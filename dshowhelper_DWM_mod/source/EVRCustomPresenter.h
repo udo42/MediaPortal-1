@@ -29,7 +29,7 @@ using namespace std;
 //Disables MP audio renderer functions if true
 #define NO_MP_AUD_REND false
 
-#define NUM_SURFACES 5
+#define NUM_SURFACES 3
 #define NB_JITTER 125
 #define NB_RFPSIZE 64
 #define NB_DFTHSIZE 64
@@ -42,6 +42,13 @@ using namespace std;
 #define FRAME_PROC_THRSH2 60
 #define DFT_THRESH 0.007
 #define NUM_PHASE_DEVIATIONS 32
+#define NUM_DWM_BUFFERS 4   //Valid range is 2-8
+
+//Bring threads and DWM under Multimedia Class Scheduler Service (MMCSS) control if true
+#define SCHED_ENABLE_MMCSS false
+#define WORKER_ENABLE_MMCSS true
+#define TIMER_ENABLE_MMCSS true
+#define DWM_ENABLE_MMCSS false
 
 // magic numbers
 #define DEFAULT_FRAME_TIME 200000 // used when fps information is not provided (PAL interlaced == 50fps)
@@ -199,8 +206,12 @@ public:
   void           NotifyRateChange(double pRate);
   void           NotifyDVDMenuState(bool pIsInMenu);
 
+//  static BOOL  CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam);
+
   bool           m_bScrubbing;
   bool           m_bZeroScrub;
+
+  BOOL           m_bDwmCompEnabled;
 
 friend class StatsRenderer;
 
@@ -242,6 +253,9 @@ protected:
   void           GetRealRefreshRate();
   LONGLONG       GetDelayToRasterTarget(LONGLONG *targetTime, LONGLONG *offsetTime);
   void           DwmEnableMMCSSOnOff(bool enable);
+  void           DwmSetParameters();
+  void           GetDwmState();
+  void           DwmFlush();
 
   CComPtr<IDirect3DDevice9>         m_pD3DDev;
   IVMR9Callback*                    m_pCallback;

@@ -85,11 +85,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.55 ----------- instance 0x%x", this);
+      Log("---------- v1.4.56 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.55 ----------- instance 0x%x", this);
+      Log("---------- v0.0.56 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -120,6 +120,7 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     m_bDVDMenu                 = false;
     m_bScrubbing               = false;
     m_bZeroScrub               = false;
+    m_bDwmCompEnabled          = false;
     m_fSeekRate                = m_fRate;
     memset(m_pllJitter,           0, sizeof(m_pllJitter));
     memset(m_pllSyncOffset,       0, sizeof(m_pllSyncOffset));
@@ -222,7 +223,7 @@ MPEVRCustomPresenter::~MPEVRCustomPresenter()
     SAFE_RELEASE(m_pAVSyncClock);
   }
   StopWorkers();
-//  DwmEnableMMCSSOnOff(false);
+  DwmEnableMMCSSOnOff(false);
   ReleaseSurfaces();
   m_pMediaType.Release();
   m_pDeviceManager =  NULL;
@@ -1426,7 +1427,7 @@ void MPEVRCustomPresenter::StartWorkers()
     return;
   }
 
-  StartThread(&m_hTimer, &m_timerParams, TimerThread, &m_uTimerThreadId, THREAD_PRIORITY_BELOW_NORMAL);
+  StartThread(&m_hTimer, &m_timerParams, TimerThread, &m_uTimerThreadId, THREAD_PRIORITY_NORMAL);
   StartThread(&m_hWorker, &m_workerParams, WorkerThread, &m_uWorkerThreadId, THREAD_PRIORITY_ABOVE_NORMAL);
   StartThread(&m_hScheduler, &m_schedulerParams, SchedulerThread, &m_uSchedulerThreadId, THREAD_PRIORITY_TIME_CRITICAL);
   m_bSchedulerRunning = TRUE;
@@ -1464,6 +1465,139 @@ void MPEVRCustomPresenter::DwmEnableMMCSSOnOff(bool enable)
     }
   }
 }
+
+void MPEVRCustomPresenter::DwmFlush()
+{
+  if (m_pDwmFlush && m_bDwmCompEnabled)
+  {
+    m_pDwmFlush();
+  }
+}
+
+void MPEVRCustomPresenter::GetDwmState()
+{
+  if (m_pDwmIsCompositionEnabled)
+  { 
+    HRESULT hr = m_pDwmIsCompositionEnabled(&m_bDwmCompEnabled);
+    if (SUCCEEDED(hr)) 
+    {
+      Log("DWM composition enabled");
+    }
+    else
+    {
+      Log("DWM composition disabled");
+    }
+  }
+  else
+  {
+    m_bDwmCompEnabled = false;
+    Log("DWM composition check failed");
+  }
+}
+
+
+
+void MPEVRCustomPresenter::DwmSetParameters()
+{
+  if (m_pDwmSetPresentParameters && m_bDwmCompEnabled)
+  {
+    DWORD wProcessId;
+    DWORD cProcessId;
+    HRESULT hr = E_FAIL;
+    HWND fhWindow = NULL;
+
+    DWM_PRESENT_PARAMETERS presentationParams;
+    presentationParams.cbSize = sizeof(DWM_PRESENT_PARAMETERS);
+    presentationParams.fQueue = 1;
+    presentationParams.cBuffer = NUM_DWM_BUFFERS;
+    presentationParams.cRefreshStart = 0;
+    presentationParams.fUseSourceRate = 0;
+    //presentationParams.rateSource = 0;
+    presentationParams.cRefreshesPerFrame = 1;
+    presentationParams.eSampling = DWM_SOURCE_FRAME_SAMPLING_POINT;
+
+    // Find the foreground window handle
+    fhWindow = GetForegroundWindow();
+    // Get it's process ID
+    GetWindowThreadProcessId(fhWindow, &wProcessId);
+    cProcessId = GetCurrentProcessId();
+    
+    // Check that it's the MP window by comparing process ID's    
+    if (fhWindow && (wProcessId == cProcessId))
+    {
+      hr = m_pDwmSetPresentParameters(fhWindow, &presentationParams);
+    }
+    
+    if (SUCCEEDED(hr)) 
+    {
+      Log("DwmSetPresentParameters succeeded, wProcessId = 0x%x, cProcessId = 0x%x", wProcessId, cProcessId);
+    }
+    else
+    {
+      Log("DwmSetPresentParameters failed, wProcessId = 0x%x, cProcessId = 0x%x", wProcessId, cProcessId);
+    }
+  }
+}
+
+//void MPEVRCustomPresenter::DwmSetParameters()
+//{
+//  if (m_pDwmSetPresentParameters && m_bDwmCompEnabled)
+//  {
+//    BOOL winFound;
+//
+//    // Enumerate the windows
+//    winFound = EnumWindows( &MPEVRCustomPresenter::EnumWindowsProc, (LPARAM) 0);
+//
+//    if (winFound) 
+//    {
+//      Log("MP window handle found for DWM");
+//    }
+//    else
+//    {
+//      Log("MP window handle NOT found for DWM");
+//    }
+//  }
+//}
+
+
+//BOOL CALLBACK MPEVRCustomPresenter::EnumWindowsProc( HWND hWnd, LPARAM lParam )
+//{
+//  DWORD wProcessId;
+//  DWORD cProcessId;
+//  
+//  // Get it's process ID
+//  GetWindowThreadProcessId(hWnd, &wProcessId);
+//  cProcessId = GetCurrentProcessId();
+//  
+//  // Check that it's the MP window by comparing process ID's    
+//  if(hWnd && (wProcessId == cProcessId)) 
+//  {
+//    HRESULT hr = E_FAIL;
+//    DWM_PRESENT_PARAMETERS presentationParams;
+//    
+//    presentationParams.cbSize = sizeof(DWM_PRESENT_PARAMETERS);
+//    presentationParams.fQueue = 1;
+//    presentationParams.cBuffer = NUM_DWM_BUFFERS;
+//    presentationParams.cRefreshStart = 0;
+//    presentationParams.fUseSourceRate = 0;
+//    presentationParams.cRefreshesPerFrame = 1;
+//    presentationParams.eSampling = DWM_SOURCE_FRAME_SAMPLING_POINT;
+//
+//    hr = m_pDwmSetPresentParameters(hWnd, &presentationParams);
+//    
+//    if (SUCCEEDED(hr)) 
+//    {
+//      Log("DwmSetPresentParameters succeeded, wProcessId = 0x%x, cProcessId = 0x%x", wProcessId, cProcessId);
+//    }
+//    else
+//    {
+//      Log("DwmSetPresentParameters failed, wProcessId = 0x%x, cProcessId = 0x%x", wProcessId, cProcessId);
+//    }
+//    return FALSE;  //Stop the window enumeration
+//  }
+//
+//  return TRUE;  //Continue the window enumeration
+//}
 
 
 void MPEVRCustomPresenter::StopWorkers()
@@ -1896,7 +2030,12 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
       m_bFirstInputNotify = FALSE;
       m_state = MP_RENDER_STATE_STARTED;
       StartWorkers();
-      DwmEnableMMCSSOnOff(false);
+      
+      //Setup the DWM
+      GetDwmState();
+      DwmSetParameters();
+      DwmEnableMMCSSOnOff(DWM_ENABLE_MMCSS && m_bDwmCompEnabled);
+      DwmFlush();
 
       // TODO add 2nd monitor support
       ResetTraceStats();
@@ -1958,6 +2097,10 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::OnClockStart(MFTIME hnsSystemTim
   NotifyWorker(true);
   NotifyScheduler(true);
   GetAVSyncClockInterface();
+//  if (m_pDwmFlush)
+//  {
+//    m_pDwmFlush();
+//  }
   return S_OK;
 }
 
@@ -1992,6 +2135,11 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::OnClockRestart(MFTIME hnsSystemT
   NotifyScheduler(true);
   GetAVSyncClockInterface();
   SetupAudioRenderer();
+//  if (m_pDwmFlush)
+//  {
+//    m_pDwmFlush();
+//  }
+
   return S_OK;
 }
 
@@ -2186,7 +2334,7 @@ HRESULT MPEVRCustomPresenter::Paint(CComPtr<IDirect3DSurface9> pSurface)
       
     m_pD3DDev->GetRasterStatus(0, &rasterStatus);
     m_LastEndOfPaintScanline = rasterStatus.ScanLine;
-    
+        
     if (m_bDrawStats) // no point in wasting CPU time if we aren't displaying the stats
     {
       //update the video and display timing values
@@ -3213,7 +3361,7 @@ LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *targetTime, LONG
      
     UINT limitLow   = (m_maxScanLine * 1)/8; 
     UINT targetPosn = limitLow;
-    UINT limitHigh  = (m_maxScanLine * 3)/8;
+    UINT limitHigh  = (m_maxScanLine * 5)/8;
     UINT limitTop   = (m_maxScanLine * 7)/8;    
     
     if (*offsetTime < 0)
@@ -3262,7 +3410,18 @@ LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *targetTime, LONG
         *offsetTime = (LONGLONG)(limitTop - currScanline) * scanlineTime ;
       }
       
-      targetDelay = targetDelay / 2; //delay in chunks
+      //currScanline value is reported as zero all through vertical blanking
+      //so limit delay to avoid overshooting the target position
+      if ( currScanline < 10 )
+      {
+        targetDelay = 15000 ; //Limit to 1.5ms
+        *offsetTime = 0 ;
+      }
+      else
+      {
+        targetDelay = targetDelay / 2; //delay in chunks
+      }
+      
       *targetTime = now + targetDelay;      
     }
     

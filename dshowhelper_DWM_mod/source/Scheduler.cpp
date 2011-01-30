@@ -58,16 +58,19 @@ UINT CALLBACK TimerThread(void* param)
   HANDLE hEvts[] = {p->eHasWork, p->eHasWorkLP};
   DWORD dwObject;
 
-    // Tell Vista Multimedia Class Scheduler (MMCS) we are doing threaded playback
-  if (m_pAvSetMmThreadCharacteristicsW) 
+  if (TIMER_ENABLE_MMCSS)
   {
-    hAvrt = m_pAvSetMmThreadCharacteristicsW(L"Playback", &dwTaskIndex);
-  }
-  if (m_pAvSetMmThreadPriority) 
-  {
-    if (m_pAvSetMmThreadPriority(hAvrt, AVRT_PRIORITY_LOW))
+    // Tell Vista/Win7 Multimedia Class Scheduler (MMCS) we are doing threaded playback
+    if (m_pAvSetMmThreadCharacteristicsW) 
     {
-      Log("Timer set AvSetMmThreadPriority succeeded");
+      hAvrt = m_pAvSetMmThreadCharacteristicsW(L"Playback", &dwTaskIndex);
+    }
+    if (m_pAvSetMmThreadPriority) 
+    {
+      if (m_pAvSetMmThreadPriority(hAvrt, AVRT_PRIORITY_LOW))
+      {
+        Log("Timer set AvSetMmThreadPriority succeeded");
+      }
     }
   }
 
@@ -135,9 +138,12 @@ UINT CALLBACK TimerThread(void* param)
   p->eHasWorkLP.Reset();
   p->eTimerEnd.Reset();
   timeEndPeriod(dwResolution);
-  if (m_pAvRevertMmThreadCharacteristics) 
+  if (TIMER_ENABLE_MMCSS)
   {
-    m_pAvRevertMmThreadCharacteristics(hAvrt);
+    if (m_pAvRevertMmThreadCharacteristics) 
+    {
+      m_pAvRevertMmThreadCharacteristics(hAvrt);
+    }
   }
   Log("Timer done.");
   return 0;
@@ -159,16 +165,19 @@ UINT CALLBACK WorkerThread(void* param)
   HANDLE hEvts[] = {p->eHasWork, p->eHasWorkLP};
   DWORD dwObject;
 
-    // Tell Vista Multimedia Class Scheduler (MMCS) we are doing threaded playback
-  if (m_pAvSetMmThreadCharacteristicsW) 
+  if (WORKER_ENABLE_MMCSS)
   {
-    hAvrt = m_pAvSetMmThreadCharacteristicsW(L"Playback", &dwTaskIndex);
-  }
-  if (m_pAvSetMmThreadPriority) 
-  {
-    if (m_pAvSetMmThreadPriority(hAvrt, AVRT_PRIORITY_NORMAL))
+    // Tell Vista/Win7 Multimedia Class Scheduler (MMCS) we are doing threaded playback
+    if (m_pAvSetMmThreadCharacteristicsW) 
     {
-      Log("Worker set AvSetMmThreadPriority succeeded");
+      hAvrt = m_pAvSetMmThreadCharacteristicsW(L"Playback", &dwTaskIndex);
+    }
+    if (m_pAvSetMmThreadPriority) 
+    {
+      if (m_pAvSetMmThreadPriority(hAvrt, AVRT_PRIORITY_NORMAL))
+      {
+        Log("Worker set AvSetMmThreadPriority succeeded");
+      }
     }
   }
 
@@ -236,9 +245,12 @@ UINT CALLBACK WorkerThread(void* param)
   p->eHasWorkLP.Reset();
   p->eTimerEnd.Reset();
   timeEndPeriod(dwResolution);
-  if (m_pAvRevertMmThreadCharacteristics) 
+  if (WORKER_ENABLE_MMCSS)
   {
-    m_pAvRevertMmThreadCharacteristics(hAvrt);
+    if (m_pAvRevertMmThreadCharacteristics) 
+    {
+      m_pAvRevertMmThreadCharacteristics(hAvrt);
+    }
   }
   Log("Worker done.");
   return 0;
@@ -248,7 +260,7 @@ UINT CALLBACK WorkerThread(void* param)
 UINT CALLBACK SchedulerThread(void* param)
 {
   SchedulerParams *p = (SchedulerParams*)param;
-//  HANDLE hAvrt;
+  HANDLE hAvrt;
   DWORD dwTaskIndex = 0;
   LONGLONG hnsTargetTime = 0;
   MMRESULT lastTimerId = 0;
@@ -266,20 +278,23 @@ UINT CALLBACK SchedulerThread(void* param)
   HANDLE hEvts3[] = {p->eHasWork, p->eTimerEnd, p->eHasWorkLP};
 
 
-  // SetThreadAffinityMask(GetCurrentThread(), 1); //Force onto CPU 0 - ATi flickering GUI experiment
+  //SetThreadAffinityMask(GetCurrentThread(), 1); //Force onto CPU 0 - ATi flickering GUI experiment
   
-    // Tell Vista Multimedia Class Scheduler (MMCS) we are doing threaded playback (increase priority)
-//  if (m_pAvSetMmThreadCharacteristicsW) 
-//  {
-//    hAvrt = m_pAvSetMmThreadCharacteristicsW(L"Playback", &dwTaskIndex);
-//  }
-//  if (m_pAvSetMmThreadPriority) 
-//  {
-//    if (m_pAvSetMmThreadPriority(hAvrt, AVRT_PRIORITY_HIGH))
-//    {
-//      Log("Scheduler set AvSetMmThreadPriority succeeded");
-//    }
-//  }
+  if (SCHED_ENABLE_MMCSS)
+  {
+    // Tell Vista/Win7 Multimedia Class Scheduler (MMCS) we are doing threaded playback (increase priority)
+    if (m_pAvSetMmThreadCharacteristicsW) 
+    {
+      hAvrt = m_pAvSetMmThreadCharacteristicsW(L"Playback", &dwTaskIndex);
+    }
+    if (m_pAvSetMmThreadPriority) 
+    {
+      if (m_pAvSetMmThreadPriority(hAvrt, AVRT_PRIORITY_HIGH))
+      {
+        Log("Scheduler set AvSetMmThreadPriority succeeded");
+      }
+    }
+  }
  
     // Set timer resolution (must be after MMCS setup, since timer res can be changed by MMCS)
   timeGetDevCaps(&tc, sizeof(TIMECAPS));
@@ -406,10 +421,13 @@ UINT CALLBACK SchedulerThread(void* param)
   p->eTimerEnd.Reset();
   
   timeEndPeriod(dwResolution);
-//  if (m_pAvRevertMmThreadCharacteristics) 
-//  {
-//    m_pAvRevertMmThreadCharacteristics(hAvrt);
-//  }
+  if (SCHED_ENABLE_MMCSS)
+  {
+    if (m_pAvRevertMmThreadCharacteristics) 
+    {
+      m_pAvRevertMmThreadCharacteristics(hAvrt);
+    }
+  }
   Log("Scheduler done.");
   return 0;
 }
