@@ -85,11 +85,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.60 ----------- instance 0x%x", this);
+      Log("---------- v1.4.61 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.60 ----------- instance 0x%x", this);
+      Log("---------- v0.0.61 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -120,7 +120,6 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     m_bDVDMenu                 = false;
     m_bScrubbing               = false;
     m_bZeroScrub               = false;
-    m_bDwmCompEnabled          = false;
     m_fSeekRate                = m_fRate;
     memset(m_pllJitter,           0, sizeof(m_pllJitter));
     memset(m_pllSyncOffset,       0, sizeof(m_pllSyncOffset));
@@ -141,8 +140,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     m_estRefreshLock        = false;
     m_dEstRefCycDiff        = 0.0;
     
-    m_dwmBuffers = 0;
-    m_hDwmWinHandle = NULL;
+    m_bDwmCompEnabled  = false;
+    m_bDWMinit         = false;
+    m_initDWMframe     = 0;
+    m_dwmBuffers       = 0;
+    m_hDwmWinHandle    = NULL;
     
     // sample time correction variables
     m_LastScheduledUncorrectedSampleTime  = -1;
@@ -241,14 +243,25 @@ MPEVRCustomPresenter::~MPEVRCustomPresenter()
   Log("Done");
 }  
 
-void MPEVRCustomPresenter::ResetDWM()
+void MPEVRCustomPresenter::DwmInit(UINT buffers, UINT rfshPerFrame)
 {
-  Log("EVRCustomPresenter::ResetDWM");  
+  Log("EVRCustomPresenter::DwmInit, frame = %d", m_iFramesDrawn);  
+  //Initialise the DWM parameters
+  DwmGetState();
+  DwmSetParameters(FALSE, buffers, rfshPerFrame);
+}  
+
+
+void MPEVRCustomPresenter::DWMreset()
+{
+  Log("EVRCustomPresenter::DWMreset");  
   //Reset the DWM parameters
-  GetDwmState();
+  if (!m_hDwmWinHandle)
+  {
+    DwmGetState();
+  }
   DwmEnableMMCSSOnOff(false);
   DwmSetParameters(FALSE, 2, 1);
-  Sleep(50);
 }  
 
 
@@ -1122,6 +1135,7 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample)
     // Failed because the device was lost.
     Log("D3DDevice was lost!");
   }
+  
   return hr;
 }
 
@@ -1373,6 +1387,13 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         AdjustAVSync(nstPhaseDiff);
       }
 
+      if ((m_iFramesDrawn > m_initDWMframe) && !m_bDWMinit)
+      {
+        //Setup the Desktop Window Manager (DWM)
+        DwmInit(NUM_DWM_BUFFERS, NUM_DWM_FRAMES);
+        m_bDWMinit = true;
+      }
+  
       if (m_bDrawStats)
       {
         CalculateNSTStats(nextSampleTime); // update NextSampleTime average
@@ -1487,7 +1508,7 @@ void MPEVRCustomPresenter::DwmFlush()
   }
 }
 
-void MPEVRCustomPresenter::GetDwmState()
+void MPEVRCustomPresenter::DwmGetState()
 {
   DWORD wProcessId;
   DWORD cProcessId;
@@ -1506,7 +1527,7 @@ void MPEVRCustomPresenter::GetDwmState()
     m_hDwmWinHandle = fhWindow;
   }
 
-  Log("GetDwmState(), hDwmWinHandle = 0x%x, wProcessId = 0x%x, cProcessId = 0x%x", fhWindow, wProcessId, cProcessId);
+  Log("DwmGetState(), hDwmWinHandle = 0x%x, wProcessId = 0x%x, cProcessId = 0x%x", fhWindow, wProcessId, cProcessId);
 
   if (m_pDwmIsCompositionEnabled)
   { 
@@ -1533,9 +1554,35 @@ void MPEVRCustomPresenter::GetDwmState()
 
 void MPEVRCustomPresenter::DwmSetParameters(BOOL useSourceRate, UINT buffers, UINT rfshPerFrame)
 {  
+  HRESULT hr = E_FAIL;
+
+  DWM_FRAME_COUNT cRefresh = 0;
+  if (false && m_pDwmGetCompositionTimingInfo && m_bDwmCompEnabled)
+  {
+    hr = E_FAIL;
+    
+    DWM_TIMING_INFO presentationStatus;
+    presentationStatus.cbSize = sizeof(presentationStatus);
+    if (m_hDwmWinHandle)
+    {
+      hr = m_pDwmGetCompositionTimingInfo(m_hDwmWinHandle, &presentationStatus);
+    }
+
+    //if (SUCCEEDED(hr)) 
+    if (hr==E_PENDING || hr==S_OK) 
+    {
+      cRefresh = presentationStatus.cRefresh;
+      Log("DwmGetCompositionTimingInfo succeeded, hr = 0x%x, cRefresh = %d", hr, cRefresh);
+    }
+    else
+    {
+      Log("DwmGetCompositionTimingInfo failed, hr = 0x%x", hr);
+    }
+  }
+  
   if (m_pDwmSetPresentParameters && m_bDwmCompEnabled)
   {
-    HRESULT hr = E_FAIL;
+    hr = E_FAIL;
 
     //Create and initialise the structure
     DWM_PRESENT_PARAMETERS presentationParams;
@@ -1553,7 +1600,6 @@ void MPEVRCustomPresenter::DwmSetParameters(BOOL useSourceRate, UINT buffers, UI
     // Set up the DWM presentation parameters    
     if (m_hDwmWinHandle)
     {
-      DwmFlush();
       hr = m_pDwmSetPresentParameters(m_hDwmWinHandle, &presentationParams);
     }
 
@@ -1568,6 +1614,24 @@ void MPEVRCustomPresenter::DwmSetParameters(BOOL useSourceRate, UINT buffers, UI
     }
     
   }  
+  
+  if (m_pDwmSetPresentParameters && m_bDwmCompEnabled)
+  {
+    hr = E_FAIL;
+    if (m_hDwmWinHandle)
+    {
+      hr = m_pDwmSetDxFrameDuration(m_hDwmWinHandle, (INT)rfshPerFrame);
+    }
+    if (SUCCEEDED(hr)) 
+    {
+      Log("DwmSetDxFrameDuration succeeded, rfshPerFrame = %d", rfshPerFrame);
+    }
+    else
+    {
+      Log("DwmSetDxFrameDuration failed, hr = 0x%x", hr);
+    }
+  }
+
 }
 
 
@@ -1999,19 +2063,18 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
       m_bEndStreaming = FALSE;
       m_bInputAvailable = FALSE;
       m_bFirstInputNotify = FALSE;
-      m_state = MP_RENDER_STATE_STARTED;
-      StartWorkers();
-      
-      //Setup the Desktop Window Manager (DWM)
-      GetDwmState();
-      //DwmSetParameters(FALSE, 2, 5);
-      DwmSetParameters(FALSE, NUM_DWM_BUFFERS, 5);
-      Sleep(50);
-      //DwmEnableMMCSSOnOff(DWM_ENABLE_MMCSS && m_bDwmCompEnabled);
-      
+      m_state = MP_RENDER_STATE_STARTED; 
+      StartWorkers();      
       // TODO add 2nd monitor support
       ResetTraceStats();
       ResetFrameStats();
+      
+//      //Setup the Desktop Window Manager (DWM)
+//      if (!m_bDWMinit)
+//      {
+//        DwmInit(NUM_DWM_BUFFERS, 1);
+//        m_bDWMinit = true;
+//      }
     break;
 
     case MFVP_MESSAGE_ENDSTREAMING:
@@ -2068,6 +2131,7 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::OnClockStart(MFTIME hnsSystemTim
   WakeThread(m_hWorker, &m_workerParams);
   NotifyWorker(true);
   NotifyScheduler(true);
+
   GetAVSyncClockInterface();
 
   return S_OK;
@@ -2840,6 +2904,8 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
   m_rasterLimitTop   = (((m_maxVisScanLine - m_minVisScanLine) * 7)/8) + m_minVisScanLine;    
 
   Log("Vsync correction : rasterLimitHigh: %d, rasterLimitLow: %d, rasterTargetPosn: %d", m_rasterLimitHigh, m_rasterLimitLow, m_rasterTargetPosn);
+
+  m_initDWMframe = (int)(250.0/m_dEstRefreshCycle); //display frame units
 
   return m_estRefreshLock;
 }

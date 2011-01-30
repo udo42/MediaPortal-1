@@ -46,6 +46,8 @@ using namespace std;
 //Valid range is 2-8
 #define NUM_DWM_BUFFERS 3
 
+#define NUM_DWM_FRAMES 1
+
 // 0 = no compensation, 1 = full compensation for DWM buffering delay
 #define DWM_DELAY_COMP 0
 
@@ -211,10 +213,12 @@ public:
   void           NotifyRateChange(double pRate);
   void           NotifyDVDMenuState(bool pIsInMenu);
 
-  void           ResetDWM();
+  void           DWMreset();
+  void           DwmInit(UINT buffers, UINT rfshPerFrame);
 
   bool           m_bScrubbing;
   bool           m_bZeroScrub;
+  bool           m_bDWMinit;
 
   BOOL           m_bDwmCompEnabled;
 
@@ -259,7 +263,7 @@ protected:
   LONGLONG       GetDelayToRasterTarget(LONGLONG *targetTime, LONGLONG *offsetTime);
   void           DwmEnableMMCSSOnOff(bool enable);
   void           DwmSetParameters(BOOL useSourceRate, UINT buffers, UINT rfshPerFrame);
-  void           GetDwmState();
+  void           DwmGetState();
   void           DwmFlush();
 
   CComPtr<IDirect3DDevice9>         m_pD3DDev;
@@ -395,6 +399,8 @@ protected:
   UINT   m_rasterTargetPosn;
   UINT   m_rasterLimitHigh;
   UINT   m_rasterLimitTop;    
+  
+  int    m_initDWMframe;
 
   double m_dEstRefCycDiff; 
   
