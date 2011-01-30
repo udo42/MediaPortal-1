@@ -196,11 +196,11 @@ void StatsRenderer::DrawStats()
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
 
-    strText.Format("Video: %d x %d @ %d x %d | Act FPS: %.6f (red)| Drwn: %d | Drop: %d | Lkd: %d", 
+    strText.Format("Video: %d x %d @ %d x %d | Act FPS: %.6f (red)| Drwn: %d | Drop: %d | Late: %d", 
       m_pPresenter->m_iVideoWidth, m_pPresenter->m_iVideoHeight, 
       m_pPresenter->m_iARX, m_pPresenter->m_iARY, 
       10000000.0 / m_pPresenter->m_fJitterMean, m_pPresenter->m_iFramesDrawn, m_pPresenter->m_iFramesDropped,
-      (int)m_pPresenter->m_DetectedLock);
+      m_pPresenter->m_iLateFrCnt);
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
 
@@ -212,15 +212,15 @@ void StatsRenderer::DrawStats()
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
 
-    strText.Format("Raster offset (ylw): %5.2f ms | SOP: %4d | EOP: %4d | FrH: %d | LFr: %d | Derr: %5.2f ms",
+    strText.Format("Raster offset (ylw): %5.2f ms | SOP: %4d | EOP: %4d | Locked: %d | Derr: %5.2f ms | Q: %d",
       m_pPresenter->m_rasterSyncOffset, m_pPresenter->m_LastStartOfPaintScanline, m_pPresenter->m_LastEndOfPaintScanline, 
-      m_pPresenter->m_iFramesHeld, m_pPresenter->m_iLateFrames, m_pPresenter->m_lastDelayErr/10000.0);
+      (int)m_pPresenter->m_DetectedLock, m_pPresenter->m_lastDelayErr/10000.0, (m_pPresenter->m_qScheduledSamples.Count()));
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
 
-    strText.Format("DetFrT: %+5.3f ms | DetFrT_SD: %+5.3f ms | RtFrT: %+5.3f ms | DetSDur: %+5.3f ms | Q: %d",  
+    strText.Format("DetFrT: %+5.3f ms | DetFrT_SD: %+5.3f ms | RtFrT: %+5.3f ms | DetSDur: %+5.3f ms",  
       (m_pPresenter->m_DetectedFrameTime * 1000.0), (m_pPresenter->m_DetectedFrameTimeStdDev/10000.0),
-      (m_pPresenter->m_rtTimePerFrame/10000.0 ), (m_pPresenter->m_SampDuration/10000.0), (m_pPresenter->m_qScheduledSamples.Count()) );
+      (m_pPresenter->m_rtTimePerFrame/10000.0 ), (m_pPresenter->m_SampDuration/10000.0) );
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
 

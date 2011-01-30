@@ -29,7 +29,7 @@ using namespace std;
 //Disables MP audio renderer functions if true
 #define NO_MP_AUD_REND false
 
-#define NUM_SURFACES 3
+#define NUM_SURFACES 4
 #define NB_JITTER 125
 #define NB_RFPSIZE 64
 #define NB_DFTHSIZE 64
@@ -42,7 +42,12 @@ using namespace std;
 #define FRAME_PROC_THRSH2 60
 #define DFT_THRESH 0.007
 #define NUM_PHASE_DEVIATIONS 32
-#define NUM_DWM_BUFFERS 4   //Valid range is 2-8
+
+//Valid range is 2-8
+#define NUM_DWM_BUFFERS 3
+
+// 0 = no compensation, 1 = full compensation for DWM buffering delay
+#define DWM_DELAY_COMP 0
 
 //Bring threads and DWM under Multimedia Class Scheduler Service (MMCSS) control if true
 #define SCHED_ENABLE_MMCSS false
@@ -251,7 +256,7 @@ protected:
   void           GetRealRefreshRate();
   LONGLONG       GetDelayToRasterTarget(LONGLONG *targetTime, LONGLONG *offsetTime);
   void           DwmEnableMMCSSOnOff(bool enable);
-  void           DwmSetParameters();
+  void           DwmSetParameters(BOOL queuedEn, UINT buffers);
   void           GetDwmState();
   void           DwmFlush();
 
@@ -328,7 +333,7 @@ protected:
   double                            m_fPCDSumAvg;
 	
 	
-  int                               m_iFramesHeld;
+  int                               m_iLateFrCnt;
   int                               m_iLateFrames;
   int                               m_iFramesProcessed;
  
@@ -381,6 +386,14 @@ protected:
   UINT   m_LastStartOfPaintScanline;
   UINT   m_LastEndOfPaintScanline;
   UINT   m_maxScanLine;
+  UINT   m_minVisScanLine;
+  UINT   m_maxVisScanLine;
+
+  UINT   m_rasterLimitLow; 
+  UINT   m_rasterTargetPosn;
+  UINT   m_rasterLimitHigh;
+  UINT   m_rasterLimitTop;    
+
   double m_dEstRefCycDiff; 
   
   LONGLONG m_SampDuration;
@@ -417,6 +430,7 @@ protected:
   LONGLONG      m_lastDelayErr;
 
   UINT          m_dwmBuffers;
+  HWND          m_hDwmWinHandle;
   
   BOOL          m_bIsWin7;
   bool          m_bMsVideoCodec;

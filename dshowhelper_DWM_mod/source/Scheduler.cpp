@@ -113,7 +113,7 @@ UINT CALLBACK TimerThread(void* param)
         while ( (now < p->llTime) && (now < timeout) && !p->bDone && (p->llTime > 0))
         {    
           now = GetCurrentTimestamp(); //poll until we reach the target time
-          Sleep(2); //CPU load is too high without a Sleep()
+          Sleep(1); //CPU load is too high without a Sleep()
         }
         if ((p->llTime > 0) && !p->bDone)
         {
