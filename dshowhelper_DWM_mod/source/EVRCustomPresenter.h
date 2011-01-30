@@ -206,8 +206,6 @@ public:
   void           NotifyRateChange(double pRate);
   void           NotifyDVDMenuState(bool pIsInMenu);
 
-//  static BOOL  CALLBACK EnumWindowsProc(HWND hWnd, LPARAM lParam);
-
   bool           m_bScrubbing;
   bool           m_bZeroScrub;
 
@@ -239,7 +237,7 @@ protected:
   void           NotifyThread(SchedulerParams* params, bool setWork, bool setWorkLP, LONGLONG llTime);
   void           NotifyScheduler(bool forceWake);
   void           NotifyWorker(bool setInAvail);
-  HRESULT        GetTimeToSchedule(IMFSample* pSample, LONGLONG* pDelta, LONGLONG *hnsSystemTime);
+  HRESULT        GetTimeToSchedule(IMFSample* pSample, LONGLONG* pDelta, LONGLONG *hnsSystemTime, LONGLONG hnsTimeOffset);
   void           Flush(BOOL forced);
   void           ScheduleSample(IMFSample* pSample);
   IMFSample*     PeekSample();
@@ -299,8 +297,7 @@ protected:
   int                               m_iFramesDropped;
   bool                              m_bFrameSkipping;
   double                            m_fSeekRate;
-//  bool                              m_bScrubbing;
-//  bool                              m_bZeroScrub;
+
   bool                              m_bFirstFrame;
   bool                              m_bDVDMenu;
   MP_RENDER_STATE                   m_state;
@@ -418,6 +415,8 @@ protected:
   LONGLONG      m_earliestPresentTime;
   LONGLONG      m_lastPresentTime;
   LONGLONG      m_lastDelayErr;
+
+  UINT          m_dwmBuffers;
   
   BOOL          m_bIsWin7;
   bool          m_bMsVideoCodec;

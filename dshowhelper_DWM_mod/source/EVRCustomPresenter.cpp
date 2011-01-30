@@ -85,11 +85,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.56 ----------- instance 0x%x", this);
+      Log("---------- v1.4.57 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.56 ----------- instance 0x%x", this);
+      Log("---------- v0.0.57 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -141,7 +141,8 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     m_estRefreshLock        = false;
     m_dEstRefCycDiff        = 0.0;
     
-
+    m_dwmBuffers = 0;
+    
     // sample time correction variables
     m_LastScheduledUncorrectedSampleTime  = -1;
     m_DetectedFrameTimePos                = 0;
@@ -508,7 +509,8 @@ HRESULT MPEVRCustomPresenter::TrackSample(IMFSample *pSample)
   return hr;
 }
 
-HRESULT MPEVRCustomPresenter::GetTimeToSchedule(IMFSample* pSample, LONGLONG *phnsDelta, LONGLONG *hnsSystemTime)
+// 'hnsTimeOffset' can be used to correct A/V sync - positive values will cause samples to be presented earlier
+HRESULT MPEVRCustomPresenter::GetTimeToSchedule(IMFSample* pSample, LONGLONG *phnsDelta, LONGLONG *hnsSystemTime, LONGLONG hnsTimeOffset)
 {
   LONGLONG hnsPresentationTime = 0; // Target presentation time
   LONGLONG hnsTimeNow = 0;          // Current presentation time
@@ -533,7 +535,7 @@ HRESULT MPEVRCustomPresenter::GetTimeToSchedule(IMFSample* pSample, LONGLONG *ph
       return S_OK;
     }
     CHECK_HR(hr = m_pClock->GetCorrelatedTime(0, &hnsTimeNow, hnsSystemTime), "Could not get correlated time!");
-    hnsTimeNow = hnsTimeNow + (GetCurrentTimestamp() - *hnsSystemTime); //correct the value
+    hnsTimeNow = hnsTimeNow + (GetCurrentTimestamp() - *hnsSystemTime) + hnsTimeOffset; //correct the value and add offset
       // Calculate the amount of time until the sample's presentation time. A negative value means the sample is late.
     hnsDelta = hnsPresentationTime - hnsTimeNow;
     *hnsSystemTime = GetCurrentTimestamp();
@@ -552,15 +554,6 @@ HRESULT MPEVRCustomPresenter::GetTimeToSchedule(IMFSample* pSample, LONGLONG *ph
       pSample, hnsDelta, hnsPresentationTime, hnsTimeNow);
   }
   LOG_TRACE("Due: %I64d, Calculated delta: %I64d (rate: %f)", hnsPresentationTime, hnsDelta, m_fRate);
-
-//  if (m_fRate != 1.0f && m_fRate != 0.0f)
-//  {
-//    *phnsDelta = (LONGLONG)((float)hnsDelta / m_fRate);
-//  }
-//  else
-//  {
-//    *phnsDelta = hnsDelta;
-//  }
 
   *phnsDelta = hnsDelta;
   
@@ -1186,7 +1179,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     }
   
     // get scheduled time, if none is available the sample will be presented immediately
-    CHECK_HR(hr = GetTimeToSchedule(pSample, &nextSampleTime, &systemTime), "Couldn't get time to schedule!");
+    CHECK_HR(hr = GetTimeToSchedule(pSample, &nextSampleTime, &systemTime, (displayTime * m_dwmBuffers)), "Couldn't get time to schedule!");
     if (FAILED(hr))
     {
       nextSampleTime = 0;
@@ -1481,15 +1474,18 @@ void MPEVRCustomPresenter::GetDwmState()
     HRESULT hr = m_pDwmIsCompositionEnabled(&m_bDwmCompEnabled);
     if (SUCCEEDED(hr)) 
     {
+      m_dwmBuffers = 2;
       Log("DWM composition enabled");
     }
     else
     {
+      m_dwmBuffers = 0;
       Log("DWM composition disabled");
     }
   }
   else
   {
+    m_dwmBuffers = 0;
     m_bDwmCompEnabled = false;
     Log("DWM composition check failed");
   }
@@ -1498,7 +1494,7 @@ void MPEVRCustomPresenter::GetDwmState()
 
 
 void MPEVRCustomPresenter::DwmSetParameters()
-{
+{  
   if (m_pDwmSetPresentParameters && m_bDwmCompEnabled)
   {
     DWORD wProcessId;
@@ -1506,13 +1502,13 @@ void MPEVRCustomPresenter::DwmSetParameters()
     HRESULT hr = E_FAIL;
     HWND fhWindow = NULL;
 
+    //Create and initialise the structure
     DWM_PRESENT_PARAMETERS presentationParams;
     presentationParams.cbSize = sizeof(DWM_PRESENT_PARAMETERS);
-    presentationParams.fQueue = 1;
+    presentationParams.fQueue = TRUE;
     presentationParams.cBuffer = NUM_DWM_BUFFERS;
     presentationParams.cRefreshStart = 0;
-    presentationParams.fUseSourceRate = 0;
-    //presentationParams.rateSource = 0;
+    presentationParams.fUseSourceRate = FALSE;
     presentationParams.cRefreshesPerFrame = 1;
     presentationParams.eSampling = DWM_SOURCE_FRAME_SAMPLING_POINT;
 
@@ -1530,6 +1526,7 @@ void MPEVRCustomPresenter::DwmSetParameters()
     
     if (SUCCEEDED(hr)) 
     {
+      m_dwmBuffers = NUM_DWM_BUFFERS;
       Log("DwmSetPresentParameters succeeded, wProcessId = 0x%x, cProcessId = 0x%x", wProcessId, cProcessId);
     }
     else
@@ -1537,67 +1534,9 @@ void MPEVRCustomPresenter::DwmSetParameters()
       Log("DwmSetPresentParameters failed, wProcessId = 0x%x, cProcessId = 0x%x", wProcessId, cProcessId);
     }
   }
+  
+  Log("DWM buffers = %d", m_dwmBuffers);
 }
-
-//void MPEVRCustomPresenter::DwmSetParameters()
-//{
-//  if (m_pDwmSetPresentParameters && m_bDwmCompEnabled)
-//  {
-//    BOOL winFound;
-//
-//    // Enumerate the windows
-//    winFound = EnumWindows( &MPEVRCustomPresenter::EnumWindowsProc, (LPARAM) 0);
-//
-//    if (winFound) 
-//    {
-//      Log("MP window handle found for DWM");
-//    }
-//    else
-//    {
-//      Log("MP window handle NOT found for DWM");
-//    }
-//  }
-//}
-
-
-//BOOL CALLBACK MPEVRCustomPresenter::EnumWindowsProc( HWND hWnd, LPARAM lParam )
-//{
-//  DWORD wProcessId;
-//  DWORD cProcessId;
-//  
-//  // Get it's process ID
-//  GetWindowThreadProcessId(hWnd, &wProcessId);
-//  cProcessId = GetCurrentProcessId();
-//  
-//  // Check that it's the MP window by comparing process ID's    
-//  if(hWnd && (wProcessId == cProcessId)) 
-//  {
-//    HRESULT hr = E_FAIL;
-//    DWM_PRESENT_PARAMETERS presentationParams;
-//    
-//    presentationParams.cbSize = sizeof(DWM_PRESENT_PARAMETERS);
-//    presentationParams.fQueue = 1;
-//    presentationParams.cBuffer = NUM_DWM_BUFFERS;
-//    presentationParams.cRefreshStart = 0;
-//    presentationParams.fUseSourceRate = 0;
-//    presentationParams.cRefreshesPerFrame = 1;
-//    presentationParams.eSampling = DWM_SOURCE_FRAME_SAMPLING_POINT;
-//
-//    hr = m_pDwmSetPresentParameters(hWnd, &presentationParams);
-//    
-//    if (SUCCEEDED(hr)) 
-//    {
-//      Log("DwmSetPresentParameters succeeded, wProcessId = 0x%x, cProcessId = 0x%x", wProcessId, cProcessId);
-//    }
-//    else
-//    {
-//      Log("DwmSetPresentParameters failed, wProcessId = 0x%x, cProcessId = 0x%x", wProcessId, cProcessId);
-//    }
-//    return FALSE;  //Stop the window enumeration
-//  }
-//
-//  return TRUE;  //Continue the window enumeration
-//}
 
 
 void MPEVRCustomPresenter::StopWorkers()
@@ -1818,7 +1757,7 @@ void MPEVRCustomPresenter::ScheduleSample(IMFSample* pSample)
   DWORD hr;
   LONGLONG nextSampleTime;
   LONGLONG systemTime;
-  CHECK_HR(hr = GetTimeToSchedule(pSample, &nextSampleTime, &systemTime), "Couldn't get time to schedule!");
+  CHECK_HR(hr = GetTimeToSchedule(pSample, &nextSampleTime, &systemTime, 0), "Couldn't get time to schedule!");
   if (SUCCEEDED(hr))
   {
     // consider 5 ms "just-in-time" for log-length's sake
@@ -2097,10 +2036,7 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::OnClockStart(MFTIME hnsSystemTim
   NotifyWorker(true);
   NotifyScheduler(true);
   GetAVSyncClockInterface();
-//  if (m_pDwmFlush)
-//  {
-//    m_pDwmFlush();
-//  }
+
   return S_OK;
 }
 
@@ -2135,10 +2071,6 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::OnClockRestart(MFTIME hnsSystemT
   NotifyScheduler(true);
   GetAVSyncClockInterface();
   SetupAudioRenderer();
-//  if (m_pDwmFlush)
-//  {
-//    m_pDwmFlush();
-//  }
 
   return S_OK;
 }
@@ -2841,7 +2773,7 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
     m_pD3DDev->GetDisplayMode(0, &m_displayMode); //update this just in case anything has changed...
     GetRealRefreshRate(); // update m_dD3DRefreshCycle and m_dD3DRefreshRate values
     
-    if (m_dEstRefreshCycle < 5.0) // just in case it's gone badly wrong...
+    if ((m_dEstRefreshCycle < 5.0) || (m_dEstRefreshCycle > 100.0)) // just in case it's gone badly wrong...
     {
       Log("Display refresh estimation failed, measured display cycle: %.6f ms", m_dEstRefreshCycle);
       m_dEstRefreshCycle = m_dD3DRefreshCycle;
