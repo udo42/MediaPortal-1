@@ -85,11 +85,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.59 ----------- instance 0x%x", this);
+      Log("---------- v1.4.60 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.59 ----------- instance 0x%x", this);
+      Log("---------- v0.0.60 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -174,6 +174,8 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
   }
 
   m_pStatsRenderer = new StatsRenderer(this, m_pD3DDev);
+  
+  DwmEnableMMCSSOnOff(false);
 }
 
 void MPEVRCustomPresenter::SetFrameSkipping(bool onOff)
@@ -218,10 +220,6 @@ MPEVRCustomPresenter::~MPEVRCustomPresenter()
 {
   Log("EVRCustomPresenter::dtor - instance 0x%x", this);
   
-  //Reset the DWM parameters
-  // DwmEnableMMCSSOnOff(false);
-  // DwmSetParameters(TRUE, 2);
-
   if (m_pCallback)
   {
     m_pCallback->PresentImage(0, 0, 0, 0, 0, 0);
@@ -241,6 +239,16 @@ MPEVRCustomPresenter::~MPEVRCustomPresenter()
   delete m_pStatsRenderer;
   timeEndPeriod(1);
   Log("Done");
+}  
+
+void MPEVRCustomPresenter::ResetDWM()
+{
+  Log("EVRCustomPresenter::ResetDWM");  
+  //Reset the DWM parameters
+  GetDwmState();
+  DwmEnableMMCSSOnOff(false);
+  DwmSetParameters(FALSE, 2, 1);
+  Sleep(50);
 }  
 
 
@@ -1086,7 +1094,8 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample)
         m_pCallback->SetSampleTime(hnsTimeScheduled);
       }
       pSample->SetSampleTime(0); //Big experiment !!
-      pSample->SetSampleDuration((LONGLONG)(GetDisplayCycle() * 10000.0)); //Big experiment !!
+      pSample->SetSampleDuration(0); //Big experiment !!
+      //pSample->SetSampleDuration((LONGLONG)(GetDisplayCycle() * 10000.0)); //Big experiment !!
     }
 
     // Present the swap surface
@@ -1190,7 +1199,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     }
   
     // get scheduled time, if none is available the sample will be presented immediately
-    CHECK_HR(hr = GetTimeToSchedule(pSample, &nextSampleTime, &systemTime, (displayTime * m_dwmBuffers * DWM_DELAY_COMP)), "Couldn't get time to schedule!");
+    CHECK_HR(hr = GetTimeToSchedule(pSample, &nextSampleTime, &systemTime, 0), "Couldn't get time to schedule!");
     if (FAILED(hr))
     {
       nextSampleTime = 0;
@@ -1522,7 +1531,7 @@ void MPEVRCustomPresenter::GetDwmState()
 }
 
 
-void MPEVRCustomPresenter::DwmSetParameters(BOOL queuedEn, UINT buffers)
+void MPEVRCustomPresenter::DwmSetParameters(BOOL useSourceRate, UINT buffers, UINT rfshPerFrame)
 {  
   if (m_pDwmSetPresentParameters && m_bDwmCompEnabled)
   {
@@ -1531,27 +1540,26 @@ void MPEVRCustomPresenter::DwmSetParameters(BOOL queuedEn, UINT buffers)
     //Create and initialise the structure
     DWM_PRESENT_PARAMETERS presentationParams;
     presentationParams.cbSize = sizeof(presentationParams);
-    presentationParams.fQueue = queuedEn;
-    presentationParams.cRefreshStart = 1;
+    presentationParams.fQueue = TRUE;
+    presentationParams.cRefreshStart = 0;
     presentationParams.cBuffer = buffers;
-    presentationParams.fUseSourceRate = FALSE;
+    presentationParams.fUseSourceRate = useSourceRate;
     presentationParams.rateSource.uiNumerator = (UINT)(100000000.0/m_dEstRefreshCycle);
     presentationParams.rateSource.uiDenominator = 100000;
-    presentationParams.cRefreshesPerFrame = 5;
+    presentationParams.cRefreshesPerFrame = rfshPerFrame;
     presentationParams.eSampling = DWM_SOURCE_FRAME_SAMPLING_POINT;
-    // presentationParams.eSampling = DWM_SOURCE_FRAME_SAMPLING_COVERAGE;
+    //presentationParams.eSampling = DWM_SOURCE_FRAME_SAMPLING_COVERAGE;
     
     // Set up the DWM presentation parameters    
     if (m_hDwmWinHandle)
     {
+      DwmFlush();
       hr = m_pDwmSetPresentParameters(m_hDwmWinHandle, &presentationParams);
     }
 
     if (SUCCEEDED(hr)) 
     {
       m_dwmBuffers = buffers;
-      Sleep(20);
-      DwmFlush();
       Log("DwmSetPresentParameters succeeded, DWM buffers = %d", m_dwmBuffers);
     }
     else
@@ -1996,9 +2004,10 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
       
       //Setup the Desktop Window Manager (DWM)
       GetDwmState();
-      DwmSetParameters(TRUE, 2);
-      DwmSetParameters(TRUE, NUM_DWM_BUFFERS);
-      DwmEnableMMCSSOnOff(DWM_ENABLE_MMCSS && m_bDwmCompEnabled);
+      //DwmSetParameters(FALSE, 2, 5);
+      DwmSetParameters(FALSE, NUM_DWM_BUFFERS, 5);
+      Sleep(50);
+      //DwmEnableMMCSSOnOff(DWM_ENABLE_MMCSS && m_bDwmCompEnabled);
       
       // TODO add 2nd monitor support
       ResetTraceStats();
@@ -2008,8 +2017,6 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
     case MFVP_MESSAGE_ENDSTREAMING:
       // The EVR switched from running or paused to stopped. The presenter should free resources.
       Log("ProcessMessage MFVP_MESSAGE_ENDSTREAMING");
-      DwmEnableMMCSSOnOff(false);
-      DwmSetParameters(TRUE, 2);
       m_state = MP_RENDER_STATE_STOPPED;
     break;
 
@@ -2829,7 +2836,7 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
   //Initialise vsync correction control values
   m_rasterLimitLow   = (((m_maxVisScanLine - m_minVisScanLine) * 1)/8) + m_minVisScanLine; 
   m_rasterTargetPosn = m_rasterLimitLow;
-  m_rasterLimitHigh  = (((m_maxVisScanLine - m_minVisScanLine) * 3)/8) + m_minVisScanLine;
+  m_rasterLimitHigh  = (((m_maxVisScanLine - m_minVisScanLine) * 4)/8) + m_minVisScanLine;
   m_rasterLimitTop   = (((m_maxVisScanLine - m_minVisScanLine) * 7)/8) + m_minVisScanLine;    
 
   Log("Vsync correction : rasterLimitHigh: %d, rasterLimitLow: %d, rasterTargetPosn: %d", m_rasterLimitHigh, m_rasterLimitLow, m_rasterTargetPosn);
@@ -3577,6 +3584,15 @@ void MPEVRCustomPresenter::GetAVSyncClockInterface()
       m_bBiasAdjustmentDone = false;
       Log("  Failed to adjust bias to : %1.10f", m_dBias);
     }
+    double audioDelayRequired = (double) m_dwmBuffers * m_dFrameCycle;
+    if (S_OK == m_pAVSyncClock->SetEVRPresentationDelay(audioDelayRequired))
+    {
+      Log("SetupAudioRenderer: Delayed Audio by : %1.10f", audioDelayRequired);
+    }
+    else
+    {
+      Log("SetupAudioRenderer: failed to set audio delay of: %1.10f", audioDelayRequired);
+    }
   }
 }
 
@@ -3617,6 +3633,15 @@ void MPEVRCustomPresenter::SetupAudioRenderer()
     {
       m_bBiasAdjustmentDone = false;
       Log("SetupAudioRenderer: failed to adjust bias to : %1.10f", m_dBias);
+    }
+    double audioDelayRequired = (double) m_dwmBuffers * m_dFrameCycle;
+    if (S_OK == m_pAVSyncClock->SetEVRPresentationDelay(audioDelayRequired))
+    {
+      Log("SetupAudioRenderer: Delayed Audio by : %1.10f", audioDelayRequired);
+    }
+    else
+    {
+      Log("SetupAudioRenderer: failed to set audio delay of: %1.10f", audioDelayRequired);
     }
   }
   else

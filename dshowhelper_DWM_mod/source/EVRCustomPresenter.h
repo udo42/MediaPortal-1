@@ -211,6 +211,8 @@ public:
   void           NotifyRateChange(double pRate);
   void           NotifyDVDMenuState(bool pIsInMenu);
 
+  void           ResetDWM();
+
   bool           m_bScrubbing;
   bool           m_bZeroScrub;
 
@@ -256,7 +258,7 @@ protected:
   void           GetRealRefreshRate();
   LONGLONG       GetDelayToRasterTarget(LONGLONG *targetTime, LONGLONG *offsetTime);
   void           DwmEnableMMCSSOnOff(bool enable);
-  void           DwmSetParameters(BOOL queuedEn, UINT buffers);
+  void           DwmSetParameters(BOOL useSourceRate, UINT buffers, UINT rfshPerFrame);
   void           GetDwmState();
   void           DwmFlush();
 
