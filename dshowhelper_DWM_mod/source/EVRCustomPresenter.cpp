@@ -85,11 +85,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.61 ----------- instance 0x%x", this);
+      Log("---------- v1.4.62 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.61 ----------- instance 0x%x", this);
+      Log("---------- v0.0.62 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -1154,6 +1154,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
   LOG_TRACE("Checking for scheduled sample (size: %d)", m_qScheduledSamples.Count());
   LONGLONG displayTime = (LONGLONG)(GetDisplayCycle() * 10000); // display cycle in hns
   LONGLONG hystersisTime = min(50000, displayTime/4) ;
+  //LONGLONG delErrLimit = (LF_DELAY_LIMIT * 10000) ;
   LONGLONG delErrLimit = displayTime ;
   LONGLONG delErr = 0;
   LONGLONG nextSampleTime = 0;
@@ -1224,8 +1225,8 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         
     if (*pTargetTime > 0)
     {  
-      delErr = *pTargetTime - systemTime;
-      m_lastDelayErr = delErr;
+      delErr = systemTime - *pTargetTime;
+      m_lastDelayErr = -delErr;
     }
     else
     {
@@ -1242,7 +1243,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         if (m_iLateFrames >= LF_THRESH)
         {
           lateLimit = delErrLimit; //more contiguous late frames are allowed
-          delErr = delErrLimit;
+          delErr = hystersisTime;
         }
         else
         {
@@ -1250,12 +1251,12 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
           delErr = 0;
         }
       }
-      else if ( (nextSampleTime < -(hystersisTime - 5000)) || (delErr < -(hystersisTime - 5000)) )
+      else if ( (nextSampleTime < -(hystersisTime - 5000)) ) // || (delErr > (hystersisTime - 5000)) )
       {
         m_iLateFrames = LF_THRESH_HIGH;
         m_iLateFrCnt++;
         lateLimit = delErrLimit; // Allow this late frame
-        delErr = delErrLimit;
+        delErr = hystersisTime;
       }
       else
       {
@@ -1295,7 +1296,8 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         }
         
         // Apply display vsync correction.     
-        LONGLONG offsetTime = -delErr; //used to widen vsync correction window
+        LONGLONG offsetTime = delErr; //used to widen vsync correction window
+        //LONGLONG offsetTime = 0;
         LONGLONG rasterDelay = GetDelayToRasterTarget( pTargetTime, &offsetTime);
 
         if (rasterDelay > 0)
@@ -1317,17 +1319,16 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
           m_earliestPresentTime = systemTime + (displayTime * (m_rawFRRatio - 1)) + offsetTime;
         }    
         
+        m_stallTime = m_earliestPresentTime - systemTime;
+
         if (nextSampleTime > (frameTime + earlyLimit))
         {      
           // It's too early to present sample, so delay for a while
           if (m_iLateFrames > 0)
           {
             LOG_LATEFR("Late frame (stall), sampTime %.2f ms, last sleep %.2f, LFr %d",(double)nextSampleTime/10000, (double)lastSleepTime/10000, m_iLateFrames) ;
-          }
-          
-          m_stallTime = m_earliestPresentTime - systemTime;
-          *pTargetTime = systemTime + (m_stallTime/2); //delay in smaller chunks
-          
+          }          
+          *pTargetTime = systemTime + (m_stallTime/2); //delay in smaller chunks          
           break;
         }    
                
@@ -1387,12 +1388,12 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         AdjustAVSync(nstPhaseDiff);
       }
 
-      if ((m_iFramesDrawn > m_initDWMframe) && !m_bDWMinit)
-      {
-        //Setup the Desktop Window Manager (DWM)
-        DwmInit(NUM_DWM_BUFFERS, NUM_DWM_FRAMES);
-        m_bDWMinit = true;
-      }
+//      if ((m_iFramesDrawn > m_initDWMframe) && !m_bDWMinit)
+//      {
+//        //Setup the Desktop Window Manager (DWM)
+//        DwmInit(NUM_DWM_BUFFERS, NUM_DWM_FRAMES);
+//        m_bDWMinit = true;
+//      }
   
       if (m_bDrawStats)
       {
@@ -2060,6 +2061,14 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
     case MFVP_MESSAGE_BEGINSTREAMING:
       // The EVR switched from stopped to paused. The presenter should allocate resources.
       Log("ProcessMessage MFVP_MESSAGE_BEGINSTREAMING");
+      //Setup the Desktop Window Manager (DWM)
+      if (!m_bDWMinit)
+      {
+        DwmFlush();
+        DwmInit(NUM_DWM_BUFFERS, NUM_DWM_FRAMES);
+        m_bDWMinit = true;
+        Sleep(100);
+      }
       m_bEndStreaming = FALSE;
       m_bInputAvailable = FALSE;
       m_bFirstInputNotify = FALSE;
@@ -2069,12 +2078,6 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
       ResetTraceStats();
       ResetFrameStats();
       
-//      //Setup the Desktop Window Manager (DWM)
-//      if (!m_bDWMinit)
-//      {
-//        DwmInit(NUM_DWM_BUFFERS, 1);
-//        m_bDWMinit = true;
-//      }
     break;
 
     case MFVP_MESSAGE_ENDSTREAMING:
@@ -2901,7 +2904,8 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
   m_rasterLimitLow   = (((m_maxVisScanLine - m_minVisScanLine) * 1)/8) + m_minVisScanLine; 
   m_rasterTargetPosn = m_rasterLimitLow;
   m_rasterLimitHigh  = (((m_maxVisScanLine - m_minVisScanLine) * 4)/8) + m_minVisScanLine;
-  m_rasterLimitTop   = (((m_maxVisScanLine - m_minVisScanLine) * 7)/8) + m_minVisScanLine;    
+  m_rasterLimitTop   = (((m_maxVisScanLine - m_minVisScanLine) * 5)/8) + m_minVisScanLine;   
+  m_rasterLimitNP    = m_maxVisScanLine;   
 
   Log("Vsync correction : rasterLimitHigh: %d, rasterLimitLow: %d, rasterTargetPosn: %d", m_rasterLimitHigh, m_rasterLimitLow, m_rasterTargetPosn);
 
@@ -3179,14 +3183,15 @@ void MPEVRCustomPresenter::GetFrameRateRatio()
 
   m_rawFRRatio = F2DRatioP6;
  
-  if (!(m_DetectedFrameTime > DFT_THRESH) || (m_iFramesProcessed < FRAME_PROC_THRESH))
+  //if (!(m_DetectedFrameTime > DFT_THRESH) || (m_iFramesDrawn < FRAME_PROC_THRESH) )
+  if (!(m_DetectedFrameTime > DFT_THRESH) || (m_iFramesDrawn < FRAME_PROC_THRSH2) )
   {
     m_frameRateRatio = 0;
   }
-  else if (m_iFramesDrawn < FRAME_PROC_THRSH2)
-  {
-    m_frameRateRatio = F2DRatioP6;
-  }
+//  else if (m_iFramesDrawn < FRAME_PROC_THRSH2)
+//  {
+//    m_frameRateRatio = F2DRatioP6;
+//  }
   else if (F2DRatioP6 == 0 || (F2DRatioP6 == F2DRatioN6)) 
   {
     m_frameRateRatio = 0;
@@ -3451,9 +3456,9 @@ LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *targetTime, LONG
         targetDelay = (LONGLONG)(GetDisplayCycle() * (70000.0/8.0));
       }
       
-      if ( currScanline < m_rasterLimitTop )
+      if ( currScanline < m_rasterLimitNP )
       {
-        *offsetTime = (LONGLONG)(m_rasterLimitTop - currScanline) * scanlineTime ;
+        *offsetTime = (LONGLONG)(m_rasterLimitNP - currScanline) * scanlineTime ;
       }
       
       //currScanline value is reported as zero all through vertical blanking

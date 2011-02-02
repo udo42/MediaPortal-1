@@ -191,11 +191,11 @@ UINT CALLBACK WorkerThread(void* param)
     LOG_TRACE("Worker sleeping.");
     if (p->iPause <= 0)
     {
-//      dwObject = WaitForMultipleObjects (2, hEvts, FALSE, INFINITE);
       if(p->pPresenter->m_bScrubbing)
         dwObject = WaitForMultipleObjects (2, hEvts, FALSE, 5);
       else
         dwObject = WaitForMultipleObjects (2, hEvts, FALSE, 50);
+        // dwObject = WaitForMultipleObjects (2, hEvts, FALSE, 50);
     }
 
     if (p->iPause > 0)
