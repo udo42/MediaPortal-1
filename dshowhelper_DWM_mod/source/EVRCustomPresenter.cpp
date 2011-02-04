@@ -2067,7 +2067,7 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
         DwmFlush();
         DwmInit(NUM_DWM_BUFFERS, NUM_DWM_FRAMES);
         m_bDWMinit = true;
-        Sleep(100);
+        Sleep(50);
       }
       m_bEndStreaming = FALSE;
       m_bInputAvailable = FALSE;
@@ -3184,14 +3184,14 @@ void MPEVRCustomPresenter::GetFrameRateRatio()
   m_rawFRRatio = F2DRatioP6;
  
   //if (!(m_DetectedFrameTime > DFT_THRESH) || (m_iFramesDrawn < FRAME_PROC_THRESH) )
-  if (!(m_DetectedFrameTime > DFT_THRESH) || (m_iFramesDrawn < FRAME_PROC_THRSH2) )
+  if (!(m_DetectedFrameTime > DFT_THRESH) || (m_iFramesDrawn < FRAME_PROC_THRESH) )
   {
     m_frameRateRatio = 0;
   }
-//  else if (m_iFramesDrawn < FRAME_PROC_THRSH2)
-//  {
-//    m_frameRateRatio = F2DRatioP6;
-//  }
+  else if (m_iFramesDrawn < FRAME_PROC_THRSH2)
+  {
+    m_frameRateRatio = F2DRatioP6;
+  }
   else if (F2DRatioP6 == 0 || (F2DRatioP6 == F2DRatioN6)) 
   {
     m_frameRateRatio = 0;
