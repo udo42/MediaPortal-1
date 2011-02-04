@@ -1154,7 +1154,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
   LOG_TRACE("Checking for scheduled sample (size: %d)", m_qScheduledSamples.Count());
   LONGLONG displayTime = (LONGLONG)(GetDisplayCycle() * 10000); // display cycle in hns
   LONGLONG hystersisTime = min(50000, displayTime/4) ;
-  //LONGLONG delErrLimit = (LF_DELAY_LIMIT * 10000) ;
   LONGLONG delErrLimit = displayTime ;
   LONGLONG delErr = 0;
   LONGLONG nextSampleTime = 0;
@@ -1251,7 +1250,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
           delErr = 0;
         }
       }
-      else if ( (nextSampleTime < -(hystersisTime - 5000)) ) // || (delErr > (hystersisTime - 5000)) )
+      else if ( (nextSampleTime < -(hystersisTime - 5000)) )
       {
         m_iLateFrames = LF_THRESH_HIGH;
         m_iLateFrCnt++;
@@ -1297,7 +1296,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         
         // Apply display vsync correction.     
         LONGLONG offsetTime = delErr; //used to widen vsync correction window
-        //LONGLONG offsetTime = 0;
         LONGLONG rasterDelay = GetDelayToRasterTarget( pTargetTime, &offsetTime);
 
         if (rasterDelay > 0)
@@ -3183,7 +3181,6 @@ void MPEVRCustomPresenter::GetFrameRateRatio()
 
   m_rawFRRatio = F2DRatioP6;
  
-  //if (!(m_DetectedFrameTime > DFT_THRESH) || (m_iFramesDrawn < FRAME_PROC_THRESH) )
   if (!(m_DetectedFrameTime > DFT_THRESH) || (m_iFramesDrawn < FRAME_PROC_THRESH) )
   {
     m_frameRateRatio = 0;

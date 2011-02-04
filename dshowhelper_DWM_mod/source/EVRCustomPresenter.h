@@ -43,9 +43,6 @@ using namespace std;
 #define DFT_THRESH 0.007
 #define NUM_PHASE_DEVIATIONS 32
 
-//Late frames delay limit in ms
-#define LF_DELAY_LIMIT 45
-
 //Valid range is 2-8
 #define NUM_DWM_BUFFERS 3
 
