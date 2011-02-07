@@ -1105,13 +1105,6 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
       LONGLONG hnsTimeNow, hnsSystemTime;
       m_pClock->GetCorrelatedTime(0, &hnsTimeNow, &hnsSystemTime);
       hnsTimeNow = hnsTimeNow + (GetCurrentTimestamp() - hnsSystemTime) + (frameTime * PS_FRAME_ADVANCE); //correct the value
-
-      //      LONGLONG hnsTimeScheduled;
-      //      pSample->GetSampleTime(&hnsTimeScheduled);
-      //      if (hnsTimeScheduled > 0)
-      //      {
-      //        m_pCallback->SetSampleTime(hnsTimeScheduled);
-      //      }
       
       if (hnsTimeNow > 0)
       {
@@ -1260,7 +1253,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
           delErr = 0;
         }
       }
-      //else if ( (nextSampleTime < -(hystersisTime - 5000)) )
       else if ( nextSampleTime < -hystersisTime )
       {
         m_iLateFrames = LF_THRESH_HIGH;
@@ -1390,11 +1382,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         AdjustAVSync(nstPhaseDiff);
       }
   
-      //      if (m_bDrawStats)
-      //      {
-      //        CalculateNSTStats(nextSampleTime); // update NextSampleTime average
-      //      }
-
       CalculateNSTStats(nextSampleTime); // update NextSampleTime average
       
       // Notify EVR of sample latency
@@ -2733,7 +2720,6 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
     int sampleCount;
 
     double estRefreshCyc [maxFrameSamples];
-    //double cycFrac = 0.0;
     double sumRefCyc = 0.0;
     double aveRefCyc = 0.0;
 
@@ -2780,8 +2766,6 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
 
       Log("Ending Frame: %d, start scanline: %d, end scanline: %d, maxScanline: %d", i, startLine, endLine, m_maxScanLine);
 
-      //cycFrac = ((double)endLine - (double)startLine)/(double)(m_maxScanLine + 1);
-      //estRefreshCyc[i] = (double)(endTime - startTime) / (1.0 + cycFrac); // in hns units
       estRefreshCyc[i] = (double)(endTime - startTime); // in hns units
       sumRefCyc += estRefreshCyc[i];
       
