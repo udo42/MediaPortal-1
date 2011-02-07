@@ -43,13 +43,15 @@ using namespace std;
 #define DFT_THRESH 0.007
 #define NUM_PHASE_DEVIATIONS 32
 
-//Valid range is 2-8
+//Valid range is 2-7
 #define NUM_DWM_BUFFERS 3
 
 #define NUM_DWM_FRAMES 1
 
 // 0 = no compensation, 1 = full compensation for DWM buffering delay
-#define DWM_DELAY_COMP 0
+#define DWM_DELAY_COMP 1
+
+#define PS_FRAME_ADVANCE 0
 
 //Bring threads and DWM under Multimedia Class Scheduler Service (MMCSS) control if true
 #define SCHED_ENABLE_MMCSS false
@@ -213,7 +215,7 @@ public:
   void           NotifyRateChange(double pRate);
   void           NotifyDVDMenuState(bool pIsInMenu);
 
-  void           DWMreset();
+  void           DwmReset();
   void           DwmInit(UINT buffers, UINT rfshPerFrame);
 
   bool           m_bScrubbing;
@@ -257,7 +259,7 @@ protected:
   HRESULT        TrackSample(IMFSample *pSample);
   HRESULT        GetFreeSample(IMFSample** ppSample);
   void           ReturnSample(IMFSample* pSample, BOOL tryNotify);
-  HRESULT        PresentSample(IMFSample* pSample);
+  HRESULT        PresentSample(IMFSample* pSample, LONGLONG frameTime);
   void           CorrectSampleTime(IMFSample* pSample);
   void           GetRealRefreshRate();
   LONGLONG       GetDelayToRasterTarget(LONGLONG *targetTime, LONGLONG *offsetTime);

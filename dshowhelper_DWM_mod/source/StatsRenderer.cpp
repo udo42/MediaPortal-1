@@ -365,7 +365,7 @@ void StatsRenderer::DrawTearingTest(CComPtr<IDirect3DSurface9> pSurface)
 
   rcTearing.left = (rcTearing.right + 15) % width;
   rcTearing.right  = rcTearing.left + 4;
-  m_pD3DDev->ColorFill(pSurface, &rcTearing, D3DCOLOR_ARGB(255,255,255,255));
+  m_pD3DDev->ColorFill(pSurface, &rcTearing, D3DCOLOR_ARGB(255,100,100,100));
 
   m_nTearingPos = (m_nTearingPos + 7) % width;
 }

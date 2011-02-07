@@ -85,11 +85,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.62 ----------- instance 0x%x", this);
+      Log("---------- v1.4.63 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.62 ----------- instance 0x%x", this);
+      Log("---------- v0.0.63 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -248,20 +248,24 @@ void MPEVRCustomPresenter::DwmInit(UINT buffers, UINT rfshPerFrame)
   Log("EVRCustomPresenter::DwmInit, frame = %d", m_iFramesDrawn);  
   //Initialise the DWM parameters
   DwmGetState();
+  DwmFlush();
   DwmSetParameters(FALSE, buffers, rfshPerFrame);
+  Sleep(50);
 }  
 
 
-void MPEVRCustomPresenter::DWMreset()
+void MPEVRCustomPresenter::DwmReset()
 {
-  Log("EVRCustomPresenter::DWMreset");  
+  Log("EVRCustomPresenter::DwmReset");  
   //Reset the DWM parameters
   if (!m_hDwmWinHandle)
   {
     DwmGetState();
   }
   DwmEnableMMCSSOnOff(false);
+  DwmFlush();
   DwmSetParameters(FALSE, 2, 1);
+  Sleep(50);
 }  
 
 
@@ -1075,7 +1079,7 @@ void MPEVRCustomPresenter::ReturnSample(IMFSample* pSample, BOOL tryNotify)
 }
 
 
-HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample)
+HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTime)
 {
   HRESULT hr = S_OK;
   IMFMediaBuffer* pBuffer = NULL;
@@ -1098,17 +1102,23 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample)
     m_iFramesDrawn++;
     if (m_pClock != NULL)
     {
-      LONGLONG hnsTimeNow, hnsSystemTime, hnsTimeScheduled;
+      LONGLONG hnsTimeNow, hnsSystemTime;
       m_pClock->GetCorrelatedTime(0, &hnsTimeNow, &hnsSystemTime);
+      hnsTimeNow = hnsTimeNow + (GetCurrentTimestamp() - hnsSystemTime) + (frameTime * PS_FRAME_ADVANCE); //correct the value
 
-      pSample->GetSampleTime(&hnsTimeScheduled);
-      if (hnsTimeScheduled > 0)
+      //      LONGLONG hnsTimeScheduled;
+      //      pSample->GetSampleTime(&hnsTimeScheduled);
+      //      if (hnsTimeScheduled > 0)
+      //      {
+      //        m_pCallback->SetSampleTime(hnsTimeScheduled);
+      //      }
+      
+      if (hnsTimeNow > 0)
       {
-        m_pCallback->SetSampleTime(hnsTimeScheduled);
+        m_pCallback->SetSampleTime(hnsTimeNow);
+        pSample->SetSampleTime(hnsTimeNow); //Big experiment !!
+        pSample->SetSampleDuration(frameTime); //Big experiment !!
       }
-      pSample->SetSampleTime(0); //Big experiment !!
-      pSample->SetSampleDuration(0); //Big experiment !!
-      //pSample->SetSampleDuration((LONGLONG)(GetDisplayCycle() * 10000.0)); //Big experiment !!
     }
 
     // Present the swap surface
@@ -1213,7 +1223,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     }
   
     // get scheduled time, if none is available the sample will be presented immediately
-    CHECK_HR(hr = GetTimeToSchedule(pSample, &nextSampleTime, &systemTime, 0), "Couldn't get time to schedule!");
+    CHECK_HR(hr = GetTimeToSchedule(pSample, &nextSampleTime, &systemTime, (frameTime * DWM_DELAY_COMP)), "Couldn't get time to schedule!");
     if (FAILED(hr))
     {
       nextSampleTime = 0;
@@ -1250,7 +1260,8 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
           delErr = 0;
         }
       }
-      else if ( (nextSampleTime < -(hystersisTime - 5000)) )
+      //else if ( (nextSampleTime < -(hystersisTime - 5000)) )
+      else if ( nextSampleTime < -hystersisTime )
       {
         m_iLateFrames = LF_THRESH_HIGH;
         m_iLateFrCnt++;
@@ -1345,17 +1356,10 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       }
       
       m_lastPresentTime = systemTime;
-      CHECK_HR(PresentSample(pSample), "PresentSample failed");
+      CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
       ReturnSample(pSample, TRUE);
       m_iFramesProcessed++;
       
-      // Notify EVR of sample latency
-      if( m_pEventSink )
-      {
-        LONGLONG sampleLatency = -nextSampleTime;
-        m_pEventSink->Notify(EC_SAMPLE_LATENCY, (LONG_PTR)&sampleLatency, 0);
-        LOG_TRACE("Sample Latency: %I64d", sampleLatency);
-      }
       
       if (m_iLateFrames > 0)
       {
@@ -1385,18 +1389,22 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
           
         AdjustAVSync(nstPhaseDiff);
       }
-
-//      if ((m_iFramesDrawn > m_initDWMframe) && !m_bDWMinit)
-//      {
-//        //Setup the Desktop Window Manager (DWM)
-//        DwmInit(NUM_DWM_BUFFERS, NUM_DWM_FRAMES);
-//        m_bDWMinit = true;
-//      }
   
-      if (m_bDrawStats)
+      //      if (m_bDrawStats)
+      //      {
+      //        CalculateNSTStats(nextSampleTime); // update NextSampleTime average
+      //      }
+
+      CalculateNSTStats(nextSampleTime); // update NextSampleTime average
+      
+      // Notify EVR of sample latency
+      if( m_pEventSink )
       {
-        CalculateNSTStats(nextSampleTime); // update NextSampleTime average
+        LONGLONG sampleLatency = -m_fCFPMean;
+        m_pEventSink->Notify(EC_SAMPLE_LATENCY, (LONG_PTR)&sampleLatency, 0);
+        LOG_TRACE("Sample Latency: %I64d", sampleLatency);
       }
+      
       break;
     } 
     else // Drop late frames when frame skipping is enabled during normal playback
@@ -1412,7 +1420,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       // Notify EVR of late sample
       if( m_pEventSink )
       {
-        LONGLONG sampleLatency = -nextSampleTime;
+        LONGLONG sampleLatency = -m_fCFPMean;
         m_pEventSink->Notify(EC_SAMPLE_LATENCY, (LONG_PTR)&sampleLatency, 0);
         LOG_TRACE("Sample Latency: %I64d", sampleLatency);
       }
@@ -2062,10 +2070,8 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
       //Setup the Desktop Window Manager (DWM)
       if (!m_bDWMinit)
       {
-        DwmFlush();
         DwmInit(NUM_DWM_BUFFERS, NUM_DWM_FRAMES);
         m_bDWMinit = true;
-        Sleep(50);
       }
       m_bEndStreaming = FALSE;
       m_bInputAvailable = FALSE;
@@ -2899,10 +2905,10 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
   }
   
   //Initialise vsync correction control values
-  m_rasterLimitLow   = (((m_maxVisScanLine - m_minVisScanLine) * 1)/8) + m_minVisScanLine; 
+  m_rasterLimitLow   = (((m_maxVisScanLine - m_minVisScanLine) * 3)/16) + m_minVisScanLine; 
   m_rasterTargetPosn = m_rasterLimitLow;
-  m_rasterLimitHigh  = (((m_maxVisScanLine - m_minVisScanLine) * 4)/8) + m_minVisScanLine;
-  m_rasterLimitTop   = (((m_maxVisScanLine - m_minVisScanLine) * 5)/8) + m_minVisScanLine;   
+  m_rasterLimitHigh  = (((m_maxVisScanLine - m_minVisScanLine) * 9)/16) + m_minVisScanLine;
+  m_rasterLimitTop   = (((m_maxVisScanLine - m_minVisScanLine) * 11)/16) + m_minVisScanLine;   
   m_rasterLimitNP    = m_maxVisScanLine;   
 
   Log("Vsync correction : rasterLimitHigh: %d, rasterLimitLow: %d, rasterTargetPosn: %d", m_rasterLimitHigh, m_rasterLimitLow, m_rasterTargetPosn);
@@ -3453,7 +3459,7 @@ LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *targetTime, LONG
         targetDelay = (LONGLONG)(GetDisplayCycle() * (70000.0/8.0));
       }
       
-      if ( currScanline < m_rasterLimitNP )
+      if ( (currScanline < m_rasterLimitNP) )
       {
         *offsetTime = (LONGLONG)(m_rasterLimitNP - currScanline) * scanlineTime ;
       }
