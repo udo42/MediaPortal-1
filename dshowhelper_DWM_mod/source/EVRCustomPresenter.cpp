@@ -85,11 +85,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.63 ----------- instance 0x%x", this);
+      Log("---------- v1.4.64 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.63 ----------- instance 0x%x", this);
+      Log("---------- v0.0.64 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -1109,8 +1109,8 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
       if (hnsTimeNow > 0)
       {
         m_pCallback->SetSampleTime(hnsTimeNow);
-        pSample->SetSampleTime(hnsTimeNow); //Big experiment !!
-        pSample->SetSampleDuration(frameTime); //Big experiment !!
+        pSample->SetSampleTime(hnsTimeNow); 
+        pSample->SetSampleDuration((frameTime * 9)/8);
       }
     }
 
@@ -1161,7 +1161,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
   LONGLONG delErr = 0;
   LONGLONG nextSampleTime = 0;
   LONGLONG systemTime = 0;
-  LONGLONG lateLimit = 0;
+  LONGLONG lateLimit = hystersisTime;
   LONGLONG earlyLimit = hystersisTime;
 
   LONGLONG frameTime = m_rtTimePerFrame;
@@ -1181,6 +1181,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       Flush(FALSE);
       WakeThread(m_hWorker, &m_workerParams);
       m_iLateFrames = 0;
+      m_iEarlyFrames = 0;
       *pTargetTime = 0;
       m_earliestPresentTime = 0;
       return S_OK;
@@ -1201,6 +1202,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     if (m_state == MP_RENDER_STATE_PAUSED && !m_bDVDMenu) 
     {
       m_iLateFrames = 0;
+      m_iEarlyFrames = 0;
       *pTargetTime = 0;
       m_earliestPresentTime = 0;
       break;
@@ -1253,7 +1255,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
           delErr = 0;
         }
       }
-      else if ( nextSampleTime < -hystersisTime )
+      else if (nextSampleTime < -hystersisTime)
       {
         m_iLateFrames = LF_THRESH_HIGH;
         m_iLateFrCnt++;
@@ -1322,13 +1324,45 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         
         m_stallTime = m_earliestPresentTime - systemTime;
 
-        if (nextSampleTime > (frameTime + earlyLimit))
-        {      
-          // It's too early to present sample, so delay for a while
-          if (m_iLateFrames > 0)
+        //De-sensitise frame stalling to avoid occasional glitches triggering frame stalls
+        if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing)
+        {
+          if (m_iEarlyFrames > 0)
           {
-            LOG_LATEFR("Late frame (stall), sampTime %.2f ms, last sleep %.2f, LFr %d",(double)nextSampleTime/10000, (double)lastSleepTime/10000, m_iLateFrames) ;
-          }          
+            if (m_iEarlyFrames >= EF_THRESH)
+            {
+              earlyLimit = delErrLimit;
+            }
+            else
+            {
+              earlyLimit = hystersisTime;
+            }
+          }
+          else if (nextSampleTime > (frameTime + hystersisTime))
+          {
+            m_iEarlyFrames = EF_THRESH_HIGH;
+            m_iLateFrCnt++;
+            earlyLimit = delErrLimit; // Allow this early frame
+          }
+          else
+          {
+            earlyLimit = hystersisTime;
+          }
+        }
+        else
+        {
+          earlyLimit = hystersisTime;
+          m_iEarlyFrames = 0;
+        }
+
+        if (nextSampleTime > (frameTime + earlyLimit))
+        {                
+          //// It's too early to present sample, so delay for a while
+          //if (m_iLateFrames > 0)
+          //{
+          //  LOG_LATEFR("Late frame (stall), sampTime %.2f ms, last sleep %.2f, LFr %d",(double)nextSampleTime/10000, (double)lastSleepTime/10000, m_iLateFrames) ;
+          //}   
+                 
           *pTargetTime = systemTime + (m_stallTime/2); //delay in smaller chunks          
           break;
         }    
@@ -1351,12 +1385,15 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
       ReturnSample(pSample, TRUE);
       m_iFramesProcessed++;
-      
-      
+            
       if (m_iLateFrames > 0)
       {
         m_iLateFrames--;
       }
+      if (m_iEarlyFrames > 0)
+      {
+        m_iEarlyFrames--;
+      }      
 
       if (m_pAVSyncClock) //Update phase deviation data for MP Audio Renderer
       {
@@ -3050,6 +3087,7 @@ void MPEVRCustomPresenter::ResetFrameStats()
   m_iFramesDropped  = 0;
   m_iLateFrCnt      = 0;
   m_iLateFrames     = 0;
+  m_iEarlyFrames    = 0;
   m_iFramesProcessed = 0;
   
   m_nNextCFP = 0;

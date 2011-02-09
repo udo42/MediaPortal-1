@@ -33,11 +33,12 @@ using namespace std;
 #define NB_JITTER 125
 #define NB_RFPSIZE 64
 #define NB_DFTHSIZE 64
-#define NB_CFPSIZE 16
+#define NB_CFPSIZE 32
 #define NB_PCDSIZE 32
-#define LF_THRESH_LOW 3
-#define LF_THRESH (LF_THRESH_LOW + 1)
-#define LF_THRESH_HIGH (LF_THRESH + 3)
+#define LF_THRESH 6
+#define LF_THRESH_HIGH (LF_THRESH + 1)
+#define EF_THRESH 6
+#define EF_THRESH_HIGH (EF_THRESH + 1)
 #define FRAME_PROC_THRESH 30
 #define FRAME_PROC_THRSH2 60
 #define DFT_THRESH 0.007
@@ -48,10 +49,10 @@ using namespace std;
 
 #define NUM_DWM_FRAMES 1
 
-// 0 = no compensation, 1 = full compensation for DWM buffering delay
-#define DWM_DELAY_COMP 1
+//Compensation for DWM buffering delay (n x video frames)
+#define DWM_DELAY_COMP 0
 
-#define PS_FRAME_ADVANCE 0
+#define PS_FRAME_ADVANCE 1
 
 //Bring threads and DWM under Multimedia Class Scheduler Service (MMCSS) control if true
 #define SCHED_ENABLE_MMCSS false
@@ -343,6 +344,7 @@ protected:
 	
   int                               m_iLateFrCnt;
   int                               m_iLateFrames;
+  int                               m_iEarlyFrames;
   int                               m_iFramesProcessed;
  
 
