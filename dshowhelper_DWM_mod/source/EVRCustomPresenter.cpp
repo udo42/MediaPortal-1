@@ -1108,7 +1108,7 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
   if (pSurface)
   {
     // Calculate offset to scheduled time for subtitle renderer
-    m_iFramesDrawn++;
+    //m_iFramesDrawn++;
     if (m_pClock != NULL)
     {
       LONGLONG hnsTimeNow, hnsSystemTime;
@@ -1392,10 +1392,11 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       
       m_lastPresentTime = systemTime;
       CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
-      if (m_iFramesDrawn < 10) //Push extra samples into the pipeline at start of play
+      if (m_iFramesDrawn < NUM_DWM_BUFFERS) //Push extra samples into the pipeline at start of play
       {
         CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
       }     
+      m_iFramesDrawn++;
       PopSample();
       if (m_pLastPresSample)
       {
