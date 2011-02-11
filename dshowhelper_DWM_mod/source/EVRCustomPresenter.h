@@ -285,6 +285,7 @@ protected:
   int                               m_iFreeSamples;
   IMFSample*                        m_vFreeSamples[NUM_SURFACES];
   CMyQueue<IMFSample*>              m_qScheduledSamples;
+  IMFSample*                        m_pLastPresSample;
   SchedulerParams                   m_schedulerParams;
   SchedulerParams                   m_workerParams;
   SchedulerParams                   m_timerParams;

@@ -111,6 +111,7 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     m_bSchedulerRunning        = FALSE;
     m_fRate                    = 1.0f;
     m_iFreeSamples             = 0;
+    m_pLastPresSample          = NULL;
     m_nNextJitter              = 0;
     m_llLastPerf               = 0;
     m_fAvrFps                  = 0.0;
@@ -758,6 +759,7 @@ void MPEVRCustomPresenter::ReAllocSurfaces()
     m_vFreeSamples[i] = samples[i];
   }
   m_iFreeSamples = NUM_SURFACES;
+  m_pLastPresSample = NULL;
   CHECK_HR(m_pDeviceManager->UnlockDevice(hDevice, FALSE), "failed: Unlock device");
   Log("Releasing device: %d", pDevice->Release());
   CHECK_HR(m_pDeviceManager->CloseDeviceHandle(hDevice), "failed: CloseDeviceHandle");
@@ -1038,6 +1040,13 @@ void MPEVRCustomPresenter::Flush(BOOL forced)
   DwmFlush(); //Just in case...
   CAutoLock sLock(&m_lockSamples);
   CAutoLock ssLock(&m_lockScheduledSamples);
+  
+  if (m_pLastPresSample)
+  {
+    ReturnSample(m_pLastPresSample, TRUE);
+    m_pLastPresSample = NULL;
+  }
+  
   if ((m_qScheduledSamples.Count() > 0 && !m_bDVDMenu) ||
      (m_qScheduledSamples.Count() > 0 && forced))
   {
@@ -1375,7 +1384,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       
       *pTargetTime = 0;
 
-      if (!PopSample())
+      if (!PeekSample())
       {
         m_earliestPresentTime = 0;
         break;
@@ -1383,7 +1392,17 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       
       m_lastPresentTime = systemTime;
       CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
-      ReturnSample(pSample, TRUE);
+      if (m_iFramesDrawn < 10) //Push extra samples into the pipeline at start of play
+      {
+        CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
+      }     
+      PopSample();
+      if (m_pLastPresSample)
+      {
+        ReturnSample(m_pLastPresSample, TRUE);
+        m_pLastPresSample = NULL;
+      }
+      m_pLastPresSample = pSample;
       m_iFramesProcessed++;
             
       if (m_iLateFrames > 0)
@@ -1419,12 +1438,16 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         AdjustAVSync(nstPhaseDiff);
       }
   
-      CalculateNSTStats(nextSampleTime); // update NextSampleTime average
+      if (m_bDrawStats)
+      {
+        CalculateNSTStats(nextSampleTime); // update NextSampleTime average
+      }
       
       // Notify EVR of sample latency
       if( m_pEventSink )
       {
-        LONGLONG sampleLatency = -m_fCFPMean;
+        // LONGLONG sampleLatency = -m_fCFPMean;
+        LONGLONG sampleLatency = 0;
         m_pEventSink->Notify(EC_SAMPLE_LATENCY, (LONG_PTR)&sampleLatency, 0);
         LOG_TRACE("Sample Latency: %I64d", sampleLatency);
       }
@@ -1435,6 +1458,11 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     {         
       m_earliestPresentTime = 0;
       
+      if (m_pLastPresSample)
+      {
+        ReturnSample(m_pLastPresSample, TRUE);
+        m_pLastPresSample = NULL;
+      }
       if (!PopSample())
       {
         break;
@@ -1444,7 +1472,8 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       // Notify EVR of late sample
       if( m_pEventSink )
       {
-        LONGLONG sampleLatency = -m_fCFPMean;
+        // LONGLONG sampleLatency = -m_fCFPMean;
+        LONGLONG sampleLatency = -nextSampleTime;
         m_pEventSink->Notify(EC_SAMPLE_LATENCY, (LONG_PTR)&sampleLatency, 0);
         LOG_TRACE("Sample Latency: %I64d", sampleLatency);
       }
@@ -2310,6 +2339,7 @@ void MPEVRCustomPresenter::ReleaseSurfaces()
   }
   Flush(TRUE);
   m_iFreeSamples = 0;
+  m_pLastPresSample = NULL;
   for (int i = 0; i < NUM_SURFACES; i++)
   {
     samples[i] = NULL;
