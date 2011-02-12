@@ -1108,7 +1108,7 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
   if (pSurface)
   {
     // Calculate offset to scheduled time for subtitle renderer
-    //m_iFramesDrawn++;
+    m_iFramesDrawn++;
     if (m_pClock != NULL)
     {
       LONGLONG hnsTimeNow, hnsSystemTime;
@@ -1169,6 +1169,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
   LONGLONG delErrLimit = displayTime ;
   LONGLONG delErr = 0;
   LONGLONG nextSampleTime = 0;
+  LONGLONG realSampleTime = 0;
   LONGLONG systemTime = 0;
   LONGLONG lateLimit = hystersisTime;
   LONGLONG earlyLimit = hystersisTime;
@@ -1227,10 +1228,10 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     }
   
     // get scheduled time, if none is available the sample will be presented immediately
-    CHECK_HR(hr = GetTimeToSchedule(pSample, &nextSampleTime, &systemTime, (frameTime * DWM_DELAY_COMP)), "Couldn't get time to schedule!");
+    CHECK_HR(hr = GetTimeToSchedule(pSample, &realSampleTime, &systemTime, (frameTime * DWM_DELAY_COMP)), "Couldn't get time to schedule!");
     if (FAILED(hr))
     {
-      nextSampleTime = 0;
+      realSampleTime = 0; 
     }
     
     LOG_TRACE("Time to schedule: %I64d", nextSampleTime);
@@ -1251,6 +1252,8 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     //De-sensitise frame dropping to avoid occasional delay glitches triggering frame drops
     if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing)
     {
+      nextSampleTime = (realSampleTime + (frameTime/2)) - m_hnsNSTinit;
+      
       if (m_iLateFrames > 0)
       {
         if (m_iLateFrames >= LF_THRESH)
@@ -1279,6 +1282,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     }
     else
     {
+      nextSampleTime = realSampleTime;
       lateLimit = hystersisTime;
       delErr = 0;
       m_iLateFrames = 0;
@@ -1392,11 +1396,11 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       
       m_lastPresentTime = systemTime;
       CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
-      if (m_iFramesDrawn < NUM_DWM_BUFFERS) //Push extra samples into the pipeline at start of play
+      if (m_iFramesDrawn < (NUM_DWM_BUFFERS)) //Push extra samples into the pipeline at start of play
       {
         CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
+        DwmFlush();
       }     
-      m_iFramesDrawn++;
       PopSample();
       if (m_pLastPresSample)
       {
@@ -1418,9 +1422,9 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       if (m_pAVSyncClock) //Update phase deviation data for MP Audio Renderer
       {
         //Target (0.5 * frameTime) for nextSampleTime
-        double nstPhaseDiff = -(((double)nextSampleTime / (double)frameTime) - 0.5);
+        double nstPhaseDiff = -(((double)realSampleTime / (double)frameTime) - 0.5);
 
-        //Clamp within limits - because of hystersis, the range of nextSampleTime
+        //Clamp within limits - because of hystersis, the range of realSampleTime
         //is greater than frameTime, so it's possible for nstPhaseDiff to exceed
         //the -0.5 to +0.5 allowable range 
         if (m_bDVDMenu || m_bScrubbing || (m_frameRateRatio == 0 && m_dBias == 1.0))
@@ -1439,10 +1443,13 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         AdjustAVSync(nstPhaseDiff);
       }
   
-      if (m_bDrawStats)
-      {
-        CalculateNSTStats(nextSampleTime); // update NextSampleTime average
-      }
+      //      if (m_bDrawStats)
+      //      {
+      //        CalculateNSTStats(realSampleTime); // update NextSampleTime average
+      //      }
+      
+      m_llLastCFPts = nextSampleTime;
+      CalculateNSTStats(realSampleTime, frameTime); // update NextSampleTime average
       
       // Notify EVR of sample latency
       if( m_pEventSink )
@@ -1474,7 +1481,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       if( m_pEventSink )
       {
         // LONGLONG sampleLatency = -m_fCFPMean;
-        LONGLONG sampleLatency = -nextSampleTime;
+        LONGLONG sampleLatency = -realSampleTime;
         m_pEventSink->Notify(EC_SAMPLE_LATENCY, (LONG_PTR)&sampleLatency, 0);
         LOG_TRACE("Sample Latency: %I64d", sampleLatency);
       }
@@ -2224,7 +2231,11 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::OnClockRestart(MFTIME hnsSystemT
 {
   Log("OnClockRestart");
   m_state = MP_RENDER_STATE_STARTED;
+  PauseThread(m_hWorker, &m_workerParams);
+  PauseThread(m_hScheduler, &m_schedulerParams);
   ResetFrameStats();
+  WakeThread(m_hScheduler, &m_schedulerParams);
+  WakeThread(m_hWorker, &m_workerParams);
   NotifyWorker(true);
   NotifyScheduler(true);
   GetAVSyncClockInterface();
@@ -3145,6 +3156,7 @@ void MPEVRCustomPresenter::ResetFrameStats()
   m_stallTime = 0;
   m_earliestPresentTime = 0;
   m_lastPresentTime = 0;
+  m_hnsNSTinit = 0;
   
   m_nNextRFP = 0;
     
@@ -3537,12 +3549,10 @@ LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *targetTime, LONG
 
 
 // Update the array m_pllCFP with a new time stamp. Calculate mean.
-void MPEVRCustomPresenter::CalculateNSTStats(LONGLONG timeStamp)
+void MPEVRCustomPresenter::CalculateNSTStats(LONGLONG timeStamp, LONGLONG frameTime)
 {
   LONGLONG cfpDiff = timeStamp;
-  
-  m_llLastCFPts = timeStamp;
-      
+        
   int tempNextCFP = (m_nNextCFP % NB_CFPSIZE);
   m_llCFPSumAvg -= m_pllCFP[tempNextCFP];
   m_pllCFP[tempNextCFP] = cfpDiff;
@@ -3553,7 +3563,7 @@ void MPEVRCustomPresenter::CalculateNSTStats(LONGLONG timeStamp)
   {
     m_fCFPMean = m_llCFPSumAvg / (LONGLONG)NB_CFPSIZE;
   }
-  else if (m_nNextCFP >= 10)
+  else if (m_nNextCFP > 0)
   {
     m_fCFPMean = m_llCFPSumAvg / (LONGLONG)m_nNextCFP;
   }
@@ -3561,6 +3571,19 @@ void MPEVRCustomPresenter::CalculateNSTStats(LONGLONG timeStamp)
   {
     m_fCFPMean = cfpDiff;
   }
+
+  if (tempNextCFP == 0)
+  {
+    if (m_fCFPMean < 0)
+    {
+      m_hnsNSTinit = -( -m_fCFPMean % frameTime);
+    }
+    else
+    {
+      m_hnsNSTinit = m_fCFPMean % frameTime;
+    }
+  }
+      
 }
 
 

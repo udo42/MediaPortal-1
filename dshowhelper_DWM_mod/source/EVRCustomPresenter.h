@@ -30,17 +30,17 @@ using namespace std;
 #define NO_MP_AUD_REND false
 
 #define NUM_SURFACES 4
-#define NB_JITTER 125
+#define NB_JITTER 128
 #define NB_RFPSIZE 64
 #define NB_DFTHSIZE 64
-#define NB_CFPSIZE 32
+#define NB_CFPSIZE 64
 #define NB_PCDSIZE 32
 #define LF_THRESH 6
 #define LF_THRESH_HIGH (LF_THRESH + 1)
 #define EF_THRESH 6
 #define EF_THRESH_HIGH (EF_THRESH + 1)
-#define FRAME_PROC_THRESH 30
-#define FRAME_PROC_THRSH2 60
+#define FRAME_PROC_THRESH 32
+#define FRAME_PROC_THRSH2 64
 #define DFT_THRESH 0.007
 #define NUM_PHASE_DEVIATIONS 32
 
@@ -380,7 +380,7 @@ protected:
   void OnVBlankFinished(bool fAll, LONGLONG periodStart, LONGLONG periodEnd);
   void CalculateJitter(LONGLONG PerfCounter);
   void CalculateRealFramePeriod(LONGLONG timeStamp);
-  void CalculateNSTStats(LONGLONG timeStamp);
+  void CalculateNSTStats(LONGLONG timeStamp, LONGLONG frameTime);
   void CalculatePresClockDelta(LONGLONG presTime, LONGLONG sysTime);
 
   bool QueryFpsFromVideoMSDecoder();
@@ -442,6 +442,7 @@ protected:
   LONGLONG      m_earliestPresentTime;
   LONGLONG      m_lastPresentTime;
   LONGLONG      m_lastDelayErr;
+  LONGLONG      m_hnsNSTinit;
 
   UINT          m_dwmBuffers;
   HWND          m_hDwmWinHandle;
