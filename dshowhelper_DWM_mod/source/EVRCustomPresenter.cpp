@@ -1233,9 +1233,9 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     {
       realSampleTime = 0; 
     }
+    nextSampleTime = realSampleTime;
     
-    LOG_TRACE("Time to schedule: %I64d", nextSampleTime);
-   
+    LOG_TRACE("Time to schedule: %I64d", nextSampleTime);  
         
     if (*pTargetTime > 0)
     {  
@@ -1252,7 +1252,10 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     //De-sensitise frame dropping to avoid occasional delay glitches triggering frame drops
     if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing)
     {
-      nextSampleTime = (realSampleTime + (frameTime/2)) - m_hnsNSTinit;
+      if (!m_pAVSyncClock)
+      {
+        nextSampleTime = (realSampleTime + (frameTime/2)) - m_hnsNSTinit;
+      }
       
       if (m_iLateFrames > 0)
       {
@@ -1282,7 +1285,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     }
     else
     {
-      nextSampleTime = realSampleTime;
       lateLimit = hystersisTime;
       delErr = 0;
       m_iLateFrames = 0;
