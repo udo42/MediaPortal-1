@@ -443,6 +443,7 @@ protected:
   LONGLONG      m_lastPresentTime;
   LONGLONG      m_lastDelayErr;
   LONGLONG      m_hnsNSTinit;
+  bool          m_NSTinitDone;
 
   UINT          m_dwmBuffers;
   HWND          m_hDwmWinHandle;

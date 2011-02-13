@@ -1252,7 +1252,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     //De-sensitise frame dropping to avoid occasional delay glitches triggering frame drops
     if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing)
     {
-      if (!m_pAVSyncClock)
+      if (!m_pAVSyncClock && m_NSTinitDone)
       {
         nextSampleTime = (realSampleTime + (frameTime/2)) - m_hnsNSTinit;
       }
@@ -3159,6 +3159,7 @@ void MPEVRCustomPresenter::ResetFrameStats()
   m_earliestPresentTime = 0;
   m_lastPresentTime = 0;
   m_hnsNSTinit = 0;
+  m_NSTinitDone = false;
   
   m_nNextRFP = 0;
     
@@ -3574,7 +3575,7 @@ void MPEVRCustomPresenter::CalculateNSTStats(LONGLONG timeStamp, LONGLONG frameT
     m_fCFPMean = cfpDiff;
   }
 
-  if (tempNextCFP == 0)
+  if (tempNextCFP == (NB_CFPSIZE-1))
   {
     if (m_fCFPMean < 0)
     {
@@ -3584,6 +3585,7 @@ void MPEVRCustomPresenter::CalculateNSTStats(LONGLONG timeStamp, LONGLONG frameT
     {
       m_hnsNSTinit = m_fCFPMean % frameTime;
     }
+    m_NSTinitDone = true;
   }
       
 }
