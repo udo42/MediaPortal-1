@@ -85,11 +85,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.65 ----------- instance 0x%x", this);
+      Log("---------- v1.4.165 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.65 ----------- instance 0x%x", this);
+      Log("---------- v0.0.165 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -246,6 +246,11 @@ MPEVRCustomPresenter::~MPEVRCustomPresenter()
 
 void MPEVRCustomPresenter::DwmInit(UINT buffers, UINT rfshPerFrame)
 {
+  if (!ENABLE_DWM_SETUP) 
+  {
+    return;
+  }
+    
   Log("EVRCustomPresenter::DwmInit, frame = %d", m_iFramesDrawn);  
   //Initialise the DWM parameters
   DwmGetState();
@@ -258,6 +263,11 @@ void MPEVRCustomPresenter::DwmInit(UINT buffers, UINT rfshPerFrame)
 
 void MPEVRCustomPresenter::DwmReset()
 {
+  if (!ENABLE_DWM_SETUP) 
+  {
+    return;
+  }
+
   Log("EVRCustomPresenter::DwmReset");  
   //Reset the DWM parameters
   if (!m_hDwmWinHandle)
@@ -1394,7 +1404,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       
       m_lastPresentTime = systemTime;
       CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
-      if (m_iFramesDrawn < (NUM_DWM_BUFFERS)) //Push extra samples into the pipeline at start of play
+      if ((m_iFramesDrawn < NUM_DWM_BUFFERS) && m_bDwmCompEnabled) //Push extra samples into the pipeline at start of play
       {
         CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
         DwmFlush();

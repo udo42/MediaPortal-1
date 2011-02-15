@@ -29,6 +29,9 @@ using namespace std;
 //Disables MP audio renderer functions if true
 #define NO_MP_AUD_REND false
 
+//Enables DWM parameter changes if true
+#define ENABLE_DWM_SETUP false
+
 #define NUM_SURFACES 4
 #define NB_JITTER 128
 #define NB_RFPSIZE 64
