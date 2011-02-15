@@ -33,12 +33,12 @@ using namespace std;
 #define NB_JITTER 128
 #define NB_RFPSIZE 64
 #define NB_DFTHSIZE 64
-#define NB_CFPSIZE 64
+#define NB_CFPSIZE 128
 #define NB_PCDSIZE 32
-#define LF_THRESH 6
-#define LF_THRESH_HIGH (LF_THRESH + 1)
-#define EF_THRESH 6
-#define EF_THRESH_HIGH (EF_THRESH + 1)
+#define LF_THRESH 7
+#define LF_THRESH_HIGH (LF_THRESH + 0)
+#define EF_THRESH 7
+#define EF_THRESH_HIGH (EF_THRESH + 0)
 #define FRAME_PROC_THRESH 32
 #define FRAME_PROC_THRSH2 64
 #define DFT_THRESH 0.007
@@ -329,11 +329,13 @@ protected:
  	double                            m_fRFPStdDev;				// Estimate the real frame period std dev
 	double                            m_fRFPMean;
 
-  LONGLONG                          m_pllCFP [NB_CFPSIZE];   // timestamp buffer for estimating real frame period
+  LONGLONG                          m_pllCFP [NB_CFPSIZE];   // timestamp buffer for average NextSampleTime calculation
   LONGLONG                          m_llLastCFPts;
   int                               m_nNextCFP;
 	LONGLONG                          m_fCFPMean;
 	LONGLONG                          m_llCFPSumAvg;
+  LONGLONG                          m_hnsNSTinit;
+  bool                              m_NSTinitDone;
 
   double                            m_pllPCD [NB_PCDSIZE];   // timestamp buffer for estimating pres/sys clock delta
   LONGLONG                          m_llLastPCDprsTs;
@@ -442,8 +444,6 @@ protected:
   LONGLONG      m_earliestPresentTime;
   LONGLONG      m_lastPresentTime;
   LONGLONG      m_lastDelayErr;
-  LONGLONG      m_hnsNSTinit;
-  bool          m_NSTinitDone;
 
   UINT          m_dwmBuffers;
   HWND          m_hDwmWinHandle;

@@ -85,11 +85,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.64 ----------- instance 0x%x", this);
+      Log("---------- v1.4.65 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.64 ----------- instance 0x%x", this);
+      Log("---------- v0.0.65 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -250,6 +250,7 @@ void MPEVRCustomPresenter::DwmInit(UINT buffers, UINT rfshPerFrame)
   //Initialise the DWM parameters
   DwmGetState();
   DwmFlush();
+  DwmSetParameters(TRUE, buffers, rfshPerFrame);
   DwmSetParameters(FALSE, buffers, rfshPerFrame);
   Sleep(50);
 }  
