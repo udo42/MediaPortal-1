@@ -1373,12 +1373,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
 
         if (nextSampleTime > (frameTime + earlyLimit))
         {                
-          //// It's too early to present sample, so delay for a while
-          //if (m_iLateFrames > 0)
-          //{
-          //  LOG_LATEFR("Late frame (stall), sampTime %.2f ms, last sleep %.2f, LFr %d",(double)nextSampleTime/10000, (double)lastSleepTime/10000, m_iLateFrames) ;
-          //}   
-                 
+          // It's too early to present sample, so delay for a while
           *pTargetTime = systemTime + (m_stallTime/2); //delay in smaller chunks          
           break;
         }    
