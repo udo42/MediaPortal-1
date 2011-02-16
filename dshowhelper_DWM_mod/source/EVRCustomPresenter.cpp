@@ -85,11 +85,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.165 ----------- instance 0x%x", this);
+      Log("---------- v1.4.066 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.165 ----------- instance 0x%x", this);
+      Log("---------- v0.0.066 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -255,8 +255,8 @@ void MPEVRCustomPresenter::DwmInit(UINT buffers, UINT rfshPerFrame)
   //Initialise the DWM parameters
   DwmGetState();
   DwmFlush();
-  DwmSetParameters(TRUE, buffers, rfshPerFrame);
   DwmSetParameters(FALSE, buffers, rfshPerFrame);
+  DwmSetParameters(TRUE, buffers, rfshPerFrame);
   Sleep(50);
 }  
 
@@ -1667,11 +1667,10 @@ void MPEVRCustomPresenter::DwmSetParameters(BOOL useSourceRate, UINT buffers, UI
     presentationParams.cRefreshStart = 0;
     presentationParams.cBuffer = buffers;
     presentationParams.fUseSourceRate = useSourceRate;
-    presentationParams.rateSource.uiNumerator = (UINT)(100000000.0/m_dEstRefreshCycle);
+    presentationParams.rateSource.uiNumerator = (UINT)(101000000.0/m_dEstRefreshCycle); // 1% faster than actual
     presentationParams.rateSource.uiDenominator = 100000;
     presentationParams.cRefreshesPerFrame = rfshPerFrame;
     presentationParams.eSampling = DWM_SOURCE_FRAME_SAMPLING_POINT;
-    //presentationParams.eSampling = DWM_SOURCE_FRAME_SAMPLING_COVERAGE;
     
     // Set up the DWM presentation parameters    
     if (m_hDwmWinHandle)
@@ -1682,7 +1681,7 @@ void MPEVRCustomPresenter::DwmSetParameters(BOOL useSourceRate, UINT buffers, UI
     if (SUCCEEDED(hr)) 
     {
       m_dwmBuffers = buffers;
-      Log("DwmSetPresentParameters succeeded, DWM buffers = %d", m_dwmBuffers);
+      Log("DwmSetPresentParameters succeeded, DWM buffers = %d, useSourceRate = %d", m_dwmBuffers, useSourceRate);
     }
     else
     {
