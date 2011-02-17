@@ -1667,7 +1667,7 @@ void MPEVRCustomPresenter::DwmSetParameters(BOOL useSourceRate, UINT buffers, UI
     presentationParams.cRefreshStart = 0;
     presentationParams.cBuffer = buffers;
     presentationParams.fUseSourceRate = useSourceRate;
-    presentationParams.rateSource.uiNumerator = (UINT)(1000000000.0/GetDisplayCycle()); // GetDisplayCycle() result is in ms
+    presentationParams.rateSource.uiNumerator = (UINT)(1010000000.0/GetDisplayCycle()); // 1% faster than actual display rate
     presentationParams.rateSource.uiDenominator = 1000000;
     presentationParams.cRefreshesPerFrame = rfshPerFrame;
     presentationParams.eSampling = DWM_SOURCE_FRAME_SAMPLING_POINT;
