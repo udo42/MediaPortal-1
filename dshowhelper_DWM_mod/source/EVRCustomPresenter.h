@@ -49,7 +49,6 @@ using namespace std;
 
 //Valid range is 2-7
 #define NUM_DWM_BUFFERS 3
-
 #define NUM_DWM_FRAMES 1
 
 //Compensation for DWM buffering delay (n x video frames)
@@ -337,7 +336,7 @@ protected:
   int                               m_nNextCFP;
 	LONGLONG                          m_fCFPMean;
 	LONGLONG                          m_llCFPSumAvg;
-  LONGLONG                          m_hnsNSTinit;
+  LONGLONG                          m_hnsNSToffset;
   bool                              m_NSTinitDone;
 
   double                            m_pllPCD [NB_PCDSIZE];   // timestamp buffer for estimating pres/sys clock delta
@@ -349,6 +348,7 @@ protected:
 	
 	
   int                               m_iLateFrCnt;
+  int                               m_iEarlyFrCnt;
   int                               m_iLateFrames;
   int                               m_iEarlyFrames;
   int                               m_iFramesProcessed;

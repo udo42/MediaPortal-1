@@ -85,11 +85,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.066 ----------- instance 0x%x", this);
+      Log("---------- v1.4.067 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.066 ----------- instance 0x%x", this);
+      Log("---------- v0.0.067 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -255,8 +255,10 @@ void MPEVRCustomPresenter::DwmInit(UINT buffers, UINT rfshPerFrame)
   //Initialise the DWM parameters
   DwmGetState();
   DwmFlush();
-  DwmSetParameters(FALSE, buffers, rfshPerFrame);
-  DwmSetParameters(TRUE, buffers, rfshPerFrame);
+  DwmSetParameters(TRUE, buffers, rfshPerFrame); //'Source rate' mode
+  Sleep(50);
+  DwmFlush();
+  DwmSetParameters(FALSE, buffers, rfshPerFrame); //'Display rate' mode
   Sleep(50);
 }  
 
@@ -1265,7 +1267,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     {
       if (!m_pAVSyncClock && m_NSTinitDone)
       {
-        nextSampleTime = (realSampleTime + (frameTime/2)) - m_hnsNSTinit;
+        nextSampleTime = (realSampleTime + (frameTime/2)) - m_hnsNSToffset;
       }
       
       if (m_iLateFrames > 0)
@@ -1367,7 +1369,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
           else if (nextSampleTime > (frameTime + hystersisTime))
           {
             m_iEarlyFrames = EF_THRESH_HIGH;
-            m_iLateFrCnt++;
+            m_iEarlyFrCnt++;
             earlyLimit = delErrLimit; // Allow this early frame
           }
           else
@@ -1451,13 +1453,8 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         AdjustAVSync(nstPhaseDiff);
       }
   
-      //      if (m_bDrawStats)
-      //      {
-      //        CalculateNSTStats(realSampleTime); // update NextSampleTime average
-      //      }
-      
       m_llLastCFPts = nextSampleTime;
-      CalculateNSTStats(realSampleTime, frameTime); // update NextSampleTime average
+      CalculateNSTStats(realSampleTime, (frameTime - 20000)); // update NextSampleTime average
       
       // Notify EVR of sample latency
       if( m_pEventSink )
@@ -1519,7 +1516,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       {
         m_iLateFrames--;
       }
-      Sleep(1); //Just to be friendly to other threads
+      Sleep(2); //Just to be friendly to other threads
     }
     
     *pIdleWait = true; //in case there are no samples and we need to go idle
@@ -1667,7 +1664,7 @@ void MPEVRCustomPresenter::DwmSetParameters(BOOL useSourceRate, UINT buffers, UI
     presentationParams.cRefreshStart = 0;
     presentationParams.cBuffer = buffers;
     presentationParams.fUseSourceRate = useSourceRate;
-    presentationParams.rateSource.uiNumerator = (UINT)(1010000000.0/GetDisplayCycle()); // 1% faster than actual display rate
+    presentationParams.rateSource.uiNumerator = (UINT)(1000000000.0/GetDisplayCycle()); // Actual display rate
     presentationParams.rateSource.uiDenominator = 1000000;
     presentationParams.cRefreshesPerFrame = rfshPerFrame;
     presentationParams.eSampling = DWM_SOURCE_FRAME_SAMPLING_POINT;
@@ -2089,7 +2086,7 @@ HRESULT MPEVRCustomPresenter::ProcessInputNotify(int* samplesProcessed, bool set
       return hr;
     }
     
-    Sleep(1); //Just to be friendly to other threads
+    Sleep(2); //Just to be friendly to other threads
     
   } while (bhasMoreSamples);
   
@@ -3135,6 +3132,7 @@ void MPEVRCustomPresenter::ResetFrameStats()
   m_iFramesDrawn    = 0;
   m_iFramesDropped  = 0;
   m_iLateFrCnt      = 0;
+  m_iEarlyFrCnt     = 0;
   m_iLateFrames     = 0;
   m_iEarlyFrames    = 0;
   m_iFramesProcessed = 0;
@@ -3163,7 +3161,7 @@ void MPEVRCustomPresenter::ResetFrameStats()
   m_stallTime = 0;
   m_earliestPresentTime = 0;
   m_lastPresentTime = 0;
-  m_hnsNSTinit = 0;
+  m_hnsNSToffset = 0;
   m_NSTinitDone = false;
   
   m_nNextRFP = 0;
@@ -3580,15 +3578,18 @@ void MPEVRCustomPresenter::CalculateNSTStats(LONGLONG timeStamp, LONGLONG frameT
     m_fCFPMean = cfpDiff;
   }
 
+  //Calculate 'next sample time' correction offset
+  //This is used to centre the timing window for the frame drop/stall logic
+  //It is updated every NB_CFPSIZE frames
   if (tempNextCFP == (NB_CFPSIZE-1))
   {
     if (m_fCFPMean < 0)
     {
-      m_hnsNSTinit = -( -m_fCFPMean % frameTime);
+      m_hnsNSToffset = -( -m_fCFPMean % frameTime);
     }
     else
     {
-      m_hnsNSTinit = m_fCFPMean % frameTime;
+      m_hnsNSToffset = m_fCFPMean % frameTime;
     }
     m_NSTinitDone = true;
   }

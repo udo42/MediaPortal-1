@@ -196,11 +196,11 @@ void StatsRenderer::DrawStats()
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
 
-    strText.Format("Video: %d x %d @ %d x %d | Act FPS: %.6f (red)| Drwn: %d | Drop: %d | >lim: %d", 
+    strText.Format("Video: %d x %d %d:%d | Act FPS: %.4f (red)| Drwn: %d | Drop: %d | Late: %d | Early: %d", 
       m_pPresenter->m_iVideoWidth, m_pPresenter->m_iVideoHeight, 
       m_pPresenter->m_iARX, m_pPresenter->m_iARY, 
       10000000.0 / m_pPresenter->m_fJitterMean, m_pPresenter->m_iFramesDrawn, m_pPresenter->m_iFramesDropped,
-      m_pPresenter->m_iLateFrCnt);
+      m_pPresenter->m_iLateFrCnt, m_pPresenter->m_iEarlyFrCnt);
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
 
@@ -218,9 +218,9 @@ void StatsRenderer::DrawStats()
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
 
-    strText.Format("DetFrT: %+5.3f ms | DetFrT_SD: %+5.3f ms | RtFrT: %+5.3f ms | DetSDur: %+5.3f ms",  
-      (m_pPresenter->m_DetectedFrameTime * 1000.0), (m_pPresenter->m_DetectedFrameTimeStdDev/10000.0),
-      (m_pPresenter->m_rtTimePerFrame/10000.0 ), (m_pPresenter->m_SampDuration/10000.0) );
+    strText.Format("VidFPS: %.3f | DetFrT: %+5.3f ms | DetFrT_SD: %+5.3f ms | DetSDur: %+5.3f ms",  
+      (10000000.0/m_pPresenter->m_rtTimePerFrame), (m_pPresenter->m_DetectedFrameTime * 1000.0),
+      (m_pPresenter->m_DetectedFrameTimeStdDev/10000.0), (m_pPresenter->m_SampDuration/10000.0) );
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
 
