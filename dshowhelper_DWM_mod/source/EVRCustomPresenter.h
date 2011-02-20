@@ -411,8 +411,6 @@ protected:
   UINT   m_rasterLimitTop;    
   UINT   m_rasterLimitNP;    
   
-  int    m_initDWMframe;
-
   double m_dEstRefCycDiff; 
   
   LONGLONG m_SampDuration;

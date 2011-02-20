@@ -143,7 +143,6 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     
     m_bDwmCompEnabled  = false;
     m_bDWMinit         = false;
-    m_initDWMframe     = 0;
     m_dwmBuffers       = 0;
     m_hDwmWinHandle    = NULL;
     
@@ -2982,8 +2981,6 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
   m_rasterLimitNP    = m_maxVisScanLine;   
 
   Log("Vsync correction : rasterLimitHigh: %d, rasterLimitLow: %d, rasterTargetPosn: %d", m_rasterLimitHigh, m_rasterLimitLow, m_rasterTargetPosn);
-
-  m_initDWMframe = (int)(250.0/m_dEstRefreshCycle); //display frame units
 
   return m_estRefreshLock;
 }
