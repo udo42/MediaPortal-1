@@ -278,6 +278,9 @@ void MPEVRCustomPresenter::DwmReset()
   }
   DwmEnableMMCSSOnOff(false);
   DwmFlush();
+  DwmSetParameters(TRUE, 2, 1);
+  Sleep(50);
+  DwmFlush();
   DwmSetParameters(FALSE, 2, 1);
   Sleep(50);
 }  
@@ -1516,7 +1519,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       {
         m_iLateFrames--;
       }
-      Sleep(2); //Just to be friendly to other threads
+      Sleep(1); //Just to be friendly to other threads
     }
     
     *pIdleWait = true; //in case there are no samples and we need to go idle
@@ -2086,7 +2089,7 @@ HRESULT MPEVRCustomPresenter::ProcessInputNotify(int* samplesProcessed, bool set
       return hr;
     }
     
-    Sleep(2); //Just to be friendly to other threads
+    Sleep(1); //Just to be friendly to other threads
     
   } while (bhasMoreSamples);
   
