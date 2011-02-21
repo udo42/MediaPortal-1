@@ -1181,8 +1181,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
   LOG_TRACE("Checking for scheduled sample (size: %d)", m_qScheduledSamples.Count());
   LONGLONG displayTime = (LONGLONG)(GetDisplayCycle() * 10000); // display cycle in hns
   LONGLONG hystersisTime = min(50000, displayTime/4) ;
-  LONGLONG delErrLimit = displayTime ;
-  LONGLONG delErr = 0;
   LONGLONG nextSampleTime = 0;
   LONGLONG realSampleTime = 0;
   LONGLONG systemTime = 0;
@@ -1205,8 +1203,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       PauseThread(m_hWorker, &m_workerParams);
       Flush(FALSE);
       WakeThread(m_hWorker, &m_workerParams);
-      m_iLateFrames = 0;
-      m_iEarlyFrames = 0;
       *pTargetTime = 0;
       m_earliestPresentTime = 0;
       return S_OK;
@@ -1226,8 +1222,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     // don't process frame in paused mode during normal playback
     if (m_state == MP_RENDER_STATE_PAUSED && !m_bDVDMenu) 
     {
-      m_iLateFrames = 0;
-      m_iEarlyFrames = 0;
       *pTargetTime = 0;
       m_earliestPresentTime = 0;
       break;
@@ -1254,66 +1248,22 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         
     if (*pTargetTime > 0)
     {  
-      delErr = systemTime - *pTargetTime;
-      m_lastDelayErr = -delErr;
-    }
-    else
-    {
-      delErr = 0;
-    }
-    
+      m_lastDelayErr = -(systemTime - *pTargetTime);
+    }   
     *pTargetTime = 0;      
-        
-    //De-sensitise frame dropping to avoid occasional delay glitches triggering frame drops
-    if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing)
-    {
-      if (!m_pAVSyncClock && m_NSTinitDone)
-      {
-        nextSampleTime = (realSampleTime + (frameTime/2)) - m_hnsNSToffset;
-      }
-      
-      if (m_iLateFrames > 0)
-      {
-        if (m_iLateFrames >= LF_THRESH)
-        {
-          lateLimit = delErrLimit; //more contiguous late frames are allowed
-          delErr = hystersisTime;
-        }
-        else
-        {
-          lateLimit = hystersisTime;
-          delErr = 0;
-        }
-      }
-      else if (nextSampleTime < -hystersisTime)
-      {
-        m_iLateFrames = LF_THRESH_HIGH;
-        m_iLateFrCnt++;
-        lateLimit = delErrLimit; // Allow this late frame
-        delErr = hystersisTime;
-      }
-      else
-      {
-        lateLimit = hystersisTime;
-        delErr = 0;
-      }
-    }
-    else
-    {
-      lateLimit = hystersisTime;
-      delErr = 0;
-      m_iLateFrames = 0;
-    }
 
+    //Centralise nextSampleTime in timing window when in normal play mode and MP Audio Renderer is inactive
+    if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing && !m_pAVSyncClock && m_NSTinitDone)
+    {
+      nextSampleTime = (realSampleTime + (frameTime/2)) - m_hnsNSToffset;
+    }
+        
     // nextSampleTime == 0 means there is no valid presentation time, so we present it immediately without vsync correction
     // When scrubbing always display at least every eighth frame - even if it's late
     if ( (nextSampleTime >= -lateLimit) || m_bDVDMenu || !m_bFrameSkipping || (m_bScrubbing && !(m_iFramesProcessed % 8)) || m_bZeroScrub )
     {   
-      if (m_iLateFrames > 0)
-      {
-        LOG_LATEFR("Late frame (present), sampTime %.2f ms, last sleep %.2f, LFr %d",(double)nextSampleTime/10000, (double)lastSleepTime/10000, m_iLateFrames) ;
-      }
       GetFrameRateRatio(); // update video to display FPS ratio data
+      
       // Within the time window to 'present' a sample, or it's a special play mode
       if (!m_bZeroScrub)
       {   
@@ -1330,7 +1280,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         }
         
         // Apply display vsync correction.     
-        LONGLONG offsetTime = delErr; //used to widen vsync correction window
+        LONGLONG offsetTime = 0; //used to widen vsync correction window
         LONGLONG rasterDelay = GetDelayToRasterTarget( pTargetTime, &offsetTime);
 
         if (rasterDelay > 0)
@@ -1354,39 +1304,13 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         
         m_stallTime = m_earliestPresentTime - systemTime;
 
-        //De-sensitise frame stalling to avoid occasional glitches triggering frame stalls
-        if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing)
-        {
-          if (m_iEarlyFrames > 0)
-          {
-            if (m_iEarlyFrames >= EF_THRESH)
-            {
-              earlyLimit = delErrLimit;
-            }
-            else
-            {
-              earlyLimit = hystersisTime;
-            }
-          }
-          else if (nextSampleTime > (frameTime + hystersisTime))
-          {
-            m_iEarlyFrames = EF_THRESH_HIGH;
-            m_iEarlyFrCnt++;
-            earlyLimit = delErrLimit; // Allow this early frame
-          }
-          else
-          {
-            earlyLimit = hystersisTime;
-          }
-        }
-        else
-        {
-          earlyLimit = hystersisTime;
-          m_iEarlyFrames = 0;
-        }
-
         if (nextSampleTime > (frameTime + earlyLimit))
         {                
+          if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing)
+          {
+            //Count the early/stalled frames
+            m_iEarlyFrCnt++;
+          }
           // It's too early to present sample, so delay for a while
           *pTargetTime = systemTime + (m_stallTime/2); //delay in smaller chunks          
           break;
@@ -1422,15 +1346,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       m_pLastPresSample = pSample;
       m_iFramesProcessed++;
             
-      if (m_iLateFrames > 0)
-      {
-        m_iLateFrames--;
-      }
-      if (m_iEarlyFrames > 0)
-      {
-        m_iEarlyFrames--;
-      }      
-
       if (m_pAVSyncClock) //Update phase deviation data for MP Audio Renderer
       {
         //Target (0.5 * frameTime) for nextSampleTime
@@ -1456,7 +1371,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       }
   
       m_llLastCFPts = nextSampleTime;
-      CalculateNSTStats(realSampleTime, (frameTime - (hystersisTime/2) )); // update NextSampleTime average
+      CalculateNSTStats(realSampleTime, frameTime); // update NextSampleTime average
       
       // Notify EVR of sample latency
       if( m_pEventSink )
@@ -1499,7 +1414,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       // so it's better to not report them in the log normally.          
       if (m_bDrawStats && !m_bScrubbing && !m_bDVDMenu)
       {
-        Log("Dropping frame, nextSampleTime %.2f ms, last sleep %.2f ms, last pres %.2f ms, paint %.2f ms, queue count %d, SOP %d, EOP %d, LFr %d, RawFRRatio %d, dropped %d, drawn %d",
+        Log("Dropping frame, nextSampleTime %.2f ms, last sleep %.2f ms, last pres %.2f ms, paint %.2f ms, queue count %d, SOP %d, EOP %d, RawFRRatio %d, dropped %d, drawn %d",
              (double)nextSampleTime/10000, 
              (double)lastSleepTime/10000, 
              (double)((m_lastPresentTime - GetCurrentTimestamp())/10000),
@@ -1507,17 +1422,12 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
              m_qScheduledSamples.Count(),
              m_LastStartOfPaintScanline,
              m_LastEndOfPaintScanline,
-             m_iLateFrames,
              m_rawFRRatio,
              m_iFramesDropped,
              m_iFramesDrawn
              );
       }
            
-      if (m_iLateFrames > 0)
-      {
-        m_iLateFrames--;
-      }
       Sleep(1); //Just to be friendly to other threads
     }
     
@@ -2974,10 +2884,10 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
   }
   
   //Initialise vsync correction control values
-  m_rasterLimitLow   = (((m_maxVisScanLine - m_minVisScanLine) * 1)/8) + m_minVisScanLine; 
+  m_rasterLimitLow   = (((m_maxVisScanLine - m_minVisScanLine) * 3)/16) + m_minVisScanLine; 
   m_rasterTargetPosn = m_rasterLimitLow;
-  m_rasterLimitHigh  = (((m_maxVisScanLine - m_minVisScanLine) * 4)/8) + m_minVisScanLine;
-  m_rasterLimitTop   = (((m_maxVisScanLine - m_minVisScanLine) * 5)/8) + m_minVisScanLine;   
+  m_rasterLimitHigh  = (((m_maxVisScanLine - m_minVisScanLine) * 9)/16) + m_minVisScanLine;
+  m_rasterLimitTop   = (((m_maxVisScanLine - m_minVisScanLine) * 11)/16) + m_minVisScanLine;   
   m_rasterLimitNP    = m_maxVisScanLine;   
 
   Log("Vsync correction : rasterLimitHigh: %d, rasterLimitLow: %d, rasterTargetPosn: %d", m_rasterLimitHigh, m_rasterLimitLow, m_rasterTargetPosn);
@@ -3131,10 +3041,7 @@ void MPEVRCustomPresenter::ResetFrameStats()
 {
   m_iFramesDrawn    = 0;
   m_iFramesDropped  = 0;
-  m_iLateFrCnt      = 0;
   m_iEarlyFrCnt     = 0;
-  m_iLateFrames     = 0;
-  m_iEarlyFrames    = 0;
   m_iFramesProcessed = 0;
   
   m_nNextCFP = 0;

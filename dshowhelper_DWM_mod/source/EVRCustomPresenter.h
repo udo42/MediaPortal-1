@@ -71,9 +71,6 @@ using namespace std;
 // Change to 'true' to enable extra logging of processing latencies
 #define LOG_DELAYS false
 
-// uncomment the //Log to enable extra logging
-#define LOG_LATEFR //Log
-
 // Macro for locking 
 #define TIME_LOCK(obj, crit, name)  \
   LONGLONG then = GetCurrentTimestamp(); \
@@ -345,12 +342,8 @@ protected:
   int                               m_nNextPCD;
 	double                            m_fPCDMean;
   double                            m_fPCDSumAvg;
-	
-	
-  int                               m_iLateFrCnt;
+		
   int                               m_iEarlyFrCnt;
-  int                               m_iLateFrames;
-  int                               m_iEarlyFrames;
   int                               m_iFramesProcessed;
  
 
