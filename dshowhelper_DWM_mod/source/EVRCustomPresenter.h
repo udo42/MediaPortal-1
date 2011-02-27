@@ -38,14 +38,11 @@ using namespace std;
 #define NB_DFTHSIZE 64
 #define NB_CFPSIZE 128
 #define NB_PCDSIZE 32
-#define LF_THRESH 7
-#define LF_THRESH_HIGH (LF_THRESH + 0)
-#define EF_THRESH 7
-#define EF_THRESH_HIGH (EF_THRESH + 0)
 #define FRAME_PROC_THRESH 32
 #define FRAME_PROC_THRSH2 64
 #define DFT_THRESH 0.007
 #define NUM_PHASE_DEVIATIONS 32
+#define FILTER_LIST_SIZE 9
 
 //Valid range is 2-7
 #define NUM_DWM_BUFFERS 3
@@ -60,7 +57,7 @@ using namespace std;
 #define SCHED_ENABLE_MMCSS false
 #define WORKER_ENABLE_MMCSS true
 #define TIMER_ENABLE_MMCSS true
-#define DWM_ENABLE_MMCSS false
+#define DWM_ENABLE_MMCSS true
 
 // magic numbers
 #define DEFAULT_FRAME_TIME 200000 // used when fps information is not provided (PAL interlaced == 50fps)
@@ -267,6 +264,9 @@ protected:
   void           DwmSetParameters(BOOL useSourceRate, UINT buffers, UINT rfshPerFrame);
   void           DwmGetState();
   void           DwmFlush();
+  
+  HRESULT EnumFilters(IFilterGraph *pGraph);
+  bool GetFilterNames();
 
   CComPtr<IDirect3DDevice9>         m_pD3DDev;
   IVMR9Callback*                    m_pCallback;
@@ -401,8 +401,9 @@ protected:
   UINT   m_rasterLimitLow; 
   UINT   m_rasterTargetPosn;
   UINT   m_rasterLimitHigh;
-  UINT   m_rasterLimitTop;    
   UINT   m_rasterLimitNP;    
+
+  LONGLONG m_hnsScanlineTime;
   
   double m_dEstRefCycDiff; 
   
@@ -441,6 +442,9 @@ protected:
 
   UINT          m_dwmBuffers;
   HWND          m_hDwmWinHandle;
+  
+  char          m_filterNames[FILTER_LIST_SIZE][MAX_FILTER_NAME];
+  int           m_numFilters;
   
   BOOL          m_bIsWin7;
   bool          m_bMsVideoCodec;
