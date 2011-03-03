@@ -840,6 +840,13 @@ HRESULT MPEVRCustomPresenter::CreateProposedOutputType(IMFMediaType* pMixerType,
     }
     else
     {
+      LARGE_INTEGER frameRate;
+      CHECK_HR((*pType)->GetUINT64(MF_MT_FRAME_RATE, (UINT64*)&frameRate.QuadPart), "Failed to get MF_MT_FRAME_RATE");
+      Log("MF_MT_FRAME_RATE: %.3f fps", ((double)frameRate.HighPart/(double)frameRate.LowPart));
+      
+      if ( (!m_bMsVideoCodec || (m_bMsVideoCodec && (m_rtTimePerFrame == 0))) && frameRate.HighPart != 0)
+        m_rtTimePerFrame = (10000000*(LONGLONG)frameRate.LowPart)/(LONGLONG)frameRate.HighPart;
+
       Log("Setting MFVideoTransferMatrix using m_pMFCreateVideoMediaType failed, trying MF_MT_FRAME_SIZE");
       CHECK_HR((*pType)->GetUINT64(MF_MT_FRAME_SIZE, (UINT64*)&i64Size.QuadPart), "Failed to get MF_MT_FRAME_SIZE");
 
@@ -866,8 +873,8 @@ HRESULT MPEVRCustomPresenter::CreateProposedOutputType(IMFMediaType* pMixerType,
     if (m_rtTimePerFrame == 0)
     {
       // if fps information is not provided use default (workaround for possible bugs)
-      Log("No time per frame available using default: %d", DEFAULT_FRAME_TIME);
-      m_rtTimePerFrame = DEFAULT_FRAME_TIME;
+      m_rtTimePerFrame = (LONGLONG)(10000 * GetDisplayCycle());
+      Log("No time per frame available using default: %f", GetDisplayCycle());
     }
 
     CHECK_HR((*pType)->GetUINT64(MF_MT_FRAME_SIZE, (UINT64*)&i64Size.QuadPart), "Failed to get MF_MT_FRAME_SIZE");
