@@ -74,7 +74,8 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
   m_iClockAdjustmentsDone(0),
   m_nNextPhDev(0),
   m_avPhaseDiff(0.0),
-  m_sumPhaseDiff(0.0)
+  m_sumPhaseDiff(0.0),
+  m_dummyEvent(INVALID_HANDLE_VALUE)
 {
   ZeroMemory((void*)&m_dPhaseDeviations, sizeof(double) * NUM_PHASE_DEVIATIONS);
 
@@ -85,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.069 ----------- instance 0x%x", this);
+      Log("---------- v1.4.070 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.069 ----------- instance 0x%x", this);
+      Log("---------- v0.0.070 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -152,6 +153,7 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     m_DetectedFrameTimePos                = 0;
     m_DectedSum                           = 0;
     m_DetectedFrameTime                   = -1.0;
+    m_DetFrameTimeAve                     = -1.0;
     m_DetectedLock                        = false;
     m_DetectedFrameTimeStdDev             = 0;
     m_LastEndOfPaintScanline       = 0;
@@ -167,6 +169,7 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     m_pD3DDev->GetDisplayMode(0, &m_displayMode);
 
     m_bDrawStats = false;
+    m_dummyEvent = CreateEvent(NULL, TRUE, FALSE, NULL); //Placeholder event for wait functions 
   }
     
   for (int i = 0; i < 2; i++)
@@ -258,12 +261,12 @@ void MPEVRCustomPresenter::DwmInit(UINT buffers, UINT rfshPerFrame)
   DwmGetState();
   DwmFlush();
   DwmSetParameters(TRUE, buffers, rfshPerFrame); //'Source rate' mode
-  Sleep(50);
+  WaitForSingleObject(m_dummyEvent, 50); //Wait for 50ms
   DwmFlush();
   DwmSetParameters(FALSE, buffers, rfshPerFrame); //'Display rate' mode
-  Sleep(50);
+  WaitForSingleObject(m_dummyEvent, 50); //Wait for 50ms
   DwmEnableMMCSSOnOff(DWM_ENABLE_MMCSS);
-  Sleep(50);
+  WaitForSingleObject(m_dummyEvent, 50); //Wait for 50ms
 }  
 
 
@@ -283,10 +286,10 @@ void MPEVRCustomPresenter::DwmReset()
   DwmEnableMMCSSOnOff(false);
   DwmFlush();
   DwmSetParameters(TRUE, 2, 1);
-  Sleep(50);
+  WaitForSingleObject(m_dummyEvent, 50); //Wait for 50ms
   DwmFlush();
   DwmSetParameters(FALSE, 2, 1);
-  Sleep(50);
+  WaitForSingleObject(m_dummyEvent, 50); //Wait for 50ms
 }  
 
 
@@ -1438,7 +1441,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
              );
       }
            
-      Sleep(1); //Just to be friendly to other threads
+      WaitForSingleObject(m_dummyEvent, 2); //Sleep for a short time to be friendly to other threads
     }
     
     *pIdleWait = true; //in case there are no samples and we need to go idle
@@ -1686,13 +1689,12 @@ void MPEVRCustomPresenter::PauseThread(HANDLE hThread, SchedulerParams* params)
   Log("Pausing thread 0x%x, 0x%x, %d", hThread, params, params->iPause);
 
   InterlockedIncrement(&params->iPause);
-
-  int i = 0;
   
+  int i = 0;
   for (i = 0; i < 50; i++)
   {
     params->eHasWork.Set(); //Wake thread (in case it's sleeping)
-    Sleep(1);
+    WaitForSingleObject(m_dummyEvent, 1); //Sleep for 1 ms to be friendly to other threads
     if (params->bPauseAck)
     {
       break;
@@ -2008,7 +2010,7 @@ HRESULT MPEVRCustomPresenter::ProcessInputNotify(int* samplesProcessed, bool set
       return hr;
     }
     
-    Sleep(1); //Just to be friendly to other threads
+    WaitForSingleObject(m_dummyEvent, 2); //Sleep for a short time to be friendly to other threads
     
   } while (bhasMoreSamples);
   
@@ -3319,6 +3321,8 @@ void MPEVRCustomPresenter::CorrectSampleTime(IMFSample* pSample)
       }
 
       double DetectedTime = Average / 10000000.0;
+      
+      m_DetFrameTimeAve = DetectedTime;
       
       bool bFTdiff = false;      
       if (m_DetectedFrameTime && DetectedTime)

@@ -195,7 +195,6 @@ UINT CALLBACK WorkerThread(void* param)
         dwObject = WaitForMultipleObjects (2, hEvts, FALSE, 5);
       else
         dwObject = WaitForMultipleObjects (2, hEvts, FALSE, 50);
-        // dwObject = WaitForMultipleObjects (2, hEvts, FALSE, 50);
     }
 
     if (p->iPause > 0)

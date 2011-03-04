@@ -424,6 +424,7 @@ protected:
   double        m_DetectedFrameTime;
   double        m_DetectedFrameTimeStdDev;
   bool          m_DetectedLock;
+  double        m_DetFrameTimeAve;
 
   int           m_frameRateRatio;
   int           m_rawFRRatio;
@@ -445,6 +446,8 @@ protected:
   
   char          m_filterNames[FILTER_LIST_SIZE][MAX_FILTER_NAME];
   int           m_numFilters;
+  
+  HANDLE        m_dummyEvent;
   
   BOOL          m_bIsWin7;
   bool          m_bMsVideoCodec;
