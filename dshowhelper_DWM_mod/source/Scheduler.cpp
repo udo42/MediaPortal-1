@@ -63,11 +63,11 @@ UINT CALLBACK TimerThread(void* param)
     // Tell Vista/Win7 Multimedia Class Scheduler (MMCS) we are doing threaded playback
     if (m_pAvSetMmThreadCharacteristicsW) 
     {
-      hAvrt = m_pAvSetMmThreadCharacteristicsW(L"Playback", &dwTaskIndex);
+      hAvrt = m_pAvSetMmThreadCharacteristicsW(MMCSS_REG_TASK, &dwTaskIndex);
     }
     if (m_pAvSetMmThreadPriority) 
     {
-      if (m_pAvSetMmThreadPriority(hAvrt, AVRT_PRIORITY_LOW))
+      if (m_pAvSetMmThreadPriority(hAvrt, TIMER_MMCSS_PRIORITY))
       {
         Log("Timer set AvSetMmThreadPriority succeeded");
       }
@@ -170,11 +170,11 @@ UINT CALLBACK WorkerThread(void* param)
     // Tell Vista/Win7 Multimedia Class Scheduler (MMCS) we are doing threaded playback
     if (m_pAvSetMmThreadCharacteristicsW) 
     {
-      hAvrt = m_pAvSetMmThreadCharacteristicsW(L"Playback", &dwTaskIndex);
+      hAvrt = m_pAvSetMmThreadCharacteristicsW(MMCSS_REG_TASK, &dwTaskIndex);
     }
     if (m_pAvSetMmThreadPriority) 
     {
-      if (m_pAvSetMmThreadPriority(hAvrt, AVRT_PRIORITY_NORMAL))
+      if (m_pAvSetMmThreadPriority(hAvrt, WORKER_MMCSS_PRIORITY))
       {
         Log("Worker set AvSetMmThreadPriority succeeded");
       }
@@ -284,11 +284,11 @@ UINT CALLBACK SchedulerThread(void* param)
     // Tell Vista/Win7 Multimedia Class Scheduler (MMCS) we are doing threaded playback (increase priority)
     if (m_pAvSetMmThreadCharacteristicsW) 
     {
-      hAvrt = m_pAvSetMmThreadCharacteristicsW(L"Playback", &dwTaskIndex);
+      hAvrt = m_pAvSetMmThreadCharacteristicsW(MMCSS_REG_TASK, &dwTaskIndex);
     }
     if (m_pAvSetMmThreadPriority) 
     {
-      if (m_pAvSetMmThreadPriority(hAvrt, AVRT_PRIORITY_HIGH))
+      if (m_pAvSetMmThreadPriority(hAvrt, SCHED_MMCSS_PRIORITY))
       {
         Log("Scheduler set AvSetMmThreadPriority succeeded");
       }

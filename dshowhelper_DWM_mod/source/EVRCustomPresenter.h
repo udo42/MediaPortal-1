@@ -53,11 +53,22 @@ using namespace std;
 
 #define PS_FRAME_ADVANCE 1
 
-//Bring threads and DWM under Multimedia Class Scheduler Service (MMCSS) control if true
+//Bring Scheduler/Worker/Timer threads under Multimedia Class Scheduler Service (MMCSS) control if 'true'
 #define SCHED_ENABLE_MMCSS false
 #define WORKER_ENABLE_MMCSS true
 #define TIMER_ENABLE_MMCSS true
+
+//MMCSS priority levels for Scheduler/Worker/Timer threads
+#define SCHED_MMCSS_PRIORITY  AVRT_PRIORITY_HIGH
+#define WORKER_MMCSS_PRIORITY AVRT_PRIORITY_NORMAL
+#define TIMER_MMCSS_PRIORITY  AVRT_PRIORITY_LOW
+
+//MMCSS 'Task' type
+#define MMCSS_REG_TASK  L"Playback"
+
+//Bring DWM under Multimedia Class Scheduler Service (MMCSS) control if 'true'
 #define DWM_ENABLE_MMCSS true
+
 
 // magic numbers
 #define DEFAULT_FRAME_TIME 200000 // used when fps information is not provided (PAL interlaced == 50fps)
@@ -249,7 +260,7 @@ protected:
   void           NotifyWorker(bool setInAvail);
   HRESULT        GetTimeToSchedule(IMFSample* pSample, LONGLONG* pDelta, LONGLONG *hnsSystemTime, LONGLONG hnsTimeOffset);
   void           Flush(BOOL forced);
-  void           ScheduleSample(IMFSample* pSample);
+  BOOL           ScheduleSample(IMFSample* pSample);
   IMFSample*     PeekSample();
   BOOL           PopSample();
   int            CheckQueueCount();

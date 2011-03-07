@@ -1296,7 +1296,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         LONGLONG offsetTime = 0;
         LONGLONG rasterDelay = GetDelayToRasterTarget( pTargetTime, &offsetTime);
 
-        if (rasterDelay > 0)
+        if (rasterDelay > 13000) // 1.3 ms
         {
            // Not at the correct point in the display raster, so sleep until pTargetTime time
           m_earliestPresentTime = 0;
@@ -1325,7 +1325,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
             m_iEarlyFrCnt++;
           }
           // It's too early to present sample, so delay for a while
-          *pTargetTime = systemTime + (m_stallTime/2); //delay in smaller chunks          
+          *pTargetTime = systemTime + max(15000,(m_stallTime/2)); //delay in smaller chunks          
           break;
         }    
                
@@ -1839,11 +1839,13 @@ IMFSample* MPEVRCustomPresenter::PeekSample()
 }
 
 
-void MPEVRCustomPresenter::ScheduleSample(IMFSample* pSample)
+BOOL MPEVRCustomPresenter::ScheduleSample(IMFSample* pSample)
 {
   CAutoLock lock(&m_lockScheduledSamples);
   LOG_TRACE("Scheduling Sample, size: %d", m_qScheduledSamples.Count());
 
+  BOOL onTimeSample = true;
+  
   CorrectSampleTime(pSample);
 
   DWORD hr;
@@ -1852,19 +1854,25 @@ void MPEVRCustomPresenter::ScheduleSample(IMFSample* pSample)
   CHECK_HR(hr = GetTimeToSchedule(pSample, &nextSampleTime, &systemTime, 0), "Couldn't get time to schedule!");
   if (SUCCEEDED(hr))
   {
-    // consider 5 ms "just-in-time" for log-length's sake
-    if (nextSampleTime < -50000 && !m_bDVDMenu && !m_bScrubbing)
+    if ((nextSampleTime < -50000) && !m_bDVDMenu && !m_bScrubbing)
     {
-      Log("Scheduling sample from the past (%.2f ms, last call to NotifyWorker: %.2f ms, Queue: %d)", 
+      // consider 5 ms "just-in-time" for log-length's sake
+      onTimeSample = false; //Allow sample to be dropped
+      Log("Scheduling/dropping sample from the past (%.2f ms, last call to NotifyWorker: %.2f ms, Queue: %d)", 
         (double)-nextSampleTime/10000, (GetCurrentTimestamp()-(double)m_llLastWorkerNotification)/10000, m_qScheduledSamples.Count());
     }
   }
 
-  m_qScheduledSamples.Put(pSample);
-  if (m_qScheduledSamples.Count() >= 1)
+  if (onTimeSample) //Use samples if they are on-time
   {
-    NotifyScheduler(false);
+    m_qScheduledSamples.Put(pSample);
+    if (m_qScheduledSamples.Count() >= 1)
+    {
+      NotifyScheduler(false);
+    }
   }
+  
+  return onTimeSample;
 }
 
 
@@ -1972,8 +1980,14 @@ HRESULT MPEVRCustomPresenter::ProcessInputNotify(int* samplesProcessed, bool set
         m_pEventSink->Notify(EC_PROCESSING_LATENCY, (LONG_PTR)&mixerLatency, 0);
         LOG_TRACE("Mixer Latency: %I64d", mixerLatency);
       }
-      ScheduleSample(sample);
-      m_qGoodPutCnt++;
+      if (ScheduleSample(sample))
+      {
+        m_qGoodPutCnt++;
+      }
+      else //sample has been dropped
+      {
+        ReturnSample(sample, FALSE);
+      }
     }
     else 
     {
@@ -2897,9 +2911,9 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
   }
   
   //Initialise vsync correction control values
-  m_rasterLimitLow   = (((m_maxVisScanLine - m_minVisScanLine) * 3)/16) + m_minVisScanLine; 
+  m_rasterLimitLow   = (((m_maxVisScanLine - m_minVisScanLine) * 4)/16) + m_minVisScanLine; 
   m_rasterTargetPosn = m_rasterLimitLow;
-  m_rasterLimitHigh  = (((m_maxVisScanLine - m_minVisScanLine) * 9)/16) + m_minVisScanLine;
+  m_rasterLimitHigh  = (((m_maxVisScanLine - m_minVisScanLine) * 10)/16) + m_minVisScanLine;
   m_rasterLimitNP    = m_maxVisScanLine; 
   m_hnsScanlineTime  = (LONGLONG) (m_dDetectedScanlineTime * 10000.0);
   
@@ -3833,7 +3847,7 @@ HRESULT MPEVRCustomPresenter::EnumFilters(IFilterGraph *pGraph)
         
         if (cch > 0 && m_numFilters < FILTER_LIST_SIZE) 
         {
-          strcpy(m_filterNames[m_numFilters],szName);
+          strcpy_s(m_filterNames[m_numFilters],szName);
           Log("Filter: %s", m_filterNames[m_numFilters]);
           m_numFilters++;
         }
