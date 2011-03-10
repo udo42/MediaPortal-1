@@ -86,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.070 ----------- instance 0x%x", this);
+      Log("---------- v1.4.071 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.070 ----------- instance 0x%x", this);
+      Log("---------- v0.0.071 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;

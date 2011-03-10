@@ -67,7 +67,7 @@ using namespace std;
 #define MMCSS_REG_TASK  L"Playback"
 
 //Bring DWM under Multimedia Class Scheduler Service (MMCSS) control if 'true'
-#define DWM_ENABLE_MMCSS true
+#define DWM_ENABLE_MMCSS false
 
 
 // magic numbers
@@ -431,7 +431,6 @@ protected:
   LONGLONG      m_DetectedFrameTimeHistory[NB_DFTHSIZE];
   LONGLONG      m_DectedSum;
   int           m_DetectedFrameTimePos;
-  double        m_DetectedFrameRate;
   double        m_DetectedFrameTime;
   double        m_DetectedFrameTimeStdDev;
   bool          m_DetectedLock;
