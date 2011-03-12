@@ -86,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.071 ----------- instance 0x%x", this);
+      Log("---------- v1.4.072 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.071 ----------- instance 0x%x", this);
+      Log("---------- v0.0.072 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -1286,19 +1286,27 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
           *pTargetTime = systemTime + (displayTime/4); //delay in smaller chunks
           break;
         }
-        else if ((m_earliestPresentTime - systemTime) > 20000 )
+        else if ((m_earliestPresentTime - systemTime) >= MIN_VSC_DELAY )
         {
-          *pTargetTime = systemTime + 15000; //delay in smaller chunks
+          *pTargetTime = systemTime + MIN_VSC_DELAY;
           break;
         }
         
         // Apply display vsync correction.     
         LONGLONG offsetTime = 0;
-        LONGLONG rasterDelay = GetDelayToRasterTarget( pTargetTime, &offsetTime);
+        LONGLONG rasterDelay = GetDelayToRasterTarget(&offsetTime);
 
-        if (rasterDelay > 13000) // 1.3 ms
+        if (rasterDelay >= MIN_VSC_DELAY)
         {
            // Not at the correct point in the display raster, so sleep until pTargetTime time
+          if (rasterDelay >= (MIN_VSC_DELAY * 2))
+          {
+            *pTargetTime = systemTime + (rasterDelay/2); //delay in smaller chunks
+          }
+          else
+          {
+            *pTargetTime = systemTime + rasterDelay;
+          }
           m_earliestPresentTime = 0;
           break;
         }
@@ -1324,8 +1332,8 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
             //Count the early/stalled frames
             m_iEarlyFrCnt++;
           }
-          // It's too early to present sample, so delay for a while
-          *pTargetTime = systemTime + max(15000,(m_stallTime/2)); //delay in smaller chunks          
+          // It's too early to present the sample, so delay for a while
+          *pTargetTime = systemTime + max(MIN_VSC_DELAY,(m_stallTime/2)); //delay in smaller chunks          
           break;
         }    
                
@@ -2911,9 +2919,9 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
   }
   
   //Initialise vsync correction control values
-  m_rasterLimitLow   = (((m_maxVisScanLine - m_minVisScanLine) * 4)/16) + m_minVisScanLine; 
+  m_rasterLimitLow   = (((m_maxVisScanLine - m_minVisScanLine) * 3)/16) + m_minVisScanLine; 
   m_rasterTargetPosn = m_rasterLimitLow;
-  m_rasterLimitHigh  = (((m_maxVisScanLine - m_minVisScanLine) * 10)/16) + m_minVisScanLine;
+  m_rasterLimitHigh  = (((m_maxVisScanLine - m_minVisScanLine) * 12)/16) + m_minVisScanLine;
   m_rasterLimitNP    = m_maxVisScanLine; 
   m_hnsScanlineTime  = (LONGLONG) (m_dDetectedScanlineTime * 10000.0);
   
@@ -3418,14 +3426,12 @@ void MPEVRCustomPresenter::GetRealRefreshRate()
 
 // get time delay (in hns) to target raster paint position
 // returns zero delay if 'now' is inside the limitLow/limitHigh window
-LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *targetTime, LONGLONG *offsetTime)
+LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *offsetTime)
 {
     D3DRASTER_STATUS rasterStatus;
     LONGLONG targetDelay = 0;
-    *targetTime = 0;    
     *offsetTime = 0;
 
-    LONGLONG now = GetCurrentTimestamp();
     // Calculate raster offset
     if (SUCCEEDED(m_pD3DDev->GetRasterStatus(0, &rasterStatus)))
     {
@@ -3461,15 +3467,10 @@ LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *targetTime, LONG
       //so limit delay to avoid overshooting the target position
       if ( currScanline < 2 )
       {
-        targetDelay = 15000 ; //Limit to 1.5ms
+        targetDelay = MIN_VSC_DELAY ; //Limit to 1.2 ms
         *offsetTime = 0 ;
       }
-      else
-      {
-        targetDelay = targetDelay / 2; //delay in chunks
-      }
       
-      *targetTime = now + targetDelay;      
     }
     
     return targetDelay;

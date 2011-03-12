@@ -67,11 +67,14 @@ using namespace std;
 #define MMCSS_REG_TASK  L"Playback"
 
 //Bring DWM under Multimedia Class Scheduler Service (MMCSS) control if 'true'
-#define DWM_ENABLE_MMCSS false
+#define DWM_ENABLE_MMCSS true
 
 
 // magic numbers
 #define DEFAULT_FRAME_TIME 200000 // used when fps information is not provided (PAL interlaced == 50fps)
+
+//Minimum usable vsync correction delay
+#define MIN_VSC_DELAY 12000
 
 // uncomment the //Log to enable extra logging
 #define LOG_TRACE //Log
@@ -270,7 +273,7 @@ protected:
   HRESULT        PresentSample(IMFSample* pSample, LONGLONG frameTime);
   void           CorrectSampleTime(IMFSample* pSample);
   void           GetRealRefreshRate();
-  LONGLONG       GetDelayToRasterTarget(LONGLONG *targetTime, LONGLONG *offsetTime);
+  LONGLONG       GetDelayToRasterTarget(LONGLONG *offsetTime);
   void           DwmEnableMMCSSOnOff(bool enable);
   void           DwmSetParameters(BOOL useSourceRate, UINT buffers, UINT rfshPerFrame);
   void           DwmGetState();
