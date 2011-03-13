@@ -1433,10 +1433,11 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
                   
       // If video frame rate is higher than display refresh then we'll get lots of dropped frames
       // so it's better to not report them in the log normally.          
-      if (m_bDrawStats && !m_bScrubbing && !m_bDVDMenu)
+      if ((m_frameRateRatio > 0) && !m_bScrubbing && !m_bDVDMenu)
       {
-        Log("Dropping frame, nextSampleTime %.2f ms, last sleep %.2f ms, last pres %.2f ms, paint %.2f ms, queue count %d, SOP %d, EOP %d, RawFRRatio %d, dropped %d, drawn %d",
+        Log("Dropping frame, NST %.2f ms, AveRNST %.2f ms, last sleep %.2f ms, last pres %.2f ms, paint %.2f ms, queue count %d, SOP %d, EOP %d, RawFRRatio %d, dropped %d, drawn %d",
              (double)nextSampleTime/10000, 
+             m_fCFPMean/10000.0,
              (double)lastSleepTime/10000, 
              (double)((m_lastPresentTime - GetCurrentTimestamp())/10000),
              (double)m_PaintTime/10000, 
@@ -1449,7 +1450,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
              );
       }
            
-      WaitForSingleObject(m_dummyEvent, 2); //Sleep for a short time to be friendly to other threads
+      WaitForSingleObject(m_dummyEvent, 1); //Sleep for a short time to be friendly to other threads
     }
     
     *pIdleWait = true; //in case there are no samples and we need to go idle
@@ -1467,7 +1468,7 @@ void MPEVRCustomPresenter::StartWorkers()
     return;
   }
 
-  StartThread(&m_hTimer, &m_timerParams, TimerThread, &m_uTimerThreadId, THREAD_PRIORITY_BELOW_NORMAL);
+  StartThread(&m_hTimer, &m_timerParams, TimerThread, &m_uTimerThreadId, THREAD_PRIORITY_NORMAL);
   StartThread(&m_hWorker, &m_workerParams, WorkerThread, &m_uWorkerThreadId, THREAD_PRIORITY_ABOVE_NORMAL);
   StartThread(&m_hScheduler, &m_schedulerParams, SchedulerThread, &m_uSchedulerThreadId, THREAD_PRIORITY_TIME_CRITICAL);
   m_bSchedulerRunning = TRUE;
@@ -1598,6 +1599,7 @@ void MPEVRCustomPresenter::DwmSetParameters(BOOL useSourceRate, UINT buffers, UI
     presentationParams.cBuffer = buffers;
     presentationParams.fUseSourceRate = useSourceRate;
     presentationParams.rateSource.uiNumerator = (UINT)(1000000000.0/GetDisplayCycle()); // Actual display rate
+    //presentationParams.rateSource.uiNumerator = (UINT)(999000000.0/GetDisplayCycle()); // Actual display rate * 0.999
     presentationParams.rateSource.uiDenominator = 1000000;
     presentationParams.cRefreshesPerFrame = rfshPerFrame;
     presentationParams.eSampling = DWM_SOURCE_FRAME_SAMPLING_POINT;
@@ -1866,8 +1868,8 @@ BOOL MPEVRCustomPresenter::ScheduleSample(IMFSample* pSample)
     {
       // consider 5 ms "just-in-time" for log-length's sake
       onTimeSample = false; //Allow sample to be dropped
-      Log("Scheduling/dropping sample from the past (%.2f ms, last call to NotifyWorker: %.2f ms, Queue: %d)", 
-        (double)-nextSampleTime/10000, (GetCurrentTimestamp()-(double)m_llLastWorkerNotification)/10000, m_qScheduledSamples.Count());
+      Log("Dropping sample from the past (%.2f ms, last call to NotifyWorker: %.2f ms, Queue: %d, Dropped: %d)", 
+        (double)-nextSampleTime/10000, (GetCurrentTimestamp()-(double)m_llLastWorkerNotification)/10000, m_qScheduledSamples.Count(), m_iFramesDropped);
     }
   }
 
@@ -2032,7 +2034,7 @@ HRESULT MPEVRCustomPresenter::ProcessInputNotify(int* samplesProcessed, bool set
       return hr;
     }
     
-    WaitForSingleObject(m_dummyEvent, 2); //Sleep for a short time to be friendly to other threads
+    WaitForSingleObject(m_dummyEvent, 1); //Sleep for a short time to be friendly to other threads
     
   } while (bhasMoreSamples);
   
@@ -2919,9 +2921,9 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
   }
   
   //Initialise vsync correction control values
-  m_rasterLimitLow   = (((m_maxVisScanLine - m_minVisScanLine) * 3)/16) + m_minVisScanLine; 
+  m_rasterLimitLow   = (((m_maxVisScanLine - m_minVisScanLine) * 2)/16) + m_minVisScanLine; 
   m_rasterTargetPosn = m_rasterLimitLow;
-  m_rasterLimitHigh  = (((m_maxVisScanLine - m_minVisScanLine) * 12)/16) + m_minVisScanLine;
+  m_rasterLimitHigh  = (((m_maxVisScanLine - m_minVisScanLine) * 10)/16) + m_minVisScanLine;
   m_rasterLimitNP    = m_maxVisScanLine; 
   m_hnsScanlineTime  = (LONGLONG) (m_dDetectedScanlineTime * 10000.0);
   

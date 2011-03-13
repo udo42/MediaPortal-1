@@ -57,7 +57,7 @@ UINT CALLBACK TimerThread(void* param)
   LONGLONG timeout = 0;
   HANDLE hEvts[] = {p->eHasWork, p->eHasWorkLP};
   DWORD dwObject;
-  HANDLE dummyEvent = CreateEvent(NULL, TRUE, FALSE, NULL); //Placeholder event for wait functions 
+  //HANDLE dummyEvent = CreateEvent(NULL, TRUE, FALSE, NULL); //Placeholder event for wait functions 
 
   if (TIMER_ENABLE_MMCSS)
   {
@@ -114,8 +114,8 @@ UINT CALLBACK TimerThread(void* param)
         while ( (now < p->llTime) && (now < timeout) && !p->bDone && (p->llTime > 0))
         {    
           now = GetCurrentTimestamp(); //poll until we reach the target time
-          WaitForSingleObject(dummyEvent, 1); //Wait for 1ms - CPU load is too high without this
-          //Sleep(1); //CPU load is too high without a Sleep()
+          //WaitForSingleObject(dummyEvent, 1); //Wait for 1ms - CPU load is too high without this
+          Sleep(1); //CPU load is too high without a Sleep()
         }
         if ((p->llTime > 0) && !p->bDone)
         {
@@ -196,7 +196,7 @@ UINT CALLBACK WorkerThread(void* param)
       if(p->pPresenter->m_bScrubbing)
         dwObject = WaitForMultipleObjects (2, hEvts, FALSE, 5);
       else
-        dwObject = WaitForMultipleObjects (2, hEvts, FALSE, 50);
+        dwObject = WaitForMultipleObjects (2, hEvts, FALSE, 10);
     }
 
     if (p->iPause > 0)
