@@ -55,8 +55,8 @@ using namespace std;
 
 //Bring Scheduler/Worker/Timer threads under Multimedia Class Scheduler Service (MMCSS) control if 'true'
 #define SCHED_ENABLE_MMCSS false
-#define WORKER_ENABLE_MMCSS false
-#define TIMER_ENABLE_MMCSS false
+#define WORKER_ENABLE_MMCSS true
+#define TIMER_ENABLE_MMCSS true
 
 //MMCSS priority levels for Scheduler/Worker/Timer threads
 #define SCHED_MMCSS_PRIORITY  AVRT_PRIORITY_HIGH
@@ -67,7 +67,7 @@ using namespace std;
 #define MMCSS_REG_TASK  L"Playback"
 
 //Bring DWM under Multimedia Class Scheduler Service (MMCSS) control if 'true'
-#define DWM_ENABLE_MMCSS false
+#define DWM_ENABLE_MMCSS true
 
 
 // magic numbers
