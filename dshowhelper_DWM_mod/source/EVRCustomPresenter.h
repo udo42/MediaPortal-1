@@ -38,8 +38,8 @@ using namespace std;
 #define NB_DFTHSIZE 64
 #define NB_CFPSIZE 128
 #define NB_PCDSIZE 32
-#define LF_THRESH 7
-#define LF_THRESH_HIGH (LF_THRESH + 0)
+//#define LF_THRESH 7
+#define LF_THRESH_HIGH 4
 #define FRAME_PROC_THRESH 32
 #define FRAME_PROC_THRSH2 64
 #define DFT_THRESH 0.007
@@ -234,6 +234,7 @@ public:
   bool           m_bScrubbing;
   bool           m_bZeroScrub;
   bool           m_bDWMinit;
+  BOOL           m_bEmptyQueue;
 
   BOOL           m_bDwmCompEnabled;
 

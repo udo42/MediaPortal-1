@@ -145,6 +145,7 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     
     m_bDwmCompEnabled  = false;
     m_bDWMinit         = false;
+    m_bEmptyQueue      = false;
     m_dwmBuffers       = 0;
     m_hDwmWinHandle    = NULL;
     
@@ -1286,7 +1287,13 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         m_iFramesHeld++;
         lateLimit = delErrLimit; // Allow this late frame
         m_earliestPresentTime = 0;
-        Log("Late frame, NST %.2f ms, AveRNST %.2f ms, paint %.2f ms, late %d", (double)nextSampleTime/10000, m_fCFPMean/10000.0, (double)m_PaintTime/10000, m_iFramesHeld);
+        Log("Late frame, NST %.2f ms, AveRNST %.2f ms, last sleep %.2f ms, paint %.2f ms, last pres %.2f ms, late %d", 
+            (double)nextSampleTime/10000, 
+            m_fCFPMean/10000.0, 
+            (double)lastSleepTime/10000, 
+            (double)m_PaintTime/10000, 
+            (double)((m_lastPresentTime - GetCurrentTimestamp())/10000), 
+            m_iFramesHeld);
       }
     }
     else
@@ -3149,7 +3156,7 @@ void MPEVRCustomPresenter::ResetFrameStats()
   m_lastPresentTime = 0;
   m_hnsNSToffset = 0;
   m_NSTinitDone = false;
-  m_NSToffsUpdate = false;
+  m_NSToffsUpdate = true;
   
   m_nNextRFP = 0;
     
@@ -3565,7 +3572,7 @@ void MPEVRCustomPresenter::CalculateNSTStats(LONGLONG timeStamp, LONGLONG frameT
   }
   else
   {
-    m_NSToffsUpdate = false;
+    m_NSToffsUpdate = !m_NSTinitDone; //force 'true' initially
   }
       
 }
