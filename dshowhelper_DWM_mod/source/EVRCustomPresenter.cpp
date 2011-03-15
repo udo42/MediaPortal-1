@@ -1199,6 +1199,8 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
   LONGLONG nextSampleTime = 0;
   LONGLONG realSampleTime = 0;
   LONGLONG systemTime = 0;
+  LONGLONG lateLimit = hystersisTime;
+  LONGLONG delErrLimit = displayTime;
 
   LONGLONG frameTime = m_rtTimePerFrame;
   if (m_DetectedFrameTime > DFT_THRESH)
@@ -1216,6 +1218,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       PauseThread(m_hWorker, &m_workerParams);
       Flush(FALSE);
       WakeThread(m_hWorker, &m_workerParams);
+      m_iLateFrames = 0;
       *pTargetTime = 0;
       m_earliestPresentTime = 0;
       return S_OK;
@@ -1235,6 +1238,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     // don't process frame in paused mode during normal playback
     if (m_state == MP_RENDER_STATE_PAUSED && !m_bDVDMenu) 
     {
+      m_iLateFrames = 0;
       *pTargetTime = 0;
       m_earliestPresentTime = 0;
       break;
@@ -1270,10 +1274,29 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     {
       nextSampleTime = (realSampleTime + (frameTime/2)) - m_hnsNSToffset;
     }
+
+    lateLimit = hystersisTime;
+
+    //De-sensitise frame dropping to avoid occasional delay glitches triggering frame drops
+    if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing && !m_NSToffsUpdate)
+    {
+      if ( (nextSampleTime < -hystersisTime) && (nextSampleTime >= -delErrLimit) && (m_iLateFrames == 0) )
+      {
+        m_iLateFrames = LF_THRESH_HIGH;
+        m_iFramesHeld++;
+        lateLimit = delErrLimit; // Allow this late frame
+        m_earliestPresentTime = 0;
+        Log("Late frame, NST %.2f ms, AveRNST %.2f ms, paint %.2f ms, late %d", (double)nextSampleTime/10000, m_fCFPMean/10000.0, (double)m_PaintTime/10000, m_iFramesHeld);
+      }
+    }
+    else
+    {
+      m_iLateFrames = 0;
+    }
         
     // nextSampleTime == 0 means there is no valid presentation time, so we present it immediately without vsync correction
     // When scrubbing always display at least every eighth frame - even if it's late
-    if ( (nextSampleTime >= -hystersisTime) || m_bDVDMenu || !m_bFrameSkipping || (m_bScrubbing && !(m_iFramesProcessed % 8)) || m_bZeroScrub )
+    if ( (nextSampleTime >= -lateLimit) || m_bDVDMenu || !m_bFrameSkipping || (m_bScrubbing && !(m_iFramesProcessed % 8)) || m_bZeroScrub )
     {   
       GetFrameRateRatio(); // update video to display FPS ratio data
       
@@ -1296,9 +1319,9 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         LONGLONG offsetTime = 0;
         LONGLONG rasterDelay = GetDelayToRasterTarget(&offsetTime);
 
-        if (rasterDelay >= MIN_VSC_DELAY)
+        if ((rasterDelay >= MIN_VSC_DELAY) && (m_iLateFrames < LF_THRESH_HIGH))
         {
-           // Not at the correct point in the display raster, so sleep until pTargetTime time
+          // Not at the correct point in the display raster, so sleep until pTargetTime time
           if (rasterDelay >= (MIN_VSC_DELAY * 2))
           {
             *pTargetTime = systemTime + (rasterDelay/2); //delay in smaller chunks
@@ -1312,18 +1335,25 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         }
         
         // We're within the raster timing limits, so present the sample or delay because it's too early...
-        
-        // Calculate minimum delay to next possible PresentSample() time
-        if ((m_frameRateRatio <= 1 && !m_bScrubbing) || (m_rawFRRatio <= 1 && m_bScrubbing))
+        if (m_iLateFrames < LF_THRESH_HIGH)
         {
-          m_earliestPresentTime = systemTime + offsetTime;
+          // Calculate minimum delay to next possible PresentSample() time
+          if ((m_frameRateRatio <= 1 && !m_bScrubbing) || (m_rawFRRatio <= 1 && m_bScrubbing))
+          {
+            m_earliestPresentTime = systemTime + offsetTime;
+          }
+          else
+          {
+            m_earliestPresentTime = systemTime + (displayTime * (m_rawFRRatio - 1)) + offsetTime;
+          }    
+          
+          m_stallTime = m_earliestPresentTime - systemTime;
         }
         else
         {
-          m_earliestPresentTime = systemTime + (displayTime * (m_rawFRRatio - 1)) + offsetTime;
-        }    
-        
-        m_stallTime = m_earliestPresentTime - systemTime;
+          m_earliestPresentTime = 0;
+          m_stallTime = 0;
+        }
 
         if (nextSampleTime > (frameTime + hystersisTime))
         {                
@@ -1366,6 +1396,11 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       }
       m_pLastPresSample = pSample;
       m_iFramesProcessed++;
+      
+      if (m_iLateFrames > 0)
+      {
+        m_iLateFrames--;
+      }
             
       if (m_pAVSyncClock) //Update phase deviation data for MP Audio Renderer
       {
@@ -1435,7 +1470,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       // so it's better to not report them in the log normally.          
       if ((m_frameRateRatio > 0) && !m_bScrubbing && !m_bDVDMenu)
       {
-        Log("Dropping frame, NST %.2f ms, AveRNST %.2f ms, last sleep %.2f ms, last pres %.2f ms, paint %.2f ms, queue count %d, SOP %d, EOP %d, RawFRRatio %d, dropped %d, drawn %d",
+        Log("Dropping frame, NST %.2f ms, AveRNST %.2f ms, last sleep %.2f ms, last pres %.2f ms, paint %.2f ms, queue count %d, SOP %d, EOP %d, RawFRRatio %d, dropped %d, drawn %d, late %d",
              (double)nextSampleTime/10000, 
              m_fCFPMean/10000.0,
              (double)lastSleepTime/10000, 
@@ -1446,10 +1481,16 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
              m_LastEndOfPaintScanline,
              m_rawFRRatio,
              m_iFramesDropped,
-             m_iFramesDrawn
+             m_iFramesDrawn,
+             m_iFramesHeld
              );
       }
-           
+      
+      if (m_iLateFrames > 0)
+      {
+        m_iLateFrames--;
+      }  
+               
       WaitForSingleObject(m_dummyEvent, 1); //Sleep for a short time to be friendly to other threads
     }
     
@@ -3080,6 +3121,8 @@ void MPEVRCustomPresenter::ResetFrameStats()
   m_iFramesDropped  = 0;
   m_iEarlyFrCnt     = 0;
   m_iFramesProcessed = 0;
+  m_iFramesHeld     = 0;
+  m_iLateFrames     = 0;
   
   m_nNextCFP = 0;
   m_fCFPMean = 0;
@@ -3106,6 +3149,7 @@ void MPEVRCustomPresenter::ResetFrameStats()
   m_lastPresentTime = 0;
   m_hnsNSToffset = 0;
   m_NSTinitDone = false;
+  m_NSToffsUpdate = false;
   
   m_nNextRFP = 0;
     
@@ -3517,6 +3561,11 @@ void MPEVRCustomPresenter::CalculateNSTStats(LONGLONG timeStamp, LONGLONG frameT
       m_hnsNSToffset = m_fCFPMean % frameTime;
     }
     m_NSTinitDone = true;
+    m_NSToffsUpdate = true;
+  }
+  else
+  {
+    m_NSToffsUpdate = false;
   }
       
 }
