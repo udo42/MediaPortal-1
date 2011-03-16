@@ -260,12 +260,15 @@ void MPEVRCustomPresenter::DwmInit(UINT buffers, UINT rfshPerFrame)
   Log("EVRCustomPresenter::DwmInit, frame = %d", m_iFramesDrawn);  
   //Initialise the DWM parameters
   DwmGetState();
+  
   DwmFlush();
   DwmSetParameters(TRUE, buffers, rfshPerFrame); //'Source rate' mode
   WaitForSingleObject(m_dummyEvent, 50); //Wait for 50ms
+  
   DwmFlush();
   DwmSetParameters(FALSE, buffers, rfshPerFrame); //'Display rate' mode
   WaitForSingleObject(m_dummyEvent, 50); //Wait for 50ms
+
   DwmEnableMMCSSOnOff(DWM_ENABLE_MMCSS);
   WaitForSingleObject(m_dummyEvent, 50); //Wait for 50ms
 }  
@@ -285,11 +288,13 @@ void MPEVRCustomPresenter::DwmReset()
     DwmGetState();
   }
   DwmEnableMMCSSOnOff(false);
+  
   DwmFlush();
-  DwmSetParameters(TRUE, 2, 1);
+  DwmSetParameters(TRUE, 2, 1); //'Source rate' mode
   WaitForSingleObject(m_dummyEvent, 50); //Wait for 50ms
+  
   DwmFlush();
-  DwmSetParameters(FALSE, 2, 1);
+  DwmSetParameters(FALSE, 2, 1); //'Display rate' mode
   WaitForSingleObject(m_dummyEvent, 50); //Wait for 50ms
 }  
 
@@ -1657,7 +1662,6 @@ void MPEVRCustomPresenter::DwmSetParameters(BOOL useSourceRate, UINT buffers, UI
     presentationParams.cBuffer = buffers;
     presentationParams.fUseSourceRate = useSourceRate;
     presentationParams.rateSource.uiNumerator = (UINT)(1000000000.0/GetDisplayCycle()); // Actual display rate
-    //presentationParams.rateSource.uiNumerator = (UINT)(999000000.0/GetDisplayCycle()); // Actual display rate * 0.999
     presentationParams.rateSource.uiDenominator = 1000000;
     presentationParams.cRefreshesPerFrame = rfshPerFrame;
     presentationParams.eSampling = DWM_SOURCE_FRAME_SAMPLING_POINT;
