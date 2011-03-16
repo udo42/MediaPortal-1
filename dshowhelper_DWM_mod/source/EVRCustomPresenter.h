@@ -418,10 +418,10 @@ protected:
   UINT   m_minVisScanLine;
   UINT   m_maxVisScanLine;
 
-  UINT   m_rasterLimitLow; 
-  UINT   m_rasterTargetPosn;
-  UINT   m_rasterLimitHigh;
-  UINT   m_rasterLimitNP;    
+  int    m_rasterLimitLow; 
+  int    m_rasterTargetPosn;
+  int    m_rasterLimitHigh;
+  int    m_rasterLimitNP;    
 
   LONGLONG m_hnsScanlineTime;
   

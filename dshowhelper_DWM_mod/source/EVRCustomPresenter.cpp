@@ -86,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.072 ----------- instance 0x%x", this);
+      Log("---------- v1.4.073 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.072 ----------- instance 0x%x", this);
+      Log("---------- v0.0.073 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -1222,7 +1222,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       m_iLateFrames = 0;
       *pTargetTime = 0;
       m_earliestPresentTime = 0;
-      return S_OK;
+      return hr;
     }
     else
     {
@@ -1232,9 +1232,19 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
 
   //Bail out after presenting first frame in skip-step FFWD/RWD mode
   if (m_bZeroScrub && (m_iFramesProcessed > 0))
-    return S_OK;
+    return hr;
 
-  while (CheckQueueCount() > 0)
+  if (CheckQueueCount() == 0) //there are no samples so we go idle
+  {
+    m_earliestPresentTime = 0;
+    m_iLateFrames = 0;
+    *pTargetTime = 0;
+    *pIdleWait = true;
+    return hr;
+  }
+
+  // At least one sample is available
+  do
   {        
     // don't process frame in paused mode during normal playback
     if (m_state == MP_RENDER_STATE_PAUSED && !m_bDVDMenu) 
@@ -1502,7 +1512,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     }
     
     *pIdleWait = true; //in case there are no samples and we need to go idle
-  } // end of while loop
+  } while (CheckQueueCount() > 0); // end of do-while loop
   
   return hr;
 }
@@ -2969,10 +2979,10 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
   }
   
   //Initialise vsync correction control values
-  m_rasterLimitLow   = (((m_maxVisScanLine - m_minVisScanLine) * 2)/16) + m_minVisScanLine; 
+  m_rasterLimitLow   = (int)((((m_maxVisScanLine - m_minVisScanLine) * 2)/16) + m_minVisScanLine); 
   m_rasterTargetPosn = m_rasterLimitLow;
-  m_rasterLimitHigh  = (((m_maxVisScanLine - m_minVisScanLine) * 10)/16) + m_minVisScanLine;
-  m_rasterLimitNP    = m_maxVisScanLine; 
+  m_rasterLimitHigh  = (int)((((m_maxVisScanLine - m_minVisScanLine) * 10)/16) + m_minVisScanLine);
+  m_rasterLimitNP    = (int)m_maxVisScanLine; 
   m_hnsScanlineTime  = (LONGLONG) (m_dDetectedScanlineTime * 10000.0);
   
   Log("Vsync correction : rasterLimitHigh: %d, rasterLimitLow: %d, rasterTargetPosn: %d", m_rasterLimitHigh, m_rasterLimitLow, m_rasterTargetPosn);
@@ -3488,42 +3498,38 @@ LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *offsetTime)
     // Calculate raster offset
     if (SUCCEEDED(m_pD3DDev->GetRasterStatus(0, &rasterStatus)))
     {
-      UINT currScanline = rasterStatus.ScanLine;
+      int currScanline = (int)rasterStatus.ScanLine;
       
-      if ( currScanline < m_rasterLimitLow )
+      if ( currScanline < 2 )
+      {
+        //currScanline value is reported as zero all through vertical blanking
+        //so limit delay to avoid overshooting the target position
+        targetDelay = MIN_VSC_DELAY ; //Limit to 1.2 ms
+        return targetDelay;
+      }
+      else if ( currScanline < m_rasterLimitLow )
       {
         targetDelay = (LONGLONG)(m_rasterTargetPosn - currScanline) * m_hnsScanlineTime ;       
       }
       else if ( currScanline > m_rasterLimitHigh )
       {
-        if (currScanline > m_maxScanLine) 
-        {
-          targetDelay = (LONGLONG)m_rasterTargetPosn * m_hnsScanlineTime ;  
-        }
-        else
-        {
-          targetDelay = (LONGLONG)(m_rasterTargetPosn + m_maxScanLine - currScanline) * m_hnsScanlineTime ;  
-        }      
+        targetDelay = MIN_VSC_DELAY ; //Limit to 1.2 ms ;  
       }   
       
-      if (targetDelay > (LONGLONG)(GetDisplayCycle() * (70000.0/8.0))) //sanity check the delay value
+      //sanity check the delay value
+      if (targetDelay < 0) 
       {
-        targetDelay = (LONGLONG)(GetDisplayCycle() * (70000.0/8.0));
+        targetDelay = MIN_VSC_DELAY;
+      }
+      else if (targetDelay > ((LONGLONG)m_rasterTargetPosn * m_hnsScanlineTime))
+      {
+        targetDelay = (LONGLONG)m_rasterTargetPosn * m_hnsScanlineTime;
       }
       
-      if ( (currScanline < m_rasterLimitNP) )
+      if ((currScanline < (int)m_maxScanLine) && (targetDelay < MIN_VSC_DELAY))
       {
-        *offsetTime = (LONGLONG)(m_rasterLimitNP - currScanline) * m_hnsScanlineTime ;
-      }
-      
-      //currScanline value is reported as zero all through vertical blanking
-      //so limit delay to avoid overshooting the target position
-      if ( currScanline < 2 )
-      {
-        targetDelay = MIN_VSC_DELAY ; //Limit to 1.2 ms
-        *offsetTime = 0 ;
-      }
-      
+        *offsetTime = (LONGLONG)((int)m_maxScanLine - currScanline) * m_hnsScanlineTime ;
+      }    
     }
     
     return targetDelay;
