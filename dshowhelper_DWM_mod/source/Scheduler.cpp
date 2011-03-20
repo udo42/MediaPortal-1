@@ -196,7 +196,7 @@ UINT CALLBACK WorkerThread(void* param)
       if(p->pPresenter->m_bScrubbing || p->pPresenter->m_bEmptyQueue)
         dwObject = WaitForMultipleObjects (2, hEvts, FALSE, 5);
       else
-        dwObject = WaitForMultipleObjects (2, hEvts, FALSE, 10);
+        dwObject = WaitForMultipleObjects (2, hEvts, FALSE, 50);
     }
 
     if (p->iPause > 0)
@@ -330,7 +330,7 @@ UINT CALLBACK SchedulerThread(void* param)
     {
       if (idleWait)
       {     
-        delay = 50000; // 5ms wait
+        delay = 500000; // 50ms wait
         timDel = (DWORD)(delay/10000);
         LOG_TRACE("Setting Scheduler Timer to %d ms idle time", timDel);
         dwObject = WaitForMultipleObjects (3, hEvts3, FALSE, timDel );

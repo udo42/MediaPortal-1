@@ -86,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.073 ----------- instance 0x%x", this);
+      Log("---------- v1.4.074 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.073 ----------- instance 0x%x", this);
+      Log("---------- v0.0.074 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -1079,7 +1079,7 @@ void MPEVRCustomPresenter::Flush(BOOL forced)
   
   if (m_pLastPresSample)
   {
-    ReturnSample(m_pLastPresSample, TRUE);
+    ReturnSample(m_pLastPresSample, FALSE);
     m_pLastPresSample = NULL;
   }
   
@@ -1117,7 +1117,7 @@ void MPEVRCustomPresenter::ReturnSample(IMFSample* pSample, BOOL tryNotify)
     CheckForEndOfStream();
   }
 
-  if (tryNotify && (m_iFreeSamples > 0) && (m_iFreeSamples < NUM_SURFACES) && m_bInputAvailable)
+  if (tryNotify && (m_iFreeSamples > 0) && (m_iFreeSamples < NUM_SURFACES))
   {
     NotifyWorker(FALSE);
   }
@@ -1227,6 +1227,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       m_iLateFrames = 0;
       *pTargetTime = 0;
       m_earliestPresentTime = 0;
+      *pIdleWait = true;
       return hr;
     }
     else
@@ -1239,28 +1240,47 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
   if (m_bZeroScrub && (m_iFramesProcessed > 0))
     return hr;
 
-  if (CheckQueueCount() == 0) //there are no samples so we go idle
-  {
-    m_earliestPresentTime = 0;
-    m_iLateFrames = 0;
-    *pTargetTime = 0;
-    *pIdleWait = true;
-    return hr;
-  }
 
-  // At least one sample is available
-  do
+  // Unless multiple samples/frames need to be dropped
+  // this loop is only traversed once each time
+  while (true)
   {        
-    // don't process frame in paused mode during normal playback
-    if (m_state == MP_RENDER_STATE_PAUSED && !m_bDVDMenu) 
+    if (
+        (CheckQueueCount() == 0) ||                         //there are no samples available so we go idle
+        (m_state == MP_RENDER_STATE_STOPPED) ||
+        (m_state == MP_RENDER_STATE_PAUSED && !m_bDVDMenu)  //don't process samples in paused mode during normal playback
+        )
     {
+      m_earliestPresentTime = 0;
       m_iLateFrames = 0;
       *pTargetTime = 0;
-      m_earliestPresentTime = 0;
+      *pIdleWait = true;
+      if (CheckQueueCount() == 0)
+      {
+        NotifyWorker(FALSE);
+      }     
+      hr = S_OK;
       break;
     }
 
     *pIdleWait = false;
+
+    // Check that we are not too early after the last 'present' time
+    if (!m_bZeroScrub)
+    {   
+      systemTime = GetCurrentTimestamp();
+      if ((m_earliestPresentTime - systemTime) > (displayTime/2) )
+      {
+        *pTargetTime = systemTime + (displayTime/4); //delay in smaller chunks
+        break;
+      }
+      else if ((m_earliestPresentTime - systemTime) >= MIN_VSC_DELAY )
+      {
+        *pTargetTime = systemTime + MIN_VSC_DELAY;
+        break;
+      }
+    }
+
 
     IMFSample* pSample = PeekSample();
     if (pSample == NULL)
@@ -1326,16 +1346,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       if (!m_bZeroScrub)
       {   
         systemTime = GetCurrentTimestamp();
-        if ((m_earliestPresentTime - systemTime) > (displayTime/2) )
-        {
-          *pTargetTime = systemTime + (displayTime/4); //delay in smaller chunks
-          break;
-        }
-        else if ((m_earliestPresentTime - systemTime) >= MIN_VSC_DELAY )
-        {
-          *pTargetTime = systemTime + MIN_VSC_DELAY;
-          break;
-        }
         
         // Apply display vsync correction.     
         LONGLONG offsetTime = 0;
@@ -1413,10 +1423,11 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       PopSample();
       if (m_pLastPresSample)
       {
-        ReturnSample(m_pLastPresSample, TRUE);
+        ReturnSample(m_pLastPresSample, FALSE);
         m_pLastPresSample = NULL;
       }
       m_pLastPresSample = pSample;
+      NotifyWorker(FALSE);
       m_iFramesProcessed++;
       
       if (m_iLateFrames > 0)
@@ -1468,14 +1479,15 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       
       if (m_pLastPresSample)
       {
-        ReturnSample(m_pLastPresSample, TRUE);
+        ReturnSample(m_pLastPresSample, FALSE);
         m_pLastPresSample = NULL;
       }
       if (!PopSample())
       {
         break;
       }
-      ReturnSample(pSample, TRUE);
+      ReturnSample(pSample, FALSE);
+      NotifyWorker(FALSE);
       
       // Notify EVR of late sample
       if( m_pEventSink )
@@ -1516,8 +1528,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       WaitForSingleObject(m_dummyEvent, 1); //Sleep for a short time to be friendly to other threads
     }
     
-    *pIdleWait = true; //in case there are no samples and we need to go idle
-  } while (CheckQueueCount() > 0); // end of do-while loop
+  } // end of while loop
   
   return hr;
 }
@@ -1894,7 +1905,7 @@ BOOL MPEVRCustomPresenter::PopSample()
 
 int MPEVRCustomPresenter::CheckQueueCount()
 {
-  CAutoLock lock(&m_lockScheduledSamples);
+  //CAutoLock lock(&m_lockScheduledSamples);
   return m_qScheduledSamples.Count();
 }
 
@@ -1938,7 +1949,7 @@ BOOL MPEVRCustomPresenter::ScheduleSample(IMFSample* pSample)
   if (onTimeSample) //Use samples if they are on-time
   {
     m_qScheduledSamples.Put(pSample);
-    if (m_qScheduledSamples.Count() >= 1)
+    if (m_qScheduledSamples.Count() <= 1 || m_bEmptyQueue)
     {
       NotifyScheduler(false);
     }
@@ -1975,8 +1986,9 @@ HRESULT MPEVRCustomPresenter::ProcessInputNotify(int* samplesProcessed, bool set
   HRESULT hr = S_OK;
   *samplesProcessed = 0;
   
-  if (!m_bFirstInputNotify)
+  if (!m_bFirstInputNotify || (m_state == MP_RENDER_STATE_STOPPED))
   {
+    m_bInputAvailable = FALSE;
     return S_OK;
   }
   
@@ -2008,13 +2020,14 @@ HRESULT MPEVRCustomPresenter::ProcessInputNotify(int* samplesProcessed, bool set
     hr = GetFreeSample(&sample);
     if (FAILED(hr))
     {
-      // double-checked locking, in case someone freed a sample between the above 2 steps and we would miss notification
-      hr = GetFreeSample(&sample);
-      if (FAILED(hr))
-      {
-        LOG_TRACE("Still more input available");
-        return S_OK;
-      }
+      return S_OK;
+      //      // double-checked locking, in case someone freed a sample between the above 2 steps and we would miss notification
+      //      hr = GetFreeSample(&sample);
+      //      if (FAILED(hr))
+      //      {
+      //        LOG_TRACE("Still more input available");
+      //        return S_OK;
+      //      }
     }
 
 
