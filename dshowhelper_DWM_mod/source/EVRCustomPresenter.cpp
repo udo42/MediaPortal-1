@@ -1057,7 +1057,9 @@ HRESULT MPEVRCustomPresenter::RenegotiateMediaOutputType()
 
 HRESULT MPEVRCustomPresenter::GetFreeSample(IMFSample** ppSample)
 {
-  TIME_LOCK(&m_lockSamples, 50000, "GetFreeSample");
+  CAutoLock sssLock(&m_lockLastPresSample);
+  CAutoLock sLock(&m_lockSamples);
+  //TIME_LOCK(&m_lockSamples, 50000, "GetFreeSample");
   LOG_TRACE("Trying to get free sample, size: %d", m_iFreeSamples);
   if (m_iFreeSamples == 0)
   {
@@ -1074,18 +1076,18 @@ HRESULT MPEVRCustomPresenter::GetFreeSample(IMFSample** ppSample)
 void MPEVRCustomPresenter::Flush(BOOL forced)
 {
   DwmFlush(); //Just in case...
+  CAutoLock sssLock(&m_lockLastPresSample);
   CAutoLock sLock(&m_lockSamples);
   CAutoLock ssLock(&m_lockScheduledSamples);
-  
-  if (m_pLastPresSample)
-  {
-    ReturnSample(m_pLastPresSample, FALSE);
-    m_pLastPresSample = NULL;
-  }
   
   if ((m_qScheduledSamples.Count() > 0 && !m_bDVDMenu) ||
      (m_qScheduledSamples.Count() > 0 && forced))
   {
+    if (m_pLastPresSample)
+    {
+      ReturnSample(m_pLastPresSample, FALSE);
+      m_pLastPresSample = NULL;
+    }
     Log("Flushing: size=%d", m_qScheduledSamples.Count());
     while (m_qScheduledSamples.Count() > 0)
     {
@@ -1108,7 +1110,9 @@ void MPEVRCustomPresenter::Flush(BOOL forced)
 
 void MPEVRCustomPresenter::ReturnSample(IMFSample* pSample, BOOL tryNotify)
 {
-  TIME_LOCK(&m_lockSamples, 50000, "ReturnSample")
+  CAutoLock sssLock(&m_lockLastPresSample);
+  CAutoLock sLock(&m_lockSamples);
+  //TIME_LOCK(&m_lockSamples, 50000, "ReturnSample")
   LOG_TRACE("Sample returned: now having %d samples", m_iFreeSamples+1);
   m_vFreeSamples[m_iFreeSamples++] = pSample;
   if (CheckQueueCount() == 0)
@@ -1322,13 +1326,14 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         m_iFramesHeld++;
         lateLimit = delErrLimit; // Allow this late frame
         m_earliestPresentTime = 0;
-        Log("Late frame, NST %.2f ms, AveRNST %.2f ms, last sleep %.2f ms, paint %.2f ms, last pres %.2f ms, late %d", 
+        Log("Late frame, NST %.2f ms, AveRNST %.2f ms, last sleep %.2f ms, paint %.2f ms, last pres %.2f ms, late %d, Q %d", 
             (double)nextSampleTime/10000, 
             m_fCFPMean/10000.0, 
             (double)lastSleepTime/10000, 
             (double)m_PaintTime/10000, 
             (double)((m_lastPresentTime - GetCurrentTimestamp())/10000), 
-            m_iFramesHeld);
+            m_iFramesHeld,
+            m_qScheduledSamples.Count());
       }
     }
     else

@@ -69,7 +69,7 @@ using namespace std;
 #define MMCSS_REG_TASK  L"Playback"
 
 //Bring DWM under Multimedia Class Scheduler Service (MMCSS) control if 'true'
-#define DWM_ENABLE_MMCSS true
+#define DWM_ENABLE_MMCSS false
 
 
 // magic numbers
@@ -297,6 +297,7 @@ protected:
   CComPtr<IMFSample>                samples[NUM_SURFACES];
   CCritSec                          m_lockSamples;
   CCritSec                          m_lockScheduledSamples;
+  CCritSec                          m_lockLastPresSample;
   CCritSec                          m_lockCallback;
   int                               m_iFreeSamples;
   IMFSample*                        m_vFreeSamples[NUM_SURFACES];
