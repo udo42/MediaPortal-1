@@ -32,6 +32,9 @@ using namespace std;
 //Enables DWM parameter changes if true
 #define ENABLE_DWM_SETUP true
 
+//Enables reset of DWM parameters if true
+#define ENABLE_DWM_RESET true
+
 #define NUM_SURFACES 4
 #define NB_JITTER 128
 #define NB_RFPSIZE 64
@@ -228,7 +231,7 @@ public:
   void           NotifyRateChange(double pRate);
   void           NotifyDVDMenuState(bool pIsInMenu);
 
-  void           DwmReset();
+  void           DwmReset(bool newWinHand);
   void           DwmInit(UINT buffers, UINT rfshPerFrame);
 
   bool           m_bScrubbing;

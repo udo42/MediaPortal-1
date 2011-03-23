@@ -86,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.074 ----------- instance 0x%x", this);
+      Log("---------- v1.4.075 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.074 ----------- instance 0x%x", this);
+      Log("---------- v0.0.075 (Full DWM) ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -247,6 +247,7 @@ MPEVRCustomPresenter::~MPEVRCustomPresenter()
   }
   delete m_pStatsRenderer;
   timeEndPeriod(1);
+  //DwmReset(true);
   Log("Done");
 }  
 
@@ -274,16 +275,17 @@ void MPEVRCustomPresenter::DwmInit(UINT buffers, UINT rfshPerFrame)
 }  
 
 
-void MPEVRCustomPresenter::DwmReset()
+void MPEVRCustomPresenter::DwmReset(bool newWinHand)
 {
-  if (!ENABLE_DWM_SETUP) 
+  if (!ENABLE_DWM_SETUP || !ENABLE_DWM_RESET || !m_bDWMinit) 
   {
     return;
   }
+  m_bDWMinit = false;
 
   Log("EVRCustomPresenter::DwmReset");  
   //Reset the DWM parameters
-  if (!m_hDwmWinHandle)
+  if (!m_hDwmWinHandle || newWinHand)
   {
     DwmGetState();
   }
@@ -1677,8 +1679,8 @@ void MPEVRCustomPresenter::DwmSetParameters(BOOL useSourceRate, UINT buffers, UI
     presentationParams.cRefreshStart = 0;
     presentationParams.cBuffer = buffers;
     presentationParams.fUseSourceRate = useSourceRate;
-    presentationParams.rateSource.uiNumerator = (UINT)(1000000000.0/GetDisplayCycle()); // Actual display rate
-    presentationParams.rateSource.uiDenominator = 1000000;
+    presentationParams.rateSource.uiNumerator = (UINT)(250000000.0/GetDisplayCycle()); // Actual display rate
+    presentationParams.rateSource.uiDenominator = 100000;
     presentationParams.cRefreshesPerFrame = rfshPerFrame;
     presentationParams.eSampling = DWM_SOURCE_FRAME_SAMPLING_POINT;
     
@@ -1981,6 +1983,7 @@ BOOL MPEVRCustomPresenter::CheckForEndOfStream()
     m_pEventSink->Notify(EC_COMPLETE, (LONG_PTR)S_OK, 0);
   }
   m_bEndStreaming = FALSE;
+  DwmReset(false);
   return TRUE;
 }
 
@@ -2180,6 +2183,7 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
 
     case MFVP_MESSAGE_ENDSTREAMING:
       // The EVR switched from running or paused to stopped. The presenter should free resources.
+      DwmReset(false);
       Log("ProcessMessage MFVP_MESSAGE_ENDSTREAMING");
       m_state = MP_RENDER_STATE_STOPPED;
     break;
