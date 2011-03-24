@@ -90,7 +90,7 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     }
     else
     {
-      Log("---------- v0.0.075 (Full DWM) ----------- instance 0x%x", this);
+      Log("---------- v0.0.075 (No Reset DWM) ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;

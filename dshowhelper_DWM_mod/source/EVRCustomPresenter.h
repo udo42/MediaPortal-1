@@ -33,7 +33,7 @@ using namespace std;
 #define ENABLE_DWM_SETUP true
 
 //Enables reset of DWM parameters if true
-#define ENABLE_DWM_RESET true
+#define ENABLE_DWM_RESET false
 
 #define NUM_SURFACES 4
 #define NB_JITTER 128
