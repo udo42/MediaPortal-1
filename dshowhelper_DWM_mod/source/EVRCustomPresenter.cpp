@@ -1983,7 +1983,7 @@ BOOL MPEVRCustomPresenter::CheckForEndOfStream()
     m_pEventSink->Notify(EC_COMPLETE, (LONG_PTR)S_OK, 0);
   }
   m_bEndStreaming = FALSE;
-  DwmReset(false);
+  //DwmReset(false);
   return TRUE;
 }
 
@@ -2163,13 +2163,22 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
     case MFVP_MESSAGE_BEGINSTREAMING:
       // The EVR switched from stopped to paused. The presenter should allocate resources.
       Log("ProcessMessage MFVP_MESSAGE_BEGINSTREAMING");
-      GetFilterNames();
+      PauseThread(m_hTimer, &m_timerParams);
+      PauseThread(m_hWorker, &m_workerParams);
+      PauseThread(m_hScheduler, &m_schedulerParams);
+      if (!m_bSchedulerRunning)
+      {
+        GetFilterNames();
+      }
       //Setup the Desktop Window Manager (DWM)
       if (!m_bDWMinit)
       {
         DwmInit(NUM_DWM_BUFFERS, NUM_DWM_FRAMES);
         m_bDWMinit = true;
       }
+      WakeThread(m_hScheduler, &m_schedulerParams);
+      WakeThread(m_hWorker, &m_workerParams);
+      WakeThread(m_hTimer, &m_timerParams);
       m_bEndStreaming = FALSE;
       m_bInputAvailable = FALSE;
       m_bFirstInputNotify = FALSE;
@@ -2183,9 +2192,18 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
 
     case MFVP_MESSAGE_ENDSTREAMING:
       // The EVR switched from running or paused to stopped. The presenter should free resources.
-      DwmReset(false);
       Log("ProcessMessage MFVP_MESSAGE_ENDSTREAMING");
+      PauseThread(m_hTimer, &m_timerParams);
+      PauseThread(m_hWorker, &m_workerParams);
+      PauseThread(m_hScheduler, &m_schedulerParams);
       m_state = MP_RENDER_STATE_STOPPED;
+      if (!m_bScrubbing)
+      {
+        DwmReset(false);
+      }
+      WakeThread(m_hScheduler, &m_schedulerParams);
+      WakeThread(m_hWorker, &m_workerParams);
+      WakeThread(m_hTimer, &m_timerParams);
     break;
 
     case MFVP_MESSAGE_ENDOFSTREAM:
@@ -2226,14 +2244,17 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
 HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::OnClockStart(MFTIME hnsSystemTime, LONGLONG llClockStartOffset)
 {
   Log("OnClockStart");
-  m_state = MP_RENDER_STATE_STARTED;
+  PauseThread(m_hTimer, &m_timerParams);
   PauseThread(m_hWorker, &m_workerParams);
   PauseThread(m_hScheduler, &m_schedulerParams);
+  m_state = MP_RENDER_STATE_STARTED;
   ResetTraceStats();
   ResetFrameStats();
   Flush(FALSE);
   WakeThread(m_hScheduler, &m_schedulerParams);
   WakeThread(m_hWorker, &m_workerParams);
+  WakeThread(m_hTimer, &m_timerParams);
+  
   NotifyWorker(true);
   NotifyScheduler(true);
 
@@ -2246,12 +2267,14 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::OnClockStart(MFTIME hnsSystemTim
 HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::OnClockStop(MFTIME hnsSystemTime)
 {
   Log("OnClockStop");
-  m_state = MP_RENDER_STATE_STOPPED;
+  PauseThread(m_hTimer, &m_timerParams);
   PauseThread(m_hWorker, &m_workerParams);
   PauseThread(m_hScheduler, &m_schedulerParams);
+  m_state = MP_RENDER_STATE_STOPPED;
   Flush(FALSE);
   WakeThread(m_hScheduler, &m_schedulerParams);
   WakeThread(m_hWorker, &m_workerParams);
+  WakeThread(m_hTimer, &m_timerParams);
   return S_OK;
 }
 
@@ -2259,7 +2282,13 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::OnClockStop(MFTIME hnsSystemTime
 HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::OnClockPause(MFTIME hnsSystemTime)
 {
   Log("OnClockPause");
+  PauseThread(m_hTimer, &m_timerParams);
+  PauseThread(m_hWorker, &m_workerParams);
+  PauseThread(m_hScheduler, &m_schedulerParams);
   m_state = MP_RENDER_STATE_PAUSED;
+  WakeThread(m_hScheduler, &m_schedulerParams);
+  WakeThread(m_hWorker, &m_workerParams);
+  WakeThread(m_hTimer, &m_timerParams);
   return S_OK;
 }
 
@@ -2267,14 +2296,18 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::OnClockPause(MFTIME hnsSystemTim
 HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::OnClockRestart(MFTIME hnsSystemTime)
 {
   Log("OnClockRestart");
-  m_state = MP_RENDER_STATE_STARTED;
+  PauseThread(m_hTimer, &m_timerParams);
   PauseThread(m_hWorker, &m_workerParams);
   PauseThread(m_hScheduler, &m_schedulerParams);
+  m_state = MP_RENDER_STATE_STARTED;
   ResetFrameStats();
   WakeThread(m_hScheduler, &m_schedulerParams);
   WakeThread(m_hWorker, &m_workerParams);
+  WakeThread(m_hTimer, &m_timerParams);
+  
   NotifyWorker(true);
   NotifyScheduler(true);
+  
   GetAVSyncClockInterface();
   SetupAudioRenderer();
 
