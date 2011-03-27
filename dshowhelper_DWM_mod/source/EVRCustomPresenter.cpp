@@ -86,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.075 ----------- instance 0x%x", this);
+      Log("---------- v1.4.076 ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.075 (No Reset DWM) ----------- instance 0x%x", this);
+      Log("---------- v0.0.076 ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -243,7 +243,7 @@ MPEVRCustomPresenter::~MPEVRCustomPresenter()
   m_pDeviceManager =  NULL;
   for (int i=0; i < NUM_SURFACES; i++)
   {
-    m_vFreeSamples[i] = 0;
+    m_vFreeSamples[i] = NULL;
   }
   delete m_pStatsRenderer;
   timeEndPeriod(1);
@@ -253,7 +253,7 @@ MPEVRCustomPresenter::~MPEVRCustomPresenter()
 
 void MPEVRCustomPresenter::DwmInit(UINT buffers, UINT rfshPerFrame)
 {
-  if (!ENABLE_DWM_SETUP) 
+  if (!ENABLE_DWM_SETUP || m_bDWMinit || (m_dEstRefreshCycle > 25.0))  //skip if display refresh rate is below 40Hz
   {
     return;
   }
@@ -272,6 +272,8 @@ void MPEVRCustomPresenter::DwmInit(UINT buffers, UINT rfshPerFrame)
 
   DwmEnableMMCSSOnOff(DWM_ENABLE_MMCSS);
   WaitForSingleObject(m_dummyEvent, 50); //Wait for 50ms
+  
+  m_bDWMinit = true;
 }  
 
 
@@ -281,7 +283,6 @@ void MPEVRCustomPresenter::DwmReset(bool newWinHand)
   {
     return;
   }
-  m_bDWMinit = false;
 
   Log("EVRCustomPresenter::DwmReset");  
   //Reset the DWM parameters
@@ -298,6 +299,8 @@ void MPEVRCustomPresenter::DwmReset(bool newWinHand)
   DwmFlush();
   DwmSetParameters(FALSE, 2, 1); //'Display rate' mode
   WaitForSingleObject(m_dummyEvent, 50); //Wait for 50ms
+  
+  m_bDWMinit = false;
 }  
 
 
@@ -742,10 +745,10 @@ HRESULT MPEVRCustomPresenter::SetMediaType(CComPtr<IMFMediaType> pType, BOOL* pb
 void MPEVRCustomPresenter::ReAllocSurfaces()
 {
   Log("ReallocSurfaces");
-  //make sure all threads are paused
-  CAutoLock tLock(&m_timerParams.csLock);
-  CAutoLock wLock(&m_workerParams.csLock);
-  CAutoLock sLock(&m_schedulerParams.csLock);
+  //All threads must be paused by the caller
+  //  CAutoLock tLock(&m_timerParams.csLock);
+  //  CAutoLock wLock(&m_workerParams.csLock);
+  //  CAutoLock sLock(&m_schedulerParams.csLock);
   ReleaseSurfaces();
 
   // set the presentation parameters
@@ -788,6 +791,7 @@ void MPEVRCustomPresenter::ReAllocSurfaces()
     }
     Log("Adding sample: 0x%x", samples[i]);
     m_vFreeSamples[i] = samples[i];
+    m_vAllSamples[i] = samples[i];
   }
   m_iFreeSamples = NUM_SURFACES;
   m_pLastPresSample = NULL;
@@ -962,9 +966,9 @@ HRESULT MPEVRCustomPresenter::LogOutputTypes()
 
 HRESULT MPEVRCustomPresenter::RenegotiateMediaOutputType()
 {
-  CAutoLock tLock(&m_timerParams.csLock);
-  CAutoLock wLock(&m_workerParams.csLock);
-  CAutoLock sLock(&m_schedulerParams.csLock);
+  //  CAutoLock tLock(&m_timerParams.csLock);
+  //  CAutoLock wLock(&m_workerParams.csLock);
+  //  CAutoLock sLock(&m_schedulerParams.csLock);
   m_bFirstInputNotify = FALSE;
   Log("RenegotiateMediaOutputType");
   HRESULT hr = S_OK;
@@ -1059,11 +1063,10 @@ HRESULT MPEVRCustomPresenter::RenegotiateMediaOutputType()
 
 HRESULT MPEVRCustomPresenter::GetFreeSample(IMFSample** ppSample)
 {
-  CAutoLock sssLock(&m_lockLastPresSample);
   CAutoLock sLock(&m_lockSamples);
   //TIME_LOCK(&m_lockSamples, 50000, "GetFreeSample");
   LOG_TRACE("Trying to get free sample, size: %d", m_iFreeSamples);
-  if (m_iFreeSamples == 0)
+  if (m_iFreeSamples == 0 || m_qScheduledSamples.IsFull())
   {
     return E_FAIL;
   }
@@ -1075,31 +1078,51 @@ HRESULT MPEVRCustomPresenter::GetFreeSample(IMFSample** ppSample)
 }
 
 
+//void MPEVRCustomPresenter::Flush(BOOL forced)
+//{
+//  DwmFlush(); //Just in case...
+//  CAutoLock sLock(&m_lockSamples);
+//  
+//  if ((!m_qScheduledSamples.IsEmpty() && !m_bDVDMenu) ||
+//     (!m_qScheduledSamples.IsEmpty() && forced))
+//  {
+//    UpdateLastPresSample(NULL);
+//    Log("Flushing: size=%d", m_qScheduledSamples.Count());
+//    while (!m_qScheduledSamples.IsEmpty())
+//    {
+//      IMFSample* pSample = PeekSample();
+//      if (pSample != NULL)
+//      {
+//        PopSample();
+//        ReturnSample(pSample, FALSE);
+//      }
+//    }
+//  }
+//  else
+//  {
+//    Log("Not flushing: size=%d", m_qScheduledSamples.Count());
+//  }
+//  
+//  m_bFlush = FALSE;
+//}
+
+
 void MPEVRCustomPresenter::Flush(BOOL forced)
 {
-  DwmFlush(); //Just in case...
-  CAutoLock sssLock(&m_lockLastPresSample);
   CAutoLock sLock(&m_lockSamples);
-  CAutoLock ssLock(&m_lockScheduledSamples);
+  DwmFlush(); //Just in case...
   
-  if ((m_qScheduledSamples.Count() > 0 && !m_bDVDMenu) ||
-     (m_qScheduledSamples.Count() > 0 && forced))
+  if (!m_bDVDMenu || forced)
   {
-    if (m_pLastPresSample)
-    {
-      ReturnSample(m_pLastPresSample, FALSE);
-      m_pLastPresSample = NULL;
-    }
     Log("Flushing: size=%d", m_qScheduledSamples.Count());
-    while (m_qScheduledSamples.Count() > 0)
+
+    for (int i = 0; i < NUM_SURFACES; i++)
     {
-      IMFSample* pSample = PeekSample();
-      if (pSample != NULL)
-      {
-        PopSample();
-        ReturnSample(pSample, FALSE);
-      }
+      m_vFreeSamples[i] = m_vAllSamples[i];
     }
+    m_iFreeSamples = NUM_SURFACES;
+    m_pLastPresSample = NULL;
+    m_qScheduledSamples.Clear();
   }
   else
   {
@@ -1110,22 +1133,39 @@ void MPEVRCustomPresenter::Flush(BOOL forced)
 }
 
 
+
 void MPEVRCustomPresenter::ReturnSample(IMFSample* pSample, BOOL tryNotify)
 {
-  CAutoLock sssLock(&m_lockLastPresSample);
   CAutoLock sLock(&m_lockSamples);
   //TIME_LOCK(&m_lockSamples, 50000, "ReturnSample")
   LOG_TRACE("Sample returned: now having %d samples", m_iFreeSamples+1);
-  m_vFreeSamples[m_iFreeSamples++] = pSample;
+  m_vFreeSamples[m_iFreeSamples] = pSample;
+  m_iFreeSamples++;
   if (CheckQueueCount() == 0)
   {
     LOG_TRACE("No scheduled samples, queue was empty -> todo, CheckForEndOfStream()");
     CheckForEndOfStream();
   }
 
-  if (tryNotify && (m_iFreeSamples > 0) && (m_iFreeSamples < NUM_SURFACES))
+  if (tryNotify && (m_iFreeSamples > 0) && !m_qScheduledSamples.IsFull())
   {
     NotifyWorker(FALSE);
+  }
+}
+
+void MPEVRCustomPresenter::UpdateLastPresSample(IMFSample* pSample)
+{
+  CAutoLock sLock(&m_lockSamples);
+  
+  if (m_pLastPresSample != NULL)
+  {
+    ReturnSample(m_pLastPresSample, FALSE);
+    m_pLastPresSample = NULL;
+  }
+  
+  if (m_pLastPresSample == NULL)
+  {
+    m_pLastPresSample = pSample;
   }
 }
 
@@ -1414,7 +1454,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       
       *pTargetTime = 0;
 
-      if (!PeekSample())
+      if (PeekSample() != pSample)
       {
         m_earliestPresentTime = 0;
         break;
@@ -1428,12 +1468,9 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         DwmFlush();
       }     
       PopSample();
-      if (m_pLastPresSample)
-      {
-        ReturnSample(m_pLastPresSample, FALSE);
-        m_pLastPresSample = NULL;
-      }
-      m_pLastPresSample = pSample;
+      
+      UpdateLastPresSample(pSample);
+      
       NotifyWorker(FALSE);
       m_iFramesProcessed++;
       
@@ -1484,11 +1521,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     {         
       m_earliestPresentTime = 0;
       
-      if (m_pLastPresSample)
-      {
-        ReturnSample(m_pLastPresSample, FALSE);
-        m_pLastPresSample = NULL;
-      }
+      UpdateLastPresSample(NULL);
       if (!PopSample())
       {
         break;
@@ -1776,28 +1809,28 @@ void MPEVRCustomPresenter::PauseThread(HANDLE hThread, SchedulerParams* params)
   {
     return;
   }
-  Log("Pausing thread 0x%x, 0x%x, %d", hThread, params, params->iPause);
+  LOG_THR_PAUSE("Pausing thread 0x%x, 0x%x, %d", hThread, params, params->iPause);
 
   InterlockedIncrement(&params->iPause);
   
   int i = 0;
-  for (i = 0; i < 50; i++)
+  for (i = 0; i < 1000; i++)
   {
     params->eHasWork.Set(); //Wake thread (in case it's sleeping)
-    WaitForSingleObject(m_dummyEvent, 1); //Sleep for 1 ms to be friendly to other threads
+    Sleep(1); //Sleep for 1 ms to be friendly to other threads
     if (params->bPauseAck)
     {
       break;
     }
   }
   
-  if (i >= 50)
+  if (i >= 1000)
   {
     Log("Thread pause timeout 0x%x, 0x%x, %d", hThread, params, params->iPause);
   }
   else
   {
-    Log("Thread paused, 0x%x, 0x%x, %d", hThread, params, params->iPause);
+    LOG_THR_PAUSE("Thread paused, 0x%x, 0x%x, %d", hThread, params, params->iPause);
   }
 
 }
@@ -1813,7 +1846,7 @@ void MPEVRCustomPresenter::WakeThread(HANDLE hThread, SchedulerParams* params)
 
   params->eHasWork.Set();
 
-  Log("Waking thread 0x%x, 0x%x, %d", hThread, params, params->iPause);  
+  LOG_THR_PAUSE("Waking thread 0x%x, 0x%x, %d", hThread, params, params->iPause);  
 }
 
 
@@ -1898,9 +1931,9 @@ void MPEVRCustomPresenter::NotifyTimer(LONGLONG targetTime)
 
 BOOL MPEVRCustomPresenter::PopSample()
 {
-  CAutoLock lock(&m_lockScheduledSamples);
+  CAutoLock lock(&m_lockSamples);
   LOG_TRACE("Removing scheduled sample, size: %d", m_qScheduledSamples.Count());
-  if (m_qScheduledSamples.Count() > 0)
+  if (!m_qScheduledSamples.IsEmpty())
   {
     m_qScheduledSamples.Get();
     m_qGoodPopCnt++;
@@ -1912,15 +1945,15 @@ BOOL MPEVRCustomPresenter::PopSample()
 
 int MPEVRCustomPresenter::CheckQueueCount()
 {
-  //CAutoLock lock(&m_lockScheduledSamples);
+  CAutoLock lock(&m_lockSamples);
   return m_qScheduledSamples.Count();
 }
 
 
 IMFSample* MPEVRCustomPresenter::PeekSample()
 {
-  CAutoLock lock(&m_lockScheduledSamples);
-  if (m_qScheduledSamples.Count() == 0)
+  CAutoLock lock(&m_lockSamples);
+  if (m_qScheduledSamples.IsEmpty())
   {
     Log("ERR: PeekSample: empty queue!");
     return NULL;
@@ -1931,7 +1964,7 @@ IMFSample* MPEVRCustomPresenter::PeekSample()
 
 BOOL MPEVRCustomPresenter::ScheduleSample(IMFSample* pSample)
 {
-  CAutoLock lock(&m_lockScheduledSamples);
+  CAutoLock lock(&m_lockSamples);
   LOG_TRACE("Scheduling Sample, size: %d", m_qScheduledSamples.Count());
 
   BOOL onTimeSample = true;
@@ -1983,7 +2016,6 @@ BOOL MPEVRCustomPresenter::CheckForEndOfStream()
     m_pEventSink->Notify(EC_COMPLETE, (LONG_PTR)S_OK, 0);
   }
   m_bEndStreaming = FALSE;
-  //DwmReset(false);
   return TRUE;
 }
 
@@ -2024,13 +2056,13 @@ HRESULT MPEVRCustomPresenter::ProcessInputNotify(int* samplesProcessed, bool set
   // try to process as many samples as possible:
   BOOL bhasMoreSamples = true;
   do {
-    IMFSample* sample;
-    hr = GetFreeSample(&sample);
+    IMFSample* pSample;
+    hr = GetFreeSample(&pSample);
     if (FAILED(hr))
     {
       return S_OK;
       //      // double-checked locking, in case someone freed a sample between the above 2 steps and we would miss notification
-      //      hr = GetFreeSample(&sample);
+      //      hr = GetFreeSample(&pSample);
       //      if (FAILED(hr))
       //      {
       //        LOG_TRACE("Still more input available");
@@ -2052,7 +2084,7 @@ HRESULT MPEVRCustomPresenter::ProcessInputNotify(int* samplesProcessed, bool set
     MFT_OUTPUT_DATA_BUFFER outputSamples[1];
     outputSamples[0].dwStreamID = 0;
     outputSamples[0].dwStatus = 0;
-    outputSamples[0].pSample = sample;
+    outputSamples[0].pSample = pSample;
     outputSamples[0].pEvents = NULL;
     hr = m_pMixer->ProcessOutput(0, 1, outputSamples, &dwStatus);
     SAFE_RELEASE(outputSamples[0].pEvents);
@@ -2060,7 +2092,7 @@ HRESULT MPEVRCustomPresenter::ProcessInputNotify(int* samplesProcessed, bool set
     {
       LONGLONG sampleTime;
       LONGLONG timeAfterMixer;
-      sample->GetSampleTime(&sampleTime);
+      pSample->GetSampleTime(&sampleTime);
 
       *samplesProcessed++;
 
@@ -2073,18 +2105,18 @@ HRESULT MPEVRCustomPresenter::ProcessInputNotify(int* samplesProcessed, bool set
         m_pEventSink->Notify(EC_PROCESSING_LATENCY, (LONG_PTR)&mixerLatency, 0);
         LOG_TRACE("Mixer Latency: %I64d", mixerLatency);
       }
-      if (ScheduleSample(sample))
+      if (ScheduleSample(pSample))
       {
         m_qGoodPutCnt++;
       }
       else //sample has been dropped
       {
-        ReturnSample(sample, FALSE);
+        ReturnSample(pSample, FALSE);
       }
     }
     else 
     {
-      ReturnSample(sample, FALSE);
+      ReturnSample(pSample, FALSE);
       m_qBadPutCnt++;
       switch (hr)
       {
@@ -2104,10 +2136,12 @@ HRESULT MPEVRCustomPresenter::ProcessInputNotify(int* samplesProcessed, bool set
         // no errors, just infos why it didn't succeed
         Log("ProcessOutput: change of type");
         bhasMoreSamples = FALSE;
+        PauseThread(m_hTimer, &m_timerParams);
         PauseThread(m_hScheduler, &m_schedulerParams);
         //LogOutputTypes();
         hr = RenegotiateMediaOutputType();
         WakeThread(m_hScheduler, &m_schedulerParams);
+        WakeThread(m_hTimer, &m_timerParams);
       break;
 
       default:
@@ -2144,12 +2178,14 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
     case MFVP_MESSAGE_INVALIDATEMEDIATYPE:
       // The mixer's output format has changed. The EVR will initiate format negotiation.
       Log("ProcessMessage MFVP_MESSAGE_INVALIDATEMEDIATYPE");
+      PauseThread(m_hTimer, &m_timerParams);
       PauseThread(m_hWorker, &m_workerParams);
       PauseThread(m_hScheduler, &m_schedulerParams);
       //LogOutputTypes();
       hr = RenegotiateMediaOutputType();
       WakeThread(m_hScheduler, &m_schedulerParams);
       WakeThread(m_hWorker, &m_workerParams);
+      WakeThread(m_hTimer, &m_timerParams);
     break;
 
     case MFVP_MESSAGE_PROCESSINPUTNOTIFY:
@@ -2166,27 +2202,25 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
       PauseThread(m_hTimer, &m_timerParams);
       PauseThread(m_hWorker, &m_workerParams);
       PauseThread(m_hScheduler, &m_schedulerParams);
+      
       if (!m_bSchedulerRunning)
       {
         GetFilterNames();
       }
       //Setup the Desktop Window Manager (DWM)
-      if (!m_bDWMinit)
-      {
-        DwmInit(NUM_DWM_BUFFERS, NUM_DWM_FRAMES);
-        m_bDWMinit = true;
-      }
-      WakeThread(m_hScheduler, &m_schedulerParams);
-      WakeThread(m_hWorker, &m_workerParams);
-      WakeThread(m_hTimer, &m_timerParams);
+      DwmInit(NUM_DWM_BUFFERS, NUM_DWM_FRAMES);
       m_bEndStreaming = FALSE;
       m_bInputAvailable = FALSE;
       m_bFirstInputNotify = FALSE;
       m_state = MP_RENDER_STATE_STARTED; 
-      StartWorkers();      
-      // TODO add 2nd monitor support
       ResetTraceStats();
       ResetFrameStats();
+        
+      WakeThread(m_hScheduler, &m_schedulerParams);
+      WakeThread(m_hWorker, &m_workerParams);
+      WakeThread(m_hTimer, &m_timerParams);
+      StartWorkers();      
+      // TODO add 2nd monitor support
       
     break;
 
@@ -2197,10 +2231,6 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
       PauseThread(m_hWorker, &m_workerParams);
       PauseThread(m_hScheduler, &m_schedulerParams);
       m_state = MP_RENDER_STATE_STOPPED;
-      if (!m_bScrubbing)
-      {
-        DwmReset(false);
-      }
       WakeThread(m_hScheduler, &m_schedulerParams);
       WakeThread(m_hWorker, &m_workerParams);
       WakeThread(m_hTimer, &m_timerParams);

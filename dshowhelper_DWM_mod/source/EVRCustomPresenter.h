@@ -33,7 +33,7 @@ using namespace std;
 #define ENABLE_DWM_SETUP true
 
 //Enables reset of DWM parameters if true
-#define ENABLE_DWM_RESET false
+#define ENABLE_DWM_RESET true
 
 #define NUM_SURFACES 4
 #define NB_JITTER 128
@@ -86,6 +86,9 @@ using namespace std;
 
 // Change to 'true' to enable extra logging of processing latencies
 #define LOG_DELAYS false
+
+// uncomment the //Log to enable extra logging of thread pause/wake
+#define LOG_THR_PAUSE //Log
 
 // Macro for locking 
 #define TIME_LOCK(obj, crit, name)  \
@@ -276,6 +279,7 @@ protected:
   HRESULT        TrackSample(IMFSample *pSample);
   HRESULT        GetFreeSample(IMFSample** ppSample);
   void           ReturnSample(IMFSample* pSample, BOOL tryNotify);
+  void           UpdateLastPresSample(IMFSample* pSample);
   HRESULT        PresentSample(IMFSample* pSample, LONGLONG frameTime);
   void           CorrectSampleTime(IMFSample* pSample);
   void           GetRealRefreshRate();
@@ -299,11 +303,11 @@ protected:
   CComPtr<IDirect3DSurface9>        surfaces[NUM_SURFACES];
   CComPtr<IMFSample>                samples[NUM_SURFACES];
   CCritSec                          m_lockSamples;
-  CCritSec                          m_lockScheduledSamples;
-  CCritSec                          m_lockLastPresSample;
+//  CCritSec                          m_lockScheduledSamples;
   CCritSec                          m_lockCallback;
   int                               m_iFreeSamples;
   IMFSample*                        m_vFreeSamples[NUM_SURFACES];
+  IMFSample*                        m_vAllSamples[NUM_SURFACES];
   CMyQueue<IMFSample*>              m_qScheduledSamples;
   IMFSample*                        m_pLastPresSample;
   SchedulerParams                   m_schedulerParams;

@@ -686,7 +686,7 @@ void EvrDeinit()
     }
     if (m_evrPresenter!=NULL)
     {
-      m_evrPresenter->DwmReset(false); //This is 'just in case' - DwmReset() should already have been called at end-of-stream
+      m_evrPresenter->DwmReset(false);
       m_evrPresenter->ReleaseCallback();
       refCount = m_evrPresenter->Release();
       m_evrPresenter = NULL;

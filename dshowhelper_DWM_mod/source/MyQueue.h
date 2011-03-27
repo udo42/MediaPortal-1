@@ -48,18 +48,18 @@ public:
 
 	bool IsFull() 
 	{
-		return m_count == m_size;
+		return m_count >= m_size;
 	}
 
 	bool IsEmpty()
 	{
-		return m_count == 0;
+		return m_count <= 0;
 	}
 
 	bool Put(T elem)
 	{
 		CAutoLock lock(this);
-		if ( m_count == m_size ) {
+		if ( m_count >= m_size ) {
 			Log("MyQueue: No more space");
 			return false;
 		}
@@ -72,7 +72,7 @@ public:
 	T Get()
 	{
 		CAutoLock lock(this);
-		if ( m_count == 0 ) return NULL;
+		if ( m_count <= 0 ) return NULL;
 		m_count--;
 		T ret;
 		ret = m_elements[m_pos];
@@ -83,7 +83,7 @@ public:
 	T Peek()
 	{
 		CAutoLock lock(this);
-		if ( m_count == 0 ) return NULL;
+		if ( m_count <= 0 ) return NULL;
 		T ret;
 		ret = m_elements[m_pos];
 		return ret;
