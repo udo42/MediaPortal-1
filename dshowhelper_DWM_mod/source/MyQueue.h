@@ -1,4 +1,4 @@
-// Copyright (C) 2005-2010 Team MediaPortal
+// Copyright (C) 2005-2011 Team MediaPortal
 // http://www.team-mediaportal.com
 // 
 // MediaPortal is free software: you can redistribute it and/or modify
@@ -58,9 +58,13 @@ public:
 
 	bool Put(T elem)
 	{
-		CAutoLock lock(this);
+		//CAutoLock lock(this);
 		if ( m_count >= m_size ) {
 			Log("MyQueue: No more space");
+			if (m_count > m_size) 
+			{
+			  Log("MyQueue: Error!!, m_count > m_size");
+		  }
 			return false;
 		}
 		m_count++;
@@ -71,8 +75,15 @@ public:
 
 	T Get()
 	{
-		CAutoLock lock(this);
-		if ( m_count <= 0 ) return NULL;
+		//CAutoLock lock(this);
+		if ( m_count <= 0 ) {
+			Log("MyQueue: Queue empty");
+			if (m_count < 0) 
+			{
+			  Log("MyQueue: Error!!, m_count < 0");
+		  }
+			return NULL;
+		}
 		m_count--;
 		T ret;
 		ret = m_elements[m_pos];
@@ -82,7 +93,7 @@ public:
 
 	T Peek()
 	{
-		CAutoLock lock(this);
+		//CAutoLock lock(this);
 		if ( m_count <= 0 ) return NULL;
 		T ret;
 		ret = m_elements[m_pos];

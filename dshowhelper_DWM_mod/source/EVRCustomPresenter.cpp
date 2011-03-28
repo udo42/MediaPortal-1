@@ -166,6 +166,8 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     m_maxVisScanLine              = 0;
     
     m_numFilters = 0;
+    ResetTraceStats();
+    ResetFrameStats();
     
     m_pD3DDev->GetDisplayMode(0, &m_displayMode);
 
@@ -413,7 +415,7 @@ ULONG MPEVRCustomPresenter::Release()
   }
   else
   {
-    Log("MPEVRCustomPresenter::Release(), m_refCount: 0x%x", m_refCount);
+    //Log("MPEVRCustomPresenter::Release(), m_refCount: 0x%x", m_refCount);
   }
   return ret;
 }
@@ -2203,6 +2205,8 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
       PauseThread(m_hWorker, &m_workerParams);
       PauseThread(m_hScheduler, &m_schedulerParams);
       
+      ResetTraceStats();
+      ResetFrameStats();
       if (!m_bSchedulerRunning)
       {
         GetFilterNames();
@@ -2213,8 +2217,6 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
       m_bInputAvailable = FALSE;
       m_bFirstInputNotify = FALSE;
       m_state = MP_RENDER_STATE_STARTED; 
-      ResetTraceStats();
-      ResetFrameStats();
         
       WakeThread(m_hScheduler, &m_schedulerParams);
       WakeThread(m_hWorker, &m_workerParams);

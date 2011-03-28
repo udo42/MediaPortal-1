@@ -42,7 +42,7 @@ using namespace std;
 #define NB_CFPSIZE 128
 #define NB_PCDSIZE 32
 //#define LF_THRESH 7
-#define LF_THRESH_HIGH 4
+#define LF_THRESH_HIGH 6
 #define FRAME_PROC_THRESH 32
 #define FRAME_PROC_THRSH2 64
 #define DFT_THRESH 0.007
