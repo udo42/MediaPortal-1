@@ -78,7 +78,7 @@ using namespace std;
 // magic numbers
 #define DEFAULT_FRAME_TIME 200000 // used when fps information is not provided (PAL interlaced == 50fps)
 
-//Minimum usable vsync correction delay
+//Minimum usable vsync correction delay in 100 ns units
 #define MIN_VSC_DELAY 12000
 
 // uncomment the //Log to enable extra logging
@@ -275,7 +275,7 @@ protected:
   BOOL           ScheduleSample(IMFSample* pSample);
   IMFSample*     PeekSample();
   BOOL           PopSample();
-  int            CheckQueueCount();
+  int            GetQueueCount();
   HRESULT        TrackSample(IMFSample *pSample);
   HRESULT        GetFreeSample(IMFSample** ppSample);
   void           ReturnSample(IMFSample* pSample, BOOL tryNotify);

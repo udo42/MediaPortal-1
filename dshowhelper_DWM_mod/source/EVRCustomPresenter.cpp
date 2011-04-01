@@ -1143,7 +1143,7 @@ void MPEVRCustomPresenter::ReturnSample(IMFSample* pSample, BOOL tryNotify)
   LOG_TRACE("Sample returned: now having %d samples", m_iFreeSamples+1);
   m_vFreeSamples[m_iFreeSamples] = pSample;
   m_iFreeSamples++;
-  if (CheckQueueCount() == 0)
+  if (m_qScheduledSamples.IsEmpty())
   {
     LOG_TRACE("No scheduled samples, queue was empty -> todo, CheckForEndOfStream()");
     CheckForEndOfStream();
@@ -1294,7 +1294,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
   while (true)
   {        
     if (
-        (CheckQueueCount() == 0) ||                         //there are no samples available so we go idle
+        (GetQueueCount() == 0) ||                         //there are no samples available so we go idle
         (m_state == MP_RENDER_STATE_STOPPED) ||
         (m_state == MP_RENDER_STATE_PAUSED && !m_bDVDMenu)  //don't process samples in paused mode during normal playback
         )
@@ -1303,7 +1303,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       m_iLateFrames = 0;
       *pTargetTime = 0;
       *pIdleWait = true;
-      if (CheckQueueCount() == 0)
+      if (GetQueueCount() == 0)
       {
         NotifyWorker(FALSE);
       }     
@@ -1317,12 +1317,19 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     if (!m_bZeroScrub)
     {   
       systemTime = GetCurrentTimestamp();
-      if ((m_earliestPresentTime - systemTime) > (displayTime/2) )
-      {
-        *pTargetTime = systemTime + (displayTime/4); //delay in smaller chunks
-        break;
-      }
-      else if ((m_earliestPresentTime - systemTime) >= MIN_VSC_DELAY )
+      
+      //      if ((m_earliestPresentTime - systemTime) > (displayTime/2) )
+      //      {
+      //        *pTargetTime = systemTime + (displayTime/4); //delay in smaller chunks
+      //        break;
+      //      }
+      //      else if ((m_earliestPresentTime - systemTime) >= MIN_VSC_DELAY )
+      //      {
+      //        *pTargetTime = systemTime + MIN_VSC_DELAY;
+      //        break;
+      //      }
+      
+      if ((m_earliestPresentTime - systemTime) >= MIN_VSC_DELAY )
       {
         *pTargetTime = systemTime + MIN_VSC_DELAY;
         break;
@@ -1377,7 +1384,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
             (double)m_PaintTime/10000, 
             (double)((m_lastPresentTime - GetCurrentTimestamp())/10000), 
             m_iFramesHeld,
-            m_qScheduledSamples.Count());
+            GetQueueCount());
       }
     }
     else
@@ -1402,15 +1409,18 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
 
         if ((rasterDelay >= MIN_VSC_DELAY) && (m_iLateFrames < LF_THRESH_HIGH))
         {
-          // Not at the correct point in the display raster, so sleep until pTargetTime time
-          if (rasterDelay >= (MIN_VSC_DELAY * 2))
-          {
-            *pTargetTime = systemTime + (rasterDelay/2); //delay in smaller chunks
-          }
-          else
-          {
-            *pTargetTime = systemTime + rasterDelay;
-          }
+          //          // Not at the correct point in the display raster, so sleep until pTargetTime time
+          //          if (rasterDelay >= (MIN_VSC_DELAY * 2))
+          //          {
+          //            *pTargetTime = systemTime + (rasterDelay/2); //delay in smaller chunks
+          //          }
+          //          else
+          //          {
+          //            *pTargetTime = systemTime + rasterDelay;
+          //          }
+          
+          *pTargetTime = systemTime + MIN_VSC_DELAY;
+
           m_earliestPresentTime = 0;
           break;
         }
@@ -1444,7 +1454,8 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
             m_iEarlyFrCnt++;
           }
           // It's too early to present the sample, so delay for a while
-          *pTargetTime = systemTime + max(MIN_VSC_DELAY,(m_stallTime/2)); //delay in smaller chunks          
+          //*pTargetTime = systemTime + max(MIN_VSC_DELAY,(m_stallTime/2)); //delay in smaller chunks          
+          *pTargetTime = systemTime + MIN_VSC_DELAY; //delay in smaller chunks          
           break;
         }    
                
@@ -1552,7 +1563,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
              (double)lastSleepTime/10000, 
              (double)((m_lastPresentTime - GetCurrentTimestamp())/10000),
              (double)m_PaintTime/10000, 
-             m_qScheduledSamples.Count(),
+             GetQueueCount(),
              m_LastStartOfPaintScanline,
              m_LastEndOfPaintScanline,
              m_rawFRRatio,
@@ -1945,7 +1956,7 @@ BOOL MPEVRCustomPresenter::PopSample()
   return FALSE;
 }
 
-int MPEVRCustomPresenter::CheckQueueCount()
+int MPEVRCustomPresenter::GetQueueCount()
 {
   CAutoLock lock(&m_lockSamples);
   return m_qScheduledSamples.Count();
@@ -2008,7 +2019,7 @@ BOOL MPEVRCustomPresenter::CheckForEndOfStream()
     return FALSE;
   }
   // samples pending
-  if (CheckQueueCount() > 0)
+  if (GetQueueCount() > 0)
   {
     return FALSE;
   }
