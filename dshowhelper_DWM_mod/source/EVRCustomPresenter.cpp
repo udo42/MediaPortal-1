@@ -1403,8 +1403,8 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       {   
         systemTime = GetCurrentTimestamp();
         
-        // Apply display vsync correction.     
-        LONGLONG offsetTime = 0;
+        // Apply display vsync correction.
+        LONGLONG offsetTime = (m_lastDelayErr < 0) ? -m_lastDelayErr : 0;
         LONGLONG rasterDelay = GetDelayToRasterTarget(&offsetTime);
 
         if ((rasterDelay >= MIN_VSC_DELAY) && (m_iLateFrames < LF_THRESH_HIGH))
@@ -3083,7 +3083,7 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
   //Initialise vsync correction control values
   m_rasterLimitLow   = (int)((((m_maxVisScanLine - m_minVisScanLine) * 2)/16) + m_minVisScanLine); 
   m_rasterTargetPosn = m_rasterLimitLow;
-  m_rasterLimitHigh  = (int)((((m_maxVisScanLine - m_minVisScanLine) * 10)/16) + m_minVisScanLine);
+  m_rasterLimitHigh  = (int)((((m_maxVisScanLine - m_minVisScanLine) * 9)/16) + m_minVisScanLine);
   m_rasterLimitNP    = (int)m_maxVisScanLine; 
   m_hnsScanlineTime  = (LONGLONG) (m_dDetectedScanlineTime * 10000.0);
   
@@ -3273,6 +3273,7 @@ void MPEVRCustomPresenter::ResetFrameStats()
   m_nNextRFP = 0;
     
   m_PaintTime = 0;
+  m_lastDelayErr = 0;
 
   m_qGoodPopCnt     = 0;
   m_qBadPopCnt      = 0; 
@@ -3595,7 +3596,6 @@ LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *offsetTime)
 {
     D3DRASTER_STATUS rasterStatus;
     LONGLONG targetDelay = 0;
-    *offsetTime = 0;
 
     // Calculate raster offset
     if (SUCCEEDED(m_pD3DDev->GetRasterStatus(0, &rasterStatus)))
@@ -3613,7 +3613,7 @@ LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *offsetTime)
       {
         targetDelay = (LONGLONG)(m_rasterTargetPosn - currScanline) * m_hnsScanlineTime ;       
       }
-      else if ( currScanline > m_rasterLimitHigh )
+      else if ( currScanline > (m_rasterLimitHigh + (*offsetTime/m_hnsScanlineTime)) )
       {
         targetDelay = MIN_VSC_DELAY ; //Limit to 1.2 ms ;  
       }   
@@ -3628,6 +3628,7 @@ LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *offsetTime)
         targetDelay = (LONGLONG)m_rasterTargetPosn * m_hnsScanlineTime;
       }
       
+      *offsetTime = 0;
       if ((currScanline < (int)m_maxScanLine) && (targetDelay < MIN_VSC_DELAY))
       {
         *offsetTime = (LONGLONG)((int)m_maxScanLine - currScanline) * m_hnsScanlineTime ;

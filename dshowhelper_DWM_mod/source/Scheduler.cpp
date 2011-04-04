@@ -279,6 +279,20 @@ UINT CALLBACK SchedulerThread(void* param)
   HANDLE hEvts3[] = {p->eHasWork, p->eTimerEnd, p->eHasWorkLP};
 
 
+  //  DWORD dwPriorityClass = GetPriorityClass(GetCurrentProcess());
+  //  if (dwPriorityClass)
+  //  {
+  //    Log("GetPriorityClass = %x", dwPriorityClass);
+  //    if (!SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS))
+  //    {
+  //      Log("SetPriorityClass failed");
+  //    }
+  //  }
+  //  else
+  //  {
+  //    Log("GetPriorityClass failed");
+  //  }
+
   //SetThreadAffinityMask(GetCurrentThread(), 1); //Force onto CPU 0 - ATi flickering GUI experiment
   
   if (SCHED_ENABLE_MMCSS)
@@ -286,7 +300,7 @@ UINT CALLBACK SchedulerThread(void* param)
     // Tell Vista/Win7 Multimedia Class Scheduler (MMCS) we are doing threaded playback (increase priority)
     if (m_pAvSetMmThreadCharacteristicsW) 
     {
-      hAvrt = m_pAvSetMmThreadCharacteristicsW(MMCSS_REG_TASK, &dwTaskIndex);
+      hAvrt = m_pAvSetMmThreadCharacteristicsW(MMCSS_SCH_REG_TASK, &dwTaskIndex);
     }
     if (m_pAvSetMmThreadPriority) 
     {
@@ -430,6 +444,10 @@ UINT CALLBACK SchedulerThread(void* param)
       m_pAvRevertMmThreadCharacteristics(hAvrt);
     }
   }
+  //  if (dwPriorityClass)
+  //  {
+  //    SetPriorityClass(GetCurrentProcess(), dwPriorityClass);
+  //  }
   Log("Scheduler done.");
   return 0;
 }

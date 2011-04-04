@@ -70,6 +70,7 @@ using namespace std;
 
 //MMCSS 'Task' type
 #define MMCSS_REG_TASK  L"Playback"
+#define MMCSS_SCH_REG_TASK  L"Playback"
 
 //Bring DWM under Multimedia Class Scheduler Service (MMCSS) control if 'true'
 #define DWM_ENABLE_MMCSS false
