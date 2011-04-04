@@ -278,21 +278,6 @@ UINT CALLBACK SchedulerThread(void* param)
   HANDLE hEvts2[] = {p->eHasWork, p->eTimerEnd};
   HANDLE hEvts3[] = {p->eHasWork, p->eTimerEnd, p->eHasWorkLP};
 
-
-  //  DWORD dwPriorityClass = GetPriorityClass(GetCurrentProcess());
-  //  if (dwPriorityClass)
-  //  {
-  //    Log("GetPriorityClass = %x", dwPriorityClass);
-  //    if (!SetPriorityClass(GetCurrentProcess(), HIGH_PRIORITY_CLASS))
-  //    {
-  //      Log("SetPriorityClass failed");
-  //    }
-  //  }
-  //  else
-  //  {
-  //    Log("GetPriorityClass failed");
-  //  }
-
   //SetThreadAffinityMask(GetCurrentThread(), 1); //Force onto CPU 0 - ATi flickering GUI experiment
   
   if (SCHED_ENABLE_MMCSS)
@@ -444,10 +429,7 @@ UINT CALLBACK SchedulerThread(void* param)
       m_pAvRevertMmThreadCharacteristics(hAvrt);
     }
   }
-  //  if (dwPriorityClass)
-  //  {
-  //    SetPriorityClass(GetCurrentProcess(), dwPriorityClass);
-  //  }
+
   Log("Scheduler done.");
   return 0;
 }
