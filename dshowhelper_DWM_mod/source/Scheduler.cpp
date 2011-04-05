@@ -57,7 +57,6 @@ UINT CALLBACK TimerThread(void* param)
   LONGLONG timeout = 0;
   HANDLE hEvts[] = {p->eHasWork, p->eHasWorkLP};
   DWORD dwObject;
-  HANDLE dummyEvent = CreateEvent(NULL, TRUE, FALSE, NULL); //Placeholder event for wait functions 
 
   if (TIMER_ENABLE_MMCSS)
   {
@@ -302,7 +301,6 @@ UINT CALLBACK SchedulerThread(void* param)
 
   while (!p->bDone)
   {   
-    // delErr = 0;
     delay  = 0;
     dwObject = (WAIT_FAILED - 1); // Make sure we fall through the switch by default
     
@@ -313,7 +311,10 @@ UINT CALLBACK SchedulerThread(void* param)
       delay = 0;
       hnsTargetTime = 0;
     }
-    delay = min(1000000, delay); //limit max sleep time to 100ms
+    else if (delay > 500000) //limit max sleep time to 50ms
+    {
+      delay = 500000;
+    }
 
     if ( lastTimerId > 0 ) 
     {
