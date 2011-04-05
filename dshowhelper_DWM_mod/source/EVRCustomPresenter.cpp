@@ -1407,18 +1407,9 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         LONGLONG offsetTime = (m_lastDelayErr < 0) ? -m_lastDelayErr : 0;
         LONGLONG rasterDelay = GetDelayToRasterTarget(&offsetTime);
 
-        if ((rasterDelay >= MIN_VSC_DELAY) && (m_iLateFrames < LF_THRESH_HIGH))
+        if ((rasterDelay != 0) && (m_iLateFrames < LF_THRESH_HIGH))
         {
-          //          // Not at the correct point in the display raster, so sleep until pTargetTime time
-          //          if (rasterDelay >= (MIN_VSC_DELAY * 2))
-          //          {
-          //            *pTargetTime = systemTime + (rasterDelay/2); //delay in smaller chunks
-          //          }
-          //          else
-          //          {
-          //            *pTargetTime = systemTime + rasterDelay;
-          //          }
-          
+          // Not at the correct point in the display raster, so sleep for a while         
           *pTargetTime = systemTime + MIN_VSC_DELAY;
 
           m_earliestPresentTime = 0;
@@ -3590,53 +3581,87 @@ void MPEVRCustomPresenter::GetRealRefreshRate()
   m_dD3DRefreshCycle = 1000.0 / m_dD3DRefreshRate; // in ms
 }
 
-// get time delay (in hns) to target raster paint position
+//// get time delay (in hns) to target raster paint position
+//// returns zero delay if 'now' is inside the limitLow/limitHigh window
+//LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *offsetTime)
+//{
+//    D3DRASTER_STATUS rasterStatus;
+//    LONGLONG targetDelay = 0;
+//
+//    // Calculate raster offset
+//    if (SUCCEEDED(m_pD3DDev->GetRasterStatus(0, &rasterStatus)))
+//    {
+//      int currScanline = (int)rasterStatus.ScanLine;
+//      
+//      if ( currScanline < 2 )
+//      {
+//        //currScanline value is reported as zero all through vertical blanking
+//        //so limit delay to avoid overshooting the target position
+//        targetDelay = MIN_VSC_DELAY ; //Limit to 1.2 ms
+//        return targetDelay;
+//      }
+//      else if ( currScanline < m_rasterLimitLow )
+//      {
+//        targetDelay = (LONGLONG)(m_rasterTargetPosn - currScanline) * m_hnsScanlineTime ;       
+//      }
+//      else if ( currScanline > (m_rasterLimitHigh + (*offsetTime/m_hnsScanlineTime)) )
+//      {
+//        targetDelay = MIN_VSC_DELAY ; //Limit to 1.2 ms ;  
+//      }   
+//      
+//      //sanity check the delay value
+//      if (targetDelay < 0) 
+//      {
+//        targetDelay = MIN_VSC_DELAY;
+//      }
+//      else if (targetDelay > ((LONGLONG)m_rasterTargetPosn * m_hnsScanlineTime))
+//      {
+//        targetDelay = (LONGLONG)m_rasterTargetPosn * m_hnsScanlineTime;
+//      }
+//      
+//      *offsetTime = 0;
+//      if ((currScanline < (int)m_maxScanLine) && (targetDelay < MIN_VSC_DELAY))
+//      {
+//        *offsetTime = (LONGLONG)((int)m_maxScanLine - currScanline) * m_hnsScanlineTime ;
+//      }    
+//    }
+//    
+//    return targetDelay;
+//}
+
+
 // returns zero delay if 'now' is inside the limitLow/limitHigh window
 LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *offsetTime)
 {
-    D3DRASTER_STATUS rasterStatus;
-    LONGLONG targetDelay = 0;
-
-    // Calculate raster offset
-    if (SUCCEEDED(m_pD3DDev->GetRasterStatus(0, &rasterStatus)))
-    {
-      int currScanline = (int)rasterStatus.ScanLine;
-      
-      if ( currScanline < 2 )
-      {
-        //currScanline value is reported as zero all through vertical blanking
-        //so limit delay to avoid overshooting the target position
-        targetDelay = MIN_VSC_DELAY ; //Limit to 1.2 ms
-        return targetDelay;
-      }
-      else if ( currScanline < m_rasterLimitLow )
-      {
-        targetDelay = (LONGLONG)(m_rasterTargetPosn - currScanline) * m_hnsScanlineTime ;       
-      }
-      else if ( currScanline > (m_rasterLimitHigh + (*offsetTime/m_hnsScanlineTime)) )
-      {
-        targetDelay = MIN_VSC_DELAY ; //Limit to 1.2 ms ;  
-      }   
-      
-      //sanity check the delay value
-      if (targetDelay < 0) 
-      {
-        targetDelay = MIN_VSC_DELAY;
-      }
-      else if (targetDelay > ((LONGLONG)m_rasterTargetPosn * m_hnsScanlineTime))
-      {
-        targetDelay = (LONGLONG)m_rasterTargetPosn * m_hnsScanlineTime;
-      }
-      
-      *offsetTime = 0;
-      if ((currScanline < (int)m_maxScanLine) && (targetDelay < MIN_VSC_DELAY))
-      {
-        *offsetTime = (LONGLONG)((int)m_maxScanLine - currScanline) * m_hnsScanlineTime ;
-      }    
-    }
+  D3DRASTER_STATUS rasterStatus;
+  LONGLONG targetDelay = MIN_VSC_DELAY;
+  
+  // Calculate raster offset
+  if (SUCCEEDED(m_pD3DDev->GetRasterStatus(0, &rasterStatus)))
+  {
+    int currScanline = (int)rasterStatus.ScanLine;
     
-    return targetDelay;
+    if (( currScanline >= m_rasterLimitLow ) && 
+        ( currScanline <= (m_rasterLimitHigh + (*offsetTime/m_hnsScanlineTime))) )
+    {        
+      targetDelay = 0 ; //It's within the allowed range for presentation
+    }
+          
+    *offsetTime = 0;
+    if ((currScanline < (int)m_maxScanLine) && (targetDelay == 0))
+    {
+      // calculate time delay (in hns) to end of raster
+      *offsetTime = (LONGLONG)((int)m_maxScanLine - currScanline) * m_hnsScanlineTime ;
+    }    
+  }
+  else
+  {
+    *offsetTime = 0;
+  }
+  
+  return targetDelay;
 }
+
 
 
 // Update the array m_pllCFP with a new time stamp. Calculate mean.
