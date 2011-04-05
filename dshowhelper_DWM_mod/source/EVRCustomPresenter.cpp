@@ -585,15 +585,16 @@ HRESULT MPEVRCustomPresenter::TrackSample(IMFSample *pSample)
 HRESULT MPEVRCustomPresenter::GetTimeToSchedule(IMFSample* pSample, LONGLONG *phnsDelta, LONGLONG *hnsSystemTime, LONGLONG hnsTimeOffset)
 {
   LONGLONG hnsPresentationTime = 0; // Target presentation time
-  LONGLONG hnsTimeNow = 0;          // Current presentation time
+  LONGLONG hnsTimeNow = 0;          // Correlated presentation time
+  LONGLONG hnsSysNow = 0;          // Correlated system time
   LONGLONG hnsDelta = 0;
   HRESULT  hr;
   
-  *hnsSystemTime = GetCurrentTimestamp();
 
   if (m_pClock == NULL)
   {
     *phnsDelta = 0;
+    *hnsSystemTime = GetCurrentTimestamp();
     return S_OK;
   }
 
@@ -604,18 +605,20 @@ HRESULT MPEVRCustomPresenter::GetTimeToSchedule(IMFSample* pSample, LONGLONG *ph
     {
       // immediate presentation
       *phnsDelta = 0;
+      *hnsSystemTime = GetCurrentTimestamp();
       return S_OK;
     }
-    CHECK_HR(hr = m_pClock->GetCorrelatedTime(0, &hnsTimeNow, hnsSystemTime), "Could not get correlated time!");
-    hnsTimeNow = hnsTimeNow + (GetCurrentTimestamp() - *hnsSystemTime) + hnsTimeOffset; //correct the value and add offset
+    CHECK_HR(hr = m_pClock->GetCorrelatedTime(0, &hnsTimeNow, &hnsSysNow), "Could not get correlated time!");
+    *hnsSystemTime = GetCurrentTimestamp();
+    hnsTimeNow = hnsTimeNow + (*hnsSystemTime - hnsSysNow) + hnsTimeOffset; //correct the value and add offset
       // Calculate the amount of time until the sample's presentation time. A negative value means the sample is late.
     hnsDelta = hnsPresentationTime - hnsTimeNow;
-    *hnsSystemTime = GetCurrentTimestamp();
   }
   else
   {
     Log("Could not get sample time from %p!", pSample);
     *phnsDelta = 0;
+    *hnsSystemTime = GetCurrentTimestamp();
     return hr;
   }
 
@@ -1318,17 +1321,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     {   
       systemTime = GetCurrentTimestamp();
       
-      //      if ((m_earliestPresentTime - systemTime) > (displayTime/2) )
-      //      {
-      //        *pTargetTime = systemTime + (displayTime/4); //delay in smaller chunks
-      //        break;
-      //      }
-      //      else if ((m_earliestPresentTime - systemTime) >= MIN_VSC_DELAY )
-      //      {
-      //        *pTargetTime = systemTime + MIN_VSC_DELAY;
-      //        break;
-      //      }
-      
       if ((m_earliestPresentTime - systemTime) >= MIN_VSC_DELAY )
       {
         *pTargetTime = systemTime + MIN_VSC_DELAY;
@@ -1401,13 +1393,9 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       // Within the time window to 'present' a sample, or it's a special play mode
       if (!m_bZeroScrub)
       {   
-        systemTime = GetCurrentTimestamp();
-        
-        // Apply display vsync correction.
+        // Apply display vsync correction - check if we are inside the allowed raster target window.
         LONGLONG offsetTime = (m_lastDelayErr < 0) ? -m_lastDelayErr : 0;
-        LONGLONG rasterDelay = GetDelayToRasterTarget(&offsetTime);
-
-        if ((rasterDelay != 0) && (m_iLateFrames < LF_THRESH_HIGH))
+        if (!GetDelayToRasterTarget(&offsetTime) && (m_iLateFrames < LF_THRESH_HIGH))
         {
           // Not at the correct point in the display raster, so sleep for a while         
           *pTargetTime = systemTime + MIN_VSC_DELAY;
@@ -1429,7 +1417,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
             m_earliestPresentTime = systemTime + (displayTime * (m_rawFRRatio - 1)) + offsetTime;
           }    
           
-          m_stallTime = m_earliestPresentTime - systemTime;
+          m_stallTime = m_earliestPresentTime - systemTime;        
         }
         else
         {
@@ -1445,7 +1433,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
             m_iEarlyFrCnt++;
           }
           // It's too early to present the sample, so delay for a while
-          //*pTargetTime = systemTime + max(MIN_VSC_DELAY,(m_stallTime/2)); //delay in smaller chunks          
           *pTargetTime = systemTime + MIN_VSC_DELAY; //delay in smaller chunks          
           break;
         }    
@@ -3630,11 +3617,11 @@ void MPEVRCustomPresenter::GetRealRefreshRate()
 //}
 
 
-// returns zero delay if 'now' is inside the limitLow/limitHigh window
-LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *offsetTime)
+// returns true if 'now' is inside the limitLow/limitHigh window
+bool MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *offsetTime)
 {
   D3DRASTER_STATUS rasterStatus;
-  LONGLONG targetDelay = MIN_VSC_DELAY;
+  bool inWindow = false;
   
   // Calculate raster offset
   if (SUCCEEDED(m_pD3DDev->GetRasterStatus(0, &rasterStatus)))
@@ -3644,11 +3631,11 @@ LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *offsetTime)
     if (( currScanline >= m_rasterLimitLow ) && 
         ( currScanline <= (m_rasterLimitHigh + (*offsetTime/m_hnsScanlineTime))) )
     {        
-      targetDelay = 0 ; //It's within the allowed range for presentation
+      inWindow = true ; //It's within the allowed range for presentation
     }
           
     *offsetTime = 0;
-    if ((currScanline < (int)m_maxScanLine) && (targetDelay == 0))
+    if ((currScanline < (int)m_maxScanLine) && inWindow)
     {
       // calculate time delay (in hns) to end of raster
       *offsetTime = (LONGLONG)((int)m_maxScanLine - currScanline) * m_hnsScanlineTime ;
@@ -3659,7 +3646,7 @@ LONGLONG MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *offsetTime)
     *offsetTime = 0;
   }
   
-  return targetDelay;
+  return inWindow;
 }
 
 

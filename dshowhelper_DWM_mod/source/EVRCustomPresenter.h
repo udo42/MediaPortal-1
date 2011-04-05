@@ -284,7 +284,7 @@ protected:
   HRESULT        PresentSample(IMFSample* pSample, LONGLONG frameTime);
   void           CorrectSampleTime(IMFSample* pSample);
   void           GetRealRefreshRate();
-  LONGLONG       GetDelayToRasterTarget(LONGLONG *offsetTime);
+  bool           GetDelayToRasterTarget(LONGLONG *offsetTime);
   void           DwmEnableMMCSSOnOff(bool enable);
   void           DwmSetParameters(BOOL useSourceRate, UINT buffers, UINT rfshPerFrame);
   void           DwmGetState();
