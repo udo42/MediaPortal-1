@@ -58,6 +58,9 @@ using namespace std;
 
 #define PS_FRAME_ADVANCE 1
 
+//skip DwmInit() if display refresh period is > 25.0 ms (i.e. below 40Hz refresh rate)
+#define DWM_REFRESH_THRESH 25.0
+
 //Bring Scheduler/Worker/Timer threads under Multimedia Class Scheduler Service (MMCSS) control if 'true'
 #define SCHED_ENABLE_MMCSS false
 #define WORKER_ENABLE_MMCSS true

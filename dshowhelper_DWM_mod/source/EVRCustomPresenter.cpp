@@ -255,7 +255,7 @@ MPEVRCustomPresenter::~MPEVRCustomPresenter()
 
 void MPEVRCustomPresenter::DwmInit(UINT buffers, UINT rfshPerFrame)
 {
-  if (!ENABLE_DWM_SETUP || m_bDWMinit || (m_dEstRefreshCycle > 25.0))  //skip if display refresh rate is below 40Hz
+  if (!ENABLE_DWM_SETUP || m_bDWMinit || (m_dEstRefreshCycle > DWM_REFRESH_THRESH))
   {
     return;
   }
