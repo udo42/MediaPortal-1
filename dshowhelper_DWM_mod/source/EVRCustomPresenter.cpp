@@ -86,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.076a No DWM ----------- instance 0x%x", this);
+      Log("---------- v1.4.077a No DWM ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.076a No DWM ----------- instance 0x%x", this);
+      Log("---------- v0.0.077a No DWM ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -1361,9 +1361,9 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     lateLimit = hystersisTime;
 
     //De-sensitise frame dropping to avoid occasional delay glitches triggering frame drops
-    if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing && !m_NSToffsUpdate)
+    if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing)
     {
-      if ( (nextSampleTime < -hystersisTime) && (nextSampleTime >= -delErrLimit) && (m_iLateFrames == 0) )
+      if ((nextSampleTime < -hystersisTime) && (nextSampleTime >= -delErrLimit) && (m_iLateFrames == 0) && !m_NSToffsUpdate)
       {
         m_iLateFrames = LF_THRESH_HIGH;
         m_iFramesHeld++;
@@ -1391,11 +1391,11 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       GetFrameRateRatio(); // update video to display FPS ratio data
       
       // Within the time window to 'present' a sample, or it's a special play mode
-      if (!m_bZeroScrub)
+      if (!m_bZeroScrub && (m_iLateFrames < LF_THRESH_HIGH))
       {   
         // Apply display vsync correction - check if we are inside the allowed raster target window.
         LONGLONG offsetTime = (m_lastDelayErr < 0) ? -m_lastDelayErr : 0;
-        if (!GetDelayToRasterTarget(&offsetTime) && (m_iLateFrames < LF_THRESH_HIGH))
+        if (!GetDelayToRasterTarget(&offsetTime))
         {
           // Not at the correct point in the display raster, so sleep for a while         
           *pTargetTime = systemTime + MIN_VSC_DELAY;
@@ -1405,25 +1405,18 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         }
         
         // We're within the raster timing limits, so present the sample or delay because it's too early...
-        if (m_iLateFrames < LF_THRESH_HIGH)
+
+        // Calculate minimum delay to next possible PresentSample() time
+        if ((m_frameRateRatio <= 1 && !m_bScrubbing) || (m_rawFRRatio <= 1 && m_bScrubbing))
         {
-          // Calculate minimum delay to next possible PresentSample() time
-          if ((m_frameRateRatio <= 1 && !m_bScrubbing) || (m_rawFRRatio <= 1 && m_bScrubbing))
-          {
-            m_earliestPresentTime = systemTime + offsetTime;
-          }
-          else
-          {
-            m_earliestPresentTime = systemTime + (displayTime * (m_rawFRRatio - 1)) + offsetTime;
-          }    
-          
-          m_stallTime = m_earliestPresentTime - systemTime;        
+          m_earliestPresentTime = systemTime + offsetTime;
         }
         else
         {
-          m_earliestPresentTime = 0;
-          m_stallTime = 0;
-        }
+          m_earliestPresentTime = systemTime + (displayTime * (m_rawFRRatio - 1)) + offsetTime;
+        }    
+        
+        m_stallTime = m_earliestPresentTime - systemTime;        
 
         if (nextSampleTime > (frameTime + hystersisTime))
         {                
@@ -3366,25 +3359,31 @@ void MPEVRCustomPresenter::GetFrameRateRatio()
 double MPEVRCustomPresenter::GetCycleDifference()
 {
 	double dBaseDisplayCycle = GetDisplayCycle();
-	UINT i;
+	UINT i, j;
 	double minDiff = 1.0;
+	
 	if (dBaseDisplayCycle == 0.0 || m_dFrameCycle == 0.0)
   {
     return 1.0;
   }
   else
 	{
-    for (i = 1; i <= 8; i++) 
+    for (j = 1; j <= 4; j++) 
 		{
-			double dDisplayCycle = i * dBaseDisplayCycle;
-			double diff = (dDisplayCycle - m_dFrameCycle) / m_dFrameCycle;
-			if (abs(diff) < abs(minDiff))
-			{
-				minDiff = diff;
-				m_dOptimumDisplayCycle = dDisplayCycle;
-			}
-		}
+  	  double dFrameCycle = j * m_dFrameCycle;
+      for (i = 1; i <= 8; i++) 
+  		{
+  			double dDisplayCycle = i * dBaseDisplayCycle;
+  			double diff = (dDisplayCycle - dFrameCycle) / dFrameCycle;
+  			if (abs(diff) < abs(minDiff))
+  			{
+  				minDiff = diff;
+  				m_dOptimumDisplayCycle = dDisplayCycle;
+  			}
+  		}
+  	}
 	}
+	
 	return minDiff;
 }
 
