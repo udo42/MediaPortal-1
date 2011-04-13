@@ -1352,18 +1352,24 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     }   
     *pTargetTime = 0;      
 
-    //Centralise nextSampleTime timing window when in normal play mode and MP Audio Renderer is inactive
-    if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing && !m_pAVSyncClock && m_NSTinitDone)
-    {
-      nextSampleTime = (realSampleTime + (frameTime/2)) - m_hnsNSToffset;
-    }
-
     lateLimit = hystersisTime;
 
-    //De-sensitise frame dropping to avoid occasional delay glitches triggering frame drops
-    if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing)
+
+    if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing && m_NSTinitDone)
     {
-      if ((nextSampleTime < -hystersisTime) && (nextSampleTime >= -delErrLimit) && (m_iLateFrames == 0) && !m_NSToffsUpdate)
+      //Centralise nextSampleTime timing window when in normal play mode and MP Audio Renderer is inactive
+      if (!m_pAVSyncClock)
+      {
+        nextSampleTime = (realSampleTime + (frameTime/2)) - m_hnsNSToffset;
+      }
+
+      //De-sensitise frame dropping to avoid occasional delay glitches triggering frame drops
+      if (  (   ((nextSampleTime < -hystersisTime) && (nextSampleTime >= -delErrLimit)) //Late sample
+             || (((systemTime - m_earliestPresentTime) > (displayTime/2)) && m_earliestPresentTime) //Too long since the last 'present'
+            ) 
+           && (m_iLateFrames == 0) 
+           && !m_NSToffsUpdate
+          )
       {
         m_iLateFrames = LF_THRESH_HIGH;
         m_iFramesHeld++;
@@ -1374,7 +1380,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
             m_fCFPMean/10000.0, 
             (double)lastSleepTime/10000, 
             (double)m_PaintTime/10000, 
-            (double)((m_lastPresentTime - GetCurrentTimestamp())/10000), 
+            (double)((m_lastPresentTime - systemTime)/10000), 
             m_iFramesHeld,
             GetQueueCount());
       }
