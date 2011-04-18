@@ -223,7 +223,7 @@ void MPEVRCustomPresenter::ResetEVRStatCounters()
 
 void MPEVRCustomPresenter::ReleaseCallback()
 {
-  CAutoLock sLock(&m_lockCallback);
+  CAutoLock cLock(&m_lockCallback);
   m_pCallback = NULL;
 }
 
@@ -1083,39 +1083,11 @@ HRESULT MPEVRCustomPresenter::GetFreeSample(IMFSample** ppSample)
 }
 
 
-//void MPEVRCustomPresenter::Flush(BOOL forced)
-//{
-//  DwmFlush(); //Just in case...
-//  CAutoLock sLock(&m_lockSamples);
-//  
-//  if ((!m_qScheduledSamples.IsEmpty() && !m_bDVDMenu) ||
-//     (!m_qScheduledSamples.IsEmpty() && forced))
-//  {
-//    UpdateLastPresSample(NULL);
-//    Log("Flushing: size=%d", m_qScheduledSamples.Count());
-//    while (!m_qScheduledSamples.IsEmpty())
-//    {
-//      IMFSample* pSample = PeekSample();
-//      if (pSample != NULL)
-//      {
-//        PopSample();
-//        ReturnSample(pSample, FALSE);
-//      }
-//    }
-//  }
-//  else
-//  {
-//    Log("Not flushing: size=%d", m_qScheduledSamples.Count());
-//  }
-//  
-//  m_bFlush = FALSE;
-//}
-
-
 void MPEVRCustomPresenter::Flush(BOOL forced)
 {
-  CAutoLock sLock(&m_lockSamples);
   DwmFlush(); //Just in case...
+
+  CAutoLock sLock(&m_lockSamples);
   
   if (!m_bDVDMenu || forced)
   {
@@ -1146,6 +1118,7 @@ void MPEVRCustomPresenter::ReturnSample(IMFSample* pSample, BOOL tryNotify)
   LOG_TRACE("Sample returned: now having %d samples", m_iFreeSamples+1);
   m_vFreeSamples[m_iFreeSamples] = pSample;
   m_iFreeSamples++;
+  
   if (m_qScheduledSamples.IsEmpty())
   {
     LOG_TRACE("No scheduled samples, queue was empty -> todo, CheckForEndOfStream()");
@@ -1364,25 +1337,40 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       }
 
       //De-sensitise frame dropping to avoid occasional delay glitches triggering frame drops
-      if (  (   ((nextSampleTime < -hystersisTime) && (nextSampleTime >= -delErrLimit)) //Late sample
-             || (((systemTime - m_earliestPresentTime) > (displayTime/2)) && m_earliestPresentTime) //Too long since the last 'present'
-            ) 
-           && (m_iLateFrames == 0) 
-           && !m_NSToffsUpdate
-          )
+      if ((m_iLateFrames == 0) && !m_NSToffsUpdate)
       {
-        m_iLateFrames = LF_THRESH_HIGH;
-        m_iFramesHeld++;
-        lateLimit = delErrLimit; // Allow this late frame
-        m_earliestPresentTime = 0;
-        Log("Late frame, NST %.2f ms, AveRNST %.2f ms, last sleep %.2f ms, paint %.2f ms, last pres %.2f ms, late %d, Q %d", 
-            (double)nextSampleTime/10000, 
-            m_fCFPMean/10000.0, 
-            (double)lastSleepTime/10000, 
-            (double)m_PaintTime/10000, 
-            (double)((m_lastPresentTime - systemTime)/10000), 
-            m_iFramesHeld,
-            GetQueueCount());
+        if ((nextSampleTime < -hystersisTime) && (nextSampleTime >= -delErrLimit)) //Very late sample
+        {
+          m_iLateFrames = LF_THRESH_HIGH;
+          m_iFramesHeld++;
+          //lateLimit = delErrLimit; // Allow this late frame
+          Log("Late frame, NST %.2f ms, AveRNST %.2f ms, last sleep %.2f ms, paint %.2f ms, last pres %.2f ms, EPT %.2f ms, late %d, Q %d", 
+              (double)nextSampleTime/10000, 
+              m_fCFPMean/10000.0, 
+              (double)lastSleepTime/10000, 
+              (double)m_PaintTime/10000, 
+              (double)((m_lastPresentTime - systemTime)/10000), 
+              (m_earliestPresentTime ? (double)((m_earliestPresentTime - systemTime)/10000) : 0), 
+              m_iFramesHeld,
+              GetQueueCount());
+              
+          m_earliestPresentTime = 0;
+          nextSampleTime = 0; //Force this sample to be presented
+        }
+        else if (((systemTime - m_earliestPresentTime) > (displayTime/2)) && m_earliestPresentTime) //Too long since the last 'present'
+        {
+          m_iLateFrames = (LF_THRESH_HIGH - 1);
+          m_iFramesHeld++;
+          Log("Delayed frame, NST %.2f ms, AveRNST %.2f ms, last sleep %.2f ms, paint %.2f ms, last pres %.2f ms, EPT %.2f ms, late %d, Q %d", 
+              (double)nextSampleTime/10000, 
+              m_fCFPMean/10000.0, 
+              (double)lastSleepTime/10000, 
+              (double)m_PaintTime/10000, 
+              (double)((m_lastPresentTime - systemTime)/10000), 
+              (m_earliestPresentTime ? (double)((m_earliestPresentTime - systemTime)/10000) : 0), 
+              m_iFramesHeld,
+              GetQueueCount());
+        }
       }
     }
     else
@@ -1406,7 +1394,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
           // Not at the correct point in the display raster, so sleep for a while         
           *pTargetTime = systemTime + MIN_VSC_DELAY;
 
-          m_earliestPresentTime = 0;
+          //m_earliestPresentTime = 0;
           break;
         }
         
@@ -1500,7 +1488,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       if( m_pEventSink )
       {
         // LONGLONG sampleLatency = -m_fCFPMean;
-        LONGLONG sampleLatency = 0;
+        LONGLONG sampleLatency = -realSampleTime;
         m_pEventSink->Notify(EC_SAMPLE_LATENCY, (LONG_PTR)&sampleLatency, 0);
         LOG_TRACE("Sample Latency: %I64d", sampleLatency);
       }
@@ -1921,7 +1909,7 @@ void MPEVRCustomPresenter::NotifyTimer(LONGLONG targetTime)
 
 BOOL MPEVRCustomPresenter::PopSample()
 {
-  CAutoLock lock(&m_lockSamples);
+  CAutoLock sLock(&m_lockSamples);
   LOG_TRACE("Removing scheduled sample, size: %d", m_qScheduledSamples.Count());
   if (!m_qScheduledSamples.IsEmpty())
   {
@@ -1935,14 +1923,14 @@ BOOL MPEVRCustomPresenter::PopSample()
 
 int MPEVRCustomPresenter::GetQueueCount()
 {
-  CAutoLock lock(&m_lockSamples);
+  CAutoLock sLock(&m_lockSamples);
   return m_qScheduledSamples.Count();
 }
 
 
 IMFSample* MPEVRCustomPresenter::PeekSample()
 {
-  CAutoLock lock(&m_lockSamples);
+  CAutoLock sLock(&m_lockSamples);
   if (m_qScheduledSamples.IsEmpty())
   {
     Log("ERR: PeekSample: empty queue!");
@@ -1954,13 +1942,10 @@ IMFSample* MPEVRCustomPresenter::PeekSample()
 
 BOOL MPEVRCustomPresenter::ScheduleSample(IMFSample* pSample)
 {
-  CAutoLock lock(&m_lockSamples);
   LOG_TRACE("Scheduling Sample, size: %d", m_qScheduledSamples.Count());
 
   BOOL onTimeSample = true;
   
-  CorrectSampleTime(pSample);
-
   DWORD hr;
   LONGLONG nextSampleTime;
   LONGLONG systemTime;
@@ -1978,16 +1963,34 @@ BOOL MPEVRCustomPresenter::ScheduleSample(IMFSample* pSample)
 
   if (onTimeSample) //Use samples if they are on-time
   {
-    m_qScheduledSamples.Put(pSample);
-    if (m_qScheduledSamples.Count() <= 1 || m_bEmptyQueue)
-    {
-      NotifyScheduler(false);
-    }
+    onTimeSample = PutSample(pSample);
   }
   
   return onTimeSample;
 }
 
+BOOL MPEVRCustomPresenter::PutSample(IMFSample* pSample)
+{
+  m_lockSamples.Lock();
+  LOG_TRACE("Adding scheduled sample, q size: %d", m_qScheduledSamples.Count());
+
+  if (m_qScheduledSamples.Put(pSample))
+  {
+    if (m_qScheduledSamples.Count() <= 1 || m_bEmptyQueue)
+    {
+      m_lockSamples.Unlock();
+      NotifyScheduler(false);
+    }
+    else
+    {
+      m_lockSamples.Unlock();
+    }
+    return TRUE;
+  }
+  
+  m_lockSamples.Unlock();
+  return FALSE;
+}
 
 BOOL MPEVRCustomPresenter::CheckForEndOfStream()
 {
@@ -2097,6 +2100,7 @@ HRESULT MPEVRCustomPresenter::ProcessInputNotify(int* samplesProcessed, bool set
       }
       if (ScheduleSample(pSample))
       {
+        CorrectSampleTime(pSample);
         m_qGoodPutCnt++;
       }
       else //sample has been dropped
@@ -2460,7 +2464,7 @@ void MPEVRCustomPresenter::ReleaseSurfaces()
 
 HRESULT MPEVRCustomPresenter::Paint(CComPtr<IDirect3DSurface9> pSurface)
 {
-  CAutoLock sLock(&m_lockCallback);
+  CAutoLock cLock(&m_lockCallback);
 
   // Old current surface is saved in case the device is lost
   // and we need to restore it 
@@ -3586,12 +3590,17 @@ bool MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *offsetTime)
   {
     int currScanline = (int)rasterStatus.ScanLine;
     
-    if (( currScanline >= m_rasterLimitLow ) && 
-        ( currScanline <= (m_rasterLimitHigh + (*offsetTime/m_hnsScanlineTime))) )
+    if (
+        (currScanline >= m_rasterLimitLow) && 
+        (
+          ( currScanline <= (m_rasterLimitHigh + (*offsetTime/m_hnsScanlineTime))) ||    //Normal term
+          ((currScanline <= m_rasterLimitNP) && (m_iLateFrames == (LF_THRESH_HIGH - 1))) //Delayed sample term (wider window)
+        )
+       )
     {        
       inWindow = true ; //It's within the allowed range for presentation
     }
-          
+              
     *offsetTime = 0;
     if ((currScanline < (int)m_maxScanLine) && inWindow)
     {

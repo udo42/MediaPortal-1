@@ -277,6 +277,7 @@ protected:
   HRESULT        GetTimeToSchedule(IMFSample* pSample, LONGLONG* pDelta, LONGLONG *hnsSystemTime, LONGLONG hnsTimeOffset);
   void           Flush(BOOL forced);
   BOOL           ScheduleSample(IMFSample* pSample);
+  BOOL           PutSample(IMFSample* pSample);
   IMFSample*     PeekSample();
   BOOL           PopSample();
   int            GetQueueCount();
