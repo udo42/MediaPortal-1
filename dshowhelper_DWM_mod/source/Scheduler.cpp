@@ -191,7 +191,7 @@ UINT CALLBACK WorkerThread(void* param)
     LOG_TRACE("Worker sleeping.");
     if (p->iPause <= 0)
     {
-      if(p->pPresenter->m_bScrubbing || p->pPresenter->m_bEmptyQueue)
+      if(p->pPresenter->m_bScrubbing)
         dwObject = WaitForMultipleObjects (2, hEvts, FALSE, 5);
       else
         dwObject = WaitForMultipleObjects (2, hEvts, FALSE, 50);
@@ -329,7 +329,7 @@ UINT CALLBACK SchedulerThread(void* param)
     {
       if (idleWait)
       {     
-        delay = 500000; // 50ms wait
+        delay = 100000; // 10ms wait
         timDel = (DWORD)(delay/10000);
         LOG_TRACE("Setting Scheduler Timer to %d ms idle time", timDel);
         dwObject = WaitForMultipleObjects (3, hEvts3, FALSE, timDel );

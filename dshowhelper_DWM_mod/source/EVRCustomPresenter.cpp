@@ -1240,24 +1240,16 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
 
   // Allow 'hystersisTime' late or early frames to avoid synchronised judder problems. 
 
-  // only flush queues while not in DVD menus
   if (m_bFlush)
   {
-    if (!m_bDVDMenu)
-    {
-      PauseThread(m_hWorker, &m_workerParams);
-      Flush(FALSE);
-      WakeThread(m_hWorker, &m_workerParams);
-      m_iLateFrames = 0;
-      *pTargetTime = 0;
-      m_earliestPresentTime = 0;
-      *pIdleWait = true;
-      return hr;
-    }
-    else
-    {
-      m_bFlush = FALSE;
-    }
+    PauseThread(m_hWorker, &m_workerParams);
+    Flush(FALSE); // do not force in case we are in DVD menus 
+    WakeThread(m_hWorker, &m_workerParams);
+    m_iLateFrames = 0;
+    *pTargetTime = 0;
+    m_earliestPresentTime = 0;
+    *pIdleWait = true;
+    return hr;
   }
 
   //Bail out after presenting first frame in skip-step FFWD/RWD mode
@@ -2130,9 +2122,11 @@ HRESULT MPEVRCustomPresenter::ProcessInputNotify(int* samplesProcessed, bool set
         // no errors, just infos why it didn't succeed
         Log("ProcessOutput: change of type");
         bhasMoreSamples = FALSE;
+        m_bFirstInputNotify = FALSE;
         PauseThread(m_hTimer, &m_timerParams);
         PauseThread(m_hScheduler, &m_schedulerParams);
         //LogOutputTypes();
+        Flush(FALSE);
         hr = RenegotiateMediaOutputType();
         WakeThread(m_hScheduler, &m_schedulerParams);
         WakeThread(m_hTimer, &m_timerParams);
@@ -2163,6 +2157,7 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
   {
     case MFVP_MESSAGE_FLUSH:
       // The presenter should discard any pending samples.
+      m_bFirstInputNotify = FALSE;
       Log("ProcessMessage MFVP_MESSAGE_FLUSH");
       // Delegate to avoid a weird deadlock with application-idle handler Flush();
       m_bFlush = TRUE;
@@ -2171,11 +2166,13 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
 
     case MFVP_MESSAGE_INVALIDATEMEDIATYPE:
       // The mixer's output format has changed. The EVR will initiate format negotiation.
+      m_bFirstInputNotify = FALSE;
       Log("ProcessMessage MFVP_MESSAGE_INVALIDATEMEDIATYPE");
       PauseThread(m_hTimer, &m_timerParams);
       PauseThread(m_hWorker, &m_workerParams);
       PauseThread(m_hScheduler, &m_schedulerParams);
       //LogOutputTypes();
+      Flush(FALSE);
       hr = RenegotiateMediaOutputType();
       WakeThread(m_hScheduler, &m_schedulerParams);
       WakeThread(m_hWorker, &m_workerParams);
@@ -2220,6 +2217,7 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
 
     case MFVP_MESSAGE_ENDSTREAMING:
       // The EVR switched from running or paused to stopped. The presenter should free resources.
+      m_bFirstInputNotify = FALSE;
       Log("ProcessMessage MFVP_MESSAGE_ENDSTREAMING");
       PauseThread(m_hTimer, &m_timerParams);
       PauseThread(m_hWorker, &m_workerParams);
@@ -2290,6 +2288,7 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::OnClockStart(MFTIME hnsSystemTim
 
 HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::OnClockStop(MFTIME hnsSystemTime)
 {
+  m_bFirstInputNotify = FALSE;
   Log("OnClockStop");
   PauseThread(m_hTimer, &m_timerParams);
   PauseThread(m_hWorker, &m_workerParams);
