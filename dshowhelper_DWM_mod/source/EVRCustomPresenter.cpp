@@ -1457,7 +1457,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         //Clamp within limits - because of hystersis, the range of realSampleTime
         //is greater than frameTime, so it's possible for nstPhaseDiff to exceed
         //the -0.5 to +0.5 allowable range 
-        if (m_bDVDMenu || m_bScrubbing || (m_iFramesDrawn <= FRAME_PROC_THRSH2))
+        if (m_bDVDMenu || m_bScrubbing || (m_iFramesDrawn <= FRAME_PROC_THRSH2) || (m_frameRateRatio == 0 && m_dBias == 1.0))
         {
           nstPhaseDiff = 0.0;
         }
@@ -3377,7 +3377,7 @@ double MPEVRCustomPresenter::GetCycleDifference()
   }
   else
 	{
-    for (j = 1; j <= 4; j++) 
+    for (j = 1; j <= 2; j++) 
 		{
   	  double dFrameCycle = j * m_dFrameCycle;
       for (i = 1; i <= 8; i++) 
