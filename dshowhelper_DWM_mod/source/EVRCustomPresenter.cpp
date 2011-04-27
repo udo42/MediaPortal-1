@@ -86,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.078 part DWM ----------- instance 0x%x", this);
+      Log("---------- v1.4.079 part DWM ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.078 part DWM ----------- instance 0x%x", this);
+      Log("---------- v0.0.079 part DWM ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -3380,7 +3380,7 @@ double MPEVRCustomPresenter::GetCycleDifference()
     for (j = 1; j <= 2; j++) 
 		{
   	  double dFrameCycle = j * m_dFrameCycle;
-      for (i = 1; i <= 8; i++) 
+      for (i = 1; i <= 4; i++) 
   		{
   			double dDisplayCycle = i * dBaseDisplayCycle;
   			double diff = (dDisplayCycle - dFrameCycle) / dFrameCycle;
