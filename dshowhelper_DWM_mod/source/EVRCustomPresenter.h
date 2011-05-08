@@ -35,6 +35,9 @@ using namespace std;
 //Enables reset of DWM parameters if true
 #define ENABLE_DWM_RESET true
 
+//Enables repeated rendering of last sample when queue becomes empty if true
+#define ENABLE_EMPTY_RENDER true
+
 #define NUM_SURFACES 4
 #define NB_JITTER 128
 #define NB_RFPSIZE 64
@@ -93,6 +96,9 @@ using namespace std;
 
 // uncomment the //Log to enable extra logging of thread pause/wake
 #define LOG_THR_PAUSE //Log
+
+// Change to 'true' to enable logging of delayed frames
+#define LOG_DEL_FRAMES false
 
 // Macro for locking 
 #define TIME_LOCK(obj, crit, name)  \
@@ -285,6 +291,7 @@ protected:
   HRESULT        GetFreeSample(IMFSample** ppSample);
   void           ReturnSample(IMFSample* pSample, BOOL tryNotify);
   void           UpdateLastPresSample(IMFSample* pSample);
+  IMFSample*     PeekLastPresSample();
   HRESULT        PresentSample(IMFSample* pSample, LONGLONG frameTime);
   void           CorrectSampleTime(IMFSample* pSample);
   void           GetRealRefreshRate();
@@ -378,6 +385,7 @@ protected:
   int                               m_iFramesProcessed;
   int                               m_iFramesHeld;
   int                               m_iLateFrames;
+  int                               m_iFramesDelayed;
  
 
   int       m_nNextSyncOffset;
@@ -459,6 +467,7 @@ protected:
   double        m_DetFrameTimeAve;
 
   int           m_frameRateRatio;
+  int           m_frameRateRatX2;
   int           m_rawFRRatio;
   
   int           m_qGoodPopCnt;
@@ -480,6 +489,7 @@ protected:
   int           m_numFilters;
   
   HANDLE        m_dummyEvent;
+  bool          m_RepeatRender;
   
   BOOL          m_bIsWin7;
   bool          m_bMsVideoCodec;

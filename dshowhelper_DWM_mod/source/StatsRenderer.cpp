@@ -197,11 +197,11 @@ void StatsRenderer::DrawStats()
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
 
-    strText.Format("Video: %d x %d %d:%d | Act FPS: %.4f (red)| Draw: %d | Drop: %d | Repeat: %d | Late: %d", 
+    strText.Format("Video: %d x %d %d:%d | Act FPS: %.4f (red)| Draw: %d | Drop: %d | Rp: %d | Lt: %d | Dl: %d", 
       m_pPresenter->m_iVideoWidth, m_pPresenter->m_iVideoHeight, 
       m_pPresenter->m_iARX, m_pPresenter->m_iARY, 
       10000000.0 / m_pPresenter->m_fJitterMean, m_pPresenter->m_iFramesDrawn, m_pPresenter->m_iFramesDropped,
-      m_pPresenter->m_iEarlyFrCnt, m_pPresenter->m_iFramesHeld);
+      m_pPresenter->m_iEarlyFrCnt, m_pPresenter->m_iFramesHeld, m_pPresenter->m_iFramesDelayed);
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
 
@@ -213,9 +213,10 @@ void StatsRenderer::DrawStats()
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
 
-    strText.Format("Raster offset (ylw): %5.2f ms | SOP: %4d | EOP: %4d | Locked: %d | Derr: %5.2f ms | Q: %d",
+    strText.Format("Raster offset (ylw): %5.2f ms | SOP: %4d | EOP: %4d | LKD: %d | Derr: %5.2f ms | Q: %d | RR: %d",
       m_pPresenter->m_rasterSyncOffset, m_pPresenter->m_LastStartOfPaintScanline, m_pPresenter->m_LastEndOfPaintScanline, 
-      (int)m_pPresenter->m_DetectedLock, m_pPresenter->m_lastDelayErr/10000.0, (m_pPresenter->m_qScheduledSamples.Count()));
+      (int)m_pPresenter->m_DetectedLock, m_pPresenter->m_lastDelayErr/10000.0, (m_pPresenter->m_qScheduledSamples.Count()),
+       m_pPresenter->m_RepeatRender);
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
 

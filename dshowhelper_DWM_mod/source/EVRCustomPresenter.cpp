@@ -86,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.079 part DWM ----------- instance 0x%x", this);
+      Log("---------- v1.4.080 part DWM ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.079 part DWM ----------- instance 0x%x", this);
+      Log("---------- v0.0.080 part DWM ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -1147,6 +1147,13 @@ void MPEVRCustomPresenter::UpdateLastPresSample(IMFSample* pSample)
   }
 }
 
+IMFSample* MPEVRCustomPresenter::PeekLastPresSample()
+{
+  CAutoLock sLock(&m_lockSamples);
+  return m_pLastPresSample;
+}
+
+
 
 HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTime)
 {
@@ -1231,6 +1238,8 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
   LONGLONG systemTime = 0;
   LONGLONG lateLimit = hystersisTime;
   LONGLONG delErrLimit = displayTime;
+  bool b_RepeatPaint = false;
+  IMFSample* pSample;
 
   LONGLONG frameTime = m_rtTimePerFrame;
   if (m_DetectedFrameTime > DFT_THRESH)
@@ -1261,8 +1270,10 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
   // this loop is only traversed once each time
   while (true)
   {        
+    b_RepeatPaint = (GetQueueCount() == 0) && ENABLE_EMPTY_RENDER && (PeekLastPresSample() != NULL);
+    
     if (
-        (GetQueueCount() == 0) ||                         //there are no samples available so we go idle
+        ((GetQueueCount() == 0) && !b_RepeatPaint) ||  //there are no samples available so we go idle
         (m_state == MP_RENDER_STATE_STOPPED) ||
         (m_state == MP_RENDER_STATE_PAUSED && !m_bDVDMenu)  //don't process samples in paused mode during normal playback
         )
@@ -1294,20 +1305,37 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     }
 
 
-    IMFSample* pSample = PeekSample();
-    if (pSample == NULL)
+    if (b_RepeatPaint) //Repeat render of last sample
     {
-      *pTargetTime = 0;
-      break;
+      pSample = PeekLastPresSample();
+      if (pSample == NULL)
+      {
+        *pTargetTime = 0;
+        break;
+      }
+      realSampleTime = 0;       
+      nextSampleTime = 0;
+      systemTime = GetCurrentTimestamp();
+      m_RepeatRender = true;
     }
-  
-    // get scheduled time, if none is available the sample will be presented immediately
-    CHECK_HR(hr = GetTimeToSchedule(pSample, &realSampleTime, &systemTime, (frameTime * DWM_DELAY_COMP)), "Couldn't get time to schedule!");
-    if (FAILED(hr))
+    else
     {
-      realSampleTime = 0; 
+      pSample = PeekSample();
+      if (pSample == NULL)
+      {
+        *pTargetTime = 0;
+        break;
+      }
+    
+      // get scheduled time, if none is available the sample will be presented immediately
+      CHECK_HR(hr = GetTimeToSchedule(pSample, &realSampleTime, &systemTime, (frameTime * DWM_DELAY_COMP)), "Couldn't get time to schedule!");
+      if (FAILED(hr))
+      {
+        realSampleTime = 0; 
+      }
+      nextSampleTime = realSampleTime;
+      m_RepeatRender = false;
     }
-    nextSampleTime = realSampleTime;
     
     LOG_TRACE("Time to schedule: %I64d", nextSampleTime);  
         
@@ -1323,7 +1351,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing && m_NSTinitDone)
     {
       //Centralise nextSampleTime timing window when in normal play mode and MP Audio Renderer is inactive
-      if (!m_pAVSyncClock)
+      if (!m_pAVSyncClock && (realSampleTime != 0))
       {
         nextSampleTime = (realSampleTime + (frameTime/2)) - m_hnsNSToffset;
       }
@@ -1352,16 +1380,19 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         else if (((systemTime - m_earliestPresentTime) > (displayTime/2)) && m_earliestPresentTime) //Too long since the last 'present'
         {
           m_iLateFrames = (LF_THRESH_HIGH - 1);
-          m_iFramesHeld++;
-          Log("Delayed frame, NST %.2f ms, AveRNST %.2f ms, last sleep %.2f ms, paint %.2f ms, last pres %.2f ms, EPT %.2f ms, late %d, Q %d", 
-              (double)nextSampleTime/10000, 
-              m_fCFPMean/10000.0, 
-              (double)lastSleepTime/10000, 
-              (double)m_PaintTime/10000, 
-              (double)((m_lastPresentTime - systemTime)/10000), 
-              (m_earliestPresentTime ? (double)((m_earliestPresentTime - systemTime)/10000) : 0), 
-              m_iFramesHeld,
-              GetQueueCount());
+          m_iFramesDelayed++;
+          if (LOG_DEL_FRAMES)
+          {
+            Log("Delayed frame, NST %.2f ms, AveRNST %.2f ms, last sleep %.2f ms, paint %.2f ms, last pres %.2f ms, EPT %.2f ms, late %d, Q %d", 
+                (double)nextSampleTime/10000, 
+                m_fCFPMean/10000.0, 
+                (double)lastSleepTime/10000, 
+                (double)m_PaintTime/10000, 
+                (double)((m_lastPresentTime - systemTime)/10000), 
+                (m_earliestPresentTime ? (double)((m_earliestPresentTime - systemTime)/10000) : 0), 
+                m_iFramesDelayed,
+                GetQueueCount());
+          }
         }
       }
     }
@@ -1424,22 +1455,30 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       
       *pTargetTime = 0;
 
-      if (PeekSample() != pSample)
-      {
-        m_earliestPresentTime = 0;
-        break;
-      }
-      
-      m_lastPresentTime = systemTime;
-      CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
-      if ((m_iFramesDrawn < NUM_DWM_BUFFERS) && m_bDwmCompEnabled) //Push extra samples into the pipeline at start of play
-      {
+      if (b_RepeatPaint) //Repeat render of last sample
+      {        
+        m_lastPresentTime = systemTime;
         CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
-        DwmFlush();
-      }     
-      PopSample();
-      
-      UpdateLastPresSample(pSample);
+      }
+      else
+      {
+        if (PeekSample() != pSample)
+        {
+          m_earliestPresentTime = 0;
+          break;
+        }
+        
+        m_lastPresentTime = systemTime;
+        CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
+        if ((m_iFramesDrawn < NUM_DWM_BUFFERS) && m_bDwmCompEnabled) //Push extra samples into the pipeline at start of play
+        {
+          CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
+          DwmFlush();
+        }     
+        PopSample();
+        
+        UpdateLastPresSample(pSample);
+      }
       
       NotifyWorker(FALSE);
       m_iFramesProcessed++;
@@ -1491,7 +1530,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     {         
       m_earliestPresentTime = 0;
       
-      UpdateLastPresSample(NULL);
+      //UpdateLastPresSample(NULL);
       if (!PopSample())
       {
         break;
@@ -3221,6 +3260,7 @@ void MPEVRCustomPresenter::ResetFrameStats()
   m_iEarlyFrCnt     = 0;
   m_iFramesProcessed = 0;
   m_iFramesHeld     = 0;
+  m_iFramesDelayed  = 0;
   m_iLateFrames     = 0;
   
   m_nNextCFP = 0;
@@ -3241,6 +3281,7 @@ void MPEVRCustomPresenter::ResetFrameStats()
   
   m_LastScheduledUncorrectedSampleTime = -1;
   m_frameRateRatio = 0;
+  m_frameRateRatX2 = 0;
   m_rawFRRatio = 0;
 
   m_stallTime = 0;
@@ -3263,6 +3304,7 @@ void MPEVRCustomPresenter::ResetFrameStats()
   m_qCorrSampTimCnt = 0; 
 
   m_iClockAdjustmentsDone = 0;
+  m_RepeatRender          = false;
 }
 
 
@@ -3344,16 +3386,8 @@ void MPEVRCustomPresenter::GetFrameRateRatio()
   int F2DRatioN6 = (int)((rtimePerFrameMs * 0.985)/currentDispCycle); // Allow -1.5% tolerance
 
   m_rawFRRatio = F2DRatioP6;
- 
-  if (!(m_DetectedFrameTime > DFT_THRESH) || (m_iFramesDrawn < FRAME_PROC_THRESH) )
-  {
-    m_frameRateRatio = 0;
-  }
-  else if (m_iFramesDrawn < FRAME_PROC_THRSH2)
-  {
-    m_frameRateRatio = F2DRatioP6;
-  }
-  else if (F2DRatioP6 == 0 || (F2DRatioP6 == F2DRatioN6)) 
+
+  if (F2DRatioP6 == 0 || (F2DRatioP6 == F2DRatioN6)) 
   {
     m_frameRateRatio = 0;
   }
@@ -3361,7 +3395,30 @@ void MPEVRCustomPresenter::GetFrameRateRatio()
   {
     m_frameRateRatio = F2DRatioP6;
   }
+
+  int F4DRatX2P6 = (int)((rtimePerFrameMs * 2.03)/currentDispCycle); // Allow +1.5% tolerance
+  int F4DRatX2N6 = (int)((rtimePerFrameMs * 1.97)/currentDispCycle); // Allow -1.5% tolerance
+
+  if (F4DRatX2P6 == 0 || (F4DRatX2P6 == F4DRatX2N6)) 
+  {
+    m_frameRateRatX2 = 0;
+  }
+  else
+  {
+    m_frameRateRatX2 = F4DRatX2P6;
+  }
  
+  if (!(m_DetectedFrameTime > DFT_THRESH) || (m_iFramesDrawn < FRAME_PROC_THRESH) )
+  {
+    m_frameRateRatio = 0;
+    m_frameRateRatX2 = 0;
+  }
+  else if (m_iFramesDrawn < FRAME_PROC_THRSH2)
+  {
+    m_frameRateRatio = F2DRatioP6;
+    m_frameRateRatX2 = F4DRatX2P6;
+  }
+
 }
 
 // Get the difference in video and display cycle times.
@@ -3380,7 +3437,7 @@ double MPEVRCustomPresenter::GetCycleDifference()
     for (j = 1; j <= 2; j++) 
 		{
   	  double dFrameCycle = j * m_dFrameCycle;
-      for (i = 1; i <= 4; i++) 
+      for (i = 1; i <= 5; i++) 
   		{
   			double dDisplayCycle = i * dBaseDisplayCycle;
   			double diff = (dDisplayCycle - dFrameCycle) / dFrameCycle;
