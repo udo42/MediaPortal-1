@@ -263,7 +263,7 @@ protected:
   int            MeasureScanLines(LONGLONG startTime, double *times, double *scanLines, int n);
   BOOL           EstimateRefreshTimings();
   void           ReleaseSurfaces();
-  HRESULT        Paint(CComPtr<IDirect3DSurface9> pSurface);
+  HRESULT        Paint(CComPtr<IDirect3DSurface9> pSurface, bool renderStats);
   HRESULT        SetMediaType(CComPtr<IMFMediaType> pType, BOOL* pbHasChanged);
   void           ReAllocSurfaces();
   HRESULT        LogOutputTypes();
@@ -292,6 +292,7 @@ protected:
   void           ReturnSample(IMFSample* pSample, BOOL tryNotify);
   void           UpdateLastPresSample(IMFSample* pSample);
   IMFSample*     PeekLastPresSample();
+  void           ReturnTempSample(IMFSample* pSample);
   HRESULT        PresentSample(IMFSample* pSample, LONGLONG frameTime);
   void           CorrectSampleTime(IMFSample* pSample);
   void           GetRealRefreshRate();

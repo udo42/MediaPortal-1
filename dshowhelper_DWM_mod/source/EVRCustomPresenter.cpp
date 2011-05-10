@@ -86,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.080 part DWM ----------- instance 0x%x", this);
+      Log("---------- v1.4.081 part DWM ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.080 part DWM ----------- instance 0x%x", this);
+      Log("---------- v0.0.081 part DWM ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -1154,12 +1154,23 @@ IMFSample* MPEVRCustomPresenter::PeekLastPresSample()
 }
 
 
+void MPEVRCustomPresenter::ReturnTempSample(IMFSample* pSample)
+{
+  CAutoLock sLock(&m_lockSamples);
+  LOG_TRACE("Clean sample returned: now having %d samples", m_iFreeSamples+1);
+  m_vFreeSamples[m_iFreeSamples] = pSample;
+  m_iFreeSamples++;
+}
+
 
 HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTime)
 {
   HRESULT hr = S_OK;
   IMFMediaBuffer* pBuffer = NULL;
   IDirect3DSurface9* pSurface = NULL;
+  IMFMediaBuffer* pTempBuffer = NULL;
+  IDirect3DSurface9* pTempSurface = NULL;
+  IMFSample* pTempSample = NULL;
   LONGLONG then = 0;
   LOG_TRACE("Presenting sample");
   // Get the buffer from the sample.
@@ -1172,7 +1183,69 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
     (void**)&pSurface),
     "failed: MyGetService");
 
-  if (pSurface)
+  //Experimental surface copying for 'repeat render' mode
+  if (m_RepeatRender)
+  {
+    if (!FAILED(GetFreeSample(&pTempSample)))
+    {
+      // Get the buffer from the sample.
+      CHECK_HR(hr = pTempSample->GetBufferByIndex(0, &pTempBuffer), "failed: GetBufferByIndex");
+    
+      CHECK_HR(hr = MyGetService(
+        pTempBuffer, 
+        MR_BUFFER_SERVICE, 
+        __uuidof(IDirect3DSurface9), 
+        (void**)&pTempSurface),
+        "failed: MyGetService");
+    
+      if (pTempSurface && pSurface)
+      {
+        //Experimental copying from real surface into temp surface for repeat render mode
+        m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
+        if (FAILED(hr = m_pD3DDev->StretchRect(pSurface, NULL, pTempSurface, NULL, D3DTEXF_NONE)))
+        {
+          Log("EVR:PresentSample: StretchRect failed %u\n",hr);
+        }
+        m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+      }      
+    }
+  }
+
+  if (pTempSurface) //Special repeat rendering mode when queue is empty
+  {
+    // Calculate offset to scheduled time for subtitle renderer
+    //m_iFramesDrawn++;
+    if (m_pClock != NULL)
+    {
+      LONGLONG hnsTimeNow, hnsSystemTime;
+      m_pClock->GetCorrelatedTime(0, &hnsTimeNow, &hnsSystemTime);
+      hnsTimeNow = hnsTimeNow + (GetCurrentTimestamp() - hnsSystemTime) + (frameTime * PS_FRAME_ADVANCE); //correct the value
+      
+      if (hnsTimeNow > 0)
+      {
+        m_pCallback->SetSampleTime(hnsTimeNow);
+        pTempSample->SetSampleTime(hnsTimeNow); 
+        pTempSample->SetSampleDuration((frameTime * 9)/8);
+      }
+    }
+
+    // Present the swap surface
+    LOG_TRACE("Painting");
+    if (LOG_DELAYS)
+      then = GetCurrentTimestamp();
+      
+    CHECK_HR(hr = Paint(pTempSurface, m_bDrawStats), "failed: Paint");
+    
+    if (LOG_DELAYS)
+    {
+      LONGLONG diff = GetCurrentTimestamp() - then;
+      if (diff > 500000)
+      {
+        Log("High Paint() latency: %.2f ms", (double)diff/10000);
+      }
+    }
+  }
+  else if (pSurface) //Normal rendering
   {
     // Calculate offset to scheduled time for subtitle renderer
     m_iFramesDrawn++;
@@ -1195,7 +1268,7 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
     if (LOG_DELAYS)
       then = GetCurrentTimestamp();
       
-    CHECK_HR(hr = Paint(pSurface), "failed: Paint");
+    CHECK_HR(hr = Paint(pSurface, (m_bDrawStats && GetQueueCount()) ), "failed: Paint");
     
     if (LOG_DELAYS)
     {
@@ -1209,6 +1282,15 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
 
   SAFE_RELEASE(pBuffer);
   SAFE_RELEASE(pSurface);
+  
+  SAFE_RELEASE(pTempBuffer);
+  SAFE_RELEASE(pTempSurface);
+  
+  if (pTempSample)
+  {
+    ReturnTempSample(pTempSample); 
+  }
+  
   if (hr == D3DERR_DEVICELOST || hr == D3DERR_DEVICENOTRESET)
   {
     // Failed because the device was lost.
@@ -1469,15 +1551,14 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         }
         
         m_lastPresentTime = systemTime;
+        PopSample();        
+        UpdateLastPresSample(pSample);
         CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
         if ((m_iFramesDrawn < NUM_DWM_BUFFERS) && m_bDwmCompEnabled) //Push extra samples into the pipeline at start of play
         {
           CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
           DwmFlush();
         }     
-        PopSample();
-        
-        UpdateLastPresSample(pSample);
       }
       
       NotifyWorker(FALSE);
@@ -2500,7 +2581,7 @@ void MPEVRCustomPresenter::ReleaseSurfaces()
 }
 
 
-HRESULT MPEVRCustomPresenter::Paint(CComPtr<IDirect3DSurface9> pSurface)
+HRESULT MPEVRCustomPresenter::Paint(CComPtr<IDirect3DSurface9> pSurface, bool renderStats)
 {
   CAutoLock cLock(&m_lockCallback);
 
@@ -2550,7 +2631,7 @@ HRESULT MPEVRCustomPresenter::Paint(CComPtr<IDirect3DSurface9> pSurface)
       m_rasterSyncOffset = m_dDetectedScanlineTime * m_maxScanLine;
     }
     
-    if (m_bDrawStats)
+    if (renderStats)
     {
       m_pD3DDev->SetRenderTarget(0, pSurface);
       m_pStatsRenderer->DrawStats();
