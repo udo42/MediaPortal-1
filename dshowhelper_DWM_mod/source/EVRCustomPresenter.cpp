@@ -1184,7 +1184,7 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
     "failed: MyGetService");
 
   //Experimental surface copying for 'repeat render' mode
-  if (m_RepeatRender)
+  if (m_RepeatRender && m_bDrawStats)
   {
     if (!FAILED(GetFreeSample(&pTempSample)))
     {
@@ -1552,13 +1552,13 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         
         m_lastPresentTime = systemTime;
         PopSample();        
-        UpdateLastPresSample(pSample);
         CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
         if ((m_iFramesDrawn < NUM_DWM_BUFFERS) && m_bDwmCompEnabled) //Push extra samples into the pipeline at start of play
         {
           CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
           DwmFlush();
         }     
+        UpdateLastPresSample(pSample);
       }
       
       NotifyWorker(FALSE);
