@@ -86,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.081 part DWM ----------- instance 0x%x", this);
+      Log("---------- v1.4.082 part DWM ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.081 part DWM ----------- instance 0x%x", this);
+      Log("---------- v0.0.082 part DWM ----------- instance 0x%x", this);
       Log("--- audio renderer testing --- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -1183,7 +1183,7 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
     (void**)&pSurface),
     "failed: MyGetService");
 
-  //Experimental surface copying for 'repeat render' mode
+  //Experimental copying from real surface into temp surface for 'repeat render' mode
   if (m_RepeatRender && m_bDrawStats)
   {
     if (!FAILED(GetFreeSample(&pTempSample)))
@@ -1200,13 +1200,14 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
     
       if (pTempSurface && pSurface)
       {
-        //Experimental copying from real surface into temp surface for repeat render mode
+        DWORD alphaBlend;
+        m_pD3DDev->GetRenderState(D3DRS_ALPHABLENDENABLE, &alphaBlend);
         m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
         if (FAILED(hr = m_pD3DDev->StretchRect(pSurface, NULL, pTempSurface, NULL, D3DTEXF_NONE)))
         {
           Log("EVR:PresentSample: StretchRect failed %u\n",hr);
         }
-        m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, TRUE);
+        m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, alphaBlend);
       }      
     }
   }
