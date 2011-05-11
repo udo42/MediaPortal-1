@@ -293,7 +293,7 @@ protected:
   void           UpdateLastPresSample(IMFSample* pSample);
   IMFSample*     PeekLastPresSample();
   void           ReturnTempSample(IMFSample* pSample);
-  HRESULT        PresentSample(IMFSample* pSample, LONGLONG frameTime);
+  HRESULT        PresentSample(IMFSample* pSample, LONGLONG frameTime, bool renderStats);
   void           CorrectSampleTime(IMFSample* pSample);
   void           GetRealRefreshRate();
   bool           GetDelayToRasterTarget(LONGLONG *offsetTime);
@@ -470,6 +470,7 @@ protected:
   int           m_frameRateRatio;
   int           m_frameRateRatX2;
   int           m_rawFRRatio;
+  bool          m_nstPhaseDiffUpd;
   
   int           m_qGoodPopCnt;
   int           m_qBadPopCnt;

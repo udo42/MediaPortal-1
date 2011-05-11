@@ -207,9 +207,9 @@ void StatsRenderer::DrawStats()
 
     OffsetRect(&rc, 0, BlankHeight); // Extra "line feed"
 
-    strText.Format("Render time (grn): %+5.1f ms | NST: %+3.1f ms | AveRNST: %+3.1f ms | FrRat: %d | Stall: %+3.1f ms", 
+    strText.Format("Render time (grn): %+5.1f ms | NST: %+3.1f ms | AveRNST: %+3.1f ms | Fr1: %d | Fr2: %d | Stall: %+3.1f ms", 
       m_pPresenter->m_fSyncOffsetAvr/10000.0, m_pPresenter->m_llLastCFPts/10000.0, 
-      m_pPresenter->m_fCFPMean/10000.0, m_pPresenter->m_frameRateRatio, m_pPresenter->m_stallTime/10000.0);
+      m_pPresenter->m_fCFPMean/10000.0, m_pPresenter->m_frameRateRatio, m_pPresenter->m_frameRateRatX2, m_pPresenter->m_stallTime/10000.0);
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
 

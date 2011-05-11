@@ -1163,7 +1163,7 @@ void MPEVRCustomPresenter::ReturnTempSample(IMFSample* pSample)
 }
 
 
-HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTime)
+HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTime, bool renderStats)
 {
   HRESULT hr = S_OK;
   IMFMediaBuffer* pBuffer = NULL;
@@ -1184,7 +1184,7 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
     "failed: MyGetService");
 
   //Experimental copying from real surface into temp surface for 'repeat render' mode
-  if (m_RepeatRender && m_bDrawStats)
+  if ((m_RepeatRender || (GetQueueCount()==0)) && renderStats)
   {
     if (!FAILED(GetFreeSample(&pTempSample)))
     {
@@ -1203,19 +1203,20 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
         DWORD alphaBlend;
         m_pD3DDev->GetRenderState(D3DRS_ALPHABLENDENABLE, &alphaBlend);
         m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, FALSE);
-        if (FAILED(hr = m_pD3DDev->StretchRect(pSurface, NULL, pTempSurface, NULL, D3DTEXF_NONE)))
-        {
-          Log("EVR:PresentSample: StretchRect failed %u\n",hr);
-        }
+        CHECK_HR(hr = m_pD3DDev->StretchRect(pSurface, NULL, pTempSurface, NULL, D3DTEXF_NONE),"PresentSample: StretchRect failed")
         m_pD3DDev->SetRenderState(D3DRS_ALPHABLENDENABLE, alphaBlend);
       }      
     }
   }
+  
+  if (!m_RepeatRender)
+  {
+    m_iFramesDrawn++;
+  }
 
-  if (pTempSurface) //Special repeat rendering mode when queue is empty
+  if (pTempSurface && !FAILED(hr)) //Special repeat rendering mode when queue is empty
   {
     // Calculate offset to scheduled time for subtitle renderer
-    //m_iFramesDrawn++;
     if (m_pClock != NULL)
     {
       LONGLONG hnsTimeNow, hnsSystemTime;
@@ -1235,7 +1236,7 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
     if (LOG_DELAYS)
       then = GetCurrentTimestamp();
       
-    CHECK_HR(hr = Paint(pTempSurface, m_bDrawStats), "failed: Paint");
+    CHECK_HR(hr = Paint(pTempSurface, renderStats), "failed: Paint");
     
     if (LOG_DELAYS)
     {
@@ -1249,7 +1250,6 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
   else if (pSurface) //Normal rendering
   {
     // Calculate offset to scheduled time for subtitle renderer
-    m_iFramesDrawn++;
     if (m_pClock != NULL)
     {
       LONGLONG hnsTimeNow, hnsSystemTime;
@@ -1269,7 +1269,8 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
     if (LOG_DELAYS)
       then = GetCurrentTimestamp();
       
-    CHECK_HR(hr = Paint(pSurface, (m_bDrawStats && GetQueueCount()) ), "failed: Paint");
+    // CHECK_HR(hr = Paint(pSurface, (m_bDrawStats && GetQueueCount()) ), "failed: Paint");
+    CHECK_HR(hr = Paint(pSurface, renderStats), "failed: Paint");
     
     if (LOG_DELAYS)
     {
@@ -1488,8 +1489,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     // When scrubbing always display at least every eighth frame - even if it's late
     if ( (nextSampleTime >= -lateLimit) || m_bDVDMenu || !m_bFrameSkipping || (m_bScrubbing && !(m_iFramesProcessed % 8)) || m_bZeroScrub )
     {   
-      GetFrameRateRatio(); // update video to display FPS ratio data
-      
       // Within the time window to 'present' a sample, or it's a special play mode
       if (!m_bZeroScrub && (m_iLateFrames < LF_THRESH_HIGH))
       {   
@@ -1541,7 +1540,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       if (b_RepeatPaint) //Repeat render of last sample
       {        
         m_lastPresentTime = systemTime;
-        CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
+        CHECK_HR(PresentSample(pSample, frameTime, m_bDrawStats), "PresentSample failed");
       }
       else
       {
@@ -1553,10 +1552,10 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         
         m_lastPresentTime = systemTime;
         PopSample();        
-        CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
+        CHECK_HR(PresentSample(pSample, frameTime, m_bDrawStats), "PresentSample failed");
         if ((m_iFramesDrawn < NUM_DWM_BUFFERS) && m_bDwmCompEnabled) //Push extra samples into the pipeline at start of play
         {
-          CHECK_HR(PresentSample(pSample, frameTime), "PresentSample failed");
+          CHECK_HR(PresentSample(pSample, frameTime, m_bDrawStats), "PresentSample failed");
           DwmFlush();
         }     
         UpdateLastPresSample(pSample);
@@ -1572,13 +1571,18 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
             
       if (m_pAVSyncClock) //Update phase deviation data for MP Audio Renderer
       {
+        m_nstPhaseDiffUpd = !m_nstPhaseDiffUpd; //Only update every other frame
+        
         //Target (0.5 * frameTime) for nextSampleTime
         double nstPhaseDiff = -(((double)realSampleTime / (double)frameTime) - 0.5);
 
         //Clamp within limits - because of hystersis, the range of realSampleTime
         //is greater than frameTime, so it's possible for nstPhaseDiff to exceed
         //the -0.5 to +0.5 allowable range 
-        if (m_bDVDMenu || m_bScrubbing || (m_iFramesDrawn <= FRAME_PROC_THRSH2) || (m_frameRateRatio == 0 && m_dBias == 1.0))
+        if (
+             m_bDVDMenu || m_bScrubbing || (m_iFramesDrawn <= FRAME_PROC_THRSH2) 
+             || (m_frameRateRatX2 == 0 && m_dBias == 1.0) || !m_nstPhaseDiffUpd
+           )
         {
           nstPhaseDiff = 0.0;
         }
@@ -3365,6 +3369,7 @@ void MPEVRCustomPresenter::ResetFrameStats()
   m_frameRateRatio = 0;
   m_frameRateRatX2 = 0;
   m_rawFRRatio = 0;
+  m_nstPhaseDiffUpd = false;
 
   m_stallTime = 0;
   m_earliestPresentTime = 0;
@@ -3690,6 +3695,8 @@ void MPEVRCustomPresenter::CorrectSampleTime(IMFSample* pSample)
     m_DectedSum = 0;
     ZeroMemory((void*)&m_DetectedFrameTimeHistory, sizeof(LONGLONG) * NB_DFTHSIZE);
   }
+  
+  GetFrameRateRatio(); // update video to display FPS ratio data
     
   LOG_TRACE("EVR: Time: %f %f %f\n", Time / 10000000.0, SetDuration / 10000000.0, m_DetectedFrameTime);
 }
