@@ -226,7 +226,7 @@ public:
   double         GetDisplayCycle();
   double         GetCycleDifference();
   double         GetDetectedFrameTime();
-  double         GetRealFramePeriod();
+  double         GetRealFramePeriod(bool getReported);
   void           GetFrameRateRatio();
 
   void           NotifyTimer(LONGLONG targetTime);

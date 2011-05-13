@@ -3435,12 +3435,11 @@ double MPEVRCustomPresenter::GetDetectedFrameTime()
 }
 
 // Get best estimate of actual frame duration in seconds
-double MPEVRCustomPresenter::GetRealFramePeriod()
+double MPEVRCustomPresenter::GetRealFramePeriod(bool getReported)
 {
   double rtimePerFrame ;
-  double currentDispCycle = GetDisplayCycle(); // in ms
   
-  if (m_DetectedFrameTime > DFT_THRESH) 
+  if ((m_DetectedFrameTime > DFT_THRESH) && !getReported) 
   {
     rtimePerFrame = m_DetectedFrameTime; // in seconds
   }

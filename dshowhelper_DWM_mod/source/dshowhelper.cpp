@@ -745,6 +745,24 @@ void EVRResetStatCounters(bool enable)
   m_evrPresenter->ResetEVRStatCounters();
 }
 
+// Get video FPS - returns FPS from filter graph if 'getReported' is true, 
+// otherwise returns FPS estimated from video timestamps
+double EVRGetVideoFPS(bool getReported)
+{
+  double videoFPS = 0.0;
+  double videoPeriod = 0.0;
+  if (m_evrPresenter)
+  {
+    videoPeriod = m_evrPresenter->GetRealFramePeriod(getReported);
+    
+    if (videoPeriod > 0.0)
+    {
+      videoFPS = 1.0/videoPeriod;
+    }
+  }
+  return videoFPS;
+}
+
 
 void Vmr9SetDeinterlaceMode(int mode)
 {
