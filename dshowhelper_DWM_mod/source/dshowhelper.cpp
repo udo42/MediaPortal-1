@@ -749,8 +749,8 @@ void EVRResetStatCounters(bool enable)
 // otherwise returns FPS estimated from video timestamps
 double EVRGetVideoFPS(bool getReported)
 {
-  double videoFPS = 0.0;
-  double videoPeriod = 0.0;
+  double videoFPS = -1.0;
+  double videoPeriod = -1.0;
   if (m_evrPresenter)
   {
     videoPeriod = m_evrPresenter->GetRealFramePeriod(getReported);
