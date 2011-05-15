@@ -3470,22 +3470,19 @@ double MPEVRCustomPresenter::GetRealFramePeriod(bool getReported)
 {
   double rtimePerFrame ;
   
-  if ((m_DetectedFrameTime > DFT_THRESH) && !getReported) 
-  {
-    if (m_DetectedFrameTimePos < NB_DFTHSIZE) //Estimate is not accurate
-    {
-      rtimePerFrame = 0.0;
-    }
-    else
-    {
-      rtimePerFrame = m_DetectedFrameTime; // in seconds
-    }
-  }
-  else
+  if (getReported)
   {
     rtimePerFrame = ((double) m_rtTimePerFrame)/10000000.0; // in seconds
   }
-  
+  else if ((m_DetectedFrameTime > DFT_THRESH) && (m_DetectedFrameTimePos >= NB_DFTHSIZE)) 
+  {
+    rtimePerFrame = m_DetectedFrameTime; // in seconds
+  }
+  else
+  {
+    rtimePerFrame = 0.0;
+  }
+ 
   return rtimePerFrame;
 }
 
