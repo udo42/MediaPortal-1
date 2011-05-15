@@ -243,6 +243,7 @@ public:
   
   void           NotifyRateChange(double pRate);
   void           NotifyDVDMenuState(bool pIsInMenu);
+  void           UpdateDisplayFPS();
 
   void           DwmReset(bool newWinHand);
   void           DwmInit(UINT buffers, UINT rfshPerFrame);
@@ -260,8 +261,8 @@ protected:
   void           GetAVSyncClockInterface();
   void           SetupAudioRenderer();
   void           AdjustAVSync(double currentPhaseDiff);
-  int            MeasureScanLines(LONGLONG startTime, double *times, double *scanLines, int n);
-  BOOL           EstimateRefreshTimings();
+  int            MeasureScanLines(LONGLONG startTime, double *times, double *scanLines, int n, UINT *maxScanLine);
+  BOOL           EstimateRefreshTimings(int numFrames, int thrdPrio);
   void           ReleaseSurfaces();
   HRESULT        Paint(CComPtr<IDirect3DSurface9> pSurface, bool renderStats);
   HRESULT        SetMediaType(CComPtr<IMFMediaType> pType, BOOL* pbHasChanged);
@@ -316,7 +317,7 @@ protected:
   CComPtr<IDirect3DSurface9>        surfaces[NUM_SURFACES];
   CComPtr<IMFSample>                samples[NUM_SURFACES];
   CCritSec                          m_lockSamples;
-//  CCritSec                          m_lockScheduledSamples;
+  CCritSec                          m_lockRasterData;
   CCritSec                          m_lockCallback;
   int                               m_iFreeSamples;
   IMFSample*                        m_vFreeSamples[NUM_SURFACES];
@@ -436,6 +437,7 @@ protected:
   double m_pllRasterSyncOffset[NB_JITTER];
   UINT   m_LastStartOfPaintScanline;
   UINT   m_LastEndOfPaintScanline;
+  
   UINT   m_maxScanLine;
   UINT   m_minVisScanLine;
   UINT   m_maxVisScanLine;

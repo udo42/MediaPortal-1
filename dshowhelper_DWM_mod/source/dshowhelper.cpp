@@ -755,12 +755,21 @@ double EVRGetVideoFPS(bool getReported)
   {
     videoPeriod = m_evrPresenter->GetRealFramePeriod(getReported);
     
-    if (videoPeriod > 0.0)
+    if (videoPeriod == 0.0)
+    {
+      videoFPS = 0.0; //Not good estimate - 'unknown' FPS
+    }
+    else if (videoPeriod > 0.0)
     {
       videoFPS = 1.0/videoPeriod;
     }
   }
   return videoFPS;
+}
+
+void EVRUpdateDisplayFPS()
+{
+  m_evrPresenter->UpdateDisplayFPS();
 }
 
 

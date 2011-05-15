@@ -86,12 +86,12 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.082 part DWM ----------- instance 0x%x", this);
+      Log("---------- v1.4.083 part DWM ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.082 part DWM ----------- instance 0x%x", this);
-      Log("--- audio renderer testing --- instance 0x%x", this);
+      Log("---------- v0.0.083 part DWM ----------- instance 0x%x", this);
+      Log("------- audio renderer testing --------- instance 0x%x", this);
     }
     m_hMonitor = monitor;
     m_pD3DDev = direct3dDevice;
@@ -131,15 +131,20 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     m_fJitterStdDev          = 0.0;
     m_fSyncOffsetStdDev     = 0.0;
     m_fSyncOffsetAvr        = 0.0;
-    m_dD3DRefreshRate       = 0.0;
-    m_dD3DRefreshCycle      = 0.0;
     m_dOptimumDisplayCycle  = 0.0;
     m_dCycleDifference      = 0.0;
     m_uSyncGlitches         = 0;
     m_rasterSyncOffset      = 0;
-    m_dDetectedScanlineTime = 0.0;
-    m_hnsScanlineTime       = 0;
-    m_dEstRefreshCycle      = 0.0;
+    
+    m_dEstRefreshCycle      = DEFAULT_FRAME_TIME/10000; //in ms
+    m_dD3DRefreshCycle      = m_dEstRefreshCycle;
+    m_dD3DRefreshRate       = 1000.0/m_dEstRefreshCycle;
+    m_dDetectedScanlineTime = m_dEstRefreshCycle/1124.0;
+    m_hnsScanlineTime       = (LONGLONG) (m_dDetectedScanlineTime * 10000.0);
+    m_maxScanLine           = 1123;
+    m_minVisScanLine        = 5;
+    m_maxVisScanLine        = 1080;
+    
     m_estRefreshLock        = false;
     m_dEstRefCycDiff        = 0.0;
     
@@ -161,9 +166,6 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     m_LastStartOfPaintScanline     = 0;
     m_frameRateRatio              = 0;
     m_rawFRRatio                  = 0;
-    m_maxScanLine                 = 0;
-    m_minVisScanLine              = 0;
-    m_maxVisScanLine              = 0;
     
     m_numFilters = 0;
     ResetTraceStats();
@@ -177,7 +179,7 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     
   for (int i = 0; i < 2; i++)
   {
-    if (EstimateRefreshTimings())
+    if (EstimateRefreshTimings(8, THREAD_PRIORITY_TIME_CRITICAL))
     {
       break; //only go round the loop again if we don't get a good result
     }
@@ -255,7 +257,7 @@ MPEVRCustomPresenter::~MPEVRCustomPresenter()
 
 void MPEVRCustomPresenter::DwmInit(UINT buffers, UINT rfshPerFrame)
 {
-  if (!ENABLE_DWM_SETUP || m_bDWMinit || (m_dEstRefreshCycle > DWM_REFRESH_THRESH))
+  if (!ENABLE_DWM_SETUP || m_bDWMinit || (GetDisplayCycle() > DWM_REFRESH_THRESH))
   {
     return;
   }
@@ -2936,7 +2938,7 @@ double LinearRegression(double *x, double *y, int n, double *pSlope, double *pIn
   return (n * sigmaXY - sigmaX * sigmaY) / sqrt((n * sigmaX2 - sigmaX * sigmaX) * (n * sigmaY2 - sigmaY * sigmaY));
 }
 
-int MPEVRCustomPresenter::MeasureScanLines(LONGLONG startTime, double *times, double *scanLines, int n)
+int MPEVRCustomPresenter::MeasureScanLines(LONGLONG startTime, double *times, double *scanLines, int n, UINT *maxScanLine)
 {
   D3DRASTER_STATUS rasterStatus;
   int line = -1;
@@ -2949,8 +2951,8 @@ int MPEVRCustomPresenter::MeasureScanLines(LONGLONG startTime, double *times, do
       scanLines[i] = (double)rasterStatus.ScanLine;
     } while (line == rasterStatus.ScanLine);
 
-    if (line > (int)m_maxScanLine) 
-      m_maxScanLine = (UINT)line;
+    if (line > (int)*maxScanLine) 
+      *maxScanLine = (UINT)line;
 
     if ((int)rasterStatus.ScanLine < line)
       return i;
@@ -2964,8 +2966,8 @@ int MPEVRCustomPresenter::MeasureScanLines(LONGLONG startTime, double *times, do
   {
     line = rasterStatus.ScanLine;
     
-    if (line > (int)m_maxScanLine) 
-      m_maxScanLine = (UINT)line;
+    if (line > (int)*maxScanLine) 
+      *maxScanLine = (UINT)line;
       
     m_pD3DDev->GetRasterStatus(0, &rasterStatus);
   }
@@ -2973,9 +2975,24 @@ int MPEVRCustomPresenter::MeasureScanLines(LONGLONG startTime, double *times, do
   return n;
 }
 
-BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
+BOOL MPEVRCustomPresenter::EstimateRefreshTimings(int numFrames, int thrdPrio)
 {
-  m_estRefreshLock = false;
+
+  struct {
+    UINT     maxScanLine;
+    UINT     minVisScanLine;
+    UINT     maxVisScanLine;    
+    double   dDetectedScanlineTime;
+    double   dEstRefreshCycle; 
+    bool     estRefreshLock;
+  }   dParams;
+
+  dParams.maxScanLine           = m_maxScanLine;
+  dParams.minVisScanLine        = m_minVisScanLine;
+  dParams.maxVisScanLine        = m_maxVisScanLine;
+  dParams.dDetectedScanlineTime = m_dDetectedScanlineTime;
+  dParams.dEstRefreshCycle      = m_dEstRefreshCycle;  
+  dParams.estRefreshLock        = false;
   
   if (m_pD3DDev)
   {
@@ -2993,18 +3010,20 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
     UINT endLine = 0;
     double AllowedError = 0.0;
     double currError = 0.0;
+
+    dParams.maxScanLine    = 0;
+    dParams.minVisScanLine = m_displayMode.Height;
+    dParams.maxVisScanLine = 0;   
     
     // Estimate the display refresh rate from the vsyncs
     
     int priority = GetThreadPriority(GetCurrentThread());
     if (priority != THREAD_PRIORITY_ERROR_RETURN)
     {
-      SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_TIME_CRITICAL);
+      SetThreadPriority(GetCurrentThread(), thrdPrio);
     }
 
-    m_maxScanLine    = 0;
-    m_minVisScanLine = m_displayMode.Height;
-    m_maxVisScanLine = 0;
+     
     const int maxScanLineSamples = 1000;
     const int maxFrameSamples = 8;
     double times[maxScanLineSamples*2];
@@ -3019,6 +3038,8 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
     double estRefreshCyc [maxFrameSamples];
     double sumRefCyc = 0.0;
     double aveRefCyc = 0.0;
+    
+    int reqFrameSamples = min(maxFrameSamples, max(3, numFrames));
 
     //Wait for vsync
     line = 0;
@@ -3027,9 +3048,9 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
     {
       line = rasterStatus.ScanLine;
       m_pD3DDev->GetRasterStatus(0, &rasterStatus);
-      if (rasterStatus.ScanLine > m_maxScanLine) 
+      if (rasterStatus.ScanLine > dParams.maxScanLine) 
       {
-        m_maxScanLine = rasterStatus.ScanLine;
+        dParams.maxScanLine = rasterStatus.ScanLine;
       }
     }
 
@@ -3039,7 +3060,7 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
     startTimeLR = endTime;
   
     // Now we're at the start of a vsync
-    for (int i = 0; i < maxFrameSamples; i++)
+    for (int i = 0; i < reqFrameSamples; i++)
     {      
       startTime = endTime;
       //Skip over vertical blanking period
@@ -3050,18 +3071,18 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
       } 
       startLine = rasterStatus.ScanLine;
       
-      if (startLine < m_minVisScanLine)
-        m_minVisScanLine = startLine;
+      if (startLine < dParams.minVisScanLine)
+        dParams.minVisScanLine = startLine;
 
       // make a few measurements
       Log("Starting Frame: %d, start scanline: %d", i, startLine);
-      sampleCount = MeasureScanLines(startTimeLR, times, scanLines, maxScanLineSamples);
+      sampleCount = MeasureScanLines(startTimeLR, times, scanLines, maxScanLineSamples, &dParams.maxScanLine);
       // Now we're at the next vsync
       m_pD3DDev->GetRasterStatus(0, &rasterStatus);
       endLine = rasterStatus.ScanLine;
       endTime = GetCurrentTimestamp();
 
-      Log("Ending Frame: %d, start scanline: %d, end scanline: %d, maxScanline: %d", i, startLine, endLine, m_maxScanLine);
+      Log("Ending Frame: %d, start scanline: %d, end scanline: %d, maxScanline: %d", i, startLine, endLine, dParams.maxScanLine);
 
       estRefreshCyc[i] = (double)(endTime - startTime); // in hns units
       sumRefCyc += estRefreshCyc[i];
@@ -3070,7 +3091,7 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
       Log("  samples = %d, slope = %.6f, intercept = %.6f, fit = %.6f", sampleCount, coeff[i].slope, coeff[i].intercept, coeff[i].fit);
     }    
 
-    m_maxVisScanLine = m_maxScanLine;
+    dParams.maxVisScanLine = dParams.maxScanLine;
 
     // Restore thread priority
     if (priority != THREAD_PRIORITY_ERROR_RETURN)
@@ -3082,13 +3103,13 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
     // Calculate the simplistic refresh rate estimate
     //-----------------------------------------------------
 
-    aveRefCyc = sumRefCyc / (double)maxFrameSamples;
+    aveRefCyc = sumRefCyc / (double)reqFrameSamples;
     
     AllowedError = 0.0;
     currError = 0.0;
     int BadIdx0 = 0;
     // Find worst match with average refresh period so it can be removed 
-    for (int i = 0; i < maxFrameSamples; ++i)
+    for (int i = 0; i < reqFrameSamples; ++i)
     {
       currError = fabs(1.0 - (aveRefCyc / estRefreshCyc[i]) );
       if (currError > AllowedError)
@@ -3100,13 +3121,13 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
     
     sumRefCyc -= estRefreshCyc[BadIdx0];
 
-    aveRefCyc = sumRefCyc / (double)(maxFrameSamples - 1);
+    aveRefCyc = sumRefCyc / (double)(reqFrameSamples - 1);
     
     AllowedError = 0.0;
     currError = 0.0;
     int BadIdx1 = 0;
     // Find next worst match with new average refresh period so it can be removed 
-    for (int i = 0; i < maxFrameSamples; ++i)
+    for (int i = 0; i < reqFrameSamples; ++i)
     {
       currError = fabs(1.0 - (aveRefCyc / estRefreshCyc[i]) );
       if ((currError > AllowedError) && (i != BadIdx0))
@@ -3117,7 +3138,7 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
     }
     sumRefCyc -= estRefreshCyc[BadIdx1];
 
-    double simpleFrameTime = sumRefCyc / (double)(maxFrameSamples - 2); // in hns units
+    double simpleFrameTime = sumRefCyc / (double)(reqFrameSamples - 2); // in hns units
 
     //--------------------------------------------------------------
     // Calculate the linear regression refresh rate estimate
@@ -3128,7 +3149,7 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
     double minFrameTime = DBL_MAX;
     int frameCount = 0;
 
-    for (int i = 1; i < maxFrameSamples; i++)
+    for (int i = 1; i < reqFrameSamples; i++)
     {
       if (coeff[i].fit > coeff[bestFitIdx].fit)
         bestFitIdx = i;
@@ -3137,14 +3158,14 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
     }
 
     // Find the number of frames measured
-    for (int i = 1; i < maxFrameSamples; i++)
+    for (int i = 1; i < reqFrameSamples; i++)
     {
       frameCount += (int)floor((coeff[i].intercept - coeff[i-1].intercept)/minFrameTime + 0.5);
     }
     
     Log("  frame count = %d", frameCount);
     double scanLineTime = coeff[bestFitIdx].slope;
-    double frameTime = (coeff[maxFrameSamples-1].intercept - coeff[0].intercept)/frameCount;
+    double frameTime = (coeff[reqFrameSamples-1].intercept - coeff[0].intercept)/frameCount;
 
     //--------------------------------------------------------------
     // Compare the two methods
@@ -3155,46 +3176,56 @@ BOOL MPEVRCustomPresenter::EstimateRefreshTimings()
     currError = fabs(1.0 - (simpleFrameTime / frameTime));
     if (currError < AllowedError)
     {
-      m_estRefreshLock = true;
+      dParams.estRefreshLock = true;
     }
     m_dEstRefCycDiff = currError;
 
-    m_maxScanLine = ((UINT)(frameTime / scanLineTime)) - 1;    
-    m_dEstRefreshCycle = frameTime / 10000.0; // in milliseconds
-    m_dDetectedScanlineTime = scanLineTime / 10000.0; 
+    dParams.maxScanLine = ((UINT)(frameTime / scanLineTime)) - 1;    
+    dParams.dEstRefreshCycle = frameTime / 10000.0; // in milliseconds
+    dParams.dDetectedScanlineTime = scanLineTime / 10000.0; 
 
     m_pD3DDev->GetDisplayMode(0, &m_displayMode); //update this just in case anything has changed...
     GetRealRefreshRate(); // update m_dD3DRefreshCycle and m_dD3DRefreshRate values
     
-    if ((m_dEstRefreshCycle < 5.0) || (m_dEstRefreshCycle > 100.0)) // just in case it's gone badly wrong...
+    if ((dParams.dEstRefreshCycle < 5.0) || (dParams.dEstRefreshCycle > 100.0)) // just in case it's gone badly wrong...
     {
-      Log("Display refresh estimation failed, measured display cycle: %.6f ms", m_dEstRefreshCycle);
-      m_dEstRefreshCycle = m_dD3DRefreshCycle;
-      m_dDetectedScanlineTime = m_dD3DRefreshCycle/(double)(m_displayMode.Height); // in milliseconds
-      m_maxScanLine = m_displayMode.Height;
-      m_maxVisScanLine = m_displayMode.Height;
-      m_minVisScanLine = 5;
-      m_estRefreshLock = false;
+      Log("Display refresh estimation failed, measured display cycle: %.6f ms", dParams.dEstRefreshCycle);
+      dParams.dEstRefreshCycle = m_dD3DRefreshCycle;
+      dParams.dDetectedScanlineTime = m_dD3DRefreshCycle/(double)(m_displayMode.Height); // in milliseconds
+      dParams.maxScanLine = m_displayMode.Height;
+      dParams.maxVisScanLine = m_displayMode.Height;
+      dParams.minVisScanLine = 5;
+      dParams.estRefreshLock = false;
     }
 
     Log("Raw est display cycle, linReg: %.6f ms, simple: %.6f ms, diff: %.6f ", frameTime/10000.0, simpleFrameTime/10000.0, currError);
-    Log("Measured display cycle: %.6f ms, locked: %d ", m_dEstRefreshCycle, m_estRefreshLock);
-    Log("Measured scanline time: %.6f us", (m_dDetectedScanlineTime * 1000.0));
-    Log("Display (from windows): %d x %d @ %.6f Hz | Measured refresh rate: %.6f Hz", m_displayMode.Width, m_displayMode.Height, m_dD3DRefreshRate, 1000.0/m_dEstRefreshCycle);
-    Log("Max total scanline: %d, Max visible scanline: %d, Min visible scanline: %d", m_maxScanLine, m_maxVisScanLine, m_minVisScanLine);
+    Log("Measured display cycle: %.6f ms, locked: %d ", dParams.dEstRefreshCycle, dParams.estRefreshLock);
+    Log("Measured scanline time: %.6f us", (dParams.dDetectedScanlineTime * 1000.0));
+    Log("Display (from windows): %d x %d @ %.6f Hz | Measured refresh rate: %.6f Hz", m_displayMode.Width, m_displayMode.Height, m_dD3DRefreshRate, 1000.0/dParams.dEstRefreshCycle);
+    Log("Max total scanline: %d, Max visible scanline: %d, Min visible scanline: %d", dParams.maxScanLine, dParams.maxVisScanLine, dParams.minVisScanLine);
     
   }
   
-  //Initialise vsync correction control values
-  m_rasterLimitLow   = (int)((((m_maxVisScanLine - m_minVisScanLine) * 2)/16) + m_minVisScanLine); 
-  m_rasterTargetPosn = m_rasterLimitLow;
-  m_rasterLimitHigh  = (int)((((m_maxVisScanLine - m_minVisScanLine) * 9)/16) + m_minVisScanLine);
-  m_rasterLimitNP    = (int)m_maxVisScanLine; 
-  m_hnsScanlineTime  = (LONGLONG) (m_dDetectedScanlineTime * 10000.0);
+  CAutoLock rLock(&m_lockRasterData); //Get lock before raster parameters are updated
+  
+  //Update raster and vsync correction control values
+  m_maxScanLine           = dParams.maxScanLine;
+  m_minVisScanLine        = dParams.minVisScanLine;
+  m_maxVisScanLine        = dParams.maxVisScanLine;
+  m_dDetectedScanlineTime = dParams.dDetectedScanlineTime;
+  m_dEstRefreshCycle      = dParams.dEstRefreshCycle;    
+  
+  m_rasterLimitLow        = (int)((((dParams.maxVisScanLine - dParams.minVisScanLine) * 2)/16) + dParams.minVisScanLine); 
+  m_rasterTargetPosn      = m_rasterLimitLow;
+  m_rasterLimitHigh       = (int)((((dParams.maxVisScanLine - dParams.minVisScanLine) * 9)/16) + dParams.minVisScanLine);
+  m_rasterLimitNP         = (int)dParams.maxVisScanLine; 
+  m_hnsScanlineTime       = (LONGLONG) (dParams.dDetectedScanlineTime * 10000.0);
+  
+  m_estRefreshLock        = dParams.estRefreshLock;
   
   Log("Vsync correction : rasterLimitHigh: %d, rasterLimitLow: %d, rasterTargetPosn: %d", m_rasterLimitHigh, m_rasterLimitLow, m_rasterTargetPosn);
 
-  return m_estRefreshLock;
+  return dParams.estRefreshLock;
 }
 
 
@@ -3441,7 +3472,14 @@ double MPEVRCustomPresenter::GetRealFramePeriod(bool getReported)
   
   if ((m_DetectedFrameTime > DFT_THRESH) && !getReported) 
   {
-    rtimePerFrame = m_DetectedFrameTime; // in seconds
+    if (m_DetectedFrameTimePos < NB_DFTHSIZE) //Estimate is not accurate
+    {
+      rtimePerFrame = 0.0;
+    }
+    else
+    {
+      rtimePerFrame = m_DetectedFrameTime; // in seconds
+    }
   }
   else
   {
@@ -3567,7 +3605,6 @@ void MPEVRCustomPresenter::NotifyRateChange(double pRate)
   }
 }
 
-
 void MPEVRCustomPresenter::NotifyDVDMenuState(bool pIsInMenu)
 {
   if (pIsInMenu != m_bDVDMenu)
@@ -3575,6 +3612,19 @@ void MPEVRCustomPresenter::NotifyDVDMenuState(bool pIsInMenu)
     Log("NotifyDVDMenu: %d", pIsInMenu);
     m_bDVDMenu = pIsInMenu;
   }
+}
+
+void MPEVRCustomPresenter::UpdateDisplayFPS()
+{
+  for (int i = 0; i < 2; i++)
+  {
+    if (EstimateRefreshTimings(8, THREAD_PRIORITY_ABOVE_NORMAL))
+    {
+      break; //only go round the loop again if we don't get a good result
+    }
+  }
+  
+  SetupAudioRenderer(); //Bias value needs to be updated
 }
 
 void MPEVRCustomPresenter::CorrectSampleTime(IMFSample* pSample)
@@ -3732,6 +3782,8 @@ bool MPEVRCustomPresenter::GetDelayToRasterTarget(LONGLONG *offsetTime)
   // Calculate raster offset
   if (SUCCEEDED(m_pD3DDev->GetRasterStatus(0, &rasterStatus)))
   {
+    CAutoLock rLock(&m_lockRasterData); //Get lock to stop raster parameters being updated
+    
     int currScanline = (int)rasterStatus.ScanLine;
     
     if (
