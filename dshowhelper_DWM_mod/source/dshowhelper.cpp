@@ -745,23 +745,18 @@ void EVRResetStatCounters(bool enable)
   m_evrPresenter->ResetEVRStatCounters();
 }
 
-// Get video FPS - returns FPS from filter graph if 'getReported' is true, 
-// otherwise returns FPS estimated from video timestamps
-double EVRGetVideoFPS(bool getReported)
+// Get video FPS - returns video FPS from a source selected by 'fpsSource'
+double EVRGetVideoFPS(int fpsSource)
 {
   double videoFPS = -1.0;
-  double videoPeriod = -1.0;
+  
   if (m_evrPresenter)
   {
-    videoPeriod = m_evrPresenter->GetRealFramePeriod(getReported);
+    videoFPS = m_evrPresenter->GetRealFramePeriod(fpsSource);
     
-    if (videoPeriod == 0.0)
+    if (videoFPS > 0.0)
     {
-      videoFPS = 0.0; //Not good estimate - 'unknown' FPS
-    }
-    else if (videoPeriod > 0.0)
-    {
-      videoFPS = 1.0/videoPeriod;
+      videoFPS = 1.0/videoFPS; //Convert valid frame period into FPS
     }
   }
   return videoFPS;

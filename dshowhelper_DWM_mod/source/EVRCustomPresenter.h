@@ -226,7 +226,7 @@ public:
   double         GetDisplayCycle();
   double         GetCycleDifference();
   double         GetDetectedFrameTime();
-  double         GetRealFramePeriod(bool getReported);
+  double         GetRealFramePeriod(int fpsSource);
   void           GetFrameRateRatio();
 
   void           NotifyTimer(LONGLONG targetTime);
@@ -459,7 +459,7 @@ protected:
   // dshowhelper owns this
   IBaseFilter*  m_EVRFilter;
 
-  // Used for detecting the real frame duration
+  // Used for detecting the video frame time from sample times
   LONGLONG      m_LastScheduledUncorrectedSampleTime;
   LONGLONG      m_DetectedFrameTimeHistory[NB_DFTHSIZE];
   LONGLONG      m_DectedSum;
@@ -468,6 +468,11 @@ protected:
   double        m_DetectedFrameTimeStdDev;
   bool          m_DetectedLock;
   double        m_DetFrameTimeAve;
+
+  // Used for detecting the average video sample duration
+  LONGLONG      m_DetSampleHistory[NB_DFTHSIZE];
+  LONGLONG      m_DetSampleSum;
+  double        m_DetSampleAve;
 
   int           m_frameRateRatio;
   int           m_frameRateRatX2;

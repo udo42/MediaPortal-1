@@ -160,6 +160,8 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     m_DectedSum                           = 0;
     m_DetectedFrameTime                   = -1.0;
     m_DetFrameTimeAve                     = -1.0;
+    m_DetSampleSum                        = 0;
+    m_DetSampleAve                        = -1.0;
     m_DetectedLock                        = false;
     m_DetectedFrameTimeStdDev             = 0;
     m_LastEndOfPaintScanline       = 0;
@@ -1582,8 +1584,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         //is greater than frameTime, so it's possible for nstPhaseDiff to exceed
         //the -0.5 to +0.5 allowable range 
         if (
-             m_bDVDMenu || m_bScrubbing || (m_iFramesDrawn <= FRAME_PROC_THRSH2) 
-             || (m_frameRateRatX2 == 0 && m_dBias == 1.0) || !m_nstPhaseDiffUpd
+             m_bDVDMenu || m_bScrubbing || (m_frameRateRatX2 == 0 && m_dBias == 1.0)
            )
         {
           nstPhaseDiff = 0.0;
@@ -1596,8 +1597,11 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         {
           nstPhaseDiff = 0.499;
         }
-          
-        AdjustAVSync(nstPhaseDiff);
+         
+        if ((m_iFramesDrawn > FRAME_PROC_THRSH2) && m_nstPhaseDiffUpd)
+        {
+          AdjustAVSync(nstPhaseDiff);
+        }
       }
   
       m_llLastCFPts = nextSampleTime;
@@ -3395,6 +3399,8 @@ void MPEVRCustomPresenter::ResetFrameStats()
   m_DetectedFrameTime     = -1.0;  
   m_DectedSum             = 0;
   ZeroMemory((void*)&m_DetectedFrameTimeHistory, sizeof(LONGLONG) * NB_DFTHSIZE);
+  m_DetSampleSum          = 0;
+  ZeroMemory((void*)&m_DetSampleHistory, sizeof(LONGLONG) * NB_DFTHSIZE);
   
   m_LastScheduledUncorrectedSampleTime = -1;
   m_frameRateRatio = 0;
@@ -3465,24 +3471,61 @@ double MPEVRCustomPresenter::GetDetectedFrameTime()
   return m_DetectedFrameTime;
 }
 
-// Get best estimate of actual frame duration in seconds
-double MPEVRCustomPresenter::GetRealFramePeriod(bool getReported)
+// Get best estimate of actual video frame duration in seconds
+double MPEVRCustomPresenter::GetRealFramePeriod(int fpsSource)
 {
-  double rtimePerFrame ;
-  
-  if (getReported)
+  double rtimePerFrame = 0.0; // 0.0 => 'unknown' FPS
+
+  switch (fpsSource)
   {
-    rtimePerFrame = ((double) m_rtTimePerFrame)/10000000.0; // in seconds
+    case 0: 
+      //Adaptive - 0.0 for the first 4 frames, 
+      //then from sample timestamps if good,
+      //else from sample duration if good,
+      //else as reported by EVR mixer/video decoder
+      if (m_DetectedFrameTimePos >= 4)
+      {
+        if (m_DetectedLock && (m_DetectedFrameTimePos >= (NB_DFTHSIZE*2)) && (m_DetFrameTimeAve > DFT_THRESH))
+        {
+          rtimePerFrame = m_DetFrameTimeAve; // in seconds
+        }
+        else if (m_DetSampleAve > DFT_THRESH)
+        {
+          rtimePerFrame = m_DetSampleAve; // in seconds
+        }
+        else
+        {
+          rtimePerFrame = ((double) m_rtTimePerFrame)/10000000.0; // in seconds
+        }
+      }
+    break;
+    
+    case 1:
+      //Returns 0.0 for the first 128 frames, then from sample timestamps
+      if ((m_DetectedFrameTimePos >= (NB_DFTHSIZE*2)) && (m_DetFrameTimeAve > DFT_THRESH))
+      {
+        rtimePerFrame = m_DetFrameTimeAve; // in seconds
+      }
+    break;
+    
+    case 2:
+      //Returns 0.0 for the first 4 frames, then from sample duration
+      if ((m_DetectedFrameTimePos >= 4) && (m_DetSampleAve > DFT_THRESH))
+      {
+        rtimePerFrame = m_DetSampleAve; // in seconds
+      }
+    break;
+    
+    case 3:
+      //Reported by EVR mixer/video decoder
+      rtimePerFrame = ((double) m_rtTimePerFrame)/10000000.0; // in seconds
+    break;
+    
+    default:
+      rtimePerFrame = -1.0; //Error
+    break;
   }
-  else if ((m_DetectedFrameTime > DFT_THRESH) && (m_DetectedFrameTimePos >= NB_DFTHSIZE)) 
-  {
-    rtimePerFrame = m_DetectedFrameTime; // in seconds
-  }
-  else
-  {
-    rtimePerFrame = 0.0;
-  }
- 
+   
   return rtimePerFrame;
 }
 
@@ -3651,20 +3694,29 @@ void MPEVRCustomPresenter::CorrectSampleTime(IMFSample* pSample)
       m_fRate == 1.0f && !m_bDVDMenu) || m_bScrubbing)
   {
     int iPos = (m_DetectedFrameTimePos % NB_DFTHSIZE);
+    //Calculate Sample time diff average
     m_DectedSum -= m_DetectedFrameTimeHistory[iPos];
     m_DetectedFrameTimeHistory[iPos] = Diff;
     m_DectedSum += Diff;
     m_DetectedFrameTimePos++;
     
+    //Calculate Sample duration average
+    m_DetSampleSum -= m_DetSampleHistory[iPos];
+    m_DetSampleHistory[iPos] = SetDuration;
+    m_DetSampleSum += SetDuration;
+
     double Average = (double)Diff;
+    double AveDur = (double)SetDuration;
     
     if (m_DetectedFrameTimePos >= NB_DFTHSIZE)
     {
       Average = (double)m_DectedSum / (double)NB_DFTHSIZE;
+      AveDur = (double)m_DetSampleSum / (double)NB_DFTHSIZE;
     }
     else if (m_DetectedFrameTimePos >= 4)
     {
       Average = (double)m_DectedSum / (double)m_DetectedFrameTimePos;
+      AveDur = (double)m_DetSampleSum / (double)m_DetectedFrameTimePos;
     }
 
     if (m_DetectedFrameTimePos >= 4)
@@ -3687,6 +3739,7 @@ void MPEVRCustomPresenter::CorrectSampleTime(IMFSample* pSample)
       double DetectedTime = Average / 10000000.0;
       
       m_DetFrameTimeAve = DetectedTime;
+      m_DetSampleAve = AveDur / 10000000.0;
       
       bool bFTdiff = false;      
       if (m_DetectedFrameTime && DetectedTime)
@@ -3696,7 +3749,8 @@ void MPEVRCustomPresenter::CorrectSampleTime(IMFSample* pSample)
       
       if (bFTdiff || (m_DetectedFrameTimePos < NB_DFTHSIZE))
 			{
-	      double AllowedError = 0.025; //Allow 2.5% error to cover (ReClock ?) sample timing jitter
+	      //double AllowedError = 0.025; //Allow 2.5% error to cover (ReClock ?) sample timing jitter
+	      double AllowedError = 0.01; //Allow 1% error to cover sample timing jitter
 	      static double AllowedValues[] = {1000.5/30000.0, 1000.0/25000.0, 1000.5/24000.0};  //30Hz and 24Hz are compromise values
 	      static double AllowedDivs[] = {4.0, 2.0, 1.0, 0.5};
 	
@@ -3739,7 +3793,9 @@ void MPEVRCustomPresenter::CorrectSampleTime(IMFSample* pSample)
     m_DetectedFrameTimePos = 0;
     m_DetectedLock = false;
     m_DectedSum = 0;
+    m_DetSampleSum = 0;
     ZeroMemory((void*)&m_DetectedFrameTimeHistory, sizeof(LONGLONG) * NB_DFTHSIZE);
+    ZeroMemory((void*)&m_DetSampleHistory, sizeof(LONGLONG) * NB_DFTHSIZE);
   }
   
   GetFrameRateRatio(); // update video to display FPS ratio data
