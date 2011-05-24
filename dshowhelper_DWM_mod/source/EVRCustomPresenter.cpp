@@ -86,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.083 part DWM ----------- instance 0x%x", this);
+      Log("---------- v1.4.084 part DWM ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.083 part DWM ----------- instance 0x%x", this);
+      Log("---------- v0.0.084 part DWM ----------- instance 0x%x", this);
       Log("------- audio renderer testing --------- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -1435,15 +1435,17 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
 
     lateLimit = hystersisTime;
 
-
-    if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing && m_NSTinitDone)
+    if (!m_bDVDMenu && !m_bScrubbing && m_NSTinitDone)
     {
       //Centralise nextSampleTime timing window when in normal play mode and MP Audio Renderer is inactive
-      if (!m_pAVSyncClock && (realSampleTime != 0))
+      if (!m_pAVSyncClock && (realSampleTime != 0) && (m_frameRateRatX2 > 0))
       {
         nextSampleTime = (realSampleTime + (frameTime/2)) - m_hnsNSToffset;
       }
+    }
 
+    if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing && m_NSTinitDone)
+    {
       //De-sensitise frame dropping to avoid occasional delay glitches triggering frame drops
       if ((m_iLateFrames == 0) && !m_NSToffsUpdate)
       {
@@ -1575,7 +1577,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
             
       if (m_pAVSyncClock) //Update phase deviation data for MP Audio Renderer
       {
-        m_nstPhaseDiffUpd = !m_nstPhaseDiffUpd; //Only update every other frame
         
         //Target (0.5 * frameTime) for nextSampleTime
         double nstPhaseDiff = -(((double)realSampleTime / (double)frameTime) - 0.5);
@@ -1598,7 +1599,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
           nstPhaseDiff = 0.499;
         }
          
-        if ((m_iFramesDrawn > FRAME_PROC_THRSH2) && m_nstPhaseDiffUpd)
+        if (m_iFramesDrawn > FRAME_PROC_THRSH2)
         {
           AdjustAVSync(nstPhaseDiff);
         }
@@ -3406,7 +3407,6 @@ void MPEVRCustomPresenter::ResetFrameStats()
   m_frameRateRatio = 0;
   m_frameRateRatX2 = 0;
   m_rawFRRatio = 0;
-  m_nstPhaseDiffUpd = false;
 
   m_stallTime = 0;
   m_earliestPresentTime = 0;

@@ -477,7 +477,6 @@ protected:
   int           m_frameRateRatio;
   int           m_frameRateRatX2;
   int           m_rawFRRatio;
-  bool          m_nstPhaseDiffUpd;
   
   int           m_qGoodPopCnt;
   int           m_qBadPopCnt;
