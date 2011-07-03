@@ -40,6 +40,7 @@ using namespace std;
 
 #define NUM_SURFACES 4
 #define NB_JITTER 128
+#define NB_PTASIZE NB_JITTER
 #define NB_RFPSIZE 64
 #define NB_DFTHSIZE 64
 #define NB_CFPSIZE 128
@@ -99,6 +100,8 @@ using namespace std;
 
 // Change to 'true' to enable logging of delayed frames
 #define LOG_DEL_FRAMES false
+// Change to 'true' to enable logging of late frames
+#define LOG_LATE_FRAMES false
 
 // Macro for locking 
 #define TIME_LOCK(obj, crit, name)  \
@@ -117,7 +120,8 @@ enum MP_RENDER_STATE
 	MP_RENDER_STATE_STARTED = 1,
 	MP_RENDER_STATE_STOPPED,
 	MP_RENDER_STATE_PAUSED,
-	MP_RENDER_STATE_SHUTDOWN
+	MP_RENDER_STATE_SHUTDOWN,
+	MP_RENDER_STATE_ENDSTREAM
 };
 
 typedef struct _SchedulerParams
@@ -247,6 +251,7 @@ public:
 
   void           DwmReset(bool newWinHand);
   void           DwmInit(UINT buffers, UINT rfshPerFrame);
+  void           FlushAtEnd();
 
   bool           m_bScrubbing;
   bool           m_bZeroScrub;
@@ -396,14 +401,13 @@ protected:
 	double    m_fJitterStdDev;				// Estimate the Jitter std dev
 	double    m_fJitterMean;
 	double    m_fSyncOffsetStdDev;
-	double    m_fSyncOffsetAvr;
+	LONGLONG  m_llSyncOffsetAvr;
 	double    m_DetectedRefreshRate;
 
-  LONGLONG  m_MaxJitter;
-  LONGLONG  m_MinJitter;
-  LONGLONG  m_MaxSyncOffset;
-  LONGLONG  m_MinSyncOffset;
-  LONGLONG  m_pllSyncOffset [NB_JITTER];		// Jitter buffer for stats
+  //  LONGLONG  m_MaxJitter;
+  //  LONGLONG  m_MinJitter;
+  LONGLONG  m_pllSyncOffset [NB_PTASIZE];		// buffer for average paint time stats
+  LONGLONG  m_pllSyncOffsetSumAvg;
   unsigned long m_uSyncGlitches;
 
 	LONGLONG  m_PaintTimeMin;
@@ -418,7 +422,7 @@ protected:
   double          m_dD3DRefreshCycle;
 
   // Functions to trace timing performance
-  void OnVBlankFinished(bool fAll, LONGLONG periodStart, LONGLONG periodEnd);
+  void OnVBlankFinished(LONGLONG period);
   void CalculateJitter(LONGLONG PerfCounter);
   void CalculateRealFramePeriod(LONGLONG timeStamp);
   void CalculateNSTStats(LONGLONG timeStamp, LONGLONG frameTime);

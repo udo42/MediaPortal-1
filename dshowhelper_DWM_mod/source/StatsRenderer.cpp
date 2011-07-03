@@ -177,10 +177,8 @@ void StatsRenderer::DrawStats()
                       &m_pFont);
   }
 
-  LONGLONG llMaxJitter = m_pPresenter->m_MaxJitter;
-  LONGLONG llMinJitter = m_pPresenter->m_MinJitter;
-  LONGLONG llMaxSyncOffset = m_pPresenter->m_MaxSyncOffset;
-  LONGLONG llMinSyncOffset = m_pPresenter->m_MinSyncOffset;
+//  LONGLONG llMaxJitter = m_pPresenter->m_MaxJitter;
+//  LONGLONG llMinJitter = m_pPresenter->m_MinJitter;
 
   RECT rc = {m_pPresenter->m_iVideoWidth/32, m_pPresenter->m_iVideoHeight/8, m_pPresenter->m_iVideoWidth, m_pPresenter->m_iVideoHeight};
   if (m_pFont && m_pSprite)
@@ -208,7 +206,7 @@ void StatsRenderer::DrawStats()
     OffsetRect(&rc, 0, BlankHeight); // Extra "line feed"
 
     strText.Format("Render time (grn): %+5.1f ms | NST: %+3.1f ms | AveRNST: %+3.1f ms | Fr1: %d | Fr2: %d | Stall: %+3.1f ms", 
-      m_pPresenter->m_fSyncOffsetAvr/10000.0, m_pPresenter->m_llLastCFPts/10000.0, 
+      m_pPresenter->m_llSyncOffsetAvr/10000.0, m_pPresenter->m_llLastCFPts/10000.0, 
       m_pPresenter->m_fCFPMean/10000.0, m_pPresenter->m_frameRateRatio, m_pPresenter->m_frameRateRatX2, m_pPresenter->m_stallTime/10000.0);
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
@@ -220,7 +218,7 @@ void StatsRenderer::DrawStats()
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
 
-    strText.Format("Rptd FPS: %.3f | Detd FPS: %.3f | Samp FPS: %.3f ms | DetFrT_SD: %+5.3f ms",  
+    strText.Format("Rptd FPS: %.3f | Detd FPS: %.3f | Samp FPS: %.3f | DetFrT_SD: %+5.3f ms",  
       ((m_pPresenter->m_rtTimePerFrame > 0) ? (10000000.0/m_pPresenter->m_rtTimePerFrame) : 0), 
       ((m_pPresenter->m_DetFrameTimeAve > 0) ? (1.0/(m_pPresenter->m_DetFrameTimeAve)) : 0),
       ((m_pPresenter->m_DetSampleAve > 0) ? (1.0/(m_pPresenter->m_DetSampleAve)) : 0),
@@ -347,12 +345,12 @@ void StatsRenderer::DrawStats()
     m_pLine->Draw(Points, NB_JITTER, D3DCOLOR_XRGB(255, 100, 100));
 
     // sync offset
-    for (int i = 0; i < NB_JITTER; i++)
+    for (int i = 0; i < NB_PTASIZE; i++)
     {
-      nIndex = (m_pPresenter->m_nNextSyncOffset + 1 + i) % NB_JITTER;
+      nIndex = (m_pPresenter->m_nNextSyncOffset + 1 + i) % NB_PTASIZE;
       if (nIndex < 0)
       {
-        nIndex += NB_JITTER;
+        nIndex += NB_PTASIZE;
       }
       Points[i].x = (FLOAT)(StartX + (i * 5));
       double offsetY = StartY + (double)m_pPresenter->m_pllSyncOffset[nIndex] / 3000 + 125 ;
@@ -360,13 +358,13 @@ void StatsRenderer::DrawStats()
       if (offsetY > StartY+DrawHeight) offsetY = StartY + DrawHeight;
       Points[i].y = (FLOAT)(offsetY);
     }    
-    m_pLine->Draw(Points, NB_JITTER, D3DCOLOR_XRGB(100, 200, 100));
+    m_pLine->Draw(Points, NB_PTASIZE, D3DCOLOR_XRGB(100, 200, 100));
 
     // raster sync offset (drawn at the bottom to keep the graph cleaner)
     for (int i = 0; i < NB_JITTER; i++)
     {
-      // m_pllRasterSyncOffset is updated always at the same time as m_fJitterMean->m_nNextSyncOffset
-      nIndex = (m_pPresenter->m_nNextSyncOffset + 1 + i) % NB_JITTER;
+      // m_pllRasterSyncOffset is updated always at the same time as m_fJitterMean->m_nNextJitter
+      nIndex = (m_pPresenter->m_nNextJitter + 1 + i) % NB_JITTER;
       if (nIndex < 0)
       {
         nIndex += NB_JITTER;

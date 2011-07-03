@@ -687,6 +687,7 @@ void EvrDeinit()
     if (m_evrPresenter!=NULL)
     {
       m_evrPresenter->DwmReset(false);
+      m_evrPresenter->FlushAtEnd();
       m_evrPresenter->ReleaseCallback();
       refCount = m_evrPresenter->Release();
       m_evrPresenter = NULL;

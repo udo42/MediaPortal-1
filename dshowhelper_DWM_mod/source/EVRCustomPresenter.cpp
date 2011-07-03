@@ -86,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.084 part DWM ----------- instance 0x%x", this);
+      Log("---------- v1.4.085 part DWM ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.084 part DWM ----------- instance 0x%x", this);
+      Log("---------- v0.0.085 part DWM ----------- instance 0x%x", this);
       Log("------- audio renderer testing --------- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -128,9 +128,10 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     memset(m_pllRasterSyncOffset, 0, sizeof(m_pllRasterSyncOffset));
 
     m_nNextSyncOffset       = 0;
+    m_pllSyncOffsetSumAvg   = 0;
     m_fJitterStdDev          = 0.0;
     m_fSyncOffsetStdDev     = 0.0;
-    m_fSyncOffsetAvr        = 0.0;
+    m_llSyncOffsetAvr        = 0;
     m_dOptimumDisplayCycle  = 0.0;
     m_dCycleDifference      = 0.0;
     m_uSyncGlitches         = 0;
@@ -304,10 +305,27 @@ void MPEVRCustomPresenter::DwmReset(bool newWinHand)
   
   DwmFlush();
   DwmSetParameters(FALSE, 2, 1); //'Display rate' mode
-  WaitForSingleObject(m_dummyEvent, 50); //Wait for 50ms
+  WaitForSingleObject(m_dummyEvent, 150); //Wait for 150ms
   
   m_bDWMinit = false;
 }  
+
+void MPEVRCustomPresenter::FlushAtEnd()
+{
+  Log("EVRCustomPresenter::FlushAtEnd");  
+  PauseThread(m_hTimer, &m_timerParams);
+  PauseThread(m_hWorker, &m_workerParams);
+  PauseThread(m_hScheduler, &m_schedulerParams);
+  Flush(TRUE);
+  if (m_pEventSink)
+  {
+    Log("FlushAtEnd:Sending completion message");
+    m_pEventSink->Notify(EC_COMPLETE, (LONG_PTR)S_OK, 0);
+  }
+  WakeThread(m_hScheduler, &m_schedulerParams);
+  WakeThread(m_hWorker, &m_workerParams);
+  WakeThread(m_hTimer, &m_timerParams);
+}
 
 
 HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::GetParameters(__RPC__out DWORD *pdwFlags, __RPC__out DWORD *pdwQueue)
@@ -1089,13 +1107,12 @@ HRESULT MPEVRCustomPresenter::GetFreeSample(IMFSample** ppSample)
 
 void MPEVRCustomPresenter::Flush(BOOL forced)
 {
-  DwmFlush(); //Just in case...
-
-  CAutoLock sLock(&m_lockSamples);
-  
   if (!m_bDVDMenu || forced)
   {
     Log("Flushing: size=%d", m_qScheduledSamples.Count());
+
+    DwmFlush(); //Just in case...
+    CAutoLock sLock(&m_lockSamples);
 
     for (int i = 0; i < NUM_SURFACES; i++)
     {
@@ -1362,7 +1379,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     
     if (
         ((GetQueueCount() == 0) && !b_RepeatPaint) ||  //there are no samples available so we go idle
-        (m_state == MP_RENDER_STATE_STOPPED) ||
         (m_state == MP_RENDER_STATE_PAUSED && !m_bDVDMenu)  //don't process samples in paused mode during normal playback
         )
     {
@@ -1444,9 +1460,11 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       }
     }
 
-    if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing && m_NSTinitDone)
+    //Workaround logic to force/allow occasional delayed/late frames to be displayed in controlled circumstances.
+    //When triggered another trigger is not allowed until m_iLateFrames has decremented to zero again.
+    //Disabled when average render times are long (> 0.5 * display frame time) - otherwise can cause stutters.
+    if ((m_frameRateRatio > 0) && !m_bDVDMenu && !m_bScrubbing && m_NSTinitDone && (m_llSyncOffsetAvr < (displayTime/2)))
     {
-      //De-sensitise frame dropping to avoid occasional delay glitches triggering frame drops
       if ((m_iLateFrames == 0) && !m_NSToffsUpdate)
       {
         if ((nextSampleTime < -hystersisTime) && (nextSampleTime >= -delErrLimit)) //Very late sample
@@ -1454,16 +1472,18 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
           m_iLateFrames = LF_THRESH_HIGH;
           m_iFramesHeld++;
           //lateLimit = delErrLimit; // Allow this late frame
-          Log("Late frame, NST %.2f ms, AveRNST %.2f ms, last sleep %.2f ms, paint %.2f ms, last pres %.2f ms, EPT %.2f ms, late %d, Q %d", 
-              (double)nextSampleTime/10000, 
-              m_fCFPMean/10000.0, 
-              (double)lastSleepTime/10000, 
-              (double)m_PaintTime/10000, 
-              (double)((m_lastPresentTime - systemTime)/10000), 
-              (m_earliestPresentTime ? (double)((m_earliestPresentTime - systemTime)/10000) : 0), 
-              m_iFramesHeld,
-              GetQueueCount());
-              
+          if (LOG_LATE_FRAMES)
+          {
+            Log("Late frame, NST %.2f ms, AveRNST %.2f ms, last sleep %.2f ms, paint %.2f ms, last pres %.2f ms, EPT %.2f ms, late %d, Q %d", 
+                (double)nextSampleTime/10000, 
+                m_fCFPMean/10000.0, 
+                (double)lastSleepTime/10000, 
+                (double)m_PaintTime/10000, 
+                (double)((m_lastPresentTime - systemTime)/10000), 
+                (m_earliestPresentTime ? (double)((m_earliestPresentTime - systemTime)/10000) : 0), 
+                m_iFramesHeld,
+                GetQueueCount());
+          }
           m_earliestPresentTime = 0;
           nextSampleTime = 0; //Force this sample to be presented
         }
@@ -2143,7 +2163,7 @@ HRESULT MPEVRCustomPresenter::ProcessInputNotify(int* samplesProcessed, bool set
   HRESULT hr = S_OK;
   *samplesProcessed = 0;
   
-  if (!m_bFirstInputNotify || (m_state == MP_RENDER_STATE_STOPPED))
+  if (!m_bFirstInputNotify)
   {
     m_bInputAvailable = FALSE;
     return S_OK;
@@ -2290,10 +2310,23 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
     case MFVP_MESSAGE_FLUSH:
       // The presenter should discard any pending samples.
       m_bFirstInputNotify = FALSE;
-      Log("ProcessMessage MFVP_MESSAGE_FLUSH");
-      // Delegate to avoid a weird deadlock with application-idle handler Flush();
-      m_bFlush = TRUE;
-      NotifyScheduler(true);
+      if (m_state == MP_RENDER_STATE_ENDSTREAM)
+      {
+        Log("ProcessMessage MFVP_MESSAGE_FLUSH, end stream, delay flushing");
+      }
+      else
+      {
+        Log("ProcessMessage MFVP_MESSAGE_FLUSH");
+        PauseThread(m_hTimer, &m_timerParams);
+        PauseThread(m_hWorker, &m_workerParams);
+        PauseThread(m_hScheduler, &m_schedulerParams);
+        // Delegate to avoid a weird deadlock with application-idle handler Flush();
+        m_bFlush = TRUE;
+        WakeThread(m_hScheduler, &m_schedulerParams);
+        WakeThread(m_hWorker, &m_workerParams);
+        WakeThread(m_hTimer, &m_timerParams);
+        NotifyScheduler(true);
+      }
     break;
 
     case MFVP_MESSAGE_INVALIDATEMEDIATYPE:
@@ -2354,7 +2387,7 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
       PauseThread(m_hTimer, &m_timerParams);
       PauseThread(m_hWorker, &m_workerParams);
       PauseThread(m_hScheduler, &m_schedulerParams);
-      m_state = MP_RENDER_STATE_STOPPED;
+      m_state = MP_RENDER_STATE_ENDSTREAM;
       WakeThread(m_hScheduler, &m_schedulerParams);
       WakeThread(m_hWorker, &m_workerParams);
       WakeThread(m_hTimer, &m_timerParams);
@@ -2426,7 +2459,7 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::OnClockStop(MFTIME hnsSystemTime
   PauseThread(m_hWorker, &m_workerParams);
   PauseThread(m_hScheduler, &m_schedulerParams);
   m_state = MP_RENDER_STATE_STOPPED;
-  Flush(FALSE);
+  //Flush(FALSE);
   WakeThread(m_hScheduler, &m_schedulerParams);
   WakeThread(m_hWorker, &m_workerParams);
   WakeThread(m_hTimer, &m_timerParams);
@@ -2662,6 +2695,8 @@ HRESULT MPEVRCustomPresenter::Paint(CComPtr<IDirect3DSurface9> pSurface, bool re
     m_pD3DDev->GetRasterStatus(0, &rasterStatus);
     m_LastEndOfPaintScanline = rasterStatus.ScanLine;
         
+    OnVBlankFinished(m_PaintTime);
+
     if (m_bDrawStats) // no point in wasting CPU time if we aren't displaying the stats
     {
       //update the video and display timing values
@@ -2670,7 +2705,6 @@ HRESULT MPEVRCustomPresenter::Paint(CComPtr<IDirect3DSurface9> pSurface, bool re
       m_PaintTimeMin = min(m_PaintTimeMin, m_PaintTime);
       m_PaintTimeMax = max(m_PaintTimeMax, m_PaintTime);
   
-      OnVBlankFinished(true, startPaint, GetCurrentTimestamp());
   
       CalculateJitter(startPaint);
     }
@@ -2736,7 +2770,7 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::get_Jitter(int *iJitter)
 
 HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::get_AvgSyncOffset(int *piAvg)
 {
-  *piAvg = (int)((m_fSyncOffsetAvr/10000.0) + 0.5);
+  *piAvg = (int)((m_llSyncOffsetAvr + 5000)/10000);
   return S_OK;
 }
 
@@ -3271,11 +3305,11 @@ void MPEVRCustomPresenter::CalculateJitter(LONGLONG PerfCounter)
 
     DeviationSum += Deviation*Deviation;
     
-    if (m_iFramesDrawn > NB_JITTER)
-    {
-      m_MaxJitter = max(m_MaxJitter, DevInt);
-      m_MinJitter = min(m_MinJitter, DevInt);
-    }
+    //    if (m_iFramesDrawn > NB_JITTER)
+    //    {
+    //      m_MaxJitter = max(m_MaxJitter, DevInt);
+    //      m_MinJitter = min(m_MinJitter, DevInt);
+    //    }
   }
 
   m_fJitterStdDev = sqrt(DeviationSum/NB_JITTER);
@@ -3284,31 +3318,25 @@ void MPEVRCustomPresenter::CalculateJitter(LONGLONG PerfCounter)
 }
 
 
-// Collect the difference between periodEnd and periodStart in an array, calculate mean and stddev.
-void MPEVRCustomPresenter::OnVBlankFinished(bool fAll, LONGLONG periodStart, LONGLONG periodEnd)
+// Collect the periods in an array, calculate mean and stddev.
+void MPEVRCustomPresenter::OnVBlankFinished(LONGLONG period)
 {
-  m_nNextSyncOffset = (m_nNextSyncOffset+1) % NB_JITTER;
-  m_pllSyncOffset[m_nNextSyncOffset] = periodEnd - periodStart;
-
-  LONGLONG AvrageSum = 0;
-  for (int i = 0; i < NB_JITTER; i++)
-  {
-    LONGLONG Offset = m_pllSyncOffset[i];
-    AvrageSum += Offset;
-    m_MaxSyncOffset = max(m_MaxSyncOffset, Offset);
-    m_MinSyncOffset = min(m_MinSyncOffset, Offset);
-  }
-  double MeanOffset = double(AvrageSum)/NB_JITTER;
-  double DeviationSum = 0;
-  for (int i = 0; i < NB_JITTER; i++)
-  {
-    double Deviation = double(m_pllSyncOffset[i]) - MeanOffset;
-    DeviationSum += Deviation*Deviation;
-  }
-  double StdDev = sqrt(DeviationSum/NB_JITTER);
-
-  m_fSyncOffsetAvr = MeanOffset;
-  m_fSyncOffsetStdDev = StdDev;
+  m_pllSyncOffsetSumAvg -= m_pllSyncOffset[m_nNextSyncOffset];
+  m_pllSyncOffset[m_nNextSyncOffset] = period;
+  m_pllSyncOffsetSumAvg += period;
+  m_nNextSyncOffset = (m_nNextSyncOffset+1) % NB_PTASIZE;
+  
+  m_llSyncOffsetAvr = m_pllSyncOffsetSumAvg/NB_PTASIZE;
+  
+  //  double MeanOffset = (double)m_llSyncOffsetAvr; 
+  //  double DeviationSum = 0;
+  //  for (int i = 0; i < NB_PTASIZE; i++)
+  //  {
+  //    double Deviation = double(m_pllSyncOffset[i]) - MeanOffset;
+  //    DeviationSum += Deviation*Deviation;
+  //  }
+  //  double StdDev = sqrt(DeviationSum/NB_PTASIZE);
+  //  m_fSyncOffsetStdDev = StdDev;
 }
 
 // Update the array m_pllRFP with a new frame time stamp. Calculate mean and stddev.
@@ -3368,10 +3396,8 @@ void MPEVRCustomPresenter::ResetTraceStats()
   m_uSyncGlitches   = 0;
   m_PaintTimeMin    = MAXLONG64;
   m_PaintTimeMax    = 0;
-  m_MinJitter       = MAXLONG64;
-  m_MaxJitter       = MINLONG64;
-  m_MinSyncOffset   = MAXLONG64;
-  m_MaxSyncOffset   = MINLONG64;
+  //  m_MinJitter       = MAXLONG64;
+  //  m_MaxJitter       = MINLONG64;
   m_bResetStats     = false;
 }
 
@@ -3394,6 +3420,11 @@ void MPEVRCustomPresenter::ResetFrameStats()
   m_fPCDMean = 1.0;
   m_fPCDSumAvg = 0.0;
   ZeroMemory((void*)&m_pllPCD, sizeof(double) * NB_PCDSIZE);
+
+  m_nNextSyncOffset       = 0;
+  m_pllSyncOffsetSumAvg   = 0;
+  m_llSyncOffsetAvr        = 0;
+  ZeroMemory((void*)&m_pllSyncOffset, sizeof(LONGLONG) * NB_PTASIZE);
   
   m_DetectedFrameTimePos  = 0;
   m_DetectedLock          = false;
