@@ -753,7 +753,7 @@ double EVRGetVideoFPS(int fpsSource)
   
   if (m_evrPresenter)
   {
-    videoFPS = m_evrPresenter->GetRealFramePeriod(fpsSource); //frame period in seconds
+    videoFPS = m_evrPresenter->GetVideoFramePeriod(fpsSource); //frame period in seconds
     
     if (videoFPS > 0.0)
     {

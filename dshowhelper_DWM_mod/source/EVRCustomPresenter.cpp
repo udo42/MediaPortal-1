@@ -3503,7 +3503,7 @@ double MPEVRCustomPresenter::GetDetectedFrameTime()
 }
 
 // Get best estimate of actual video frame duration in seconds
-double MPEVRCustomPresenter::GetRealFramePeriod(int fpsSource)
+double MPEVRCustomPresenter::GetVideoFramePeriod(int fpsSource)
 {
   double rtimePerFrame = 0.0; // 0.0 => 'unknown' FPS
 
@@ -3518,7 +3518,16 @@ double MPEVRCustomPresenter::GetRealFramePeriod(int fpsSource)
       {
         if (m_DetectedLock && (m_DetectedFrameTimePos >= (NB_DFTHSIZE*2)) && (m_DetFrameTimeAve > DFT_THRESH))
         {
-          rtimePerFrame = m_DetFrameTimeAve; // in seconds
+          //If the sample period and timestamp difference methods give the same result with 2%,
+          //use the sample period since it should be more accurate.
+          if ((m_DetSampleAve > DFT_THRESH) && (fabs(1.0 - (m_DetSampleAve / m_DetFrameTimeAve)) < 0.02))
+          {
+            rtimePerFrame = m_DetSampleAve; // in seconds
+          }
+          else
+          {
+            rtimePerFrame = m_DetFrameTimeAve; // in seconds
+          }
         }
         else if (m_DetSampleAve > DFT_THRESH)
         {
@@ -3555,6 +3564,19 @@ double MPEVRCustomPresenter::GetRealFramePeriod(int fpsSource)
     default:
       rtimePerFrame = -1.0; //Error
     break;
+  }
+  
+  //Check the result to try and eliminate some frame-doubled values  
+  if (rtimePerFrame > 0.0)
+  {
+    if (rtimePerFrame < (1.0/80.0)) 
+    {
+      rtimePerFrame *= 2.0; // > 80 Hz, assume frame-doubled 50/60 Hz
+    }
+    else if ((rtimePerFrame > (1.0/49.0)) && (rtimePerFrame < (1.0/47.0))) 
+    {
+      rtimePerFrame *= 2.0; //approx 48Hz, assume frame-doubled 24Hz
+    }
   }
    
   return rtimePerFrame;

@@ -230,7 +230,7 @@ public:
   double         GetDisplayCycle();
   double         GetCycleDifference();
   double         GetDetectedFrameTime();
-  double         GetRealFramePeriod(int fpsSource);
+  double         GetVideoFramePeriod(int fpsSource);
   void           GetFrameRateRatio();
 
   void           NotifyTimer(LONGLONG targetTime);
