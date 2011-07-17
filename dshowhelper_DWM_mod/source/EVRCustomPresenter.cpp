@@ -1126,7 +1126,8 @@ void MPEVRCustomPresenter::Flush(BOOL forced)
   {
     Log("Not flushing: size=%d", m_qScheduledSamples.Count());
   }
-  
+
+  CheckForEndOfStream();  
   m_bFlush = FALSE;
 }
 
@@ -1366,15 +1367,20 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     return hr;
   }
 
+  
   //Bail out after presenting first frame in skip-step FFWD/RWD mode
   if (m_bZeroScrub && (m_iFramesProcessed > 0))
+  {
+    CheckForEndOfStream();
     return hr;
+  }
 
 
   // Unless multiple samples/frames need to be dropped
   // this loop is only traversed once each time
   while (true)
   {        
+    
     b_RepeatPaint = (GetQueueCount() == 0) && ENABLE_EMPTY_RENDER && (PeekLastPresSample() != NULL);
     
     if (
@@ -1388,6 +1394,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       *pIdleWait = true;
       if (GetQueueCount() == 0)
       {
+        CheckForEndOfStream();
         NotifyWorker(FALSE);
       }     
       hr = S_OK;
@@ -1567,6 +1574,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       {        
         m_lastPresentTime = systemTime;
         CHECK_HR(PresentSample(pSample, frameTime, m_bDrawStats), "PresentSample failed");
+        CheckForEndOfStream();
       }
       else
       {
