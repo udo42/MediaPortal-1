@@ -1109,7 +1109,14 @@ void MPEVRCustomPresenter::Flush(BOOL forced)
 {
   if (!m_bDVDMenu || forced)
   {
-    Log("Flushing: size=%d", m_qScheduledSamples.Count());
+    if (m_pLastPresSample != NULL)
+    {
+      Log("Flushing: size=%d, LpValid", m_qScheduledSamples.Count());
+    }
+    else
+    {
+      Log("Flushing: size=%d, LpNull", m_qScheduledSamples.Count());
+    }
 
     DwmFlush(); //Just in case...
     CAutoLock sLock(&m_lockSamples);
