@@ -86,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.085 part DWM ----------- instance 0x%x", this);
+      Log("---------- v1.4.086 part DWM ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.085 part DWM ----------- instance 0x%x", this);
+      Log("---------- v0.0.086 part DWM ----------- instance 0x%x", this);
       Log("------- audio renderer testing --------- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -2327,7 +2327,7 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
       m_bFirstInputNotify = FALSE;
       if (m_state == MP_RENDER_STATE_ENDSTREAM)
       {
-        Log("ProcessMessage MFVP_MESSAGE_FLUSH, end stream, delay flushing");
+        Log("ProcessMessage MFVP_MESSAGE_FLUSH, end stream -> delay flushing");
       }
       else
       {
@@ -2376,10 +2376,7 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
       
       ResetTraceStats();
       ResetFrameStats();
-      if (!m_bSchedulerRunning)
-      {
-        GetFilterNames();
-      }
+      GetFilterNames();
       //Setup the Desktop Window Manager (DWM)
       DwmInit(NUM_DWM_BUFFERS, NUM_DWM_FRAMES);
       m_bEndStreaming = FALSE;
