@@ -86,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.087 part DWM ----------- instance 0x%x", this);
+      Log("---------- v1.4.088 part DWM ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.087 part DWM ----------- instance 0x%x", this);
+      Log("---------- v0.0.088 part DWM ----------- instance 0x%x", this);
       Log("------- audio renderer testing --------- instance 0x%x", this);
     }
     m_hMonitor = monitor;
@@ -1254,6 +1254,7 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
       
       if (hnsTimeNow > 0)
       {
+        m_pCallback->SetSampleTime(hnsTimeNow);
         pTempSample->SetSampleTime(hnsTimeNow); 
         pTempSample->SetSampleDuration((frameTime * 9)/8);
       }
@@ -1284,11 +1285,22 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
       m_pClock->GetCorrelatedTime(0, &hnsTimeNow, &hnsSystemTime);
       hnsTimeNow = hnsTimeNow + (GetCurrentTimestamp() - hnsSystemTime) + (frameTime * PS_FRAME_ADVANCE); //correct the value
       
-      pSample->GetSampleTime(&hnsTimeScheduled);
-      if ((hnsTimeScheduled > 0) && !m_RepeatRender)
+      if (m_RepeatRender) //use current time
       {
-        m_pCallback->SetSampleTime(hnsTimeScheduled);
+        if (hnsTimeNow > 0)
+        {
+          m_pCallback->SetSampleTime(hnsTimeNow);
+        }
       }
+      else //use the real sample time
+      {
+        pSample->GetSampleTime(&hnsTimeScheduled);
+        if (hnsTimeScheduled > 0)
+        {
+          m_pCallback->SetSampleTime(hnsTimeScheduled);
+        }
+      }
+      
       if (hnsTimeNow > 0)
       {
         pSample->SetSampleTime(hnsTimeNow); 
@@ -1356,7 +1368,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
   LONGLONG systemTime = 0;
   LONGLONG lateLimit = hystersisTime;
   LONGLONG delErrLimit = displayTime;
-  bool b_RepeatPaint = false;
   IMFSample* pSample;
 
   LONGLONG frameTime = m_rtTimePerFrame;
@@ -1393,10 +1404,10 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
   while (true)
   {        
     
-    b_RepeatPaint = (GetQueueCount() == 0) && ENABLE_EMPTY_RENDER && (PeekLastPresSample() != NULL);
+    m_RepeatRender = (GetQueueCount() == 0) && ENABLE_EMPTY_RENDER && (PeekLastPresSample() != NULL);
     
     if (
-        ((GetQueueCount() == 0) && !b_RepeatPaint) ||  //there are no samples available so we go idle
+        ((GetQueueCount() == 0) && !m_RepeatRender) ||  //there are no samples available so we go idle
         (m_state == MP_RENDER_STATE_PAUSED && !m_bDVDMenu)  //don't process samples in paused mode during normal playback
         )
     {
@@ -1428,7 +1439,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     }
 
 
-    if (b_RepeatPaint) //Repeat render of last sample
+    if (m_RepeatRender) //Repeat render of last sample
     {
       pSample = PeekLastPresSample();
       if (pSample == NULL)
@@ -1439,7 +1450,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       realSampleTime = 0;       
       nextSampleTime = 0;
       systemTime = GetCurrentTimestamp();
-      m_RepeatRender = true;
     }
     else
     {
@@ -1475,7 +1485,6 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       else
       {
         nextSampleTime = realSampleTime;
-        m_RepeatRender = false;
       }
     }
     
