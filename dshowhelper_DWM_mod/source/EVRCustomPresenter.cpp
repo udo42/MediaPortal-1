@@ -86,11 +86,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     LogRotate();
     if (NO_MP_AUD_REND)
     {
-      Log("---------- v1.4.088 part DWM ----------- instance 0x%x", this);
+      Log("---------- v1.4.088a no DWM ----------- instance 0x%x", this);
     }
     else
     {
-      Log("---------- v0.0.088 part DWM ----------- instance 0x%x", this);
+      Log("---------- v0.0.088a no DWM ----------- instance 0x%x", this);
       Log("------- audio renderer testing --------- instance 0x%x", this);
     }
     m_hMonitor = monitor;
