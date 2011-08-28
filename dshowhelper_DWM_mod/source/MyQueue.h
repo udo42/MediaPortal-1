@@ -100,6 +100,15 @@ public:
 		return ret;
 	}
 
+	T PeekNext()
+	{
+		//CAutoLock lock(this);
+		if ( m_count <= 1 ) return NULL;
+		T ret;
+		ret = m_elements[NextIdx(m_pos)];
+		return ret;
+	}
+
 	int Count()
 	{
 		return m_count;

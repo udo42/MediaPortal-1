@@ -30,8 +30,8 @@ using namespace std;
 #define NO_MP_AUD_REND false
 
 //Enables DWM parameter changes if true
-//#define ENABLE_DWM_SETUP true
-#define ENABLE_DWM_SETUP false
+#define ENABLE_DWM_SETUP true
+//#define ENABLE_DWM_SETUP false
 
 //Enables reset of DWM parameters if true
 #define ENABLE_DWM_RESET true
@@ -288,10 +288,12 @@ protected:
   void           NotifyScheduler(bool forceWake);
   void           NotifyWorker(bool setInAvail);
   HRESULT        GetTimeToSchedule(IMFSample* pSample, LONGLONG* pDelta, LONGLONG *hnsSystemTime, LONGLONG hnsTimeOffset);
+  LONGLONG       GetNextSampleDiff(IMFSample* pSample, IMFSample* pNextSample);
   void           Flush(BOOL forced);
   BOOL           ScheduleSample(IMFSample* pSample);
   BOOL           PutSample(IMFSample* pSample);
   IMFSample*     PeekSample();
+  IMFSample*     PeekNextSample();
   BOOL           PopSample();
   int            GetQueueCount();
   HRESULT        TrackSample(IMFSample *pSample);
@@ -301,7 +303,7 @@ protected:
   IMFSample*     PeekLastPresSample();
   void           ReturnTempSample(IMFSample* pSample);
   HRESULT        PresentSample(IMFSample* pSample, LONGLONG frameTime, bool renderStats);
-  void           CorrectSampleTime(IMFSample* pSample);
+  void           VideoFpsFromSample(IMFSample* pSample);
   void           GetRealRefreshRate();
   bool           GetDelayToRasterTarget(LONGLONG *offsetTime);
   void           DwmEnableMMCSSOnOff(bool enable);
@@ -503,6 +505,7 @@ protected:
   
   HANDLE        m_dummyEvent;
   bool          m_RepeatRender;
+  LONGLONG      m_endStreamingTime;
   
   BOOL          m_bIsWin7;
   bool          m_bMsVideoCodec;
