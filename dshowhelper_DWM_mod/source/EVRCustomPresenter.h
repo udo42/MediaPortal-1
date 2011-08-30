@@ -433,7 +433,7 @@ protected:
   void OnVBlankFinished(LONGLONG period);
   void CalculateJitter(LONGLONG PerfCounter);
   void CalculateRealFramePeriod(LONGLONG timeStamp);
-  void CalculateNSTStats(LONGLONG timeStamp, LONGLONG frameTime, bool detLockBlank);
+  void CalculateNSTStats(LONGLONG timeStamp, LONGLONG frameTime);
   void CalculatePresClockDelta(LONGLONG presTime, LONGLONG sysTime);
 
   bool QueryFpsFromVideoMSDecoder();
