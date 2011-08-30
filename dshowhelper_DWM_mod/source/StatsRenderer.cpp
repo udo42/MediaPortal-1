@@ -220,7 +220,7 @@ void StatsRenderer::DrawStats()
 
     strText.Format("Rptd FPS: %.3f | Detd FPS: %.3f | Samp FPS: %.3f | DetFrT_SD: %+5.3f ms | ver: 089",  
       ((m_pPresenter->m_rtTimePerFrame > 0) ? (10000000.0/m_pPresenter->m_rtTimePerFrame) : 0), 
-      ((m_pPresenter->m_DetFrameTimeAve > 0) ? (1.0/(m_pPresenter->m_DetFrameTimeAve)) : 0),
+      ((m_pPresenter->m_DetectedFrameTime > 0) ? (1.0/(m_pPresenter->m_DetectedFrameTime)) : 0),
       ((m_pPresenter->m_DetSampleAve > 0) ? (1.0/(m_pPresenter->m_DetSampleAve)) : 0),
       (m_pPresenter->m_DetectedFrameTimeStdDev/10000.0)); 
     DrawText(rc, strText);

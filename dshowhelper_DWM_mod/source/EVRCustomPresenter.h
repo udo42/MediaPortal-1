@@ -38,13 +38,18 @@ using namespace std;
 
 //Enables repeated rendering of last sample when queue becomes empty if true
 #define ENABLE_EMPTY_RENDER true
+//#define ENABLE_EMPTY_RENDER false
 
 #define NUM_SURFACES 4
 #define NB_JITTER 128
 #define NB_PTASIZE NB_JITTER
 #define NB_RFPSIZE 64
-#define NB_DFTHSIZE 64
-#define NB_CFPSIZE 128
+
+//#define NB_DFTHSIZE 64
+//#define NB_CFPSIZE 128
+#define NB_DFTHSIZE 32
+#define NB_CFPSIZE 16
+
 #define NB_PCDSIZE 32
 //#define LF_THRESH 7
 #define LF_THRESH_HIGH 6
@@ -288,12 +293,12 @@ protected:
   void           NotifyScheduler(bool forceWake);
   void           NotifyWorker(bool setInAvail);
   HRESULT        GetTimeToSchedule(IMFSample* pSample, LONGLONG* pDelta, LONGLONG *hnsSystemTime, LONGLONG hnsTimeOffset);
-  LONGLONG       GetNextSampleDiff(IMFSample* pSample, IMFSample* pNextSample);
+//  LONGLONG       GetNextSampleDiff(IMFSample* pSample, IMFSample* pNextSample);
   void           Flush(BOOL forced);
   BOOL           ScheduleSample(IMFSample* pSample);
   BOOL           PutSample(IMFSample* pSample);
   IMFSample*     PeekSample();
-  IMFSample*     PeekNextSample();
+//  IMFSample*     PeekNextSample();
   BOOL           PopSample();
   int            GetQueueCount();
   HRESULT        TrackSample(IMFSample *pSample);
@@ -428,7 +433,7 @@ protected:
   void OnVBlankFinished(LONGLONG period);
   void CalculateJitter(LONGLONG PerfCounter);
   void CalculateRealFramePeriod(LONGLONG timeStamp);
-  void CalculateNSTStats(LONGLONG timeStamp, LONGLONG frameTime);
+  void CalculateNSTStats(LONGLONG timeStamp, LONGLONG frameTime, bool detLockBlank);
   void CalculatePresClockDelta(LONGLONG presTime, LONGLONG sysTime);
 
   bool QueryFpsFromVideoMSDecoder();
@@ -472,6 +477,7 @@ protected:
   LONGLONG      m_DectedSum;
   int           m_DetectedFrameTimePos;
   double        m_DetectedFrameTime;
+  double        m_DetdFrameTimeLast;
   double        m_DetectedFrameTimeStdDev;
   bool          m_DetectedLock;
   double        m_DetFrameTimeAve;
