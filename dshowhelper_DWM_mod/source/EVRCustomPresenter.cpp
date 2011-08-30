@@ -3995,7 +3995,7 @@ void MPEVRCustomPresenter::VideoFpsFromSample(IMFSample* pSample)
 
   //Put frame time into sample duration field
   SetDuration = (LONGLONG)(m_DetdFrameTimeLast * 10000000.0);
-  pSample->SetSampleDuration(&SetDuration);  
+  pSample->SetSampleDuration(SetDuration);  
 }
 
 
