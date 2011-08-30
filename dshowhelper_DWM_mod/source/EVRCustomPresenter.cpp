@@ -1508,6 +1508,19 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         *pTargetTime = 0;
         break;
       }
+      
+      if (m_isNewSample)
+      {
+        LONGLONG GetDuration;
+        pSample->GetSampleDuration(&GetDuration);
+        m_DetectedFrameTime = ((double)GetDuration)/10000000.0;    
+        GetFrameRateRatio(); // update video to display FPS ratio data     
+        if (m_DetectedFrameTime > DFT_THRESH)
+        {
+          frameTime = GetDuration;
+        }
+        m_isNewSample = false;
+      }
     
       // get scheduled time, if none is available the sample will be presented immediately
       CHECK_HR(hr = GetTimeToSchedule(pSample, &realSampleTime, &systemTime, (frameTime * DWM_DELAY_COMP)), "Couldn't get time to schedule!");
@@ -1627,7 +1640,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         // We're within the raster timing limits, so present the sample or delay because it's too early...
 
         // Calculate minimum delay to next possible PresentSample() time
-        if ((m_frameRateRatio <= 1 && !m_bScrubbing) || (m_rawFRRatio <= 1 && m_bScrubbing))
+        if ((m_frameRateRatio <= 1 && !m_bScrubbing) || (m_rawFRRatio <= 1 && m_bScrubbing) || m_RepeatRender)
         {
           m_earliestPresentTime = systemTime + offsetTime;
         }
@@ -1681,6 +1694,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
           DwmFlush();
         }     
         UpdateLastPresSample(pSample);
+        m_isNewSample = true; //next sample from queue will be a new one
       }
       
       NotifyWorker(FALSE);
@@ -1746,6 +1760,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
       }
       ReturnSample(pSample, FALSE);
       NotifyWorker(FALSE);
+      m_isNewSample = true; //next sample from queue will be a new one
       
       // Notify EVR of late sample
       if( m_pEventSink )
@@ -3554,6 +3569,7 @@ void MPEVRCustomPresenter::ResetFrameStats()
   m_hnsNSToffset = 0;
   m_NSTinitDone = false;
   m_NSToffsUpdate = true;
+  m_isNewSample = true;
   
   m_nNextRFP = 0;
     
@@ -3949,6 +3965,10 @@ void MPEVRCustomPresenter::VideoFpsFromSample(IMFSample* pSample)
 	      }
 	    }
     }
+    else
+    {
+      m_DetdFrameTimeLast = (double)SetDuration/10000000.0;
+    }
 
   }
   else if ((Diff >= m_rtTimePerFrame*8) && m_rtTimePerFrame)
@@ -3967,11 +3987,15 @@ void MPEVRCustomPresenter::VideoFpsFromSample(IMFSample* pSample)
 //    m_DetectedFrameTime = m_DetdFrameTimeLast;
 //  }
 
-  m_DetectedFrameTime = m_DetdFrameTimeLast;
+//  m_DetectedFrameTime = m_DetdFrameTimeLast;
   
-  GetFrameRateRatio(); // update video to display FPS ratio data
-    
-  LOG_TRACE("EVR: Time: %f %f %f\n", Time / 10000000.0, SetDuration / 10000000.0, m_DetectedFrameTime);
+//  GetFrameRateRatio(); // update video to display FPS ratio data
+
+  LOG_TRACE("EVR: Time: %f %f %f\n", Time / 10000000.0, SetDuration / 10000000.0, m_DetdFrameTimeLast);
+
+  //Put frame time into sample duration field
+  SetDuration = (LONGLONG)(m_DetdFrameTimeLast * 10000000.0);
+  pSample->SetSampleDuration(&SetDuration);  
 }
 
 

@@ -481,6 +481,7 @@ protected:
   double        m_DetectedFrameTimeStdDev;
   bool          m_DetectedLock;
   double        m_DetFrameTimeAve;
+  bool          m_isNewSample;
 
   // Used for detecting the average video sample duration
   LONGLONG      m_DetSampleHistory[NB_DFTHSIZE];
