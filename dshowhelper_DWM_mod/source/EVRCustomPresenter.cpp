@@ -1550,7 +1550,8 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
     if (!m_bDVDMenu && !m_bScrubbing && m_NSTinitDone)
     {
       //Centralise nextSampleTime timing window when in normal play mode and MP Audio Renderer is inactive
-      if (!m_pAVSyncClock && (realSampleTime != 0) && (m_frameRateRatX2 > 0))
+      //if (!m_pAVSyncClock && (realSampleTime != 0) && (m_frameRateRatX2 > 0))
+      if (!m_pAVSyncClock && (realSampleTime != 0))
       {
         nextSampleTime = (realSampleTime + (frameTime/2)) - m_hnsNSToffset;
       }
