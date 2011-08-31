@@ -48,7 +48,7 @@ using namespace std;
 //#define NB_DFTHSIZE 64
 //#define NB_CFPSIZE 128
 #define NB_DFTHSIZE 8
-#define NB_CFPSIZE 8
+#define NB_CFPSIZE 32
 
 #define NB_PCDSIZE 32
 //#define LF_THRESH 7

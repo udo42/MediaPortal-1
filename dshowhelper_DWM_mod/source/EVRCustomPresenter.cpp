@@ -1296,7 +1296,8 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
           m_pCallback->SetSampleTime(hnsTimeNow);
         }         
         pTempSample->SetSampleTime(hnsTimeNow); 
-        pTempSample->SetSampleDuration((frameTime * 9)/8);
+        //pTempSample->SetSampleDuration((frameTime * 9)/8);
+        pTempSample->SetSampleDuration(0);
       }
     }
 
@@ -1354,7 +1355,8 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
           m_pCallback->SetSampleTime(hnsTimeNow);
         }         
         pSample->SetSampleTime(hnsTimeNow); 
-        pSample->SetSampleDuration((frameTime * 9)/8);
+        //pSample->SetSampleDuration((frameTime * 9)/8);
+        pSample->SetSampleDuration(0);
       }
     }
 
@@ -1520,8 +1522,9 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
         realSampleTime = 0; 
       }
       
-      if ((realSampleTime > 5000000) && ENABLE_EMPTY_RENDER && !m_bScrubbing && !m_bDVDMenu && (systemTime < m_endStreamingTime)) //More than 500ms in the future, so go repeat render or idle
+      if ((realSampleTime > (500*10000)) && ENABLE_EMPTY_RENDER && !m_bScrubbing && !m_bDVDMenu && (systemTime < m_endStreamingTime))
       {
+        //More than 500ms in the future, so go repeat render or idle
         pSample = PeekLastPresSample();
         if (pSample == NULL) //go idle
         {
@@ -1709,7 +1712,7 @@ HRESULT MPEVRCustomPresenter::CheckForScheduledSample(LONGLONG *pTargetTime, LON
                   
       // If video frame rate is higher than display refresh then we'll get lots of dropped frames
       // so it's better to not report them in the log normally.          
-      if ((m_frameRateRatio > 0) && !m_bScrubbing && !m_bDVDMenu)
+      if ((m_frameRateRatio > 0) && !m_bScrubbing && !m_bDVDMenu && m_bDrawStats)
       {
         Log("Dropping frame, NST %.2f ms, AveRNST %.2f ms, last sleep %.2f ms, last pres %.2f ms, paint %.2f ms, queue count %d, SOP %d, EOP %d, RawFRRatio %d, dropped %d, drawn %d, late %d",
              (double)nextSampleTime/10000, 
@@ -2437,7 +2440,7 @@ HRESULT STDMETHODCALLTYPE MPEVRCustomPresenter::ProcessMessage(MFVP_MESSAGE_TYPE
       PauseThread(m_hWorker, &m_workerParams);
       PauseThread(m_hScheduler, &m_schedulerParams);
       m_state = MP_RENDER_STATE_ENDSTREAM;
-      m_endStreamingTime = GetCurrentTimestamp() + (500*10000); //Set 500ms time limit on 'repeat render' mode
+      m_endStreamingTime = GetCurrentTimestamp() + (350*10000); //Set 350ms time limit on 'repeat render' mode
       WakeThread(m_hScheduler, &m_schedulerParams);
       WakeThread(m_hWorker, &m_workerParams);
       WakeThread(m_hTimer, &m_timerParams);
