@@ -88,11 +88,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     {
       if (NO_MP_AUD_REND)
       {
-        Log("---------- v1.4.089 part DWM ----------- instance 0x%x", this);
+        Log("---------- v1.4.091 part DWM ----------- instance 0x%x", this);
       }
       else
       {
-        Log("---------- v0.0.089 part DWM ----------- instance 0x%x", this);
+        Log("---------- v0.0.091 part DWM ----------- instance 0x%x", this);
         Log("------- audio renderer testing --------- instance 0x%x", this);
       }
     }
@@ -100,12 +100,12 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     {
       if (NO_MP_AUD_REND)
       {
-        Log("---------- v1.4.089a no DWM ----------- instance 0x%x", this);
+        Log("---------- v1.4.091a no DWM ----------- instance 0x%x", this);
       }
       else
       {
-        Log("---------- v0.0.089a no DWM ----------- instance 0x%x", this);
-        Log("------- audio renderer testing --------- instance 0x%x", this);
+        Log("---------- v0.0.091a no DWM ----------- instance 0x%x", this);
+        Log("------- audio renderer testing -------- instance 0x%x", this);
       }
     }
     m_hMonitor = monitor;
@@ -736,6 +736,30 @@ HRESULT MPEVRCustomPresenter::GetAspectRatio(CComPtr<IMFMediaType> pType, int* p
       *piARX = vheader->dwPictAspectRatioX;
       *piARY = vheader->dwPictAspectRatioY;
       pType->FreeRepresentation(FORMAT_VideoInfo2, (void*)pAMMediaType);
+      
+      //Make sure values do not exceed 16 bit signed maximum....
+      if ((*piARX > 32767) || (*piARY > 32767))
+      {
+        Log("Large ARX/ARY: %d:%d", *piARX, *piARY);
+        if ((*piARX > *piARY) && (*piARX != 0))
+        {
+          *piARY = (int)(((double)*piARY * 32767.0) / (double)*piARX);
+          *piARY = min(32767, *piARY);          
+          *piARX = 32767;
+        }
+        else if ((*piARX < *piARY) && (*piARY != 0))
+        {
+          *piARX = (int)(((double)*piARX * 32767.0) / (double)*piARY);
+          *piARX = min(32767, *piARX);          
+          *piARY = 32767;
+        }
+        else
+        {
+          *piARX = 32767;
+          *piARY = 32767;
+        }        
+        Log("Adjusted ARX/ARY: %d:%d", *piARX, *piARY);
+      }
     }
     else
     {
@@ -916,7 +940,10 @@ HRESULT MPEVRCustomPresenter::CreateProposedOutputType(IMFMediaType* pMixerType,
     {
       LARGE_INTEGER frameRate;
       CHECK_HR((*pType)->GetUINT64(MF_MT_FRAME_RATE, (UINT64*)&frameRate.QuadPart), "Failed to get MF_MT_FRAME_RATE");
-      Log("MF_MT_FRAME_RATE: %.3f fps", ((double)frameRate.HighPart/(double)frameRate.LowPart));
+      if (frameRate.LowPart != 0)
+      {
+        Log("MF_MT_FRAME_RATE: %.3f fps", ((double)frameRate.HighPart/(double)frameRate.LowPart));
+      }
       
       if ( (!m_bMsVideoCodec || (m_bMsVideoCodec && (m_rtTimePerFrame == 0))) && frameRate.HighPart != 0)
         m_rtTimePerFrame = (10000000*(LONGLONG)frameRate.LowPart)/(LONGLONG)frameRate.HighPart;
@@ -942,7 +969,10 @@ HRESULT MPEVRCustomPresenter::CreateProposedOutputType(IMFMediaType* pMixerType,
 
     LARGE_INTEGER frameRate;
     CHECK_HR((*pType)->GetUINT64(MF_MT_FRAME_RATE, (UINT64*)&frameRate.QuadPart), "Failed to get MF_MT_FRAME_RATE");
-    Log("MF_MT_FRAME_RATE: %.3f fps", ((double)frameRate.HighPart/(double)frameRate.LowPart));
+    if (frameRate.LowPart != 0)
+    {
+      Log("MF_MT_FRAME_RATE: %.3f fps", ((double)frameRate.HighPart/(double)frameRate.LowPart));
+    }
     
     if (m_rtTimePerFrame == 0)
     {
@@ -2741,7 +2771,7 @@ HRESULT MPEVRCustomPresenter::Paint(CComPtr<IDirect3DSurface9> pSurface, bool re
     CComPtr<IDirect3DTexture9> pTexture = NULL;
     pSurface->GetContainer(IID_IDirect3DTexture9, (void**)&pTexture);
 
-    hr = m_pCallback->PresentImage(m_iVideoWidth, m_iVideoHeight, m_iARX,m_iARY, (DWORD)(IDirect3DTexture9*)pTexture, (DWORD)(IDirect3DSurface9*)pSurface);
+    hr = m_pCallback->PresentImage((INT16)m_iVideoWidth, (INT16)m_iVideoHeight, (INT16)m_iARX, (INT16)m_iARY, (DWORD)(IDirect3DTexture9*)pTexture, (DWORD)(IDirect3DSurface9*)pSurface);
 
     m_PaintTime = GetCurrentTimestamp() - startPaint;
       

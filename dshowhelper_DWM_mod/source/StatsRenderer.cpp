@@ -218,7 +218,7 @@ void StatsRenderer::DrawStats()
     DrawText(rc, strText);
     OffsetRect(&rc, 0, TextHeight);
 
-    strText.Format("Rptd FPS: %.3f | Detd FPS: %.3f | Samp FPS: %.3f | DetFrT_SD: %+5.3f ms | ver: 089",  
+    strText.Format("Rptd FPS: %.3f | Detd FPS: %.3f | Samp FPS: %.3f | DetFrT_SD: %+5.3f ms | ver: 091",  
       ((m_pPresenter->m_rtTimePerFrame > 0) ? (10000000.0/m_pPresenter->m_rtTimePerFrame) : 0), 
       ((m_pPresenter->m_DetectedFrameTime > 0) ? (1.0/(m_pPresenter->m_DetectedFrameTime)) : 0),
       ((m_pPresenter->m_DetSampleAve > 0) ? (1.0/(m_pPresenter->m_DetSampleAve)) : 0),
