@@ -88,11 +88,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     {
       if (NO_MP_AUD_REND)
       {
-        Log("---------- v1.4.091 part DWM ----------- instance 0x%x", this);
+        Log("---------- v1.4.092 part DWM ----------- instance 0x%x", this);
       }
       else
       {
-        Log("---------- v0.0.091 part DWM ----------- instance 0x%x", this);
+        Log("---------- v0.0.092 part DWM ----------- instance 0x%x", this);
         Log("------- audio renderer testing --------- instance 0x%x", this);
       }
     }
@@ -100,11 +100,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     {
       if (NO_MP_AUD_REND)
       {
-        Log("---------- v1.4.091a no DWM ----------- instance 0x%x", this);
+        Log("---------- v1.4.092a no DWM ----------- instance 0x%x", this);
       }
       else
       {
-        Log("---------- v0.0.091a no DWM ----------- instance 0x%x", this);
+        Log("---------- v0.0.092a no DWM ----------- instance 0x%x", this);
         Log("------- audio renderer testing -------- instance 0x%x", this);
       }
     }
@@ -1313,7 +1313,7 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
       LONGLONG hnsTimeNow, hnsSystemTime, hnsSubTime;
       m_pClock->GetCorrelatedTime(0, &hnsTimeNow, &hnsSystemTime);
       hnsTimeNow = hnsTimeNow + (GetCurrentTimestamp() - hnsSystemTime) + (frameTime * PS_FRAME_ADVANCE); //correct the value
-      hnsSubTime = hnsTimeNow - (2 * frameTime);
+      hnsSubTime = hnsTimeNow - (100*10000);
       
       if (hnsTimeNow > 0)
       {
@@ -1355,7 +1355,7 @@ HRESULT MPEVRCustomPresenter::PresentSample(IMFSample* pSample, LONGLONG frameTi
       LONGLONG hnsTimeNow, hnsSystemTime, hnsSubTime;
       m_pClock->GetCorrelatedTime(0, &hnsTimeNow, &hnsSystemTime);
       hnsTimeNow = hnsTimeNow + (GetCurrentTimestamp() - hnsSystemTime) + (frameTime * PS_FRAME_ADVANCE); //correct the value
-      hnsSubTime = hnsTimeNow - (2 * frameTime);
+      hnsSubTime = hnsTimeNow - (100*10000);
       
 //      if (m_RepeatRender) //use current time
 //      {
