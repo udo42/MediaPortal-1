@@ -1,0 +1,208 @@
+﻿#region Copyright (C) 2005-2011 Team MediaPortal
+
+// Copyright (C) 2005-2011 Team MediaPortal
+// http://www.team-mediaportal.com
+// 
+// MediaPortal is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 2 of the License, or
+// (at your option) any later version.
+// 
+// MediaPortal is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+// GNU General Public License for more details.
+// 
+// You should have received a copy of the GNU General Public License
+// along with MediaPortal. If not, see <http://www.gnu.org/licenses/>.
+
+#endregion
+
+using System;
+using System.Collections;
+using System.Globalization;
+using MediaPortal.Dialogs;
+using MediaPortal.GUI.Library;
+using MediaPortal.Profile;
+using Action = MediaPortal.GUI.Library.Action;
+
+namespace WindowPlugins.GUISettings
+{
+  /// <summary>
+  /// Summary description for GUISettingsGeneral.
+  /// </summary>
+  public class GUISettingsScreenSaver : GUIInternalWindow
+  {
+    [SkinControl(2)] protected GUICheckButton btnScreenSaverEnabled= null;
+    //[SkinControl(3)] protected GUIButtonControl btnScreenSaverDelay= null;
+    [SkinControl(4)] protected GUICheckMarkControl cmBlankScreen= null;
+    [SkinControl(5)] protected GUICheckMarkControl cmReduceFrameRate= null;
+
+    private enum Controls
+    {
+      CONTROL_SCREENSAVER_DELAY = 3
+    } ;
+    
+    private bool settingsChanged = false;
+    private Int32 screenSaverDelay = 300;
+    private bool settingsSaved;
+    
+    private class CultureComparer : IComparer
+    {
+      #region IComparer Members
+
+      public int Compare(object x, object y)
+      {
+        CultureInfo info1 = (CultureInfo)x;
+        CultureInfo info2 = (CultureInfo)y;
+        return String.Compare(info1.EnglishName, info2.EnglishName, true);
+      }
+
+      #endregion
+    }
+
+    public GUISettingsScreenSaver()
+    {
+      GetID = (int)Window.WINDOW_SETTINGS_SCREENSAVER;
+    }
+
+    #region Serialisation
+
+    private void LoadSettings()
+    {
+      using (Settings xmlreader = new MPSettings())
+      {
+        btnScreenSaverEnabled.Selected = xmlreader.GetValueAsBool("general", "IdleTimer", true);
+        EnableButtons(btnScreenSaverEnabled.Selected);
+
+
+        screenSaverDelay = xmlreader.GetValueAsInt("general", "IdleTimeValue", 300);
+        bool screenSaverType = xmlreader.GetValueAsBool("general", "IdleBlanking", false);
+        if (screenSaverType)
+        {
+          cmBlankScreen.Selected = true;
+          cmReduceFrameRate.Selected = false;
+        }
+        else
+        {
+          cmBlankScreen.Selected = false;
+          cmReduceFrameRate.Selected = true;
+        }
+      }
+    }
+
+    private void SaveSettings()
+    {
+      if (!settingsSaved)
+      {
+        settingsSaved = true;
+        using (Settings xmlwriter = new MPSettings())
+        {
+          xmlwriter.SetValueAsBool("general", "IdleTimer", btnScreenSaverEnabled.Selected);
+          xmlwriter.SetValue("general", "IdleTimeValue", screenSaverDelay);
+          xmlwriter.SetValueAsBool("general", "IdleBlanking", cmBlankScreen.Selected);
+        }
+      }
+    }
+
+    #endregion
+
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\settings_screensaver.xml");
+    }
+
+    public override bool OnMessage(GUIMessage message)
+    {
+      switch (message.Message)
+      {
+        case GUIMessage.MessageType.GUI_MSG_WINDOW_INIT:
+          {
+            base.OnMessage(message);
+
+            for (int i = 1; i <= 10000; ++i)
+            {
+              GUIControl.AddItemLabelControl(GetID, (int)Controls.CONTROL_SCREENSAVER_DELAY, i.ToString());
+            }
+            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_SCREENSAVER_DELAY, screenSaverDelay - 1);
+          }
+          return true;
+
+          case GUIMessage.MessageType.GUI_MSG_CLICKED:
+          {
+            int iControl = message.SenderControlId;
+            if (iControl == (int)Controls.CONTROL_SCREENSAVER_DELAY)
+            {
+              string strLabel = message.Label;
+              screenSaverDelay = Int32.Parse(strLabel);
+              GUIGraphicsContext.ScrollSpeedHorizontal = screenSaverDelay;
+              settingsChanged = true;
+            }
+            break;
+          }
+      }
+      return base.OnMessage(message);
+    }
+
+    public bool SettingsChanged
+    {
+      get { return settingsChanged; }
+      set { settingsChanged = value; }
+    }
+
+    protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
+    {
+      
+      if (control == btnScreenSaverEnabled)
+      {
+        EnableButtons(btnScreenSaverEnabled.Selected);
+        settingsChanged = true;
+      }
+      if (control == cmBlankScreen)
+      {
+        cmReduceFrameRate.Selected = false;
+        settingsChanged = true;
+      }
+      if (control == cmReduceFrameRate)
+      {
+        cmBlankScreen.Selected = false;
+        settingsChanged = true;
+      }
+      base.OnClicked(controlId, control, actionType);
+    }
+
+    protected override void OnPageLoad()
+    {
+      settingsSaved = false;
+      base.OnPageLoad();
+      GUIPropertyManager.SetProperty("#currentmodule", GUILocalizeStrings.Get(100016));
+      LoadSettings();
+    }
+
+    protected override void OnPageDestroy(int newWindowId)
+    {
+      SaveSettings();
+      GUISettingsGeneral.SettingsChanged = settingsChanged;
+      base.OnPageDestroy(newWindowId);
+    }
+
+    private void EnableButtons (bool enable)
+    {
+      if (enable)
+      {
+        cmBlankScreen.IsEnabled = true;
+        cmReduceFrameRate.IsEnabled = true;
+        //btnScreenSaverDelay.IsEnabled = true;
+        GUIControl.EnableControl(GetID, (int)Controls.CONTROL_SCREENSAVER_DELAY);
+      }
+      else
+      {
+        cmBlankScreen.IsEnabled = false;
+        cmReduceFrameRate.IsEnabled = false;
+        //btnScreenSaverDelay.IsEnabled = false;
+        GUIControl.DisableControl(GetID, (int)Controls.CONTROL_SCREENSAVER_DELAY);
+      }
+    }
+
+  }
+}

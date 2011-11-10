@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <window>
   <id>4</id>
-  <defaultcontrol>4</defaultcontrol>
+  <defaultcontrol>3</defaultcontrol>
   <allowoverlay>yes</allowoverlay>
   <controls>
     <import>common.settings.xml</import>
@@ -18,13 +18,37 @@
       <posY>206</posY>
       <layout>StackLayout</layout>
       <control>
-        <description>General</description>
+        <description>General General setttings</description>
+        <type>button</type>
+        <id>3</id>
+        <width>350</width>
+        <label>128</label>
+        <hyperlink>1003</hyperlink>
+        <onup>17</onup>
+      </control>
+			<control>
+        <description>General Volume setttings</description>
+        <type>button</type>
+        <id>12</id>
+        <width>350</width>
+        <label>1420</label>
+        <hyperlink>1007</hyperlink>
+      </control>
+			<control>
+        <description>General refreshrate setttings</description>
+        <type>button</type>
+        <id>13</id>
+        <width>350</width>
+        <label>1350</label>
+        <hyperlink>1008</hyperlink>
+      </control>
+			<control>
+        <description>General Skin settings</description>
         <type>button</type>
         <id>4</id>
         <width>350</width>
-        <label>128</label>
+        <label>674</label>
         <hyperlink>705</hyperlink>
-        <onup>17</onup>
       </control>
       <control>
         <description>Screen</description>

@@ -35,12 +35,14 @@ namespace MediaPortal.GUI.Settings
       CONTROL_SPEED_HORIZONTAL = 2,
       CONTROL_SPEED_VERTICAL = 4,
       CONTROL_FPS = 3,
+      CONTROL_LISTLOOP_DELAY= 5,
       CONTROL_EXAMPLE = 25,
       CONTROL_EXAMPLE2 = 26,
     } ;
 
     private int m_iSpeedHorizontal = 1;
     private int m_iSpeedVertical = 4;
+    private int m_iListLoopDelay = 100;
 
     public GUISettingsGUI()
     {
@@ -103,6 +105,15 @@ namespace MediaPortal.GUI.Settings
             }
             GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_FPS, GUIGraphicsContext.MaxFPS - 10);
 
+
+            GUIControl.ClearControl(GetID, (int)Controls.CONTROL_LISTLOOP_DELAY);
+            for (int i = 1; i <= 10000; ++i)
+            {
+              GUIControl.AddItemLabelControl(GetID, (int)Controls.CONTROL_LISTLOOP_DELAY, i.ToString());
+            }
+            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_LISTLOOP_DELAY, m_iListLoopDelay - 1);
+
+
             ResetExampleLabels();
 
             return true;
@@ -137,6 +148,13 @@ namespace MediaPortal.GUI.Settings
               int fps = Int32.Parse(strLabel);
               GUIGraphicsContext.MaxFPS = fps;
             }
+            if (iControl == (int)Controls.CONTROL_LISTLOOP_DELAY)
+            {
+              string strLabel = message.Label;
+              m_iListLoopDelay = Int32.Parse(strLabel);
+              GUIGraphicsContext.ScrollSpeedVertical = m_iListLoopDelay;
+              ResetExampleLabels();
+            }
           }
           break;
       }
@@ -161,6 +179,7 @@ namespace MediaPortal.GUI.Settings
       {
         m_iSpeedHorizontal = xmlreader.GetValueAsInt("gui", "ScrollSpeedRight", 1);
         m_iSpeedVertical = xmlreader.GetValueAsInt("gui", "ScrollSpeedDown", 4);
+        m_iListLoopDelay = xmlreader.GetValueAsInt("gui", "listLoopDelay", 100);
       }
     }
 
@@ -171,6 +190,7 @@ namespace MediaPortal.GUI.Settings
         xmlwriter.SetValue("gui", "ScrollSpeedRight", m_iSpeedHorizontal.ToString());
         xmlwriter.SetValue("gui", "ScrollSpeedDown", m_iSpeedVertical.ToString());
         xmlwriter.SetValue("screen", "GuiRenderFps", GUIGraphicsContext.MaxFPS);
+        xmlwriter.SetValue("gui", "listLoopDelay", m_iListLoopDelay.ToString());
       }
     }
 

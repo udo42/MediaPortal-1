@@ -19,12 +19,17 @@
       <colordiffuse>eeffffff</colordiffuse>
     </control>
     
-    
+			<control>
+					<type>label</type>
+					<description>Skip steps label</description>
+					<id>1</id>
+					<label>Skip steps (left / right)</label>
+					<posX>99</posX>
+					<posY>148</posY>
+			</control>
     <control>
       <description>buttons</description>
       <type>group</type>
-      
-      
       <animation effect="slide" time="70" start="800,0">WindowOpen</animation>
       <animation effect="slide" time="70" end="800,0">WindowClose</animation>
       <posX>99</posX>
@@ -50,11 +55,88 @@
         <type>button</type>
         <id>18</id>
         <label>886</label>
-        <ondown>99</ondown>
+        <ondown>22</ondown>
         <onright>5</onright>
       </control>
-    </control>
-    <control>
+		</control>
+		<!--timeout group-->
+				<control>
+					<type>label</type>
+					<description>timeout label</description>
+					<id>1</id>
+					<label>1328</label>
+					<posX>99</posX>
+					<posY>330</posY>
+				</control>
+			<control>
+					<description>Timeout button</description>
+					<type>button</type>
+					<id>22</id>
+					<label>1329</label>
+					<ondown>23</ondown>
+					<onright>22</onright>
+					<posX>99</posX>
+					<posY>370</posY>
+			</control>
+			<control>
+					<type>label</type>
+					<description>timeout value label</description>
+					<id>1</id>
+					<label>#timeoutValue</label>
+					<font>font13</font>
+					<posX>365</posX>
+					<posY>375</posY>
+			</control>
+			<!--skip type-->
+			<control>
+					<type>label</type>
+					<description>skip type label</description>
+					<id>1</id>
+					<label>1330</label>
+					<posX>99</posX>
+					<posY>420</posY>
+				</control>			
+				<control>
+					<description>skip type relative button</description>
+					<type>checkbutton</type>
+					<id>23</id>
+					<label>1331</label>
+					<ondown>24</ondown>
+					<onright>23</onright>
+					<posX>99</posX>
+					<posY>460</posY>
+				</control>
+				<control>
+					<description>skip type constant button</description>
+					<type>checkbutton</type>
+					<id>24</id>
+					<label>1332</label>
+					<ondown>25</ondown>
+					<onright>24</onright>
+					<posX>99</posX>
+					<posY>505</posY>
+				</control>
+				<control>
+					<description>Skip value button</description>
+					<type>button</type>
+					<id>25</id>
+					<label>1333</label>
+					<onright>25</onright>
+					<posX>99</posX>
+					<posY>550</posY>
+				</control>
+				<control>
+					<type>label</type>
+					<description>Skip value label</description>
+					<id>1</id>
+					<label>#skipValue</label>
+					<font>font13</font>
+					<posX>365</posX>
+					<posY>555</posY>
+			</control>
+		
+		
+		<control>
       <description>skip steps seconds</description>
       <type>group</type>
       

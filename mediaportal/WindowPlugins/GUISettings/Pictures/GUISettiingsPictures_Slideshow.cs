@@ -1,4 +1,4 @@
-#region Copyright (C) 2005-2011 Team MediaPortal
+﻿#region Copyright (C) 2005-2011 Team MediaPortal
 
 // Copyright (C) 2005-2011 Team MediaPortal
 // http://www.team-mediaportal.com
@@ -21,6 +21,7 @@
 using System;
 using MediaPortal.Configuration;
 using MediaPortal.GUI.Library;
+using WindowPlugins.GUISettings;
 using Action = MediaPortal.GUI.Library.Action;
 
 namespace MediaPortal.GUI.Settings
@@ -28,11 +29,16 @@ namespace MediaPortal.GUI.Settings
   /// <summary>
   /// 
   /// </summary>
-  public class GUISettingsSlideshow : GUIInternalWindow
+  public class GUISettingsPicturesSlideshow : GUIInternalWindow
   {
-    [SkinControl(8)] protected GUICheckMarkControl cmLoopSlideShows = null;
-    [SkinControl(9)] protected GUICheckMarkControl cmShuffleSlideShows = null;
-
+    [SkinControl(8)] protected GUICheckButton cmLoopSlideShows = null;
+    [SkinControl(9)] protected GUICheckButton cmShuffleSlideShows = null;
+    [SkinControl(41)] protected GUICheckButton cmExifSlideShows = null;
+    [SkinControl(42)] protected GUICheckButton cmPicasaSlideShows = null;
+    [SkinControl(43)] protected GUICheckButton cmGroupByDaySlideShows = null;
+    [SkinControl(44)] protected GUICheckButton cmEnablePlaySlideShows = null;
+    [SkinControl(45)] protected GUICheckButton cmPlayInSlideShows = null;
+    
     private enum Controls
     {
       CONTROL_SPEED = 2,
@@ -49,15 +55,54 @@ namespace MediaPortal.GUI.Settings
     private bool m_bXFade = false;
     private bool m_bKenBurns = false;
     private bool m_bRandom = false;
-
-    public GUISettingsSlideshow()
+    
+    public GUISettingsPicturesSlideshow()
     {
-      GetID = (int)Window.WINDOW_SETTINGS_SLIDESHOW;
+      GetID = (int)Window.WINDOW_SETTINGS_PICTURES_SLIDESHOW;
     }
+
+    #region Serialisation
+
+    private void LoadSettings()
+    {
+      using (Profile.Settings xmlreader = new Profile.MPSettings())
+      {
+        m_iSpeed = xmlreader.GetValueAsInt("pictures", "speed", 3);
+        m_iTransistion = xmlreader.GetValueAsInt("pictures", "transition", 20);
+        m_iKenBurnsSpeed = xmlreader.GetValueAsInt("pictures", "kenburnsspeed", 20);
+        m_bKenBurns = xmlreader.GetValueAsBool("pictures", "kenburns", false);
+        m_bRandom = xmlreader.GetValueAsBool("pictures", "random", false);
+        m_bXFade = (!m_bRandom & !m_bKenBurns);
+
+
+        cmShuffleSlideShows.Selected = xmlreader.GetValueAsBool("pictures", "autoShuffle", false);
+        cmLoopSlideShows.Selected = xmlreader.GetValueAsBool("pictures", "autoRepeat", false);
+
+        cmExifSlideShows.Selected = xmlreader.GetValueAsBool("pictures", "useExif", true);
+        cmPicasaSlideShows.Selected = xmlreader.GetValueAsBool("pictures", "usePicasa", false);
+        cmGroupByDaySlideShows.Selected = xmlreader.GetValueAsBool("pictures", "useDayGrouping", false);
+        cmEnablePlaySlideShows.Selected = xmlreader.GetValueAsBool("pictures", "enableVideoPlayback", false);
+        cmPlayInSlideShows.Selected = xmlreader.GetValueAsBool("pictures", "playVideosInSlideshows", false);
+      }
+    }
+
+    private void SaveSettings()
+    {
+      using (Profile.Settings xmlwriter = new Profile.MPSettings())
+      {
+        xmlwriter.SetValue("pictures", "speed", m_iSpeed.ToString());
+        xmlwriter.SetValue("pictures", "transition", m_iTransistion.ToString());
+        xmlwriter.SetValue("pictures", "kenburnsspeed", m_iKenBurnsSpeed.ToString());
+        xmlwriter.SetValueAsBool("pictures", "kenburns", m_bKenBurns);
+        xmlwriter.SetValueAsBool("pictures", "random", m_bRandom);
+      }
+    }
+
+    #endregion
 
     public override bool Init()
     {
-      return Load(GUIGraphicsContext.Skin + @"\SettingsSlideShow.xml");
+      return Load(GUIGraphicsContext.Skin + @"\SettingsSlideShow_slideshow.xml");
     }
 
     public override void OnAction(Action action)
@@ -213,6 +258,27 @@ namespace MediaPortal.GUI.Settings
       {
         OnShuffleSlideShows();
       }
+      if (control == cmExifSlideShows)
+      {
+        OnExif();
+      }
+      if (control == cmPicasaSlideShows)
+      {
+        OnPicasa();
+      }
+      if (control == cmGroupByDaySlideShows)
+      {
+        OnGroupByDay();
+      }
+      if (control == cmEnablePlaySlideShows)
+      {
+        OnEnablePlay();
+      }
+      if (control == cmPlayInSlideShows)
+      {
+        OnPlayInSlideShow();
+      }
+      
       base.OnClicked(controlId, control, actionType);
     }
 
@@ -232,37 +298,45 @@ namespace MediaPortal.GUI.Settings
       }
     }
 
-    #region Serialisation
-
-    private void LoadSettings()
-    {
-      using (Profile.Settings xmlreader = new Profile.MPSettings())
-      {
-        m_iSpeed = xmlreader.GetValueAsInt("pictures", "speed", 3);
-        m_iTransistion = xmlreader.GetValueAsInt("pictures", "transition", 20);
-        m_iKenBurnsSpeed = xmlreader.GetValueAsInt("pictures", "kenburnsspeed", 20);
-        m_bKenBurns = xmlreader.GetValueAsBool("pictures", "kenburns", false);
-        m_bRandom = xmlreader.GetValueAsBool("pictures", "random", false);
-        m_bXFade = (!m_bRandom & !m_bKenBurns);
-
-
-        cmShuffleSlideShows.Selected = xmlreader.GetValueAsBool("pictures", "autoShuffle", false);
-        cmLoopSlideShows.Selected = xmlreader.GetValueAsBool("pictures", "autoRepeat", false);
-      }
-    }
-
-    private void SaveSettings()
+    private void OnExif()
     {
       using (Profile.Settings xmlwriter = new Profile.MPSettings())
       {
-        xmlwriter.SetValue("pictures", "speed", m_iSpeed.ToString());
-        xmlwriter.SetValue("pictures", "transition", m_iTransistion.ToString());
-        xmlwriter.SetValue("pictures", "kenburnsspeed", m_iKenBurnsSpeed.ToString());
-        xmlwriter.SetValueAsBool("pictures", "kenburns", m_bKenBurns);
-        xmlwriter.SetValueAsBool("pictures", "random", m_bRandom);
+        xmlwriter.SetValueAsBool("pictures", "useExif", cmExifSlideShows.Selected);
       }
     }
 
-    #endregion
+    private void OnPicasa()
+    {
+      using (Profile.Settings xmlwriter = new Profile.MPSettings())
+      {
+        xmlwriter.SetValueAsBool("pictures", "usePicasa", cmPicasaSlideShows.Selected);
+      }
+    }
+
+    private void OnGroupByDay()
+    {
+      using (Profile.Settings xmlwriter = new Profile.MPSettings())
+      {
+        xmlwriter.SetValueAsBool("pictures", "useDayGrouping", cmGroupByDaySlideShows.Selected);
+      }
+    }
+
+    private void OnEnablePlay()
+    {
+      using (Profile.Settings xmlwriter = new Profile.MPSettings())
+      {
+        xmlwriter.SetValueAsBool("pictures", "enableVideoPlayback", cmEnablePlaySlideShows.Selected);
+      }
+    }
+
+    private void OnPlayInSlideShow()
+    {
+      using (Profile.Settings xmlwriter = new Profile.MPSettings())
+      {
+        xmlwriter.SetValueAsBool("pictures", "playVideosInSlideshows", cmPlayInSlideShows.Selected);
+      }
+    }
+    
   }
 }

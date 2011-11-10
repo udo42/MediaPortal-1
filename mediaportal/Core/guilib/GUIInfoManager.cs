@@ -1775,7 +1775,7 @@ namespace MediaPortal.GUI.Library
       }
       else if (strWindow.Equals("mypicturessettings"))
       {
-        wWindowID = (int)GUIWindow.Window.WINDOW_SETTINGS_SLIDESHOW;
+        wWindowID = (int)GUIWindow.Window.WINDOW_SETTINGS_PICTURES;
       }
         //else if (strWindow.Equals("myprogramssettings")) wWindowID = (int)GUIWindow.Window.WINDOW_SETTINGS_MYPROGRAMS;
         //else if (strWindow.Equals("myweathersettings")) wWindowID = (int)GUIWindow.Window.WINDOW_SETTINGS_MYWEATHER;

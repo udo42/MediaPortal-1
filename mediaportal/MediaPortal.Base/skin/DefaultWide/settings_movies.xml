@@ -9,70 +9,73 @@
     <import>common.settings.xml</import>
     <control>
       <description>buttons</description>
-      <type>group</type>
-      
-      
+      <type>group</type>      
       <animation effect="slide" time="70" start="800,0">WindowOpen</animation>
       <animation effect="slide" time="70" end="800,0">WindowClose</animation>
-      <posX>99</posX>
-      <posY>188</posY>
-      <layout>GridLayout(0, 6, 52, 8, 1)</layout>
+      <posX>50</posX>
+      <posY>120</posY>
+      <layout>GridLayout(0, 9, 52, 8, 1)</layout>
       <control>
-        <description>MPEG-2 Video Codecs</description>
+        <description>Video</description>
         <type>button</type>
         <id>24</id>
-        <label>6000</label>
-        <onup>17</onup>
+        <label>1268</label>
+				<width>420</width>
+        <onup>42</onup>
       </control>
       <control>
-        <description>H.264 Video Codecs</description>
-        <type>button</type>
-        <id>29</id>
-        <label>6036</label>
-      </control>
-      <control>
-        <description>Audio Codecs</description>
+        <description>Audio</description>
         <type>button</type>
         <id>25</id>
-        <label>6001</label>
-      </control>
-      <control>
-        <description>AAC Audio Codecs</description>
-        <type>button</type>
-        <id>30</id>
-        <label>6039</label>
-      </control>
-      <control>
-        <description>Audio Renderer</description>
-        <type>button</type>
-        <id>27</id>
-        <label>6002</label>
-      </control>
-      <control>
-        <description>Apect Ratio</description>
-        <type>button</type>
-        <id>28</id>
-        <label>6004</label>
+        <label>1269</label>
+				<width>420</width>
       </control>
       <control>
         <description>Subtitles On/Off</description>
-        <type>togglebutton</type>
+        <type>checkbutton</type>
         <id>31</id>
         <label>1196</label>
+				<width>420</width>
       </control>
-      <control>
-        <description>Subtitle Language</description>
-        <type>button</type>
-        <id>32</id>
-        <label>1029</label>
-      </control>
-      <control>
-        <description>Audio Language</description>
-        <type>button</type>
-        <id>33</id>
-        <label>492</label>
-        <ondown>99</ondown>
-      </control>
+				<control>
+          <description>Play all</description>
+          <type>button</type>
+          <id>34</id>
+          <label>Play all behaviour</label>
+					<width>420</width>
+        </control>
+				<control>
+          <description>Extensions</description>
+          <type>button</type>
+          <id>35</id>
+          <label>1265</label>
+					<width>420</width>
+        </control>
+				<control>
+          <description>Share folders</description>
+          <type>button</type>
+          <id>40</id>
+          <label>1277</label>
+					<width>420</width>
+        </control>
+				<control>
+          <description>Database</description>
+          <type>button</type>
+          <id>41</id>
+          <label>1434</label>
+					<width>420</width>
+          <ondown>42</ondown>
+        </control>
+				<control>
+          <description>Playlist</description>
+          <type>button</type>
+          <id>42</id>
+          <label>851</label>
+					<width>420</width>
+          <onup>41</onup>
+					<ondown>24</ondown>
+        </control>
     </control>
+					
   </controls>
 </window>

@@ -14,7 +14,7 @@
       <posX>215</posX>
       <posY>150</posY>
       <width>850</width>
-      <height>420</height>
+      <height>450</height>
       <texture mask="picturethumbmask.png">blue.png</texture>
       <colordiffuse>eeffffff</colordiffuse>
     </control>
@@ -63,12 +63,34 @@
         <onleft>4</onleft>
         <onright>4</onright>
       </control>
+			<!--List loop delay-->>
+			<control>
+        <description>List loop label</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>255</posX>
+        <posY>241</posY>
+        <label>1315</label>
+      </control>
+			<control>
+        <description>List loop delay</description>
+        <type>spincontrol</type>
+        <id>5</id>
+        <posX>788</posX>
+        <posY>246</posY>
+        <align>right</align>
+        <onup>2</onup>
+        <ondown>3</ondown>
+        <onleft>4</onleft>
+        <onright>4</onright>
+      </control>
+			
       <control>
         <description>FPS label</description>
         <type>label</type>
         <id>1</id>
         <posX>255</posX>
-        <posY>241</posY>
+        <posY>274</posY>
         <label>973</label>
       </control>
       <control>
@@ -76,7 +98,7 @@
         <type>spincontrol</type>
         <id>3</id>
         <posX>788</posX>
-        <posY>246</posY>
+        <posY>280</posY>
         <align>right</align>
         <onup>4</onup>
         <ondown>99</ondown>
@@ -88,7 +110,7 @@
         <type>label</type>
         <id>1</id>
         <posX>877</posX>
-        <posY>241</posY>
+        <posY>275</posY>
         <label>#fps</label>
       </control>
       <control>
@@ -96,7 +118,7 @@
         <type>label</type>
         <id>1</id>
         <posX>255</posX>
-        <posY>275</posY>
+        <posY>309</posY>
         <width>711</width>
         <label>675</label>
       </control>
@@ -105,7 +127,7 @@
         <type>fadelabel</type>
         <id>25</id>
         <posX>255</posX>
-        <posY>300</posY>
+        <posY>334</posY>
         <width>533</width>
         <label>-</label>
         <font>font13</font>
@@ -116,7 +138,7 @@
         <type>textboxscrollup</type>
         <id>26</id>
         <posX>255</posX>
-        <posY>360</posY>
+        <posY>394</posY>
         <width>633</width>
         <height>165</height>
         <label>-</label>

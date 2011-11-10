@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<window>
+  <id>1006</id>
+  <defaultcontrol>2</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+	<controls>
+    <import>common.settings.xml</import>
+			<control>
+        <description>Display timeout Section label</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>400</posX>
+        <posY>120</posY>
+        <label>1323</label>
+      </control>
+			<control>
+        <description>DisplayTimeout button</description>
+        <type>button</type>
+        <id>2</id>
+        <label>1324</label>
+			  <posX>450</posX>
+				<posY>160</posY>
+			</control>
+			<control>
+        <description>DisplayTimeout value label</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>750</posX>
+        <posY>165</posY>
+        <label>#displayTimeout</label>
+      </control>
+			<!--Zap-->
+			<control>
+        <description>Zap Section label</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>400</posX>
+        <posY>220</posY>
+        <label>1327</label>
+      </control>
+			<control>
+        <description>Zap delay button</description>
+        <type>button</type>
+        <id>3</id>
+        <label>1325</label>
+			  <posX>450</posX>
+				<posY>260</posY>
+			</control>
+			<control>
+        <description>Zap Delay value</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>750</posX>
+        <posY>265</posY>
+        <label>#zapDelay</label>
+			</control>
+			<control>
+        <description>ZapTimeout button</description>
+        <type>button</type>
+        <id>4</id>
+        <label>1326</label>
+			  <posX>450</posX>
+				<posY>305</posY>
+			</control>
+			<control>
+        <description>ZapTimeout value label</description>
+        <type>label</type>
+        <id>1</id>
+        <posX>750</posX>
+        <posY>310</posY>
+        <label>#zapTimeout</label>
+      </control>
+			
+			
+  </controls>
+</window>

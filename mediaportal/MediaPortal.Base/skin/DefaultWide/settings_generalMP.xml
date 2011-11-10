@@ -1,0 +1,374 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<window>
+  <id>1003</id>
+  <defaultcontrol>2</defaultcontrol>
+  <allowoverlay>yes</allowoverlay>
+	<controls>
+    <import>common.settings.xml</import>
+		<!-- Mask-->
+		<control>
+      <description>rectangle image</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>20</posX>
+      <posY>100</posY>
+      <width>1260</width>
+      <height>700</height>
+      <texture mask="picturethumbmask.png">blue.png</texture>
+      <colordiffuse>eeffffff</colordiffuse>
+    </control>
+		
+		<!--General-->
+			<control>
+				<description>Section name</description>
+        <type>label</type>
+        <id>100</id>
+        <posX>50</posX>
+        <posY>130</posY>
+				<width>600</width>
+        <label>1400</label>
+			</control>
+			<control>
+        <description>Log</description>
+        <type>button</type>
+        <id>2</id>
+        <posX>50</posX>
+        <posY>170</posY>
+				<width>300</width>
+				<height>35</height>
+				<font>font9</font>
+        <label>1310</label>
+        <onup>17</onup>
+      </control>
+      <control>
+        <description>Process priority</description>
+        <type>button</type>
+        <id>3</id>
+        <posX>50</posX>
+        <posY>205</posY>
+				<width>300</width>
+				<height>35</height>
+				<font>font9</font>
+        <label>1311</label>
+      </control>
+      <control>
+        <description>Watchdog</description>
+        <type>checkbutton</type>
+        <id>4</id>
+        <posX>380</posX>
+        <posY>170</posY>
+        <label>1312</label>
+				<width>300</width>
+				<height>35</height>
+				<align>right</align>
+				<font>font9</font>
+      </control>
+      <control>
+        <description>Autorestart</description>
+        <type>checkbutton</type>
+        <id>5</id>
+        <posX>380</posX>
+        <posY>205</posY>
+				<label>1313</label>
+				<width>300</width>
+				<height>35</height>
+				<onright>5</onright>
+				<align>right</align>
+				<font>font9</font>
+				<ondown>6</ondown>
+      </control>
+      <control>
+        <description>Seconds label</description>
+        <type>label</type>
+        <id>100</id>
+        <posX>760</posX>
+        <posY>210</posY>
+				<width>600</width>
+        <label>1314</label>
+				<font>font11</font>
+				<visible>control.isvisible(6)</visible>
+      </control>
+			<control>
+        <description>Seconds</description>
+        <type>spincontrol</type>
+        <id>6</id>
+        <posX>1130</posX>
+        <posY>215</posY>
+				<onup>5</onup>
+				<ondown>99</ondown>
+				<align>right</align>
+				<font>font11</font>
+				<buddycontrolid>100</buddycontrolid>
+      </control>
+    
+			<!-- Startup resume-->
+			<control>
+        <description>Section name</description>
+        <type>label</type>
+        <id>100</id>
+        <posX>50</posX>
+        <posY>260</posY>
+				<width>600</width>
+        <label>1401</label>
+			</control>
+			<!--Left part-->
+			<control>
+        <description>MP fullscreen</description>
+        <type>checkbutton</type>
+        <id>10</id>
+        <posX>50</posX>
+        <posY>300</posY>
+				<onright>17</onright>
+				<label>1402</label>
+				<width>420</width>
+				<height>35</height>
+				<align>right</align>
+				<font>font9</font>
+			</control>
+			<control>
+        <description>Splashscreen</description>
+        <type>checkbutton</type>
+        <id>11</id>
+        <posX>50</posX>
+        <posY>330</posY>
+				<onright>18</onright>
+				<label>1403</label>
+				<width>420</width>
+				<height>35</height>
+				<align>right</align>
+				<font>font9</font>
+			</control>
+			<control>
+        <description>On top</description>
+        <type>checkbutton</type>
+        <id>12</id>
+        <posX>50</posX>
+        <posY>360</posY>
+				<onright>19</onright>
+				<label>1404</label>
+				<width>420</width>
+				<height>35</height>
+				<align>right</align>
+				<font>font9</font>
+			</control>
+			<control>
+        <description>Hide taskbar</description>
+        <type>checkbutton</type>
+        <id>13</id>
+        <posX>50</posX>
+        <posY>390</posY>
+				<onright>20</onright>
+				<label>1405</label>
+				<width>420</width>
+				<height>35</height>
+				<align>right</align>
+				<font>font9</font>
+			</control>
+			<control>
+        <description>Aautostart on WinUp</description>
+        <type>checkbutton</type>
+        <id>14</id>
+        <posX>50</posX>
+        <posY>420</posY>
+				<label>1406</label>
+				<width>420</width>
+				<height>35</height>
+				<onright>21</onright>
+				<align>right</align>
+				<font>font9</font>
+			</control>
+			<control>
+        <description>Minimize to tray Startup</description>
+        <type>checkbutton</type>
+        <id>15</id>
+        <posX>50</posX>
+        <posY>450</posY>
+				<label>1407</label>
+				<width>420</width>
+				<height>35</height>
+				<align>right</align>
+				<font>font9</font>
+				<onright>22</onright>
+			</control>
+			<control>
+        <description>Minimize to tray GUI exit</description>
+        <type>checkbutton</type>
+        <id>16</id>
+        <posX>50</posX>
+        <posY>480</posY>
+				<label>1408</label>
+				<width>420</width>
+				<height>35</height>
+				<align>right</align>
+				<font>font9</font>
+				<onright>23</onright>
+			</control>
+			<!--Right part-->
+			<control>
+        <description>Turn off monitor blank screen</description>
+        <type>checkbutton</type>
+        <id>17</id>
+        <posX>550</posX>
+        <posY>300</posY>
+				<label>1409</label>
+				<width>510</width>
+				<height>35</height>
+				<align>right</align>
+				<font>font9</font>
+			</control>
+			<control>
+        <description>Turn monitor on resume</description>
+        <type>checkbutton</type>
+        <id>18</id>
+        <posX>550</posX>
+        <posY>330</posY>
+				<label>1410</label>
+				<width>510</width>
+				<height>35</height>
+				<align>right</align>
+				<font>font9</font>
+			</control>
+			<control>
+        <description>S3 standby</description>
+        <type>checkbutton</type>
+        <id>19</id>
+        <posX>550</posX>
+        <posY>360</posY>
+				<label>1411</label>
+				<width>510</width>
+				<height>35</height>
+				<align>right</align>
+				<font>font9</font>
+			</control>
+			<control>
+        <description>Workaround ifx</description>
+        <type>checkbutton</type>
+        <id>20</id>
+        <posX>550</posX>
+        <posY>390</posY>
+				<label>1412</label>
+				<width>510</width>
+				<height>35</height>
+				<align>right</align>
+				<font>font9</font>
+			</control>
+			<control>
+        <description>Restart on resume</description>
+        <type>checkbutton</type>
+        <id>21</id>
+        <posX>550</posX>
+        <posY>420</posY>
+				<label>1413</label>
+				<width>510</width>
+				<height>35</height>
+				<align>right</align>
+				<font>font9</font>
+			</control>
+			<control>
+        <description>Show last module</description>
+				<type>checkbutton</type>	
+        <id>22</id>
+        <posX>550</posX>
+        <posY>450</posY>
+				<label>1414</label>
+				<width>510</width>
+				<height>35</height>
+				<align>right</align>
+				<font>font9</font>
+			</control>
+			<control>
+        <description>Screen selector</description>
+        <type>checkbutton</type>
+        <id>23</id>
+        <posX>550</posX>
+        <posY>480</posY>
+				<label>1415</label>
+				<width>510</width>
+				<height>35</height>
+				<align>right</align>
+				<font>font9</font>
+			</control>
+			<control>
+        <description>Screen button</description>
+        <type>button</type>
+        <id>24</id>
+        <posX>580</posX>
+        <posY>510</posY>
+				<width>40</width>
+				<height>40</height>
+        <font>font11</font>
+				<textureFocus>osd_play_focus.png</textureFocus>
+				<textureNoFocus>osd_play_nofocus.png</textureNoFocus>
+      </control>
+			<control>
+				<type>label</type>
+				<id>1</id>
+				<posX>630</posX>
+				<posY>520</posY>
+				<label>#defScreen</label>
+				<align>left</align>
+				<font>font9</font>
+				<visible>control.isvisible(24)</visible>
+			 </control>
+			
+			<!--Delay section-->
+			<control>
+        <description>Section name</description>
+        <type>label</type>
+        <id>100</id>
+        <posX>50</posX>
+        <posY>530</posY>
+				<width>600</width>
+        <label>1416</label>
+			</control>
+			<!--Delay startup label-->
+			<control>
+        <description>Delay button</description>
+        <type>button</type>
+        <id>30</id>
+        <posX>50</posX>
+        <posY>570</posY>
+				<width>200</width>
+				<height>35</height>
+        <label>1417</label>
+				<font>font11</font>
+      </control>
+			<control>
+      <type>label</type>
+				<id>1</id>
+				<posX>260</posX>
+				<posY>578</posY>
+				<label>#delayStartup</label>
+				<align>left</align>
+				<font>font11</font>
+      </control>
+			<control>
+        <description>Delay on MP start</description>
+        <type>checkbutton</type>
+        <id>31</id>
+        <posX>80</posX>
+        <posY>610</posY>
+				<label>1418</label>
+				<width>420</width>
+				<height>35</height>
+				<onup>30</onup>
+				<align>right</align>
+				<font>font9</font>
+			</control>
+			<control>
+        <description>Delay on MP resume</description>
+        <type>checkbutton</type>
+        <id>32</id>
+        <posX>80</posX>
+        <posY>640</posY>
+				<label>1419</label>
+				<width>420</width>
+				<height>35</height>
+				<align>right</align>
+				<font>font9</font>
+				<onup>31</onup>
+			</control>
+		
+		
+  </controls>
+</window>

@@ -103,6 +103,7 @@ namespace MediaPortal.GUI.Video
     private static IMDB _imdb;
     private static bool _askBeforePlayingDVDImage = false;
     private static VirtualDirectory _virtualDirectory;
+    private static string _currentFolder;
     private static PlayListPlayer _playlistPlayer;
 
     private MapSettings _mapSettings = new MapSettings();
@@ -2964,6 +2965,28 @@ namespace MediaPortal.GUI.Video
 
       // play movie...
       PlayMovieFromPlayList(askForResumeMovie, requestPin);
+    }
+
+    public static void ResetShares()
+    {
+      _virtualDirectory.Reset();
+      _virtualDirectory.DefaultShare = null;
+      _virtualDirectory.LoadSettings("movies");
+      int pincode;
+      bool folderPinProtected = _virtualDirectory.IsProtectedShare(_virtualDirectory.DefaultShare.Path, out pincode);
+      if (folderPinProtected)
+      {
+        _currentFolder = string.Empty;
+      }
+      else
+      {
+        _currentFolder = _virtualDirectory.DefaultShare.Path;
+      }
+    }
+
+    public static void ResetExtensions(ArrayList extensions)
+    {
+      _virtualDirectory.SetExtensions(extensions);
     }
 
     #region IMDB.IProgress
