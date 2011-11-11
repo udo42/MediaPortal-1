@@ -181,6 +181,17 @@ namespace MediaPortal.GUI.Settings
     {
       GUIPropertyManager.SetProperty("#musicPlaylist", _musicPlayListFolder);
       GUIPropertyManager.SetProperty("#videosPlaylist", _videosPlayListFolder);
+
+      switch (_section)
+      {
+        case "music":
+          GUIPropertyManager.SetProperty("#playlisttype", GUILocalizeStrings.Get(1435));
+          break;
+
+        case "movies":
+          GUIPropertyManager.SetProperty("#playlisttype", GUILocalizeStrings.Get(1463));
+          break;
+      }
     }
 
     /// <summary>
@@ -463,15 +474,15 @@ namespace MediaPortal.GUI.Settings
       switch (_section)
       {
         case "music":
-          btnVideosplaylist.IsEnabled = false;
-          btnVideosrepeatplaylist.IsEnabled = false;
+          btnVideosplaylist.IsVisible = false;
+          btnVideosrepeatplaylist.IsVisible = false;
 
-          btnMusicautoshuffle.IsEnabled = true;
-          btnMusicloaddefault.IsEnabled = true;
-          btnMusicplaylist.IsEnabled = true;
-          btnMusicplaylistscreen.IsEnabled = true;
-          btnMusicrepeatplaylist.IsEnabled = true;
-          btnMusicsavecurrentasdefault.IsEnabled = true;
+          btnMusicautoshuffle.IsVisible = true;
+          btnMusicloaddefault.IsVisible = true;
+          btnMusicplaylist.IsVisible = true;
+          btnMusicplaylistscreen.IsVisible = true;
+          btnMusicrepeatplaylist.IsVisible = true;
+          btnMusicsavecurrentasdefault.IsVisible = true;
 
           btnMusicplaylist.Focus = true;
           btnVideosplaylist.Focus = false;
@@ -479,15 +490,15 @@ namespace MediaPortal.GUI.Settings
           break;
 
         case "movies":
-          btnVideosplaylist.IsEnabled = true;
-          btnVideosrepeatplaylist.IsEnabled = true;
+          btnVideosplaylist.IsVisible = true;
+          btnVideosrepeatplaylist.IsVisible = true;
 
-          btnMusicautoshuffle.IsEnabled = false;
-          btnMusicloaddefault.IsEnabled = false;
-          btnMusicplaylist.IsEnabled = false;
-          btnMusicplaylistscreen.IsEnabled = false;
-          btnMusicrepeatplaylist.IsEnabled = false;
-          btnMusicsavecurrentasdefault.IsEnabled = false;
+          btnMusicautoshuffle.IsVisible = false;
+          btnMusicloaddefault.IsVisible = false;
+          btnMusicplaylist.IsVisible = false;
+          btnMusicplaylistscreen.IsVisible = false;
+          btnMusicrepeatplaylist.IsVisible = false;
+          btnMusicsavecurrentasdefault.IsVisible = false;
 
           btnMusicplaylist.Focus = false;
           btnVideosplaylist.Focus = true;
