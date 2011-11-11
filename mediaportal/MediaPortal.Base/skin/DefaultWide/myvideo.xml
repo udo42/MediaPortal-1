@@ -62,103 +62,6 @@
           <visible>!Control.HasFocus(50)+player.hasmedia</visible>
         </control>
         <control>
-          <description>caption of the selected item</description>
-          <type>label</type>
-          <overlay>yes</overlay>
-          <id>0</id>
-          <posX>71</posX>
-          <posY>546</posY>
-          <width>285</width>
-          <height>93</height>
-          <font>font11</font>
-          <label>#Play.Current.Artist</label>
-          <visible>!Control.HasFocus(50)+player.hasmedia</visible>
-        </control>
-        <control>
-          <description>caption of the selected item</description>
-          <type>label</type>
-          <overlay>yes</overlay>
-          <id>0</id>
-          <posX>71</posX>
-          <posY>571</posY>
-          <width>285</width>
-          <height>93</height>
-          <font>font11</font>
-          <label>#Play.Current.Album</label>
-          <visible>!Control.HasFocus(50)+player.hasmedia</visible>
-        </control>
-        <control>
-          <description>caption of the selected item2</description>
-          <allowoverlay>yes</allowoverlay>
-          <type>label</type>
-          <overlay>yes</overlay>
-          <id>0</id>
-          <posX>217</posX>
-          <posY>473</posY>
-          <width>355</width>
-          <height>87</height>
-          <font>font16</font>
-          <align>left</align>
-          <textcolor>80ffffff</textcolor>
-          <label>#currentplaytime</label>
-          <visible>!Control.HasFocus(50)+player.hasmedia</visible>
-        </control>
-        <control>
-          <description>music logo</description>
-          <type>image</type>
-          <overlay>yes</overlay>
-          <id>600</id>
-          <posX>71</posX>
-          <posY>426</posY>
-          <width>121</width>
-          <height>121</height>
-          <keepaspectratio>no</keepaspectratio>
-          <centered>yes</centered>
-          <texture mask="Picturethumbmask.png">#Play.Current.Thumb</texture>
-          <visible>!Control.HasFocus(50)+player.hasmedia</visible>
-        </control>
-        <control>
-          <description>music logo</description>
-          <type>image</type>
-          <overlay>yes</overlay>
-          <id>1</id>
-          <posX>71</posX>
-          <posY>426</posY>
-          <width>121</width>
-          <height>121</height>
-          <texture mask="Picturethumbmask.png">Picturethumbframe.png</texture>
-          <visible>!Control.HasFocus(50) + player.hasmedia + control.hasthumb(600)</visible>
-        </control>
-        <control>
-          <description>Progress background</description>
-          <type>image</type>
-          <id>1</id>
-          <posX>60</posX>
-          <posY>626</posY>
-          <width>250</width>
-          <height>27</height>
-          <texture>osd_progress_background.png</texture>
-          <visible>!Control.HasFocus(50)+player.hasmedia</visible>
-        </control>
-        <control>
-          <description>progress bar</description>
-          <type>progress</type>
-          <id>0</id>
-          <posX>62</posX>
-          <posY>631</posY>
-          <width>250</width>
-          <height>20</height>
-          <offset>0</offset>
-          <height>20</height>
-          <innerheight>20</innerheight>
-          <texturebg>-</texturebg>
-          <lefttexture>-</lefttexture>
-          <midtexture>osd_progress_mid.png</midtexture>
-          <righttexture>-</righttexture>
-          <label>#percentage</label>
-          <visible>!Control.HasFocus(50)+player.hasmedia</visible>
-        </control>
-        <control>
           <description>button group</description>
           <type>group</type>
           <animation effect="slide" time="70" start="-300,0" reversible="false">visible</animation>
@@ -219,9 +122,18 @@
             <id>9</id>
             <label>983</label>
             <onright>50</onright>
-            <ondown>10</ondown>
+            <ondown>9876</ondown>
             <onup>20</onup>
+          </control>
+          <control>
+            <description>Video Settings</description>
+            <type>button</type>
+            <id>9876</id>
+            <label>6022</label>
+            <hyperlink>703</hyperlink>
+            <onup>9</onup>
             <ondown>2</ondown>
+            <onright>50</onright>
           </control>
         </control>
       </control>

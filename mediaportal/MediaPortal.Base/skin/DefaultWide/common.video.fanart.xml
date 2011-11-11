@@ -61,8 +61,8 @@
       <posy>0</posy>
       <width>1280</width>
       <height>720</height>
-      <texture>backgroundtop.png</texture>
-      <colordiffuse>ccffffff</colordiffuse>
+      <texture>background.png</texture>
+      <colordiffuse>bbffffff</colordiffuse>
       <visible>control.isvisible(91919292)|control.isvisible(91919291)</visible>
       <animation effect="fade" time="70">visible</animation>
       <animation effect="fade" time="70" delay="300">hidden</animation>
@@ -81,5 +81,6 @@
       <animation effect="fade" time="70">visible</animation>
       <animation effect="fade" time="70" delay="300">hidden</animation>
     </control>
+    
   </controls>
 </window>

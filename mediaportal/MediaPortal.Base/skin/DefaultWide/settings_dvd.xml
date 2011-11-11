@@ -22,6 +22,7 @@
         <type>button</type>
         <id>24</id>
         <label>1268</label>
+				<width>420</width>
 				<onup>17</onup>
       </control>
       <control>
@@ -29,30 +30,35 @@
         <type>button</type>
         <id>25</id>
         <label>1269</label>
+				<width>420</width>
       </control>
 			<control>
         <description>Enable Subtitles</description>
         <type>checkbutton</type>
         <id>22</id>
         <label>1196</label>
+				<width>420</width>
       </control>
 			<control>
         <description>Enable Closed Caption</description>
         <type>checkbutton</type>
         <id>31</id>
         <label>1281</label>
+				<width>420</width>
       </control>
       <control>
         <description>Turn Off DXVA</description>
         <type>checkbutton</type>
         <id>23</id>
         <label>1197</label>
+				<width>420</width>
 			</control>
 			<control>
         <description>Autoplay</description>
         <type>button</type>
         <id>32</id>
         <label>713</label>
+				<width>420</width>
 				<ondown>99</ondown>
       </control>
 			
