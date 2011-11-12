@@ -7,22 +7,25 @@
   <define>#header.hover:hover_my music.png</define>
   <controls>
     <import>common.settings.xml</import>
-    <!--control>
-      <description>rectangle image</description>
+    <control>
+      <description>background</description>
       <type>image</type>
       <id>1</id>
-      <posX>215</posX>
-      <posY>150</posY>
-      <width>830</width>
-      <height>460</height>
-      <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>eeffffff</colordiffuse>
-    </control-->
+      <posX>445</posX>
+      <posY>110</posY>
+      <height>500</height>
+      <width>390</width>
+      <texture mask="video_poster_mask.png">blue.png</texture>
+      <colordiffuse>70ffffff</colordiffuse>
+    </control>
     <control>
-      <description>group element</description>
+      <description>buttons</description>
       <type>group</type>
-      <animation effect="slide" time="70" start="800,0">WindowOpen</animation>
-      <animation effect="slide" time="70" end="800,0">WindowClose</animation>
+      <animation effect="slide" time="70" start="-300,0">WindowOpen</animation>
+      <animation effect="slide" time="70" end="-300,0">WindowClose</animation>
+      <posX>465</posX>
+      <posY>130</posY>
+      <layout>StackLayout(0, Horizontal, True)</layout>
       <control>
         <description>Now playing</description>
         <type>button</type>
@@ -30,7 +33,7 @@
         <posX>50</posX>
         <posY>100</posY>
         <label>4540</label>
-        <width>420</width>
+        <width>350</width>
         <onleft>2</onleft>
         <onright>2</onright>
         <ondown>8</ondown>
@@ -42,7 +45,7 @@
         <label>851</label>
         <posX>50</posX>
         <posY>145</posY>
-        <width>420</width>
+        <width>350</width>
         <height>41</height>
         <onleft>8</onleft>
         <onright>8</onright>
@@ -56,7 +59,7 @@
         <label>485</label>
         <posX>50</posX>
         <posY>190</posY>
-        <width>420</width>
+        <width>350</width>
         <height>41</height>
         <onup>8</onup>
         <ondown>10</ondown>
@@ -70,7 +73,7 @@
         <label>422</label>
         <posX>50</posX>
         <posY>235</posY>
-        <width>420</width>
+        <width>350</width>
         <height>41</height>
         <onleft>10</onleft>
         <onright>10</onright>
@@ -84,7 +87,7 @@
         <label>1265</label>
         <posX>50</posX>
         <posY>280</posY>
-        <width>420</width>
+        <width>350</width>
         <height>41</height>
         <onleft>40</onleft>
         <onright>40</onright>
@@ -98,7 +101,7 @@
         <label>1277</label>
         <posX>50</posX>
         <posY>325</posY>
-        <width>420</width>
+        <width>350</width>
         <height>41</height>
         <onleft>40</onleft>
         <onright>40</onright>
@@ -112,7 +115,7 @@
         <label>1434</label>
         <posX>50</posX>
         <posY>370</posY>
-        <width>420</width>
+        <width>350</width>
         <height>41</height>
         <onleft>40</onleft>
         <onright>40</onright>

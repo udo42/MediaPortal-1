@@ -7,245 +7,303 @@
   <define>#header.hover:hover_my pictures.png</define>
   <controls>
     <import>common.settings.xml</import>
-		
-		<!--Box background-->
-    <!--control>
-      <description>rectangle image</description>
+    <!--Slideshow transition group-->
+    <control>
+      <description>background</description>
       <type>image</type>
       <id>1</id>
-      <posX>20</posX>
-      <posY>100</posY>
-      <width>1260</width>
-      <height>700</height>
+      <posX>80</posX>
+      <posY>110</posY>
+      <height>180</height>
+      <width>430</width>
       <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>eeffffff</colordiffuse>
-    </control-->
-    
-      
-			<!--Slideshow transition group-->
-			<control>
-        <description>Slideshow transition label</description>
-        <type>label</type>
-        <id>100</id>
-        <posX>40</posX>
-        <posY>120</posY>
-        <label>1289</label>
-      </control>
-			<control>
-        <description>Ken Buns transitions</description>
-        <type>checkbutton</type>
-        <id>6</id>
-        <posX>40</posX>
-        <posY>160</posY>
-				<onleft>2</onleft>
-				<onright>2</onright>
-				<width>420</width>
-				<label>13008</label>
-        <align>right</align>
-      </control>
-			<control>
-        <description>X-fade transitions</description>
-        <type>checkbutton</type>
-        <id>5</id>
-        <posX>40</posX>
-        <posY>205</posY>
-				<onleft>3</onleft>
-				<onright>3</onright>
-				<width>420</width>
-        <label>13010</label>
-        <align>right</align>
-      </control>
-      <control>
-        <description>Random transitions</description>
-        <type>checkbutton</type>
-        <id>7</id>
-        <posX>40</posX>
-        <posY>245</posY>
-				<onleft>4</onleft>
-				<onright>4</onright>
-				<width>420</width>
-        <label>13009</label>
-        <align>right</align>
-      </control>
-		
-			<!--Slideshow Settings group-->
-			<control>
-        <description>Slideshow settings</description>
-        <type>label</type>
-        <id>1</id>
-        <posX>630</posX>
-        <posY>120</posY>
-        <label>1290</label>
-      </control>
-			<control>
-        <description>Speed label</description>
-        <type>label</type>
-        <id>100</id>
-        <posX>640</posX>
-        <posY>160</posY>
-        <label>224</label>
-      </control>
-      <control>
-        <description>Speed select</description>
-        <type>spincontrol</type>
-        <id>2</id>
-        <posX>1180</posX>
-        <posY>165</posY>
-				<onleft>6</onleft>
-				<onright>6</onright>
-				<ondown>3</ondown>
-				<align>right</align>
-				<buddycontrolid>100</buddycontrolid>
-      </control>
-			<control>
-        <description>Transition time label</description>
-        <type>label</type>
-        <id>101</id>
-        <posX>640</posX>
-        <posY>205</posY>
-        <label>225</label>
-      </control>
-      <control>
-        <description>Transition time select</description>
-        <type>spincontrol</type>
-        <id>3</id>
-        <posX>1180</posX>
-        <posY>210</posY>
-				<onleft>5</onleft>
-				<onright>5</onright>
-				<onup>2</onup>
-				<ondown>4</ondown>
-				<align>right</align>
-        <buddycontrolid>101</buddycontrolid>
-      </control>
-      <control>
-        <description>ken burns speed label</description>
-        <type>label</type>
-        <id>102</id>
-        <posX>640</posX>
-        <posY>250</posY>
-        <label>13011</label>
-      </control>
-      <control>
-        <description>ken burns speed select</description>
-        <type>spincontrol</type>
-        <id>4</id>
-        <posX>1180</posX>
-        <posY>255</posY>
-				<align>right</align>
-				<onleft>7</onleft>
-				<onright>7</onright>
-				<onup>3</onup>
-				<ondown>8</ondown>
-        <buddycontrolid>102</buddycontrolid>
-      </control>						
-      <control>
-        <description>Repeat/loop slideshows</description>
-        <type>checkbutton</type>
-        <id>8</id>
-        <posX>630</posX>
-        <posY>295</posY>
-				<onup>4</onup>
-				<ondown>9</ondown>
-				<width>420</width>
-        <label>6020</label>
-        <align>right</align>
-      </control>
-      <control>
-        <description>Auto shuffle slideshow</description>
-        <type>checkbutton</type>
-        <id>9</id>
-        <posX>630</posX>
-        <posY>340</posY>
-				<onup>8</onup>
-				<width>420</width>
-				<label>6021</label>
-        <align>right</align>
-      </control>
-			
-			<!--Rotation settings group-->
-			<control>
-        <description>Rotation settings</description>
-        <type>label</type>
-        <id>1</id>
-        <posX>40</posX>
-        <posY>390</posY>
-        <label>1291</label>
-      </control>
-			<control>
-        <description>EXIF rotation</description>
-        <type>checkbutton</type>
-        <id>41</id>
-        <posX>40</posX>
-        <posY>430</posY>
-				<width>420</width>
-        <label>1292</label>
-        <align>right</align>
-				<onleft>43</onleft>
-        <onright>43</onright>
-      </control>
-			<control>
-        <description>Picasa.ini rotation</description>
-        <type>checkbutton</type>
-        <id>42</id>
-        <posX>40</posX>
-        <posY>475</posY>
-				<width>420</width>
-        <label>1293</label>
-        <align>right</align>
-				<onleft>44</onleft>
-        <onright>44</onright>
-				<ondown>35</ondown>
-      </control>
-			
-			<!--View settings group-->
-			<control>
-        <description>View settings</description>
-        <type>label</type>
-        <id>1</id>
-        <posX>630</posX>
-        <posY>390</posY>
-        <label>1294</label>
-      </control>
-			<control>
-        <description>Group by day</description>
-        <type>checkbutton</type>
-        <id>43</id>
-        <posX>630</posX>
-        <posY>430</posY>
-				<width>420</width>
-        <label>1295</label>
-        <align>right</align>
-				<onup>9</onup>
-				<onleft>41</onleft>
-        <onright>41</onright>
-      </control>
-			<control>
-        <description>Enable playing videos</description>
-        <type>checkbutton</type>
-        <id>44</id>
-        <posX>630</posX>
-        <posY>475</posY>
-        <label>1296</label>
-				<width>420</width>
-        <align>right</align>
-				<onleft>42</onleft>
-        <onright>42</onright>
-      </control>
-			<control>
-        <description>Play videos in slideshow</description>
-        <type>checkbutton</type>
-        <id>45</id>
-        <posX>630</posX>
-        <posY>515</posY>
-        <label>1297</label>
-				<width>420</width>
-        <align>right</align>
-				<onleft>40</onleft>
-        <onright>40</onright>
-      </control>
-			
-			
-			
+      <colordiffuse>70ffffff</colordiffuse>
+    </control>
+    <control>
+      <description>Slideshow transition label</description>
+      <type>label</type>
+      <id>100</id>
+      <posX>100</posX>
+      <posY>120</posY>
+      <label>1289</label>
+    </control>
+    <control>
+      <description>Ken Buns transitions</description>
+      <type>checkmark</type>
+      <id>6</id>
+      <posX>100</posX>
+      <posY>160</posY>
+      <onleft>2</onleft>
+      <onright>2</onright>
+      <label>13008</label>
+      <align>right</align>
+    </control>
+    <control>
+      <description>X-fade transitions</description>
+      <type>checkmark</type>
+      <id>5</id>
+      <posX>100</posX>
+      <posY>205</posY>
+      <onleft>3</onleft>
+      <onright>3</onright>
+      <label>13010</label>
+      <align>right</align>
+    </control>
+    <control>
+      <description>Random transitions</description>
+      <type>checkmark</type>
+      <id>7</id>
+      <posX>100</posX>
+      <posY>245</posY>
+      <onleft>4</onleft>
+      <onright>4</onright>
+      <label>13009</label>
+      <align>right</align>
+    </control>
+    <!--Slideshow Settings group-->
+    <control>
+      <description>background</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>560</posX>
+      <posY>110</posY>
+      <height>280</height>
+      <width>660</width>
+      <texture mask="picturethumbmask.png">blue.png</texture>
+      <colordiffuse>70ffffff</colordiffuse>
+    </control>
+    <control>
+      <description>Slideshow settings</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>580</posX>
+      <posY>120</posY>
+      <label>1290</label>
+    </control>
+    <control>
+      <description>Speed label</description>
+      <type>label</type>
+      <id>100</id>
+     <posX>590</posX>
+      <posY>160</posY>
+      <label>224</label>
+    </control>
+    <control>
+      <description>Speed select</description>
+      <type>spincontrol</type>
+      <id>2</id>
+      <posX>1130</posX>
+      <posY>165</posY>
+      <onleft>6</onleft>
+      <onright>6</onright>
+      <ondown>3</ondown>
+      <align>right</align>
+      <buddycontrolid>100</buddycontrolid>
+    </control>
+    <control>
+      <description>Transition time label</description>
+      <type>label</type>
+      <id>101</id>
+     <posX>590</posX>
+      <posY>205</posY>
+      <label>225</label>
+    </control>
+    <control>
+      <description>Transition time select</description>
+      <type>spincontrol</type>
+      <id>3</id>
+      <posX>1130</posX>
+      <posY>210</posY>
+      <onleft>5</onleft>
+      <onright>5</onright>
+      <onup>2</onup>
+      <ondown>4</ondown>
+      <align>right</align>
+      <buddycontrolid>101</buddycontrolid>
+    </control>
+    <control>
+      <description>ken burns speed label</description>
+      <type>label</type>
+      <id>102</id>
+     <posX>590</posX>
+      <posY>250</posY>
+      <label>13011</label>
+    </control>
+    <control>
+      <description>ken burns speed select</description>
+      <type>spincontrol</type>
+      <id>4</id>
+      <posX>1130</posX>
+      <posY>255</posY>
+      <align>right</align>
+      <onleft>7</onleft>
+      <onright>7</onright>
+      <onup>3</onup>
+      <ondown>8</ondown>
+      <buddycontrolid>102</buddycontrolid>
+    </control>
+    <control>
+      <description>Repeat/loop slideshows</description>
+      <type>checkmark</type>
+      <id>8</id>
+      <posX>580</posX>
+      <posY>295</posY>
+      <onup>4</onup>
+      <ondown>9</ondown>
+      <label>6020</label>
+      <align>right</align>
+    </control>
+    <control>
+      <description>Auto shuffle slideshow</description>
+      <type>checkmark</type>
+      <id>9</id>
+      <posX>580</posX>
+      <posY>340</posY>
+      <onup>8</onup>
+      <label>6021</label>
+      <align>right</align>
+    </control>
+    <!--Rotation settings group-->
+    <control>
+      <description>background</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>80</posX>
+      <posY>340</posY>
+      <height>140</height>
+      <width>430</width>
+      <texture mask="picturethumbmask.png">blue.png</texture>
+      <colordiffuse>70ffffff</colordiffuse>
+    </control>
+    <control>
+      <description>Rotation settings</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>100</posX>
+      <posY>350</posY>
+      <label>1291</label>
+    </control>
+    <control>
+      <description>EXIF rotation</description>
+      <type>checkmark</type>
+      <id>41</id>
+      <posX>100</posX>
+      <posY>390</posY>
+      <label>1292</label>
+      <align>right</align>
+      <onleft>43</onleft>
+      <onright>43</onright>
+    </control>
+    <control>
+      <description>Picasa.ini rotation</description>
+      <type>checkmark</type>
+      <id>42</id>
+      <posX>100</posX>
+      <posY>435</posY>
+      <label>1293</label>
+      <align>right</align>
+      <onleft>44</onleft>
+      <onright>44</onright>
+      <ondown>35</ondown>
+    </control>
+    <!--View settings group-->
+    <!--Slideshow Settings group-->
+    <control>
+      <description>background</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>560</posX>
+      <posY>440</posY>
+      <height>180</height>
+      <width>660</width>
+      <texture mask="picturethumbmask.png">blue.png</texture>
+      <colordiffuse>70ffffff</colordiffuse>
+    </control>
+    <control>
+      <description>View settings</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>580</posX>
+      <posY>450</posY>
+      <label>1294</label>
+    </control>
+    <control>
+      <description>Group by day</description>
+      <type>checkmark</type>
+      <id>43</id>
+      <posX>580</posX>
+      <posY>490</posY>
+      <label>1295</label>
+      <align>right</align>
+      <onup>9</onup>
+      <onleft>41</onleft>
+      <onright>41</onright>
+    </control>
+    <control>
+      <description>Enable playing videos</description>
+      <type>checkmark</type>
+      <id>44</id>
+      <posX>580</posX>
+      <posY>535</posY>
+      <label>1296</label>
+      <align>right</align>
+      <onleft>42</onleft>
+      <onright>42</onright>
+    </control>
+    <control>
+      <description>Play videos in slideshow</description>
+      <type>checkmark</type>
+      <id>45</id>
+      <posX>580</posX>
+      <posY>575</posY>
+      <label>1297</label>
+      <align>right</align>
+      <onleft>40</onleft>
+      <onright>40</onright>
+    </control>
+    <!--Other settings group-->
+    <control>
+      <description>background</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>80</posX>
+      <posY>540</posY>
+      <height>160</height>
+      <width>430</width>
+      <texture mask="picturethumbmask.png">blue.png</texture>
+      <colordiffuse>70ffffff</colordiffuse>
+    </control>
+    <control>
+      <description>Other settings</description>
+      <type>label</type>
+      <id>1</id>
+      <posX>100</posX>
+      <posY>550</posY>
+      <label>1298</label>
+    </control>
+    <control>
+      <description>Extensions</description>
+      <type>button</type>
+      <id>35</id>
+      <label>1265</label>
+      <posX>100</posX>
+      <posY>590</posY>
+      <onleft>35</onleft>
+      <onright>35</onright>
+      <onup>42</onup>
+      <ondown>40</ondown>
+    </control>
+    <control>
+      <description>Folders button</description>
+      <type>button</type>
+      <id>40</id>
+      <label>1277</label>
+      <posX>100</posX>
+      <posY>635</posY>
+      <onleft>40</onleft>
+      <onright>40</onright>
+      <onup>35</onup>
+      <ondown>99</ondown>
+    </control>
   </controls>
 </window>

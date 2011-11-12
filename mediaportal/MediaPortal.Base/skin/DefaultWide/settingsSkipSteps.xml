@@ -12,11 +12,11 @@
       <type>image</type>
       <id>9876</id>
       <posX>490</posX>
-      <posY>150</posY>
+      <posY>160</posY>
       <width>730</width>
       <height>380</height>
       <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>eeffffff</colordiffuse>
+      <colordiffuse>70ffffff</colordiffuse>
     </control>
     
 			<control>

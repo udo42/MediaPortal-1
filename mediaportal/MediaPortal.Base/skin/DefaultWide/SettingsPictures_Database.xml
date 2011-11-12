@@ -9,7 +9,7 @@
       <description>Scan pictures folder label</description>
       <type>label</type>
       <id>1</id>
-      <posX>50</posX>
+      <posX>90</posX>
       <posY>120</posY>
       <label>1376</label>
     </control>
@@ -88,7 +88,7 @@
       <type>button</type>
       <id>3</id>
       <label>1377</label>
-      <posX>50</posX>
+      <posX>90</posX>
       <posY>155</posY>
       <width>300</width>
       <height>45</height>
@@ -101,7 +101,7 @@
       <type>button</type>
       <id>4</id>
       <label>1378</label>
-      <posX>50</posX>
+      <posX>90</posX>
       <posY>200</posY>
       <width>300</width>
       <height>45</height>

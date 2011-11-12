@@ -6,11 +6,22 @@
   <controls>
     <import>common.settings.xml</import>
     <control>
-      <description>Daynamic content label</description>
+      <description>background</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>270</posX>
+      <posY>150</posY>
+      <height>390</height>
+      <width>780</width>
+      <texture mask="picturethumbmask.png">blue.png</texture>
+      <colordiffuse>70ffffff</colordiffuse>
+    </control>
+    <control>
+      <description>Dynamic content label</description>
       <type>label</type>
       <id>1</id>
-      <posX>50</posX>
-      <posY>120</posY>
+      <posX>300</posX>
+      <posY>170</posY>
       <label>1464</label>
     </control>
     <control>
@@ -18,62 +29,65 @@
       <type>checkbutton</type>
       <id>2</id>
       <label>1465</label>
-      <posX>50</posX>
-      <posY>165</posY>
+      <posX>300</posX>
+      <posY>215</posY>
       <width>720</width>
       <ondown>3</ondown>
+      <textureFocus>listfocus.png</textureFocus>
     </control>
     <control>
-      <description>Disable Interent lookups for best albums
-      tracks</description>
+      <description>Disable Interent lookups for best albums       tracks</description>
       <type>checkbutton</type>
       <id>3</id>
       <label>1466</label>
-      <posX>50</posX>
-      <posY>210</posY>
+      <posX>300</posX>
+      <posY>260</posY>
       <width>720</width>
       <onup>2</onup>
       <ondown>4</ondown>
+      <textureFocus>listfocus.png</textureFocus>
     </control>
     <control>
       <description>Disable interent lookups for track suggestions</description>
       <type>checkbutton</type>
       <id>4</id>
       <label>1467</label>
-      <posX>50</posX>
-      <posY>255</posY>
+      <posX>300</posX>
+      <posY>305</posY>
       <width>720</width>
       <onup>3</onup>
       <ondown>5</ondown>
+      <textureFocus>listfocus.png</textureFocus>
     </control>
     <control>
       <description>Switch artists</description>
       <type>checkbutton</type>
       <id>5</id>
       <label>1468</label>
-      <posX>50</posX>
-      <posY>300</posY>
+      <posX>300</posX>
+      <posY>350</posY>
       <width>720</width>
       <onup>4</onup>
       <ondown>6</ondown>
+      <textureFocus>listfocus.png</textureFocus>
     </control>
     <control>
       <description>VuMeter label</description>
       <type>label</type>
       <id>1</id>
-      <posX>50</posX>
-      <posY>360</posY>
+      <posX>300</posX>
+      <posY>410</posY>
       <width>720</width>
       <label>1469</label>
+      <textureFocus>listfocus.png</textureFocus>
     </control>
     <control>
       <description>VUMeter button</description>
       <type>button</type>
       <id>6</id>
       <label>#vumeter</label>
-      <posX>50</posX>
-      <posY>405</posY>
-      <width>320</width>
+      <posX>300</posX>
+      <posY>455</posY>
       <onup>5</onup>
     </control>
   </controls>

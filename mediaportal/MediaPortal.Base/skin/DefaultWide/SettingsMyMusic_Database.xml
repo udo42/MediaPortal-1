@@ -9,7 +9,7 @@
       <description>Scan music folder label</description>
       <type>label</type>
       <id>1</id>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>120</posY>
       <label>1379</label>
     </control>
@@ -88,7 +88,7 @@
       <type>button</type>
       <id>14</id>
       <label>1377</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>150</posY>
       <width>420</width>
       <height>35</height>
@@ -101,7 +101,7 @@
       <type>button</type>
       <id>11</id>
       <label>#dateadded</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>185</posY>
       <width>420</width>
       <height>35</height>
@@ -114,7 +114,7 @@
       <type>checkbutton</type>
       <id>12</id>
       <label>#updatesincelastimprot</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>220</posY>
       <width>420</width>
       <height>35</height>
@@ -127,7 +127,7 @@
       <type>checkbutton</type>
       <id>13</id>
       <label>1380</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>255</posY>
       <width>420</width>
       <height>35</height>
@@ -140,7 +140,7 @@
       <type>checkbutton</type>
       <id>3</id>
       <label>1381</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>290</posY>
       <width>420</width>
       <height>35</height>
@@ -154,7 +154,7 @@
       <description>Prefixes</description>
       <type>label</type>
       <id>1</id>
-      <posX>70</posX>
+      <posX>100</posX>
       <posY>325</posY>
       <width>420</width>
       <font>font9</font>
@@ -165,7 +165,7 @@
       <type>checkbutton</type>
       <id>4</id>
       <label>1382</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>350</posY>
       <width>420</width>
       <height>35</height>
@@ -178,7 +178,7 @@
       <description>Thumb creation section</description>
       <type>label</type>
       <id>1</id>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>400</posY>
       <label>1383</label>
     </control>
@@ -187,7 +187,7 @@
       <type>checkbutton</type>
       <id>5</id>
       <label>1384</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>435</posY>
       <width>420</width>
       <height>35</height>
@@ -200,7 +200,7 @@
       <type>checkbutton</type>
       <id>6</id>
       <label>1385</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>470</posY>
       <width>420</width>
       <height>35</height>
@@ -214,7 +214,7 @@
       <type>checkbutton</type>
       <id>7</id>
       <label>1386</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>505</posY>
       <width>420</width>
       <height>35</height>
@@ -227,7 +227,7 @@
       <type>checkbutton</type>
       <id>8</id>
       <label>1387</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>540</posY>
       <width>420</width>
       <height>35</height>
@@ -240,7 +240,7 @@
       <type>checkbutton</type>
       <id>9</id>
       <label>1388</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>575</posY>
       <width>420</width>
       <height>35</height>
@@ -253,7 +253,7 @@
       <type>checkbutton</type>
       <id>10</id>
       <label>1389</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>610</posY>
       <width>420</width>
       <height>35</height>

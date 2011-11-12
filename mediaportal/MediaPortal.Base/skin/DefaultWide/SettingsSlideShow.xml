@@ -7,7 +7,25 @@
   <define>#header.hover:hover_my pictures.png</define>
   <controls>
     <import>common.settings.xml</import>
-		
+		<control>
+      <description>background</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>445</posX>
+      <posY>110</posY>
+      <height>500</height>
+      <width>390</width>
+      <texture mask="video_poster_mask.png">blue.png</texture>
+      <colordiffuse>70ffffff</colordiffuse>
+    </control>
+    <control>
+      <description>buttons</description>
+      <type>group</type>
+      <animation effect="slide" time="70" start="-300,0">WindowOpen</animation>
+      <animation effect="slide" time="70" end="-300,0">WindowClose</animation>
+      <posX>465</posX>
+      <posY>130</posY>
+      <layout>StackLayout(0, Horizontal, True)</layout>
 		<control>
         <description>Slideshow</description>
         <type>button</type>
@@ -16,7 +34,7 @@
 			  <posX>50</posX>
 				<posY>120</posY>
 				<ondown>3</ondown>
-				<width>420</width>
+				<width>350</width>
       </control>
 		<control>
         <description>Extensions</description>
@@ -27,7 +45,7 @@
 				<posY>165</posY>
 				<onup>2</onup>
 				<ondown>4</ondown>
-				<width>420</width>
+				<width>350</width>
       </control>
 			<control>
 				<description>Folders button</description>
@@ -38,7 +56,7 @@
 				<posY>210</posY>
 				<onup>3</onup>
 				<ondown>5</ondown>
-				<width>420</width>
+				<width>350</width>
 			</control>
 			<control>
 				<description>Database button</description>
@@ -48,8 +66,8 @@
 				<posX>50</posX>
 				<posY>255</posY>
 				<onup>4</onup>
-				<width>420</width>
+				<width>350</width>
 			</control>
-			
+			</control>
   </controls>
 </window>

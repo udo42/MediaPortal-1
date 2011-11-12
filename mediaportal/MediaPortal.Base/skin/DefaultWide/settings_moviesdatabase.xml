@@ -9,7 +9,7 @@
       <description>Scan label</description>
       <type>label</type>
       <id>1</id>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>120</posY>
       <label>1390</label>
     </control>
@@ -77,7 +77,7 @@
       <type>button</type>
       <id>14</id>
       <label>1377</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>150</posY>
       <width>420</width>
       <height>35</height>
@@ -90,7 +90,7 @@
       <type>button</type>
       <id>15</id>
       <label>1378</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>185</posY>
       <width>420</width>
       <height>35</height>
@@ -104,7 +104,7 @@
       <type>button</type>
       <id>2</id>
       <label>1263</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>220</posY>
       <width>420</width>
       <height>35</height>
@@ -118,7 +118,7 @@
       <type>button</type>
       <id>3</id>
       <label>1262</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>255</posY>
       <width>420</width>
       <height>35</height>
@@ -131,7 +131,7 @@
       <description>Scan options</description>
       <type>label</type>
       <id>1</id>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>305</posY>
       <label>1391</label>
     </control>
@@ -140,7 +140,7 @@
       <type>checkbutton</type>
       <id>4</id>
       <label>1392</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>335</posY>
       <width>420</width>
       <height>35</height>
@@ -155,7 +155,7 @@
       <type>checkbutton</type>
       <id>5</id>
       <label>1393</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>370</posY>
       <width>280</width>
       <height>35</height>
@@ -169,7 +169,7 @@
       <description>Fanart Q</description>
       <type>spincontrol</type>
       <id>6</id>
-      <posX>410</posX>
+      <posX>430</posX>
       <posY>379</posY>
 			<font>font9</font>
       <onleft>5</onleft>
@@ -183,7 +183,7 @@
       <type>checkbutton</type>
       <id>7</id>
       <label>1394</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>405</posY>
       <width>420</width>
       <height>35</height>
@@ -198,7 +198,7 @@
       <type>checkbutton</type>
       <id>8</id>
       <label>1395</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>440</posY>
       <width>420</width>
       <height>35</height>
@@ -213,7 +213,7 @@
       <type>checkbutton</type>
       <id>9</id>
       <label>1396</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>475</posY>
       <width>420</width>
       <height>35</height>
@@ -228,7 +228,7 @@
       <type>checkbutton</type>
       <id>11</id>
       <label>1397</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>510</posY>
       <width>420</width>
       <height>35</height>
@@ -243,7 +243,7 @@
       <type>checkbutton</type>
       <id>12</id>
       <label>1398</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>545</posY>
       <width>420</width>
       <height>35</height>
@@ -258,7 +258,7 @@
       <type>checkbutton</type>
       <id>13</id>
       <label>1399</label>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>580</posY>
       <width>420</width>
       <height>35</height>

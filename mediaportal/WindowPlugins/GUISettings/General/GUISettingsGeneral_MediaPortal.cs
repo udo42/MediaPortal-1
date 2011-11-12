@@ -196,7 +196,7 @@ namespace MediaPortal.GUI.Settings
       }
       if (control == cmWatchdog)
       {
-        OnWatchdog();
+        settingsChanged = true;
       }
       if (control == cmAutoRestart)
       {
@@ -208,126 +208,72 @@ namespace MediaPortal.GUI.Settings
         {
           GUIControl.ShowControl(GetID, (int)Controls.CONTROL_DELAYINSEC);
         }
-        OnAutoRestart();
+        settingsChanged = true;
       }
       // Startup/Resume
-      using (Profile.Settings xmlwriter = new Profile.MPSettings())
+      if (control == cmStartfullscreen)
       {
-        if (control == cmStartfullscreen)
-        {
-          xmlwriter.SetValueAsBool("general", "startfullscreen", cmStartfullscreen.Selected);
-          settingsChanged = true;
-        }
-        if (control == cmUsefullscreensplash)
-        {
-          xmlwriter.SetValueAsBool("general", "usefullscreensplash", cmUsefullscreensplash.Selected);
-          settingsChanged = true;
-        }
-        if (control == cmAlwaysontop)
-        {
-          xmlwriter.SetValueAsBool("general", "alwaysontop", cmAlwaysontop.Selected);
-          settingsChanged = true;
-          try
-          {
-            if (cmAlwaysontop.Selected) // always on top
-            {
-              using (RegistryKey subkey = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop", true))
-              {
-                subkey.SetValue("ForegroundLockTimeout", 0);
-              }
-            }
-          }
-          catch (Exception) {}
-        }
-        if (control == cmHidetaskbar)
-        {
-          xmlwriter.SetValueAsBool("general", "hidetaskbar", cmHidetaskbar.Selected);
-          settingsChanged = true;
-        }
-        if (control == cmAutostart)
-        {
-          xmlwriter.SetValueAsBool("general", "autostart", cmAutostart.Selected);
-          settingsChanged = true;
+        settingsChanged = true;
+      }
+      if (control == cmUsefullscreensplash)
+      {
+        settingsChanged = true;
+      }
+      if (control == cmAlwaysontop)
+      {
+        settingsChanged = true;
+      }
+      if (control == cmHidetaskbar)
+      {
+        settingsChanged = true;
+      }
+      if (control == cmAutostart)
+      {
+        settingsChanged = true;
+      }
+      if (control == cmMinimizeonstartup)
+      {
+        settingsChanged = true;
+      }
+      if (control == cmMinimizeonexit)
+      {
+        settingsChanged = true;
+      }
+      if (control == cmTurnoffmonitor)
+      {
+        settingsChanged = true;
+      }
+      if (control == cmTurnmonitoronafterresume)
+      {
+        settingsChanged = true;
+      }
+      if (control == cmEnables3trick)
+      {
+        settingsChanged = true;
+      }
+      if (control == cmUseS3Hack)
+      {
+        settingsChanged = true;
+      }
+      if (control == cmRestartonresume)
+      {
+        settingsChanged = true;
+      }
+      if (control == cmShowlastactivemodule)
+      {
+        settingsChanged = true;
+      }
+      if (control == cmUsescreenselector)
+      {
+        settingsChanged = true;
 
-          try
-          {
-            if (cmAutostart.Selected) // autostart on boot
-            {
-              string fileName = Config.GetFile(Config.Dir.Base, "MediaPortal.exe");
-              using (
-                RegistryKey subkey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run",
-                                                                     true)
-                )
-              {
-                subkey.SetValue("MediaPortal", fileName);
-              }
-            }
-            else
-            {
-              using (
-                RegistryKey subkey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run",
-                                                                     true)
-                )
-              {
-                subkey.DeleteValue("MediaPortal", false);
-              }
-            }
-          }
-          catch (Exception) {}
-         }
-        if (control == cmMinimizeonstartup)
+        if (cmUsescreenselector.Selected)
         {
-          xmlwriter.SetValueAsBool("general", "minimizeonstartup", cmMinimizeonstartup.Selected);
-          settingsChanged = true;
+          btnShowScreens.Visible = true;
         }
-        if (control == cmMinimizeonexit)
+        else
         {
-          xmlwriter.SetValueAsBool("general", "minimizeonexit", cmMinimizeonexit.Selected);
-          settingsChanged = true;
-        }
-        if (control == cmTurnoffmonitor)
-        {
-          xmlwriter.SetValueAsBool("general", "turnoffmonitor", cmTurnoffmonitor.Selected);
-          settingsChanged = true;
-        }
-        if (control == cmTurnmonitoronafterresume)
-        {
-          xmlwriter.SetValueAsBool("general", "turnmonitoronafterresume", cmTurnmonitoronafterresume.Selected);
-          settingsChanged = true;
-        }
-        if (control == cmEnables3trick)
-        {
-          xmlwriter.SetValueAsBool("general", "enables3trick", cmEnables3trick.Selected);
-          settingsChanged = true;
-        }
-        if (control == cmUseS3Hack)
-        {
-          xmlwriter.SetValueAsBool("general", "useS3Hack", cmUseS3Hack.Selected);
-          settingsChanged = true;
-        }
-        if (control == cmRestartonresume)
-        {
-          xmlwriter.SetValueAsBool("general", "restartonresume", cmRestartonresume.Selected);
-          settingsChanged = true;
-        }
-        if (control == cmShowlastactivemodule)
-        {
-          xmlwriter.SetValueAsBool("general", "showlastactivemodule", cmShowlastactivemodule.Selected);
-          settingsChanged = true;
-        }
-        if (control == cmUsescreenselector)
-        {
-          xmlwriter.SetValueAsBool("screenselector", "usescreenselector", cmUsescreenselector.Selected);
-          settingsChanged = true;
-
-          if (cmUsescreenselector.Selected)
-          {
-            btnShowScreens.Visible = true;
-          }
-          else
-          {
-            btnShowScreens.Visible = false;
-          }
+          btnShowScreens.Visible = false;
         }
       }
       // Delay at startup
@@ -337,11 +283,11 @@ namespace MediaPortal.GUI.Settings
       }
       if (control == cmDelayStartup)
       {
-        OnDelayStartUp();
+        settingsChanged = true;
       }
       if (control == cmDelayResume)
       {
-        OnDelayResume();
+        settingsChanged = true;
       }
       if (control == btnShowScreens)
       {
@@ -427,7 +373,61 @@ namespace MediaPortal.GUI.Settings
     {
       using (Profile.Settings xmlwriter = new Profile.MPSettings())
       {
+        xmlwriter.SetValueAsBool("general", "startfullscreen", cmStartfullscreen.Selected);
+        xmlwriter.SetValueAsBool("general", "usefullscreensplash", cmUsefullscreensplash.Selected);
+        xmlwriter.SetValueAsBool("general", "alwaysontop", cmAlwaysontop.Selected);
+        try
+        {
+          if (cmAlwaysontop.Selected) // always on top
+          {
+            using (RegistryKey subkey = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop", true))
+            {
+              subkey.SetValue("ForegroundLockTimeout", 0);
+            }
+          }
+        }
+        catch (Exception) { }
+        xmlwriter.SetValueAsBool("general", "hidetaskbar", cmHidetaskbar.Selected);
+        xmlwriter.SetValueAsBool("general", "autostart", cmAutostart.Selected);
+        try
+        {
+          if (cmAutostart.Selected) // autostart on boot
+          {
+            string fileName = Config.GetFile(Config.Dir.Base, "MediaPortal.exe");
+            using (
+              RegistryKey subkey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run",
+                                                                   true)
+              )
+            {
+              subkey.SetValue("MediaPortal", fileName);
+            }
+          }
+          else
+          {
+            using (
+              RegistryKey subkey = Registry.CurrentUser.OpenSubKey(@"Software\Microsoft\Windows\CurrentVersion\Run",
+                                                                   true)
+              )
+            {
+              subkey.DeleteValue("MediaPortal", false);
+            }
+          }
+        }
+        catch (Exception) { }
+        xmlwriter.SetValueAsBool("general", "minimizeonexit", cmMinimizeonexit.Selected);
+        xmlwriter.SetValueAsBool("general", "turnoffmonitor", cmTurnoffmonitor.Selected);
+        xmlwriter.SetValueAsBool("general", "turnmonitoronafterresume", cmTurnmonitoronafterresume.Selected);
+        xmlwriter.SetValueAsBool("general", "enables3trick", cmEnables3trick.Selected);
+        xmlwriter.SetValueAsBool("general", "useS3Hack", cmUseS3Hack.Selected);
+        xmlwriter.SetValueAsBool("general", "restartonresume", cmRestartonresume.Selected);
+        xmlwriter.SetValueAsBool("general", "showlastactivemodule", cmShowlastactivemodule.Selected);
+        xmlwriter.SetValueAsBool("screenselector", "usescreenselector", cmUsescreenselector.Selected);
+        xmlwriter.SetValueAsBool("general", "minimizeonstartup", cmMinimizeonstartup.Selected);
         xmlwriter.SetValue("general", "restart delay", iDelay.ToString());
+        xmlwriter.SetValueAsBool("general", "watchdogEnabled", cmWatchdog.Selected);
+        xmlwriter.SetValueAsBool("general", "restartOnError", cmAutoRestart.Selected);
+        xmlwriter.SetValueAsBool("general", "delay startup", cmDelayStartup.Selected);
+        xmlwriter.SetValueAsBool("general", "delay resume", cmDelayResume.Selected);
       }
     }
 
@@ -521,24 +521,6 @@ namespace MediaPortal.GUI.Settings
       priority = dlg.SelectedLabelText;
     }
 
-    private void OnWatchdog()
-    {
-      using (Profile.Settings xmlwriter = new Profile.MPSettings())
-      {
-        xmlwriter.SetValueAsBool("general", "watchdogEnabled", cmWatchdog.Selected);
-        settingsChanged = true;
-      }
-    }
-
-    private void OnAutoRestart()
-    {
-      using (Profile.Settings xmlwriter = new Profile.MPSettings())
-      {
-        xmlwriter.SetValueAsBool("general", "restartOnError", cmAutoRestart.Selected);
-        settingsChanged = true;
-      }
-    }
-
     private void OnStartUpDelay()
     {
       string seconds = iStartUpDelay.ToString();
@@ -562,24 +544,6 @@ namespace MediaPortal.GUI.Settings
       using (Profile.Settings xmlwriter = new Profile.MPSettings())
       {
         xmlwriter.SetValue("general", "delay", iStartUpDelay);
-        settingsChanged = true;
-      }
-    }
-
-    private void OnDelayStartUp()
-    {
-      using (Profile.Settings xmlwriter = new Profile.MPSettings())
-      {
-        xmlwriter.SetValueAsBool("general", "delay startup", cmDelayStartup.Selected);
-        settingsChanged = true;
-      }
-    }
-
-    private void OnDelayResume()
-    {
-      using (Profile.Settings xmlwriter = new Profile.MPSettings())
-      {
-        xmlwriter.SetValueAsBool("general", "delay resume", cmDelayResume.Selected);
         settingsChanged = true;
       }
     }

@@ -1,67 +1,75 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <window>
   <id>704</id>
-  <defaultcontrol>21</defaultcontrol>
+  <defaultcontrol>24</defaultcontrol>
   <allowoverlay>yes</allowoverlay>
   <define>#header.label:6015</define>
   <define>#header.hover:hover_my videos.png</define>
   <controls>
     <import>common.settings.xml</import>
     <control>
+      <description>background</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>445</posX>
+      <posY>110</posY>
+      <height>500</height>
+      <width>390</width>
+      <texture mask="video_poster_mask.png">blue.png</texture>
+      <colordiffuse>70ffffff</colordiffuse>
+    </control>
+    <control>
       <description>buttons</description>
       <type>group</type>
-      
-      
-      <animation effect="slide" time="70" start="800,0">WindowOpen</animation>
-      <animation effect="slide" time="70" end="800,0">WindowClose</animation>
-      <posX>99</posX>
-      <posY>188</posY>
-      <layout>GridLayout(0, 6, 52, 8, 1)</layout>
+      <animation effect="slide" time="70" start="-300,0">WindowOpen</animation>
+      <animation effect="slide" time="70" end="-300,0">WindowClose</animation>
+      <posX>465</posX>
+      <posY>130</posY>
+      <layout>StackLayout(0, Horizontal, True)</layout>
       <control>
         <description>Video</description>
         <type>button</type>
         <id>24</id>
         <label>1268</label>
-				<width>420</width>
-				<onup>17</onup>
+        <width>350</width>
+        <onup>17</onup>
       </control>
       <control>
         <description>Audio</description>
         <type>button</type>
         <id>25</id>
         <label>1269</label>
-				<width>420</width>
+        <width>350</width>
       </control>
-			<control>
+      <control>
         <description>Enable Subtitles</description>
         <type>checkbutton</type>
         <id>22</id>
         <label>1196</label>
-				<width>420</width>
+        <width>350</width>
       </control>
-			<control>
+      <control>
         <description>Enable Closed Caption</description>
         <type>checkbutton</type>
         <id>31</id>
         <label>1281</label>
-				<width>420</width>
+        <width>350</width>
       </control>
       <control>
         <description>Turn Off DXVA</description>
         <type>checkbutton</type>
         <id>23</id>
         <label>1197</label>
-				<width>420</width>
-			</control>
-			<control>
+        <width>350</width>
+      </control>
+      <control>
         <description>Autoplay</description>
         <type>button</type>
         <id>32</id>
         <label>713</label>
-				<width>420</width>
-				<ondown>99</ondown>
+        <width>350</width>
+        <ondown>24</ondown>
       </control>
-			
     </control>
   </controls>
 </window>

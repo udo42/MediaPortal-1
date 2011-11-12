@@ -16,7 +16,7 @@
       <width>850</width>
       <height>450</height>
       <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>eeffffff</colordiffuse>
+      <colordiffuse>70ffffff</colordiffuse>
     </control>
     <control>
       <description>group element</description>
@@ -63,8 +63,8 @@
         <onleft>4</onleft>
         <onright>4</onright>
       </control>
-			<!--List loop delay-->>
-			<control>
+      <!--List loop delay-->>
+      <control>
         <description>List loop label</description>
         <type>label</type>
         <id>1</id>
@@ -72,7 +72,7 @@
         <posY>241</posY>
         <label>1315</label>
       </control>
-			<control>
+      <control>
         <description>List loop delay</description>
         <type>spincontrol</type>
         <id>5</id>
@@ -84,7 +84,6 @@
         <onleft>4</onleft>
         <onright>4</onright>
       </control>
-			
       <control>
         <description>FPS label</description>
         <type>label</type>
