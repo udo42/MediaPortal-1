@@ -422,24 +422,32 @@ STDMETHODIMP CTsReaderFilter::GetState(DWORD dwMilliSecsTimeout, FILTER_STATE *p
     LogDebug("CTsReaderFilter::GetState(), null pointer");
     return E_POINTER;
   }
+
    
   *pState = m_State;
   if (m_State == State_Paused)
-  {
-    DWORD timeout = timeGetTime() + dwMilliSecsTimeout;   
-    do {
-      if (m_demultiplexer.m_bAudioVideoReady)
+  {    
+    double playRate = 1.0;
+    if (m_pAudioPin->IsConnected())
+    {
+      if (FAILED(m_pAudioPin->GetRate(&playRate)))
       {
-        LogDebug("CTsReaderFilter::GetState(), VFW_S_CANT_CUE");
-        return VFW_S_CANT_CUE;
+        playRate = 1.0;
       }
-      else
-      {
-        //LogDebug("CTsReaderFilter::GetState(), VFW_S_STATE_INTERMEDIATE");
-        return VFW_S_STATE_INTERMEDIATE;
-      }
-      Sleep(5);
-    } while (timeGetTime() < timeout);
+    }
+
+    //FFWD is more responsive if we return VFW_S_CANT_CUE when rate != 1.0
+    if (m_demultiplexer.m_bAudioVideoReady || (playRate != 1.0))
+    {
+      LogDebug("CTsReaderFilter::GetState(), VFW_S_CANT_CUE, playRate %f",(float)playRate);
+      return VFW_S_CANT_CUE;
+    }
+    else
+    {
+      //Stall for a while...
+      //LogDebug("CTsReaderFilter::GetState(), VFW_S_STATE_INTERMEDIATE");
+      return VFW_S_STATE_INTERMEDIATE;
+    }   
   }
   else
   {
@@ -559,118 +567,115 @@ STDMETHODIMP CTsReaderFilter::Pause()
   //m_ShowBufferVideo = INIT_SHOWBUFFERVIDEO;
   //m_ShowBufferAudio = INIT_SHOWBUFFERAUDIO;
 
+  LogDebug("CTsReaderFilter::Pause() - IsTimeShifting = %d - state = %d", IsTimeShifting(), m_State);
+  HRESULT hr = S_FALSE;
+  
+  { //Set scope for lock
+    CAutoLock cObjectLock(m_pLock);
+  
+    if (m_State == State_Running)
+    {
+      m_lastPause = timeGetTime();
+      m_RandomCompensation = 0;
+    }
+  
+    //pause filter
+    hr=CSource::Pause();
+  
+    if (!m_bPauseOnClockTooFast)
+    {
+      //are we using rtsp?
+      if (m_fileDuration==NULL)
+      {
+        //yes, are we busy seeking?
+        if (!IsSeeking())
+        {
+          //not seeking, is rtsp streaming at the moment?
+          if (!m_rtspClient.IsRunning())
+          {
+            //not streaming atm
+            double startTime=m_seekTime.Millisecs();
+            startTime/=1000.0;
+    
+            long Old_rtspDuration = m_rtspClient.Duration() ;
+            //clear buffers
+            LogDebug("  -- Pause()  ->start rtsp from %f", startTime);
+            m_buffer.Clear();
+            m_demultiplexer.Flush(false);
+    
+            //start streaming
+            m_buffer.Run(true);
+            m_rtspClient.Play(startTime,0.0);
+    //        m_tickCount = timeGetTime();
+            LogDebug("  -- Pause()  ->rtsp started");
+    
+            //update the duration of the stream
+            CPcr pcrStart, pcrEnd, pcrMax ;
+            double duration = m_rtspClient.Duration() / 1000.0f ;
+    
+            if (m_bTimeShifting)
+            {
+              // EndPcr is continuously increasing ( until ~26 hours for rollover that will fail ! )
+              // So, we refer duration to End, and just update start.
+              pcrEnd   = m_duration.EndPcr() ;
+              double start  = pcrEnd.ToClock() - duration;
+    	        if (start<0) start=0 ;
+              pcrStart.FromClock(start) ;
+              m_duration.Set( pcrStart, pcrEnd, pcrMax) ;     // Pause()-RTSP
+            }
+            else
+            {
+              // It's a record, eventually end can increase if recording is in progress, let the end virtually updated by ThreadProc()
+              //m_bRecording = (Old_rtspDuration != m_rtspClient.Duration()) ;
+              m_bRecording = true; // duration may have not increased in such a short time
+            }
+            LogDebug("Timeshift %d, Recording %d, StartPCR %f, EndPcr %f, Duration %f",m_bTimeShifting,m_bRecording,m_duration.StartPcr().ToClock(),m_duration.EndPcr().ToClock(),(float)m_duration.Duration().Millisecs()/1000.0f) ;
+          }
+          else
+          {
+            //we are streaming at the moment.
+           
+            //query the current position, so it can resume on un-pause at this position
+            //can be required in multiseat with rtsp when changing audio streams 
+            IMediaSeeking * ptrMediaPos;
+            if (SUCCEEDED(GetFilterGraph()->QueryInterface(IID_IMediaSeeking, (void**)&ptrMediaPos)))
+            {
+              ptrMediaPos->GetCurrentPosition(&m_seekTime.m_time);
+              ptrMediaPos->Release();
+            }
+            //pause the streaming
+            LogDebug("  -- Pause()  ->pause rtsp at position: %f", (m_seekTime.Millisecs() / 1000.0f));
+            m_rtspClient.Pause();
+          }
+        }
+        else //we are seeking
+        {
+          IMediaSeeking * ptrMediaPos;
+    
+          if (SUCCEEDED(GetFilterGraph()->QueryInterface(IID_IMediaSeeking, (void**)&ptrMediaPos)))
+          {
+            LONGLONG currentPos;
+            ptrMediaPos->GetCurrentPosition(&currentPos);
+            ptrMediaPos->Release();
+            double clock = currentPos;clock /= 10000000.0;
+            float clockEnd = m_duration.EndPcr().ToClock() ;
+            if (clock >= clockEnd && clockEnd > 0 )
+            {
+              LogDebug("End of rtsp stream...");
+              m_demultiplexer.SetEndOfFile(true);
+            }
+          }
+        }
+      }
+      m_demultiplexer.m_LastDataFromRtsp = timeGetTime() ;
+    }
+  }
+    
+  LogDebug("CTsReaderFilter::Pause() - END - state = %d", m_State);
+  
   m_bForcePosnUpdate = true;
   WakeThread();
-
-  LogDebug("CTsReaderFilter::Pause() - IsTimeShifting = %d - state = %d", IsTimeShifting(), m_State);
-  CAutoLock cObjectLock(m_pLock);
-
-  if (m_State == State_Running)
-  {
-    m_lastPause = timeGetTime();
-    m_RandomCompensation = 0;
-  }
-
-  //pause filter
-  HRESULT hr=CSource::Pause();
-
-  if (!m_bPauseOnClockTooFast)
-  {
-    //are we using rtsp?
-    if (m_fileDuration==NULL)
-    {
-    //yes, are we busy seeking?
-    if (!IsSeeking())
-    {
-      //not seeking, is rtsp streaming at the moment?
-      if (!m_rtspClient.IsRunning())
-      {
-        //not streaming atm
-        double startTime=m_seekTime.Millisecs();
-        startTime/=1000.0;
-
-        long Old_rtspDuration = m_rtspClient.Duration() ;
-        //clear buffers
-        LogDebug("  -- Pause()  ->start rtsp from %f", startTime);
-        m_buffer.Clear();
-        m_demultiplexer.Flush(false);
-
-        //start streaming
-        m_buffer.Run(true);
-        m_rtspClient.Play(startTime,0.0);
-//        m_tickCount = timeGetTime();
-        LogDebug("  -- Pause()  ->rtsp started");
-
-        //update the duration of the stream
-        CPcr pcrStart, pcrEnd, pcrMax ;
-        double duration = m_rtspClient.Duration() / 1000.0f ;
-
-        if (m_bTimeShifting)
-        {
-          // EndPcr is continuously increasing ( until ~26 hours for rollover that will fail ! )
-          // So, we refer duration to End, and just update start.
-          pcrEnd   = m_duration.EndPcr() ;
-          double start  = pcrEnd.ToClock() - duration;
-	        if (start<0) start=0 ;
-          pcrStart.FromClock(start) ;
-          m_duration.Set( pcrStart, pcrEnd, pcrMax) ;     // Pause()-RTSP
-        }
-        else
-        {
-          // It's a record, eventually end can increase if recording is in progress, let the end virtually updated by ThreadProc()
-          //m_bRecording = (Old_rtspDuration != m_rtspClient.Duration()) ;
-          m_bRecording = true; // duration may have not increased in such a short time
-        }
-        LogDebug("Timeshift %d, Recording %d, StartPCR %f, EndPcr %f, Duration %f",m_bTimeShifting,m_bRecording,m_duration.StartPcr().ToClock(),m_duration.EndPcr().ToClock(),(float)m_duration.Duration().Millisecs()/1000.0f) ;
-      }
-      else
-      {
-        //we are streaming at the moment.
-       
-        //query the current position, so it can resume on un-pause at this position
-        //can be required in multiseat with rtsp when changing audio streams 
-        IMediaSeeking * ptrMediaPos;
-        if (SUCCEEDED(GetFilterGraph()->QueryInterface(IID_IMediaSeeking, (void**)&ptrMediaPos)))
-        {
-          ptrMediaPos->GetCurrentPosition(&m_seekTime.m_time);
-          ptrMediaPos->Release();
-        }
-        //pause the streaming
-        LogDebug("  -- Pause()  ->pause rtsp at position: %f", (m_seekTime.Millisecs() / 1000.0f));
-        m_rtspClient.Pause();
-      }
-    }
-    else //we are seeking
-    {
-      IMediaSeeking * ptrMediaPos;
-
-      if (SUCCEEDED(GetFilterGraph()->QueryInterface(IID_IMediaSeeking, (void**)&ptrMediaPos)))
-      {
-        LONGLONG currentPos;
-        ptrMediaPos->GetCurrentPosition(&currentPos);
-        ptrMediaPos->Release();
-        double clock = currentPos;clock /= 10000000.0;
-        float clockEnd = m_duration.EndPcr().ToClock() ;
-        if (clock >= clockEnd && clockEnd > 0 )
-        {
-          LogDebug("End of rtsp stream...");
-          m_demultiplexer.SetEndOfFile(true);
-        }
-      }
-    }
-    }
-    m_demultiplexer.m_LastDataFromRtsp = timeGetTime() ;
-  }
-
-//  //is the duration update thread running?
-//  if (!IsThreadRunning())
-//  {
-//    //nop? then start it
-//    //LogDebug("  CTsReaderFilter::Pause()->start duration thread");
-//    StartThread();
-//  }
-
-  LogDebug("CTsReaderFilter::Pause() - END - state = %d", m_State);
+  
   return hr;
 }
 
@@ -1744,23 +1749,35 @@ void CTsReaderFilter::GetMediaPosition(REFERENCE_TIME *pMediaPos)
 {
   CAutoLock cObjectLock(&m_GetTimeLock);
   REFERENCE_TIME Time=0 ;
-  if (State() == State_Stopped)
+  if (State() == State_Running)
   {
-    m_MediaPos=0 ;
-    m_BaseTime = (REFERENCE_TIME)timeGetTime() * 10000 ; // m_pClock->GetTime(&m_BaseTime) ;
-    m_LastTime=m_BaseTime ;
-    // LogDebug("GetMediaPosition on stop...") ; 
+    m_LastTime = (REFERENCE_TIME)timeGetTime() * 10000 ; // m_pClock->GetTime(&m_LastTime) ;      LogDebug("GetMediaPos : %f %d",(float)m_LastTime,timeGetTime()) ;
   }
-  else
-  {
-    if (State() == State_Running)
-    {
-      m_LastTime = (REFERENCE_TIME)timeGetTime() * 10000 ; // m_pClock->GetTime(&m_LastTime) ;      LogDebug("GetMediaPos : %f %d",(float)m_LastTime,timeGetTime()) ;
-    }
-	}
   *pMediaPos = (m_MediaPos + m_LastTime - m_BaseTime) ;
   return ; 
 }
+
+//void CTsReaderFilter::GetMediaPosition(REFERENCE_TIME *pMediaPos)
+//{
+//  CAutoLock cObjectLock(&m_GetTimeLock);
+//  REFERENCE_TIME Time=0 ;
+//  if (State() == State_Stopped)
+//  {
+//    //m_MediaPos=0 ;
+//    m_BaseTime = (REFERENCE_TIME)timeGetTime() * 10000 ; // m_pClock->GetTime(&m_BaseTime) ;
+//    m_LastTime=m_BaseTime ;
+//    // LogDebug("GetMediaPosition on stop...") ; 
+//  }
+//  else
+//  {
+//    if (State() == State_Running)
+//    {
+//      m_LastTime = (REFERENCE_TIME)timeGetTime() * 10000 ; // m_pClock->GetTime(&m_LastTime) ;      LogDebug("GetMediaPos : %f %d",(float)m_LastTime,timeGetTime()) ;
+//    }
+//	}
+//  *pMediaPos = (m_MediaPos + m_LastTime - m_BaseTime) ;
+//  return ; 
+//}
 
 //----------------------------------------------------
 // Derived from FFDShow code

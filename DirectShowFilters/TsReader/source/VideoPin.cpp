@@ -367,7 +367,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
           clock = (double)(RefClock-m_rtStart.m_time)/10000000.0 ;
           fTime = (float)cRefTime.Millisecs()/1000.0f - clock ;
                                                                       
-          if ((fTime > -0.2) || ForcePresent)
+          if ((fTime > -0.2) || ForcePresent || (m_dRateSeeking != 1.0))
           {
             m_bPresentSample = true;
             Sleep(1); // Ambass : avoid blocking audio FillBuffer method ( on audio/video starting ) by excessive video Fill buffer preemption
@@ -561,7 +561,8 @@ HRESULT CVideoPin::ChangeRate()
     m_dRateSeeking = 1.0;  // Reset to a reasonable value.
     return E_FAIL;
   }
-  if( m_dRateSeeking > 2.0 && m_pTsReaderFilter->m_videoDecoderCLSID == CLSID_FFDSHOWVIDEO)
+  if( m_dRateSeeking > 2.0 && (m_pTsReaderFilter->m_videoDecoderCLSID == CLSID_FFDSHOWVIDEO 
+                                || m_pTsReaderFilter->m_videoDecoderCLSID == CLSID_LAVVIDEO))
   {
     //FFDShow video decoder doesn't handle rate > 2.0 properly
     m_dRateSeeking = 1.0;  // Reset to a reasonable value.
