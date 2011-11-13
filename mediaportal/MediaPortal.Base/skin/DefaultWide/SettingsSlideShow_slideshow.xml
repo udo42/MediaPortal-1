@@ -29,7 +29,7 @@
     </control>
     <control>
       <description>Ken Buns transitions</description>
-      <type>checkmark</type>
+      <type>checkbutton</type>
       <id>6</id>
       <posX>100</posX>
       <posY>160</posY>
@@ -37,10 +37,11 @@
       <onright>2</onright>
       <label>13008</label>
       <align>right</align>
+			<width>380</width>
     </control>
     <control>
       <description>X-fade transitions</description>
-      <type>checkmark</type>
+      <type>checkbutton</type>
       <id>5</id>
       <posX>100</posX>
       <posY>205</posY>
@@ -48,10 +49,11 @@
       <onright>3</onright>
       <label>13010</label>
       <align>right</align>
+			<width>380</width>
     </control>
     <control>
       <description>Random transitions</description>
-      <type>checkmark</type>
+      <type>checkbutton</type>
       <id>7</id>
       <posX>100</posX>
       <posY>245</posY>
@@ -59,6 +61,7 @@
       <onright>4</onright>
       <label>13009</label>
       <align>right</align>
+			<width>380</width>
     </control>
     <!--Slideshow Settings group-->
     <control>
@@ -144,7 +147,7 @@
     </control>
     <control>
       <description>Repeat/loop slideshows</description>
-      <type>checkmark</type>
+      <type>checkbutton</type>
       <id>8</id>
       <posX>580</posX>
       <posY>295</posY>
@@ -152,16 +155,18 @@
       <ondown>9</ondown>
       <label>6020</label>
       <align>right</align>
+			<width>380</width>
     </control>
     <control>
       <description>Auto shuffle slideshow</description>
-      <type>checkmark</type>
+      <type>checkbutton</type>
       <id>9</id>
       <posX>580</posX>
       <posY>340</posY>
       <onup>8</onup>
       <label>6021</label>
       <align>right</align>
+			<width>380</width>
     </control>
     <!--Rotation settings group-->
     <control>
@@ -185,7 +190,7 @@
     </control>
     <control>
       <description>EXIF rotation</description>
-      <type>checkmark</type>
+      <type>checkbutton</type>
       <id>41</id>
       <posX>100</posX>
       <posY>390</posY>
@@ -193,10 +198,11 @@
       <align>right</align>
       <onleft>43</onleft>
       <onright>43</onright>
+			<width>380</width>
     </control>
     <control>
       <description>Picasa.ini rotation</description>
-      <type>checkmark</type>
+      <type>checkbutton</type>
       <id>42</id>
       <posX>100</posX>
       <posY>435</posY>
@@ -205,6 +211,7 @@
       <onleft>44</onleft>
       <onright>44</onright>
       <ondown>35</ondown>
+			<width>380</width>
     </control>
     <!--View settings group-->
     <!--Slideshow Settings group-->
@@ -229,7 +236,7 @@
     </control>
     <control>
       <description>Group by day</description>
-      <type>checkmark</type>
+      <type>checkbutton</type>
       <id>43</id>
       <posX>580</posX>
       <posY>490</posY>
@@ -238,10 +245,11 @@
       <onup>9</onup>
       <onleft>41</onleft>
       <onright>41</onright>
+			<width>380</width>
     </control>
     <control>
       <description>Enable playing videos</description>
-      <type>checkmark</type>
+      <type>checkbutton</type>
       <id>44</id>
       <posX>580</posX>
       <posY>535</posY>
@@ -249,10 +257,11 @@
       <align>right</align>
       <onleft>42</onleft>
       <onright>42</onright>
+			<width>380</width>
     </control>
     <control>
       <description>Play videos in slideshow</description>
-      <type>checkmark</type>
+      <type>checkbutton</type>
       <id>45</id>
       <posX>580</posX>
       <posY>575</posY>
@@ -260,50 +269,7 @@
       <align>right</align>
       <onleft>40</onleft>
       <onright>40</onright>
-    </control>
-    <!--Other settings group-->
-    <control>
-      <description>background</description>
-      <type>image</type>
-      <id>1</id>
-      <posX>80</posX>
-      <posY>540</posY>
-      <height>160</height>
-      <width>430</width>
-      <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>70ffffff</colordiffuse>
-    </control>
-    <control>
-      <description>Other settings</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>100</posX>
-      <posY>550</posY>
-      <label>1298</label>
-    </control>
-    <control>
-      <description>Extensions</description>
-      <type>button</type>
-      <id>35</id>
-      <label>1265</label>
-      <posX>100</posX>
-      <posY>590</posY>
-      <onleft>35</onleft>
-      <onright>35</onright>
-      <onup>42</onup>
-      <ondown>40</ondown>
-    </control>
-    <control>
-      <description>Folders button</description>
-      <type>button</type>
-      <id>40</id>
-      <label>1277</label>
-      <posX>100</posX>
-      <posY>635</posY>
-      <onleft>40</onleft>
-      <onright>40</onright>
-      <onup>35</onup>
-      <ondown>99</ondown>
+			<width>380</width>
     </control>
   </controls>
 </window>

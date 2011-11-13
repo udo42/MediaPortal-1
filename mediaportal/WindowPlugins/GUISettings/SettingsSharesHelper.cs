@@ -480,30 +480,14 @@ namespace MediaPortal.GUI.Settings
       {
         case "movies":
           GUIVideoFiles.ResetShares();
-          //if (VirtualDirectories.Instance.Movies != null)
-          //{
-          //  VirtualDirectories.Instance.Movies.Clear();
-          //  VirtualDirectories.Instance.Movies.LoadSettings(section);
-          //}
           break;
         case "music":
           GUIMusicFiles.ResetShares();
-          //if (VirtualDirectories.Instance.Music != null)
-          //{
-          //  VirtualDirectories.Instance.Music.Clear();
-          //  VirtualDirectories.Instance.Music.LoadSettings(section);
-          //}
           break;
         case "pictures":
           GUIPictures.ResetShares();
-          //if (VirtualDirectories.Instance.Pictures != null)
-          //{
-          //  VirtualDirectories.Instance.Pictures.Clear();
-          //  VirtualDirectories.Instance.Pictures.LoadSettings(section);
-          //}
           break;
       }
-
     }
 
     public static GUIFacadeControl.Layout ProperLayoutFromDefault(int defaultView)

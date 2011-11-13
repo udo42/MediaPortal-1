@@ -103,7 +103,7 @@ namespace MediaPortal.GUI.Video
     private static IMDB _imdb;
     private static bool _askBeforePlayingDVDImage = false;
     private static VirtualDirectory _virtualDirectory;
-    private static string _currentFolder;
+    private static string _currentFolder = string.Empty;
     private static PlayListPlayer _playlistPlayer;
 
     private MapSettings _mapSettings = new MapSettings();
@@ -2972,15 +2972,19 @@ namespace MediaPortal.GUI.Video
       _virtualDirectory.Reset();
       _virtualDirectory.DefaultShare = null;
       _virtualDirectory.LoadSettings("movies");
-      int pincode;
-      bool folderPinProtected = _virtualDirectory.IsProtectedShare(_virtualDirectory.DefaultShare.Path, out pincode);
-      if (folderPinProtected)
+      
+      if (_virtualDirectory.DefaultShare != null)
       {
-        _currentFolder = string.Empty;
-      }
-      else
-      {
-        _currentFolder = _virtualDirectory.DefaultShare.Path;
+        int pincode;
+        bool folderPinProtected = _virtualDirectory.IsProtectedShare(_virtualDirectory.DefaultShare.Path, out pincode);
+        if (folderPinProtected)
+        {
+          _currentFolder = string.Empty;
+        }
+        else
+        {
+          _currentFolder = _virtualDirectory.DefaultShare.Path;
+        }
       }
     }
 

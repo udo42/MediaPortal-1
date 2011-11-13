@@ -26,7 +26,6 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Windows.Forms;
 using MediaPortal.Configuration;
 using MediaPortal.Database;
 using MediaPortal.Dialogs;
@@ -45,7 +44,6 @@ namespace WindowPlugins.GUISettings
   {
     [SkinControl(10)] protected GUIButtonControl btnSkin = null;
     [SkinControl(11)] protected GUIButtonControl btnLanguage = null;
-    //[SkinControl(12)] protected GUIToggleButtonControl btnFullscreen = null;
     [SkinControl(13)] protected GUIButtonControl btnScreenSaver = null;
     [SkinControl(14)] protected GUICheckButton btnLanguagePrefix = null;
     [SkinControl(15)] protected GUIButtonControl btnThumbnails = null;

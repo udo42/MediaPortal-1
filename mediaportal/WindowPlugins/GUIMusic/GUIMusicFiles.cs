@@ -1891,15 +1891,19 @@ namespace MediaPortal.GUI.Music
       _virtualDirectory.Reset();
       _virtualDirectory.DefaultShare = null;
       _virtualDirectory.LoadSettings("music");
-      int pincode;
-      bool folderPinProtected = _virtualDirectory.IsProtectedShare(_virtualDirectory.DefaultShare.Path, out pincode);
-      if (folderPinProtected)
+      
+      if (_virtualDirectory.DefaultShare != null)
       {
-        currentFolder = string.Empty;
-      }
-      else
-      {
-        currentFolder = _virtualDirectory.DefaultShare.Path;
+        int pincode;
+        bool folderPinProtected = _virtualDirectory.IsProtectedShare(_virtualDirectory.DefaultShare.Path, out pincode);
+        if (folderPinProtected)
+        {
+          currentFolder = string.Empty;
+        }
+        else
+        {
+          currentFolder = _virtualDirectory.DefaultShare.Path;
+        }
       }
     }
 

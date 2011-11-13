@@ -46,7 +46,7 @@
     </control>
     <control>
       <description>BurnIn</description>
-      <type>checkmark</type>
+      <type>checkbutton</type>
       <id>4</id>
       <width>408</width>
       <label>1318</label>
@@ -54,11 +54,10 @@
       <posY>306</posY>
       <onright>5</onright>
       <onup>3</onup>
-      <align>right</align>
     </control>
     <control>
       <description>Reduce framerate</description>
-      <type>checkmark</type>
+      <type>checkbutton</type>
       <id>5</id>
       <width>408</width>
       <label>1319</label>
@@ -66,7 +65,6 @@
       <posY>346</posY>
       <onleft>4</onleft>
       <onup>3</onup>
-      <align>right</align>
     </control>
   </controls>
 </window>

@@ -2048,15 +2048,19 @@ namespace MediaPortal.GUI.Pictures
       virtualDirectory.Reset();
       virtualDirectory.DefaultShare = null;
       virtualDirectory.LoadSettings("pictures");
-      int pincode;
-      bool folderPinProtected = virtualDirectory.IsProtectedShare(virtualDirectory.DefaultShare.Path, out pincode);
-      if (folderPinProtected)
+
+      if (virtualDirectory.DefaultShare != null)
       {
-        currentFolder = string.Empty;
-      }
-      else
-      {
-        currentFolder = virtualDirectory.DefaultShare.Path;
+        int pincode;
+        bool folderPinProtected = virtualDirectory.IsProtectedShare(virtualDirectory.DefaultShare.Path, out pincode);
+        if (folderPinProtected)
+        {
+          currentFolder = string.Empty;
+        }
+        else
+        {
+          currentFolder = virtualDirectory.DefaultShare.Path;
+        }
       }
     }
 

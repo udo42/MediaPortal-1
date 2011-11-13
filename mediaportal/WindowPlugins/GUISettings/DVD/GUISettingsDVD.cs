@@ -24,7 +24,6 @@ using System.Globalization;
 using DirectShowLib;
 using DShowNET;
 using DShowNET.Helper;
-using MediaPortal.Configuration;
 using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
 using MediaPortal.Profile;
@@ -38,15 +37,11 @@ namespace WindowPlugins.GUISettings.TV
   /// </summary>
   public class GUISettingsDVD : GUIInternalWindow
   {
-    //[SkinControl(21)] protected GUIButtonControl btnDVDNavigator = null;
     [SkinControl(22)] protected GUICheckButton btnEnableSubtitles = null;
     [SkinControl(23)] protected GUICheckButton btnDXVA = null;
     [SkinControl(24)] protected GUIButtonControl btnVideo = null;
     [SkinControl(25)] protected GUIButtonControl btnAudio = null;
-    //[SkinControl(27)] protected GUIButtonControl btnAudioRenderer = null;
-    //[SkinControl(28)] protected GUIButtonControl btnAspectRatio = null;
     [SkinControl(29)] protected GUIButtonControl btnSubtitle = null;
-    //[SkinControl(30)] protected GUIButtonControl btnAudioLanguage = null;
     [SkinControl(31)] protected GUICheckButton btnEnableCC = null;
     [SkinControl(32)] protected GUIButtonControl btnAutoPlay = null;
 

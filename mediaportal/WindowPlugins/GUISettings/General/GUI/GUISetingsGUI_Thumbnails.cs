@@ -21,7 +21,6 @@
 using System;
 using System.Collections;
 using System.Globalization;
-using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
 using MediaPortal.Profile;
 using MediaPortal.Util;

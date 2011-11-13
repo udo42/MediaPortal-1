@@ -21,7 +21,6 @@
 using System;
 using System.Collections;
 using System.Globalization;
-using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
 using MediaPortal.Profile;
 using Action = MediaPortal.GUI.Library.Action;
@@ -34,9 +33,8 @@ namespace WindowPlugins.GUISettings
   public class GUISettingsScreenSaver : GUIInternalWindow
   {
     [SkinControl(2)] protected GUICheckButton btnScreenSaverEnabled= null;
-    //[SkinControl(3)] protected GUIButtonControl btnScreenSaverDelay= null;
-    [SkinControl(4)] protected GUICheckMarkControl cmBlankScreen= null;
-    [SkinControl(5)] protected GUICheckMarkControl cmReduceFrameRate= null;
+    [SkinControl(4)] protected GUICheckButton cmBlankScreen = null;
+    [SkinControl(5)] protected GUICheckButton cmReduceFrameRate = null;
 
     private enum Controls
     {
