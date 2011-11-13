@@ -132,21 +132,31 @@ HRESULT CVideoPin::CompleteConnect(IPin *pReceivePin)
   HRESULT hr = CBaseOutputPin::CompleteConnect(pReceivePin);
   if (SUCCEEDED(hr))
   {
+    m_pTsReaderFilter->m_bFastSyncFFDShow=false;
+    m_pTsReaderFilter->m_bFastSyncVideo=false;
+    
     CLSID &ref=m_pTsReaderFilter->GetCLSIDFromPin(pReceivePin);
     m_pTsReaderFilter->m_videoDecoderCLSID = ref;
     if (m_pTsReaderFilter->m_videoDecoderCLSID == CLSID_FFDSHOWVIDEO)
     {
       m_pTsReaderFilter->m_bFastSyncFFDShow=true;
-      LogDebug("vid:CompleteConnect() FFDShow Video Decoder connected, fast sync enabled");
+      //m_pTsReaderFilter->m_bFastSyncVideo=true;    
+      LogDebug("vid:CompleteConnect() FFDShow Video Decoder connected");
     }
-//    else if (m_pTsReaderFilter->m_videoDecoderCLSID == CLSID_FFDSHOWDXVA)
-//    {
-//      m_pTsReaderFilter->m_bFastSyncFFDShow=true;
-//      LogDebug("vid:CompleteConnect() FFDShow DXVA Video Decoder connected, fast sync enabled");
-//    }
-    else
+    else if (m_pTsReaderFilter->m_videoDecoderCLSID == CLSID_LAVCUVID)
     {
-      m_pTsReaderFilter->m_bFastSyncFFDShow=false;
+      //m_pTsReaderFilter->m_bFastSyncVideo=true;
+      LogDebug("vid:CompleteConnect() LAV CUVID Video Decoder connected");
+    }
+    else if (m_pTsReaderFilter->m_videoDecoderCLSID == CLSID_LAVVIDEO)
+    {
+      //m_pTsReaderFilter->m_bFastSyncVideo=true;    
+      LogDebug("vid:CompleteConnect() LAV Video Decoder connected");
+    }
+    else if (m_pTsReaderFilter->m_videoDecoderCLSID == CLSID_FFDSHOWDXVA)
+    {
+      //m_pTsReaderFilter->m_bFastSyncVideo=true;
+      LogDebug("vid:CompleteConnect() FFDShow DXVA Video Decoder connected");
     }
     
     m_bConnected=true;    
@@ -271,6 +281,11 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
     CDeMultiplexer& demux = m_pTsReaderFilter->GetDemultiplexer();
     CBuffer* buffer = NULL;
 
+//    if (!demux.m_bAudioVideoReady)
+//    {
+//      LogDebug("Video FillBuffer, not m_bAudioVideoReady ");
+//    }
+
     do
     {
       //get file-duration and set m_rtDuration
@@ -287,11 +302,15 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
         return NOERROR;
       }
 
-      if (m_pTsReaderFilter->m_bStreamCompensated && !demux.m_bHoldFileRead)
+      if (m_pTsReaderFilter->m_bStreamCompensated && !demux.m_bFlushRunning)
       {       
         CAutoLock flock (&demux.m_sectionFlushVideo);
         // Get next video buffer from demultiplexer
         buffer=demux.GetVideo();
+      }
+      else
+      {
+        buffer=NULL;
       }
 
       //did we reach the end of the file
@@ -318,34 +337,40 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
         //check if it has a timestamp
         if ((HasTimestamp=buffer->MediaTime(RefTime)))
         {
-          CRefTime AddOffset=m_pTsReaderFilter->AddVideoComp;
-          // Try duration of drift recovery 10 times the compensation. ( ie: 10sec for 1 sec compensation )
+          bool ForcePresent = false;
           cRefTime = RefTime;
           cRefTime -= m_rtStart;
           //adjust the timestamp with the compensation
           cRefTime -= m_pTsReaderFilter->Compensation;
 
-          if (!m_pTsReaderFilter->m_bFastSyncFFDShow && (cRefTime.m_time < (m_pTsReaderFilter->AddVideoComp.m_time * DRIFT_RATE)) )
+          // 'fast start' timestamp modification (at start of play)
+          CRefTime AddOffset=m_pTsReaderFilter->AddVideoComp;
+          cRefTime -= AddOffset;
+          cRefTime -= m_pTsReaderFilter->m_ClockOnStart.m_time;
+          if (!m_pTsReaderFilter->m_bFastSyncVideo && (cRefTime.m_time < (m_pTsReaderFilter->AddVideoComp.m_time * DRIFT_RATE)) )
           {
             // Ambass : try to stretch video after zapping
-            cRefTime -= AddOffset;
-            cRefTime -= m_pTsReaderFilter->m_ClockOnStart.m_time;
             AddOffset = cRefTime.m_time / DRIFT_RATE;
+            ForcePresent = true;
+            if (m_pTsReaderFilter->m_bFastSyncFFDShow)
+            {
+              m_bDiscontinuity = true;
+            }
             // LogDebug("%03.3f, %03.3f, %03.3f", (float)AddOffset.Millisecs()/1000.0f,(float)cRefTime.Millisecs()/1000.0f, (float)m_pTsReaderFilter->AddVideoComp.Millisecs()/1000.0f);
             // m_pTsReaderFilter->AddVideoComp.m_time =0;
-            cRefTime += AddOffset;
-            cRefTime += m_pTsReaderFilter->m_ClockOnStart.m_time;
           }
+          cRefTime += AddOffset;
+          cRefTime += m_pTsReaderFilter->m_ClockOnStart.m_time;
 
           REFERENCE_TIME RefClock = 0;
           m_pTsReaderFilter->GetMediaPosition(&RefClock) ;
           clock = (double)(RefClock-m_rtStart.m_time)/10000000.0 ;
           fTime = (float)cRefTime.Millisecs()/1000.0f - clock ;
                                                                       
-          if (fTime >= 0.0)
+          if ((fTime > -0.2) || ForcePresent)
           {
             m_bPresentSample = true;
-            Sleep(2); // Ambass : avoid blocking audio FillBuffer method ( on audio/video starting ) by excessive video Fill buffer preemption
+            Sleep(1); // Ambass : avoid blocking audio FillBuffer method ( on audio/video starting ) by excessive video Fill buffer preemption
           }
           else
           {
@@ -354,7 +379,6 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
             m_bDiscontinuity = TRUE; //Next good sample will be discontinuous
           }
 
-          //m_bPresentSample = true;
         }
 
         if (m_bPresentSample)

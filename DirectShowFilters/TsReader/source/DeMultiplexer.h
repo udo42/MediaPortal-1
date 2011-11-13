@@ -65,7 +65,7 @@ public:
   virtual ~CDeMultiplexer(void);
 
   void       Start();
-  void       Flush();
+  void       Flush(bool clearAVready);
   CBuffer*   GetVideo();
   CBuffer*   GetAudio();
   CBuffer*   GetSubtitle();
@@ -137,8 +137,11 @@ public:
   bool m_bAudioVideoReady;
   bool m_bFlushDelegated;
   bool m_bFlushDelgNow;
-  bool m_bHoldFileRead;
+  bool m_bFlushRunning;
   bool m_bReadAheadFromFile;
+
+  long m_AudioDataLowCount;
+  long m_VideoDataLowCount;
 
   CCritSec m_sectionFlushAudio;
   CCritSec m_sectionFlushVideo;
