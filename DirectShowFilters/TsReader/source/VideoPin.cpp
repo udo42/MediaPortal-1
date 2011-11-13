@@ -332,8 +332,8 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
       {
         CRefTime RefTime, cRefTime;
         bool HasTimestamp;
-        float fTime = 0.0;
-        float clock = 0.0;
+        double fTime = 0.0;
+        double clock = 0.0;
         //check if it has a timestamp
         if ((HasTimestamp=buffer->MediaTime(RefTime)))
         {
@@ -347,10 +347,10 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
           CRefTime AddOffset=m_pTsReaderFilter->AddVideoComp;
           cRefTime -= AddOffset;
           cRefTime -= m_pTsReaderFilter->m_ClockOnStart.m_time;
-          if (!m_pTsReaderFilter->m_bFastSyncVideo && (cRefTime.m_time < (m_pTsReaderFilter->AddVideoComp.m_time * DRIFT_RATE)) )
+          if (!m_pTsReaderFilter->m_bFastSyncVideo && (cRefTime.m_time < (REFERENCE_TIME)((double)m_pTsReaderFilter->AddVideoComp.m_time * DRIFT_RATE)) )
           {
             // Ambass : try to stretch video after zapping
-            AddOffset = cRefTime.m_time / DRIFT_RATE;
+            AddOffset = (REFERENCE_TIME)((double)cRefTime.m_time / DRIFT_RATE);
             ForcePresent = true;
             if (m_pTsReaderFilter->m_bFastSyncFFDShow)
             {
@@ -365,7 +365,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
           REFERENCE_TIME RefClock = 0;
           m_pTsReaderFilter->GetMediaPosition(&RefClock) ;
           clock = (double)(RefClock-m_rtStart.m_time)/10000000.0 ;
-          fTime = (float)cRefTime.Millisecs()/1000.0f - clock ;
+          fTime = (double)cRefTime.Millisecs()/1000.0f - clock ;
                                                                       
           if ((fTime > -0.2) || ForcePresent || (m_dRateSeeking != 1.0))
           {
@@ -401,7 +401,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
             
             bool stsDiscon = TimestampDisconChecker(refTime); //Update with current timestamp
 
-            refTime /= m_dRateSeeking;
+            refTime = (REFERENCE_TIME)((double)refTime/m_dRateSeeking);
             pSample->SetTime(&refTime,&refTime);
             if (m_dRateSeeking == 1.0)
             {

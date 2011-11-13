@@ -415,7 +415,7 @@ void CDeMultiplexer::FlushVideo()
   m_WaitHeaderPES=-1 ;
   m_bVideoAtEof=false;
   m_MinVideoDelta = 10.0 ;
-  _InterlockedAnd(&m_VideoDataLowCount, 0) ;
+  _InterlockedAnd(&m_AVDataLowCount, 0) ;
   m_filter.m_bRenderingClockTooFast=false ;
   m_bSetVideoDiscontinuity=true;
   
@@ -452,7 +452,7 @@ void CDeMultiplexer::FlushAudio()
   m_pCurrentAudioBuffer = new CBuffer();
   m_bAudioAtEof = false;
   m_MinAudioDelta = 10.0;
-  _InterlockedAnd(&m_AudioDataLowCount, 0);
+  _InterlockedAnd(&m_AVDataLowCount, 0);
   m_filter.m_bRenderingClockTooFast=false;
   m_bSetAudioDiscontinuity=true;
   
@@ -582,7 +582,16 @@ CBuffer* CDeMultiplexer::GetVideo()
 //    if (m_bHoldVideo) return NULL;
 
     //else try to read some packets from the file
-    if (ReadFromFile(false,true)<MIN_READ_SIZE) break ;
+    if (ReadFromFile(false,true)<MIN_READ_SIZE) 
+    {
+      // No buffer and nothing to read....
+      if (m_bAudioVideoReady && !m_filter.m_bRenderingClockTooFast) //Running very low on data
+      {
+        InterlockedIncrement(&m_AVDataLowCount);   
+        m_filter.WakeThread();
+      }                
+      return NULL;
+    }
   }
 
   //are there video packets in the buffer?
@@ -644,7 +653,16 @@ CBuffer* CDeMultiplexer::GetAudio()
     SizeRead = ReadFromFile(true,false) ;
 
     //are there audio packets in the buffer?
-    if (m_vecAudioBuffers.size()==0 && SizeRead<MIN_READ_SIZE) return NULL;                          // No buffer and nothing to read....
+    if (m_vecAudioBuffers.size()==0 && SizeRead<MIN_READ_SIZE)
+    {
+       // No buffer and nothing to read....
+       if (m_bAudioVideoReady && !m_filter.m_bRenderingClockTooFast) //Running very low on data
+       {
+        InterlockedIncrement(&m_AVDataLowCount);   
+        m_filter.WakeThread();
+       }           
+       return NULL;
+    }
 
     if (IsMediaChanging()) return NULL;
 
@@ -1085,7 +1103,7 @@ void CDeMultiplexer::FillAudio(CTsHeader& header, byte* tsPacket)
               LogDebug("Demux : Audio to render %03.3f Sec", Delta);
               if (Delta < 0.1)
               {
-                InterlockedIncrement(&m_AudioDataLowCount);              
+                //InterlockedIncrement(&m_AudioDataLowCount);              
                 LogDebug("Demux : Audio to render too late= %03.3f Sec", Delta) ;
                 //  m_filter.m_bRenderingClockTooFast=true;
                 m_MinAudioDelta+=1.0;
@@ -1459,7 +1477,7 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
                 m_MinVideoDelta=Delta;
                 if (Delta < 0.2)
                 {
-                  InterlockedIncrement(&m_VideoDataLowCount);              
+                  //InterlockedIncrement(&m_VideoDataLowCount);              
                   LogDebug("Demux : Video to render too late= %03.3f Sec", Delta) ;
                   //  m_filter.m_bRenderingClockTooFast=true;
                   m_MinAudioDelta+=1.0;
@@ -1811,7 +1829,7 @@ void CDeMultiplexer::FillVideoMPEG2(CTsHeader& header, byte* tsPacket)
                   m_MinVideoDelta=Delta;
                   if (Delta < 0.2)
                   {
-                    InterlockedIncrement(&m_VideoDataLowCount);              
+                    //InterlockedIncrement(&m_VideoDataLowCount);              
                     LogDebug("Demux : Video to render too late= %03.3f Sec", Delta) ;
                     //  m_filter.m_bRenderingClockTooFast=true;
                     m_MinAudioDelta+=1.0;

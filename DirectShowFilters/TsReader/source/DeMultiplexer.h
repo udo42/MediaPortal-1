@@ -140,8 +140,9 @@ public:
   bool m_bFlushRunning;
   bool m_bReadAheadFromFile;
 
-  long m_AudioDataLowCount;
-  long m_VideoDataLowCount;
+  //  long m_AudioDataLowCount;
+  //  long m_VideoDataLowCount;
+  long m_AVDataLowCount;
 
   CCritSec m_sectionFlushAudio;
   CCritSec m_sectionFlushVideo;
@@ -218,7 +219,7 @@ private:
   int m_iAudioIdx;
   int m_iPatVersion;
   int m_ReqPatVersion;
-  int m_WaitNewPatTmo;
+  DWORD m_WaitNewPatTmo;
   int m_receivedPackets;
 
   bool m_bFirstGopFound;

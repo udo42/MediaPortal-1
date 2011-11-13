@@ -339,8 +339,8 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
 
         CRefTime RefTime,cRefTime ;
         bool HasTimestamp ;
-        float fTime = 0.0;
-        float clock = 0.0;
+        double fTime = 0.0;
+        double clock = 0.0;
         //check if it has a timestamp
         if ((HasTimestamp=buffer->MediaTime(RefTime)))
         {
@@ -352,13 +352,13 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
           REFERENCE_TIME RefClock = 0;
           m_pTsReaderFilter->GetMediaPosition(&RefClock) ;
           clock = (double)(RefClock-m_rtStart.m_time)/10000000.0 ;
-          fTime = (float)cRefTime.Millisecs()/1000.0f - clock ;
+          fTime = (double)cRefTime.Millisecs()/1000.0f - clock ;
 
           //if (cRefTime.m_time >= m_pTsReaderFilter->m_ClockOnStart) // m_rtStart.m_time+m_pTsReaderFilter->Compensation.m_time) // + PRESENT_DELAY)
           if ((fTime > -0.2) || (m_dRateSeeking != 1.0))
           {
             m_bPresentSample = true ;
-            Sleep(5) ;
+            Sleep(2) ;
           }
           else
           {
@@ -383,7 +383,7 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
           {
             //now we have the final timestamp, set timestamp in sample
             REFERENCE_TIME refTime=(REFERENCE_TIME)cRefTime;
-            refTime /= m_dRateSeeking;
+            refTime = (REFERENCE_TIME)((double)refTime/m_dRateSeeking);
 
             pSample->SetSyncPoint(TRUE);
 

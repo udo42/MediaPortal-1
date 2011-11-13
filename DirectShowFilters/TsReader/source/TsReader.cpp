@@ -229,6 +229,7 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   m_bFastSyncVideo=false;
   m_ShowBufferAudio = INIT_SHOWBUFFERAUDIO;
   m_ShowBufferVideo = INIT_SHOWBUFFERVIDEO;
+  m_lastPause = timeGetTime();
   
   m_MPmainThreadID = GetCurrentThreadId() ;
   
@@ -471,8 +472,8 @@ STDMETHODIMP CTsReaderFilter::Run(REFERENCE_TIME tStart)
     LogDebug("Elapsed time from pause to Audio/Video ( total zapping time ) : %d mS",timeGetTime()-m_lastPause);
   }
  
-  m_ShowBufferVideo = INIT_SHOWBUFFERVIDEO;
-  m_ShowBufferAudio = INIT_SHOWBUFFERAUDIO;
+  //  m_ShowBufferVideo = INIT_SHOWBUFFERVIDEO;
+  //  m_ShowBufferAudio = INIT_SHOWBUFFERAUDIO;
 
   CAutoLock cObjectLock(m_pLock);
 
@@ -564,8 +565,16 @@ bool CTsReaderFilter::IsTimeShifting()
 
 STDMETHODIMP CTsReaderFilter::Pause()
 {
-  //m_ShowBufferVideo = INIT_SHOWBUFFERVIDEO;
-  //m_ShowBufferAudio = INIT_SHOWBUFFERAUDIO;
+  if (m_bPauseOnClockTooFast)
+  {
+    m_ShowBufferVideo = 2;
+    m_ShowBufferAudio = 2;
+  }
+  else
+  {
+    m_ShowBufferVideo = INIT_SHOWBUFFERVIDEO;
+    m_ShowBufferAudio = INIT_SHOWBUFFERAUDIO;
+  }
 
   LogDebug("CTsReaderFilter::Pause() - IsTimeShifting = %d - state = %d", IsTimeShifting(), m_State);
   HRESULT hr = S_FALSE;
@@ -1201,10 +1210,11 @@ void CTsReaderFilter::ThreadProc()
   int  durationUpdateLoop = 1;
   long Old_rtspDuration = -1 ;
   long PauseDuration =0;
-  int timeNow = timeGetTime();
-  int  lastFlushTime = timeNow;
-  int  lastPosnTime = timeNow;
-  int  lastDurTime = timeNow - 2000;
+  DWORD timeNow = timeGetTime();
+  DWORD  lastFlushTime = timeNow;
+  DWORD  lastPosnTime = timeNow;
+  DWORD  lastDataLowTime = timeNow;
+  DWORD  lastDurTime = timeNow - 2000;
 
   ::SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_BELOW_NORMAL);
   do
@@ -1218,6 +1228,25 @@ void CTsReaderFilter::ThreadProc()
 
     timeNow = timeGetTime();
 
+    //Buffer underrun handling for timeshifting
+    if (m_demultiplexer.m_AVDataLowCount > 0)
+    {
+      if (timeNow < (lastDataLowTime + 1000))
+      {
+        //LogDebug("CTsReaderFilter:: Timeshift buffer underrun, rendering will be paused");
+        m_bRenderingClockTooFast=true;
+        BufferingPause(); //Pause for a short time         
+        _InterlockedAnd(&m_demultiplexer.m_AVDataLowCount, 0);
+        m_bRenderingClockTooFast=false ;
+      }
+      else
+      {
+        lastDataLowTime = timeNow;
+        _InterlockedAnd(&m_demultiplexer.m_AVDataLowCount, 0);
+      }
+    }
+    
+ 
     //Update stream position - minimum 50ms between updates
     if ((m_State != State_Stopped) && (((timeNow - 50) > lastPosnTime) || (timeNow < lastPosnTime) || m_bForcePosnUpdate))
     {      
@@ -1387,27 +1416,12 @@ void CTsReaderFilter::ThreadProc()
       }
       
       durationUpdateLoop = (durationUpdateLoop + 1) % 5;
-      
-      //Buffer underrun handling for timeshifting - check every 5 seconds
-      if (durationUpdateLoop == 0)
-      {
-        // BufferingPause(); //debug - Pause every 5s        
-        if ((m_demultiplexer.m_AudioDataLowCount > 2) || (m_demultiplexer.m_VideoDataLowCount > 2))
-        {
-          LogDebug("CTsReaderFilter:: Timeshift buffer underrun, rendering will be paused");
-          m_bRenderingClockTooFast=true;
-          BufferingPause(); //Pause for a short time         
-          m_bRenderingClockTooFast=false ;
-        }
-        _InterlockedAnd(&m_demultiplexer.m_AudioDataLowCount, 0);
-        _InterlockedAnd(&m_demultiplexer.m_VideoDataLowCount, 0);
-      }
-                  
+                        
     }
     
     Sleep(1);
   }
-  while (!ThreadIsStopping(210)) ;
+  while (!ThreadIsStopping(110)) ;
   LogDebug("CTsReaderFilter::ThreadProc stopped()");
 }
 
@@ -1712,8 +1726,22 @@ void CTsReaderFilter::BufferingPause()
     if (m_bPauseOnClockTooFast)
       return ;                  // Do not re-enter !
       
-    //Don't pause within 30s after a seek
-    if (((m_MediaPos/10000)-m_absSeekTime.Millisecs()) < 30*1000)
+    //Don't pause within 2s after a seek
+    if (((m_MediaPos/10000)-m_absSeekTime.Millisecs()) < (2*1000))
+    {
+      return ;                  
+    }
+
+    DWORD sleepTime = 95; //Pause length
+    DWORD minDelayTime = 10000; //Min time between pauses
+    if (((m_MediaPos/10000)-m_absSeekTime.Millisecs()) < (10*1000))
+    {
+      sleepTime = 395 ;    //Longer pauses at start of play              
+      minDelayTime = 600 ; //Shorter time between pauses at start of play              
+    }          
+    
+    //Don't pause too soon after last time
+    if ((timeGetTime()- m_lastPause) < minDelayTime)
     {
       return ;                  
     }
@@ -1726,9 +1754,9 @@ void CTsReaderFilter::BufferingPause()
       {
         if (m_State == State_Running)
         {
-          LogDebug("Pause 100mS renderer clock to match provider/RTSP clock...") ; 
+          LogDebug("Pause %d mS renderer clock to match provider/RTSP clock...", sleepTime) ; 
           ptrMediaCtrl->Pause() ;
-          Sleep(100) ;
+          Sleep(sleepTime) ;
           if (m_State != State_Stopped)
           {
             ptrMediaCtrl->Run() ;
