@@ -568,6 +568,7 @@ CBuffer* CDeMultiplexer::GetVideo()
     m_filter.WakeThread();
   }
 
+
   // when there are no video packets at the moment
   // then try to read some from the current file
   while (m_vecVideoBuffers.size()==0)
@@ -579,10 +580,11 @@ CBuffer* CDeMultiplexer::GetVideo()
     if (!m_filter.IsFilterRunning()) return NULL;
     if (m_filter.m_bStopping) return NULL;
     if (m_bEndOfFile) return NULL;
-//    if (m_bHoldVideo) return NULL;
+
+    int SizeRead = ReadFromFile(true,false) ;
 
     //else try to read some packets from the file
-    if (ReadFromFile(false,true)<MIN_READ_SIZE) 
+    if (m_vecVideoBuffers.size()==0 && SizeRead<MIN_READ_SIZE) 
     {
       // No buffer and nothing to read....
       if (m_bAudioVideoReady && !m_filter.m_bRenderingClockTooFast) //Running very low on data
@@ -617,7 +619,6 @@ CBuffer* CDeMultiplexer::GetVideo()
 // or NULL if there is none available
 CBuffer* CDeMultiplexer::GetAudio()
 {
-  int SizeRead=READ_SIZE ;
   if (m_bFlushDelgNow || m_bFlushRunning || m_bStarting) return NULL; //Flush pending or Start() active
   if ((m_iAudioStream == -1)) return NULL;
 
@@ -650,7 +651,7 @@ CBuffer* CDeMultiplexer::GetAudio()
 
     if (m_bEndOfFile) return NULL;
 
-    SizeRead = ReadFromFile(true,false) ;
+    int SizeRead = ReadFromFile(true,false) ;
 
     //are there audio packets in the buffer?
     if (m_vecAudioBuffers.size()==0 && SizeRead<MIN_READ_SIZE)

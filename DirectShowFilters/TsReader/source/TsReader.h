@@ -227,7 +227,7 @@ private:
   HRESULT FindSubtitleFilter();
   void    RemoveGraphFromRot();
   void    SetMediaPosnUpdate(REFERENCE_TIME MediaPos);
-  void    BufferingPause();
+  void    BufferingPause(bool longPause);
 
   CAudioPin*	    m_pAudioPin;
   CVideoPin*	    m_pVideoPin;

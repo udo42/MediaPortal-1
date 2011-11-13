@@ -1215,6 +1215,9 @@ void CTsReaderFilter::ThreadProc()
   DWORD  lastPosnTime = timeNow;
   DWORD  lastDataLowTime = timeNow;
   DWORD  lastDurTime = timeNow - 2000;
+  DWORD  pauseWaitTime = 1000;
+  long   underRunLimit = 10;
+  bool   longPause = true;
 
   ::SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_BELOW_NORMAL);
   do
@@ -1228,14 +1231,35 @@ void CTsReaderFilter::ThreadProc()
 
     timeNow = timeGetTime();
 
-    //Buffer underrun handling for timeshifting
-    if (m_demultiplexer.m_AVDataLowCount > 0)
+    if (((m_MediaPos/10000)-m_absSeekTime.Millisecs()) < (10*1000))
     {
-      if (timeNow < (lastDataLowTime + 1000))
+      //Shorter delay at start of play
+      pauseWaitTime = 500;
+      underRunLimit = 10;
+      longPause = true;
+    }
+    else
+    {
+      pauseWaitTime = 2000;
+      underRunLimit = 50;
+      longPause = false;
+    }
+
+    //Buffer underrun handling for timeshifting
+    if (m_demultiplexer.m_AVDataLowCount > underRunLimit)
+    {      
+      if (timeNow < (lastDataLowTime + pauseWaitTime))
       {
         //LogDebug("CTsReaderFilter:: Timeshift buffer underrun, rendering will be paused");
         m_bRenderingClockTooFast=true;
-        BufferingPause(); //Pause for a short time         
+        if (timeNow < (lastDataLowTime + (pauseWaitTime/4))) //Reached trigger point in a short time
+        {
+          BufferingPause(true); //Force longer pause      
+        }
+        else
+        {
+          BufferingPause(longPause); //Pause for a short time         
+        }
         _InterlockedAnd(&m_demultiplexer.m_AVDataLowCount, 0);
         m_bRenderingClockTooFast=false ;
       }
@@ -1416,6 +1440,15 @@ void CTsReaderFilter::ThreadProc()
       }
       
       durationUpdateLoop = (durationUpdateLoop + 1) % 5;
+      
+      if (durationUpdateLoop==0)
+      {
+        CRefTime firstAudio, lastAudio;
+        CRefTime firstVideo, lastVideo;
+        int cntA = m_demultiplexer.GetAudioBufferPts(firstAudio, lastAudio);
+        int cntV = m_demultiplexer.GetVideoBufferPts(firstVideo, lastVideo);
+        LogDebug("Buffers : A/V = %d/%d, A last : %03.3f, V Last : %03.3f", cntA, cntV, (float)lastAudio.Millisecs()/1000.0f,(float)lastVideo.Millisecs()/1000.0f);
+      }
                         
     }
     
@@ -1719,25 +1752,25 @@ void CTsReaderFilter::SetMediaPosition(REFERENCE_TIME MediaPos)
 
 }
 
-void CTsReaderFilter::BufferingPause()
+void CTsReaderFilter::BufferingPause(bool longPause)
 {
 // Must be called from CTsReaderFilter::ThreadProc() to allow TsReader to "Pause" itself without deadlock issue.
 
     if (m_bPauseOnClockTooFast)
       return ;                  // Do not re-enter !
       
-    //Don't pause within 2s after a seek
-    if (((m_MediaPos/10000)-m_absSeekTime.Millisecs()) < (2*1000))
+    //Don't pause within 1s after a seek
+    if (((m_MediaPos/10000)-m_absSeekTime.Millisecs()) < (1*1000))
     {
       return ;                  
     }
 
-    DWORD sleepTime = 95; //Pause length
-    DWORD minDelayTime = 10000; //Min time between pauses
-    if (((m_MediaPos/10000)-m_absSeekTime.Millisecs()) < (10*1000))
+    DWORD sleepTime = 95; //Pause length in ms
+    DWORD minDelayTime = 5000; //Min time between pauses in ms
+    if (longPause)
     {
-      sleepTime = 395 ;    //Longer pauses at start of play              
-      minDelayTime = 600 ; //Shorter time between pauses at start of play              
+      sleepTime = 195 ;    //Longer pauses at start of play              
+      minDelayTime = 400 ; //Shorter time between pauses at start of play   
     }          
 
 //    DWORD sleepTime = 50; //Pause length
