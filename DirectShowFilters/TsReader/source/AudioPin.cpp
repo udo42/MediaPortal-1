@@ -315,7 +315,9 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
           }
 
           // set the current compensation
-          m_pTsReaderFilter->Compensation.m_time=(BestCompensation.m_time - m_pTsReaderFilter->m_ClockOnStart.m_time) - PRESENT_DELAY ;
+          CRefTime compTemp;
+          compTemp.m_time=(BestCompensation.m_time - m_pTsReaderFilter->m_ClockOnStart.m_time) - PRESENT_DELAY ;
+          m_pTsReaderFilter->SetCompensation(compTemp);
           m_pTsReaderFilter->AddVideoComp=AddVideoCompensation ;
 
           LogDebug("aud:Compensation:%03.3f, Clock on start %03.3f m_rtStart:%d ",(float)m_pTsReaderFilter->Compensation.Millisecs()/1000.0f, m_pTsReaderFilter->m_ClockOnStart.Millisecs()/1000.0f, m_rtStart.Millisecs());
@@ -332,7 +334,7 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
           if(pDVBSubtitleFilter)
           {
             LogDebug("aud:pDVBSubtitleFilter->SetTimeCompensation");
-            pDVBSubtitleFilter->SetTimeCompensation(m_pTsReaderFilter->Compensation);
+            pDVBSubtitleFilter->SetTimeCompensation(m_pTsReaderFilter->GetCompensation());
             m_bSubtitleCompensationSet=true;
           }
         }
@@ -347,20 +349,20 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
           cRefTime = RefTime ;
 					cRefTime -= m_rtStart ;
           //adjust the timestamp with the compensation
-          cRefTime-= m_pTsReaderFilter->Compensation ;
+          cRefTime-= m_pTsReaderFilter->GetCompensation() ;
 
           REFERENCE_TIME RefClock = 0;
           m_pTsReaderFilter->GetMediaPosition(&RefClock) ;
           clock = (double)(RefClock-m_rtStart.m_time)/10000000.0 ;
           fTime = (double)cRefTime.Millisecs()/1000.0f - clock ;
 
-          //if (cRefTime.m_time >= m_pTsReaderFilter->m_ClockOnStart) // m_rtStart.m_time+m_pTsReaderFilter->Compensation.m_time) // + PRESENT_DELAY)
-          if ((fTime > -0.2) || (m_dRateSeeking != 1.0))
+          //if (fTime > -0.05)
+          if ((cRefTime.m_time >= m_pTsReaderFilter->m_ClockOnStart) && (fTime > -0.5)) //Discard late samples at start of play
           {
             m_bPresentSample = true ;
             Sleep(2) ;
           }
-          else
+          else //Don't drop samples normally - it upsets the rate matching in the audio renderer
           {
             // Sample is too late.
             m_bPresentSample = false ;

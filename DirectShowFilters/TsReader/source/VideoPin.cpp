@@ -330,7 +330,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
       }
       else
       {
-        CRefTime RefTime, cRefTime;
+        CRefTime RefTime, cRefTime, compTemp;
         bool HasTimestamp;
         double fTime = 0.0;
         double clock = 0.0;
@@ -338,10 +338,16 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
         if ((HasTimestamp=buffer->MediaTime(RefTime)))
         {
           bool ForcePresent = false;
+          compTemp = m_pTsReaderFilter->GetCompensation();
+          if (m_pTsReaderFilter->m_bFastSyncFFDShow && (compTemp != m_llLastComp))
+          {
+            m_bDiscontinuity = true;
+          }
+          m_llLastComp = compTemp;
           cRefTime = RefTime;
           cRefTime -= m_rtStart;
           //adjust the timestamp with the compensation
-          cRefTime -= m_pTsReaderFilter->Compensation;
+          cRefTime -= compTemp;
 
           // 'fast start' timestamp modification (at start of play)
           CRefTime AddOffset=m_pTsReaderFilter->AddVideoComp;
@@ -367,7 +373,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
           clock = (double)(RefClock-m_rtStart.m_time)/10000000.0 ;
           fTime = (double)cRefTime.Millisecs()/1000.0f - clock ;
                                                                       
-          if ((fTime > -0.2) || ForcePresent || (m_dRateSeeking != 1.0))
+          if ((fTime > -0.5) || ForcePresent || (m_dRateSeeking != 1.0))
           {
             m_bPresentSample = true;
             Sleep(1); // Ambass : avoid blocking audio FillBuffer method ( on audio/video starting ) by excessive video Fill buffer preemption
@@ -530,6 +536,7 @@ HRESULT CVideoPin::OnThreadStartPlay()
   m_bPresentSample=false;
   m_delayedDiscont = 0;
 
+  m_llLastComp = 0;
   m_llLastMTDts = 0;
   m_nNextMTD = 0;
 	m_fMTDMean = 0;

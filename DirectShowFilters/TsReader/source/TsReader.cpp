@@ -1739,12 +1739,31 @@ void CTsReaderFilter::BufferingPause()
       sleepTime = 395 ;    //Longer pauses at start of play              
       minDelayTime = 600 ; //Shorter time between pauses at start of play              
     }          
+
+//    DWORD sleepTime = 50; //Pause length
+//    DWORD minDelayTime = 5000; //Min time between pauses
+//    if (((m_MediaPos/10000)-m_absSeekTime.Millisecs()) < (20*1000))
+//    {
+//      sleepTime = 100 ;    //Longer pauses at start of play              
+//      minDelayTime = 1000 ; //Shorter time between pauses at start of play              
+//    }          
     
     //Don't pause too soon after last time
     if ((timeGetTime()- m_lastPause) < minDelayTime)
     {
       return ;                  
     }
+
+//    if (State() == State_Running)
+//    {
+//      m_bPauseOnClockTooFast=true ;
+//      LogDebug("Pause %d mS renderer clock to match provider/RTSP clock...", sleepTime) ; 
+//      DeltaCompensation((REFERENCE_TIME)sleepTime * 10000); 
+//      m_lastPause = timeGetTime();
+//      m_bPauseOnClockTooFast=false ;
+//      m_ShowBufferVideo = 2;
+//      m_ShowBufferAudio = 2;
+//    }
 
     if (State() == State_Running)
     {
@@ -1771,6 +1790,32 @@ void CTsReaderFilter::BufferingPause()
       m_bPauseOnClockTooFast=false ;
     }
 
+}
+
+void CTsReaderFilter::DeltaCompensation(REFERENCE_TIME deltaComp)
+{
+  {
+    CAutoLock cObjectLock(&m_GetCompLock);
+    Compensation.m_time -= deltaComp ; // positive deltaComp pushes timestamps into the future
+  }
+  LogDebug("DeltaCompensation : %.3f s, %.3f s",(float)deltaComp/10000000,(float)Compensation.m_time/10000000) ; 
+}
+
+void CTsReaderFilter::SetCompensation(CRefTime newComp)
+{
+  {
+    CAutoLock cObjectLock(&m_GetCompLock);
+    Compensation = newComp ;
+  }
+  //LogDebug("SetMediaPosnUpdate : %f %f",(float)MediaPos/10000,(float)m_LastTime/10000) ; 
+}
+
+CRefTime CTsReaderFilter::GetCompensation()
+{
+  {
+    CAutoLock cObjectLock(&m_GetCompLock);
+    return Compensation;
+  }
 }
 
 void CTsReaderFilter::GetMediaPosition(REFERENCE_TIME *pMediaPos)

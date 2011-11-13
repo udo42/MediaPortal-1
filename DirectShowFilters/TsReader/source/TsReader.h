@@ -171,6 +171,9 @@ public:
   bool            IsTimeShifting();
   CTsDuration&    GetDuration();
   FILTER_STATE    State() {return m_State;};
+  void            DeltaCompensation(REFERENCE_TIME deltaComp);
+  void            SetCompensation(CRefTime newComp);
+  CRefTime        GetCompensation();
   CRefTime        Compensation;
   CRefTime        AddVideoComp;
   void            OnMediaTypeChanged(int mediaTypes);
@@ -233,6 +236,7 @@ private:
   CCritSec        m_section;
   CCritSec        m_CritSecDuration;
   CCritSec        m_GetTimeLock;
+  CCritSec        m_GetCompLock;
   FileReader*     m_fileReader;
   FileReader*     m_fileDuration;
   CTsDuration     m_duration;
