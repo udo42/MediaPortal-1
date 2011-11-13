@@ -88,11 +88,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     {
       if (NO_MP_AUD_REND)
       {
-        Log("---------- v1.4.092 part DWM ----------- instance 0x%x", this);
+        Log("---------- v1.4.093 part DWM ----------- instance 0x%x", this);
       }
       else
       {
-        Log("---------- v0.0.092 part DWM ----------- instance 0x%x", this);
+        Log("---------- v0.0.093 part DWM ----------- instance 0x%x", this);
         Log("------- audio renderer testing --------- instance 0x%x", this);
       }
     }
@@ -100,11 +100,11 @@ MPEVRCustomPresenter::MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDe
     {
       if (NO_MP_AUD_REND)
       {
-        Log("---------- v1.4.092a no DWM ----------- instance 0x%x", this);
+        Log("---------- v1.4.093a no DWM ----------- instance 0x%x", this);
       }
       else
       {
-        Log("---------- v0.0.092a no DWM ----------- instance 0x%x", this);
+        Log("---------- v0.0.093a no DWM ----------- instance 0x%x", this);
         Log("------- audio renderer testing -------- instance 0x%x", this);
       }
     }
@@ -2174,6 +2174,7 @@ BOOL MPEVRCustomPresenter::ScheduleSample(IMFSample* pSample)
   LOG_TRACE("Scheduling Sample, size: %d", m_qScheduledSamples.Count());
 
   BOOL onTimeSample = true;
+  BOOL clockRun = true;
   
   DWORD hr;
   LONGLONG nextSampleTime;
@@ -2181,7 +2182,17 @@ BOOL MPEVRCustomPresenter::ScheduleSample(IMFSample* pSample)
   CHECK_HR(hr = GetTimeToSchedule(pSample, &nextSampleTime, &systemTime, 0), "Couldn't get time to schedule!");
   if (SUCCEEDED(hr))
   {
-    if ((nextSampleTime < -50000) && !m_bDVDMenu && !m_bScrubbing)
+    if (m_pClock != NULL)
+    {
+      MFCLOCK_STATE state;
+      m_pClock->GetState(0, &state);
+      if (state != MFCLOCK_STATE_RUNNING)
+      {
+        clockRun = false;
+      }
+    }
+
+    if ((nextSampleTime < -50000) && !m_bDVDMenu && !m_bScrubbing && clockRun)
     {
       // consider 5 ms "just-in-time" for log-length's sake
       onTimeSample = false; //Allow sample to be dropped
@@ -2259,18 +2270,23 @@ HRESULT MPEVRCustomPresenter::ProcessInputNotify(int* samplesProcessed, bool set
     m_bInputAvailable = true;
   }
     
-  if (m_pClock != NULL)
-  {
-    MFCLOCK_STATE state;
-    m_pClock->GetState(0, &state);
-    if (state == MFCLOCK_STATE_PAUSED)
-    {
-      // Log("Should not be processing data in pause mode");
-      m_bInputAvailable = FALSE;
-      return S_OK;
-    }
-  }
-  else 
+//  if (m_pClock != NULL)
+//  {
+//    MFCLOCK_STATE state;
+//    m_pClock->GetState(0, &state);
+//    if (state == MFCLOCK_STATE_PAUSED)
+//    {
+//      // Log("Should not be processing data in pause mode");
+//      m_bInputAvailable = FALSE;
+//      return S_OK;
+//    }
+//  }
+//  else 
+//  {
+//    return S_OK;
+//  }
+
+  if (m_pClock == NULL)
   {
     return S_OK;
   }
