@@ -208,7 +208,11 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
         return NOERROR;
       }
 
-      buffer=demux.GetAudio();
+      if (!demux.m_bHoldFileRead)
+      {
+        CAutoLock flock (&demux.m_sectionFlushAudio);
+        buffer=demux.GetAudio();
+      }
 
       //did we reach the end of the file
       if (demux.EndOfFile()) // || ((GetTickCount()-m_LastTickCount > 3000) && !m_pTsReaderFilter->IsTimeShifting()))
@@ -343,6 +347,8 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
 
         CRefTime RefTime,cRefTime ;
         bool HasTimestamp ;
+        float fTime = 0.0;
+        float clock = 0.0;
         //check if it has a timestamp
         if ((HasTimestamp=buffer->MediaTime(RefTime)))
         {
@@ -351,7 +357,13 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
           //adjust the timestamp with the compensation
           cRefTime-= m_pTsReaderFilter->Compensation ;
 
-          if (cRefTime.m_time >= m_pTsReaderFilter->m_ClockOnStart) // m_rtStart.m_time+m_pTsReaderFilter->Compensation.m_time) // + PRESENT_DELAY)
+          REFERENCE_TIME RefClock = 0;
+          m_pTsReaderFilter->GetMediaPosition(&RefClock) ;
+          clock = (double)(RefClock-m_rtStart.m_time)/10000000.0 ;
+          fTime = (float)cRefTime.Millisecs()/1000.0f - clock ;
+
+          //if (cRefTime.m_time >= m_pTsReaderFilter->m_ClockOnStart) // m_rtStart.m_time+m_pTsReaderFilter->Compensation.m_time) // + PRESENT_DELAY)
+          if (fTime >= 0.0)
           {
             m_bPresentSample = true ;
             Sleep(5) ;
@@ -360,6 +372,7 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
           {
             // Sample is too late.
             m_bPresentSample = false ;
+            m_bDiscontinuity = TRUE; //Next good sample will be discontinuous
           }
         }
 
@@ -385,11 +398,6 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
             pSample->SetTime(&refTime,&refTime);
             if (m_dRateSeeking == 1.0)
             {
-              REFERENCE_TIME RefClock = 0;
-              m_pTsReaderFilter->GetMediaPosition(&RefClock) ;
-              float clock = (double)(RefClock-m_rtStart.m_time)/10000000.0 ;
-              float fTime=(float)cRefTime.Millisecs()/1000.0f - clock ;
-
               if (m_pTsReaderFilter->m_ShowBufferAudio || fTime < 0.030)
               {
                 LogDebug("Aud/Ref : %03.3f, Late              Compensated = %03.3f ( %0.3f A/V buffers=%02d/%02d), Clk : %f, State %d", (float)RefTime.Millisecs()/1000.0f, (float)cRefTime.Millisecs()/1000.0f, fTime,cntA,cntV, clock, m_pTsReaderFilter->State());

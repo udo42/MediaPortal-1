@@ -170,7 +170,8 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   TCHAR filename[1024];
   GetLogFile(filename);
   ::DeleteFile(filename);
-  LogDebug("---------- v0.4.12 -------------------");
+  LogDebug("----- Continue after corruption testing ---------");
+  LogDebug("---------- v0.4.29 XXX -------------------");
 
   m_fileReader=NULL;
   m_fileDuration=NULL;
@@ -228,11 +229,17 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   m_ShowBufferVideo = INIT_SHOWBUFFERVIDEO;
   
   m_MPmainThreadID = GetCurrentThreadId() ;
+  
+  LogDebug("Start duration thread");
+  StartThread();
 }
 
 CTsReaderFilter::~CTsReaderFilter()
 {
   LogDebug("CTsReaderFilter::dtor");
+  //stop duration thread
+  StopThread();
+  
   HRESULT hr = m_pAudioPin->Disconnect();
   delete m_pAudioPin;
 
@@ -471,7 +478,7 @@ STDMETHODIMP CTsReaderFilter::Stop()
   }
 
   //stop duration thread
-  StopThread();
+  //StopThread();
 
   LogDebug("CTsReaderFilter::Stop()  -stop source");
   //stop filter
@@ -614,13 +621,13 @@ STDMETHODIMP CTsReaderFilter::Pause()
     m_demultiplexer.m_LastDataFromRtsp = GetTickCount() ;
   }
 
-  //is the duration update thread running?
-  if (!IsThreadRunning())
-  {
-    //nop? then start it
-    //LogDebug("  CTsReaderFilter::Pause()->start duration thread");
-    StartThread();
-  }
+//  //is the duration update thread running?
+//  if (!IsThreadRunning())
+//  {
+//    //nop? then start it
+//    //LogDebug("  CTsReaderFilter::Pause()->start duration thread");
+//    StartThread();
+//  }
 
   LogDebug("CTsReaderFilter::Pause() - END - state = %d", m_State);
   return hr;
@@ -772,7 +779,7 @@ STDMETHODIMP CTsReaderFilter::Load(LPCOLESTR pszFileName,const AM_MEDIA_TYPE *pm
 
     //get file duration
     m_duration.SetFileReader(m_fileDuration);
-    m_duration.UpdateDuration();
+    m_duration.UpdateDuration(true);
 
     float milli = m_duration.Duration().Millisecs();
     milli /= 1000.0;
@@ -1041,8 +1048,9 @@ void CTsReaderFilter::SeekPreStart(CRefTime& rtAbsSeek)
 
 	  if (!m_bOnZap || !m_demultiplexer.IsNewPatReady() || m_bAnalog) // On zapping, new PAT has occured, we should not flush to avoid loosing data.
 	  {                                                               //             new PAT has not occured, we should flush to avoid restart with old data.							
-	    m_demultiplexer.FlushAudio() ;
-	    m_demultiplexer.FlushVideo() ;
+	    //m_demultiplexer.FlushAudio() ;
+	    //m_demultiplexer.FlushVideo() ;
+	    m_demultiplexer.Flush();
     }
     m_bOnZap=false ;
 //    m_demultiplexer.SetHoldAudio(false) ;
@@ -1136,14 +1144,19 @@ IDVBSubtitle* CTsReaderFilter::GetSubtitleFilter()
 /// Every second it will check the stream or local file and determine the total duration of the file/stream
 /// The duration can/will grow if we are playing a timeshifting buffer/stream
 //  If the duration has changed it will update m_duration and send a EC_LENGTH_CHANGED event
-//  to the graph
+//  to the graph.
+//  Flushing after large video/audio PTS jump and PES '0-0-1 fail' errors 
+//  are also delegated to this thread.
 void CTsReaderFilter::ThreadProc()
 {
   LogDebug("CTsReaderFilter::ThreadProc start()");
 
-  int durationUpdateLoop = 1;
+  int  durationUpdateLoop = 1;
   long Old_rtspDuration = -1 ;
   long PauseDuration =0;
+  int timeNow = GetTickCount();
+  int  lastFlushTime = timeNow;
+  int  lastDurTime = timeNow - 2000;
 
   ::SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_BELOW_NORMAL);
   do
@@ -1152,27 +1165,147 @@ void CTsReaderFilter::ThreadProc()
     //since we're no longer playing
     if (m_demultiplexer.EndOfFile())
       break;
-    //are we playing an RTSP stream?
-    if (m_fileDuration!=NULL)
+
+    timeNow = GetTickCount();
+
+    //Flush delegated to this thread
+    if (m_demultiplexer.m_bFlushDelegated || m_demultiplexer.m_bFlushDelgNow)
     {
-      //no, then get the duration from the local file
-      CTsDuration duration;
-      duration.SetFileReader(m_fileDuration);
-      duration.SetVideoPid(m_duration.GetPid());
-      duration.UpdateDuration();
-
-      //did we find a duration?
-      if (duration.Duration().Millisecs()>0)
+      if (!m_demultiplexer.m_bFlushDelgNow && ((timeNow - 500) < lastFlushTime) && (timeNow > lastFlushTime)) 
+      { 
+        // Too early for next flush
+        m_demultiplexer.m_bFlushDelegated = false;
+      }
+      else
       {
-        //yes, is it different then the one we determined last time?
-        if (duration.StartPcr().PcrReferenceBase!=m_duration.StartPcr().PcrReferenceBase ||
-            duration.EndPcr().PcrReferenceBase!=m_duration.EndPcr().PcrReferenceBase)
-        {
-          //yes, then update it
-          m_duration.Set(duration.StartPcr(), duration.EndPcr(), duration.MaxPcr());  // Local file
+        lastFlushTime = timeNow;
+  
+        LogDebug("CTsReaderFilter::ThreadProc - Flush");     
+        //Flush the internal data
+        m_demultiplexer.Flush();
+        m_bStreamCompensated=false ;
+        m_demultiplexer.m_bAudioVideoReady=false ;
+      }
+    }
 
+    //File read prefetch
+    if (m_demultiplexer.m_bReadAheadFromFile)
+    {
+      m_demultiplexer.m_bReadAheadFromFile = false;
+      m_demultiplexer.ReadAheadFromFile();
+    }
+     
+    if ((((timeNow - 1000) > lastDurTime) || (timeNow < lastDurTime)) && IsFilterRunning())
+    {
+      lastDurTime = timeNow;
+      //are we playing an RTSP stream?
+      if (m_fileDuration!=NULL)
+      {
+        //no, then get the duration from the local file
+        if (m_demultiplexer.m_bAudioVideoReady) //Normal play started
+        {          
+          if((durationUpdateLoop == 2) || m_bRecording)
+          {
+            CTsDuration duration;
+            duration.SetFileReader(m_fileDuration);
+            duration.SetVideoPid(m_duration.GetPid());
+            duration.UpdateDuration(false);
+    
+            //did we find a duration?
+            if (duration.Duration().Millisecs()>0)
+            {
+              //yes, is it different then the one we determined last time?
+              if (duration.StartPcr().PcrReferenceBase!=m_duration.StartPcr().PcrReferenceBase ||
+                  duration.EndPcr().PcrReferenceBase!=m_duration.EndPcr().PcrReferenceBase)
+              {
+                //yes, then update it - we must be timeshifting or playing an in-progress recording
+                m_duration.Set(duration.StartPcr(), duration.EndPcr(), duration.MaxPcr());  // Local file
+                m_bRecording = true;
+      
+                // Is graph running?
+                if (m_State == State_Running||m_State==State_Paused)
+                {
+                  //yes, then send a EC_LENGTH_CHANGED event to the graph
+                  NotifyEvent(EC_LENGTH_CHANGED, NULL, NULL);
+                  SetDuration();
+                }
+              }
+              else
+              {
+                m_bRecording = false;
+              }
+            }
+          }
+          
+          if (m_bLiveTv && (m_State == State_Paused))
+          {
+            // After 10 secs Pause, for sure, liveTv is cancelled.
+            PauseDuration++ ;
+            if (PauseDuration > 10)
+            {
+              m_bLiveTv=false;
+              LogDebug("CTsReaderFilter, Live Tv is paused for more than 10 secs => m_bLiveTv=false.");
+            }
+          }
+          else
+          {
+            PauseDuration=0 ;
+          }
+        }
+        else
+        {
+          m_bRecording = true; //Force duration update next time m_bAudioVideoReady is true
+        }
+      }
+      else
+      {
+        // we are not playing a local file
+        // we are playing a (RTSP) stream?
+        if(m_bTimeShifting || m_bRecording)
+        {
+          if(durationUpdateLoop == 0)
+          {
+          	Old_rtspDuration = m_rtspClient.Duration();
+            m_rtspClient.UpdateDuration();
+          }
+    	
+          CPcr pcrStart, pcrEnd, pcrMax ;
+          double duration = m_rtspClient.Duration() / 1000.0f ;
+          double start = m_duration.StartPcr().ToClock() ;
+          double end = m_duration.EndPcr().ToClock() ; 
+          
+      	  if (m_bTimeShifting)
+          {
+            // EndPcr is continuously increasing ( until ~26 hours for rollover that will fail ! )
+            // So, we refer duration to End, and just update start.
+            end = (double)(GetTickCount()-m_tickCount)/1000.0 ;
+            if(durationUpdateLoop == 0)
+            {
+              start  = end - duration;
+              if (start<0) start=0 ;
+            }
+  				}
+  				else
+  				{
+            end = start + duration ;
+  					if (Old_rtspDuration!=m_rtspClient.Duration())  // recording alive, continue to increase every second.
+  					{
+              end += (double)(durationUpdateLoop % 5) ;
+  					}
+            else
+            {
+              m_bRecording = false;
+            }
+  				}           
+          //set the duration
+          pcrStart.FromClock(start) ;
+          pcrEnd.FromClock(end);
+          m_duration.Set( pcrStart, pcrEnd, pcrMax);          // Continuous update
+  
+  //          LogDebug("Start : %f, End : %f",(float)m_duration.StartPcr().ToClock(),(float)m_duration.EndPcr().ToClock()) ;
+  
           // Is graph running?
-          if (m_State == State_Running||m_State==State_Paused)
+          if (m_State == State_Running)
           {
             //yes, then send a EC_LENGTH_CHANGED event to the graph
             NotifyEvent(EC_LENGTH_CHANGED, NULL, NULL);
@@ -1180,79 +1313,13 @@ void CTsReaderFilter::ThreadProc()
           }
         }
       }
-      if (m_bLiveTv && (m_State == State_Paused))
-      {
-        // After 10 secs Pause, for sure, liveTv is cancelled.
-        PauseDuration++ ;
-        if (PauseDuration > 10)
-        {
-          m_bLiveTv=false;
-          LogDebug("CTsReaderFilter, Live Tv is paused for more than 10 secs => m_bLiveTv=false.");
-        }
-      }
-      else
-        PauseDuration=0 ;
+      
+      durationUpdateLoop = (durationUpdateLoop + 1) % 5;
     }
-    else
-    {
-      // we are not playing a local file
-      // we are playing a (RTSP) stream?
-      if(m_bTimeShifting || m_bRecording)
-      {
-        if(durationUpdateLoop == 0)
-        {
-        	Old_rtspDuration = m_rtspClient.Duration();
-          m_rtspClient.UpdateDuration();
-        }
-  	
-        CPcr pcrStart, pcrEnd, pcrMax ;
-        double duration = m_rtspClient.Duration() / 1000.0f ;
-        double start = m_duration.StartPcr().ToClock() ;
-        double end = m_duration.EndPcr().ToClock() ; 
-        
-    	  if (m_bTimeShifting)
-        {
-          // EndPcr is continuously increasing ( until ~26 hours for rollover that will fail ! )
-          // So, we refer duration to End, and just update start.
-          end = (double)(GetTickCount()-m_tickCount)/1000.0 ;
-          if(durationUpdateLoop == 0)
-          {
-            start  = end - duration;
-            if (start<0) start=0 ;
-          }
-				}
-				else
-				{
-          end = start + duration ;
-					if (Old_rtspDuration!=m_rtspClient.Duration())  // recording alive, continue to increase every second.
-					{
-            end += (double)(durationUpdateLoop % 5) ;
-					}
-          else
-          {
-            m_bRecording = false;
-          }
-				}           
-        //set the duration
-        pcrStart.FromClock(start) ;
-        pcrEnd.FromClock(end);
-        m_duration.Set( pcrStart, pcrEnd, pcrMax);          // Continuous update
-
-//          LogDebug("Start : %f, End : %f",(float)m_duration.StartPcr().ToClock(),(float)m_duration.EndPcr().ToClock()) ;
-
-        durationUpdateLoop = (durationUpdateLoop + 1) % 5;
-        
-        // Is graph running?
-        if (m_State == State_Running)
-        {
-          //yes, then send a EC_LENGTH_CHANGED event to the graph
-          NotifyEvent(EC_LENGTH_CHANGED, NULL, NULL);
-          SetDuration();
-        }
-      }
-    }
+    
+    Sleep(1);
   }
-  while (!ThreadIsStopping(1000)) ;
+  while (!ThreadIsStopping(210)) ;
   LogDebug("CTsReaderFilter::ThreadProc stopped()");
 }
 

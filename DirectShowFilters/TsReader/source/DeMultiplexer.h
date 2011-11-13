@@ -130,9 +130,19 @@ public:
   void SetAudioChanging(bool onOff);
   bool IsAudioChanging(void);
 
+  int ReadAheadFromFile();
+
   bool m_DisableDiscontinuitiesFiltering;
   DWORD m_LastDataFromRtsp;
   bool m_bAudioVideoReady;
+  bool m_bFlushDelegated;
+  bool m_bFlushDelgNow;
+  bool m_bHoldFileRead;
+  bool m_bReadAheadFromFile;
+
+  CCritSec m_sectionFlushAudio;
+  CCritSec m_sectionFlushVideo;
+  CCritSec m_sectionFlushSubtitle;
 
 private:
   struct stAudioStream
@@ -219,6 +229,8 @@ private:
   bool m_bStarting;
 
   bool m_mpegParserTriggerFormatChange;
+  bool m_videoChanged;
+  bool m_audioChanged;
   bool m_bSetAudioDiscontinuity;
   bool m_bSetVideoDiscontinuity;
   CPcr m_subtitlePcr;

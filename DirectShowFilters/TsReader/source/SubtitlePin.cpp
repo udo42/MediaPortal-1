@@ -217,13 +217,12 @@ HRESULT CSubtitlePin::FillBuffer(IMediaSample *pSample)
         return NOERROR;
       }
 
-      if (m_pTsReaderFilter->m_bStreamCompensated)
+      if (m_pTsReaderFilter->m_bStreamCompensated && !demux.m_bHoldFileRead)
       {
         //get next buffer from demultiplexer
-        {
-          CAutoLock lock(&m_bufferLock);
-          buffer=demux.GetSubtitle();
-        }
+        CAutoLock flock (&demux.m_sectionFlushSubtitle);
+        CAutoLock lock(&m_bufferLock);
+        buffer=demux.GetSubtitle();
       }
 
       //did we reach the end of the file

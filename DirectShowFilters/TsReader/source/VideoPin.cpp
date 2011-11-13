@@ -139,11 +139,11 @@ HRESULT CVideoPin::CompleteConnect(IPin *pReceivePin)
       m_pTsReaderFilter->m_bFastSyncFFDShow=true;
       LogDebug("vid:CompleteConnect() FFDShow Video Decoder connected, fast sync enabled");
     }
-    else if (m_pTsReaderFilter->m_videoDecoderCLSID == CLSID_FFDSHOWDXVA)
-    {
-      m_pTsReaderFilter->m_bFastSyncFFDShow=true;
-      LogDebug("vid:CompleteConnect() FFDShow DXVA Video Decoder connected, fast sync enabled");
-    }
+//    else if (m_pTsReaderFilter->m_videoDecoderCLSID == CLSID_FFDSHOWDXVA)
+//    {
+//      m_pTsReaderFilter->m_bFastSyncFFDShow=true;
+//      LogDebug("vid:CompleteConnect() FFDShow DXVA Video Decoder connected, fast sync enabled");
+//    }
     else
     {
       m_pTsReaderFilter->m_bFastSyncFFDShow=false;
@@ -287,8 +287,9 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
         return NOERROR;
       }
 
-      if (m_pTsReaderFilter->m_bStreamCompensated)
-      {
+      if (m_pTsReaderFilter->m_bStreamCompensated && !demux.m_bHoldFileRead)
+      {       
+        CAutoLock flock (&demux.m_sectionFlushVideo);
         // Get next video buffer from demultiplexer
         buffer=demux.GetVideo();
       }
@@ -312,6 +313,8 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
       {
         CRefTime RefTime, cRefTime;
         bool HasTimestamp;
+        float fTime = 0.0;
+        float clock = 0.0;
         //check if it has a timestamp
         if ((HasTimestamp=buffer->MediaTime(RefTime)))
         {
@@ -321,9 +324,6 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
           cRefTime -= m_rtStart;
           //adjust the timestamp with the compensation
           cRefTime -= m_pTsReaderFilter->Compensation;
-
-          //CRefTime Dur;
-          //Dur = (m_pTsReaderFilter->AddVideoComp.m_time * DRIFT_RATE);
 
           if (!m_pTsReaderFilter->m_bFastSyncFFDShow && (cRefTime.m_time < (m_pTsReaderFilter->AddVideoComp.m_time * DRIFT_RATE)) )
           {
@@ -336,13 +336,25 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
             cRefTime += AddOffset;
             cRefTime += m_pTsReaderFilter->m_ClockOnStart.m_time;
           }
+
+          REFERENCE_TIME RefClock = 0;
+          m_pTsReaderFilter->GetMediaPosition(&RefClock) ;
+          clock = (double)(RefClock-m_rtStart.m_time)/10000000.0 ;
+          fTime = (float)cRefTime.Millisecs()/1000.0f - clock ;
                                                                       
-          if (cRefTime.m_time >= 0)
+          if (fTime >= 0.0)
           {
-            Sleep(1); // Ambass : avoid blocking audio FillBuffer method ( on audio/video starting ) by excessive video Fill buffer preemption
+            m_bPresentSample = true;
+            Sleep(2); // Ambass : avoid blocking audio FillBuffer method ( on audio/video starting ) by excessive video Fill buffer preemption
+          }
+          else
+          {
+            // Sample is too late.
+            m_bPresentSample = false ;
+            m_bDiscontinuity = TRUE; //Next good sample will be discontinuous
           }
 
-          m_bPresentSample = true;
+          //m_bPresentSample = true;
         }
 
         if (m_bPresentSample)
@@ -394,11 +406,6 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
                 }                
               }
               
-              REFERENCE_TIME RefClock = 0;
-              m_pTsReaderFilter->GetMediaPosition(&RefClock) ;
-              float clock = (double)(RefClock-m_rtStart.m_time)/10000000.0 ;
-              float fTime=(float)cRefTime.Millisecs()/1000.0f - clock ;
-
               if (m_pTsReaderFilter->m_ShowBufferVideo || fTime < 0.030)
               {
                 int cntA, cntV;
@@ -468,10 +475,10 @@ bool CVideoPin::TimestampDisconChecker(REFERENCE_TIME timeStamp)
   }
 
     // Check for discontinuity
-  if (stsDiff > (m_fMTDMean + (500 * 10000))) // diff - mean > 500ms
+  if (stsDiff > (m_fMTDMean + (800 * 10000))) // diff - mean > 800ms
   {
     mtdDiscontinuity = true;
-    LogDebug("vid:Timestamp discontinuity, TsDiff %0.3f ms, TsMeanDiff %0.3f ms, samples %d", (float)stsDiff/10000.0f, (float)m_fMTDMean/10000.0f, m_nNextMTD);
+    //LogDebug("vid:Timestamp discontinuity, TsDiff %0.3f ms, TsMeanDiff %0.3f ms, samples %d", (float)stsDiff/10000.0f, (float)m_fMTDMean/10000.0f, m_nNextMTD);
   }
 
     // Update the rolling timestamp difference sum
