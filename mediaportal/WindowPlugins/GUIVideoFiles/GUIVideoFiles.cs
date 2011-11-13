@@ -791,7 +791,7 @@ namespace MediaPortal.GUI.Video
         else if ((File.Exists(path + @"\BDMV\index.bdmv")) && (item.Label != ".."))
         {
           isFolderAMovie = true;
-          path = item.Path + @"\bdmv\index.bdmv";
+          path = item.Path + @"\BDMV\index.bdmv";
         }
         else
         {

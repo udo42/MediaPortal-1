@@ -798,6 +798,18 @@ namespace MediaPortal.Player
       }
     }
 
+    public static MenuItems ShowMenuItems
+    {
+      get
+      {
+        if (_player == null)
+        {
+          return MenuItems.All;
+        }
+        return _player.ShowMenuItems;
+      }
+    }
+
     public static bool HasChapters
     {
       get
@@ -806,7 +818,7 @@ namespace MediaPortal.Player
         {
           return false;
         }
-        if (_chapters == null)
+        if (Chapters == null)
         {
           return false;
         }
@@ -1382,6 +1394,7 @@ namespace MediaPortal.Player
         // Still for BDISO strFile = ISO filename, convert it
         Util.Utils.IsBDImage(strFile, ref strFile);
 
+        _currentFileName = strFile;
         _player = _factory.Create(strFile, type);
         
         if (_player != null)
@@ -1759,6 +1772,7 @@ namespace MediaPortal.Player
         {
           return null;
         }
+        _chapters = _player.Chapters;
         return _chapters;
       }
     }
@@ -1771,6 +1785,7 @@ namespace MediaPortal.Player
         {
           return null;
         }
+        _chaptersname = _player.ChaptersName;
         return _chaptersname;
       }
     }
@@ -2994,7 +3009,8 @@ namespace MediaPortal.Player
     {
       try
       {
-        _mediaInfo = new MediaInfoWrapper(FileName);
+        if (_mediaInfo == null)
+          _mediaInfo = new MediaInfoWrapper(FileName);
 
         GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CODEC_MISSING, 0, 0, 0, 0, 0, null);
         msg.Label = string.Format("{0}: {1}", GUILocalizeStrings.Get(1451), Path.GetFileName(FileName));
@@ -3005,6 +3021,7 @@ namespace MediaPortal.Player
                        ? string.Empty
                        : string.Format("Audio codec: {0}", _mediaInfo.AudioCodec);
         GUIGraphicsContext.SendMessage(msg);
+        _mediaInfo = null;
       }
       catch (Exception ex)
       {
