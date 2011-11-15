@@ -42,7 +42,7 @@
 // For more details for memory leak detection see the alloctracing.h header
 #include "..\..\alloctracing.h"
 
-#define MAX_BUF_SIZE 8000
+#define MAX_BUF_SIZE 1000
 #define BUFFER_LENGTH 0x1000
 #define READ_SIZE (1316*30)
 #define MIN_READ_SIZE 564
@@ -629,7 +629,7 @@ CBuffer* CDeMultiplexer::GetAudio()
     return NULL;
   }
 
-  if (   ((m_vecAudioBuffers.size() < 4) 
+  if (   ((m_vecAudioBuffers.size() < 2) 
       || ((m_LastAudioSample.Millisecs() - m_FirstAudioSample.Millisecs()) < 200))  
       && !m_bReadAheadFromFile)
   {
@@ -1149,6 +1149,10 @@ void CDeMultiplexer::FillAudio(CTsHeader& header, byte* tsPacket)
             ivecBuffers it = m_vecAudioBuffers.begin();
             delete *it;
             m_vecAudioBuffers.erase(it);
+            
+            //Something is going wrong - Flush the world
+            m_bFlushDelegated = true;
+            m_filter.WakeThread();            
           }
           it = m_t_vecAudioBuffers.begin();
 
@@ -1499,8 +1503,12 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
             }
             else
             {
-              m_bSetVideoDiscontinuity = true;
+              m_bSetVideoDiscontinuity = true;            
+              //Something is going wrong - Flush the world
+              m_bFlushDelegated = true;
+              m_filter.WakeThread();            
             }
+            
           }
 
           if (lastVidResX!=m_mpegPesParser->basicVideoInfo.width || lastVidResY!=m_mpegPesParser->basicVideoInfo.height)
@@ -1852,7 +1860,11 @@ void CDeMultiplexer::FillVideoMPEG2(CTsHeader& header, byte* tsPacket)
               else
               {
                 m_bSetVideoDiscontinuity = true;
+                //Something is going wrong - Flush the world
+                m_bFlushDelegated = true;
+                m_filter.WakeThread();            
               }
+              
             }
             m_CurrentVideoPts.IsValid=false ;   
             

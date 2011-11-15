@@ -170,7 +170,7 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   TCHAR filename[1024];
   GetLogFile(filename);
   ::DeleteFile(filename);
-  LogDebug("----- Continue after corruption testing ---------");
+  LogDebug("--- Buffer-empty rate control testing ----");
   LogDebug("---------- v0.4.30 XXX -------------------");
 
   m_fileReader=NULL;
@@ -1252,7 +1252,7 @@ void CTsReaderFilter::ThreadProc()
       {
         //LogDebug("CTsReaderFilter:: Timeshift buffer underrun, rendering will be paused");
         m_bRenderingClockTooFast=true;
-        if (timeNow < (lastDataLowTime + (pauseWaitTime/4))) //Reached trigger point in a short time
+        if (timeNow < (lastDataLowTime + (pauseWaitTime/2))) //Reached trigger point in a short time
         {
           BufferingPause(true); //Force longer pause      
         }
@@ -1807,8 +1807,11 @@ void CTsReaderFilter::BufferingPause(bool longPause)
         if (m_State == State_Running)
         {
           LogDebug("Pause %d mS renderer clock to match provider/RTSP clock...", sleepTime) ; 
-          ptrMediaCtrl->Pause() ;
-          Sleep(sleepTime) ;
+          ptrMediaCtrl->Pause() ;         
+          Sleep(sleepTime/2) ;
+          m_demultiplexer.ReadAheadFromFile(); //File read prefetch
+          Sleep(sleepTime/2) ;
+          m_demultiplexer.ReadAheadFromFile(); //File read prefetch
           if (m_State != State_Stopped)
           {
             ptrMediaCtrl->Run() ;

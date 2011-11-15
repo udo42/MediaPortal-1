@@ -373,7 +373,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
           clock = (double)(RefClock-m_rtStart.m_time)/10000000.0 ;
           fTime = (double)cRefTime.Millisecs()/1000.0f - clock ;
                                                                       
-          if ((fTime > -0.5) || ForcePresent || (m_dRateSeeking != 1.0))
+          if (((fTime > -0.2) && (fTime < 2.5)) || ForcePresent || (m_dRateSeeking != 1.0))
           {
             m_bPresentSample = true;
             Sleep(1); // Ambass : avoid blocking audio FillBuffer method ( on audio/video starting ) by excessive video Fill buffer preemption

@@ -357,7 +357,7 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
           fTime = (double)cRefTime.Millisecs()/1000.0f - clock ;
 
           //if (fTime > -0.05)
-          if ((cRefTime.m_time >= m_pTsReaderFilter->m_ClockOnStart) && (fTime > -0.5)) //Discard late samples at start of play
+          if ((cRefTime.m_time >= m_pTsReaderFilter->m_ClockOnStart) && (fTime > -0.2) && (fTime < 2.5)) //Discard late or very early samples at start of play
           {
             m_bPresentSample = true ;
             Sleep(2) ;
