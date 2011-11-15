@@ -48,7 +48,6 @@ namespace WindowPlugins.GUISettings
       CONTROL_THUMBNAILS_ROWS = 12,
     } ;
 
-    private bool settingsChanged = false;
     private int iQuality = 3;
     private int iColumns = 1;
     private int iRows = 1;
@@ -71,12 +70,6 @@ namespace WindowPlugins.GUISettings
     public GUISettingsThumbnails()
     {
       GetID = (int)Window.WINDOW_SETTINGS_THUMBNAILS;
-    }
-
-    public bool SettingsChanged
-    {
-      get { return settingsChanged; }
-      set { settingsChanged = value; }
     }
 
     #region Serialisation
@@ -117,6 +110,8 @@ namespace WindowPlugins.GUISettings
     }
 
     #endregion
+
+    #region Overrides
 
     public override bool Init()
     {
@@ -192,7 +187,7 @@ namespace WindowPlugins.GUISettings
 
       if (control == btnEnableMusicThumbs)
       {
-        //settingsChanged = true;
+        SettingsChanged(true);
       }
       if (control == btnDeleteMusicThumbs)
       {
@@ -203,7 +198,7 @@ namespace WindowPlugins.GUISettings
       }
       if (control == btnEnablePicturesThumbs)
       {
-        //settingsChanged = true;
+        SettingsChanged(true);
       }
       if (control == btnDeletePicturesThumbs)
       {
@@ -211,11 +206,11 @@ namespace WindowPlugins.GUISettings
       }
       if (control == btnEnableVideosThumbs)
       {
-        //settingsChanged = true;
+        SettingsChanged(true);
       }
       if (control == btnEnableLeaveThumbInFolder)
       {
-        //settingsChanged = true;
+        SettingsChanged(true);
       }
       if (control == btnDeleteVideosThumbs)
       {
@@ -238,10 +233,21 @@ namespace WindowPlugins.GUISettings
     protected override void OnPageDestroy(int newWindowId)
     {
       SaveSettings();
-      GUISettingsGeneral.SettingsChanged = settingsChanged;
       base.OnPageDestroy(newWindowId);
     }
-    
+
+    public override void OnAction(Action action)
+    {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
+      base.OnAction(action);
+    }
+
+    #endregion
+
     private void ThumbQuality_ValueChanged()
     {
       switch (iQuality)
@@ -309,6 +315,11 @@ namespace WindowPlugins.GUISettings
           GUIPropertyManager.SetProperty("#thumbScreen", "Very large LCDs, Projectors");
           break;
       }
+    }
+
+    private void SettingsChanged(bool settingsChanged)
+    {
+      MediaPortal.GUI.Settings.GUISettings.SettingsChanged = settingsChanged;
     }
 
   }

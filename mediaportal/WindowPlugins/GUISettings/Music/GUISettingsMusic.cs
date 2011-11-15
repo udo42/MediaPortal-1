@@ -48,21 +48,17 @@ namespace MediaPortal.GUI.Settings
       GetID = (int)Window.WINDOW_SETTINGS_MUSIC;
     }
 
+    #region serialization
+
     private void LoadSettings()
-    {
-      //using (Profile.Settings xmlreader = new Profile.MPSettings())
-      //{
-      //  btnAutoshuffle.Selected = xmlreader.GetValueAsBool("musicfiles", "autoshuffle", true);
-      //}
-    }
+    {}
 
     private void SaveSettings()
-    {
-      //using (Profile.Settings xmlreader = new Profile.MPSettings())
-      //{
-      //  xmlreader.SetValueAsBool("musicfiles", "autoshuffle",btnAutoshuffle.Selected);
-      //}
-    }
+    {}
+
+    #endregion
+
+    #region Overrides
 
     public override bool Init()
     {
@@ -83,6 +79,11 @@ namespace MediaPortal.GUI.Settings
 
     public override void OnAction(Action action)
     {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
       switch (action.wID)
       {
         case Action.ActionType.ACTION_PREVIOUS_MENU:
@@ -134,6 +135,8 @@ namespace MediaPortal.GUI.Settings
       base.OnClicked(controlId, control, actionType);
     }
 
+    #endregion
+
     private void OnNowPlaying()
     {
       GUISettingsMusicNowPlaying dlg = (GUISettingsMusicNowPlaying)GUIWindowManager.GetWindow((int)Window.WINDOW_SETTINGS_MUSICNOWPLAYING);
@@ -154,27 +157,6 @@ namespace MediaPortal.GUI.Settings
     {
       MusicDatabaseReorg dbreorg = new MusicDatabaseReorg();
       dbreorg.DeleteAlbumInfo();
-    }
-
-    private void OnReorgDb()
-    {
-      GUIDialogYesNo dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_YES_NO);
-      if (null != dlgYesNo)
-      {
-        dlgYesNo.SetHeading(333);
-        dlgYesNo.SetLine(1, "");
-        dlgYesNo.SetLine(2, "");
-        dlgYesNo.SetLine(3, "");
-        dlgYesNo.DoModal(GetID);
-
-        if (dlgYesNo.IsConfirmed)
-        {
-          MusicDatabaseReorg reorg = new MusicDatabaseReorg(GetID);
-          Work work = new Work(new DoWorkHandler(reorg.ReorgAsync));
-          work.ThreadPriority = ThreadPriority.Lowest;
-          GlobalServiceProvider.Get<IThreadPool>().Add(work, QueuePriority.Low);
-        }
-      }
     }
 
     private void OnFolders()

@@ -41,9 +41,8 @@ namespace WindowPlugins.GUISettings
       CONTROL_SCREENSAVER_DELAY = 3
     } ;
     
-    private bool settingsChanged = false;
-    private Int32 screenSaverDelay = 300;
-    private bool settingsSaved;
+    private Int32 _screenSaverDelay = 300;
+    private bool _settingsSaved;
     
     private class CultureComparer : IComparer
     {
@@ -74,7 +73,7 @@ namespace WindowPlugins.GUISettings
         EnableButtons(btnScreenSaverEnabled.Selected);
 
 
-        screenSaverDelay = xmlreader.GetValueAsInt("general", "IdleTimeValue", 300);
+        _screenSaverDelay = xmlreader.GetValueAsInt("general", "IdleTimeValue", 300);
         bool screenSaverType = xmlreader.GetValueAsBool("general", "IdleBlanking", false);
         if (screenSaverType)
         {
@@ -91,19 +90,21 @@ namespace WindowPlugins.GUISettings
 
     private void SaveSettings()
     {
-      if (!settingsSaved)
+      if (!_settingsSaved)
       {
-        settingsSaved = true;
+        _settingsSaved = true;
         using (Settings xmlwriter = new MPSettings())
         {
           xmlwriter.SetValueAsBool("general", "IdleTimer", btnScreenSaverEnabled.Selected);
-          xmlwriter.SetValue("general", "IdleTimeValue", screenSaverDelay);
+          xmlwriter.SetValue("general", "IdleTimeValue", _screenSaverDelay);
           xmlwriter.SetValueAsBool("general", "IdleBlanking", cmBlankScreen.Selected);
         }
       }
     }
 
     #endregion
+
+    #region Overrides
 
     public override bool Init()
     {
@@ -122,7 +123,7 @@ namespace WindowPlugins.GUISettings
             {
               GUIControl.AddItemLabelControl(GetID, (int)Controls.CONTROL_SCREENSAVER_DELAY, i.ToString());
             }
-            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_SCREENSAVER_DELAY, screenSaverDelay - 1);
+            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_SCREENSAVER_DELAY, _screenSaverDelay - 1);
           }
           return true;
 
@@ -132,20 +133,14 @@ namespace WindowPlugins.GUISettings
             if (iControl == (int)Controls.CONTROL_SCREENSAVER_DELAY)
             {
               string strLabel = message.Label;
-              screenSaverDelay = Int32.Parse(strLabel);
-              GUIGraphicsContext.ScrollSpeedHorizontal = screenSaverDelay;
-              settingsChanged = true;
+              _screenSaverDelay = Int32.Parse(strLabel);
+              GUIGraphicsContext.ScrollSpeedHorizontal = _screenSaverDelay;
+              SettingsChanged(true);
             }
             break;
           }
       }
       return base.OnMessage(message);
-    }
-
-    public bool SettingsChanged
-    {
-      get { return settingsChanged; }
-      set { settingsChanged = value; }
     }
 
     protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
@@ -154,24 +149,24 @@ namespace WindowPlugins.GUISettings
       if (control == btnScreenSaverEnabled)
       {
         EnableButtons(btnScreenSaverEnabled.Selected);
-        settingsChanged = true;
+        SettingsChanged(true);
       }
       if (control == cmBlankScreen)
       {
         cmReduceFrameRate.Selected = false;
-        settingsChanged = true;
+        SettingsChanged(true);
       }
       if (control == cmReduceFrameRate)
       {
         cmBlankScreen.Selected = false;
-        settingsChanged = true;
+        SettingsChanged(true);
       }
       base.OnClicked(controlId, control, actionType);
     }
 
     protected override void OnPageLoad()
     {
-      settingsSaved = false;
+      _settingsSaved = false;
       base.OnPageLoad();
       GUIPropertyManager.SetProperty("#currentmodule", GUILocalizeStrings.Get(100016));
       LoadSettings();
@@ -180,9 +175,20 @@ namespace WindowPlugins.GUISettings
     protected override void OnPageDestroy(int newWindowId)
     {
       SaveSettings();
-      GUISettingsGeneral.SettingsChanged = settingsChanged;
       base.OnPageDestroy(newWindowId);
     }
+
+    public override void OnAction(Action action)
+    {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
+      base.OnAction(action);
+    }
+
+    #endregion
 
     private void EnableButtons (bool enable)
     {
@@ -200,6 +206,11 @@ namespace WindowPlugins.GUISettings
         //btnScreenSaverDelay.IsEnabled = false;
         GUIControl.DisableControl(GetID, (int)Controls.CONTROL_SCREENSAVER_DELAY);
       }
+    }
+
+    private void SettingsChanged(bool settingsChanged)
+    {
+      MediaPortal.GUI.Settings.GUISettings.SettingsChanged = settingsChanged;
     }
 
   }

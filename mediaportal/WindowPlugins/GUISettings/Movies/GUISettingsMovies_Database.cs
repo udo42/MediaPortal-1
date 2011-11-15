@@ -77,11 +77,11 @@ namespace MediaPortal.GUI.Settings
 
     private int m_iCount = 1;
     private string _prefixes = string.Empty;
-    private int scanShare = 0;
+    private int _scanShare = 0;
     private ArrayList _conflictFiles = new ArrayList();
     private bool _scanning = false;
-    private int scanningFileNumber = 1;
-    private int scanningFileTotal = 1;
+    private int _scanningFileNumber = 1;
+    private int _scanningFileTotal = 1;
 
     private ShareData FolderInfo(GUIListItem item)
     {
@@ -131,7 +131,8 @@ namespace MediaPortal.GUI.Settings
           GUIControl.DisableControl(GetID, (int)Controls.CONTROL_FANARTCOUNT);
         }
         
-        m_iCount = xmlreader.GetValueAsInt("moviedatabase", "fanartnumber", 1);
+        m_iCount = xmlreader.GetValueAsInt("moviedatabase", "fanartnumber", 0);
+        m_iCount++;
         // Folder names as title
         btnFoldernamefortitle.Selected = xmlreader.GetValueAsBool("moviedatabase", "usefolderastitle", false);
         if (btnFoldernamefortitle.Selected)
@@ -150,7 +151,7 @@ namespace MediaPortal.GUI.Settings
         _prefixes = xmlreader.GetValueAsString("moviedatabase", "titleprefixes", "The, Les, Die");
         // Load share settings
         lcFolders.Clear();
-        scanShare = 0;
+        _scanShare = 0;
         SettingsSharesHelper settingsSharesHelper = new SettingsSharesHelper();
         
         settingsSharesHelper.LoadSettings("movies");
@@ -168,7 +169,7 @@ namespace MediaPortal.GUI.Settings
             {
               item.IsPlayed = true;
               item.Label2 = GUILocalizeStrings.Get(193);
-              scanShare++;
+              _scanShare++;
             }
             item.OnItemSelected += OnItemSelected;
             item.Label = FolderInfo(item).Folder;
@@ -191,7 +192,7 @@ namespace MediaPortal.GUI.Settings
         xmlwriter.SetValueAsBool("movies", "fuzzyMatching", btnNearestmatch.Selected);
         // FanArt
         xmlwriter.SetValueAsBool("moviedatabase", "usefanart", btnUsefanart.Selected);
-        xmlwriter.SetValue("moviedatabase", "fanartnumber", m_iCount);
+        xmlwriter.SetValue("moviedatabase", "fanartnumber", m_iCount - 1);
         xmlwriter.SetValueAsBool("moviedatabase", "usefanartshare", btnUsefanartonshare.Selected);
 
         // Folder movie title
@@ -234,7 +235,9 @@ namespace MediaPortal.GUI.Settings
             {
               GUIControl.AddItemLabelControl(GetID, (int)Controls.CONTROL_FANARTCOUNT, i.ToString());
             }
-            
+
+            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_FANARTCOUNT, m_iCount - 1);
+
             return true;
           }
 
@@ -281,14 +284,14 @@ namespace MediaPortal.GUI.Settings
           lcFolders.SelectedListItem.Label2 = "";
           lcFolders.SelectedListItem.IsPlayed = false;
           FolderInfo(lcFolders.SelectedListItem).ScanShare = false;
-          scanShare--;
+          _scanShare--;
         }
         else
         {
           lcFolders.SelectedListItem.Label2 = GUILocalizeStrings.Get(193);
           lcFolders.SelectedListItem.IsPlayed = true;
           FolderInfo(lcFolders.SelectedListItem).ScanShare = true;
-          scanShare++;
+          _scanShare++;
         }
       }
 
@@ -304,7 +307,7 @@ namespace MediaPortal.GUI.Settings
 
       if (control == btnScandatabase)
       {
-        if (scanShare == 0)
+        if (_scanShare == 0)
         {
           GUIDialogOK dlgOk = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
           dlgOk.SetHeading(GUILocalizeStrings.Get(1020));
@@ -367,6 +370,16 @@ namespace MediaPortal.GUI.Settings
         OnResetDatabase();
       }
 
+    }
+
+    public override void OnAction(Action action)
+    {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
+      base.OnAction(action);
     }
 
     #endregion
@@ -660,7 +673,7 @@ namespace MediaPortal.GUI.Settings
         }
       }
 
-      for (int index = 0; index < scanShare; index++)
+      for (int index = 0; index < _scanShare; index++)
       {
         GUIListItem item = (GUIListItem)scanShares[index];
         string path = item.Path;
@@ -831,7 +844,7 @@ namespace MediaPortal.GUI.Settings
       String heading;
       if (_scanning)
       {
-        heading = String.Format("{0}:{1}/{2}", GUILocalizeStrings.Get(197), scanningFileNumber, scanningFileTotal);
+        heading = String.Format("{0}:{1}/{2}", GUILocalizeStrings.Get(197), _scanningFileNumber, _scanningFileTotal);
       }
       else
       {
@@ -897,7 +910,7 @@ namespace MediaPortal.GUI.Settings
       String heading;
       if (_scanning)
       {
-        heading = String.Format("{0}:{1}/{2}", GUILocalizeStrings.Get(198), scanningFileNumber, scanningFileTotal);
+        heading = String.Format("{0}:{1}/{2}", GUILocalizeStrings.Get(198), _scanningFileNumber, _scanningFileTotal);
       }
       else
       {
@@ -945,7 +958,7 @@ namespace MediaPortal.GUI.Settings
       String heading;
       if (_scanning)
       {
-        heading = String.Format("{0}:{1}/{2}", GUILocalizeStrings.Get(986), scanningFileNumber, scanningFileTotal);
+        heading = String.Format("{0}:{1}/{2}", GUILocalizeStrings.Get(986), _scanningFileNumber, _scanningFileTotal);
       }
       else
       {
@@ -1066,8 +1079,8 @@ namespace MediaPortal.GUI.Settings
     {
       _scanning = true;
       _conflictFiles.Clear();
-      scanningFileTotal = total;
-      scanningFileNumber = 1;
+      _scanningFileTotal = total;
+      _scanningFileNumber = 1;
       return true;
     }
 
@@ -1150,13 +1163,13 @@ namespace MediaPortal.GUI.Settings
 
     public bool OnScanIterating(int count)
     {
-      scanningFileNumber = count;
+      _scanningFileNumber = count;
       return true;
     }
 
     public bool OnScanIterated(int count)
     {
-      scanningFileNumber = count;
+      _scanningFileNumber = count;
       GUIDialogProgress pDlgProgress =
         (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
       if (pDlgProgress.IsCanceled)

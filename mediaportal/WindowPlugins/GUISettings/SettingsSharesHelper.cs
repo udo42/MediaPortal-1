@@ -114,7 +114,7 @@ namespace MediaPortal.GUI.Settings
       get { return _autoSwitchRemovableDrives; }
       set { _autoSwitchRemovableDrives = value; }
     }
-    //
+    
     private void AddStaticShares(DriveType driveType, string defaultName)
     {
       string[] drives = Environment.GetLogicalDrives();
@@ -197,11 +197,7 @@ namespace MediaPortal.GUI.Settings
       }
       // Default share
       listItem.IsPlayed = check;
-      //if (check)
-      //{
-      //  _currentlyCheckedItem = listItem;
-      //}
-
+      
       _shareListControl.Add(listItem);
     }
 
@@ -272,11 +268,8 @@ namespace MediaPortal.GUI.Settings
 
           // For Music Shares, we can indicate, if we want to scan them every time
           bool shareScanData = false;
-          //if (section == "music" || section == "movies")
-          //{
           string shareScan = String.Format("sharescan{0}", index);
           shareScanData = xmlreader.GetValueAsBool(section, shareScan, true);
-          //}
           // For Movies Shares, we can indicate, if we want to create thumbs
           bool thumbs = true;
           if (section == "movies")
@@ -296,11 +289,8 @@ namespace MediaPortal.GUI.Settings
             newShare.RemoteFolder = shareRemotePathData;
             newShare.DefaultLayout = (GUIFacadeControl.Layout)shareLayout;
 
-            //if (section == "music" || section == "movies")
-            //{
             newShare.ScanShare = shareScanData;
-            //}
-            // ThumbsCreate
+            
             if (section == "movies")
             {
               newShare.CreateThumbs = thumbs;
@@ -394,12 +384,9 @@ namespace MediaPortal.GUI.Settings
           xmlwriter.RemoveEntry(section, shareRemotePath);
           xmlwriter.RemoveEntry(section, shareViewPath);
 
-          //if (section == "music" || section == "movies")
-          //{
           string shareScan = String.Format("sharescan{0}", index);
           xmlwriter.RemoveEntry(section, shareScan);
-          //}
-
+          
           if (section == "movies")
           {
             string thumbs = String.Format("videothumbscreate{0}", index);
@@ -456,12 +443,9 @@ namespace MediaPortal.GUI.Settings
               xmlwriter.SetValue(section, shareRemotePath, shareRemotePathData);
               xmlwriter.SetValue(section, shareViewPath, shareLayout);
 
-              //if (section == "music" || section == "movies")
-              //{
               shareScan = String.Format("sharescan{0}", index);
               xmlwriter.SetValueAsBool(section, shareScan, shareScanData);
-              //}
-              //ThumbsCreate
+              
               if (section == "movies")
               {
                 string thumbs = String.Format("videothumbscreate{0}", index);

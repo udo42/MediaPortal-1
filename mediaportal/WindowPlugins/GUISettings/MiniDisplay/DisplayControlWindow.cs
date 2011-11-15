@@ -117,6 +117,16 @@ namespace MediaPortal.ProcessPlugins.MiniDisplayPlugin.Setup
       GUIPropertyManager.SetProperty("#currentmodule", GUILocalizeStrings.Get(109002));
     }
 
+    public override void OnAction(Action action)
+    {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
+      base.OnAction(action);
+    }
+
     private void SaveSettings()
     {
       this.DisplayControl.BlankDisplayWithVideo = this.btnDisplayVideo.Selected;

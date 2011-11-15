@@ -18,14 +18,9 @@
 
 #endregion
 
-using System;
 using System.Collections;
-using System.Threading;
-using MediaPortal.Configuration;
 using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
-using MediaPortal.Services;
-using MediaPortal.Threading;
 using Action = MediaPortal.GUI.Library.Action;
 
 namespace MediaPortal.GUI.Settings
@@ -81,6 +76,8 @@ namespace MediaPortal.GUI.Settings
     }
 
     #endregion
+
+    #region Overrides
 
     public override bool Init()
     {
@@ -138,10 +135,29 @@ namespace MediaPortal.GUI.Settings
 
           _vuMeter = dlg.SelectedLabelText;
           SetProperty();
+          SettingsChanged(true);
         }
       }
+      if (control == btnFetchlastfmcovers || control == btnFetchlastfmtopalbums || 
+          control == btnFetchlastfmtracktags || control == btnSwitchArtistOnLastFMSubmit)
+      {
+        SettingsChanged(true);
+      }
+      
       base.OnClicked(controlId, control, actionType);
     }
+
+    public override void OnAction(Action action)
+    {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
+      base.OnAction(action);
+    }
+
+    #endregion
 
     private string UppercaseFirst(string s)
     {
@@ -156,6 +172,11 @@ namespace MediaPortal.GUI.Settings
     private void SetProperty()
     {
       GUIPropertyManager.SetProperty("#vumeter", UppercaseFirst(_vuMeter));
+    }
+
+    private void SettingsChanged(bool settingsChanged)
+    {
+      MediaPortal.GUI.Settings.GUISettings.SettingsChanged = settingsChanged;
     }
   }
 }

@@ -49,6 +49,8 @@ namespace WindowPlugins.GUISettings.TV
       GetID = (int)Window.WINDOW_SETTINGS_TV;
     }
 
+    #region Overrides
+
     public override bool Init()
     {
       return Load(GUIGraphicsContext.Skin + @"\settings_tv.xml");
@@ -90,6 +92,18 @@ namespace WindowPlugins.GUISettings.TV
       }
       base.OnClicked(controlId, control, actionType);
     }
+
+    public override void OnAction(Action action)
+    {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
+      base.OnAction(action);
+    }
+
+    #endregion
 
     private void OnVideoCodec()
     {

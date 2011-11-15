@@ -45,12 +45,11 @@ namespace WindowPlugins.GUISettings.TV
     [SkinControl(31)] protected GUICheckButton btnEnableCC = null;
     [SkinControl(32)] protected GUIButtonControl btnAutoPlay = null;
 
-    private bool dxvaSetting;
-    private bool subtitleSettings;
-    //private bool settingsLoaded = false;
-    private int selectedOption;
-    private int selectedOptionLvl2;
-    private bool ccSetting;
+    private bool _dxvaSetting;
+    private bool _subtitleSettings;
+    private int _selectedOption;
+    private int _selectedOptionLvl2;
+    private bool _ccSetting;
 
     private enum AspectRatioCorrectionMode
     {
@@ -103,13 +102,13 @@ namespace WindowPlugins.GUISettings.TV
     {
       if (control == btnVideo)
       {
-        selectedOption = -1;
-        selectedOptionLvl2 = -1;
+        _selectedOption = -1;
+        _selectedOptionLvl2 = -1;
         OnVideo();
       }
       if (control == btnAudio)
       {
-        selectedOption = -1;
+        _selectedOption = -1;
         OnAudio();
       }
       if (control == btnDXVA)
@@ -126,10 +125,20 @@ namespace WindowPlugins.GUISettings.TV
       }
       if (control == btnAutoPlay)
       {
-        selectedOption = -1;
+        _selectedOption = -1;
         OnAutoPlay();
       }
       base.OnClicked(controlId, control, actionType);
+    }
+
+    public override void OnAction(Action action)
+    {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
+      base.OnAction(action);
     }
 
     private AspectRatioCorrectionMode GetAspectRatioCorrectionMode(string aspectRatioCorrectionModeText)
@@ -229,10 +238,10 @@ namespace WindowPlugins.GUISettings.TV
         dlg.AddLocalizedString(6004); // Aspect Ratio
         dlg.AddLocalizedString(1029); // Subtitle
 
-        selectedOptionLvl2 = -1;
+        _selectedOptionLvl2 = -1;
 
-        if (selectedOption != -1)
-          dlg.SelectedLabel = selectedOption;
+        if (_selectedOption != -1)
+          dlg.SelectedLabel = _selectedOption;
 
         dlg.DoModal(GetID);
 
@@ -241,7 +250,7 @@ namespace WindowPlugins.GUISettings.TV
           return;
         }
 
-        selectedOption = dlg.SelectedLabel;
+        _selectedOption = dlg.SelectedLabel;
 
         switch (dlg.SelectedId)
         {
@@ -273,8 +282,8 @@ namespace WindowPlugins.GUISettings.TV
         dlg.AddLocalizedString(6002); // Audio render
         dlg.AddLocalizedString(492);  // Audio language
 
-        if (selectedOption != -1)
-          dlg.SelectedLabel = selectedOption;
+        if (_selectedOption != -1)
+          dlg.SelectedLabel = _selectedOption;
 
         dlg.DoModal(GetID);
 
@@ -283,7 +292,7 @@ namespace WindowPlugins.GUISettings.TV
           return;
         }
 
-        selectedOption = dlg.SelectedLabel;
+        _selectedOption = dlg.SelectedLabel;
 
         switch (dlg.SelectedId)
         {
@@ -469,8 +478,8 @@ namespace WindowPlugins.GUISettings.TV
       dlg.AddLocalizedString(1283); // Display mode
       dlg.AddLocalizedString(1284); // Zoom mode
 
-      if (selectedOptionLvl2 != -1)
-        dlg.SelectedLabel = selectedOptionLvl2;
+      if (_selectedOptionLvl2 != -1)
+        dlg.SelectedLabel = _selectedOptionLvl2;
 
       // show dialog and wait for result
       dlg.DoModal(GetID);
@@ -480,7 +489,7 @@ namespace WindowPlugins.GUISettings.TV
         return;
       }
 
-      selectedOptionLvl2 = dlg.SelectedLabel;
+      _selectedOptionLvl2 = dlg.SelectedLabel;
 
       switch (dlg.SelectedId)
       {
@@ -827,8 +836,8 @@ namespace WindowPlugins.GUISettings.TV
         dlg.AddLocalizedString(1268); // Video
         dlg.AddLocalizedString(1288); // Photo
 
-        if (selectedOption != -1)
-          dlg.SelectedLabel = selectedOption;
+        if (_selectedOption != -1)
+          dlg.SelectedLabel = _selectedOption;
 
         dlg.DoModal(GetID);
 
@@ -837,7 +846,7 @@ namespace WindowPlugins.GUISettings.TV
           return;
         }
 
-        selectedOption = dlg.SelectedLabel;
+        _selectedOption = dlg.SelectedLabel;
 
         switch (dlg.SelectedId)
         {
@@ -932,12 +941,12 @@ namespace WindowPlugins.GUISettings.TV
     {
       using (Settings xmlreader = new MPSettings())
       {
-        subtitleSettings = xmlreader.GetValueAsBool("dvdplayer", "showsubtitles", false);
-        btnEnableSubtitles.Selected = subtitleSettings;
-        dxvaSetting = xmlreader.GetValueAsBool("dvdplayer", "turnoffdxva", true);
-        btnDXVA.Selected = dxvaSetting;
-        ccSetting = xmlreader.GetValueAsBool("dvdplayer", "showclosedcaptions", false);
-        btnEnableCC.Selected = ccSetting;
+        _subtitleSettings = xmlreader.GetValueAsBool("dvdplayer", "showsubtitles", false);
+        btnEnableSubtitles.Selected = _subtitleSettings;
+        _dxvaSetting = xmlreader.GetValueAsBool("dvdplayer", "turnoffdxva", true);
+        btnDXVA.Selected = _dxvaSetting;
+        _ccSetting = xmlreader.GetValueAsBool("dvdplayer", "showclosedcaptions", false);
+        btnEnableCC.Selected = _ccSetting;
       }
     }
   }

@@ -84,6 +84,58 @@ namespace WindowPlugins.GUISettings.TV
       GetID = (int)Window.WINDOW_SETTINGS_MOVIES;
     }
 
+    #region Serialization
+
+    private void LoadSettings()
+    {
+      using (Settings xmlreader = new MPSettings())
+      {
+        _strVideoCodec = xmlreader.GetValueAsString("movieplayer", "mpeg2videocodec", "");
+        _strH264VideoCodec = xmlreader.GetValueAsString("movieplayer", "h264videocodec", "");
+        _strAudioCodec = xmlreader.GetValueAsString("movieplayer", "mpeg2audiocodec", "");
+        string aspectRatioText = xmlreader.GetValueAsString("movieplayer", "defaultar", "Normal");
+        _aspectRatio = Utils.GetAspectRatio(aspectRatioText);
+        _strAudioRenderer = xmlreader.GetValueAsString("movieplayer", "audiorenderer", "Default DirectSound Device");
+        _strAACAudioCodec = xmlreader.GetValueAsString("movieplayer", "aacaudiocodec", "");
+        _defaultSubtitleLanguage = xmlreader.GetValueAsString("subtitles", "language", "EN");
+        _defaultAudioLanguage = xmlreader.GetValueAsString("movieplayer", "audiolanguage", "EN");
+
+        _subtitleSettings = xmlreader.GetValueAsBool("subtitles", "enabled", false);
+        btnEnableSubtitles.Selected = _subtitleSettings;
+        _playAll = xmlreader.GetValueAsInt("movies", "playallinfolder", 3);
+      }
+    }
+
+    private void SaveSettings()
+    {
+      using (Settings xmlwriter = new MPSettings())
+      {
+        xmlwriter.SetValue("movieplayer", "mpeg2videocodec", _strVideoCodec);
+        xmlwriter.SetValue("movieplayer", "h264videocodec", _strH264VideoCodec);
+        xmlwriter.SetValue("movieplayer", "mpeg2audiocodec", _strAudioCodec);
+        string aspectRatioText = Utils.GetAspectRatio(_aspectRatio);
+        xmlwriter.SetValue("movieplayer", "defaultar", aspectRatioText);
+        xmlwriter.SetValue("movieplayer", "audiorenderer", _strAudioRenderer);
+        xmlwriter.SetValue("movieplayer", "aacaudiocodec", _strAACAudioCodec);
+
+        if (_info != null)
+        {
+          xmlwriter.SetValue("subtitles", "language", _info.Name);
+        }
+        if (_infoAudio != null)
+        {
+          xmlwriter.SetValue("movieplayer", "audiolanguage", _infoAudio.Name);
+        }
+
+        xmlwriter.SetValueAsBool("subtitles", "enabled", btnEnableSubtitles.Selected);
+        xmlwriter.SetValue("movies", "playallinfolder", _playAll);
+      }
+    }
+
+    #endregion
+
+    #region Overrides
+
     public override bool Init()
     {
       return Load(GUIGraphicsContext.Skin + @"\settings_movies.xml");
@@ -113,10 +165,6 @@ namespace WindowPlugins.GUISettings.TV
         _selectedOption = -1;
         OnAudio();
       }
-      //if (control == btnGrabbers)
-      //{
-      //  OnGrabber();
-      //}
       if (control == btnPlayall)
       {
         OnPlayAllVideos();
@@ -140,7 +188,19 @@ namespace WindowPlugins.GUISettings.TV
 
       base.OnClicked(controlId, control, actionType);
     }
-    
+
+    public override void OnAction(Action action)
+    {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
+      base.OnAction(action);
+    }
+
+    #endregion
+
     private void OnVideo()
     {
       GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
@@ -630,55 +690,6 @@ namespace WindowPlugins.GUISettings.TV
       dlg.Section = _section;
       GUIWindowManager.ActivateWindow((int)Window.WINDOW_SETTINGS_PLAYLIST);
     }
-
-    #region Serialization
-
-    private void LoadSettings()
-    {
-      using (Settings xmlreader = new MPSettings())
-      {
-        _strVideoCodec = xmlreader.GetValueAsString("movieplayer", "mpeg2videocodec", "");
-        _strH264VideoCodec = xmlreader.GetValueAsString("movieplayer", "h264videocodec", "");
-        _strAudioCodec = xmlreader.GetValueAsString("movieplayer", "mpeg2audiocodec", "");
-        string aspectRatioText = xmlreader.GetValueAsString("movieplayer", "defaultar", "Normal");
-        _aspectRatio = Utils.GetAspectRatio(aspectRatioText);
-        _strAudioRenderer = xmlreader.GetValueAsString("movieplayer", "audiorenderer", "Default DirectSound Device");
-        _strAACAudioCodec = xmlreader.GetValueAsString("movieplayer", "aacaudiocodec", "");
-        _defaultSubtitleLanguage = xmlreader.GetValueAsString("subtitles", "language", "EN");
-        _defaultAudioLanguage = xmlreader.GetValueAsString("movieplayer", "audiolanguage", "EN");
-        
-        _subtitleSettings = xmlreader.GetValueAsBool("subtitles", "enabled", false);
-        btnEnableSubtitles.Selected = _subtitleSettings;
-        _playAll= xmlreader.GetValueAsInt("movies", "playallinfolder", 3);
-      }
-    }
-
-    private void SaveSettings()
-    {
-      using (Settings xmlwriter = new MPSettings())
-      {
-        xmlwriter.SetValue("movieplayer", "mpeg2videocodec", _strVideoCodec);
-        xmlwriter.SetValue("movieplayer", "h264videocodec", _strH264VideoCodec);
-        xmlwriter.SetValue("movieplayer", "mpeg2audiocodec", _strAudioCodec);
-        string aspectRatioText = Utils.GetAspectRatio(_aspectRatio);
-        xmlwriter.SetValue("movieplayer", "defaultar", aspectRatioText);
-        xmlwriter.SetValue("movieplayer", "audiorenderer", _strAudioRenderer);
-        xmlwriter.SetValue("movieplayer", "aacaudiocodec", _strAACAudioCodec);
-
-        if (_info != null)
-        {
-          xmlwriter.SetValue("subtitles", "language", _info.Name);
-        }
-        if (_infoAudio != null)
-        {
-          xmlwriter.SetValue("movieplayer", "audiolanguage", _infoAudio.Name);
-        }
-
-        xmlwriter.SetValueAsBool("subtitles", "enabled", btnEnableSubtitles.Selected);
-        xmlwriter.SetValue("movies", "playallinfolder", _playAll);
-      }
-    }
-
-    #endregion
+   
   }
 }

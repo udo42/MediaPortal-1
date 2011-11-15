@@ -100,201 +100,16 @@ namespace MediaPortal.GUI.Settings
       BelowNormal =3
     }
 
-    private int iDelay = 10;
-    private string loglevel = "2"; // 0= Error, 1= warning, 2 = info, 3 = debug
-    private string priority = "Normal";
-    private int iStartUpDelay = 0;
-    private bool settingsChanged = false;
-    private bool hideTaskBar = false;
-
-    private int screennumber = 0; // 0 is the primary screen
-    private ArrayList screenCollection = new ArrayList();
-
-    [DllImport("shlwapi.dll")]
-    private static extern bool PathIsNetworkPath(string Path);
-
+    private int _iDelay = 10;
+    private string _loglevel = "2"; // 0= Error, 1= warning, 2 = info, 3 = debug
+    private string _priority = "Normal";
+    private int _iStartUpDelay = 0;
+    private int _screennumber = 0; // 0 is the primary screen
+    private ArrayList _screenCollection = new ArrayList();
+    
     public GUISettingsGeneralMP()
     {
       GetID = (int)Window.WINDOW_SETTINGS_GENERALMP;
-    }
-    
-    public override bool Init()
-    {
-      return Load(GUIGraphicsContext.Skin + @"\settings_generalMP.xml");
-    }
-
-    public override void OnAction(Action action)
-    {
-      switch (action.wID)
-      {
-        case Action.ActionType.ACTION_PREVIOUS_MENU:
-          {
-            GUIWindowManager.ShowPreviousWindow();
-            return;
-          }
-      }
-      base.OnAction(action);
-    }
-
-    public override bool OnMessage(GUIMessage message)
-    {
-      switch (message.Message)
-      {
-        case GUIMessage.MessageType.GUI_MSG_WINDOW_INIT:
-          {
-            base.OnMessage(message);
-            GUIPropertyManager.SetProperty("#currentmodule", GUILocalizeStrings.Get(100008));
-            LoadSettings();
-            
-            GUIControl.ClearControl(GetID, (int)Controls.CONTROL_DELAYINSEC);
-            for (int i = 1; i <= 100; ++i)
-            {
-              GUIControl.AddItemLabelControl(GetID, (int)Controls.CONTROL_DELAYINSEC, i.ToString());
-            }
-            
-            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_DELAYINSEC, iDelay - 1);
-            
-            return true;
-          }
-
-        case GUIMessage.MessageType.GUI_MSG_WINDOW_DEINIT:
-          {
-            SaveSettings();
-            
-            // Ask to restart MP if settings changed
-            if (settingsChanged)
-            {
-              OnRestartMP();
-            }
-          }
-          break;
-
-        case GUIMessage.MessageType.GUI_MSG_CLICKED:
-          {
-            int iControl = message.SenderControlId;
-            if (iControl == (int)Controls.CONTROL_DELAYINSEC)
-            {
-              string strLabel = message.Label;
-              iDelay = Int32.Parse(strLabel);
-              settingsChanged = true;
-            }
-          }
-          break;
-      }
-      return base.OnMessage(message);
-    }
-
-    protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
-    {
-      if (control == btnLog)
-      {
-        OnLog();
-      }
-      if (control == btnProcess)
-      {
-        OnProcess();
-      }
-      if (control == cmWatchdog)
-      {
-        settingsChanged = true;
-      }
-      if (control == cmAutoRestart)
-      {
-        if (!cmAutoRestart.Selected)
-        {
-          GUIControl.HideControl(GetID, (int)Controls.CONTROL_DELAYINSEC);
-        }
-        else
-        {
-          GUIControl.ShowControl(GetID, (int)Controls.CONTROL_DELAYINSEC);
-        }
-        settingsChanged = true;
-      }
-      // Startup/Resume
-      if (control == cmStartfullscreen)
-      {
-        settingsChanged = true;
-      }
-      if (control == cmUsefullscreensplash)
-      {
-        settingsChanged = true;
-      }
-      if (control == cmAlwaysontop)
-      {
-        settingsChanged = true;
-      }
-      if (control == cmHidetaskbar)
-      {
-        settingsChanged = true;
-      }
-      if (control == cmAutostart)
-      {
-        settingsChanged = true;
-      }
-      if (control == cmMinimizeonstartup)
-      {
-        settingsChanged = true;
-      }
-      if (control == cmMinimizeonexit)
-      {
-        settingsChanged = true;
-      }
-      if (control == cmTurnoffmonitor)
-      {
-        settingsChanged = true;
-      }
-      if (control == cmTurnmonitoronafterresume)
-      {
-        settingsChanged = true;
-      }
-      if (control == cmEnables3trick)
-      {
-        settingsChanged = true;
-      }
-      if (control == cmUseS3Hack)
-      {
-        settingsChanged = true;
-      }
-      if (control == cmRestartonresume)
-      {
-        settingsChanged = true;
-      }
-      if (control == cmShowlastactivemodule)
-      {
-        settingsChanged = true;
-      }
-      if (control == cmUsescreenselector)
-      {
-        settingsChanged = true;
-
-        if (cmUsescreenselector.Selected)
-        {
-          btnShowScreens.Visible = true;
-        }
-        else
-        {
-          btnShowScreens.Visible = false;
-        }
-      }
-      // Delay at startup
-      if (control == btnDelayStartup)
-      {
-        OnStartUpDelay();
-      }
-      if (control == cmDelayStartup)
-      {
-        settingsChanged = true;
-      }
-      if (control == cmDelayResume)
-      {
-        settingsChanged = true;
-      }
-      if (control == btnShowScreens)
-      {
-        OnShowScreens();
-      }
-      
-      base.OnClicked(controlId, control, actionType);
     }
 
     #region Serialisation
@@ -303,8 +118,8 @@ namespace MediaPortal.GUI.Settings
     {
       using (Profile.Settings xmlreader = new Profile.MPSettings())
       {
-        loglevel = xmlreader.GetValueAsString("general", "loglevel", "2"); // set loglevel to 2:info 3:debug
-        priority = xmlreader.GetValueAsString("general", "ThreadPriority", "Normal");
+        _loglevel = xmlreader.GetValueAsString("general", "loglevel", "2"); // set loglevel to 2:info 3:debug
+        _priority = xmlreader.GetValueAsString("general", "ThreadPriority", "Normal");
         cmWatchdog.Selected = xmlreader.GetValueAsBool("general", "watchdogEnabled", false);
         cmAutoRestart.Selected = xmlreader.GetValueAsBool("general", "restartOnError", true);
         if (!cmAutoRestart.Selected)
@@ -315,14 +130,13 @@ namespace MediaPortal.GUI.Settings
         {
           GUIControl.ShowControl(GetID, (int)Controls.CONTROL_DELAYINSEC);
         }
-        iDelay = xmlreader.GetValueAsInt("general", "restart delay", 10);
+        _iDelay = xmlreader.GetValueAsInt("general", "restart delay", 10);
 
         // startup/Resume settings
         cmStartfullscreen.Selected = xmlreader.GetValueAsBool("general", "startfullscreen", true);
         cmUsefullscreensplash.Selected = xmlreader.GetValueAsBool("general", "usefullscreensplash", true);
         cmAlwaysontop.Selected = xmlreader.GetValueAsBool("general", "alwaysontop", false);
         cmHidetaskbar.Selected = xmlreader.GetValueAsBool("general", "hidetaskbar", false);
-        hideTaskBar = cmHidetaskbar.Selected;
         cmAutostart.Selected = xmlreader.GetValueAsBool("general", "autostart", false);
         cmMinimizeonstartup.Selected = xmlreader.GetValueAsBool("general", "minimizeonstartup", false);
         cmMinimizeonexit.Selected = xmlreader.GetValueAsBool("general", "minimizeonexit", false);
@@ -334,14 +148,14 @@ namespace MediaPortal.GUI.Settings
         cmShowlastactivemodule.Selected = xmlreader.GetValueAsBool("general", "showlastactivemodule", false);
         cmUsescreenselector.Selected = xmlreader.GetValueAsBool("screenselector", "usescreenselector", false);
 
-        screennumber = xmlreader.GetValueAsInt("screenselector", "screennumber", 0);
+        _screennumber = xmlreader.GetValueAsInt("screenselector", "screennumber", 0);
 
         // Delay startup
-        iStartUpDelay = xmlreader.GetValueAsInt("general", "delay", 0);
-        string property = iStartUpDelay + " sec";
+        _iStartUpDelay = xmlreader.GetValueAsInt("general", "delay", 0);
+        string property = _iStartUpDelay + " sec";
         GUIPropertyManager.SetProperty("#delayStartup", property);
 
-        if (iStartUpDelay == 0)
+        if (_iStartUpDelay == 0)
         {
           cmDelayStartup.Visible = false;
           cmDelayResume.Visible = false;
@@ -355,7 +169,7 @@ namespace MediaPortal.GUI.Settings
         cmDelayResume.Selected = xmlreader.GetValueAsBool("general", "delay resume", false);
 
         GetScreens();
-        GUIPropertyManager.SetProperty("#defScreen", screenCollection[screennumber].ToString());
+        GUIPropertyManager.SetProperty("#defScreen", _screenCollection[_screennumber].ToString());
 
         if (cmUsescreenselector.Selected)
         {
@@ -423,12 +237,194 @@ namespace MediaPortal.GUI.Settings
         xmlwriter.SetValueAsBool("general", "showlastactivemodule", cmShowlastactivemodule.Selected);
         xmlwriter.SetValueAsBool("screenselector", "usescreenselector", cmUsescreenselector.Selected);
         xmlwriter.SetValueAsBool("general", "minimizeonstartup", cmMinimizeonstartup.Selected);
-        xmlwriter.SetValue("general", "restart delay", iDelay.ToString());
+        xmlwriter.SetValue("general", "restart delay", _iDelay.ToString());
         xmlwriter.SetValueAsBool("general", "watchdogEnabled", cmWatchdog.Selected);
         xmlwriter.SetValueAsBool("general", "restartOnError", cmAutoRestart.Selected);
         xmlwriter.SetValueAsBool("general", "delay startup", cmDelayStartup.Selected);
         xmlwriter.SetValueAsBool("general", "delay resume", cmDelayResume.Selected);
       }
+    }
+
+    #endregion
+
+    #region Overrides
+
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\settings_generalMP.xml");
+    }
+
+    public override void OnAction(Action action)
+    {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
+      switch (action.wID)
+      {
+        case Action.ActionType.ACTION_PREVIOUS_MENU:
+          {
+            GUIWindowManager.ShowPreviousWindow();
+            return;
+          }
+      }
+      base.OnAction(action);
+    }
+
+    public override bool OnMessage(GUIMessage message)
+    {
+      switch (message.Message)
+      {
+        case GUIMessage.MessageType.GUI_MSG_WINDOW_INIT:
+          {
+            base.OnMessage(message);
+            GUIPropertyManager.SetProperty("#currentmodule", GUILocalizeStrings.Get(100008));
+            LoadSettings();
+            
+            GUIControl.ClearControl(GetID, (int)Controls.CONTROL_DELAYINSEC);
+            for (int i = 1; i <= 100; ++i)
+            {
+              GUIControl.AddItemLabelControl(GetID, (int)Controls.CONTROL_DELAYINSEC, i.ToString());
+            }
+            
+            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_DELAYINSEC, _iDelay - 1);
+            
+            return true;
+          }
+
+        case GUIMessage.MessageType.GUI_MSG_WINDOW_DEINIT:
+          {
+            SaveSettings();
+          }
+          break;
+
+        case GUIMessage.MessageType.GUI_MSG_CLICKED:
+          {
+            int iControl = message.SenderControlId;
+            if (iControl == (int)Controls.CONTROL_DELAYINSEC)
+            {
+              string strLabel = message.Label;
+              _iDelay = Int32.Parse(strLabel);
+              SettingsChanged(true);
+            }
+          }
+          break;
+      }
+      return base.OnMessage(message);
+    }
+
+    protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
+    {
+      if (control == btnLog)
+      {
+        OnLog();
+      }
+      if (control == btnProcess)
+      {
+        OnProcess();
+      }
+      if (control == cmWatchdog)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmAutoRestart)
+      {
+        if (!cmAutoRestart.Selected)
+        {
+          GUIControl.HideControl(GetID, (int)Controls.CONTROL_DELAYINSEC);
+        }
+        else
+        {
+          GUIControl.ShowControl(GetID, (int)Controls.CONTROL_DELAYINSEC);
+        }
+        SettingsChanged(true);
+      }
+      // Startup/Resume
+      if (control == cmStartfullscreen)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmUsefullscreensplash)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmAlwaysontop)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmHidetaskbar)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmAutostart)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmMinimizeonstartup)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmMinimizeonexit)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmTurnoffmonitor)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmTurnmonitoronafterresume)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmEnables3trick)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmUseS3Hack)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmRestartonresume)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmShowlastactivemodule)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmUsescreenselector)
+      {
+        SettingsChanged(true);
+
+        if (cmUsescreenselector.Selected)
+        {
+          btnShowScreens.Visible = true;
+        }
+        else
+        {
+          btnShowScreens.Visible = false;
+        }
+      }
+      // Delay at startup
+      if (control == btnDelayStartup)
+      {
+        OnStartUpDelay();
+      }
+      if (control == cmDelayStartup)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmDelayResume)
+      {
+        SettingsChanged(true);
+      }
+      if (control == btnShowScreens)
+      {
+        OnShowScreens();
+      }
+      
+      base.OnClicked(controlId, control, actionType);
     }
 
     #endregion
@@ -469,7 +465,7 @@ namespace MediaPortal.GUI.Settings
       dlg.Add("Information");
       dlg.Add("Debug");
 
-      dlg.SelectedLabel = Convert.ToInt16(loglevel);
+      dlg.SelectedLabel = Convert.ToInt16(_loglevel);
       
       // Show dialog menu
       dlg.DoModal(GetID);
@@ -482,9 +478,9 @@ namespace MediaPortal.GUI.Settings
       using (Profile.Settings xmlwriter = new Profile.MPSettings())
       {
         xmlwriter.SetValue("general", "loglevel", dlg.SelectedLabel);
-        settingsChanged = true;
+        SettingsChanged(true);
       }
-      loglevel = dlg.SelectedLabel.ToString();
+      _loglevel = dlg.SelectedLabel.ToString();
     }
 
     private void OnProcess()
@@ -502,7 +498,7 @@ namespace MediaPortal.GUI.Settings
       dlg.Add("Normal");
       dlg.Add("BelowNormal");
 
-      dlg.SelectedLabel = GetPriority(priority);
+      dlg.SelectedLabel = GetPriority(_priority);
       
       // Show dialog menu
       dlg.DoModal(GetID);
@@ -515,22 +511,22 @@ namespace MediaPortal.GUI.Settings
       using (Profile.Settings xmlwriter = new Profile.MPSettings())
       {
         xmlwriter.SetValue("general", "ThreadPriority", dlg.SelectedLabelText);
-        settingsChanged = true;
+        SettingsChanged(true);
       }
 
-      priority = dlg.SelectedLabelText;
+      _priority = dlg.SelectedLabelText;
     }
 
     private void OnStartUpDelay()
     {
-      string seconds = iStartUpDelay.ToString();
+      string seconds = _iStartUpDelay.ToString();
       GetNumberFromKeyboard(ref seconds);
-      iStartUpDelay = Convert.ToInt32(seconds);
+      _iStartUpDelay = Convert.ToInt32(seconds);
 
-      string property = iStartUpDelay + " sec";
+      string property = _iStartUpDelay + " sec";
       GUIPropertyManager.SetProperty("#delayStartup", property);
 
-      if (iStartUpDelay == 0)
+      if (_iStartUpDelay == 0)
       {
         cmDelayStartup.Visible = false;
         cmDelayResume.Visible = false;
@@ -543,8 +539,8 @@ namespace MediaPortal.GUI.Settings
 
       using (Profile.Settings xmlwriter = new Profile.MPSettings())
       {
-        xmlwriter.SetValue("general", "delay", iStartUpDelay);
-        settingsChanged = true;
+        xmlwriter.SetValue("general", "delay", _iStartUpDelay);
+        SettingsChanged(true);
       }
     }
 
@@ -558,14 +554,14 @@ namespace MediaPortal.GUI.Settings
       dlg.Reset();
       dlg.SetHeading(496); // Options
 
-      foreach (string screen in screenCollection)
+      foreach (string screen in _screenCollection)
       {
         dlg.Add(screen);
       }
 
-      if (screennumber < screenCollection.Count)
+      if (_screennumber < _screenCollection.Count)
       {
-        dlg.SelectedLabel = screennumber;
+        dlg.SelectedLabel = _screennumber;
       }
       
       // Show dialog menu
@@ -579,10 +575,10 @@ namespace MediaPortal.GUI.Settings
       using (Profile.Settings xmlwriter = new Profile.MPSettings())
       {
         xmlwriter.SetValue("screenselector", "screennumber", dlg.SelectedLabel);
-        settingsChanged = true;
+        SettingsChanged(true);
       }
 
-      priority = dlg.SelectedLabelText;
+      _priority = dlg.SelectedLabelText;
     }
 
     private void GetNumberFromKeyboard(ref string strLine)
@@ -602,7 +598,7 @@ namespace MediaPortal.GUI.Settings
         int number;
         if (Int32.TryParse(keyboard.Text, out number))
         {
-          iStartUpDelay = number;
+          _iStartUpDelay = number;
           strLine = keyboard.Text;
         }
       }
@@ -610,7 +606,7 @@ namespace MediaPortal.GUI.Settings
 
     public void GetScreens()
     {
-      screenCollection.Clear();
+      _screenCollection.Clear();
       foreach (Screen screen in Screen.AllScreens)
       {
         int dwf = 0;
@@ -630,7 +626,7 @@ namespace MediaPortal.GUI.Settings
         {
           if (screen.DeviceName.StartsWith(adapter.Information.DeviceName.Trim()))
           {
-            screenCollection.Add(string.Format("{0} ({1}x{2}) on {3}",
+            _screenCollection.Add(string.Format("{0} ({1}x{2}) on {3}",
                                              monitorname, screen.Bounds.Width, screen.Bounds.Height,
                                              adapter.Information.Description));
           }
@@ -638,97 +634,10 @@ namespace MediaPortal.GUI.Settings
       }
     }
 
-    #region RestartMP
-
-    private void OnRestartMP()
+    private void SettingsChanged(bool settingsChanged)
     {
-      GUIDialogYesNo dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_YES_NO);
-      if (null == dlgYesNo)
-      {
-        return;
-      }
-      dlgYesNo.SetHeading(927);
-
-      dlgYesNo.SetLine(1, GUILocalizeStrings.Get(1470));
-      dlgYesNo.SetLine(2, GUILocalizeStrings.Get(1471));
-      dlgYesNo.DoModal(GetID);
-
-      if (!dlgYesNo.IsConfirmed)
-      {
-        return;
-      }
-      else
-      {
-        if (hideTaskBar)
-        {
-          // only re-show the startbar if MP is the one that has hidden it.
-          Win32API.EnableStartBar(true);
-          Win32API.ShowStartBar(true);
-        }
-        Log.Info("Settings: OnRestart - prepare for restart!");
-        File.Delete(Config.GetFile(Config.Dir.Config, "mediaportal.running"));
-        Log.Info("Settings: OnRestart - saving settings...");
-        Profile.Settings.SaveCache();
-        DisposeDBs();
-        VolumeHandler.Dispose();
-        Log.Info("Main: OnSuspend - Done");
-        Process restartScript = new Process();
-        restartScript.EnableRaisingEvents = false;
-        restartScript.StartInfo.WorkingDirectory = Config.GetFolder(Config.Dir.Base);
-        restartScript.StartInfo.FileName = Config.GetFile(Config.Dir.Base, @"restart.vbs");
-        Log.Debug("Settings: OnRestart - executing script {0}", restartScript.StartInfo.FileName);
-        restartScript.Start();
-        try
-        {
-          // Maybe the scripting host is not available therefore do not wait infinitely.
-          if (!restartScript.HasExited)
-          {
-            restartScript.WaitForExit();
-          }
-        }
-        catch (Exception ex)
-        {
-          Log.Error("Settings: OnRestart - WaitForExit: {0}", ex.Message);
-        }
-      }
+      MediaPortal.GUI.Settings.GUISettings.SettingsChanged = settingsChanged;
     }
 
-    private void DisposeDBs()
-    {
-      string dbPath = FolderSettings.DatabaseName;
-      bool isRemotePath = (!string.IsNullOrEmpty(dbPath) && PathIsNetworkPath(dbPath));
-      if (isRemotePath)
-      {
-        Log.Info("Settings: disposing FolderDatabase3 sqllite database.");
-        FolderSettings.Dispose();
-      }
-
-      dbPath = MediaPortal.Picture.Database.PictureDatabase.DatabaseName;
-      isRemotePath = (!string.IsNullOrEmpty(dbPath) && PathIsNetworkPath(dbPath));
-      if (isRemotePath)
-      {
-        Log.Info("Settings: disposing PictureDatabase sqllite database.");
-        MediaPortal.Picture.Database.PictureDatabase.Dispose();
-      }
-
-      dbPath = MediaPortal.Video.Database.VideoDatabase.DatabaseName;
-      isRemotePath = (!string.IsNullOrEmpty(dbPath) && PathIsNetworkPath(dbPath));
-      if (isRemotePath)
-      {
-        Log.Info("Settings: disposing VideoDatabaseV5.db3 sqllite database.");
-        MediaPortal.Video.Database.VideoDatabase.Dispose();
-      }
-
-      dbPath = MediaPortal.Music.Database.MusicDatabase.Instance.DatabaseName;
-      isRemotePath = (!string.IsNullOrEmpty(dbPath) && PathIsNetworkPath(dbPath));
-      if (isRemotePath)
-      {
-        Log.Info("Settings: disposing MusicDatabase db3 sqllite database.");
-        MediaPortal.Music.Database.MusicDatabase.Dispose();
-      }
-    }
-
-    #endregion
-    
   }
 }

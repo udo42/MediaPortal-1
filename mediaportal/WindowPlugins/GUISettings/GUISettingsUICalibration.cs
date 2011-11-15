@@ -112,6 +112,11 @@ namespace MediaPortal.GUI.Settings
 
     public override void OnAction(Action action)
     {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
       if ((DateTime.Now.Ticks / 10000) - m_dwLastTime > 500)
       {
         m_iSpeed = 1;

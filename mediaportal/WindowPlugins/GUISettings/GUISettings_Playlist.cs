@@ -171,6 +171,13 @@ namespace MediaPortal.GUI.Settings
       if (control == btnVideosplaylist || control == btnMusicplaylist)
       {
         OnAddPath();
+        SettingsChanged(true);
+      }
+      if (control == btnMusicautoshuffle || control == btnMusicloaddefault || control == btnMusicplaylistscreen ||
+          control == btnMusicrepeatplaylist || control == btnMusicsavecurrentasdefault || 
+          control == btnVideosrepeatplaylist)
+      {
+        SettingsChanged(true);
       }
     }
 
@@ -194,11 +201,6 @@ namespace MediaPortal.GUI.Settings
       }
     }
 
-    /// <summary>
-    /// Get user txt. If maxLenght >0, string is limited to that value.
-    /// </summary>
-    /// <param name="strLine"></param>
-    /// <param name="maxLenght">String lenght limitation. Less than 1 - No limit.</param>
     private void GetStringFromKeyboard(ref string strLine)
     {
       VirtualKeyboard keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
@@ -505,6 +507,11 @@ namespace MediaPortal.GUI.Settings
 
           break;
       }
+    }
+
+    private void SettingsChanged(bool settingsChanged)
+    {
+      GUISettings.SettingsChanged = settingsChanged;
     }
 
   }

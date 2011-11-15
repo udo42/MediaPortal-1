@@ -74,27 +74,7 @@ namespace WindowPlugins.GUISettings
       return Load(GUIGraphicsContext.Skin + @"\settingsSkipSteps.xml");
     }
 
-    #region loading
-
-    protected override void OnPageLoad()
-    {
-      base.OnPageLoad();
-      //Load settings
-      Log.Info("GUISkipSteps: {0}", "Load settings");
-      LoadSettings();
-      SetProperties();
-      GUIControl.FocusControl(GetID, checkMarkButtonStep1.GetID);
-    }
-
-    #endregion
-
-    #region saving
-
-    protected override void OnPageDestroy(int newWindowId)
-    {
-      base.OnPageDestroy(newWindowId);
-      SaveSettings();
-    }
+    #region Serialization
 
     private void LoadSettings()
     {
@@ -154,6 +134,23 @@ namespace WindowPlugins.GUISettings
 
     #endregion
 
+    #region Overrides
+
+    protected override void OnPageLoad()
+    {
+      base.OnPageLoad();
+      Log.Info("GUISkipSteps: {0}", "Load settings");
+      LoadSettings();
+      SetProperties();
+      GUIControl.FocusControl(GetID, checkMarkButtonStep1.GetID);
+    }
+
+    protected override void OnPageDestroy(int newWindowId)
+    {
+      base.OnPageDestroy(newWindowId);
+      SaveSettings();
+    }
+    
     private void SetCheckMarksBasedOnString(string s)
     {
       bool check1 = false, check2 = false, check3 = false, check4 = false, check5 = false, check6 = false;
@@ -245,8 +242,6 @@ namespace WindowPlugins.GUISettings
       checkMarkButtonStep16.Selected = check16;
     }
 
-    #region event handling
-
     protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
     {
       if (control == buttonReset)
@@ -260,11 +255,14 @@ namespace WindowPlugins.GUISettings
         vk.Reset();
         vk.DoModal(GetID);
         string newStep = vk.Text;
-        if (newStep == string.Empty || newStep == null)
+        
+        if (string.IsNullOrEmpty(newStep))
         {
           return;
         }
+        
         string error = verifySkipStep(newStep);
+        
         if (error != null)
         {
           GUIDialogOK errDialog = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
@@ -431,6 +429,16 @@ namespace WindowPlugins.GUISettings
         }
       }
       base.OnClicked(controlId, control, actionType);
+    }
+
+    public override void OnAction(Action action)
+    {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
+      base.OnAction(action);
     }
 
     #endregion

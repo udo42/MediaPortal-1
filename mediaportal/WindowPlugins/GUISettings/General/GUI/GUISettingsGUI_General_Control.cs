@@ -55,6 +55,11 @@ namespace MediaPortal.GUI.Settings
 
     public override void OnAction(Action action)
     {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
       switch (action.wID)
       {
         case Action.ActionType.ACTION_PREVIOUS_MENU:
@@ -63,6 +68,7 @@ namespace MediaPortal.GUI.Settings
             return;
           }
       }
+
       base.OnAction(action);
     }
 

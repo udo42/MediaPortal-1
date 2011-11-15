@@ -21,13 +21,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
-using System.Runtime.InteropServices;
 using MediaPortal.Configuration;
-using MediaPortal.Database;
 using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
 using MediaPortal.Player;
@@ -72,19 +69,14 @@ namespace WindowPlugins.GUISettings
       UseOnlyOne = 2,
     }
     
-    private string selectedLangName;
-    private string selectedSkinName;
-    private bool selectedFullScreen;
-    private bool selectedScreenSaver;
-    private ArrayList homeUsage = new ArrayList();
-    private static bool settingsChanged = false;
-    private int homeSelectedIndex = 0;
-    private bool hideTaskBar = false;
-    private string pin = string.Empty;
+    private string _selectedLangName;
+    private string _selectedSkinName;
+    private bool _selectedScreenSaver;
+    private ArrayList _homeUsage = new ArrayList();
+    private int _homeSelectedIndex = 0;
+    private string _pin = string.Empty;
 
-    [DllImport("shlwapi.dll")]
-    private static extern bool PathIsNetworkPath(string Path);
-
+    
     private class CultureComparer : IComparer
     {
       #region IComparer Members
@@ -106,14 +98,7 @@ namespace WindowPlugins.GUISettings
 
     public override bool Init()
     {
-      //SkinDirectory = GUIGraphicsContext.Skin.Remove(GUIGraphicsContext.Skin.LastIndexOf(@"\")); 
       return Load(GUIGraphicsContext.Skin + @"\settings_general.xml");
-    }
-
-    public static bool SettingsChanged
-    {
-      get { return settingsChanged; }
-      set { settingsChanged = value; }
     }
 
     protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
@@ -135,35 +120,44 @@ namespace WindowPlugins.GUISettings
         {
           dlg.Add(skin);
         }
+        
         dlg.SelectedLabel = btnSkin.SelectedItem;
         dlg.DoModal(GetID);
+        
         if (dlg.SelectedId == -1)
         {
           return;
         }
+        
         if (String.Compare(dlg.SelectedLabelText, btnSkin.Label, true) != 0)
         {
           btnSkin.Label = dlg.SelectedLabelText;
           OnSkinChanged();
         }
+        
         return;
       }
       if (control == btnLanguage)
       {
         GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+        
         if (dlg == null)
         {
           return;
         }
+        
         dlg.Reset();
         dlg.SetHeading(248); // menu
         string[] languages = GUILocalizeStrings.SupportedLanguages();
+        
         foreach (string lang in languages)
         {
           dlg.Add(lang);
         }
+        
         string currentLanguage = btnLanguage.Label;
         dlg.SelectedLabel = 0;
+        
         for (int i = 0; i < languages.Length; i++)
         {
           if (languages[i].ToLower() == currentLanguage.ToLower())
@@ -172,109 +166,109 @@ namespace WindowPlugins.GUISettings
             break;
           }
         }
+        
         dlg.DoModal(GetID);
+        
         if (dlg.SelectedId == -1)
         {
           return;
         }
+        
         if (String.Compare(dlg.SelectedLabelText, btnLanguage.Label, true) != 0)
         {
           btnLanguage.Label = dlg.SelectedLabelText;
           OnLanguageChanged();
         }
+        
         return;
       }
-      using (Settings xmlwriter = new MPSettings())
+      if (control == cmAllowRememberLastFocusedItem)
       {
-        if (control == cmAllowRememberLastFocusedItem)
-        {
-          settingsChanged = true;
-        }
-        if (control == cmAutosize)
-        {
-          settingsChanged = true;
-        }
-        if (control == cmHideextensions)
-        {
-          settingsChanged = true;
-        }
-        if (control == cmFileexistscache)
-        {
-          settingsChanged = true;
-        }
-        if (control == cmEnableguisounds)
-        {
-          settingsChanged = true;
-        }
-        if (control == cmMousesupport)
-        {
-          settingsChanged = true;
-        }
-        if (control == btnHomeUsage)
-        {
-          OnHomeUsage();
-        }
-        if (control == btnLanguagePrefix)
-        {
-          settingsChanged = true;
-        }
-        if (control == btnScreenSaver)
-        {
-          GUISettingsScreenSaver GUISettingsScreenSaver = (GUISettingsScreenSaver)GUIWindowManager.GetWindow((int)Window.WINDOW_SETTINGS_SCREENSAVER);
-          if (GUISettingsScreenSaver == null)
-          {
-            return;
-          }
-
-          GUISettingsScreenSaver.SettingsChanged = settingsChanged;
-          GUIWindowManager.ActivateWindow((int)Window.WINDOW_SETTINGS_SCREENSAVER);
-        }
-        if (control == btnThumbnails)
-        {
-          GUISettingsThumbnails GUISettingsThumbnails = (GUISettingsThumbnails)GUIWindowManager.GetWindow((int)Window.WINDOW_SETTINGS_THUMBNAILS);
-          if (GUISettingsThumbnails == null)
-          {
-            return;
-          }
-          GUISettingsThumbnails.SettingsChanged = settingsChanged;
-          GUIWindowManager.ActivateWindow((int)Window.WINDOW_SETTINGS_THUMBNAILS);
-        }
-        if (control == btnFileMenu)
-        {
-          if (btnFileMenu.Selected)
-          {
-            btnPin.IsEnabled = true;
-          }
-          else
-          {
-            btnPin.IsEnabled = false;
-          }
-        }
-        if (control == btnPin)
-        {
-          string tmpPin = pin;
-          GetStringFromKeyboard(ref tmpPin, 4);
-
-          int number;
-          if (Int32.TryParse(tmpPin, out number))
-          {
-            pin = number.ToString();
-          }
-        }
-        if (control == btnOnScreenDisplay)
-        {
-          GUISettingsOnScreenDisplay onScreenDisplay = (GUISettingsOnScreenDisplay)GUIWindowManager.GetWindow((int)Window.WINDOW_SETTINGS_ONSCREEN_DISPLAY);
-
-          if (onScreenDisplay == null)
-          {
-            return;
-          }
-
-          GUIWindowManager.ActivateWindow((int)Window.WINDOW_SETTINGS_ONSCREEN_DISPLAY);
-        }
-        
+        SettingsChanged(true);
       }
+      if (control == cmAutosize)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmHideextensions)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmFileexistscache)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmEnableguisounds)
+      {
+        SettingsChanged(true);
+      }
+      if (control == cmMousesupport)
+      {
+        SettingsChanged(true);
+      }
+      if (control == btnHomeUsage)
+      {
+        OnHomeUsage();
+      }
+      if (control == btnLanguagePrefix)
+      {
+        SettingsChanged(true);
+      }
+      if (control == btnScreenSaver)
+      {
+        GUISettingsScreenSaver guiSettingsScreenSaver = (GUISettingsScreenSaver)GUIWindowManager.GetWindow((int)Window.WINDOW_SETTINGS_SCREENSAVER);
+        if (guiSettingsScreenSaver == null)
+        {
+          return;
+        }
 
+        GUIWindowManager.ActivateWindow((int)Window.WINDOW_SETTINGS_SCREENSAVER);
+      }
+      if (control == btnThumbnails)
+      {
+        GUISettingsThumbnails guiSettingsThumbnails = (GUISettingsThumbnails)GUIWindowManager.GetWindow((int)Window.WINDOW_SETTINGS_THUMBNAILS);
+        if (guiSettingsThumbnails == null)
+        {
+          return;
+        }
+        GUIWindowManager.ActivateWindow((int)Window.WINDOW_SETTINGS_THUMBNAILS);
+      }
+      if (control == btnFileMenu)
+      {
+        if (btnFileMenu.Selected)
+        {
+          btnPin.IsEnabled = true;
+        }
+        else
+        {
+          btnPin.IsEnabled = false;
+        }
+        SettingsChanged(true);
+      }
+      if (control == btnPin)
+      {
+        string tmpPin = _pin;
+        GetStringFromKeyboard(ref tmpPin, 4);
+
+        int number;
+        if (Int32.TryParse(tmpPin, out number))
+        {
+          _pin = number.ToString();
+        }
+        SettingsChanged(true);
+      }
+      if (control == btnOnScreenDisplay)
+      {
+        GUISettingsOnScreenDisplay onScreenDisplay = (GUISettingsOnScreenDisplay)GUIWindowManager.GetWindow((int)Window.WINDOW_SETTINGS_ONSCREEN_DISPLAY);
+
+        if (onScreenDisplay == null)
+        {
+          return;
+        }
+
+        GUIWindowManager.ActivateWindow((int)Window.WINDOW_SETTINGS_ONSCREEN_DISPLAY);
+      }
+        
       base.OnClicked(controlId, control, actionType);
     }
 
@@ -282,8 +276,8 @@ namespace WindowPlugins.GUISettings
     {
       base.OnPageLoad();
 
-      homeUsage.Clear();
-      homeUsage.AddRange(new object[]
+      _homeUsage.Clear();
+      _homeUsage.AddRange(new object[]
                                         {
                                           "Classic and Basic, prefer Classic",
                                           "Classic and Basic, prefer Basic",
@@ -297,14 +291,17 @@ namespace WindowPlugins.GUISettings
     protected override void OnPageDestroy(int newWindowId)
     {
       SaveSettings();
-
-      if (settingsChanged && newWindowId != (int)Window.WINDOW_SETTINGS_SCREENSAVER && 
-                             newWindowId != (int)Window.WINDOW_SETTINGS_THUMBNAILS)
-      {
-        OnRestartMP();
-      }
-      settingsChanged = false;
       base.OnPageDestroy(newWindowId);
+    }
+
+    public override void OnAction(Action action)
+    {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
+      base.OnAction(action);
     }
 
     #region Serialisation
@@ -331,16 +328,15 @@ namespace WindowPlugins.GUISettings
         
         bool startWithBasicHome = xmlreader.GetValueAsBool("gui", "startbasichome", false);
         bool useOnlyOneHome = xmlreader.GetValueAsBool("gui", "useonlyonehome", false);
-        homeSelectedIndex = (int)((useOnlyOneHome ? HomeUsageEnum.UseOnlyOne : HomeUsageEnum.UseBoth) |
+        _homeSelectedIndex = (int)((useOnlyOneHome ? HomeUsageEnum.UseOnlyOne : HomeUsageEnum.UseBoth) |
                                            (startWithBasicHome ? HomeUsageEnum.PreferBasic : HomeUsageEnum.PreferClassic));
 
-        GUIPropertyManager.SetProperty("#homeScreen", homeUsage[homeSelectedIndex].ToString());
-        btnHomeUsage.Label = homeUsage[homeSelectedIndex].ToString();
-        hideTaskBar = xmlreader.GetValueAsBool("general", "hidetaskbar", false);
-
+        GUIPropertyManager.SetProperty("#homeScreen", _homeUsage[_homeSelectedIndex].ToString());
+        btnHomeUsage.Label = _homeUsage[_homeSelectedIndex].ToString();
+        
         btnFileMenu.Selected = xmlreader.GetValueAsBool("filemenu", "enabled", true);
         btnPin.IsEnabled = btnFileMenu.Selected;
-        pin = Utils.DecryptPin(xmlreader.GetValueAsString("filemenu", "pincode", ""));
+        _pin = Utils.DecryptPin(xmlreader.GetValueAsString("filemenu", "pincode", ""));
       }
     }
 
@@ -362,7 +358,7 @@ namespace WindowPlugins.GUISettings
         xmlwriter.SetValueAsBool("gui", "myprefix", btnLanguagePrefix.Selected);
         
         xmlwriter.SetValueAsBool("filemenu", "enabled", btnFileMenu.Selected);
-        xmlwriter.SetValue("filemenu", "pincode", Utils.EncryptPin(pin));
+        xmlwriter.SetValue("filemenu", "pincode", Utils.EncryptPin(_pin));
       }
       Config.SkinName = btnSkin.Label;
     }
@@ -418,18 +414,17 @@ namespace WindowPlugins.GUISettings
 
     private void BackupButtons()
     {
-      selectedSkinName = btnSkin.Label;
-      selectedLangName = btnLanguage.Label;
-      //selectedFullScreen = btnFullscreen.Selected;
-      selectedScreenSaver = btnScreenSaver.Selected;
+      _selectedSkinName = btnSkin.Label;
+      _selectedLangName = btnLanguage.Label;
+      _selectedScreenSaver = btnScreenSaver.Selected;
     }
 
     private void RestoreButtons()
     {
-      btnSkin.Label = selectedSkinName;
-      btnLanguage.Label = selectedLangName;
+      btnSkin.Label = _selectedSkinName;
+      btnLanguage.Label = _selectedLangName;
       
-      if (selectedScreenSaver)
+      if (_selectedScreenSaver)
       {
         GUIControl.SelectControl(GetID, btnScreenSaver.GetID);
       }
@@ -505,12 +500,12 @@ namespace WindowPlugins.GUISettings
       dlg.Reset();
       dlg.SetHeading(496); // options
       
-      foreach (string home in homeUsage)
+      foreach (string home in _homeUsage)
       {
         dlg.Add(home);
       }
 
-      dlg.SelectedLabel = homeSelectedIndex;
+      dlg.SelectedLabel = _homeSelectedIndex;
       
       dlg.DoModal(GetID);
       if (dlg.SelectedLabel == -1)
@@ -518,7 +513,7 @@ namespace WindowPlugins.GUISettings
         return;
       }
 
-      homeSelectedIndex = dlg.SelectedLabel;
+      _homeSelectedIndex = dlg.SelectedLabel;
       btnHomeUsage.Label = dlg.SelectedLabelText;
 
       using (Settings xmlwriter = new MPSettings())
@@ -528,9 +523,9 @@ namespace WindowPlugins.GUISettings
         xmlwriter.SetValueAsBool("gui", "startbasichome",
                                  (dlg.SelectedLabel & (int)HomeUsageEnum.PreferBasic) != 0);
       }
-      GUIPropertyManager.SetProperty("#homeScreen", homeUsage[homeSelectedIndex].ToString());
+      GUIPropertyManager.SetProperty("#homeScreen", _homeUsage[_homeSelectedIndex].ToString());
 
-      settingsChanged = true;
+      SettingsChanged(true);
     }
 
     private void GetStringFromKeyboard(ref string strLine, int maxLenght)
@@ -549,104 +544,16 @@ namespace WindowPlugins.GUISettings
       }
 
       keyboard.DoModal(GUIWindowManager.ActiveWindow);
-      //strLine = string.Empty;
+      
       if (keyboard.IsConfirmed)
       {
         strLine = keyboard.Text;
       }
     }
-    
-    #region RestartMP
 
-    private void OnRestartMP()
+    private void SettingsChanged(bool settingsChanged)
     {
-      GUIDialogYesNo dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_YES_NO);
-      if (null == dlgYesNo)
-      {
-        return;
-      }
-      dlgYesNo.SetHeading(927);
-
-      dlgYesNo.SetLine(1, "Settings changed!");
-      dlgYesNo.SetLine(2, "Do you want to restart MediaPortal?");
-      dlgYesNo.DoModal(GetID);
-
-      if (!dlgYesNo.IsConfirmed)
-      {
-        return;
-      }
-      else
-      {
-        // Will be changed to one liner after SE patch
-        if (hideTaskBar)
-        {
-          // only re-show the startbar if MP is the one that has hidden it.
-          Win32API.EnableStartBar(true);
-          Win32API.ShowStartBar(true);
-        }
-        Log.Info("Settings: OnRestart - prepare for restart!");
-        File.Delete(Config.GetFile(Config.Dir.Config, "mediaportal.running"));
-        Log.Info("Settings: OnRestart - saving settings...");
-        Settings.SaveCache();
-        DisposeDBs();
-        VolumeHandler.Dispose();
-        Log.Info("Main: OnSuspend - Done");
-        Process restartScript = new Process();
-        restartScript.EnableRaisingEvents = false;
-        restartScript.StartInfo.WorkingDirectory = Config.GetFolder(Config.Dir.Base);
-        restartScript.StartInfo.FileName = Config.GetFile(Config.Dir.Base, @"restart.vbs");
-        Log.Debug("Settings: OnRestart - executing script {0}", restartScript.StartInfo.FileName);
-        restartScript.Start();
-        try
-        {
-          // Maybe the scripting host is not available therefore do not wait infinitely.
-          if (!restartScript.HasExited)
-          {
-            restartScript.WaitForExit();
-          }
-        }
-        catch (Exception ex)
-        {
-          Log.Error("Settings: OnRestart - WaitForExit: {0}", ex.Message);
-        }
-      }
+      MediaPortal.GUI.Settings.GUISettings.SettingsChanged = settingsChanged;
     }
-
-    private void DisposeDBs()
-    {
-      string dbPath = FolderSettings.DatabaseName;
-      bool isRemotePath = (!string.IsNullOrEmpty(dbPath) && PathIsNetworkPath(dbPath));
-      if (isRemotePath)
-      {
-        Log.Info("Settings: disposing FolderDatabase3 sqllite database.");
-        FolderSettings.Dispose();
-      }
-
-      dbPath = MediaPortal.Picture.Database.PictureDatabase.DatabaseName;
-      isRemotePath = (!string.IsNullOrEmpty(dbPath) && PathIsNetworkPath(dbPath));
-      if (isRemotePath)
-      {
-        Log.Info("Settings: disposing PictureDatabase sqllite database.");
-        MediaPortal.Picture.Database.PictureDatabase.Dispose();
-      }
-
-      dbPath = MediaPortal.Video.Database.VideoDatabase.DatabaseName;
-      isRemotePath = (!string.IsNullOrEmpty(dbPath) && PathIsNetworkPath(dbPath));
-      if (isRemotePath)
-      {
-        Log.Info("Settings: disposing VideoDatabaseV5.db3 sqllite database.");
-        MediaPortal.Video.Database.VideoDatabase.Dispose();
-      }
-
-      dbPath = MediaPortal.Music.Database.MusicDatabase.Instance.DatabaseName;
-      isRemotePath = (!string.IsNullOrEmpty(dbPath) && PathIsNetworkPath(dbPath));
-      if (isRemotePath)
-      {
-        Log.Info("Settings: disposing MusicDatabase db3 sqllite database.");
-        MediaPortal.Music.Database.MusicDatabase.Dispose();
-      }
-    }
-
-    #endregion
   }
 }

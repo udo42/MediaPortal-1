@@ -64,9 +64,8 @@ namespace WindowPlugins.GUISettings
     [SkinControl(10)] protected GUICheckButton btnUseDefaultRefreshRate = null;
     [SkinControl(11)] protected GUIButtonControl btnSelectDefaultRefreshRate = null;
 
-    private bool settingsChanged;
-    private string sDefaultHz;
-    private ArrayList defaultHz = new ArrayList();
+    private string _sDefaultHz;
+    private ArrayList _defaultHz = new ArrayList();
 
     private string _name= string.Empty; 
     private string _framerate = string.Empty; 
@@ -74,7 +73,7 @@ namespace WindowPlugins.GUISettings
     private string _action = string.Empty;
     private GUIListItem _selectedRefreshRateListItem = new GUIListItem();
     private GUIListItem _newRefreshRateListItem = new GUIListItem();
-    private int defaultHzIndex = 0;
+    private int _defaultHzIndex = 0;
     private RefreshRateData _newRateDataInfo;
     
 
@@ -97,12 +96,7 @@ namespace WindowPlugins.GUISettings
       GetID = (int)Window.WINDOW_SETTINGS_DYNAMIC_REFRESHRATE;
     }
 
-    public bool SettingsChanged
-    {
-      get { return settingsChanged; }
-      set { settingsChanged = value; }
-    }
-
+    
     #region Serialisation
 
     private void LoadSettings()
@@ -114,11 +108,11 @@ namespace WindowPlugins.GUISettings
         btnUseDefaultRefreshRate.Selected = xmlreader.GetValueAsBool("general", "use_default_hz", false);
         btnUseDeviceReset.Selected = xmlreader.GetValueAsBool("general", "devicereset", false);
         btnForceRefreshRateChange.Selected = xmlreader.GetValueAsBool("general", "force_refresh_rate", false);
-        sDefaultHz = xmlreader.GetValueAsString("general", "default_hz", "");
+        _sDefaultHz = xmlreader.GetValueAsString("general", "default_hz", "");
 
         String[] p = null;
-        defaultHzIndex = -1;
-        defaultHz.Clear();
+        _defaultHzIndex = -1;
+        _defaultHz.Clear();
 
         for (int i = 1; i < 100; i++)
         {
@@ -144,11 +138,11 @@ namespace WindowPlugins.GUISettings
           item.AlbumInfoTag = refreshRateData;
           item.OnItemSelected += OnItemSelected;
           lcRefreshRatesList.Add(item);
-          defaultHz.Add(p[0]);
+          _defaultHz.Add(p[0]);
 
-          if (sDefaultHz == hz)
+          if (_sDefaultHz == hz)
           {
-            defaultHzIndex = i - 1;
+            _defaultHzIndex = i - 1;
           }
         }
 
@@ -169,9 +163,9 @@ namespace WindowPlugins.GUISettings
         xmlwriter.SetValueAsBool("general", "devicereset", btnUseDeviceReset.Selected);
         xmlwriter.SetValueAsBool("general", "force_refresh_rate", btnForceRefreshRateChange.Selected);
         
-        if (defaultHzIndex >= 0)
+        if (_defaultHzIndex >= 0)
         {
-          string rate = RefreshRateData(lcRefreshRatesList.ListItems[defaultHzIndex]).Refreshrate;
+          string rate = RefreshRateData(lcRefreshRatesList.ListItems[_defaultHzIndex]).Refreshrate;
           xmlwriter.SetValue("general", "default_hz", rate);
         }
         else
@@ -215,6 +209,8 @@ namespace WindowPlugins.GUISettings
 
     #endregion
 
+    #region Overrides
+
     public override bool Init()
     {
       return Load(GUIGraphicsContext.Skin + @"\settings_dynamicrefreshrate.xml");
@@ -226,6 +222,7 @@ namespace WindowPlugins.GUISettings
       if (control == btnEnableDynamicRefreshRate)
       {
         EnableControls();
+        SettingsChanged(true);
       }
       if (_name.ToLower().IndexOf("tv") < 1)
       {
@@ -234,18 +231,20 @@ namespace WindowPlugins.GUISettings
         {
           int sIndex = lcRefreshRatesList.SelectedListItemIndex;
           lcRefreshRatesList.RemoveItem(sIndex);
-          defaultHz.RemoveAt(sIndex);
+          _defaultHz.RemoveAt(sIndex);
 
           if (sIndex > 0)
           {
             sIndex--;
             lcRefreshRatesList.SelectedListItemIndex = sIndex;
           }
+          SettingsChanged(true);
         }
         // Default
         if (control == btnDefault)
         {
           InsertDefaultValues();
+          SettingsChanged(true);
         }
         if (control == btnUseDefaultRefreshRate)
         {
@@ -257,6 +256,7 @@ namespace WindowPlugins.GUISettings
           {
             btnSelectDefaultRefreshRate.IsEnabled = false;
           }
+          SettingsChanged(true);
         }
         // Add
         if (control == btnAdd)
@@ -275,12 +275,13 @@ namespace WindowPlugins.GUISettings
                 _newRefreshRateListItem.AlbumInfoTag = _newRateDataInfo;
                 _newRefreshRateListItem.OnItemSelected += OnItemSelected;
                 lcRefreshRatesList.Add(_newRefreshRateListItem);
-                defaultHz.Add(_name);
+                _defaultHz.Add(_name);
                 UpdateRefreshRateDataFields();
                 SetProperties();
               }
             }
           }
+          SettingsChanged(true);
         }
         // Edit
         if (control == btnEdit)
@@ -296,9 +297,10 @@ namespace WindowPlugins.GUISettings
                 lcRefreshRatesList.SelectedListItem.Label = _name;
                 _newRateDataInfo = new RefreshRateData(_name, _framerate, _refreshrate, _action);
                 lcRefreshRatesList.SelectedListItem.AlbumInfoTag = _newRateDataInfo;
-                defaultHz[defaultHzIndex] = _name;
+                _defaultHz[_defaultHzIndex] = _name;
                 UpdateRefreshRateDataFields();
                 SetProperties();
+                SettingsChanged(true);
               }
             }
           }
@@ -308,11 +310,13 @@ namespace WindowPlugins.GUISettings
       if (control == btnUseDefaultRefreshRate)
       {
         EnableControls();
+        SettingsChanged(true);
       }
       // Select default refreshrate
       if (control == btnSelectDefaultRefreshRate)
       {
         OnSelectDefaultRefreshRate();
+        SettingsChanged(true);
       }
 
       base.OnClicked(controlId, control, actionType);
@@ -331,9 +335,20 @@ namespace WindowPlugins.GUISettings
     protected override void OnPageDestroy(int newWindowId)
     {
       SaveSettings();
-      //GUISettingsGeneral.SettingsChanged = settingsChanged;
       base.OnPageDestroy(newWindowId);
     }
+
+    public override void OnAction(Action action)
+    {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
+      base.OnAction(action);
+    }
+
+    #endregion
 
     private RefreshRateData RefreshRateData(GUIListItem item)
     {
@@ -343,9 +358,9 @@ namespace WindowPlugins.GUISettings
 
     private void SetProperties()
     {
-      if (defaultHzIndex >= 0)
+      if (_defaultHzIndex >= 0)
       {
-        GUIPropertyManager.SetProperty("#defaultrate", defaultHz[defaultHzIndex].ToString());
+        GUIPropertyManager.SetProperty("#defaultrate", _defaultHz[_defaultHzIndex].ToString());
       }
       else
       {
@@ -407,7 +422,7 @@ namespace WindowPlugins.GUISettings
     private void InsertDefaultValues()
     {
       lcRefreshRatesList.Clear();
-      defaultHz.Clear();
+      _defaultHz.Clear();
       Settings xmlreader = new MPSettings();
       //first time mp config is run, no refreshrate settings available, create the default ones.
       string[] p = new String[4];
@@ -421,7 +436,7 @@ namespace WindowPlugins.GUISettings
       item.AlbumInfoTag = refreshRateData;
       item.OnItemSelected += OnItemSelected;
       lcRefreshRatesList.Add(item);
-      defaultHz.Add(p[0]);
+      _defaultHz.Add(p[0]);
 
       p = new String[4];
       p[0] = "PAL";
@@ -434,7 +449,7 @@ namespace WindowPlugins.GUISettings
       item.AlbumInfoTag = refreshRateData;
       item.OnItemSelected += OnItemSelected;
       lcRefreshRatesList.Add(item);
-      defaultHz.Add(p[0]);
+      _defaultHz.Add(p[0]);
 
       p = new String[4];
       p[0] = "HDTV";
@@ -447,7 +462,7 @@ namespace WindowPlugins.GUISettings
       item.AlbumInfoTag = refreshRateData;
       item.OnItemSelected += OnItemSelected;
       lcRefreshRatesList.Add(item);
-      defaultHz.Add(p[0]);
+      _defaultHz.Add(p[0]);
 
       p = new String[4];
       p[0] = "NTSC";
@@ -460,7 +475,7 @@ namespace WindowPlugins.GUISettings
       item.AlbumInfoTag = refreshRateData;
       item.OnItemSelected += OnItemSelected;
       lcRefreshRatesList.Add(item);
-      defaultHz.Add(p[0]);
+      _defaultHz.Add(p[0]);
 
       //tv section is not editable, it's static.
       string tvExtCmd = xmlreader.GetValueAsString("general", "refreshrateTV_ext", "");
@@ -480,7 +495,7 @@ namespace WindowPlugins.GUISettings
       item.AlbumInfoTag = refreshRateData;
       item.OnItemSelected += OnItemSelected;
       lcRefreshRatesList.Add(item);
-      defaultHz.Add(parameters[0]);
+      _defaultHz.Add(parameters[0]);
     }
 
     private void UpdateRefreshRateDataFields()
@@ -735,14 +750,14 @@ namespace WindowPlugins.GUISettings
       dlg.Reset();
       dlg.SetHeading(496); // Menu
 
-      foreach (string rate in defaultHz)
+      foreach (string rate in _defaultHz)
       {
         dlg.Add(rate);
       }
 
-      if (defaultHzIndex >= 0)
+      if (_defaultHzIndex >= 0)
       {
-        dlg.SelectedLabel = defaultHzIndex;
+        dlg.SelectedLabel = _defaultHzIndex;
       }
 
       // Show dialog menu
@@ -753,9 +768,14 @@ namespace WindowPlugins.GUISettings
         return;
       }
 
-      defaultHzIndex = dlg.SelectedLabel;
-      sDefaultHz = dlg.SelectedLabelText;
+      _defaultHzIndex = dlg.SelectedLabel;
+      _sDefaultHz = dlg.SelectedLabelText;
       SetProperties();
+    }
+
+    private void SettingsChanged(bool settingsChanged)
+    {
+      MediaPortal.GUI.Settings.GUISettings.SettingsChanged = settingsChanged;
     }
   }
 }

@@ -24,7 +24,6 @@ using System.Globalization;
 using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
 using MediaPortal.Profile;
-using MediaPortal.Util;
 using Action = MediaPortal.GUI.Library.Action;
 
 namespace WindowPlugins.GUISettings
@@ -38,10 +37,9 @@ namespace WindowPlugins.GUISettings
     [SkinControl(3)] protected GUIButtonControl btnZapDelay = null;
     [SkinControl(4)] protected GUIButtonControl btnZapTimeOut = null;
 
-    private bool settingsSaved = false;
-    private int displayTimeout = 0;
-    private int zapDelay= 2;
-    private int zapTimeout = 5;
+    private int _displayTimeout = 0;
+    private int _zapDelay= 2;
+    private int _zapTimeout = 5;
     
     
     private class CultureComparer : IComparer
@@ -63,6 +61,32 @@ namespace WindowPlugins.GUISettings
       GetID = (int)Window.WINDOW_SETTINGS_ONSCREEN_DISPLAY;
     }
 
+    #region Serialisation
+
+    private void LoadSettings()
+    {
+      using (Settings xmlreader = new MPSettings())
+      {
+        _displayTimeout = xmlreader.GetValueAsInt("movieplayer", "osdtimeout", 0);
+        _zapDelay = xmlreader.GetValueAsInt("movieplayer", "zapdelay", 2);
+        _zapTimeout = xmlreader.GetValueAsInt("movieplayer", "zaptimeout", 5);
+      }
+    }
+
+    private void SaveSettings()
+    {
+      using (Settings xmlwriter = new MPSettings())
+      {
+        xmlwriter.SetValue("movieplayer", "osdtimeout", _displayTimeout);
+        xmlwriter.SetValue("movieplayer", "zapdelay", _zapDelay);
+        xmlwriter.SetValue("movieplayer", "zaptimeout", _zapTimeout);
+      }
+    }
+
+    #endregion
+
+    #region Overrides
+
     public override bool Init()
     {
       return Load(GUIGraphicsContext.Skin + @"\settings_onscreendisplay.xml");
@@ -72,36 +96,42 @@ namespace WindowPlugins.GUISettings
     {
       string getNumber;
       int number;
+      
       if (control == btnDisplayTimeout)
       {
-        getNumber = displayTimeout.ToString();
+        getNumber = _displayTimeout.ToString();
         GetStringFromKeyboard(ref getNumber, 2);
         
         if (Int32.TryParse(getNumber, out number))
         {
-          displayTimeout = number;
+          _displayTimeout = number;
+          SettingsChanged(true);
         }
         SetProperties();
       }
+      
       if (control == btnZapDelay)
       {
-        getNumber = zapDelay.ToString();
+        getNumber = _zapDelay.ToString();
         GetStringFromKeyboard(ref getNumber, 2);
         
         if (Int32.TryParse(getNumber, out number))
         {
-          zapDelay = number;
+          _zapDelay = number;
+          SettingsChanged(true);
         }
         SetProperties();
       }
+      
       if (control == btnZapTimeOut)
       {
-        getNumber = zapTimeout.ToString();
+        getNumber = _zapTimeout.ToString();
         GetStringFromKeyboard(ref getNumber, 2);
 
         if (Int32.TryParse(getNumber, out number))
         {
-          zapTimeout = number;
+          _zapTimeout = number;
+          SettingsChanged(true);
         }
         SetProperties();
       }
@@ -123,6 +153,18 @@ namespace WindowPlugins.GUISettings
 
       base.OnPageDestroy(newWindowId);
     }
+
+    public override void OnAction(Action action)
+    {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
+      base.OnAction(action);
+    }
+
+    #endregion
 
     private void GetStringFromKeyboard(ref string strLine, int maxLenght)
     {
@@ -149,34 +191,15 @@ namespace WindowPlugins.GUISettings
 
     private void SetProperties()
     {
-      GUIPropertyManager.SetProperty("#displayTimeout", displayTimeout + " " + GUILocalizeStrings.Get(2999));
-      GUIPropertyManager.SetProperty("#zapDelay", zapDelay + " " + GUILocalizeStrings.Get(2999));
-      GUIPropertyManager.SetProperty("#zapTimeout", zapTimeout + " " + GUILocalizeStrings.Get(2999));
+      GUIPropertyManager.SetProperty("#displayTimeout", _displayTimeout + " " + GUILocalizeStrings.Get(2999));
+      GUIPropertyManager.SetProperty("#zapDelay", _zapDelay + " " + GUILocalizeStrings.Get(2999));
+      GUIPropertyManager.SetProperty("#zapTimeout", _zapTimeout + " " + GUILocalizeStrings.Get(2999));
     }
     
-    #region Serialisation
-
-    private void LoadSettings()
+    private void SettingsChanged(bool settingsChanged)
     {
-      using (Settings xmlreader = new MPSettings())
-      {
-        displayTimeout = xmlreader.GetValueAsInt("movieplayer", "osdtimeout", 0);
-        zapDelay = xmlreader.GetValueAsInt("movieplayer", "zapdelay", 2);
-        zapTimeout = xmlreader.GetValueAsInt("movieplayer", "zaptimeout", 5);
-      }
+      MediaPortal.GUI.Settings.GUISettings.SettingsChanged = settingsChanged;
     }
-
-    private void SaveSettings()
-    {
-      using (Settings xmlwriter = new MPSettings())
-      {
-        xmlwriter.SetValue("movieplayer", "osdtimeout", displayTimeout);
-        xmlwriter.SetValue("movieplayer", "zapdelay", zapDelay);
-        xmlwriter.SetValue("movieplayer", "zaptimeout", zapTimeout);
-      }
-    }
-
-    #endregion
 
   }
 }

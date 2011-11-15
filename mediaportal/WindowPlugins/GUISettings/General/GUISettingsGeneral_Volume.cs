@@ -44,10 +44,9 @@ namespace WindowPlugins.GUISettings
     [SkinControl(8)] protected GUICheckButton btnCustom = null;
     [SkinControl(9)] protected GUICheckButton btnEnableOSDVolume = null;
     
-    private bool settingsChanged;
-    private bool settingsSaved;
-    private string customVolume = string.Empty;
-    private bool useMixing = false;
+    private bool _settingsSaved;
+    private string _customVolume = string.Empty;
+    private bool _useMixing = false;
 
     private class CultureComparer : IComparer
     {
@@ -66,12 +65,6 @@ namespace WindowPlugins.GUISettings
     public GUISettingsGeneralVolume()
     {
       GetID = (int)Window.WINDOW_SETTINGS_VOLUME;
-    }
-
-    public bool SettingsChanged
-    {
-      get { return settingsChanged; }
-      set { settingsChanged = value; }
     }
 
     #region Serialisation
@@ -101,12 +94,12 @@ namespace WindowPlugins.GUISettings
         btnLogarithmic.Selected= volumeStyle == 2;
         btnCustom.Selected = volumeStyle == 3;
         btnVistaWin7.Selected = volumeStyle == 4;
-        customVolume = xmlreader.GetValueAsString("volume", "table",
+        _customVolume = xmlreader.GetValueAsString("volume", "table",
                                               "0, 4095, 8191, 12287, 16383, 20479, 24575, 28671, 32767, 36863, 40959, 45055, 49151, 53247, 57343, 61439, 65535");
 
         // When Upmixing has selected, we need to use Wave Volume
-        useMixing = xmlreader.GetValueAsBool("audioplayer", "mixing", false);
-        if (useMixing)
+        _useMixing = xmlreader.GetValueAsBool("audioplayer", "mixing", false);
+        if (_useMixing)
         {
           isDigital = true;
           EnableMixerButtons(false);
@@ -120,9 +113,9 @@ namespace WindowPlugins.GUISettings
 
     private void SaveSettings()
     {
-      if (!settingsSaved)
+      if (!_settingsSaved)
       {
-        settingsSaved = true;
+        _settingsSaved = true;
         using (Settings xmlwriter = new MPSettings())
         {
           if (btnClassic.Selected)
@@ -147,18 +140,20 @@ namespace WindowPlugins.GUISettings
           }
 
           bool useDigital = btnWave.Selected;
-          if (useMixing)
+          if (_useMixing)
           {
             useDigital = true;
           }
           xmlwriter.SetValueAsBool("volume", "digital", useDigital);
-          xmlwriter.SetValue("volume", "table", customVolume);
+          xmlwriter.SetValue("volume", "table", _customVolume);
           xmlwriter.SetValueAsBool("volume", "defaultVolumeOSD", btnEnableOSDVolume.Selected);
         }
       }
     }
 
     #endregion
+
+    #region Overrides
 
     public override bool Init()
     {
@@ -178,6 +173,7 @@ namespace WindowPlugins.GUISettings
         {
           btnWave.Selected = true;
         }
+        SettingsChanged(true);
       }
       if (control == btnWave)
       {
@@ -189,6 +185,7 @@ namespace WindowPlugins.GUISettings
         {
           btnMasterVolume.Selected = true;
         }
+        SettingsChanged(true);
       }
       //Scale
       if (control == btnWinXP)
@@ -199,8 +196,9 @@ namespace WindowPlugins.GUISettings
           btnLogarithmic.Selected = false;
           btnVistaWin7.Selected = false;
           btnCustom.Selected = false;
-          customVolume = string.Empty;
+          _customVolume = string.Empty;
           SetProperties();
+          SettingsChanged(true);
         }
       }
       if (control == btnClassic)
@@ -211,8 +209,9 @@ namespace WindowPlugins.GUISettings
           btnLogarithmic.Selected = false;
           btnVistaWin7.Selected = false;
           btnCustom.Selected = false;
-          customVolume = string.Empty;
+          _customVolume = string.Empty;
           SetProperties();
+          SettingsChanged(true);
         }
       }
       if (control == btnLogarithmic)
@@ -223,8 +222,9 @@ namespace WindowPlugins.GUISettings
           btnClassic.Selected = false;
           btnVistaWin7.Selected = false;
           btnCustom.Selected = false;
-          customVolume = string.Empty;
+          _customVolume = string.Empty;
           SetProperties();
+          SettingsChanged(true);
         }
       }
       if (control == btnVistaWin7)
@@ -235,8 +235,9 @@ namespace WindowPlugins.GUISettings
           btnClassic.Selected = false;
           btnLogarithmic.Selected = false;
           btnCustom.Selected = false;
-          customVolume = string.Empty;
+          _customVolume = string.Empty;
           SetProperties();
+          SettingsChanged(true);
         }
       }
       if (control == btnCustom)
@@ -248,16 +249,17 @@ namespace WindowPlugins.GUISettings
           btnLogarithmic.Selected = false;
           btnVistaWin7.Selected = false;
           
-          string volumeTable = customVolume;
+          string volumeTable = _customVolume;
           GetStringFromKeyboard(ref volumeTable);
           ValidateCustomTable(ref volumeTable);
 
           if (!string.IsNullOrEmpty(volumeTable))
           {
-            customVolume = volumeTable;
+            _customVolume = volumeTable;
           }
 
           SetProperties();
+          SettingsChanged(true);
         }
       }
       
@@ -270,19 +272,30 @@ namespace WindowPlugins.GUISettings
       GUIPropertyManager.SetProperty("#currentmodule", GUILocalizeStrings.Get(101007));
       LoadSettings();
       SetProperties();
-      settingsSaved = false;
+      _settingsSaved = false;
     }
 
     protected override void OnPageDestroy(int newWindowId)
     {
       SaveSettings();
-      //GUISettingsGeneral.SettingsChanged = settingsChanged;
       base.OnPageDestroy(newWindowId);
     }
-    
+
+    public override void OnAction(Action action)
+    {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
+      base.OnAction(action);
+    }
+
+    #endregion
+
     private void SetProperties()
     {
-      GUIPropertyManager.SetProperty("#customScalevalues", customVolume);
+      GUIPropertyManager.SetProperty("#customScalevalues", _customVolume);
     }
 
     private void EnableMixerButtons(bool enable)
@@ -380,6 +393,11 @@ namespace WindowPlugins.GUISettings
       {
         customTable = string.Empty;
       }
+    }
+    
+    private void SettingsChanged(bool settingsChanged)
+    {
+      MediaPortal.GUI.Settings.GUISettings.SettingsChanged = settingsChanged;
     }
    }
 }

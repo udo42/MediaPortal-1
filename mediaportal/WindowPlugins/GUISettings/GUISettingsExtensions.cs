@@ -51,6 +51,8 @@ namespace MediaPortal.GUI.Settings
       GetID = (int)GUIWindow.Window.WINDOW_SETTINGS_EXTENSIONS;
     }
 
+    #region Overrides
+
     public override bool Init()
     {
       return Load(GUIGraphicsContext.Skin + @"\settings_extensions.xml");
@@ -113,9 +115,16 @@ namespace MediaPortal.GUI.Settings
 
     public override void OnAction(Action action)
     {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
       base.OnAction(action);
     }
-    
+
+    #endregion
+
     private void OnExtensions()
     {
       string extensions = string.Empty;
@@ -196,13 +205,7 @@ namespace MediaPortal.GUI.Settings
       {
         xmlwriter.SetValue(_section, "extensions", extensions);
       }
-      // update internal plugins settings
-      //if (VirtualDirectories.Instance.Movies != null)
-      //{
-      //  VirtualDirectories.Instance.Movies.LoadSettings(_section);
-      //  VirtualDirectories.Instance.Movies.SetExtensions(aExtensions);
-      //}
-      // update internal plugins settings
+      
       switch (_section)
       {
         case "movies":

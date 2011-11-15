@@ -95,10 +95,20 @@ namespace MediaPortal.GUI.Settings
         xmlwriter.SetValue("pictures", "kenburnsspeed", m_iKenBurnsSpeed.ToString());
         xmlwriter.SetValueAsBool("pictures", "kenburns", m_bKenBurns);
         xmlwriter.SetValueAsBool("pictures", "random", m_bRandom);
+
+        xmlwriter.SetValueAsBool("pictures", "autoRepeat", cmLoopSlideShows.Selected);
+        xmlwriter.SetValueAsBool("pictures", "autoShuffle", cmShuffleSlideShows.Selected);
+        xmlwriter.SetValueAsBool("pictures", "useExif", cmExifSlideShows.Selected);
+        xmlwriter.SetValueAsBool("pictures", "usePicasa", cmPicasaSlideShows.Selected);
+        xmlwriter.SetValueAsBool("pictures", "useDayGrouping", cmGroupByDaySlideShows.Selected);
+        xmlwriter.SetValueAsBool("pictures", "enableVideoPlayback", cmEnablePlaySlideShows.Selected);
+        xmlwriter.SetValueAsBool("pictures", "playVideosInSlideshows", cmPlayInSlideShows.Selected);
       }
     }
 
     #endregion
+
+    #region Overrides
 
     public override bool Init()
     {
@@ -107,6 +117,11 @@ namespace MediaPortal.GUI.Settings
 
     public override void OnAction(Action action)
     {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
       switch (action.wID)
       {
         case Action.ActionType.ACTION_PREVIOUS_MENU:
@@ -250,93 +265,22 @@ namespace MediaPortal.GUI.Settings
 
     protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
     {
-      if (cmLoopSlideShows == control)
+      if (cmLoopSlideShows == control || cmShuffleSlideShows == control || control == cmExifSlideShows ||
+          control == cmPicasaSlideShows || control == cmGroupByDaySlideShows || control == cmEnablePlaySlideShows ||
+          control == cmPlayInSlideShows)
       {
-        OnLoopSlideShows();
-      }
-      if (cmShuffleSlideShows == control)
-      {
-        OnShuffleSlideShows();
-      }
-      if (control == cmExifSlideShows)
-      {
-        OnExif();
-      }
-      if (control == cmPicasaSlideShows)
-      {
-        OnPicasa();
-      }
-      if (control == cmGroupByDaySlideShows)
-      {
-        OnGroupByDay();
-      }
-      if (control == cmEnablePlaySlideShows)
-      {
-        OnEnablePlay();
-      }
-      if (control == cmPlayInSlideShows)
-      {
-        OnPlayInSlideShow();
+        SettingsChanged(true);
       }
       
       base.OnClicked(controlId, control, actionType);
     }
 
-    private void OnLoopSlideShows()
+    #endregion
+
+    private void SettingsChanged(bool settingsChanged)
     {
-      using (Profile.Settings xmlwriter = new Profile.MPSettings())
-      {
-        xmlwriter.SetValueAsBool("pictures", "autoRepeat", cmLoopSlideShows.Selected);
-      }
+      MediaPortal.GUI.Settings.GUISettings.SettingsChanged = settingsChanged;
     }
 
-    private void OnShuffleSlideShows()
-    {
-      using (Profile.Settings xmlwriter = new Profile.MPSettings())
-      {
-        xmlwriter.SetValueAsBool("pictures", "autoShuffle", cmShuffleSlideShows.Selected);
-      }
-    }
-
-    private void OnExif()
-    {
-      using (Profile.Settings xmlwriter = new Profile.MPSettings())
-      {
-        xmlwriter.SetValueAsBool("pictures", "useExif", cmExifSlideShows.Selected);
-      }
-    }
-
-    private void OnPicasa()
-    {
-      using (Profile.Settings xmlwriter = new Profile.MPSettings())
-      {
-        xmlwriter.SetValueAsBool("pictures", "usePicasa", cmPicasaSlideShows.Selected);
-      }
-    }
-
-    private void OnGroupByDay()
-    {
-      using (Profile.Settings xmlwriter = new Profile.MPSettings())
-      {
-        xmlwriter.SetValueAsBool("pictures", "useDayGrouping", cmGroupByDaySlideShows.Selected);
-      }
-    }
-
-    private void OnEnablePlay()
-    {
-      using (Profile.Settings xmlwriter = new Profile.MPSettings())
-      {
-        xmlwriter.SetValueAsBool("pictures", "enableVideoPlayback", cmEnablePlaySlideShows.Selected);
-      }
-    }
-
-    private void OnPlayInSlideShow()
-    {
-      using (Profile.Settings xmlwriter = new Profile.MPSettings())
-      {
-        xmlwriter.SetValueAsBool("pictures", "playVideosInSlideshows", cmPlayInSlideShows.Selected);
-      }
-    }
-    
   }
 }

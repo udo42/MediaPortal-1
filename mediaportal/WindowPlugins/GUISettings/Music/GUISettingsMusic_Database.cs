@@ -59,7 +59,7 @@ namespace MediaPortal.GUI.Settings
     private ArrayList _dateAdded = new ArrayList();
     private Thread _scanThread = null;
     private bool _scanRunning = false;
-    private int scanShare = 0;
+    private int _scanShare = 0;
 
     private String _defaultShare;
     private bool _rememberLastFolder;
@@ -112,7 +112,7 @@ namespace MediaPortal.GUI.Settings
         _dateAddedSelectedIndex = xmlreader.GetValueAsInt("musicfiles", "dateadded", 0);
 
         lcFolders.Clear();
-        scanShare = 0;
+        _scanShare = 0;
         SettingsSharesHelper settingsSharesHelper = new SettingsSharesHelper();
         // Load share settings
         settingsSharesHelper.LoadSettings("music");
@@ -130,7 +130,7 @@ namespace MediaPortal.GUI.Settings
             {
               item.IsPlayed = true;
               item.Label2 = GUILocalizeStrings.Get(193);
-              scanShare++;
+              _scanShare++;
             }
             item.OnItemSelected += OnItemSelected;
             item.Label = FolderInfo(item).Folder;
@@ -215,7 +215,7 @@ namespace MediaPortal.GUI.Settings
           lcFolders.SelectedListItem.Label2 = "";
           lcFolders.SelectedListItem.IsPlayed = false;
           FolderInfo(lcFolders.SelectedListItem).ScanShare = false;
-          scanShare--;
+          _scanShare--;
           
         }
         else
@@ -223,7 +223,7 @@ namespace MediaPortal.GUI.Settings
           lcFolders.SelectedListItem.Label2 = GUILocalizeStrings.Get(193); // Scan
           lcFolders.SelectedListItem.IsPlayed = true;
           FolderInfo(lcFolders.SelectedListItem).ScanShare = true;
-          scanShare++;
+          _scanShare++;
        }
       }
 
@@ -232,6 +232,7 @@ namespace MediaPortal.GUI.Settings
         if (btnStripartistprefixes.Selected)
         {
           OnStripArtistsPrefixes();
+          SettingsChanged(true);
         }
       }
 
@@ -245,6 +246,7 @@ namespace MediaPortal.GUI.Settings
         {
           btnCreateMissingFolderThumbs.IsEnabled = false;
         }
+        SettingsChanged(true);
       }
 
       if (control == btnDateAdded)
@@ -254,7 +256,7 @@ namespace MediaPortal.GUI.Settings
 
       if (control == btnUpdateDatabase)
       {
-        if (scanShare == 0)
+        if (_scanShare == 0)
         {
           GUIDialogOK dlgOk = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
           dlgOk.SetHeading(GUILocalizeStrings.Get(1020)); // Information
@@ -267,7 +269,17 @@ namespace MediaPortal.GUI.Settings
       }
 
     }
-    
+
+    public override void OnAction(Action action)
+    {
+      if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
+      {
+        return;
+      }
+
+      base.OnAction(action);
+    }
+
     #endregion
 
     private void OnStripArtistsPrefixes()
@@ -333,7 +345,7 @@ namespace MediaPortal.GUI.Settings
         }
       }
 
-      for (int index = 0; index < scanShare; index++)
+      for (int index = 0; index < _scanShare; index++)
       {
         GUIListItem item = (GUIListItem)scanShares[index];
         string path = item.Path;
@@ -500,6 +512,11 @@ namespace MediaPortal.GUI.Settings
       {
 
       }
+    }
+
+    private void SettingsChanged(bool settingsChanged)
+    {
+      MediaPortal.GUI.Settings.GUISettings.SettingsChanged = settingsChanged;
     }
   }
 }
