@@ -278,7 +278,18 @@ namespace MediaPortal.GUI.Settings
           _folderPath = path;
           return;
         }
-
+        
+        // Update changes
+        FolderInfo(_shareFolderListItem).Name = _folderName;
+        _shareFolderListItem.Label = _folderName;
+        FolderInfo(_shareFolderListItem).Folder = _folderPath;
+        FolderInfo(_shareFolderListItem).PinCode = _folderPin;
+        FolderInfo(_shareFolderListItem).CreateThumbs = _shareCreateThumbs;
+        FolderInfo(_shareFolderListItem).DefaultLayout = SettingsSharesHelper.ProperLayoutFromDefault(_folderDefaultLayoutIndex);
+        // Add changes to a listitem
+        videosShareListcontrol.SelectedListItem.AlbumInfoTag = _shareFolderListItem.AlbumInfoTag;
+        videosShareListcontrol.SelectedListItem.Label = _folderName;
+        // Sort list
         GUIListItem newItem = _shareFolderListItem;
         Sort();
         int index = videosShareListcontrol.ListItems.IndexOf(newItem);

@@ -2,7 +2,7 @@
 <window>
   <id>1012</id>
   <defaultcontrol>2</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
+  <allowoverlay>no</allowoverlay>
   <controls>
     <import>common.settings.xml</import>
     <control>
@@ -37,7 +37,7 @@
       <id>1</id>
       <posX>680</posX>
       <posY>150</posY>
-      <font>font9</font>
+      <font>font10</font>
       <width>600</width>
       <label>#scanstatus</label>
     </control>
@@ -67,7 +67,7 @@
       <IconYOff>4</IconYOff>
       <keepaspectratio>yes</keepaspectratio>
       <font>font11</font>
-      <font2>font9</font2>
+      <font2>font10</font2>
       <font3>font11</font3>
       <textcolor>ffffffff</textcolor>
       <textcolor2>ffffffff</textcolor2>

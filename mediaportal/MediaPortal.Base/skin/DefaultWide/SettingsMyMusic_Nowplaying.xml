@@ -2,7 +2,7 @@
 <window>
   <id>1013</id>
   <defaultcontrol>2</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
+  <allowoverlay>no</allowoverlay>
   <controls>
     <import>common.settings.xml</import>
     <control>
@@ -14,7 +14,7 @@
       <height>390</height>
       <width>780</width>
       <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>70ffffff</colordiffuse>
+      <colordiffuse>ccffffff</colordiffuse>
     </control>
     <control>
       <description>Dynamic content label</description>
@@ -31,9 +31,8 @@
       <label>1465</label>
       <posX>300</posX>
       <posY>215</posY>
-      <width>720</width>
+      <width>690</width>
       <ondown>3</ondown>
-      <textureFocus>listfocus.png</textureFocus>
     </control>
     <control>
       <description>Disable Interent lookups for best albums       tracks</description>
@@ -42,10 +41,9 @@
       <label>1466</label>
       <posX>300</posX>
       <posY>260</posY>
-      <width>720</width>
+      <width>690</width>
       <onup>2</onup>
       <ondown>4</ondown>
-      <textureFocus>listfocus.png</textureFocus>
     </control>
     <control>
       <description>Disable interent lookups for track suggestions</description>
@@ -54,10 +52,9 @@
       <label>1467</label>
       <posX>300</posX>
       <posY>305</posY>
-      <width>720</width>
+      <width>690</width>
       <onup>3</onup>
       <ondown>5</ondown>
-      <textureFocus>listfocus.png</textureFocus>
     </control>
     <control>
       <description>Switch artists</description>
@@ -66,10 +63,9 @@
       <label>1468</label>
       <posX>300</posX>
       <posY>350</posY>
-      <width>720</width>
+      <width>690</width>
       <onup>4</onup>
       <ondown>6</ondown>
-      <textureFocus>listfocus.png</textureFocus>
     </control>
     <control>
       <description>VuMeter label</description>
@@ -77,9 +73,8 @@
       <id>1</id>
       <posX>300</posX>
       <posY>410</posY>
-      <width>720</width>
+      <width>690</width>
       <label>1469</label>
-      <textureFocus>listfocus.png</textureFocus>
     </control>
     <control>
       <description>VUMeter button</description>

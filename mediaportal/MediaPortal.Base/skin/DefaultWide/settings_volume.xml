@@ -2,7 +2,7 @@
 <window>
   <id>1007</id>
   <defaultcontrol>9</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
+  <allowoverlay>no</allowoverlay>
   <controls>
     <import>common.settings.xml</import>
     <control>
@@ -14,7 +14,7 @@
       <height>600</height>
       <width>780</width>
       <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>70ffffff</colordiffuse>
+      <colordiffuse>ccffffff</colordiffuse>
     </control>
     <!--Control-->
     <control>
@@ -141,7 +141,7 @@
       <posX>600</posX>
       <posY>510</posY>
       <width>600</width>
-      <font>font9</font>
+      <font>font10</font>
       <label>#customScalevalues</label>
       <visible>control.hasfocus(8)</visible>
     </control>

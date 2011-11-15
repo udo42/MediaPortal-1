@@ -2,7 +2,7 @@
 <window>
   <id>1001</id>
   <defaultcontrol>2</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
+  <allowoverlay>no</allowoverlay>
   <define>#header.label:1265</define>
   <define>#header.hover:hover_settings.png</define>
   <controls>
@@ -14,10 +14,10 @@
       <id>1</id>
       <posX>455</posX>
       <posY>110</posY>
-      <height>500</height>
+      <height>520</height>
       <width>390</width>
       <texture mask="video_poster_mask.png">blue.png</texture>
-      <colordiffuse>70ffffff</colordiffuse>
+      <colordiffuse>ccffffff</colordiffuse>
     </control>
     <control>
       <description>buttons</description>
@@ -73,7 +73,7 @@
       <width>360</width>
       <textXOff>80</textXOff>
       <spinPosX>630</spinPosX>
-      <spinPosY>620</spinPosY>
+      <spinPosY>660</spinPosY>
       <onleft>3</onleft>
       <onright>35</onright>
       <spaceBetweenItems>0</spaceBetweenItems>

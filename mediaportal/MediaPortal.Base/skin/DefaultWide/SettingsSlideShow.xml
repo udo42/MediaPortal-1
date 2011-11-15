@@ -2,8 +2,8 @@
 <window>
   <id>12</id>
   <defaultcontrol>2</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
-  <define>#header.label:1</define>
+  <allowoverlay>no</allowoverlay>
+  <define>#header.label:101015</define>
   <define>#header.hover:hover_my pictures.png</define>
   <controls>
     <import>common.settings.xml</import>
@@ -16,7 +16,7 @@
       <height>500</height>
       <width>390</width>
       <texture mask="video_poster_mask.png">blue.png</texture>
-      <colordiffuse>70ffffff</colordiffuse>
+      <colordiffuse>ccffffff</colordiffuse>
     </control>
     <control>
       <description>buttons</description>

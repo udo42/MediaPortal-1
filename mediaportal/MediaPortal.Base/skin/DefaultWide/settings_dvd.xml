@@ -2,7 +2,7 @@
 <window>
   <id>704</id>
   <defaultcontrol>24</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
+  <allowoverlay>no</allowoverlay>
   <define>#header.label:6015</define>
   <define>#header.hover:hover_my videos.png</define>
   <controls>
@@ -16,7 +16,7 @@
       <height>500</height>
       <width>390</width>
       <texture mask="video_poster_mask.png">blue.png</texture>
-      <colordiffuse>70ffffff</colordiffuse>
+      <colordiffuse>ccffffff</colordiffuse>
     </control>
     <control>
       <description>buttons</description>

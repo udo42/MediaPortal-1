@@ -2,7 +2,7 @@
 <window>
   <id>1003</id>
   <defaultcontrol>2</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
+  <allowoverlay>no</allowoverlay>
   <controls>
     <import>common.settings.xml</import>
     <!-- Mask-->
@@ -15,7 +15,7 @@
       <width>1220</width>
       <height>700</height>
       <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>70ffffff</colordiffuse>
+      <colordiffuse>ccffffff</colordiffuse>
     </control>
     <control>
       <description>Section name</description>
@@ -34,7 +34,7 @@
       <posY>140</posY>
       <width>300</width>
       <height>35</height>
-      <font>font9</font>
+      <font>font10</font>
       <label>1310</label>
       <onup>17</onup>
     </control>
@@ -46,7 +46,7 @@
       <posY>175</posY>
       <width>300</width>
       <height>35</height>
-      <font>font9</font>
+      <font>font10</font>
       <label>1311</label>
     </control>
     <control>
@@ -59,7 +59,7 @@
       <width>300</width>
       <height>35</height>
       <align>right</align>
-      <font>font9</font>
+      <font>font10</font>
     </control>
     <control>
       <description>Autorestart</description>
@@ -70,10 +70,10 @@
       <label>1313</label>
       <width>300</width>
       <height>35</height>
-      <onright>5</onright>
+      <onright>6</onright>
       <align>right</align>
-      <font>font9</font>
-      <ondown>6</ondown>
+      <font>font10</font>
+      <ondown>10</ondown>
     </control>
     <control>
       <description>Seconds label</description>
@@ -93,6 +93,7 @@
       <posX>1130</posX>
       <posY>185</posY>
       <onup>5</onup>
+			<onleft>5</onleft>
       <ondown>99</ondown>
       <align>right</align>
       <font>font11</font>
@@ -126,7 +127,7 @@
         <width>420</width>
         <height>35</height>
         <align>right</align>
-        <font>font9</font>
+        <font>font10</font>
       </control>
       <control>
         <description>Splashscreen</description>
@@ -137,7 +138,7 @@
         <width>420</width>
         <height>35</height>
         <align>right</align>
-        <font>font9</font>
+        <font>font10</font>
       </control>
       <control>
         <description>On top</description>
@@ -148,7 +149,7 @@
         <width>420</width>
         <height>35</height>
         <align>right</align>
-        <font>font9</font>
+        <font>font10</font>
       </control>
       <control>
         <description>Hide taskbar</description>
@@ -159,7 +160,7 @@
         <width>420</width>
         <height>35</height>
         <align>right</align>
-        <font>font9</font>
+        <font>font10</font>
       </control>
       <control>
         <description>Aautostart on WinUp</description>
@@ -170,7 +171,7 @@
         <height>35</height>
         <onright>21</onright>
         <align>right</align>
-        <font>font9</font>
+        <font>font10</font>
       </control>
       <control>
         <description>Minimize to tray Startup</description>
@@ -180,7 +181,7 @@
         <width>420</width>
         <height>35</height>
         <align>right</align>
-        <font>font9</font>
+        <font>font10</font>
         <onright>22</onright>
       </control>
       <control>
@@ -191,7 +192,7 @@
         <width>420</width>
         <height>35</height>
         <align>right</align>
-        <font>font9</font>
+        <font>font10</font>
         <onright>23</onright>
       </control>
     </control>
@@ -209,70 +210,70 @@
         <type>checkbutton</type>
         <id>17</id>
         <label>1409</label>
-        <width>550</width>
+        <width>600</width>
         <height>35</height>
         <align>right</align>
-        <font>font9</font>
+        <font>font10</font>
       </control>
       <control>
         <description>Turn monitor on resume</description>
         <type>checkbutton</type>
         <id>18</id>
         <label>1410</label>
-        <width>550</width>
+        <width>600</width>
         <height>35</height>
         <align>right</align>
-        <font>font9</font>
+        <font>font10</font>
       </control>
       <control>
         <description>S3 standby</description>
         <type>checkbutton</type>
         <id>19</id>
         <label>1411</label>
-        <width>550</width>
+        <width>600</width>
         <height>35</height>
         <align>right</align>
-        <font>font9</font>
+        <font>font10</font>
       </control>
       <control>
         <description>Workaround ifx</description>
         <type>checkbutton</type>
         <id>20</id>
         <label>1412</label>
-        <width>550</width>
+        <width>600</width>
         <height>35</height>
         <align>right</align>
-        <font>font9</font>
+        <font>font10</font>
       </control>
       <control>
         <description>Restart on resume</description>
         <type>checkbutton</type>
         <id>21</id>
         <label>1413</label>
-        <width>550</width>
+        <width>600</width>
         <height>35</height>
         <align>right</align>
-        <font>font9</font>
+        <font>font10</font>
       </control>
       <control>
         <description>Show last module</description>
         <type>checkbutton</type>
         <id>22</id>
         <label>1414</label>
-        <width>550</width>
+        <width>600</width>
         <height>35</height>
         <align>right</align>
-        <font>font9</font>
+        <font>font10</font>
       </control>
       <control>
         <description>Screen selector</description>
         <type>checkbutton</type>
         <id>23</id>
         <label>1415</label>
-        <width>550</width>
+        <width>600</width>
         <height>35</height>
         <align>right</align>
-        <font>font9</font>
+        <font>font10</font>
       </control>
     </control>
     <control>
@@ -294,7 +295,7 @@
       <posY>530</posY>
       <label>#defScreen</label>
       <align>left</align>
-      <font>font9</font>
+      <font>font10</font>
       <visible>control.isvisible(24)</visible>
     </control>
     <!--Delay section-->
@@ -339,7 +340,7 @@
       <height>35</height>
       <onup>30</onup>
       <align>right</align>
-      <font>font9</font>
+      <font>font10</font>
     </control>
     <control>
       <description>Delay on MP resume</description>
@@ -351,7 +352,7 @@
       <width>420</width>
       <height>35</height>
       <align>right</align>
-      <font>font9</font>
+      <font>font10</font>
       <onup>31</onup>
     </control>
   </controls>

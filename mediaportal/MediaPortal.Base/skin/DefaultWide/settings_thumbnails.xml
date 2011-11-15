@@ -2,7 +2,7 @@
 <window>
   <id>1005</id>
   <defaultcontrol>10</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
+  <allowoverlay>no</allowoverlay>
   <controls>
     <import>common.settings.xml</import>
     <control>
@@ -14,7 +14,7 @@
       <width>1220</width>
       <height>700</height>
       <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>70ffffff</colordiffuse>
+      <colordiffuse>ccffffff</colordiffuse>
     </control>
     <control>
       <description>Thumb quality spin label</description>

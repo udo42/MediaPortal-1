@@ -2,7 +2,7 @@
 <window>
   <id>1011</id>
   <defaultcontrol>2</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
+  <allowoverlay>no</allowoverlay>
   <controls>
     <import>common.settings.xml</import>
     <control>
@@ -37,7 +37,7 @@
       <id>1</id>
       <posX>780</posX>
       <posY>150</posY>
-      <font>font9</font>
+      <font>font10</font>
       <width>600</width>
       <label>#scanstatus</label>
     </control>
@@ -67,7 +67,7 @@
       <IconYOff>4</IconYOff>
       <keepaspectratio>yes</keepaspectratio>
       <font>font11</font>
-      <font2>font9</font2>
+      <font2>font10</font2>
       <font3>font11</font3>
       <textcolor>ffffffff</textcolor>
       <textcolor2>ffffffff</textcolor2>
@@ -92,7 +92,7 @@
       <posY>150</posY>
       <width>420</width>
       <height>35</height>
-      <font>font9</font>
+      <font>font10</font>
       <onright>2</onright>
 			<ondown>11</ondown>
     </control>
@@ -105,7 +105,7 @@
       <posY>185</posY>
       <width>420</width>
       <height>35</height>
-      <font>font9</font>
+      <font>font10</font>
       <onup>14</onup>
 			<ondown>12</ondown>
     </control>
@@ -118,7 +118,7 @@
       <posY>220</posY>
       <width>420</width>
       <height>35</height>
-      <font>font9</font>
+      <font>font10</font>
       <onup>11</onup>
       <ondown>13</ondown>
     </control>
@@ -131,7 +131,7 @@
       <posY>255</posY>
       <width>420</width>
       <height>35</height>
-      <font>font9</font>
+      <font>font10</font>
       <onup>12</onup>
 			<ondown>3</ondown>
     </control>
@@ -144,7 +144,7 @@
       <posY>290</posY>
       <width>420</width>
       <height>35</height>
-      <font>font9</font>
+      <font>font10</font>
       <onup>14</onup>
       <onright>2</onright>
 			<onup>13</onup>
@@ -157,7 +157,7 @@
       <posX>100</posX>
       <posY>325</posY>
       <width>420</width>
-      <font>font9</font>
+      <font>font10</font>
       <label>#prefixes</label>
     </control>
     <control>
@@ -169,7 +169,7 @@
       <posY>350</posY>
       <width>420</width>
       <height>35</height>
-      <font>font9</font>
+      <font>font10</font>
       <onleft></onleft>
       <onup>3</onup>
       <ondown>5</ondown>
@@ -191,7 +191,7 @@
       <posY>435</posY>
       <width>420</width>
       <height>35</height>
-      <font>font9</font>
+      <font>font10</font>
       <onup>4</onup>
       <ondown>6</ondown>
     </control>
@@ -204,7 +204,7 @@
       <posY>470</posY>
       <width>420</width>
       <height>35</height>
-      <font>font9</font>
+      <font>font10</font>
       <onleft></onleft>
       <onup>5</onup>
       <ondown>7</ondown>
@@ -218,7 +218,7 @@
       <posY>505</posY>
       <width>420</width>
       <height>35</height>
-      <font>font9</font>
+      <font>font10</font>
       <onup>6</onup>
       <ondown>8</ondown>
     </control>
@@ -231,7 +231,7 @@
       <posY>540</posY>
       <width>420</width>
       <height>35</height>
-      <font>font9</font>
+      <font>font10</font>
       <onup>7</onup>
       <ondown>9</ondown>
     </control>
@@ -244,7 +244,7 @@
       <posY>575</posY>
       <width>420</width>
       <height>35</height>
-      <font>font9</font>
+      <font>font10</font>
       <onup>8</onup>
       <ondown>10</ondown>
     </control>
@@ -257,7 +257,7 @@
       <posY>610</posY>
       <width>420</width>
       <height>35</height>
-      <font>font9</font>
+      <font>font10</font>
       <onup>9</onup>
     </control>
     

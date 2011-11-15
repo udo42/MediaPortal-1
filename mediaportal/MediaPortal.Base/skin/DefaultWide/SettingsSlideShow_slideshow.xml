@@ -2,8 +2,8 @@
 <window>
   <id>1015</id>
   <defaultcontrol>6</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
-  <define>#header.label:1</define>
+  <allowoverlay>no</allowoverlay>
+  <define>#header.label:101015</define>
   <define>#header.hover:hover_my pictures.png</define>
   <controls>
     <import>common.settings.xml</import>
@@ -17,7 +17,7 @@
       <height>180</height>
       <width>430</width>
       <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>70ffffff</colordiffuse>
+      <colordiffuse>ccffffff</colordiffuse>
     </control>
     <control>
       <description>Slideshow transition label</description>
@@ -73,7 +73,7 @@
       <height>280</height>
       <width>660</width>
       <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>70ffffff</colordiffuse>
+      <colordiffuse>ccffffff</colordiffuse>
     </control>
     <control>
       <description>Slideshow settings</description>
@@ -178,7 +178,7 @@
       <height>140</height>
       <width>430</width>
       <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>70ffffff</colordiffuse>
+      <colordiffuse>ccffffff</colordiffuse>
     </control>
     <control>
       <description>Rotation settings</description>
@@ -224,7 +224,7 @@
       <height>180</height>
       <width>660</width>
       <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>70ffffff</colordiffuse>
+      <colordiffuse>ccffffff</colordiffuse>
     </control>
     <control>
       <description>View settings</description>
