@@ -50,7 +50,7 @@ namespace WindowPlugins.GUISettings
   /// <summary>
   /// Summary description for GUISettingsGeneral.
   /// </summary>
-  public class GUISettingsDynamicRefreshRate : GUIInternalWindow
+  public class GUISettingsGeneralRefreshRate : GUIInternalWindow
   {
     [SkinControl(2)] protected GUICheckButton btnEnableDynamicRefreshRate = null;
     [SkinControl(3)] protected GUICheckButton btnNotify= null;
@@ -91,9 +91,9 @@ namespace WindowPlugins.GUISettings
       #endregion
     }
 
-    public GUISettingsDynamicRefreshRate()
+    public GUISettingsGeneralRefreshRate()
     {
-      GetID = (int)Window.WINDOW_SETTINGS_DYNAMIC_REFRESHRATE;
+      GetID = (int)Window.WINDOW_SETTINGS_GENERALREFRESHRATE;
     }
 
     
@@ -150,6 +150,7 @@ namespace WindowPlugins.GUISettings
         {
           InsertDefaultValues();
         }
+        lcRefreshRatesList.SelectedListItemIndex = 0;
       }
     }
 

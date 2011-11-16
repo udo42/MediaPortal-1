@@ -10,22 +10,13 @@
       <type>image</type>
       <id>1</id>
       <posX>320</posX>
-      <posY>90</posY>
-      <height>600</height>
+      <posY>130</posY>
+      <height>540</height>
       <width>780</width>
       <texture mask="picturethumbmask.png">blue.png</texture>
       <colordiffuse>ccffffff</colordiffuse>
     </control>
     <!--Control-->
-    <control>
-      <description>Control label</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>350</posX>
-      <posY>110</posY>
-      <width>400</width>
-      <label>1351</label>
-    </control>
     <control>
       <description>Master volume</description>
       <type>checkbutton</type>

@@ -31,7 +31,7 @@ namespace WindowPlugins.GUISettings
   /// <summary>
   /// Summary description for GUISettingsGeneral.
   /// </summary>
-  public class GUISettingsThumbnails : GUIInternalWindow
+  public class GUISettingsGUIThumbnails : GUIInternalWindow
   {
     [SkinControl(2)] protected GUICheckButton btnEnableMusicThumbs = null;
     [SkinControl(3)] protected GUIButtonControl btnDeleteMusicThumbs= null;
@@ -67,9 +67,9 @@ namespace WindowPlugins.GUISettings
       #endregion
     }
     
-    public GUISettingsThumbnails()
+    public GUISettingsGUIThumbnails()
     {
-      GetID = (int)Window.WINDOW_SETTINGS_THUMBNAILS;
+      GetID = (int)Window.WINDOW_SETTINGS_GUITHUMBNAILS;
     }
 
     #region Serialisation

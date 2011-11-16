@@ -31,6 +31,7 @@
       <label>1324</label>
       <posX>450</posX>
       <posY>210</posY>
+      <onup>17</onup>
     </control>
     <control>
       <description>DisplayTimeout value label</description>
@@ -72,6 +73,7 @@
       <label>1326</label>
       <posX>450</posX>
       <posY>355</posY>
+      <ondown>2</ondown>
     </control>
     <control>
       <description>ZapTimeout value label</description>

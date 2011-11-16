@@ -13,8 +13,8 @@
       <type>image</type>
       <id>1</id>
       <posX>455</posX>
-      <posY>110</posY>
-      <height>520</height>
+      <posY>140</posY>
+      <height>480</height>
       <width>390</width>
       <texture mask="video_poster_mask.png">blue.png</texture>
       <colordiffuse>ccffffff</colordiffuse>
@@ -25,7 +25,7 @@
       <animation effect="slide" time="70" start="-300,0">WindowOpen</animation>
       <animation effect="slide" time="70" end="-300,0">WindowClose</animation>
       <posX>70</posX>
-      <posY>130</posY>
+      <posY>160</posY>
       <layout>StackLayout(0, Horizontal, True)</layout>
       <control>
         <description>Add</description>
@@ -68,12 +68,12 @@
       <type>listcontrol</type>
       <id>2</id>
       <posX>475</posX>
-      <posY>130</posY>
+      <posY>160</posY>
       <height>520</height>
       <width>360</width>
       <textXOff>80</textXOff>
       <spinPosX>630</spinPosX>
-      <spinPosY>660</spinPosY>
+      <spinPosY>640</spinPosY>
       <onleft>3</onleft>
       <onright>35</onright>
       <spaceBetweenItems>0</spaceBetweenItems>

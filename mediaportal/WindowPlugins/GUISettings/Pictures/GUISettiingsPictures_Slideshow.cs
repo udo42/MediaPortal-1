@@ -31,6 +31,10 @@ namespace MediaPortal.GUI.Settings
   /// </summary>
   public class GUISettingsPicturesSlideshow : GUIInternalWindow
   {
+    [SkinControl(5)] protected GUICheckButton cmXfade = null;
+    [SkinControl(6)] protected GUICheckButton cmKenburns = null;
+    [SkinControl(7)] protected GUICheckButton cmRandom = null;
+
     [SkinControl(8)] protected GUICheckButton cmLoopSlideShows = null;
     [SkinControl(9)] protected GUICheckButton cmShuffleSlideShows = null;
     [SkinControl(41)] protected GUICheckButton cmExifSlideShows = null;
@@ -43,10 +47,7 @@ namespace MediaPortal.GUI.Settings
     {
       CONTROL_SPEED = 2,
       CONTROL_TRANSITION = 3,
-      CONTROL_KENBURNS_SPEED = 4,
-      CONTROL_XFADE = 5,
-      CONTROL_KENBURNS = 6,
-      CONTROL_RANDOM = 7
+      CONTROL_KENBURNS_SPEED = 4
     } ;
 
     private int m_iSpeed = 3;
@@ -73,7 +74,6 @@ namespace MediaPortal.GUI.Settings
         m_bKenBurns = xmlreader.GetValueAsBool("pictures", "kenburns", false);
         m_bRandom = xmlreader.GetValueAsBool("pictures", "random", false);
         m_bXFade = (!m_bRandom & !m_bKenBurns);
-
 
         cmShuffleSlideShows.Selected = xmlreader.GetValueAsBool("pictures", "autoShuffle", false);
         cmLoopSlideShows.Selected = xmlreader.GetValueAsBool("pictures", "autoRepeat", false);
@@ -165,15 +165,15 @@ namespace MediaPortal.GUI.Settings
 
             if (m_bXFade)
             {
-              GUIControl.SelectControl(GetID, (int)Controls.CONTROL_XFADE);
+              cmXfade.Selected = true;
             }
             if (m_bKenBurns)
             {
-              GUIControl.SelectControl(GetID, (int)Controls.CONTROL_KENBURNS);
+              cmKenburns.Selected = true;
             }
             if (m_bRandom)
             {
-              GUIControl.SelectControl(GetID, (int)Controls.CONTROL_RANDOM);
+              cmRandom.Selected = true;
             }
 
             return true;
@@ -203,7 +203,7 @@ namespace MediaPortal.GUI.Settings
               string strLabel = message.Label;
               m_iKenBurnsSpeed = Int32.Parse(strLabel);
             }
-            if (iControl == (int)Controls.CONTROL_XFADE)
+            if (iControl == cmXfade.GetID)
             {
               m_bXFade = true;
               m_bKenBurns = false;
@@ -211,7 +211,7 @@ namespace MediaPortal.GUI.Settings
               UpdateButtons();
               return true;
             }
-            if (iControl == (int)Controls.CONTROL_KENBURNS)
+            if (iControl == cmKenburns.GetID)
             {
               m_bXFade = false;
               m_bKenBurns = true;
@@ -219,7 +219,7 @@ namespace MediaPortal.GUI.Settings
               UpdateButtons();
               return true;
             }
-            if (iControl == (int)Controls.CONTROL_RANDOM)
+            if (iControl == cmRandom.GetID)
             {
               m_bXFade = false;
               m_bKenBurns = false;
@@ -232,42 +232,19 @@ namespace MediaPortal.GUI.Settings
       }
       return base.OnMessage(message);
     }
-
-    private void UpdateButtons()
-    {
-      if (m_bRandom)
-      {
-        GUIControl.SelectControl(GetID, (int)Controls.CONTROL_RANDOM);
-      }
-      else
-      {
-        GUIControl.DeSelectControl(GetID, (int)Controls.CONTROL_RANDOM);
-      }
-
-      if (m_bXFade)
-      {
-        GUIControl.SelectControl(GetID, (int)Controls.CONTROL_XFADE);
-      }
-      else
-      {
-        GUIControl.DeSelectControl(GetID, (int)Controls.CONTROL_XFADE);
-      }
-
-      if (m_bKenBurns)
-      {
-        GUIControl.SelectControl(GetID, (int)Controls.CONTROL_KENBURNS);
-      }
-      else
-      {
-        GUIControl.DeSelectControl(GetID, (int)Controls.CONTROL_KENBURNS);
-      }
-    }
-
+    
     protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
     {
-      if (cmLoopSlideShows == control || cmShuffleSlideShows == control || control == cmExifSlideShows ||
-          control == cmPicasaSlideShows || control == cmGroupByDaySlideShows || control == cmEnablePlaySlideShows ||
-          control == cmPlayInSlideShows)
+      if (control == cmLoopSlideShows || 
+          control == cmShuffleSlideShows || 
+          control == cmExifSlideShows ||
+          control == cmPicasaSlideShows || 
+          control == cmGroupByDaySlideShows || 
+          control == cmEnablePlaySlideShows ||
+          control == cmPlayInSlideShows || 
+          control == cmXfade || 
+          control == cmKenburns || 
+          control == cmRandom)
       {
         SettingsChanged(true);
       }
@@ -276,6 +253,36 @@ namespace MediaPortal.GUI.Settings
     }
 
     #endregion
+
+    private void UpdateButtons()
+    {
+      if (m_bRandom)
+      {
+        cmRandom.Selected = true;
+      }
+      else
+      {
+        cmRandom.Selected = false;
+      }
+
+      if (m_bXFade)
+      {
+        cmXfade.Selected = true;
+      }
+      else
+      {
+        cmXfade.Selected = false;
+      }
+
+      if (m_bKenBurns)
+      {
+        cmKenburns.Selected = true;
+      }
+      else
+      {
+        cmKenburns.Selected = false;
+      }
+    }
 
     private void SettingsChanged(bool settingsChanged)
     {

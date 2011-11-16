@@ -245,14 +245,19 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="GUISettings\General\GeneralMP\GUISettingsGeneralResume.cs" />
+    <Compile Include="GUISettings\General\GeneralMP\GUISettingsGeneral_GeneralMP.cs" />
+    <Compile Include="GUISettings\General\GeneralMP\GUISettingsGeneral_Main.cs" />
+    <Compile Include="GUISettings\General\GUI\GUISettingsGUI_General.cs" />
+    <Compile Include="GUISettings\General\GUI\GUISettingsGUI_Main.cs" />
     <Compile Include="GUISettings\GUISettings_Playlist.cs" />
     <Compile Include="GUISettings\Music\GUISettings_NowPlaying.cs" />
     <Compile Include="GUISettings\Pictures\GUISettiingsPictures_Slideshow.cs" />
     <Compile Include="GUISettings\Pictures\GUISettingsPictures_Database.cs" />
     <Compile Include="GUISettings\Movies\GUISettingsMovies_Database.cs" />
-    <Compile Include="GUISettings\General\GUISettingsGeneral_MediaPortal.cs" />
-    <Compile Include="GUISettings\General\GUISettingsGeneral_RefreshRate.cs" />
-    <Compile Include="GUISettings\General\GUISettingsGeneral_Volume.cs" />
+    <Compile Include="GUISettings\General\GeneralMP\GUISettingsGeneral_Startup.cs" />
+    <Compile Include="GUISettings\General\GeneralMP\GUISettingsGeneral_RefreshRate.cs" />
+    <Compile Include="GUISettings\General\GeneralMP\GUISettingsGeneral_Volume.cs" />
     <Compile Include="GUISettings\General\GUI\GUISetingsGUI_Thumbnails.cs" />
     <Compile Include="GUISettings\General\GUI\GUISettingsGUI_OnScreenDisplay.cs" />
     <Compile Include="GUISettings\General\GUI\GUISettingsGUI_ScreenSaver.cs" />
@@ -433,7 +438,7 @@
     <Compile Include="GUISettings\DVD\GUISettingsDVD.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GUISettings\General\GUI\GUISettingsGUI_General.cs">
+    <Compile Include="GUISettings\General\GUI\GUISettingsGUI_Skin.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GUISettings\General\GUI\GUISettingsGUI_General_SkipSteps.cs">
@@ -445,16 +450,16 @@
     <Compile Include="GUISettings\General\GUI\GUISettingsGUI_General_Control.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GUISettings\GUISettingsMovieCalibration.cs">
+    <Compile Include="GUISettings\General\GUI\GUISettingsMovieCalibration.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GUISettings\Music\GUISettingsMusic.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GUISettings\GUISettingsScreen.cs">
+    <Compile Include="GUISettings\General\GUI\GUISettingsGUIScreenSetup.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="GUISettings\GUISettingsUICalibration.cs">
+    <Compile Include="GUISettings\General\GUI\GUISettingsUICalibration.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="GUISettings\Movies\GUISettingsMovies.cs">

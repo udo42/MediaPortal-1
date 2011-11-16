@@ -25,11 +25,11 @@ namespace MediaPortal.GUI.Settings
   /// <summary>
   /// 
   /// </summary>
-  public class GUISettingsScreen : GUIInternalWindow
+  public class GUISettingsGUIScreenSetup : GUIInternalWindow
   {
-    public GUISettingsScreen()
+    public GUISettingsGUIScreenSetup()
     {
-      GetID = (int)Window.WINDOW_SETTINGS_SCREEN;
+      GetID = (int)Window.WINDOW_SETTINGS_GUISCREENSETUP;
     }
 
     public override bool Init()

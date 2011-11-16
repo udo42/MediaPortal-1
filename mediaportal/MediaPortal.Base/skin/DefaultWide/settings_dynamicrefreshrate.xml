@@ -11,7 +11,7 @@
       <id>1</id>
       <posX>60</posX>
       <posY>110</posY>
-      <height>600</height>
+      <height>550</height>
       <width>1200</width>
       <texture mask="picturethumbmask.png">blue.png</texture>
       <colordiffuse>ccffffff</colordiffuse>
@@ -237,6 +237,7 @@
       <label>#defaultrate</label>
       <font>font13</font>
       <textcolor>ffffffff</textcolor>
+			<visible>control.isvisible(11)</visible>
     </control>
   </controls>
 </window>

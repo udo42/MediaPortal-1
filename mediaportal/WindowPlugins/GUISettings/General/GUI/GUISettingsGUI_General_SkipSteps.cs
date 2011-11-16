@@ -28,7 +28,7 @@ using Action = MediaPortal.GUI.Library.Action;
 
 namespace WindowPlugins.GUISettings
 {
-  public class GUISettingsSkipSteps : GUIInternalWindow
+  public class GUISettingsGUISkipSteps : GUIInternalWindow
   {
     #region Skin elements
 
@@ -64,9 +64,9 @@ namespace WindowPlugins.GUISettings
     private int timeOutValue = 1500;
     private int skipValue = 10;
 
-    public GUISettingsSkipSteps()
+    public GUISettingsGUISkipSteps()
     {
-      GetID = (int)Window.WINDOW_SETTINGS_SKIPSTEPS;
+      GetID = (int)Window.WINDOW_SETTINGS_GUISKIPSTEPS;
     }
 
     public override bool Init()

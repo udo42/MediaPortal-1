@@ -30,7 +30,7 @@ namespace WindowPlugins.GUISettings
   /// <summary>
   /// Summary description for GUISettingsGeneral.
   /// </summary>
-  public class GUISettingsScreenSaver : GUIInternalWindow
+  public class GUISettingsGUIScreenSaver : GUIInternalWindow
   {
     [SkinControl(2)] protected GUICheckButton btnScreenSaverEnabled= null;
     [SkinControl(4)] protected GUICheckButton cmBlankScreen = null;
@@ -58,9 +58,9 @@ namespace WindowPlugins.GUISettings
       #endregion
     }
 
-    public GUISettingsScreenSaver()
+    public GUISettingsGUIScreenSaver()
     {
-      GetID = (int)Window.WINDOW_SETTINGS_SCREENSAVER;
+      GetID = (int)Window.WINDOW_SETTINGS_GUISCREENSAVER;
     }
 
     #region Serialisation

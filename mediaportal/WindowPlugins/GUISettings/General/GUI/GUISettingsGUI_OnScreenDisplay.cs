@@ -31,7 +31,7 @@ namespace WindowPlugins.GUISettings
   /// <summary>
   /// Summary description for GUISettingsGeneral.
   /// </summary>
-  public class GUISettingsOnScreenDisplay: GUIInternalWindow
+  public class GUISettingsGUIOnScreenDisplay: GUIInternalWindow
   {
     [SkinControl(2)] protected GUIButtonControl btnDisplayTimeout = null;
     [SkinControl(3)] protected GUIButtonControl btnZapDelay = null;
@@ -56,9 +56,9 @@ namespace WindowPlugins.GUISettings
       #endregion
     }
 
-    public GUISettingsOnScreenDisplay()
+    public GUISettingsGUIOnScreenDisplay()
     {
-      GetID = (int)Window.WINDOW_SETTINGS_ONSCREEN_DISPLAY;
+      GetID = (int)Window.WINDOW_SETTINGS_GUIONSCREEN_DISPLAY;
     }
 
     #region Serialisation

@@ -5,14 +5,12 @@
   <allowoverlay>no</allowoverlay>
   <controls>
     <import>common.settings.xml</import>
-    <import>common.window.xml</import>
-    <import>common.time.xml</import>
     <control>
       <description>background</description>
       <type>image</type>
       <id>1</id>
       <posX>445</posX>
-      <posY>110</posY>
+      <posY>140</posY>
       <height>500</height>
       <width>390</width>
       <texture mask="video_poster_mask.png">blue.png</texture>
@@ -24,7 +22,7 @@
       <animation effect="slide" time="70" start="-300,0">WindowOpen</animation>
       <animation effect="slide" time="70" end="-300,0">WindowClose</animation>
       <posX>465</posX>
-      <posY>130</posY>
+      <posY>160</posY>
       <layout>StackLayout(0, Horizontal, True)</layout>
       <control>
         <description>General Skin settings</description>
@@ -32,16 +30,16 @@
         <id>4</id>
         <width>350</width>
         <label>674</label>
-        <hyperlink>705</hyperlink>
+        <hyperlink>1021</hyperlink>
         <onup>17</onup>
       </control>
       <control>
-        <description>General General setttings</description>
+        <description>General Main setttings</description>
         <type>button</type>
         <id>3</id>
         <width>350</width>
-        <label>128</label>
-        <hyperlink>1003</hyperlink>
+        <label>1400</label>
+        <hyperlink>1016</hyperlink>
       </control>
       <control>
         <description>TV</description>
@@ -83,39 +81,23 @@
         <label>1027</label>
         <hyperlink>704</hyperlink>
       </control>
-      <control>
-        <description>Screen</description>
-        <type>button</type>
-        <id>5</id>
-        <width>350</width>
-        <label>6023</label>
-        <hyperlink>9</hyperlink>
-      </control>
-      <control>
-        <description>General Volume setttings</description>
-        <type>button</type>
-        <id>12</id>
-        <width>350</width>
-        <label>Volume settings</label>
-        <hyperlink>1007</hyperlink>
-      </control>
-      <control>
-        <description>General refreshrate setttings</description>
-        <type>button</type>
-        <id>13</id>
-        <width>350</width>
-        <label>1350</label>
-        <hyperlink>1008</hyperlink>
-      </control>
-      <control>
-        <description>MiniDisplay</description>
-        <type>button</type>
-        <id>11</id>
-        <width>350</width>
-        <label>9100</label>
-        <hyperlink>9000</hyperlink>
-        <ondown>4</ondown>
-      </control>
+      <!--control>
+      <description>Screen</description>
+      <type>button</type>
+      <id>5</id>
+      <width>350</width>
+      <label>6023</label>
+      <hyperlink>9</hyperlink>
+    </control-->
+    <control>
+      <description>MiniDisplay</description>
+      <type>button</type>
+      <id>11</id>
+      <width>350</width>
+      <label>9100</label>
+      <hyperlink>9000</hyperlink>
+      <ondown>4</ondown>
     </control>
-  </controls>
+  </control>
+</controls>
 </window>

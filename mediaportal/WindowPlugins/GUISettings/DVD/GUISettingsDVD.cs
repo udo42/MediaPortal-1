@@ -43,7 +43,7 @@ namespace WindowPlugins.GUISettings.TV
     [SkinControl(25)] protected GUIButtonControl btnAudio = null;
     [SkinControl(29)] protected GUIButtonControl btnSubtitle = null;
     [SkinControl(31)] protected GUICheckButton btnEnableCC = null;
-    [SkinControl(32)] protected GUIButtonControl btnAutoPlay = null;
+    
 
     private bool _dxvaSetting;
     private bool _subtitleSettings;
@@ -122,11 +122,6 @@ namespace WindowPlugins.GUISettings.TV
       if (control == btnEnableCC)
       {
         OnEnableCC();
-      }
-      if (control == btnAutoPlay)
-      {
-        _selectedOption = -1;
-        OnAutoPlay();
       }
       base.OnClicked(controlId, control, actionType);
     }
@@ -824,118 +819,118 @@ namespace WindowPlugins.GUISettings.TV
       }
     }
 
-    private void OnAutoPlay()
-    {
-      GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
-      if (dlg != null)
-      {
-        dlg.Reset();
-        dlg.SetHeading(GUILocalizeStrings.Get(713)); //Autoplay
+    //private void OnAutoPlay()
+    //{
+    //  GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+    //  if (dlg != null)
+    //  {
+    //    dlg.Reset();
+    //    dlg.SetHeading(GUILocalizeStrings.Get(713)); //Autoplay
 
-        dlg.AddLocalizedString(1269); // Audio
-        dlg.AddLocalizedString(1268); // Video
-        dlg.AddLocalizedString(1288); // Photo
+    //    dlg.AddLocalizedString(1269); // Audio
+    //    dlg.AddLocalizedString(1268); // Video
+    //    dlg.AddLocalizedString(1288); // Photo
 
-        if (_selectedOption != -1)
-          dlg.SelectedLabel = _selectedOption;
+    //    if (_selectedOption != -1)
+    //      dlg.SelectedLabel = _selectedOption;
 
-        dlg.DoModal(GetID);
+    //    dlg.DoModal(GetID);
 
-        if (dlg.SelectedId == -1)
-        {
-          return;
-        }
+    //    if (dlg.SelectedId == -1)
+    //    {
+    //      return;
+    //    }
 
-        _selectedOption = dlg.SelectedLabel;
+    //    _selectedOption = dlg.SelectedLabel;
 
-        switch (dlg.SelectedId)
-        {
-          case 1269: // Audio
-          case 1268: // Video
-          case 1288: // Photo
-            OnPlay(dlg.SelectedId);
-            break;
-        }
-      }
-    }
-
-    private void OnPlay(int type)
-    {
-      string strHowToPlay = string.Empty;
-      string strType = string.Empty;
+    //    switch (dlg.SelectedId)
+    //    {
+    //      case 1269: // Audio
+    //      case 1268: // Video
+    //      case 1288: // Photo
+    //        OnPlay(dlg.SelectedId);
+    //        break;
+    //    }
+    //  }
+    //}
+    ////Remove
+    //private void OnPlay(int type)
+    //{
+    //  string strHowToPlay = string.Empty;
+    //  string strType = string.Empty;
       
-      using (Settings xmlreader = new MPSettings())
-      {
-        if (type == 1269) // Audio
-        {
-          strType = "autoplay_video";
-        }
-        if (type == 1268) // Video
-        {
-          strType = "autoplay_audio";
-        }
-        if (type == 1288) // photo
-        {
-          strType = "autoplay_photo";
-        }
-        strHowToPlay = xmlreader.GetValueAsString("general", strType, "Ask");
-      }
-      GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
-      if (dlg != null)
-      {
-        dlg.Reset();
-        dlg.SetHeading(GUILocalizeStrings.Get(496)); //Options
+    //  using (Settings xmlreader = new MPSettings())
+    //  {
+    //    if (type == 1269) // Audio
+    //    {
+    //      strType = "autoplay_video";
+    //    }
+    //    if (type == 1268) // Video
+    //    {
+    //      strType = "autoplay_audio";
+    //    }
+    //    if (type == 1288) // photo
+    //    {
+    //      strType = "autoplay_photo";
+    //    }
+    //    strHowToPlay = xmlreader.GetValueAsString("general", strType, "Ask");
+    //  }
+    //  GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+    //  if (dlg != null)
+    //  {
+    //    dlg.Reset();
+    //    dlg.SetHeading(GUILocalizeStrings.Get(496)); //Options
 
-        dlg.AddLocalizedString(208); // Play
-        dlg.AddLocalizedString(1287); // Do not play
-        dlg.AddLocalizedString(1286); // Ask what to do
+    //    dlg.AddLocalizedString(208); // Play
+    //    dlg.AddLocalizedString(1287); // Do not play
+    //    dlg.AddLocalizedString(1286); // Ask what to do
 
-        // Set options from config
-        switch (strHowToPlay)
-        {
-          case "Yes":
-            dlg.SelectedLabel = 0;
-            break;
-          case "No":
-            dlg.SelectedLabel = 1;
-            break;
-          case "Ask":
-            dlg.SelectedLabel = 2;
-            break;
-          default:
-            dlg.SelectedLabel = 2;
-            break;
-        }
-        // Show options
-        dlg.DoModal(GetID);
+    //    // Set options from config
+    //    switch (strHowToPlay)
+    //    {
+    //      case "Yes":
+    //        dlg.SelectedLabel = 0;
+    //        break;
+    //      case "No":
+    //        dlg.SelectedLabel = 1;
+    //        break;
+    //      case "Ask":
+    //        dlg.SelectedLabel = 2;
+    //        break;
+    //      default:
+    //        dlg.SelectedLabel = 2;
+    //        break;
+    //    }
+    //    // Show options
+    //    dlg.DoModal(GetID);
 
-        if (dlg.SelectedId == -1)
-        {
-          OnAutoPlay();
-          return;
-        }
+    //    if (dlg.SelectedId == -1)
+    //    {
+    //      OnAutoPlay();
+    //      return;
+    //    }
 
-        switch (dlg.SelectedId)
-        {
-          case 208: // Play
-            strHowToPlay = "Yes";
-            break;
-          case 1287: // Do not play
-            strHowToPlay = "No";
-            break;
-          case 1286: // Ask what to do
-            strHowToPlay = "Ask";
-            break;
-        }
+    //    switch (dlg.SelectedId)
+    //    {
+    //      case 208: // Play
+    //        strHowToPlay = "Yes";
+    //        break;
+    //      case 1287: // Do not play
+    //        strHowToPlay = "No";
+    //        break;
+    //      case 1286: // Ask what to do
+    //        strHowToPlay = "Ask";
+    //        break;
+    //    }
 
-        using (Settings xmlwriter = new MPSettings())
-        {
+    //    using (Settings xmlwriter = new MPSettings())
+    //    {
 
-          xmlwriter.SetValue("general", strType, strHowToPlay);
-        }
-      }
-      OnAutoPlay();
-    }
+    //      xmlwriter.SetValue("general", strType, strHowToPlay);
+    //    }
+    //  }
+    //  OnAutoPlay();
+    //}
 
     private void LoadSettings()
     {

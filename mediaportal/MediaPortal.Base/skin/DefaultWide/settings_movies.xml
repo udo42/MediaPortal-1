@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <window>
   <id>703</id>
-  <defaultcontrol>24</defaultcontrol>
+  <defaultcontrol>42</defaultcontrol>
   <allowoverlay>no</allowoverlay>
-  <define>#header.label:6022</define>
-  <define>#header.hover:hover_my videos.png</define>
   <controls>
     <import>common.settings.xml</import>
     <control>
@@ -12,7 +10,7 @@
       <type>image</type>
       <id>1</id>
       <posX>445</posX>
-      <posY>110</posY>
+      <posY>140</posY>
       <height>500</height>
       <width>390</width>
       <texture mask="video_poster_mask.png">blue.png</texture>
@@ -24,22 +22,15 @@
       <animation effect="slide" time="70" start="-300,0">WindowOpen</animation>
       <animation effect="slide" time="70" end="-300,0">WindowClose</animation>
       <posX>465</posX>
-      <posY>130</posY>
+      <posY>160</posY>
       <layout>StackLayout(0, Horizontal, True)</layout>
       <control>
-        <description>Video</description>
+        <description>Playlist</description>
         <type>button</type>
-        <id>24</id>
-        <label>1268</label>
+        <id>42</id>
+        <label>851</label>
         <width>350</width>
-        <onup>42</onup>
-      </control>
-      <control>
-        <description>Audio</description>
-        <type>button</type>
-        <id>25</id>
-        <label>1269</label>
-        <width>350</width>
+        <onup>17</onup>
       </control>
       <control>
         <description>Subtitles On/Off</description>
@@ -56,13 +47,6 @@
         <width>350</width>
       </control>
       <control>
-        <description>Extensions</description>
-        <type>button</type>
-        <id>35</id>
-        <label>1265</label>
-        <width>350</width>
-      </control>
-      <control>
         <description>Share folders</description>
         <type>button</type>
         <id>40</id>
@@ -75,16 +59,28 @@
         <id>41</id>
         <label>1434</label>
         <width>350</width>
-        <ondown>42</ondown>
       </control>
       <control>
-        <description>Playlist</description>
+        <description>Extensions</description>
         <type>button</type>
-        <id>42</id>
-        <label>851</label>
+        <id>35</id>
+        <label>1265</label>
         <width>350</width>
-        <onup>41</onup>
-        <ondown>24</ondown>
+      </control>
+      <control>
+        <description>Video</description>
+        <type>button</type>
+        <id>24</id>
+        <label>Video codecs</label>
+        <width>350</width>
+      </control>
+      <control>
+        <description>Audio</description>
+        <type>button</type>
+        <id>25</id>
+        <label>Audio codecs</label>
+        <width>350</width>
+        <ondown>42</ondown>
       </control>
     </control>
   </controls>

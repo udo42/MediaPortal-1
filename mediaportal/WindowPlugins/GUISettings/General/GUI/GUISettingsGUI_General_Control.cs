@@ -45,7 +45,7 @@ namespace MediaPortal.GUI.Settings
 
     public GUISettingsGUI()
     {
-      GetID = (int)Window.WINDOW_SETTINGS_GUI;
+      GetID = (int)Window.WINDOW_SETTINGS_GUICONTROL;
     }
 
     public override bool Init()

@@ -113,31 +113,36 @@ namespace MediaPortal.GUI.Settings
     public static bool IsGUISettingsWindow(int windowId)
     {
       if (windowId == (int)Window.WINDOW_SETTINGS_DVD ||
-          windowId == (int)Window.WINDOW_SETTINGS_DYNAMIC_REFRESHRATE ||
           windowId == (int)Window.WINDOW_SETTINGS_EXTENSIONS ||
           windowId == (int)Window.WINDOW_SETTINGS_FOLDERS ||
+          windowId == (int)Window.WINDOW_SETTINGS_GENERALMAIN||
           windowId == (int)Window.WINDOW_SETTINGS_GENERALMP ||
-          windowId == (int)Window.WINDOW_SETTINGS_GUI ||
+          windowId == (int)Window.WINDOW_SETTINGS_GENERALSTARTUP ||
+          windowId == (int)Window.WINDOW_SETTINGS_GENERALRESUME ||
+          windowId == (int)Window.WINDOW_SETTINGS_GENERALREFRESHRATE ||
           windowId == (int)Window.WINDOW_SETTINGS_MOVIES ||
           windowId == (int)Window.WINDOW_SETTINGS_MUSIC ||
           windowId == (int)Window.WINDOW_SETTINGS_MUSICDATABASE ||
           windowId == (int)Window.WINDOW_SETTINGS_MUSICNOWPLAYING ||
-          windowId == (int)Window.WINDOW_SETTINGS_ONSCREEN_DISPLAY ||
+          windowId == (int)Window.WINDOW_SETTINGS_GUIMAIN ||
+          windowId == (int)Window.WINDOW_SETTINGS_GUISKIN ||
+          windowId == (int)Window.WINDOW_SETTINGS_GUIGENERAL||
+          windowId == (int)Window.WINDOW_SETTINGS_GUIONSCREEN_DISPLAY ||
+          windowId == (int)Window.WINDOW_SETTINGS_GUICONTROL ||
+          windowId == (int)Window.WINDOW_SETTINGS_GUISKIPSTEPS ||
+          windowId == (int)Window.WINDOW_SETTINGS_GUITHUMBNAILS ||
           windowId == (int)Window.WINDOW_SETTINGS_PICTURES ||
           windowId == (int)Window.WINDOW_SETTINGS_PICTURES_SLIDESHOW ||
           windowId == (int)Window.WINDOW_SETTINGS_PICTURESDATABASE ||
           windowId == (int)Window.WINDOW_SETTINGS_PLAYLIST ||
           windowId == (int)Window.WINDOW_SETTINGS_RECORDINGS ||
-          windowId == (int)Window.WINDOW_SETTINGS_SCREEN ||
-          windowId == (int)Window.WINDOW_SETTINGS_SCREENSAVER ||
-          windowId == (int)Window.WINDOW_SETTINGS_SKIN ||
-          windowId == (int)Window.WINDOW_SETTINGS_SKIPSTEPS ||
+          windowId == (int)Window.WINDOW_SETTINGS_GUISCREENSETUP ||
+          windowId == (int)Window.WINDOW_SETTINGS_GUISCREENSAVER ||
           windowId == (int)Window.WINDOW_SETTINGS_SORT_CHANNELS ||
-          windowId == (int)Window.WINDOW_SETTINGS_THUMBNAILS ||
           windowId == (int)Window.WINDOW_SETTINGS_TV ||
           windowId == (int)Window.WINDOW_SETTINGS_TV_EPG ||
           windowId == (int)Window.WINDOW_SETTINGS_VIDEODATABASE ||
-          windowId == (int)Window.WINDOW_SETTINGS_VOLUME ||
+          windowId == (int)Window.WINDOW_SETTINGS_GENERALVOLUME ||
         // Minidisplay (no enum values in GUIWindow)
           windowId == 9000 ||
           windowId == 9001 ||

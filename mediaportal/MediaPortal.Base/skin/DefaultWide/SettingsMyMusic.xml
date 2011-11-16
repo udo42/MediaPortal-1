@@ -12,7 +12,7 @@
       <type>image</type>
       <id>1</id>
       <posX>445</posX>
-      <posY>110</posY>
+      <posY>140</posY>
       <height>500</height>
       <width>390</width>
       <texture mask="video_poster_mask.png">blue.png</texture>
@@ -24,103 +24,59 @@
       <animation effect="slide" time="70" start="-300,0">WindowOpen</animation>
       <animation effect="slide" time="70" end="-300,0">WindowClose</animation>
       <posX>465</posX>
-      <posY>130</posY>
+      <posY>160</posY>
       <layout>StackLayout(0, Horizontal, True)</layout>
       <control>
         <description>Now playing</description>
         <type>button</type>
         <id>2</id>
-        <posX>50</posX>
-        <posY>100</posY>
         <label>4540</label>
         <width>350</width>
-        <onleft>2</onleft>
-        <onright>2</onright>
-        <ondown>8</ondown>
+        <onup>17</onup>
       </control>
       <control>
         <description>Playlist button</description>
         <type>button</type>
         <id>8</id>
         <label>851</label>
-        <posX>50</posX>
-        <posY>145</posY>
         <width>350</width>
-        <height>41</height>
-        <onleft>8</onleft>
-        <onright>8</onright>
-        <onup>2</onup>
-        <ondown>13</ondown>
       </control>
       <control>
         <description>delete album button</description>
         <type>button</type>
         <id>13</id>
         <label>485</label>
-        <posX>50</posX>
-        <posY>190</posY>
         <width>350</width>
-        <height>41</height>
-        <onup>8</onup>
-        <ondown>10</ondown>
-        <onleft>13</onleft>
-        <onright>13</onright>
       </control>
       <control>
         <description>Delete Album Info</description>
         <type>button</type>
         <id>10</id>
         <label>422</label>
-        <posX>50</posX>
-        <posY>235</posY>
         <width>350</width>
-        <height>41</height>
-        <onleft>10</onleft>
-        <onright>10</onright>
-        <onup>13</onup>
-        <ondown>35</ondown>
-      </control>
-      <control>
-        <description>Extensions</description>
-        <type>button</type>
-        <id>35</id>
-        <label>1265</label>
-        <posX>50</posX>
-        <posY>280</posY>
-        <width>350</width>
-        <height>41</height>
-        <onleft>40</onleft>
-        <onright>40</onright>
-        <onup>10</onup>
-        <ondown>40</ondown>
       </control>
       <control>
         <description>Share folders</description>
         <type>button</type>
         <id>40</id>
         <label>1277</label>
-        <posX>50</posX>
-        <posY>325</posY>
         <width>350</width>
         <height>41</height>
-        <onleft>40</onleft>
-        <onright>40</onright>
-        <onup>35</onup>
-        <ondown>41</ondown>
       </control>
       <control>
         <description>Database</description>
         <type>button</type>
         <id>41</id>
         <label>1434</label>
-        <posX>50</posX>
-        <posY>370</posY>
         <width>350</width>
-        <height>41</height>
-        <onleft>40</onleft>
-        <onright>40</onright>
-        <onup>40</onup>
-        <ondown>99</ondown>
+      </control>
+      <control>
+        <description>Extensions</description>
+        <type>button</type>
+        <id>35</id>
+        <label>1265</label>
+        <width>350</width>
+        <ondown>2</ondown>
       </control>
     </control>
   </controls>

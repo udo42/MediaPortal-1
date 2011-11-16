@@ -64,7 +64,7 @@ namespace WindowPlugins.GUISettings
 
     public GUISettingsGeneralVolume()
     {
-      GetID = (int)Window.WINDOW_SETTINGS_VOLUME;
+      GetID = (int)Window.WINDOW_SETTINGS_GENERALVOLUME;
     }
 
     #region Serialisation

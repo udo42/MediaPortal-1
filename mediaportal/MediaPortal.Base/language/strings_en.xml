@@ -1144,8 +1144,8 @@
     <String id="1397">Skip files already in datababase</String>
     <String id="1398">Refresh existing files only</String>
     <String id="1399">Strip title prefix</String>
-    <String id="1400">General settings (need restart)</String>
-    <String id="1401">Startup/resume settings (need restart)</String>
+    <String id="1400">General settings</String>
+    <String id="1401">Startup settings</String>
     <String id="1402">Start MediaPortal in full screen</String>
     <String id="1403">Alternative splash screen</String>
     <String id="1404">Keep MediaPortal always on top</String>
@@ -1229,6 +1229,12 @@
     <String id="1482">By Name</String>
     <String id="1483">By Date</String>
     <String id="1484">Always Ask</String>
+		<String id="1485">Resume settings</String>
+		<String id="1486">Startup</String>
+		<String id="1487">Resume</String>
+		<String id="1488">Volume</String>
+		<String id="1489">Screen setup</String>
+		<String id="1490">On-screen Display</String>
     <String id="1498">Program/Channel not found</String>
     <String id="1499">No signal</String>
     <String id="1500">Unable to start timeshifting</String>
@@ -2051,9 +2057,9 @@
     <String id="101002">Virtual Standard Keyboard</String>
     <String id="101003">Virtual Web Keyboard</String>
     <String id="101004">Virtual SMS Keyboard</String>
-    <String id="101005">GUISettings->Thumbnails</String>
-    <String id="101006">GUISettings->On-screen display</String>
-    <String id="101007">Settings->General->Volume settings</String>
+    <String id="101005">GUISettings->GUI Thumbnails</String>
+    <String id="101006">GUISettings->GUI On-screen display</String>
+    <String id="101007">Settings->General Volume settings</String>
     <String id="101008">GUISettings->Dynamic refresh rate</String>
     <String id="101010">Settings->Videos->Database</String>
     <String id="101011">Settings->Music->Database</String>
@@ -2061,6 +2067,13 @@
     <String id="101013">Settings->Music->Now Playing</String>
     <String id="101014">Settings->Playlist</String>
 		<String id="101015">Settings->Slideshow</String>
+		<String id="101016">Settings->General Main</String>
+		<String id="101017">Settings->General Resume</String>
+		<String id="101018">Settings->General Settings</String>
+		<String id="101019">Settings->General Startup</String>
+		<String id="101020">Settings->GUI Screensaver</String>
+		<String id="101021">Settings->GUI Main</String>
+		<String id="101022">Settings->GUI General</String>
     <String id="102000">Select dialog</String>
     <String id="102001" prefix="My ">Music/info</String>
     <String id="102002">Dialog OK</String>

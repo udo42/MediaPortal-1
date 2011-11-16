@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <window>
-  <id>1004</id>
+  <id>1020</id>
   <defaultcontrol>2</defaultcontrol>
   <allowoverlay>no</allowoverlay>
   <controls>
@@ -10,8 +10,8 @@
       <type>image</type>
       <id>1</id>
       <posX>210</posX>
-      <posY>140</posY>
-      <height>390</height>
+      <posY>180</posY>
+      <height>240</height>
       <width>780</width>
       <texture mask="picturethumbmask.png">blue.png</texture>
       <colordiffuse>ccffffff</colordiffuse>
@@ -25,6 +25,7 @@
       <posX>250</posX>
       <posY>206</posY>
       <ondown>3</ondown>
+      <onup>17</onup>
     </control>
     <control>
       <description>Delay label</description>
@@ -63,8 +64,7 @@
       <label>1319</label>
       <posX>250</posX>
       <posY>346</posY>
-      <onleft>4</onleft>
-      <onup>3</onup>
+      <ondown>2</ondown>
     </control>
   </controls>
 </window>
