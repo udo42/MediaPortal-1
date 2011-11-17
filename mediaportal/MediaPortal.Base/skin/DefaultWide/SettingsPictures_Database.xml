@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <window>
   <id>1012</id>
-  <defaultcontrol>2</defaultcontrol>
+  <defaultcontrol>3</defaultcontrol>
   <allowoverlay>no</allowoverlay>
+  <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
     <import>common.settings.xml</import>
     <control>
@@ -94,7 +95,7 @@
       <height>45</height>
       <font>font11</font>
       <onright>2</onright>
-      <ondown>4</ondown>
+      <onup>17</onup>
     </control>
     <control>
       <description>Reset database button</description>
@@ -107,7 +108,7 @@
       <height>45</height>
       <font>font11</font>
       <onright>2</onright>
-      <onup>3</onup>
+      <ondown>3</ondown>
     </control>
     
   </controls>

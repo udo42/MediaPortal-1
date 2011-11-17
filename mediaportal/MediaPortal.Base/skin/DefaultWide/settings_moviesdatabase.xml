@@ -3,6 +3,7 @@
   <id>1010</id>
   <defaultcontrol>14</defaultcontrol>
   <allowoverlay>no</allowoverlay>
+  <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
     <import>common.settings.xml</import>
     <control>
@@ -83,7 +84,7 @@
       <height>35</height>
       <font>font10</font>
       <onright>10</onright>
-			<ondown>15</ondown>
+			<onup>17</onup>
     </control>
     <control>
       <description>Reset database</description>
@@ -263,14 +264,14 @@
       <width>420</width>
       <height>35</height>
       <font>font10</font>
-      <onup>12</onup>
+      <ondown>14</ondown>
       <onright>10</onright>
     </control>
     <control>
       <description>Prefixes</description>
       <type>label</type>
       <id>1</id>
-      <posX>70</posX>
+      <posX>100</posX>
       <posY>615</posY>
       <width>420</width>
       <font>font10</font>

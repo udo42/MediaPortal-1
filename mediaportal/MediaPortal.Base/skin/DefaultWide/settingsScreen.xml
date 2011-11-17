@@ -3,8 +3,7 @@
   <id>9</id>
   <defaultcontrol>2</defaultcontrol>
   <allowoverlay>no</allowoverlay>
-  <define>#header.label:6023</define>
-  <define>#header.hover:hover_settings.png</define>
+  <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
     <import>common.settings.xml</import>
     <control>
@@ -50,7 +49,7 @@
         <width>350</width>
         <label>673</label>
         <hyperlink>31</hyperlink>
-        <ondown>99</ondown>
+        <ondown>2</ondown>
       </control>
     </control>
   </controls>

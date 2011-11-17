@@ -3,6 +3,7 @@
   <id>1013</id>
   <defaultcontrol>2</defaultcontrol>
   <allowoverlay>no</allowoverlay>
+  <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
     <import>common.settings.xml</import>
     <control>
@@ -32,7 +33,7 @@
       <posX>300</posX>
       <posY>215</posY>
       <width>690</width>
-      <ondown>3</ondown>
+      <onup>17</onup>
     </control>
     <control>
       <description>Disable Interent lookups for best albums       tracks</description>
@@ -42,8 +43,7 @@
       <posX>300</posX>
       <posY>260</posY>
       <width>690</width>
-      <onup>2</onup>
-      <ondown>4</ondown>
+      
     </control>
     <control>
       <description>Disable interent lookups for track suggestions</description>
@@ -53,8 +53,7 @@
       <posX>300</posX>
       <posY>305</posY>
       <width>690</width>
-      <onup>3</onup>
-      <ondown>5</ondown>
+      
     </control>
     <control>
       <description>Switch artists</description>
@@ -64,8 +63,7 @@
       <posX>300</posX>
       <posY>350</posY>
       <width>690</width>
-      <onup>4</onup>
-      <ondown>6</ondown>
+      
     </control>
     <control>
       <description>VuMeter label</description>
@@ -83,7 +81,7 @@
       <label>#vumeter</label>
       <posX>300</posX>
       <posY>455</posY>
-      <onup>5</onup>
+      <ondown>2</ondown>
     </control>
   </controls>
 </window>

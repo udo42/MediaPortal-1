@@ -3,6 +3,7 @@
   <id>1005</id>
   <defaultcontrol>10</defaultcontrol>
   <allowoverlay>no</allowoverlay>
+  <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
     <import>common.settings.xml</import>
     <control>
@@ -29,13 +30,12 @@
       <description>Thumb quality</description>
       <type>spincontrol</type>
       <id>10</id>
-      <posX>450</posX>
+      <posX>350</posX>
       <posY>123</posY>
       <onleft>10</onleft>
       <onright>10</onright>
       <onup>17</onup>
       <ondown>2</ondown>
-      <align>right</align>
     </control>
     <!--Thumbs quality labels-->
     <control>
@@ -192,7 +192,7 @@
       <posY>345</posY>
       <width>500</width>
       <label>1341</label>
-      <onup>3</onup>
+      <onup>8</onup>
       <ondown>5</ondown>
       <onleft>2</onleft>
       <onright>4</onright>
@@ -255,7 +255,7 @@
       <width>500</width>
       <label>1346</label>
       <onup>7</onup>
-      <ondown>99</ondown>
+      <ondown>4</ondown>
       <onleft>8</onleft>
       <onright>12</onright>
     </control>
@@ -288,7 +288,6 @@
       <onright>11</onright>
       <onup>5</onup>
       <ondown>12</ondown>
-      <align>right</align>
     </control>
     <control>
       <description>Rows label</description>
@@ -309,7 +308,6 @@
       <onright>12</onright>
       <onup>11</onup>
       <ondown>99</ondown>
-      <align>right</align>
     </control>
   </controls>
 </window>

@@ -3,8 +3,7 @@
   <id>1016</id>
   <defaultcontrol>2</defaultcontrol>
   <allowoverlay>no</allowoverlay>
-  <define>#header.label:6022</define>
-  <define>#header.hover:hover_my videos.png</define>
+  <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
     <import>common.settings.xml</import>
     <control>

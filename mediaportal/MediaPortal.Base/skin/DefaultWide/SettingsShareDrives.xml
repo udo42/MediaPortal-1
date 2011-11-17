@@ -3,8 +3,7 @@
   <id>1000</id>
   <defaultcontrol>43</defaultcontrol>
   <allowoverlay>no</allowoverlay>
-  <define>#header.label:1277</define>
-  <define>#header.hover:hover_settings.png</define>
+  <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
     <import>common.settings.xml</import>
     <!--     *******************************************************************************************  -->
@@ -21,15 +20,8 @@
         <type>button</type>
         <id>3</id>
         <label>1368</label>
-        <onleft>3</onleft>
         <onright>43</onright>
-        <onup>3</onup>
-        <ondown>4</ondown>
-        <textcolor>ffffffff</textcolor>
-        <colordiffuse>ffffffff</colordiffuse>
-        <disabledcolor>ffffffff</disabledcolor>
-        <textcolorNoFocus>ffffffff</textcolorNoFocus>
-        <dimColor>ffffffff</dimColor>
+        <onup>17</onup>
         <width>170</width>
       </control>
       <control>
@@ -37,15 +29,7 @@
         <type>button</type>
         <id>4</id>
         <label>1369</label>
-        <onleft>4</onleft>
         <onright>43</onright>
-        <onup>3</onup>
-        <ondown>5</ondown>
-        <textcolor>ffffffff</textcolor>
-        <colordiffuse>ffffffff</colordiffuse>
-        <disabledcolor>ffffffff</disabledcolor>
-        <textcolorNoFocus>ffffffff</textcolorNoFocus>
-        <dimColor>ffffffff</dimColor>
         <width>170</width>
       </control>
       <control>
@@ -53,15 +37,7 @@
         <type>button</type>
         <id>5</id>
         <label>2076</label>
-        <onleft>5</onleft>
         <onright>43</onright>
-        <onup>4</onup>
-        <ondown>6</ondown>
-        <textcolor>ffffffff</textcolor>
-        <colordiffuse>ffffffff</colordiffuse>
-        <disabledcolor>ffffffff</disabledcolor>
-        <textcolorNoFocus>ffffffff</textcolorNoFocus>
-        <dimColor>ffffffff</dimColor>
         <width>170</width>
       </control>
       <control>
@@ -69,15 +45,8 @@
         <type>button</type>
         <id>6</id>
         <label>868</label>
-        <onleft>6</onleft>
         <onright>43</onright>
-        <onup>5</onup>
-        <ondown>40</ondown>
-        <textcolor>ffffffff</textcolor>
-        <colordiffuse>ffffffff</colordiffuse>
-        <disabledcolor>ffffffff</disabledcolor>
-        <textcolorNoFocus>ffffffff</textcolorNoFocus>
-        <dimColor>ffffffff</dimColor>
+        <ondown>3</ondown>
         <width>170</width>
       </control>
     </control>
@@ -143,7 +112,7 @@
       <spinPosY>350</spinPosY>
       <onup>42</onup>
       <ondown>40</ondown>
-			<onleft>3</onleft>
+      <onleft>3</onleft>
       <onright>3</onright>
       <spaceBetweenItems>0</spaceBetweenItems>
       <unfocusedAlpha>160</unfocusedAlpha>
@@ -292,8 +261,7 @@
       <width>340</width>
       <height>35</height>
       <font>font11</font>
-      <onup>6</onup>
-      <ondown>41</ondown>
+      <onup>43</onup>
     </control>
     <control>
       <description>Add  optical drives On/Off</description>
@@ -305,8 +273,6 @@
       <width>340</width>
       <height>35</height>
       <font>font11</font>
-      <onup>40</onup>
-      <ondown>42</ondown>
     </control>
     <control>
       <description>Auto switch removables On/Off</description>
@@ -318,8 +284,7 @@
       <width>340</width>
       <height>35</height>
       <font>font11</font>
-      <onup>41</onup>
-      <ondown>43</ondown>
+      <ondown>40</ondown>
     </control>
   </controls>
 </window>

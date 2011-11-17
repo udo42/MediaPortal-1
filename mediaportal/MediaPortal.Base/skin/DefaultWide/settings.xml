@@ -3,6 +3,7 @@
   <id>4</id>
   <defaultcontrol>4</defaultcontrol>
   <allowoverlay>no</allowoverlay>
+  <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
     <import>common.settings.xml</import>
     <control>
@@ -81,23 +82,15 @@
         <label>1027</label>
         <hyperlink>704</hyperlink>
       </control>
-      <!--control>
-      <description>Screen</description>
-      <type>button</type>
-      <id>5</id>
-      <width>350</width>
-      <label>6023</label>
-      <hyperlink>9</hyperlink>
-    </control-->
-    <control>
-      <description>MiniDisplay</description>
-      <type>button</type>
-      <id>11</id>
-      <width>350</width>
-      <label>9100</label>
-      <hyperlink>9000</hyperlink>
-      <ondown>4</ondown>
+      <control>
+        <description>MiniDisplay</description>
+        <type>button</type>
+        <id>11</id>
+        <width>350</width>
+        <label>9100</label>
+        <hyperlink>9000</hyperlink>
+        <ondown>4</ondown>
+      </control>
     </control>
-  </control>
-</controls>
+  </controls>
 </window>

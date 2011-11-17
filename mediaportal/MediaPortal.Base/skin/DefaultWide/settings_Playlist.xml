@@ -3,8 +3,7 @@
   <id>1014</id>
   <defaultcontrol>2</defaultcontrol>
   <allowoverlay>no</allowoverlay>
-  <define>#header.label:1277</define>
-  <define>#header.hover:hover_settings.png</define>
+  <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
     <import>common.settings.xml</import>
     <control>
@@ -34,7 +33,7 @@
       <label>851</label>
       <posX>100</posX>
       <posY>195</posY>
-      <ondown>9</ondown>
+      <onup>17</onup>
     </control>
     <control>
       <description>Videos playlist folder label</description>
@@ -54,7 +53,7 @@
       <posX>100</posX>
       <posY>240</posY>
       <width>540</width>
-      <onup>8</onup>
+      <ondown>8</ondown>
       <font>font11</font>
     </control>
     <!--Music-->
@@ -65,7 +64,7 @@
     <label>851</label>
     <posX>100</posX>
     <posY>195</posY>
-    <ondown>3</ondown>
+    <onup>17</onup>
   </control>
   <control>
     <description>Music playlist folder label</description>
@@ -133,7 +132,7 @@
     <posX>100</posX>
     <posY>420</posY>
     <width>540</width>
-    <onup>6</onup>
+    <ondown>2</ondown>
     <font>font11</font>
   </control>
 </controls>

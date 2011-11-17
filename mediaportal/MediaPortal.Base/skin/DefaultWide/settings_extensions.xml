@@ -3,8 +3,7 @@
   <id>1001</id>
   <defaultcontrol>2</defaultcontrol>
   <allowoverlay>no</allowoverlay>
-  <define>#header.label:1265</define>
-  <define>#header.hover:hover_settings.png</define>
+  <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
     <import>common.settings.xml</import>
     <!--Add/Remove/Default-->
@@ -31,35 +30,23 @@
         <description>Add</description>
         <type>button</type>
         <id>3</id>
-        <posX>50</posX>
-        <posY>120</posY>
-        <onright>6</onright>
-        <ondown>4</ondown>
         <onright>2</onright>
-        <align>right</align>
+        <onup>17</onup>
         <label>1368</label>
       </control>
       <control>
         <description>Remove</description>
         <type>button</type>
         <id>4</id>
-        <posX>50</posX>
-        <posY>165</posY>
         <onright>2</onright>
-        <onup>3</onup>
-        <ondown>5</ondown>
-        <align>right</align>
         <label>1369</label>
       </control>
       <control>
         <description>Default</description>
         <type>button</type>
         <id>5</id>
-        <posX>50</posX>
-        <posY>210</posY>
         <onright>2</onright>
-        <onup>4</onup>
-        <align>right</align>
+        <ondown>3</ondown>
         <label>886</label>
       </control>
     </control>

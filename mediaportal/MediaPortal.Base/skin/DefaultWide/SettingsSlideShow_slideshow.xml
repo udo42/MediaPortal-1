@@ -3,8 +3,7 @@
   <id>1015</id>
   <defaultcontrol>6</defaultcontrol>
   <allowoverlay>no</allowoverlay>
-  <define>#header.label:101015</define>
-  <define>#header.hover:hover_my pictures.png</define>
+  <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
     <import>common.settings.xml</import>
     <!--Slideshow transition group-->
@@ -13,8 +12,8 @@
       <type>image</type>
       <id>1</id>
       <posX>80</posX>
-      <posY>140</posY>
-      <height>180</height>
+      <posY>110</posY>
+      <height>205</height>
       <width>430</width>
       <texture mask="picturethumbmask.png">blue.png</texture>
       <colordiffuse>ccffffff</colordiffuse>
@@ -68,7 +67,7 @@
       <id>1</id>
       <posX>80</posX>
       <posY>340</posY>
-      <height>140</height>
+      <height>170</height>
       <width>430</width>
       <texture mask="picturethumbmask.png">blue.png</texture>
       <colordiffuse>ccffffff</colordiffuse>
@@ -110,8 +109,8 @@
       <type>image</type>
       <id>1</id>
       <posX>560</posX>
-      <posY>140</posY>
-      <height>280</height>
+      <posY>100</posY>
+      <height>320</height>
       <width>660</width>
       <texture mask="picturethumbmask.png">blue.png</texture>
       <colordiffuse>ccffffff</colordiffuse>
@@ -131,6 +130,7 @@
       <posX>590</posX>
       <posY>160</posY>
       <label>224</label>
+      
     </control>
     <control>
       <description>Speed select</description>
@@ -141,6 +141,7 @@
       <onleft>6</onleft>
       <onright>6</onright>
       <ondown>3</ondown>
+      <onup>42</onup>
       <buddycontrolid>100</buddycontrolid>
     </control>
     <control>
@@ -213,7 +214,7 @@
       <id>1</id>
       <posX>560</posX>
       <posY>440</posY>
-      <height>180</height>
+      <height>210</height>
       <width>660</width>
       <texture mask="picturethumbmask.png">blue.png</texture>
       <colordiffuse>ccffffff</colordiffuse>
@@ -258,6 +259,8 @@
       <label>1297</label>
       <onleft>40</onleft>
       <onright>40</onright>
+      <ondown>6</ondown>
+      <onup>44</onup>
       <width>380</width>
     </control>
   </controls>

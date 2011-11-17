@@ -3,6 +3,7 @@
   <id>705</id>
   <defaultcontrol>10</defaultcontrol>
   <allowoverlay>no</allowoverlay>
+  <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
     <import>common.settings.xml</import>
     <control>
