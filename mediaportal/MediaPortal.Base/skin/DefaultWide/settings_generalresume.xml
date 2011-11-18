@@ -12,11 +12,11 @@
       <type>image</type>
       <id>1</id>
       <posX>160</posX>
-      <posY>120</posY>
-      <width>960</width>
-      <height>570</height>
-      <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>ccffffff</colordiffuse>
+      <posY>110</posY>
+      <width>950</width>
+      <height>490</height>
+      <texture>backslide2.png</texture>
+      <colordiffuse>ffffffff</colordiffuse>
     </control>
     <!-- Startup resume-->
     <!--Right part-->

@@ -3,7 +3,8 @@
 <window>
   <id>705</id>
   <defaultcontrol>10</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
+  <allowoverlay>no</allowoverlay>
+  <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
     <import>common.settings.xml</import>
     <control>
@@ -12,13 +13,13 @@
       <animation effect="slide" time="70" start="800,0">WindowOpen</animation>
       <animation effect="slide" time="70" end="800,0">WindowClose</animation>
       <posX>55</posX>
-      <posY>150</posY>
+      <posY>128</posY>
+      <layout>StackLayout(0, Horizontal, True)</layout>
       <control>
         <description>Skin</description>
         <type>button</type>
         <id>10</id>
-        <posX>55</posX>
-        <posY>150</posY>
+        <width>253</width>
         <label>166</label>
         <onup>17</onup>
       </control>
@@ -26,35 +27,16 @@
         <description>Language</description>
         <type>button</type>
         <id>11</id>
-        <posX>55</posX>
-        <posY>186</posY>
+        <width>253</width>
         <label>248</label>
       </control>
       <control>
-        <description>Start in fullscreen mode</description>
-        <type>togglebutton</type>
-        <id>12</id>
-        <posX>55</posX>
-        <posY>222</posY>
-        <label>1047</label>
-      </control>
-      <control>
-        <description>Screensaver</description>
-        <type>togglebutton</type>
-        <id>13</id>
-        <posX>55</posX>
-        <posY>258</posY>
-        <label>360</label>
-      </control>
-      <control>
-        <description>Skip steps screen button</description>
-        <type>button</type>
-        <id>21</id>
-        <posX>55</posX>
-        <posY>294</posY>
-        <label>6024</label>
-        <hyperlink>708</hyperlink>
-        <ondown>99</ondown>
+        <description>Prefix My</description>
+        <type>checkbutton</type>
+        <id>14</id>
+        <width>253</width>
+        <label>1316</label>
+        <ondown>10</ondown>
       </control>
     </control>
     <control>
@@ -65,8 +47,8 @@
       <animation effect="fade" time="250">WindowClose</animation>
       <animation effect="slide" time="70" start="800,0">WindowOpen</animation>
       <animation effect="slide" time="250" end="800,0">WindowClose</animation>
-      <posX>309</posX>
-      <posY>114</posY>
+      <posX>337</posX>
+      <posY>130</posY>
       <width>360</width>
       <height>302</height>
       <texture>LCD.png</texture>
@@ -77,8 +59,8 @@
       <id>20</id>
       <animation effect="slide" time="70" start="800,0">WindowOpen</animation>
       <animation effect="slide" time="70" end="800,0">WindowClose</animation>
-      <posX>320</posX>
-      <posY>130</posY>
+      <posX>348</posX>
+      <posY>146</posY>
       <width>337</width>
       <height>270</height>
       <texture>preview.png</texture>

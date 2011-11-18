@@ -1,23 +1,30 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <!--version="1.0" encoding="utf-8" standalone="yes"-->
 <window>
   <id>708</id>
   <defaultcontrol>19</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
-  <define>#header.label:6025</define>
-  <define>#header.hover:hover_settings.png</define>
+  <allowoverlay>no</allowoverlay>
+  <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
     <import>common.settings.xml</import>
     <control>
       <description>rectangle image</description>
       <type>image</type>
       <id>9876</id>
-      <posX>275</posX>
+      <posX>270</posX>
       <posY>120</posY>
       <width>410</width>
       <height>304</height>
-      <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>eeffffff</colordiffuse>
+      <texture>backslide2.png</texture>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+    <control>
+      <type>label</type>
+      <description>Skip steps label</description>
+      <id>1</id>
+      <label>Skip steps (left / right)</label>
+      <posX>55</posX>
+      <posY>118</posY>
     </control>
     <control>
       <description>buttons</description>
@@ -47,9 +54,85 @@
         <type>button</type>
         <id>18</id>
         <label>886</label>
-        <ondown>99</ondown>
+        <ondown>22</ondown>
         <onright>5</onright>
       </control>
+    </control>
+    <!--timeout group-->
+    <control>
+      <type>label</type>
+      <description>timeout label</description>
+      <id>1</id>
+      <label>1328</label>
+      <posX>55</posX>
+      <posY>264</posY>
+    </control>
+    <control>
+      <description>Timeout button</description>
+      <type>button</type>
+      <id>22</id>
+      <label>1329</label>
+      <ondown>23</ondown>
+      <onright>22</onright>
+      <posX>55</posX>
+      <posY>296</posY>
+    </control>
+    <control>
+      <type>label</type>
+      <description>timeout value label</description>
+      <id>1</id>
+      <label>#timeoutValue</label>
+      <font>font13</font>
+      <posX>205</posX>
+      <posY>300</posY>
+    </control>
+    <!--skip type-->
+    <control>
+      <type>label</type>
+      <description>skip type label</description>
+      <id>1</id>
+      <label>1330</label>
+      <posX>55</posX>
+      <posY>336</posY>
+    </control>
+    <control>
+      <description>skip type relative button</description>
+      <type>checkbutton</type>
+      <id>23</id>
+      <label>1331</label>
+      <ondown>24</ondown>
+      <onright>23</onright>
+      <posX>55</posX>
+      <posY>368</posY>
+    </control>
+    <control>
+      <description>skip type constant button</description>
+      <type>checkbutton</type>
+      <id>24</id>
+      <label>1332</label>
+      <ondown>25</ondown>
+      <onright>24</onright>
+      <posX>55</posX>
+      <posY>404</posY>
+    </control>
+    <control>
+      <description>Skip value button</description>
+      <type>button</type>
+      <id>25</id>
+      <label>1333</label>
+      <onright>25</onright>
+      <posX>55</posX>
+      <posY>440</posY>
+      <ondown>19</ondown>
+    </control>
+    <control>
+      <type>label</type>
+      <description>Skip value label</description>
+      <id>1</id>
+      <label>#skipValue</label>
+      <font>font13</font>
+      <posX>205</posX>
+      <posY>444</posY>
     </control>
     <control>
       <description>skip steps seconds</description>
@@ -58,7 +141,7 @@
       <animation effect="slide" time="70" end="800,0">WindowClose</animation>
       <posX>288</posX>
       <posY>149</posY>
-      <layout>StackLayout(25)</layout>
+      <layout>StackLayout(35)</layout>
       <control>
         <type>label</type>
         <description>skip steps seconds</description>
@@ -70,7 +153,7 @@
         <description>Step 1</description>
         <type>checkmark</type>
         <id>2</id>
-        <label> 5</label>
+        <label>5</label>
         <align>right</align>
         <onleft>19</onleft>
         <onright>6</onright>
@@ -81,7 +164,7 @@
         <description>Step 2</description>
         <type>checkmark</type>
         <id>3</id>
-        <label> 15</label>
+        <label>15</label>
         <align>right</align>
         <onleft>20</onleft>
         <onright>7</onright>
@@ -92,7 +175,7 @@
         <description>Step 3</description>
         <type>checkmark</type>
         <id>4</id>
-        <label> 30</label>
+        <label>30</label>
         <align>right</align>
         <onleft>20</onleft>
         <onright>8</onright>
@@ -103,7 +186,7 @@
         <description>Step 4</description>
         <type>checkmark</type>
         <id>5</id>
-        <label> 45</label>
+        <label>45</label>
         <align>right</align>
         <onleft>18</onleft>
         <onright>9</onright>
@@ -118,7 +201,7 @@
       <animation effect="slide" time="70" end="800,0">WindowClose</animation>
       <posX>432</posX>
       <posY>149</posY>
-      <layout>StackLayout(25)</layout>
+      <layout>StackLayout(35)</layout>
       <control>
         <description>skip steps minutes</description>
         <type>label</type>
@@ -129,7 +212,7 @@
         <description>Step 5</description>
         <type>checkmark</type>
         <id>6</id>
-        <label> 1</label>
+        <label>1</label>
         <align>right</align>
         <onleft>2</onleft>
         <onright>14</onright>
@@ -140,7 +223,7 @@
         <description>Step 6</description>
         <type>checkmark</type>
         <id>7</id>
-        <label> 3</label>
+        <label>3</label>
         <align>right</align>
         <onleft>3</onleft>
         <onright>15</onright>
@@ -151,7 +234,7 @@
         <description>Step 7</description>
         <type>checkmark</type>
         <id>8</id>
-        <label> 5</label>
+        <label>5</label>
         <align>right</align>
         <onleft>4</onleft>
         <onright>16</onright>
@@ -162,7 +245,7 @@
         <description>Step 8</description>
         <type>checkmark</type>
         <id>9</id>
-        <label> 7</label>
+        <label>7</label>
         <align>right</align>
         <onleft>5</onleft>
         <onright>17</onright>
@@ -173,7 +256,7 @@
         <description>Step 9</description>
         <type>checkmark</type>
         <id>10</id>
-        <label> 10</label>
+        <label>10</label>
         <align>right</align>
         <onleft>5</onleft>
         <onright>17</onright>
@@ -184,7 +267,7 @@
         <description>Step 10</description>
         <type>checkmark</type>
         <id>11</id>
-        <label> 15</label>
+        <label>15</label>
         <align>right</align>
         <onleft>5</onleft>
         <onright>17</onright>
@@ -195,7 +278,7 @@
         <description>Step 11</description>
         <type>checkmark</type>
         <id>12</id>
-        <label> 30</label>
+        <label>30</label>
         <align>right</align>
         <onleft>5</onleft>
         <onright>17</onright>
@@ -206,7 +289,7 @@
         <description>Step 12</description>
         <type>checkmark</type>
         <id>13</id>
-        <label> 45</label>
+        <label>45</label>
         <align>right</align>
         <onleft>5</onleft>
         <onright>17</onright>
@@ -221,7 +304,7 @@
       <animation effect="slide" time="70" end="800,0">WindowClose</animation>
       <posX>576</posX>
       <posY>149</posY>
-      <layout>StackLayout(25)</layout>
+      <layout>StackLayout(35)</layout>
       <control>
         <description>skip steps hours</description>
         <type>label</type>
@@ -232,7 +315,7 @@
         <description>Step 13</description>
         <type>checkmark</type>
         <id>14</id>
-        <label> 1</label>
+        <label>1</label>
         <align>right</align>
         <onleft>6</onleft>
         <onright>14</onright>
@@ -254,7 +337,7 @@
         <description>Step 15</description>
         <type>checkmark</type>
         <id>16</id>
-        <label> 2</label>
+        <label>2</label>
         <align>right</align>
         <onleft>8</onleft>
         <onright>16</onright>
@@ -265,7 +348,7 @@
         <description>Step 16</description>
         <type>checkmark</type>
         <id>17</id>
-        <label> 3</label>
+        <label>3</label>
         <align>right</align>
         <onleft>9</onleft>
         <onright>17</onright>

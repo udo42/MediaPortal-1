@@ -251,7 +251,7 @@
     <Compile Include="GUISettings\General\GUI\GUISettingsGUI_General.cs" />
     <Compile Include="GUISettings\General\GUI\GUISettingsGUI_Main.cs" />
     <Compile Include="GUISettings\GUISettings_Playlist.cs" />
-    <Compile Include="GUISettings\Music\GUISettings_NowPlaying.cs" />
+    <Compile Include="GUISettings\Music\GUISettingsMusic_NowPlaying.cs" />
     <Compile Include="GUISettings\Pictures\GUISettiingsPictures_Slideshow.cs" />
     <Compile Include="GUISettings\Pictures\GUISettingsPictures_Database.cs" />
     <Compile Include="GUISettings\Movies\GUISettingsMovies_Database.cs" />

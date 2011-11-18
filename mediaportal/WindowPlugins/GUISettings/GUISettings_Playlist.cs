@@ -62,6 +62,11 @@ namespace MediaPortal.GUI.Settings
       GetID = (int)Window.WINDOW_SETTINGS_PLAYLIST;
     }
 
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\settings_Playlist.xml");
+    }
+
     public string Section
     {
       get { return _section; }
@@ -130,15 +135,22 @@ namespace MediaPortal.GUI.Settings
     #endregion
 
     #region overrides
-
-    public override bool Init()
-    {
-      return Load(GUIGraphicsContext.Skin + @"\settings_Playlist.xml");
-    }
-
+    
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
+      
+      switch (_section)
+      {
+        case "music":
+          GUIPropertyManager.SetProperty("#currentmodule", "*Music - Playlist");
+          break;
+
+        case "movies":
+          GUIPropertyManager.SetProperty("#currentmodule", "*Videos - Playlist");
+          break;
+      }
+
       LoadSettings();
       UpdateControls();
       SetProperties();

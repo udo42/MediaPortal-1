@@ -10,12 +10,12 @@
       <description>rectangle image</description>
       <type>image</type>
       <id>1</id>
-      <posX>50</posX>
+      <posX>70</posX>
       <posY>80</posY>
-      <width>1220</width>
-      <height>700</height>
-      <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>ccffffff</colordiffuse>
+      <width>1180</width>
+      <height>580</height>
+      <texture>backslide2.png</texture>
+      <colordiffuse>ffffffff</colordiffuse>
     </control>
     <control>
       <description>Thumb quality spin label</description>

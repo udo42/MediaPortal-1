@@ -63,6 +63,11 @@ namespace WindowPlugins.GUISettings
       GetID = (int)Window.WINDOW_SETTINGS_GUISCREENSAVER;
     }
 
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\settings_screensaver.xml");
+    }
+
     #region Serialisation
 
     private void LoadSettings()
@@ -105,11 +110,6 @@ namespace WindowPlugins.GUISettings
     #endregion
 
     #region Overrides
-
-    public override bool Init()
-    {
-      return Load(GUIGraphicsContext.Skin + @"\settings_screensaver.xml");
-    }
 
     public override bool OnMessage(GUIMessage message)
     {
@@ -168,7 +168,7 @@ namespace WindowPlugins.GUISettings
     {
       _settingsSaved = false;
       base.OnPageLoad();
-      GUIPropertyManager.SetProperty("#currentmodule", GUILocalizeStrings.Get(100016));
+      GUIPropertyManager.SetProperty("#currentmodule", "*GUI - Screen saver");
       LoadSettings();
     }
 

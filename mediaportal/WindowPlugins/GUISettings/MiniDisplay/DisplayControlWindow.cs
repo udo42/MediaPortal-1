@@ -41,6 +41,8 @@ namespace MediaPortal.ProcessPlugins.MiniDisplayPlugin.Setup
       return Load(GUIGraphicsContext.Skin + @"\settings_Display_DisplayControl.xml");
     }
 
+    #region Serialization
+
     private void LoadSettings()
     {
       this.DisplayControl = XMLUTILS.LoadDisplayControlSettings();
@@ -50,6 +52,26 @@ namespace MediaPortal.ProcessPlugins.MiniDisplayPlugin.Setup
       this.SetDisplayIdle();
       this.SetIdleDelay();
     }
+
+    private void SaveSettings()
+    {
+      this.DisplayControl.BlankDisplayWithVideo = this.btnDisplayVideo.Selected;
+      this.DisplayControl.EnableDisplayAction = this.btnDisplayAction.Selected;
+      if (this.btnDisplayAction.Selected)
+      {
+        this.DisplayControl.DisplayActionTime = this.btnDisplayActionTime.SelectedItem;
+      }
+      this.DisplayControl.BlankDisplayWhenIdle = this.btnDisplayIdle.Selected;
+      if (this.btnDisplayIdle.Selected)
+      {
+        this.DisplayControl.BlankIdleDelay = this.btnIdleDelay.SelectedItem;
+      }
+      XMLUTILS.SaveDisplayControlSettings(this.DisplayControl);
+    }
+
+    #endregion
+
+    #region Overrides
 
     protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
     {
@@ -127,22 +149,8 @@ namespace MediaPortal.ProcessPlugins.MiniDisplayPlugin.Setup
       base.OnAction(action);
     }
 
-    private void SaveSettings()
-    {
-      this.DisplayControl.BlankDisplayWithVideo = this.btnDisplayVideo.Selected;
-      this.DisplayControl.EnableDisplayAction = this.btnDisplayAction.Selected;
-      if (this.btnDisplayAction.Selected)
-      {
-        this.DisplayControl.DisplayActionTime = this.btnDisplayActionTime.SelectedItem;
-      }
-      this.DisplayControl.BlankDisplayWhenIdle = this.btnDisplayIdle.Selected;
-      if (this.btnDisplayIdle.Selected)
-      {
-        this.DisplayControl.BlankIdleDelay = this.btnIdleDelay.SelectedItem;
-      }
-      XMLUTILS.SaveDisplayControlSettings(this.DisplayControl);
-    }
-
+    #endregion
+    
     private void SetDisplayAction()
     {
       if (this.DisplayControl.BlankDisplayWithVideo)

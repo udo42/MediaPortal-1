@@ -37,6 +37,19 @@ namespace MediaPortal.GUI.Settings
       return Load(GUIGraphicsContext.Skin + @"\settingsScreen.xml");
     }
 
+    #region Overrides
+
+    protected override void OnPageLoad()
+    {
+      GUIPropertyManager.SetProperty("#currentmodule", "*GUI - Screen");
+      base.OnPageLoad();
+    }
+
+    protected override void OnPageDestroy(int new_windowId)
+    {
+      base.OnPageDestroy(new_windowId);
+    }
+
     public override void OnAction(Action action)
     {
       if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
@@ -70,5 +83,7 @@ namespace MediaPortal.GUI.Settings
       }
       return base.OnMessage(message);
     }
+
+    #endregion
   }
 }

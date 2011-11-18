@@ -10,12 +10,12 @@
       <description>background</description>
       <type>image</type>
       <id>1</id>
-      <posX>270</posX>
-      <posY>150</posY>
+      <posX>260</posX>
+      <posY>135</posY>
       <height>390</height>
       <width>780</width>
-      <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>ccffffff</colordiffuse>
+      <texture>backslide2.png</texture>
+      <colordiffuse>ffffffff</colordiffuse>
     </control>
     <control>
       <description>Dynamic content label</description>

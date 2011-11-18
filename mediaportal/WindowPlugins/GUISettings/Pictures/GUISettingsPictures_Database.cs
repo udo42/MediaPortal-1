@@ -60,6 +60,11 @@ namespace MediaPortal.GUI.Settings
       GetID = (int)Window.WINDOW_SETTINGS_PICTURESDATABASE;
     }
 
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\SettingsPictures_Database.xml");
+    }
+
     #region Serialization
 
     private void LoadSettings()
@@ -119,15 +124,11 @@ namespace MediaPortal.GUI.Settings
     #endregion
 
     #region Overrides
-
-    public override bool Init()
-    {
-      return Load(GUIGraphicsContext.Skin + @"\SettingsPictures_Database.xml");
-    }
-
+    
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
+      GUIPropertyManager.SetProperty("#currentmodule", "*Pictures - Database");
       LoadSettings();
       SetProperties();
     }

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-
 <window>
   <controls>
     <control>
@@ -15,23 +14,19 @@
       <id>1</id>
       <posX>33</posX>
       <posY>21</posY>
-      <label>#currentmodule</label>
+      <label>5</label>
       <font>font16</font>
       <align>left</align>
       <textcolor>White</textcolor>
-      
-      
     </control>
     <control>
-      
-      
       <description>Selected item Label</description>
       <type>fadelabel</type>
       <id>1</id>
       <posX>33</posX>
       <posY>52</posY>
       <width>399</width>
-      <label>#selecteditem</label>
+      <label>#currentmodule</label>
       <font>font13</font>
       <align>left</align>
       <textcolor>ffa9d0f7</textcolor>
@@ -46,8 +41,6 @@
       <align>right</align>
       <font>font13</font>
       <textcolor>ffa9d0f7</textcolor>
-      
-      
     </control>
   </controls>
 </window>

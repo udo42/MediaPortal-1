@@ -46,55 +46,6 @@ namespace MediaPortal.GUI.Settings
     private int m_iLogHeight; // Notional (logical) screen height
     private float m_orgZoomVertical;
 
-    // Ensure m_iLogWidth/Height are in range.
-    // Returns true if either are clamped.
-    private bool ClampLogicalScreenSize()
-    {
-      bool bClamped;
-      int iCurrWidth = m_iLogWidth;
-      int iCurrHeight = m_iLogHeight;
-
-      m_iLogWidth = (int)
-                    Math.Max((float)GUIGraphicsContext.Width * ZOOM_MIN,
-                             Math.Min((float)GUIGraphicsContext.Width * ZOOM_MAX, (float)m_iLogWidth));
-
-      m_iLogHeight = (int)
-                     Math.Max((float)GUIGraphicsContext.Height * ZOOM_MIN,
-                              Math.Min((float)GUIGraphicsContext.Height * ZOOM_MAX, (float)m_iLogHeight));
-
-      bClamped = (m_iLogWidth != iCurrWidth) || (m_iLogHeight != iCurrHeight);
-
-      return bClamped;
-    }
-
-    // Update dialog to reflect current values.
-    private void UpdateControlLabel()
-    {
-      string strOffset;
-
-      int iX1 = GUIGraphicsContext.OffsetX;
-      int iY1 = GUIGraphicsContext.OffsetY;
-      int iX2 = iX1 + (int)Math.Round(GUIGraphicsContext.ZoomHorizontal
-                                      * (float)GUIGraphicsContext.Width);
-      int iY2 = iY1 + (int)Math.Round(GUIGraphicsContext.ZoomVertical
-                                      * (float)GUIGraphicsContext.Height);
-
-      if (m_iMode == 1)
-      {
-        // Zoom
-        strOffset = String.Format("{0},{1} - [{2},{3}]",
-                                  iX1, iY1, iX2, iY2);
-      }
-      else
-      {
-        // Offset
-        strOffset = String.Format("[{0},{1}] - {2},{3}",
-                                  iX1, iY1, iX2, iY2);
-      }
-
-      GUIControl.SetControlLabel(GetID, CONTROL_LABEL, strOffset);
-    }
-
     public GUISettingsUICalibration()
     {
       GetID = (int)Window.WINDOW_UI_CALIBRATION;
@@ -103,6 +54,14 @@ namespace MediaPortal.GUI.Settings
     public override bool Init()
     {
       return Load(GUIGraphicsContext.Skin + @"\settingsUICalibration.xml");
+    }
+
+    #region Overrides
+
+    protected override void OnPageLoad()
+    {
+      base.OnPageLoad();
+      GUIPropertyManager.SetProperty("#currentmodule", "*GUI - UI Calibration");
     }
 
     public override int GetFocusControlId()
@@ -473,5 +432,57 @@ namespace MediaPortal.GUI.Settings
       }
       return base.OnMessage(message);
     }
+
+    #endregion
+
+    // Ensure m_iLogWidth/Height are in range.
+    // Returns true if either are clamped.
+    private bool ClampLogicalScreenSize()
+    {
+      bool bClamped;
+      int iCurrWidth = m_iLogWidth;
+      int iCurrHeight = m_iLogHeight;
+
+      m_iLogWidth = (int)
+                    Math.Max((float)GUIGraphicsContext.Width * ZOOM_MIN,
+                             Math.Min((float)GUIGraphicsContext.Width * ZOOM_MAX, (float)m_iLogWidth));
+
+      m_iLogHeight = (int)
+                     Math.Max((float)GUIGraphicsContext.Height * ZOOM_MIN,
+                              Math.Min((float)GUIGraphicsContext.Height * ZOOM_MAX, (float)m_iLogHeight));
+
+      bClamped = (m_iLogWidth != iCurrWidth) || (m_iLogHeight != iCurrHeight);
+
+      return bClamped;
+    }
+
+    // Update dialog to reflect current values.
+    private void UpdateControlLabel()
+    {
+      string strOffset;
+
+      int iX1 = GUIGraphicsContext.OffsetX;
+      int iY1 = GUIGraphicsContext.OffsetY;
+      int iX2 = iX1 + (int)Math.Round(GUIGraphicsContext.ZoomHorizontal
+                                      * (float)GUIGraphicsContext.Width);
+      int iY2 = iY1 + (int)Math.Round(GUIGraphicsContext.ZoomVertical
+                                      * (float)GUIGraphicsContext.Height);
+
+      if (m_iMode == 1)
+      {
+        // Zoom
+        strOffset = String.Format("{0},{1} - [{2},{3}]",
+                                  iX1, iY1, iX2, iY2);
+      }
+      else
+      {
+        // Offset
+        strOffset = String.Format("[{0},{1}] - {2},{3}",
+                                  iX1, iY1, iX2, iY2);
+      }
+
+      GUIControl.SetControlLabel(GetID, CONTROL_LABEL, strOffset);
+    }
+
   }
 }

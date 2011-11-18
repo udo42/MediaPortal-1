@@ -49,12 +49,12 @@ namespace WindowPlugins.GUISettings.TV
       GetID = (int)Window.WINDOW_SETTINGS_TV;
     }
 
-    #region Overrides
-
     public override bool Init()
     {
       return Load(GUIGraphicsContext.Skin + @"\settings_tv.xml");
     }
+
+    #region Overrides
 
     protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
     {

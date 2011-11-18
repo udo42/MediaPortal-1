@@ -4,6 +4,7 @@
   <id>18</id>
   <defaultcontrol>2</defaultcontrol>
   <allowoverlay>no</allowoverlay>
+  <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
     <control>
       <description>background image</description>

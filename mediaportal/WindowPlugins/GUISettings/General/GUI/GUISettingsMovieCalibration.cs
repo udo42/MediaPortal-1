@@ -66,7 +66,15 @@ namespace MediaPortal.GUI.Settings
     {
       return Load(GUIGraphicsContext.Skin + @"\settingsScreenCalibration.xml");
     }
-    
+
+    #region Overrides
+
+    protected override void OnPageLoad()
+    {
+      base.OnPageLoad();
+      GUIPropertyManager.SetProperty("#currentmodule", "*GUI - Screen calibration");
+    }
+
     public override void OnAction(Action action)
     {
       if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
@@ -569,5 +577,7 @@ namespace MediaPortal.GUI.Settings
     {
       return 1;
     }
+
+    #endregion
   }
 }

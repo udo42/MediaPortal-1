@@ -22,11 +22,9 @@ using System;
 using System.Collections;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using MediaPortal.Configuration;
 using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
 using Microsoft.DirectX.Direct3D;
-using Microsoft.Win32;
 using Action = MediaPortal.GUI.Library.Action;
 
 namespace MediaPortal.GUI.Settings
@@ -75,6 +73,11 @@ namespace MediaPortal.GUI.Settings
     public GUISettingsGeneralResume()
     {
       GetID = (int)Window.WINDOW_SETTINGS_GENERALRESUME; //1017
+    }
+
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\settings_generalresume.xml");
     }
 
     #region Serialisation
@@ -150,6 +153,7 @@ namespace MediaPortal.GUI.Settings
     protected override void OnPageLoad()
     {
       LoadSettings();
+      GUIPropertyManager.SetProperty("#currentmodule", "*General - Resume");
       base.OnPageLoad();
     }
 
@@ -157,11 +161,6 @@ namespace MediaPortal.GUI.Settings
     {
       SaveSettings();
       base.OnPageDestroy(new_windowId);
-    }
-
-    public override bool Init()
-    {
-      return Load(GUIGraphicsContext.Skin + @"\settings_generalresume.xml");
     }
 
     public override void OnAction(Action action)

@@ -63,6 +63,11 @@ namespace WindowPlugins.GUISettings
       GetID = (int)Window.WINDOW_SETTINGS_GENERALMAIN;//1016
     }
 
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\settings_generalmain.xml");
+    }
+
     #region Serialization
 
     private void LoadSettings()
@@ -79,14 +84,10 @@ namespace WindowPlugins.GUISettings
 
     #region Overrides
 
-    public override bool Init()
-    {
-      return Load(GUIGraphicsContext.Skin + @"\settings_generalmain.xml");
-    }
-
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
+      GUIPropertyManager.SetProperty("#currentmodule", "*General");
       LoadSettings();
     }
 

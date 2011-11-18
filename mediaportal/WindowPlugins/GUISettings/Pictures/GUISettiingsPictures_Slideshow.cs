@@ -62,6 +62,11 @@ namespace MediaPortal.GUI.Settings
       GetID = (int)Window.WINDOW_SETTINGS_PICTURES_SLIDESHOW;
     }
 
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\SettingsSlideShow_slideshow.xml");
+    }
+
     #region Serialisation
 
     private void LoadSettings()
@@ -110,9 +115,10 @@ namespace MediaPortal.GUI.Settings
 
     #region Overrides
 
-    public override bool Init()
+    protected override void OnPageLoad()
     {
-      return Load(GUIGraphicsContext.Skin + @"\SettingsSlideShow_slideshow.xml");
+      base.OnPageLoad();
+      GUIPropertyManager.SetProperty("#currentmodule", "*Pictures - Slideshow");
     }
 
     public override void OnAction(Action action)

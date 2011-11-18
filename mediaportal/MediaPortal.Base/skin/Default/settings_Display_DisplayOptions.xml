@@ -3,7 +3,7 @@
 <window>
   <id>9003</id>
   <defaultcontrol>30</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
+  <allowoverlay>no</allowoverlay>
   <define>#header.label:109003</define>
   <define>#header.hover:hover_settings.png</define>
   <!-- cheat a little, we don't use two of the items in the imported file to blank their labels -->

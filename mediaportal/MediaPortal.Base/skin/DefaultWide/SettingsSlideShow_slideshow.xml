@@ -12,11 +12,11 @@
       <type>image</type>
       <id>1</id>
       <posX>80</posX>
-      <posY>110</posY>
+      <posY>100</posY>
       <height>205</height>
       <width>430</width>
-      <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>ccffffff</colordiffuse>
+      <texture>backslide2.png</texture>
+      <colordiffuse>ffffffff</colordiffuse>
     </control>
     <control>
       <description>Slideshow transition label</description>
@@ -66,11 +66,11 @@
       <type>image</type>
       <id>1</id>
       <posX>80</posX>
-      <posY>340</posY>
+      <posY>330</posY>
       <height>170</height>
       <width>430</width>
-      <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>ccffffff</colordiffuse>
+      <texture>backslide2.png</texture>
+      <colordiffuse>ffffffff</colordiffuse>
     </control>
     <control>
       <description>Rotation settings</description>
@@ -109,11 +109,11 @@
       <type>image</type>
       <id>1</id>
       <posX>560</posX>
-      <posY>100</posY>
+      <posY>90</posY>
       <height>320</height>
       <width>660</width>
-      <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>ccffffff</colordiffuse>
+      <texture>backslide2.png</texture>
+      <colordiffuse>ffffffff</colordiffuse>
     </control>
     <control>
       <description>Slideshow settings</description>
@@ -213,11 +213,11 @@
       <type>image</type>
       <id>1</id>
       <posX>560</posX>
-      <posY>440</posY>
+      <posY>430</posY>
       <height>210</height>
       <width>660</width>
-      <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>ccffffff</colordiffuse>
+      <texture>backslide2.png</texture>
+      <colordiffuse>ffffffff</colordiffuse>
     </control>
     <control>
       <description>View settings</description>

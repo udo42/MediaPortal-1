@@ -12,11 +12,11 @@
       <type>image</type>
       <id>1</id>
       <posX>455</posX>
-      <posY>140</posY>
-      <height>480</height>
-      <width>390</width>
-      <texture mask="video_poster_mask.png">blue.png</texture>
-      <colordiffuse>ccffffff</colordiffuse>
+      <posY>120</posY>
+      <height>505</height>
+      <width>425</width>
+      <texture>backslide.png</texture>
+      <colordiffuse>ffffffff</colordiffuse>
     </control>
     <control>
       <description>buttons</description>

@@ -74,6 +74,11 @@ namespace WindowPlugins.GUISettings
       GetID = (int)Window.WINDOW_SETTINGS_GENERALMP;//1018
     }
 
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\settings_generalMP.xml");
+    }
+
     #region Serialization
 
     private void LoadSettings()
@@ -111,11 +116,6 @@ namespace WindowPlugins.GUISettings
     #endregion
 
     #region Overrides
-
-    public override bool Init()
-    {
-      return Load(GUIGraphicsContext.Skin + @"\settings_generalMP.xml");
-    }
 
     public override bool OnMessage(GUIMessage message)
     {
@@ -156,6 +156,7 @@ namespace WindowPlugins.GUISettings
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
+      GUIPropertyManager.SetProperty("#currentmodule", "*General - Media Portal");
     }
 
     protected override void OnPageDestroy(int new_windowId)

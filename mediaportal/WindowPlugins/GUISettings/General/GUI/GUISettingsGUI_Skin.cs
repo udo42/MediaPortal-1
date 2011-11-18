@@ -70,6 +70,36 @@ namespace WindowPlugins.GUISettings
       return Load(GUIGraphicsContext.Skin + @"\settings_general.xml");
     }
 
+    #region Serialisation
+
+    private void LoadSettings()
+    {
+      using (Settings xmlreader = new MPSettings())
+      {
+        string currentLanguage = string.Empty;
+        currentLanguage = xmlreader.GetValueAsString("gui", "language", "English");
+        btnLanguage.Label = currentLanguage;
+        btnLanguagePrefix.Selected = xmlreader.GetValueAsBool("gui", "myprefix", false);
+
+        SetSkins();
+      }
+    }
+
+    private void SaveSettings()
+    {
+      using (Settings xmlwriter = new MPSettings())
+      {
+        xmlwriter.SetValue("gui", "language", btnLanguage.Label);
+        xmlwriter.SetValue("skin", "name", btnSkin.Label);
+        xmlwriter.SetValueAsBool("gui", "myprefix", btnLanguagePrefix.Selected);
+      }
+      Config.SkinName = btnSkin.Label;
+    }
+
+    #endregion
+
+    #region Overrides
+
     protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
     {
       if (control == btnSkin)
@@ -162,6 +192,7 @@ namespace WindowPlugins.GUISettings
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
+      GUIPropertyManager.SetProperty("#currentmodule", "* GUI - Skin");
       LoadSettings();
     }
    
@@ -179,32 +210,6 @@ namespace WindowPlugins.GUISettings
       }
 
       base.OnAction(action);
-    }
-
-    #region Serialisation
-
-    private void LoadSettings()
-    {
-      using (Settings xmlreader = new MPSettings())
-      {
-        string currentLanguage = string.Empty;
-        currentLanguage = xmlreader.GetValueAsString("gui", "language", "English");
-        btnLanguage.Label = currentLanguage;
-        btnLanguagePrefix.Selected = xmlreader.GetValueAsBool("gui", "myprefix", false);
-        
-        SetSkins();
-      }
-    }
-
-    private void SaveSettings()
-    {
-      using (Settings xmlwriter = new MPSettings())
-      {
-        xmlwriter.SetValue("gui", "language", btnLanguage.Label);
-        xmlwriter.SetValue("skin", "name", btnSkin.Label);
-        xmlwriter.SetValueAsBool("gui", "myprefix", btnLanguagePrefix.Selected);
-      }
-      Config.SkinName = btnSkin.Label;
     }
 
     #endregion

@@ -48,10 +48,10 @@ namespace WindowPlugins.GUISettings
       CONTROL_THUMBNAILS_ROWS = 12,
     } ;
 
-    private int iQuality = 3;
-    private int iColumns = 1;
-    private int iRows = 1;
-    private bool settingsSaved;
+    private int _iQuality = 3;
+    private int _iColumns = 1;
+    private int _iRows = 1;
+    private bool _settingsSaved;
 
     private class CultureComparer : IComparer
     {
@@ -72,6 +72,11 @@ namespace WindowPlugins.GUISettings
       GetID = (int)Window.WINDOW_SETTINGS_GUITHUMBNAILS;
     }
 
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\settings_thumbnails.xml");
+    }
+
     #region Serialisation
 
     private void LoadSettings()
@@ -79,32 +84,32 @@ namespace WindowPlugins.GUISettings
       using (Settings xmlreader = new MPSettings())
       {
 
-        iQuality = xmlreader.GetValueAsInt("thumbnails", "quality", 3);
-        iQuality++;
+        _iQuality = xmlreader.GetValueAsInt("thumbnails", "quality", 3);
+        _iQuality++;
         btnEnableMusicThumbs.Selected = xmlreader.GetValueAsBool("thumbnails", "musicfolderondemand", true);
         btnEnablePicturesThumbs.Selected = xmlreader.GetValueAsBool("thumbnails", "picturenolargethumbondemand", false);
         btnEnableVideosThumbs.Selected = xmlreader.GetValueAsBool("thumbnails", "tvrecordedondemand", true);
         btnEnableLeaveThumbInFolder.Selected = xmlreader.GetValueAsBool("thumbnails", "tvrecordedsharepreview", false);
-        iColumns = xmlreader.GetValueAsInt("thumbnails", "tvthumbcols", 1);
-        iRows = xmlreader.GetValueAsInt("thumbnails", "tvthumbrows", 1);
+        _iColumns = xmlreader.GetValueAsInt("thumbnails", "tvthumbcols", 1);
+        _iRows = xmlreader.GetValueAsInt("thumbnails", "tvthumbrows", 1);
       }
     }
 
     private void SaveSettings()
     {
-      if (!settingsSaved)
+      if (!_settingsSaved)
       {
-        settingsSaved = true;
+        _settingsSaved = true;
         using (Settings xmlwriter = new MPSettings())
         {
-          iQuality--;
-          xmlwriter.SetValue("thumbnails", "quality", iQuality);
+          _iQuality--;
+          xmlwriter.SetValue("thumbnails", "quality", _iQuality);
           xmlwriter.SetValueAsBool("thumbnails", "musicfolderondemand", btnEnableMusicThumbs.Selected);
           xmlwriter.SetValueAsBool("thumbnails", "picturenolargethumbondemand", btnEnablePicturesThumbs.Selected);
           xmlwriter.SetValueAsBool("thumbnails", "tvrecordedondemand", btnEnableVideosThumbs.Selected);
           xmlwriter.SetValueAsBool("thumbnails", "tvrecordedsharepreview", btnEnableLeaveThumbInFolder.Selected);
-          xmlwriter.SetValue("thumbnails", "tvthumbcols", iColumns);
-          xmlwriter.SetValue("thumbnails", "tvthumbrows", iRows);
+          xmlwriter.SetValue("thumbnails", "tvthumbcols", _iColumns);
+          xmlwriter.SetValue("thumbnails", "tvthumbrows", _iRows);
         }
       }
     }
@@ -112,11 +117,6 @@ namespace WindowPlugins.GUISettings
     #endregion
 
     #region Overrides
-
-    public override bool Init()
-    {
-      return Load(GUIGraphicsContext.Skin + @"\settings_thumbnails.xml");
-    }
 
     public override bool OnMessage(GUIMessage message)
     {
@@ -130,19 +130,19 @@ namespace WindowPlugins.GUISettings
             {
               GUIControl.AddItemLabelControl(GetID, (int)Controls.CONTROL_THUMBNAILS_QUALITY, i.ToString());
             }
-            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_THUMBNAILS_QUALITY, iQuality - 1);
+            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_THUMBNAILS_QUALITY, _iQuality - 1);
 
             for (int i = 1; i <= 3; ++i)
             {
               GUIControl.AddItemLabelControl(GetID, (int)Controls.CONTROL_THUMBNAILS_COLUMNS, i.ToString());
             }
-            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_THUMBNAILS_COLUMNS, iColumns - 1);
+            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_THUMBNAILS_COLUMNS, _iColumns - 1);
 
             for (int i = 1; i <= 3; ++i)
             {
               GUIControl.AddItemLabelControl(GetID, (int)Controls.CONTROL_THUMBNAILS_ROWS, i.ToString());
             }
-            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_THUMBNAILS_ROWS, iRows - 1);
+            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_THUMBNAILS_ROWS, _iRows - 1);
           }
           return true;
 
@@ -153,26 +153,26 @@ namespace WindowPlugins.GUISettings
             if (iControl == (int)Controls.CONTROL_THUMBNAILS_QUALITY)
             {
               string strLabel = message.Label;
-              iQuality = Int32.Parse(strLabel);
-              GUIGraphicsContext.ScrollSpeedHorizontal = iQuality;
+              _iQuality = Int32.Parse(strLabel);
+              GUIGraphicsContext.ScrollSpeedHorizontal = _iQuality;
               //settingsChanged = true;
-              ThumbQuality_ValueChanged();
+              ThumbQualityValueChanged();
               SetProperties();
             }
 
             if (iControl == (int)Controls.CONTROL_THUMBNAILS_COLUMNS)
             {
               string strLabel = message.Label;
-              iColumns = Int32.Parse(strLabel);
-              GUIGraphicsContext.ScrollSpeedHorizontal = iColumns;
+              _iColumns = Int32.Parse(strLabel);
+              GUIGraphicsContext.ScrollSpeedHorizontal = _iColumns;
               //settingsChanged = true;
             }
 
             if (iControl == (int)Controls.CONTROL_THUMBNAILS_ROWS)
             {
               string strLabel = message.Label;
-              iRows = Int32.Parse(strLabel);
-              GUIGraphicsContext.ScrollSpeedHorizontal = iRows;
+              _iRows = Int32.Parse(strLabel);
+              GUIGraphicsContext.ScrollSpeedHorizontal = _iRows;
               //settingsChanged = true;
             }
 
@@ -224,10 +224,10 @@ namespace WindowPlugins.GUISettings
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
-      GUIPropertyManager.SetProperty("#currentmodule", GUILocalizeStrings.Get(1321));
+      GUIPropertyManager.SetProperty("#currentmodule", "*GUI - Thumbnails");
       LoadSettings();
       SetProperties();
-      settingsSaved = false;
+      _settingsSaved = false;
     }
 
     protected override void OnPageDestroy(int newWindowId)
@@ -248,9 +248,9 @@ namespace WindowPlugins.GUISettings
 
     #endregion
 
-    private void ThumbQuality_ValueChanged()
+    private void ThumbQualityValueChanged()
     {
-      switch (iQuality)
+      switch (_iQuality)
       {
         case 1:
           Thumbs.Quality = Thumbs.ThumbQuality.fastest;
@@ -272,7 +272,7 @@ namespace WindowPlugins.GUISettings
 
     private void SetProperties()
     {
-      switch (iQuality)
+      switch (_iQuality)
       {
         case 1:
           GUIPropertyManager.SetProperty("#thumbResolution", Convert.ToString((int)Thumbs.ThumbResolution) + " + " +

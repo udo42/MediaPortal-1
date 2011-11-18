@@ -19,7 +19,6 @@
 #endregion
 
 using System;
-using MediaPortal.Configuration;
 using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
 using MediaPortal.Player;
@@ -60,9 +59,9 @@ namespace WindowPlugins.GUISettings
 
     #endregion
 
-    private const string DEFAULT_SETTING = "15,30,60,180,300,600,900,1800,3600,7200";
-    private int timeOutValue = 1500;
-    private int skipValue = 10;
+    private const string DefaultSetting = "15,30,60,180,300,600,900,1800,3600,7200";
+    private int _timeOutValue = 1500;
+    private int _skipValue = 10;
 
     public GUISettingsGUISkipSteps()
     {
@@ -84,10 +83,10 @@ namespace WindowPlugins.GUISettings
       {
         try
         {
-          regValue = xmlreader.GetValueAsString("movieplayer", "skipsteps", DEFAULT_SETTING);
+          regValue = xmlreader.GetValueAsString("movieplayer", "skipsteps", DefaultSetting);
           if (regValue == string.Empty) // config after wizard run 1st
           {
-            regValue = DEFAULT_SETTING;
+            regValue = DefaultSetting;
             Log.Info("GeneralSkipSteps - creating new Skip-Settings {0}", "");
           }
           else if (OldStyle(regValue))
@@ -96,7 +95,7 @@ namespace WindowPlugins.GUISettings
           }
           labelCurrent.Label = regValue;
 
-          timeOutValue = xmlreader.GetValueAsInt("movieplayer", "skipsteptimeout", 1500);
+          _timeOutValue = xmlreader.GetValueAsInt("movieplayer", "skipsteptimeout", 1500);
           btnRelative.Selected = xmlreader.GetValueAsBool("movieplayer", "immediateskipstepsisrelative", true);
 
           if (!btnRelative.Selected)
@@ -104,7 +103,7 @@ namespace WindowPlugins.GUISettings
             btnConstant.Selected = true;
           }
 
-          skipValue = xmlreader.GetValueAsInt("movieplayer", "immediateskipstepsize", 10);
+          _skipValue = xmlreader.GetValueAsInt("movieplayer", "immediateskipstepsize", 10);
 
         }
         catch (Exception ex)
@@ -123,9 +122,9 @@ namespace WindowPlugins.GUISettings
       {
         xmlwriter.SetValue("movieplayer", "skipsteps", labelCurrent.Label);
         //
-        xmlwriter.SetValue("movieplayer", "skipsteptimeout", timeOutValue);
+        xmlwriter.SetValue("movieplayer", "skipsteptimeout", _timeOutValue);
         xmlwriter.SetValueAsBool("movieplayer", "immediateskipstepsisrelative", btnRelative.Selected);
-        xmlwriter.SetValue("movieplayer", "immediateskipstepsize", skipValue);
+        xmlwriter.SetValue("movieplayer", "immediateskipstepsize", _skipValue);
 
       }
       g_Player.configLoaded = false;
@@ -139,7 +138,7 @@ namespace WindowPlugins.GUISettings
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
-      Log.Info("GUISkipSteps: {0}", "Load settings");
+      GUIPropertyManager.SetProperty("#currentmodule", "*GUI - Skip steps");
       LoadSettings();
       SetProperties();
       GUIControl.FocusControl(GetID, checkMarkButtonStep1.GetID);
@@ -246,8 +245,8 @@ namespace WindowPlugins.GUISettings
     {
       if (control == buttonReset)
       {
-        labelCurrent.Label = DEFAULT_SETTING;
-        SetCheckMarksBasedOnString(DEFAULT_SETTING);
+        labelCurrent.Label = DefaultSetting;
+        SetCheckMarksBasedOnString(DefaultSetting);
       }
       else if (control == buttonAdd)
       {
@@ -383,12 +382,12 @@ namespace WindowPlugins.GUISettings
       if (control == btnTimeoutValue)
       {
         int number;
-        string getNumber = timeOutValue.ToString();
+        string getNumber = _timeOutValue.ToString();
         GetStringFromKeyboard(ref getNumber, -1);
 
         if (Int32.TryParse(getNumber, out number))
         {
-          timeOutValue = number;
+          _timeOutValue = number;
         }
 
         SetProperties();
@@ -396,12 +395,12 @@ namespace WindowPlugins.GUISettings
       if (control == btnSkipValue)
       {
         int number;
-        string getNumber = skipValue.ToString();
+        string getNumber = _skipValue.ToString();
         GetStringFromKeyboard(ref getNumber, -1);
 
         if (Int32.TryParse(getNumber, out number))
         {
-          skipValue = number;
+          _skipValue = number;
         }
 
         SetProperties();
@@ -445,8 +444,8 @@ namespace WindowPlugins.GUISettings
 
     private void SetProperties()
     {
-      GUIPropertyManager.SetProperty("#timeoutValue", timeOutValue.ToString());
-      GUIPropertyManager.SetProperty("#skipValue", skipValue.ToString());
+      GUIPropertyManager.SetProperty("#timeoutValue", _timeOutValue.ToString());
+      GUIPropertyManager.SetProperty("#skipValue", _skipValue.ToString());
     }
 
     private void GetStringFromKeyboard(ref string strLine, int maxLenght)
@@ -846,7 +845,7 @@ namespace WindowPlugins.GUISettings
         }
         catch (Exception)
         {
-          return DEFAULT_SETTING;
+          return DefaultSetting;
         }
       }
       return (newStyle == string.Empty ? string.Empty : newStyle.Substring(0, newStyle.Length - 1));

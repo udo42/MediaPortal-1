@@ -2,75 +2,87 @@
 <!--version="1.0" encoding="utf-8" standalone="yes"-->
 <window>
   <id>703</id>
-  <defaultcontrol>24</defaultcontrol>
-  <allowoverlay>yes</allowoverlay>
-  <define>#header.label:6022</define>
-  <define>#header.hover:hover_my videos.png</define>
+  <defaultcontrol>42</defaultcontrol>
+  <allowoverlay>no</allowoverlay>
+  <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
     <import>common.settings.xml</import>
     <control>
+      <description>background</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>244</posX>
+      <posY>96</posY>
+      <height>416</height>
+      <width>244</width>
+      <texture>backslide.png</texture>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
+    <control>
       <description>buttons</description>
       <type>group</type>
-      <animation effect="slide" time="70" start="800,0">WindowOpen</animation>
-      <animation effect="slide" time="70" end="800,0">WindowClose</animation>
-      <posX>55</posX>
-      <posY>150</posY>
-      <layout>GridLayout(0, 6, 52, 8, 1)</layout>
+      <animation effect="slide" time="70" start="-300,0">WindowOpen</animation>
+      <animation effect="slide" time="70" end="-300,0">WindowClose</animation>
+      <posX>261</posX>
+      <posY>128</posY>
+      <layout>StackLayout(0, Horizontal, True)</layout>
       <control>
-        <description>MPEG-2 Video Codecs</description>
+        <description>Playlist</description>
         <type>button</type>
-        <id>24</id>
-        <label>6000</label>
+        <id>42</id>
+        <label>851</label>
+        <width>196</width>
         <onup>17</onup>
       </control>
       <control>
-        <description>H.264 Video Codecs</description>
-        <type>button</type>
-        <id>29</id>
-        <label>6036</label>
-      </control>
-      <control>
-        <description>Audio Codecs</description>
-        <type>button</type>
-        <id>25</id>
-        <label>6001</label>
-      </control>
-      <control>
-        <description>AAC Audio Codecs</description>
-        <type>button</type>
-        <id>30</id>
-        <label>6039</label>
-      </control>
-      <control>
-        <description>Audio Renderer</description>
-        <type>button</type>
-        <id>27</id>
-        <label>6002</label>
-      </control>
-      <control>
-        <description>Apect Ratio</description>
-        <type>button</type>
-        <id>28</id>
-        <label>6004</label>
-      </control>
-      <control>
         <description>Subtitles On/Off</description>
-        <type>togglebutton</type>
+        <type>checkbutton</type>
         <id>31</id>
         <label>1196</label>
+        <width>196</width>
       </control>
       <control>
-        <description>Subtitle Language</description>
+        <description>Play all</description>
         <type>button</type>
-        <id>32</id>
-        <label>1029</label>
+        <id>34</id>
+        <label>Play all behaviour</label>
+        <width>196</width>
       </control>
       <control>
-        <description>Audio Language</description>
+        <description>Share folders</description>
         <type>button</type>
-        <id>33</id>
-        <label>492</label>
-        <ondown>99</ondown>
+        <id>40</id>
+        <label>1277</label>
+        <width>196</width>
+      </control>
+      <control>
+        <description>Database</description>
+        <type>button</type>
+        <id>41</id>
+        <label>1434</label>
+        <width>196</width>
+      </control>
+      <control>
+        <description>Extensions</description>
+        <type>button</type>
+        <id>35</id>
+        <label>1265</label>
+        <width>196</width>
+      </control>
+      <control>
+        <description>Video</description>
+        <type>button</type>
+        <id>24</id>
+        <label>Video codecs</label>
+        <width>196</width>
+      </control>
+      <control>
+        <description>Audio</description>
+        <type>button</type>
+        <id>25</id>
+        <label>Audio codecs</label>
+        <width>196</width>
+        <ondown>42</ondown>
       </control>
     </control>
   </controls>

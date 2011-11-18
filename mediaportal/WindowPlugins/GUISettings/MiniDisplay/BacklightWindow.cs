@@ -41,6 +41,8 @@ namespace MediaPortal.ProcessPlugins.MiniDisplayPlugin.Setup
       return Load(GUIGraphicsContext.Skin + @"\settings_Display_BackLight.xml");
     }
 
+    #region Serialization
+
     private void LoadSettings()
     {
       this.BackLightOptions = XMLUTILS.LoadBackLightSettings();
@@ -49,6 +51,10 @@ namespace MediaPortal.ProcessPlugins.MiniDisplayPlugin.Setup
       this.SetBlue();
       this.SetInverted();
     }
+
+    #endregion
+
+    #region overrides
 
     protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
     {
@@ -94,6 +100,8 @@ namespace MediaPortal.ProcessPlugins.MiniDisplayPlugin.Setup
 
       base.OnAction(action);
     }
+
+    #endregion
 
     private void SaveSettings()
     {

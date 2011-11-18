@@ -62,6 +62,22 @@ namespace MediaPortal.GUI.Settings
     {
       OnExtensions();
       base.OnPageLoad();
+      
+      string module = string.Empty;
+      switch (_section)
+      {
+        case "movies":
+          module = "*Videos - Extensions";
+          break;
+        case "music":
+          module = "*Music - Extensions";
+          break;
+        case "pictures":
+          module = "*Pictures - Extensions";
+          break;
+      }
+
+      GUIPropertyManager.SetProperty("#currentmodule", module);
     }
 
     protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
@@ -146,22 +162,6 @@ namespace MediaPortal.GUI.Settings
           extensionsListcontrol.Add(item);
         }
       }
-
-      string module = string.Empty;
-      switch (_section)
-      {
-        case "movies":
-          module = GUILocalizeStrings.Get(100006);
-          break;
-        case "music":
-          module = GUILocalizeStrings.Get(100005);
-          break;
-        case "pictures":
-          module = GUILocalizeStrings.Get(100002);
-          break;
-      }
-
-      GUIPropertyManager.SetProperty("#currentmodule", GUILocalizeStrings.Get(1265) + "-" + module);
     }
 
     private void GetStringFromKeyboard(ref string strLine)

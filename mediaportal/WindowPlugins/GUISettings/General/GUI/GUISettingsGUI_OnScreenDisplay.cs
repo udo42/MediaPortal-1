@@ -61,6 +61,11 @@ namespace WindowPlugins.GUISettings
       GetID = (int)Window.WINDOW_SETTINGS_GUIONSCREEN_DISPLAY;
     }
 
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\settings_onscreendisplay.xml");
+    }
+
     #region Serialisation
 
     private void LoadSettings()
@@ -86,11 +91,6 @@ namespace WindowPlugins.GUISettings
     #endregion
 
     #region Overrides
-
-    public override bool Init()
-    {
-      return Load(GUIGraphicsContext.Skin + @"\settings_onscreendisplay.xml");
-    }
     
     protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
     {
@@ -142,7 +142,7 @@ namespace WindowPlugins.GUISettings
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
-      GUIPropertyManager.SetProperty("#currentmodule", GUILocalizeStrings.Get(1323));
+      GUIPropertyManager.SetProperty("#currentmodule", "*GUI - On-Screen display");
       LoadSettings();
       SetProperties();
     }

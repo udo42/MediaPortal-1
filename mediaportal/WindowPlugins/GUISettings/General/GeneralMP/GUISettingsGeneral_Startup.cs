@@ -44,6 +44,11 @@ namespace MediaPortal.GUI.Settings
       GetID = (int)Window.WINDOW_SETTINGS_GENERALSTARTUP; //1003
     }
 
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\settings_generalstartup.xml");
+    }
+
     #region Serialisation
 
     private void LoadSettings()
@@ -120,6 +125,7 @@ namespace MediaPortal.GUI.Settings
     protected override void OnPageLoad()
     {
       LoadSettings();
+      GUIPropertyManager.SetProperty("#currentmodule", "*General - Startup");
       base.OnPageLoad();
     }
 
@@ -127,11 +133,6 @@ namespace MediaPortal.GUI.Settings
     {
       SaveSettings();
       base.OnPageDestroy(new_windowId);
-    }
-
-    public override bool Init()
-    {
-      return Load(GUIGraphicsContext.Skin + @"\settings_generalstartup.xml");
     }
 
     public override void OnAction(Action action)

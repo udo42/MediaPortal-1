@@ -77,6 +77,11 @@ namespace MediaPortal.GUI.Settings
       GetID = (int)Window.WINDOW_SETTINGS_MUSICDATABASE;
     }
 
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\SettingsMyMusic_Database.xml");
+    }
+
     #region Serialization
 
     private void LoadSettings()
@@ -179,14 +184,10 @@ namespace MediaPortal.GUI.Settings
 
     #region Overrides
 
-    public override bool Init()
-    {
-      return Load(GUIGraphicsContext.Skin + @"\SettingsMyMusic_Database.xml");
-    }
-
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
+      GUIPropertyManager.SetProperty("#currentmodule", "*Music - Database");
       _dateAdded.Clear();
       _dateAdded.AddRange(new object[]
                                       {

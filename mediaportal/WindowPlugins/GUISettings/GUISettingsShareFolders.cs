@@ -90,6 +90,11 @@ namespace MediaPortal.GUI.Settings
       GetID = (int)Window.WINDOW_SETTINGS_FOLDERS;
     }
 
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\SettingsShareDrives.xml");
+    }
+
     public string Section
     {
       get { return _section; }
@@ -152,14 +157,27 @@ namespace MediaPortal.GUI.Settings
 
     #region overrides
 
-    public override bool Init()
-    {
-      return Load(GUIGraphicsContext.Skin + @"\SettingsShareDrives.xml");
-    }
+    
 
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
+      
+      string module = string.Empty;
+      switch (_section)
+      {
+        case "movies":
+          module = "*Videos - Folders";
+          break;
+        case "music":
+          module = "*Music - Folders";
+          break;
+        case "pictures":
+          module = "*Pictures - Folders";
+          break;
+      }
+      GUIPropertyManager.SetProperty("#currentmodule", module);
+
       _layouts.Clear();
       _layouts.AddRange(new object[]
                                       {
@@ -335,22 +353,9 @@ namespace MediaPortal.GUI.Settings
     // Skin properties update
     private void SetProperties()
     {
-      string module = string.Empty;
-      switch (_section)
-      {
-        case "movies":
-          module = GUILocalizeStrings.Get(100006);
-          break;
-        case "music":
-          module = GUILocalizeStrings.Get(100005);
-          break;
-        case "pictures":
-          module = GUILocalizeStrings.Get(100002);
-          break;
-      }
-
       GUIPropertyManager.SetProperty("#folderName", _folderName);
       GUIPropertyManager.SetProperty("#folder", _folderPath);
+      
       if (!string.IsNullOrEmpty(_folderPin))
       {
         GUIPropertyManager.SetProperty("#pinCode", "****");
@@ -359,8 +364,9 @@ namespace MediaPortal.GUI.Settings
       {
         GUIPropertyManager.SetProperty("#pinCode", "");
       }
+      
       GUIPropertyManager.SetProperty("#layout", _folderDefaultLayout);
-      GUIPropertyManager.SetProperty("#currentmodule", GUILocalizeStrings.Get(1277) + "-" + module);
+      
       string strValue = "no";
 
       if (_shareCreateThumbs)

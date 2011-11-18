@@ -53,14 +53,9 @@ namespace WindowPlugins.GUISettings
       UseOnlyOne = 2,
     }
 
-    private string _selectedLangName;
-    private string _selectedSkinName;
-    private bool _selectedScreenSaver;
     private ArrayList _homeUsage = new ArrayList();
     private int _homeSelectedIndex = 0;
-    private string _pin = string.Empty;
-
-
+    
     private class CultureComparer : IComparer
     {
       #region IComparer Members
@@ -84,6 +79,47 @@ namespace WindowPlugins.GUISettings
     {
       return Load(GUIGraphicsContext.Skin + @"\settings_GUIgeneral.xml");
     }
+
+    #region Serialisation
+
+    private void LoadSettings()
+    {
+      using (Settings xmlreader = new MPSettings())
+      {
+        // GUI settings
+        cmAllowRememberLastFocusedItem.Selected = xmlreader.GetValueAsBool("gui", "allowRememberLastFocusedItem", true);
+        cmAutosize.Selected = xmlreader.GetValueAsBool("gui", "autosize", true);
+        cmHideextensions.Selected = xmlreader.GetValueAsBool("gui", "hideextensions", true);
+        cmFileexistscache.Selected = xmlreader.GetValueAsBool("gui", "fileexistscache", false);
+        cmEnableguisounds.Selected = xmlreader.GetValueAsBool("gui", "enableguisounds", true);
+        cmMousesupport.Selected = xmlreader.GetValueAsBool("gui", "mousesupport", false);
+
+        bool startWithBasicHome = xmlreader.GetValueAsBool("gui", "startbasichome", false);
+        bool useOnlyOneHome = xmlreader.GetValueAsBool("gui", "useonlyonehome", false);
+        _homeSelectedIndex = (int)((useOnlyOneHome ? HomeUsageEnum.UseOnlyOne : HomeUsageEnum.UseBoth) |
+                                           (startWithBasicHome ? HomeUsageEnum.PreferBasic : HomeUsageEnum.PreferClassic));
+
+        GUIPropertyManager.SetProperty("#homeScreen", _homeUsage[_homeSelectedIndex].ToString());
+        btnHomeUsage.Label = _homeUsage[_homeSelectedIndex].ToString();
+      }
+    }
+
+    private void SaveSettings()
+    {
+      using (Settings xmlwriter = new MPSettings())
+      {
+        xmlwriter.SetValueAsBool("gui", "allowRememberLastFocusedItem", cmAllowRememberLastFocusedItem.Selected);
+        xmlwriter.SetValueAsBool("gui", "autosize", cmAutosize.Selected);
+        xmlwriter.SetValueAsBool("gui", "hideextensions", cmHideextensions.Selected);
+        xmlwriter.SetValueAsBool("gui", "fileexistscache", cmFileexistscache.Selected);
+        xmlwriter.SetValueAsBool("gui", "enableguisounds", cmEnableguisounds.Selected);
+        xmlwriter.SetValueAsBool("gui", "mousesupport", cmMousesupport.Selected);
+      }
+    }
+
+    #endregion
+
+    #region Overrides
 
     protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
     {
@@ -122,7 +158,7 @@ namespace WindowPlugins.GUISettings
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
-
+      GUIPropertyManager.SetProperty("#currentmodule", "*GUI - General");
       _homeUsage.Clear();
       _homeUsage.AddRange(new object[]
                                         {
@@ -149,43 +185,6 @@ namespace WindowPlugins.GUISettings
       }
 
       base.OnAction(action);
-    }
-
-    #region Serialisation
-
-    private void LoadSettings()
-    {
-      using (Settings xmlreader = new MPSettings())
-      {
-        // GUI settings
-        cmAllowRememberLastFocusedItem.Selected = xmlreader.GetValueAsBool("gui", "allowRememberLastFocusedItem", true);
-        cmAutosize.Selected = xmlreader.GetValueAsBool("gui", "autosize", true);
-        cmHideextensions.Selected = xmlreader.GetValueAsBool("gui", "hideextensions", true);
-        cmFileexistscache.Selected = xmlreader.GetValueAsBool("gui", "fileexistscache", false);
-        cmEnableguisounds.Selected = xmlreader.GetValueAsBool("gui", "enableguisounds", true);
-        cmMousesupport.Selected = xmlreader.GetValueAsBool("gui", "mousesupport", false);
-
-        bool startWithBasicHome = xmlreader.GetValueAsBool("gui", "startbasichome", false);
-        bool useOnlyOneHome = xmlreader.GetValueAsBool("gui", "useonlyonehome", false);
-        _homeSelectedIndex = (int)((useOnlyOneHome ? HomeUsageEnum.UseOnlyOne : HomeUsageEnum.UseBoth) |
-                                           (startWithBasicHome ? HomeUsageEnum.PreferBasic : HomeUsageEnum.PreferClassic));
-
-        GUIPropertyManager.SetProperty("#homeScreen", _homeUsage[_homeSelectedIndex].ToString());
-        btnHomeUsage.Label = _homeUsage[_homeSelectedIndex].ToString();
-      }
-    }
-
-    private void SaveSettings()
-    {
-      using (Settings xmlwriter = new MPSettings())
-      {
-        xmlwriter.SetValueAsBool("gui", "allowRememberLastFocusedItem", cmAllowRememberLastFocusedItem.Selected);
-        xmlwriter.SetValueAsBool("gui", "autosize", cmAutosize.Selected);
-        xmlwriter.SetValueAsBool("gui", "hideextensions", cmHideextensions.Selected);
-        xmlwriter.SetValueAsBool("gui", "fileexistscache", cmFileexistscache.Selected);
-        xmlwriter.SetValueAsBool("gui", "enableguisounds", cmEnableguisounds.Selected);
-        xmlwriter.SetValueAsBool("gui", "mousesupport", cmMousesupport.Selected);
-      }
     }
 
     #endregion

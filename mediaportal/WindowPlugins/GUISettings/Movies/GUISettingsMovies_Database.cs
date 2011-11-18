@@ -94,6 +94,11 @@ namespace MediaPortal.GUI.Settings
       GetID = (int)Window.WINDOW_SETTINGS_VIDEODATABASE;
     }
 
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\settings_moviesdatabase.xml");
+    }
+
     // Need change for 1.3.0
     #region Serialization
 
@@ -255,14 +260,10 @@ namespace MediaPortal.GUI.Settings
       return base.OnMessage(message);
     }
 
-    public override bool Init()
-    {
-      return Load(GUIGraphicsContext.Skin + @"\settings_moviesdatabase.xml");
-    }
-
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
+      GUIPropertyManager.SetProperty("#currentmodule", "*Videos - Database");
       LoadSettings();
       SetProperties();
     }

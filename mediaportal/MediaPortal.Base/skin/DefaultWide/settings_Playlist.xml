@@ -11,11 +11,11 @@
       <type>image</type>
       <id>1</id>
       <posX>70</posX>
-      <posY>120</posY>
+      <posY>110</posY>
       <height>490</height>
       <width>1180</width>
-      <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>ccffffff</colordiffuse>
+      <texture>backslide2.png</texture>
+      <colordiffuse>ffffffff</colordiffuse>
     </control>
     <!--Videos-->
     <control>

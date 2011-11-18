@@ -10,12 +10,12 @@
       <description>rectangle image</description>
       <type>image</type>
       <id>9876</id>
-      <posX>490</posX>
-      <posY>160</posY>
+      <posX>480</posX>
+      <posY>150</posY>
       <width>730</width>
       <height>380</height>
-      <texture mask="picturethumbmask.png">blue.png</texture>
-      <colordiffuse>ccffffff</colordiffuse>
+      <texture>backslide2.png</texture>
+      <colordiffuse>ffffffff</colordiffuse>
     </control>
     
 			<control>

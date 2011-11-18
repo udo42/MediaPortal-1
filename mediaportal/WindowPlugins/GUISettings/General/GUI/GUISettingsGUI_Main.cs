@@ -20,15 +20,10 @@
 
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
 using System.Globalization;
-using System.IO;
-using MediaPortal.Configuration;
 using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
 using MediaPortal.GUI.Settings;
-using MediaPortal.Player;
 using MediaPortal.Profile;
 using MediaPortal.Util;
 using Action = MediaPortal.GUI.Library.Action;
@@ -76,6 +71,31 @@ namespace WindowPlugins.GUISettings
     {
       return Load(GUIGraphicsContext.Skin + @"\settings_GUImain.xml");
     }
+
+    #region Serialisation
+
+    private void LoadSettings()
+    {
+      using (Settings xmlreader = new MPSettings())
+      {
+        btnFileMenu.Selected = xmlreader.GetValueAsBool("filemenu", "enabled", true);
+        btnPin.IsEnabled = btnFileMenu.Selected;
+        _pin = Utils.DecryptPin(xmlreader.GetValueAsString("filemenu", "pincode", ""));
+      }
+    }
+
+    private void SaveSettings()
+    {
+      using (Settings xmlwriter = new MPSettings())
+      {
+        xmlwriter.SetValueAsBool("filemenu", "enabled", btnFileMenu.Selected);
+        xmlwriter.SetValue("filemenu", "pincode", Utils.EncryptPin(_pin));
+      }
+    }
+
+    #endregion
+
+    #region Overrides
 
     protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
     {
@@ -183,6 +203,7 @@ namespace WindowPlugins.GUISettings
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
+      GUIPropertyManager.SetProperty("#currentmodule", "*GUI");
       LoadSettings();
     }
 
@@ -200,27 +221,6 @@ namespace WindowPlugins.GUISettings
       }
 
       base.OnAction(action);
-    }
-
-    #region Serialisation
-
-    private void LoadSettings()
-    {
-      using (Settings xmlreader = new MPSettings())
-      {
-        btnFileMenu.Selected = xmlreader.GetValueAsBool("filemenu", "enabled", true);
-        btnPin.IsEnabled = btnFileMenu.Selected;
-        _pin = Utils.DecryptPin(xmlreader.GetValueAsString("filemenu", "pincode", ""));
-      }
-    }
-
-    private void SaveSettings()
-    {
-      using (Settings xmlwriter = new MPSettings())
-      {
-        xmlwriter.SetValueAsBool("filemenu", "enabled", btnFileMenu.Selected);
-        xmlwriter.SetValue("filemenu", "pincode", Utils.EncryptPin(_pin));
-      }
     }
 
     #endregion

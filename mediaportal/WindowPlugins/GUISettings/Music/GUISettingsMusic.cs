@@ -48,6 +48,11 @@ namespace MediaPortal.GUI.Settings
       GetID = (int)Window.WINDOW_SETTINGS_MUSIC;
     }
 
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\SettingsMyMusic.xml");
+    }
+
     #region serialization
 
     private void LoadSettings()
@@ -60,14 +65,10 @@ namespace MediaPortal.GUI.Settings
 
     #region Overrides
 
-    public override bool Init()
-    {
-      return Load(GUIGraphicsContext.Skin + @"\SettingsMyMusic.xml");
-    }
-
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
+      GUIPropertyManager.SetProperty("#currentmodule", "*Music");
       LoadSettings();
     }
 

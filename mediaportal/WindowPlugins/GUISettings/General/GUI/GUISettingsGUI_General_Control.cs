@@ -53,6 +53,39 @@ namespace MediaPortal.GUI.Settings
       return Load(GUIGraphicsContext.Skin + @"\SettingsGUI.xml");
     }
 
+    #region Serialisation
+
+    private void LoadSettings()
+    {
+      using (Profile.Settings xmlreader = new Profile.MPSettings())
+      {
+        m_iSpeedHorizontal = xmlreader.GetValueAsInt("gui", "ScrollSpeedRight", 1);
+        m_iSpeedVertical = xmlreader.GetValueAsInt("gui", "ScrollSpeedDown", 4);
+        m_iListLoopDelay = xmlreader.GetValueAsInt("gui", "listLoopDelay", 100);
+      }
+    }
+
+    private void SaveSettings()
+    {
+      using (Profile.Settings xmlwriter = new Profile.MPSettings())
+      {
+        xmlwriter.SetValue("gui", "ScrollSpeedRight", m_iSpeedHorizontal.ToString());
+        xmlwriter.SetValue("gui", "ScrollSpeedDown", m_iSpeedVertical.ToString());
+        xmlwriter.SetValue("screen", "GuiRenderFps", GUIGraphicsContext.MaxFPS);
+        xmlwriter.SetValue("gui", "listLoopDelay", m_iListLoopDelay.ToString());
+      }
+    }
+
+    #endregion
+
+    #region Overrides
+
+    protected override void OnPageLoad()
+    {
+      base.OnPageLoad();
+      GUIPropertyManager.SetProperty("#currentmodule", "*GUI - Scoll speed");
+    }
+
     public override void OnAction(Action action)
     {
       if (action.wID == Action.ActionType.ACTION_HOME || action.wID == Action.ActionType.ACTION_SWITCH_HOME)
@@ -166,6 +199,8 @@ namespace MediaPortal.GUI.Settings
       return base.OnMessage(message);
     }
 
+    #endregion
+
     private void ResetExampleLabels()
     {
       GUIControl.ClearControl(GetID, (int)Controls.CONTROL_EXAMPLE);
@@ -175,30 +210,6 @@ namespace MediaPortal.GUI.Settings
       GUIControl.AddItemLabelControl(GetID, (int)Controls.CONTROL_EXAMPLE, strTmp);
       GUIControl.SetControlLabel(GetID, (int)Controls.CONTROL_EXAMPLE2, strTmp);
     }
-
-    #region Serialisation
-
-    private void LoadSettings()
-    {
-      using (Profile.Settings xmlreader = new Profile.MPSettings())
-      {
-        m_iSpeedHorizontal = xmlreader.GetValueAsInt("gui", "ScrollSpeedRight", 1);
-        m_iSpeedVertical = xmlreader.GetValueAsInt("gui", "ScrollSpeedDown", 4);
-        m_iListLoopDelay = xmlreader.GetValueAsInt("gui", "listLoopDelay", 100);
-      }
-    }
-
-    private void SaveSettings()
-    {
-      using (Profile.Settings xmlwriter = new Profile.MPSettings())
-      {
-        xmlwriter.SetValue("gui", "ScrollSpeedRight", m_iSpeedHorizontal.ToString());
-        xmlwriter.SetValue("gui", "ScrollSpeedDown", m_iSpeedVertical.ToString());
-        xmlwriter.SetValue("screen", "GuiRenderFps", GUIGraphicsContext.MaxFPS);
-        xmlwriter.SetValue("gui", "listLoopDelay", m_iListLoopDelay.ToString());
-      }
-    }
-
-    #endregion
+    
   }
 }

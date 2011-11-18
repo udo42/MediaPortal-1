@@ -84,6 +84,11 @@ namespace WindowPlugins.GUISettings.TV
       GetID = (int)Window.WINDOW_SETTINGS_MOVIES;
     }
 
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\settings_movies.xml");
+    }
+
     #region Serialization
 
     private void LoadSettings()
@@ -136,14 +141,10 @@ namespace WindowPlugins.GUISettings.TV
 
     #region Overrides
 
-    public override bool Init()
-    {
-      return Load(GUIGraphicsContext.Skin + @"\settings_movies.xml");
-    }
-
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
+      GUIPropertyManager.SetProperty("#currentmodule", "*Videos");
       LoadSettings();
     }
 

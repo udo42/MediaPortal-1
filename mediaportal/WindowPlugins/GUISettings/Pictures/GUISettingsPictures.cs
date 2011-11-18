@@ -48,9 +48,12 @@ namespace MediaPortal.GUI.Settings
       return Load(GUIGraphicsContext.Skin + @"\SettingsSlideShow.xml");
     }
 
+    #region Overrides
+
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
+      GUIPropertyManager.SetProperty("#currentmodule", "*Pictures");
     }
 
     protected override void OnPageDestroy(int new_windowId)
@@ -96,6 +99,8 @@ namespace MediaPortal.GUI.Settings
       }
       base.OnClicked(controlId, control, actionType);
     }
+
+    #endregion
 
     private void OnSlideShow()
     {

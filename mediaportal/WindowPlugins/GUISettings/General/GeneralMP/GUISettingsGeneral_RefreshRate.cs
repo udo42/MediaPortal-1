@@ -96,6 +96,10 @@ namespace WindowPlugins.GUISettings
       GetID = (int)Window.WINDOW_SETTINGS_GENERALREFRESHRATE;
     }
 
+    public override bool Init()
+    {
+      return Load(GUIGraphicsContext.Skin + @"\settings_dynamicrefreshrate.xml");
+    }
     
     #region Serialisation
 
@@ -212,11 +216,6 @@ namespace WindowPlugins.GUISettings
 
     #region Overrides
 
-    public override bool Init()
-    {
-      return Load(GUIGraphicsContext.Skin + @"\settings_dynamicrefreshrate.xml");
-    }
-
     protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
     {
       // Enable
@@ -326,7 +325,7 @@ namespace WindowPlugins.GUISettings
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
-      GUIPropertyManager.SetProperty("#currentmodule", GUILocalizeStrings.Get(101008));
+      GUIPropertyManager.SetProperty("#currentmodule", "*General - Dynamic Refresh rate");
       LoadSettings();
       //Update();
       SetProperties();
