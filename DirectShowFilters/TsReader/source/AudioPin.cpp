@@ -254,6 +254,17 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
           CRefTime AddVideoCompensation ;
           LogDebug("Audio Samples : %d, First : %03.3f, Last : %03.3f",cntA, (float)firstAudio.Millisecs()/1000.0f,(float)lastAudio.Millisecs()/1000.0f);
           LogDebug("Video Samples : %d, First : %03.3f, Last : %03.3f",cntV, (float)firstVideo.Millisecs()/1000.0f,(float)lastVideo.Millisecs()/1000.0f);
+          
+          if ((cntA > 0) && ((lastAudio.Millisecs() - firstAudio.Millisecs()) > 0))
+          {
+            m_sampleSleepTime = max(1,(lastAudio.Millisecs() - firstAudio.Millisecs())/(cntA*4));
+            LogDebug("Audio sample sleep time : %d ms", m_sampleSleepTime);
+          }
+          else
+          {
+            m_sampleSleepTime = 1;
+          }
+          
           if (m_pTsReaderFilter->GetVideoPin()->IsConnected())
           {
             if (firstAudio.Millisecs() < firstVideo.Millisecs())
@@ -415,14 +426,15 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
           //delete the buffer and return
           delete buffer;
           demux.EraseAudioBuff();
+          Sleep(m_sampleSleepTime) ; //Sleep for a time derived from data rate
         }
         else
         { // Buffer was not displayed because it was out of date, search for next.
           delete buffer;
           demux.EraseAudioBuff();
           buffer=NULL ;
+          Sleep(1) ;
         }
-        Sleep(2) ;
       }
     } while (buffer==NULL);
     return NOERROR;
@@ -489,6 +501,8 @@ HRESULT CAudioPin::OnThreadStartPlay()
   //is not belonging to any previous data
   m_bDiscontinuity = TRUE;
   m_bPresentSample = false;
+  
+  m_sampleSleepTime = 1;
 
   LogDebug("aud:OnThreadStartPlay(%f) %02.2f", (float)m_rtStart.Millisecs()/1000.0f, m_dRateSeeking);
 
