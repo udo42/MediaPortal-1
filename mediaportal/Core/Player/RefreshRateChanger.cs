@@ -443,11 +443,11 @@ namespace MediaPortal.Player
     {
       GetRefreshRateConfiguration();
 
-      name = name.ToLower();
+      name = name.ToLowerInvariant();
 
       foreach (RefreshRateSetting setting in _refreshRateSettings)
       {
-        if (setting.Name.ToLower().Equals(name))
+        if (setting.Name.ToLowerInvariant().Equals(name))
         {
           return setting;
         }
@@ -546,7 +546,7 @@ namespace MediaPortal.Player
       string args = "";
       string cmd = "";
 
-      newExtCmd = newExtCmd.Trim().ToLower();
+      newExtCmd = newExtCmd.Trim().ToLowerInvariant();
 
       int lenCmd = newExtCmd.Length;
       int idxCmd = newExtCmd.IndexOf(".cmd");

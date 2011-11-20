@@ -24,6 +24,7 @@ using System.IO;
 using System.Globalization;
 using MediaPortal.GUI.Library;
 using MediaPortal.Profile;
+using MediaPortal.Util;
 
 #region API
 
@@ -109,6 +110,13 @@ namespace MediaPortal.Player
         return;
       }
 
+      // Check if video file is from image file
+      string vDrive = DaemonTools.GetVirtualDrive();
+      string bDrive = Path.GetPathRoot(strFile);
+
+      if (vDrive == Util.Utils.RemoveTrailingSlash(bDrive))
+        isDVD = false;
+
       //currently mediainfo is only used for local video related material (if enabled)
       if ((!isVideo && !isDVD) || (isDVD && !_DVDenabled))
       {
@@ -123,9 +131,21 @@ namespace MediaPortal.Player
         _mI.Option("ParseSpeed", _ParseSpeed);
 
         if (Util.VirtualDirectory.IsImageFile(System.IO.Path.GetExtension(strFile)))
+        {
           strFile = Util.DaemonTools.GetVirtualDrive() + @"\VIDEO_TS\VIDEO_TS.IFO";
 
-        if (strFile.ToLower().EndsWith(".ifo"))
+          if (!File.Exists(strFile))
+          {
+            strFile = Util.DaemonTools.GetVirtualDrive() + @"\BDMV\index.bdmv";
+
+            if (!File.Exists(strFile))
+            {
+              return;
+            }
+          }
+        }
+
+        if (strFile.ToLowerInvariant().EndsWith(".ifo"))
         {
           string path = Path.GetDirectoryName(strFile);
           string mainTitle = GetLargestFileInDirectory(path, "VTS_*1.VOB");
@@ -144,6 +164,32 @@ namespace MediaPortal.Player
           // get all other info from main title's 1st vob
           strFile = mainTitle;
         }
+        else if (strFile.ToLower().EndsWith(".bdmv"))
+        {
+          string path = Path.GetDirectoryName(strFile) + @"\STREAM";
+          strFile = GetLargestFileInDirectory(path, "*.m2ts");
+        }
+
+        /*if (strFile.ToLowerInvariant().EndsWith(".bdmv"))
+        {
+          string path = Path.GetDirectoryName(strFile) + @"\STREAM";
+          string mainTitle = GetLargestFileInDirectory(path, "*.m2ts");
+          string titleSearch = Path.GetFileName(mainTitle);
+          //titleSearch = titleSearch.Substring(0, titleSearch.LastIndexOf('_')) + "*.m2ts";
+          string[] m2tss = Directory.GetFiles(path, titleSearch, SearchOption.TopDirectoryOnly);
+
+          foreach (string m2ts in m2tss)
+          {
+            int vobDuration = 0;
+            _mI.Open(m2ts);
+            int.TryParse(_mI.Get(StreamKind.General, 0, "Duration"), out vobDuration);
+            _mI.Close();
+            _videoDuration += vobDuration;
+          }
+          // get all other info from main title's 1st vob
+          strFile = mainTitle;
+        }*/
+
 
         _mI.Open(strFile);
 
@@ -157,7 +203,7 @@ namespace MediaPortal.Player
         int.TryParse(_mI.Get(StreamKind.Video, 0, "Height"), out _height);
         _aspectRatio = _mI.Get(StreamKind.Video, 0, "Display AspectRatio") == "4:3" ? "fullscreen" : "widescreen";
         _videoCodec = GetFullCodecName(StreamKind.Video);
-        _scanType = _mI.Get(StreamKind.Video, 0, "ScanType").ToLower();
+        _scanType = _mI.Get(StreamKind.Video, 0, "ScanType").ToLowerInvariant();
         _isInterlaced = _scanType.Contains("interlaced");
 
         _videoResolution = _height < 720 ? "SD" : "HD";
@@ -243,7 +289,7 @@ namespace MediaPortal.Player
         Log.Info("MediaInfoWrapper.MediaInfoWrapper: Height           : {0}", _height);
         Log.Info("MediaInfoWrapper.MediaInfoWrapper: AspectRatio      : {0}", _aspectRatio);
         Log.Info("MediaInfoWrapper.MediaInfoWrapper: VideoCodec       : {0} [ \"{1}.png\" ]", _videoCodec,
-                 Util.Utils.MakeFileName(_videoCodec).ToLower());
+                 Util.Utils.MakeFileName(_videoCodec).ToLowerInvariant());
         Log.Info("MediaInfoWrapper.MediaInfoWrapper: Scan type        : {0}", _scanType);
         Log.Info("MediaInfoWrapper.MediaInfoWrapper: IsInterlaced     : {0}", _isInterlaced);
         Log.Info("MediaInfoWrapper.MediaInfoWrapper: VideoResolution  : {0}", _videoResolution);
@@ -253,7 +299,7 @@ namespace MediaPortal.Player
         Log.Info("MediaInfoWrapper.MediaInfoWrapper: AudioChannels    : {0} [ \"{1}.png\" ]", _audioChannels,
                  _audioChannelsFriendly);
         Log.Info("MediaInfoWrapper.MediaInfoWrapper: AudioCodec       : {0} [ \"{1}.png\" ]", _audioCodec,
-                 Util.Utils.MakeFileName(_audioCodec).ToLower());
+                 Util.Utils.MakeFileName(_audioCodec).ToLowerInvariant());
         //Detection
         Log.Info("MediaInfoWrapper.MediaInfoWrapper: HasAudio         : {0}", _hasAudio);
         Log.Info("MediaInfoWrapper.MediaInfoWrapper: HasVideo         : {0}", _hasVideo);
@@ -347,7 +393,7 @@ namespace MediaPortal.Player
         foreach (string file in Directory.GetFiles(Path.GetDirectoryName(strFile), filenameNoExt + "*"))
         {
           System.IO.FileInfo fi = new FileInfo(file);
-          if (_subTitleExtensions.Contains(fi.Extension.ToLower()))
+          if (_subTitleExtensions.Contains(fi.Extension.ToLowerInvariant()))
           {
             return true;
           }

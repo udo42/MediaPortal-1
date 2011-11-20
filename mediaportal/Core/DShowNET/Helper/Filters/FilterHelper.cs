@@ -83,15 +83,15 @@ namespace DShowNET.Helper
       }
       foreach (Filter device in Filters.BDAReceivers)
       {
-        if (device.Name.ToLower() == "bda slip de-framer")
+        if (device.Name.ToLowerInvariant() == "bda slip de-framer")
         {
           continue;
         }
-        if (device.Name.ToLower() == "bda mpe filter")
+        if (device.Name.ToLowerInvariant() == "bda mpe filter")
         {
           continue;
         }
-        if (device.Name.ToLower() == "bda mpe-filter")
+        if (device.Name.ToLowerInvariant() == "bda mpe-filter")
         {
           continue;
         }
@@ -117,15 +117,15 @@ namespace DShowNET.Helper
       }
       foreach (Filter device in Filters.BDAReceivers)
       {
-        if (device.Name.ToLower() == "bda slip de-framer")
+        if (device.Name.ToLowerInvariant() == "bda slip de-framer")
         {
           continue;
         }
-        if (device.Name.ToLower() == "bda mpe filter")
+        if (device.Name.ToLowerInvariant() == "bda mpe filter")
         {
           continue;
         }
-        if (device.Name.ToLower() == "bda mpe-filter")
+        if (device.Name.ToLowerInvariant() == "bda mpe-filter")
         {
           continue;
         }
@@ -153,7 +153,7 @@ namespace DShowNET.Helper
         if (String.Compare(filter.Name, "DVD Navigator", true) == 0 ||
             String.Compare(filter.Name, "InterVideo Navigator", true) == 0 ||
             String.Compare(filter.Name, "NVIDIA Navigator", true) == 0 ||
-            filter.Name.ToLower().Contains("cyberlink dvd navigator"))
+            filter.Name.ToLowerInvariant().Contains("cyberlink dvd navigator"))
         {
           navigators.Add(filter.Name);
         }
@@ -198,7 +198,59 @@ namespace DShowNET.Helper
       }
     }
 
+    public static ArrayList GetFileSync()
+    {
+      ArrayList list = new ArrayList();
+      foreach (Filter filter in Filters.LegacyFilters)
+      {
+        bool add = false;
+        if (filter.MonikerString ==
+            @"@device:sw:{083863F1-70DE-11D0-BD40-00A0C911CE86}\{E436EBB5-524F-11CE-9F53-0020AF0BA770}")
+        {
+          add = true;
+        }
+        if (add)
+        {
+          list.Add(filter.Name);
+        }
+      }
+      return list;
+    }
+
+    public static ArrayList GetFilterSource()
+    {
+      ArrayList sources = new ArrayList();
+
+      foreach (Filter filter in Filters.LegacyFilters)
+      {
+        if (filter.Name.ToLowerInvariant().Contains("source"))
+        {
+          sources.Add(filter.Name);
+        }
+      }
+      return sources;
+    }
+
+    public static ArrayList GetFilterSplitter()
+    {
+      ArrayList sources = new ArrayList();
+
+      foreach (Filter filter in Filters.LegacyFilters)
+      {
+        if (filter.Name.ToLowerInvariant().Contains("splitter"))
+        {
+          sources.Add(filter.Name);
+        }
+      }
+      return sources;
+    }
+
     public static ArrayList GetFilters(Guid mediaType, Guid mediaSubType)
+    {
+      return GetFilters(mediaType, mediaSubType, (Merit)0x080001);
+    }
+
+    public static ArrayList GetFiltersBD(Guid mediaType, Guid mediaSubType)
     {
       return GetFilters(mediaType, mediaSubType, (Merit)0x080001);
     }

@@ -67,12 +67,12 @@ namespace MediaPortal.Player
         showClosedCaptions = xmlreader.GetValueAsBool("dvdplayer", "showclosedcaptions", false);
         dvdDNavigator = xmlreader.GetValueAsString("dvdplayer", "navigator", "DVD Navigator");
 
-        if (dvdDNavigator.ToLower().Contains("cyberlink dvd navigator"))
+        if (dvdDNavigator.ToLowerInvariant().Contains("cyberlink dvd navigator"))
         {
           _cyberlinkDVDNavigator = true;
         }
 
-        aspectRatio = xmlreader.GetValueAsString("dvdplayer", "armode", "").ToLower();
+        aspectRatio = xmlreader.GetValueAsString("dvdplayer", "armode", "").ToLowerInvariant();
         if (aspectRatio == "crop")
         {
           arMode = AspectRatioMode.Crop;
@@ -90,7 +90,7 @@ namespace MediaPortal.Player
           arMode = AspectRatioMode.StretchedAsPrimary;
         }
 
-        displayMode = xmlreader.GetValueAsString("dvdplayer", "displaymode", "").ToLower();
+        displayMode = xmlreader.GetValueAsString("dvdplayer", "displaymode", "").ToLowerInvariant();
         if (displayMode == "default")
         {
           _videoPref = DvdPreferredDisplayMode.DisplayContentDefault;
@@ -392,6 +392,12 @@ namespace MediaPortal.Player
         _state = PlayState.Stopped;
         VMR9Util.g_vmr9.EVRSetDVDMenuState(false);
 
+        //Janne
+        if (_vmr9 != null)
+        {
+          _vmr9.Enable(false);
+        }
+
         _visible = false;
         _mediaEvt = null;
         _dvdCtrl = null;
@@ -428,12 +434,12 @@ namespace MediaPortal.Player
 
         PostProcessingEngine.GetInstance().FreePostProcess();
 
-        if (_vmr9 != null)
+        /*if (_vmr9 != null)
         {
           _vmr9.Enable(false);
           _vmr9.SafeDispose();
           _vmr9 = null;
-        }
+        }*/
 
         if (_graphBuilder != null)
         {
@@ -447,6 +453,13 @@ namespace MediaPortal.Player
           }
           while ((hr = DirectShowUtil.ReleaseComObject(_graphBuilder)) > 0) ;
           _graphBuilder = null;
+        }
+
+        //Janne
+        if (_vmr9 != null)
+        {
+          _vmr9.SafeDispose();
+          _vmr9 = null;
         }
 
         _state = PlayState.Init;

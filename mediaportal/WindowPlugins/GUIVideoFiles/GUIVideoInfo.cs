@@ -100,9 +100,17 @@ namespace MediaPortal.GUI.Video
       {
         videoOverlay.Focused = false;
       }
-
+      // GoBack bug fix (corrupted video info)
       if (currentMovie == null)
       {
+        if (GUIWindowManager.HasPreviousWindow())
+        {
+          GUIWindowManager.ShowPreviousWindow();
+        }
+        else
+        {
+          GUIWindowManager.CloseCurrentWindow();
+        }
         return;
       }
       // Default picture					
@@ -304,25 +312,28 @@ namespace MediaPortal.GUI.Video
 
       if (control == btnWatched)
       {
+        int iPercent = 0;
+        VideoDatabase.GetmovieWatchedStatus(currentMovie.ID, ref iPercent);
+
         if (currentMovie.Watched > 0)
         {
           GUIPropertyManager.SetProperty("#iswatched", "no");
           currentMovie.Watched = 0;
-          VideoDatabase.SetMovieWatchedStatus(currentMovie.ID, false);
+          VideoDatabase.SetMovieWatchedStatus(currentMovie.ID, false, iPercent);
           ArrayList files = new ArrayList();
           VideoDatabase.GetFiles(currentMovie.ID, ref files);
 
-          foreach (string file in files)
-          {
-            int fileId = VideoDatabase.GetFileId(file);
-            VideoDatabase.DeleteMovieStopTime(fileId);
-          }
+          //foreach (string file in files)
+          //{
+          //  int fileId = VideoDatabase.GetFileId(file);
+          //  VideoDatabase.DeleteMovieStopTime(fileId);
+          //}
         }
         else
         {
           GUIPropertyManager.SetProperty("#iswatched", "yes");
           currentMovie.Watched = 1;
-          VideoDatabase.SetMovieWatchedStatus(currentMovie.ID, true);
+          VideoDatabase.SetMovieWatchedStatus(currentMovie.ID, true, iPercent);
         }
         VideoDatabase.SetWatched(currentMovie);
       }
@@ -353,8 +364,8 @@ namespace MediaPortal.GUI.Video
 
         if (files.Count > 1)
         {
-          GUIVideoFiles._stackedMovieFiles = files;
-          GUIVideoFiles._isStacked = true;
+          GUIVideoFiles.StackedMovieFiles = files;
+          GUIVideoFiles.IsStacked = true;
           GUIVideoFiles.MovieDuration(files);
         }
 
@@ -425,7 +436,10 @@ namespace MediaPortal.GUI.Video
       }
 
       btnWatched.Selected = (currentMovie.Watched != 0);
-      currentMovie.SetProperties(false);
+      // Set skin control properties
+      ArrayList files = new ArrayList();
+      VideoDatabase.GetFiles(currentMovie.ID, ref files);
+      currentMovie.SetProperties(false, (string)files[0]);
 
       if (imgCoverArt != null)
       {
@@ -573,7 +587,9 @@ namespace MediaPortal.GUI.Video
       {
         Log.Error("GUIVideoInfo: Error creating new thumbs for {0} - {1}", currentMovie.ThumbURL, ex2.Message);
       }
-      currentMovie.SetProperties(false);
+      ArrayList files = new ArrayList();
+      VideoDatabase.GetFiles(currentMovie.ID, ref files);
+      currentMovie.SetProperties(false, (string)files[0]);
     }
 
     private void AmazonLookupThread()

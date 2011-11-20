@@ -199,16 +199,19 @@ namespace MediaPortal.Player
     public IPlayer Create(string fileName, g_Player.MediaType type)
     {
       IPlayer newPlayer = null;
+      Log.Info("PlayerFactory: SEB LOG Create {0} start before try", fileName);
       try
       {
         g_Player.MediaType? paramType = type as g_Player.MediaType?;
         if (paramType.HasValue)
         {
           newPlayer = Create(fileName, paramType);
+          Log.Info("PlayerFactory: SEB LOG Create newPlayer fileName (OK) {0}, Param {1}", fileName, paramType);
         }
         else
         {
           newPlayer = Create(fileName, null);
+          Log.Info("PlayerFactory: SEB LOG Create fileName {0}", fileName);
         }
       }
       catch (Exception ex)
@@ -234,6 +237,7 @@ namespace MediaPortal.Player
         if (aMediaType != null && aMediaType != g_Player.MediaType.Unknown)
         {
           localType = (g_Player.MediaType)aMediaType;
+          Log.Info("PlayerFactory: SEB LOG Create localType {0}", localType);
         }
 
         // Get settings only once
@@ -242,6 +246,7 @@ namespace MediaPortal.Player
           string strAudioPlayer = xmlreader.GetValueAsString("audioplayer", "player", "Internal dshow player");
           int streamPlayer = xmlreader.GetValueAsInt("audioscrobbler", "streamplayertype", 0);
           bool Vmr9Enabled = xmlreader.GetValueAsBool("musicvideo", "useVMR9", true);
+          bool BDInternalMenu = xmlreader.GetValueAsBool("bdplayer", "useInternalBDMenu", true);
 
           // Free BASS to avoid problems with Digital Audio, when watching movies
           if (BassMusicPlayer.IsDefaultMusicPlayer)
@@ -249,6 +254,7 @@ namespace MediaPortal.Player
             if (!Util.Utils.IsAudio(aFileName))
             {
               BassMusicPlayer.Player.FreeBass();
+              Log.Info("PlayerFactory: SEB LOG Freebass aFileName {0}", aFileName);
             }
           }
 
@@ -290,6 +296,18 @@ namespace MediaPortal.Player
             }
           }
 
+          if (extension == ".bdmv")
+          {
+            if (BDInternalMenu)
+            {
+              return new BDPlayer();
+            }
+            else
+            {
+              return new VideoPlayerVMR9();
+            }
+          }
+
           if (Util.Utils.IsVideo(aFileName))
           {
             if (extension == ".tv" || extension == ".sbe" || extension == ".dvr-ms")
@@ -311,23 +329,27 @@ namespace MediaPortal.Player
           if (extension == ".tsbuffer" || extension == ".ts" || extension == ".rec")
             //new support for Topfield recordings
           {
-            if (aFileName.ToLower().IndexOf("radio.tsbuffer") >= 0)
+            /*if (aFileName.ToLower().IndexOf("radio.tsbuffer") >= 0)
             {
               if (aMediaType != null)
               {
+                Log.Info("PlayerFactory: SEB LOG1 (Radio) localType {0}, aMediaType {1}", localType, aMediaType);
                 return new BaseTSReaderPlayer(localType);
               }
               else
               {
+                Log.Info("PlayerFactory: SEB LOG1 (Radio)");
                 return new BaseTSReaderPlayer();
               }
-            }
+            }*/
             if (aMediaType != null)
             {
+              Log.Info("PlayerFactory: SEB LOG TSReaderPlayer localType {0}, aMediaType {1}", localType, aMediaType);
               return new TSReaderPlayer(localType);
             }
             else
             {
+              Log.Info("PlayerFactory: SEB LOG TSReaderPlayer");
               return new TSReaderPlayer();
             }
           }

@@ -343,7 +343,7 @@ namespace MediaPortal.Video.Database
               string path = _movieDetails.Path;
               string filename = _movieDetails.File;
 
-              if (filename.ToUpper() == "VIDEO_TS.IFO")
+              if (filename.ToUpper() == "VIDEO_TS.IFO" || filename.ToUpper() == "INDEX.BDMV")
               {
                 // Remove \VIDEO_TS from directory structure
                 string directoryDVD = path.Substring(0, path.LastIndexOf("\\"));
@@ -359,7 +359,8 @@ namespace MediaPortal.Video.Database
             // Save details to database
             //
             // Check movie table if there is an entry that new movie is already played as share
-            if (VideoDatabase.GetmovieWatchedStatus(_movieDetails.ID))
+            int percentage = 0;
+            if (VideoDatabase.GetmovieWatchedStatus(_movieDetails.ID, ref percentage))
             {
               _movieDetails.Watched = 1;
             }
@@ -691,7 +692,7 @@ namespace MediaPortal.Video.Database
       for (int index = 0; index < _imdb.Count; ++index)
       {
         name = _imdb.GetSearchString(name);
-        int distance = Levenshtein.Match(name, _imdb[index].Title.ToLower());
+        int distance = Levenshtein.Match(name, _imdb[index].Title.ToLowerInvariant());
 
         if (distance == matchingDistance && matchingDistance != int.MaxValue)
         {
@@ -945,6 +946,13 @@ namespace MediaPortal.Video.Database
             // DVD folder
             string dvdFolder = strFileName.Substring(0, strFileName.ToUpper().IndexOf(@"\VIDEO_TS\VIDEO_TS.IFO"));
             currentMovie.DVDLabel = Path.GetFileName(dvdFolder);
+            strMovieName = currentMovie.DVDLabel;
+          }
+          else if (strFileName.ToUpper().IndexOf(@"\BDMV\INDEX.BDMV") >= 0)
+          {
+            // BD folder
+            string bdFolder = strFileName.Substring(0, strFileName.ToUpper().IndexOf(@"\BDMV\INDEX.BDMV"));
+            currentMovie.DVDLabel = Path.GetFileName(bdFolder);
             strMovieName = currentMovie.DVDLabel;
           }
           else
@@ -1257,9 +1265,14 @@ namespace MediaPortal.Video.Database
           {
             if (item.Label != "..")
             {
-              if (item.Path.ToLower().IndexOf("video_ts") >= 0)
+              if (item.Path.ToLowerInvariant().IndexOf("video_ts") >= 0)
               {
                 string strFile = String.Format(@"{0}\VIDEO_TS.IFO", item.Path);
+                availableFiles.Add(strFile);
+              }
+              else if (item.Path.ToLowerInvariant().IndexOf("bdmv") >= 0)
+              {
+                string strFile = String.Format(@"{0}\index.bdmv", item.Path);
                 availableFiles.Add(strFile);
               }
               else

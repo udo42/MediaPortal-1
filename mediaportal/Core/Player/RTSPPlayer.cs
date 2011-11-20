@@ -221,7 +221,7 @@ namespace MediaPortal.Player
             intCount++;
           }
         }
-        string extension = Path.GetExtension(m_strCurrentFile).ToLower();
+        string extension = Path.GetExtension(m_strCurrentFile).ToLowerInvariant();
         if (IsRadio == false)
         {
           if (strVideoCodec.Length > 0)
@@ -506,6 +506,12 @@ namespace MediaPortal.Player
           _mediaCtrl = null;
         }
 
+        //Janne
+        if (Vmr9 != null)
+        {
+          Vmr9.Enable(false);
+        }
+
         if (mediaEvt != null)
         {
           hr = mediaEvt.SetNotifyWindow(IntPtr.Zero, WM_GRAPHNOTIFY, IntPtr.Zero);
@@ -527,12 +533,12 @@ namespace MediaPortal.Player
         videoWin = null;
         SubEngine.GetInstance().FreeSubtitles();
 
-        if (Vmr9 != null)
+        /*if (Vmr9 != null)
         {
           Vmr9.Enable(false);
           Vmr9.SafeDispose();
           Vmr9 = null;
-        }
+        }*/
 
         if (graphBuilder != null)
         {
@@ -545,6 +551,14 @@ namespace MediaPortal.Player
           DirectShowUtil.ReleaseComObject(graphBuilder);
           graphBuilder = null;
         }
+
+        //Janne
+        if (Vmr9 != null)
+        {
+          Vmr9.SafeDispose();
+          Vmr9 = null;
+        }
+
 
         GUIGraphicsContext.form.Invalidate(true);
         _state = PlayState.Init;

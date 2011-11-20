@@ -1155,6 +1155,10 @@ namespace DirectShowLib
     public static readonly Guid Audio = new Guid(0x73647561, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b,
                                                  0x71);
 
+      /// <summary> MEDIATYPE_FileSourceAsync </summary>
+    public static readonly Guid FileSourceAsync = new Guid(0xE436EBB5, 0x524F, 0x11CE, 0x9F, 0x53, 0x00, 0x20, 0xAF, 0x0B, 0xA7,
+                                                 0x70);
+
     /// <summary> MEDIATYPE_Text 'txts' </summary>
     public static readonly Guid Text = new Guid(0x73747874, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b,
                                                 0x71);
@@ -1738,6 +1742,14 @@ namespace DirectShowLib
 
     /// <summary> MEDIASUBTYPE_H264 </summary>
     public static readonly Guid H264 = new Guid(0x34363248, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b,
+                                                0x71);
+
+    /// <summary> MEDIASUBTYPE_AVC1 </summary>
+    public static readonly Guid AVC1 = new Guid(0x31435641, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b,
+                                                0x71);
+    
+    /// <summary> MEDIASUBTYPE_VC1 </summary>
+    public static readonly Guid VC1 = new Guid(0x31435657, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B,
                                                 0x71);
 
     /// <summary> MEDIASUBTYPE_NV24 </summary>

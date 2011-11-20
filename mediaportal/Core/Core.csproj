@@ -162,11 +162,11 @@
     <DefineConstants>TRACE;UseCaptureCardDefinitions;NET_2_0</DefineConstants>
     <BaseAddress>285212672</BaseAddress>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <DebugType>
-    </DebugType>
+    <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
     <ErrorReport>prompt</ErrorReport>
     <Optimize>true</Optimize>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'UseCaptureCardDefinitions|x86' ">
     <DebugSymbols>true</DebugSymbols>
@@ -345,6 +345,8 @@
     <Compile Include="guilib\GUIStandardKeyboard.cs" />
     <Compile Include="guilib\ViewHandler.cs" />
     <Compile Include="guilib\XMLSkinFunctionAttribute.cs" />
+    <Compile Include="Player\BDOSDRenderer.cs" />
+    <Compile Include="Player\BDPlayer.cs" />
     <Compile Include="Player\FFDShow\FFDShowEngine.cs" />
     <Compile Include="Player\FFDShow\FFDShowReceiver.cs">
       <SubType>Form</SubType>
@@ -412,6 +414,8 @@
     <Compile Include="Player\Subtitles\SubEngine.cs" />
     <Compile Include="Player\Subtitles\MpcEngine.cs" />
     <Compile Include="Player\Subtitles\SubSettings.cs" />
+    <Compile Include="Player\Subtitles\SubtitleRendererBD.cs" />
+    <Compile Include="Player\Subtitles\SubtitleSelectorBD.cs" />
     <Compile Include="Player\Teletext\Hamming.cs" />
     <Compile Include="Player\Teletext\IDVBTeletextDecoder.cs" />
     <Compile Include="Player\Teletext\ITeletextSource.cs" />

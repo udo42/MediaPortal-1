@@ -110,7 +110,7 @@ namespace MediaPortal.GUI.Video
 
     protected VideoSort.SortMethod GetSortMethod(string s)
     {
-      switch (s.Trim().ToLower())
+      switch (s.Trim().ToLowerInvariant())
       {
         case "modified":
           return VideoSort.SortMethod.Modified;
@@ -362,8 +362,12 @@ namespace MediaPortal.GUI.Video
       // Save view
       using (Profile.Settings xmlwriter = new Profile.MPSettings())
       {
-        xmlwriter.SetValue("movies", "startWindow", VideoState.StartWindow.ToString());
-        xmlwriter.SetValue("movies", "startview", VideoState.View);
+        // Save only MyVideos window views
+        if (GUIVideoFiles.IsVideoWindow(VideoState.StartWindow))
+        {
+          xmlwriter.SetValue("movies", "startWindow", VideoState.StartWindow.ToString());
+          xmlwriter.SetValue("movies", "startview", VideoState.View);
+        }
       }
 
       m_bPlaylistsLayout = false;
@@ -637,6 +641,21 @@ namespace MediaPortal.GUI.Video
         GlobalServiceProvider.Add<ISelectDVDHandler>(selectDVDHandler);
       }
       selectDVDHandler.OnPlayDVD(drive, GetID);
+    }
+
+    protected void OnPlayBD(String drive, int parentId)
+    {
+      ISelectBDHandler selectBDHandler;
+      if (GlobalServiceProvider.IsRegistered<ISelectBDHandler>())
+      {
+        selectBDHandler = GlobalServiceProvider.Get<ISelectBDHandler>();
+      }
+      else
+      {
+        selectBDHandler = new SelectBDHandler();
+        GlobalServiceProvider.Add<ISelectBDHandler>(selectBDHandler);
+      }
+      selectBDHandler.OnPlayBD(drive, GetID);
     }
 
     protected void OnPlayFiles(System.Collections.ArrayList filesList)

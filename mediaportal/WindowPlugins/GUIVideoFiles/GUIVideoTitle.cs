@@ -304,13 +304,13 @@ namespace MediaPortal.GUI.Video
 
         if (files.Count > 1)
         {
-          GUIVideoFiles._stackedMovieFiles = files;
-          GUIVideoFiles._isStacked = true;
+          GUIVideoFiles.StackedMovieFiles = files;
+          GUIVideoFiles.IsStacked = true;
           GUIVideoFiles.MovieDuration(files);
         }
         else
         {
-          GUIVideoFiles._isStacked = false;
+          GUIVideoFiles.IsStacked = false;
         }
         GUIVideoFiles.PlayMovie(movie.ID, false);
       }
@@ -562,7 +562,9 @@ namespace MediaPortal.GUI.Video
         item.DVDLabel = movie.DVDLabel;
         item.Rating = movie.Rating;
         item.IsPlayed = movie.Watched > 0 ? true : false;
-
+        int percent = 0;
+        VideoDatabase.GetmovieWatchedStatus(movie.ID, ref percent);
+        item.Label3 = percent + "%";
         item.OnItemSelected += new GUIListItem.ItemSelectedHandler(item_OnItemSelected);
 
         itemlist.Add(item);
@@ -576,7 +578,7 @@ namespace MediaPortal.GUI.Video
         IMDBMovie movie = item.AlbumInfoTag as IMDBMovie;
         movie = new IMDBMovie();
         item.AlbumInfoTag = movie;
-        movie.SetProperties(false);
+        movie.SetProperties(false, string.Empty);
         itemlist.Add(item);
       }
 
@@ -608,15 +610,15 @@ namespace MediaPortal.GUI.Video
 
       if (handler.CurrentLevel < handler.MaxLevels)
       {
-        if (handler.CurrentLevelWhere.ToLower() == "genre")
+        if (handler.CurrentLevelWhere.ToLowerInvariant() == "genre")
         {
           SetGenreThumbs(itemlist);
         }
-        else if (handler.CurrentLevelWhere.ToLower() == "actor")
+        else if (handler.CurrentLevelWhere.ToLowerInvariant() == "actor")
         {
           SetActorThumbs(itemlist);
         }
-        else if (handler.CurrentLevelWhere.ToLower() == "year")
+        else if (handler.CurrentLevelWhere.ToLowerInvariant() == "year")
         {
           SetYearThumbs(itemlist);
         }
@@ -895,7 +897,18 @@ namespace MediaPortal.GUI.Video
       {
         movie = new IMDBMovie();
       }
-      movie.SetProperties(false);
+      ArrayList files = new ArrayList();
+      VideoDatabase.GetFiles(movie.ID, ref files);
+
+      if (files.Count > 0)
+      {
+        movie.SetProperties(false, (string)files[0]);
+      }
+      else
+      {
+        movie.SetProperties(false, string.Empty);
+      }
+
       if (movie.ID >= 0)
       {
         string coverArtImage;
@@ -1049,7 +1062,7 @@ namespace MediaPortal.GUI.Video
         // Iterate unlocked shares against current item path
         foreach (string share in currentProtectedShare)
         {
-          if (!directory.ToLower().Contains(share.ToLower()))
+          if (!directory.ToLowerInvariant().Contains(share.ToLowerInvariant()))
           {
             continue;
           }

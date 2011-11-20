@@ -127,7 +127,7 @@ namespace MediaPortal.Configuration.Sections
         {
           foreach (string skName in rk.GetValueNames())
           {
-            if (skName.ToLower().Contains(Search.ToLower()))
+            if (skName.ToLowerInvariant().Contains(Search.ToLowerInvariant()))
             {
               SoftwarePath = rk.GetValue(skName).ToString().Replace("\"", "");
 

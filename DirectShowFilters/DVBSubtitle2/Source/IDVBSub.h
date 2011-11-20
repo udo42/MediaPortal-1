@@ -36,6 +36,14 @@ DEFINE_GUID(CLSID_DVBSub2,
 DEFINE_GUID(IID_IDVBSubtitle2, 
   0x901c9084, 0x246a, 0x47c9, 0xbb, 0xcd, 0xf8, 0xf3, 0x98, 0xd3, 0xa, 0xb0);
 
+// {3B4C4F66-739F-452c-AFC4-1C039BED3299}
+DEFINE_GUID(CLSID_DVBSub3, 
+0x3b4c4f66, 0x739f, 0x452c, 0xaf, 0xc4, 0x1c, 0x3, 0x9b, 0xed, 0x32, 0x99);
+
+// {1E00BDAA-44AB-460b-A2CB-4D554D771392}
+DEFINE_GUID(IID_IDVBSubtitle3, 
+0x1e00bdaa, 0x44ab, 0x460b, 0xa2, 0xcb, 0x4d, 0x55, 0x4d, 0x77, 0x13, 0x92);
+
 // {4A4fAE7C-6095-11DC-8314-0800200C9A66}
 DEFINE_GUID(IID_IDVBSubtitleSource, 
   0x4a4fae7c, 0x6095, 0x11dc, 0x83, 0x14, 0x08, 0x00, 0x20, 0x0c, 0x9a, 0x66);
@@ -56,4 +64,5 @@ DECLARE_INTERFACE_( IDVBSubtitle, IUnknown )
   STDMETHOD(SetFirstPcr)( LONGLONG pPcr ) PURE;
   STDMETHOD(SeekDone)( CRefTime& rtSeek ) PURE;
   STDMETHOD(SetTimeCompensation)( CRefTime& rtCompensation ) PURE;
+  STDMETHOD(SetHDMV)( bool pHDMV ) PURE;
 };
