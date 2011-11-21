@@ -325,7 +325,7 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
         }
 
         //Calculate sleep times (average sample duration/4)
-        if ((audSampleCount > 1) && (m_dRateSeeking == 1.0))
+        if (m_dRateSeeking == 1.0)
         {
           m_sampleDuration = GetAverageSampleDur(lastAudio.GetUnits());
           m_sampleSleepTime = min(50, max(1, m_sampleDuration/40000));
@@ -410,7 +410,7 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
             {
               if (m_pTsReaderFilter->m_ShowBufferAudio || fTime < 0.030)
               {
-                LogDebug("Aud/Ref : %03.3f, Late              Compensated = %03.3f ( %0.3f A/V buffers=%02d/%02d), Clk : %f, State %d, Sleep %d ms", (float)RefTime.Millisecs()/1000.0f, (float)cRefTime.Millisecs()/1000.0f, fTime,cntA,cntV, clock, m_pTsReaderFilter->State(), m_sampleSleepTime);
+                LogDebug("Aud/Ref : %03.3f, Compensated = %03.3f ( %0.3f A/V buffers=%02d/%02d), Clk : %f, State %d, Sleep %d ms", (float)RefTime.Millisecs()/1000.0f, (float)cRefTime.Millisecs()/1000.0f, fTime,cntA,cntV, clock, m_pTsReaderFilter->State(), m_sampleSleepTime);
               }
               if (m_pTsReaderFilter->m_ShowBufferAudio) m_pTsReaderFilter->m_ShowBufferAudio--;
             }
