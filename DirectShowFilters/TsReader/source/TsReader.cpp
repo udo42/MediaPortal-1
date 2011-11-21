@@ -1445,20 +1445,19 @@ void CTsReaderFilter::ThreadProc()
       {
         CRefTime firstAudio, lastAudio;
         CRefTime firstVideo, lastVideo;
-        DWORD  audSampleCount, audSampleDur;
+        DWORD  audSampleCount;
+        DWORD  audSampleSleep = 0;
+        float  audSampleDur = 0.0;
         int cntA = m_demultiplexer.GetAudioBufferPts(firstAudio, lastAudio, audSampleCount);
         int cntV = m_demultiplexer.GetVideoBufferPts(firstVideo, lastVideo);
         
-        if ((audSampleCount > 0) && ((lastAudio.Millisecs() - firstAudio.Millisecs()) > 0))
+        if (m_pAudioPin->IsConnected())
         {
-          audSampleDur = max(1,(lastAudio.Millisecs() - firstAudio.Millisecs())/audSampleCount);
-        }
-        else
-        {
-          audSampleDur = 1;
+          audSampleDur = ((float)m_pAudioPin->m_sampleDuration)/10000.0;
+          audSampleSleep = m_pAudioPin->m_sampleSleepTime;
         }
         
-        LogDebug("Buffers : A/V = %d/%d, A last : %03.3f, V Last : %03.3f, ASD : %d ms", cntA, cntV, (float)lastAudio.Millisecs()/1000.0f,(float)lastVideo.Millisecs()/1000.0f, audSampleDur);
+        LogDebug("Buffers : A/V = %d/%d, A last : %03.3f, V Last : %03.3f, ASD : %03.3f ms, ASSlp : %d ms", cntA, cntV, (float)lastAudio.Millisecs()/1000.0f,(float)lastVideo.Millisecs()/1000.0f, audSampleDur, audSampleSleep);
       }
                         
     }

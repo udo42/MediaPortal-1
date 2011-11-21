@@ -238,6 +238,7 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
       else
       {
         m_bPresentSample = true ;
+        m_sampleSleepTime = 1;
         
         int cntA,cntV ;
         DWORD  audSampleCount;
@@ -324,12 +325,14 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
         }
 
         //Calculate sleep times (average sample duration/4)
-        if ((audSampleCount > 0) && ((lastAudio.Millisecs() - firstAudio.Millisecs()) > 0) && (m_dRateSeeking == 1.0))
+        if ((audSampleCount > 1) && (m_dRateSeeking == 1.0))
         {
-          m_sampleSleepTime = min(50, max(1,(lastAudio.Millisecs() - firstAudio.Millisecs())/(audSampleCount*4)));
+          m_sampleDuration = GetAverageSampleDur(lastAudio.GetUnits());
+          m_sampleSleepTime = min(50, max(1, m_sampleDuration/40000));
         }
         else
         {
+          m_sampleDuration = GetAverageSampleDur(lastAudio.GetUnits());
           m_sampleSleepTime = 1;
         }
 
@@ -453,6 +456,49 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
   return NOERROR;
 }
 
+// Calculate rolling average audio sample duration
+LONGLONG CAudioPin::GetAverageSampleDur(LONGLONG timeStamp)
+{
+  LONGLONG stsDiff;
+  if (m_nNextASD > 0)
+  {
+    stsDiff = timeStamp - m_llLastASDts;
+  }
+  else
+  {
+    stsDiff = 10000;
+  }
+  
+  m_llLastASDts = timeStamp;
+        
+    // Calculate the mean timestamp difference
+  if (m_nNextASD >= NB_ASDSIZE)
+  {
+    m_fASDMean = m_llASDSumAvg / (LONGLONG)NB_ASDSIZE;
+  }
+  else if (m_nNextASD > 1)
+  {
+    m_fASDMean = m_llASDSumAvg / (LONGLONG)m_nNextASD;
+  }
+  else
+  {
+    m_fASDMean = stsDiff;
+  }
+
+    // Update the rolling timestamp difference sum
+    // (these values are initialised in OnThreadStartPlay())
+  int tempNextASD = (m_nNextASD % NB_ASDSIZE);
+  m_llASDSumAvg -= m_pllASD[tempNextASD];
+  m_pllASD[tempNextASD] = stsDiff;
+  m_llASDSumAvg += stsDiff;
+  m_nNextASD++;
+  
+  //LogDebug("aud:GetAverageSampleTime, nextASD %d, TsMeanDiff %0.3f, stsDiff %0.3f", m_nNextASD, (float)m_fASDMean/10000.0f, (float)stsDiff/10000.0f);
+  
+  return m_fASDMean;
+}
+
+
 bool CAudioPin::IsConnected()
 {
   return m_bConnected;
@@ -504,6 +550,14 @@ HRESULT CAudioPin::OnThreadStartPlay()
   m_bPresentSample = false;
   
   m_sampleSleepTime = 1;
+  m_sampleDuration = 10000; //1 ms
+
+  m_llLastComp = 0;
+  m_llLastASDts = 0;
+  m_nNextASD = 0;
+	m_fASDMean = 0;
+	m_llASDSumAvg = 0;
+  ZeroMemory((void*)&m_pllASD, sizeof(LONGLONG) * NB_ASDSIZE);
 
   LogDebug("aud:OnThreadStartPlay(%f) %02.2f", (float)m_rtStart.Millisecs()/1000.0f, m_dRateSeeking);
 
