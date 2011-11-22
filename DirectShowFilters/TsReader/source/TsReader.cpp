@@ -440,7 +440,7 @@ STDMETHODIMP CTsReaderFilter::GetState(DWORD dwMilliSecsTimeout, FILTER_STATE *p
     //FFWD is more responsive if we return VFW_S_CANT_CUE when rate != 1.0
     if (m_demultiplexer.m_bAudioVideoReady || (playRate != 1.0))
     {
-      LogDebug("CTsReaderFilter::GetState(), VFW_S_CANT_CUE, playRate %f",(float)playRate);
+      //LogDebug("CTsReaderFilter::GetState(), VFW_S_CANT_CUE, playRate %f",(float)playRate);
       return VFW_S_CANT_CUE;
     }
     else
@@ -452,7 +452,7 @@ STDMETHODIMP CTsReaderFilter::GetState(DWORD dwMilliSecsTimeout, FILTER_STATE *p
   }
   else
   {
-    LogDebug("CTsReaderFilter::GetState(), %d", m_State);
+    //LogDebug("CTsReaderFilter::GetState(), %d", m_State);
     return S_OK;
   }
 }
