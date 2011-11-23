@@ -171,7 +171,7 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   GetLogFile(filename);
   ::DeleteFile(filename);
   LogDebug("--- Buffer-empty rate control testing ----");
-  LogDebug("---------- v0.4.31 XXX -------------------");
+  LogDebug("---------- v0.4.32 XXX -------------------");
 
   m_fileReader=NULL;
   m_fileDuration=NULL;
@@ -1215,11 +1215,12 @@ void CTsReaderFilter::ThreadProc()
   DWORD  lastPosnTime = timeNow;
   DWORD  lastDataLowTime = timeNow;
   DWORD  lastDurTime = timeNow - 2000;
+  DWORD  lastFileReadTime = timeNow;
   DWORD  pauseWaitTime = 1000;
   long   underRunLimit = 10;
   bool   longPause = true;
 
-  ::SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_BELOW_NORMAL);
+  ::SetThreadPriority(GetCurrentThread(),THREAD_PRIORITY_NORMAL);
   do
   {
     //if demuxer reached the end of the file, we can skip the loop
@@ -1312,11 +1313,11 @@ void CTsReaderFilter::ThreadProc()
     }
 
     //File read prefetch
-    if (m_demultiplexer.m_bReadAheadFromFile)
+    if (m_demultiplexer.m_bReadAheadFromFile && (((timeNow - 10) > lastFileReadTime) || (timeNow < lastFileReadTime)))
     {
+      lastFileReadTime = timeNow; 
       m_demultiplexer.ReadAheadFromFile();
       m_demultiplexer.m_bReadAheadFromFile = false;
-      Sleep(5);
     }
      
     //Execute this loop approx every second
@@ -1775,7 +1776,7 @@ void CTsReaderFilter::BufferingPause(bool longPause)
       return ;                  
     }
 
-    DWORD sleepTime = 95; //Pause length in ms
+    DWORD sleepTime = 195; //Pause length in ms
     DWORD minDelayTime = 5000; //Min time between pauses in ms
     if (longPause)
     {
@@ -1818,9 +1819,7 @@ void CTsReaderFilter::BufferingPause(bool longPause)
         {
           LogDebug("Pause %d mS renderer clock to match provider/RTSP clock...", sleepTime) ; 
           ptrMediaCtrl->Pause() ;         
-          Sleep(sleepTime/2) ;
-          m_demultiplexer.ReadAheadFromFile(); //File read prefetch
-          Sleep(sleepTime/2) ;
+          Sleep(sleepTime) ;
           m_demultiplexer.ReadAheadFromFile(); //File read prefetch
           if (m_State != State_Stopped)
           {
