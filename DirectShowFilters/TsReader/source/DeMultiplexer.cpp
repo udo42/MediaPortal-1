@@ -525,7 +525,6 @@ CBuffer* CDeMultiplexer::GetSubtitle()
   {
     m_bReadAheadFromFile = true;
     m_filter.WakeThread();
-    //ReadFromFile(false,false);
     return NULL;
   }
   //if there is no subtitle pid, then simply return NULL
@@ -560,56 +559,15 @@ CBuffer* CDeMultiplexer::GetVideo()
   {
     m_bReadAheadFromFile = true;
     m_filter.WakeThread();
-    //ReadFromFile(false,true);
     return NULL;
   }
 
-//  if (  ((m_vecVideoBuffers.size() < 8) 
-//     || ((m_LastVideoSample.Millisecs() - m_FirstVideoSample.Millisecs()) < 400) 
-//     || (m_LastAudioSample.m_time < m_FirstVideoSample.m_time)) 
-//     && !m_bReadAheadFromFile)
   if ((m_vecVideoBuffers.size() < 4) || !m_bAudioVideoReady)
   {
     //Prefetch some data
     m_bReadAheadFromFile = true;
     m_filter.WakeThread();
   }
-
-
-  //  // when there are no video packets at the moment
-  //  // then try to read some from the current file
-  //  while (m_vecVideoBuffers.size()==0)
-  //  {
-  //    //if filter is stopped or
-  //    //end of file has been reached or
-  //    //demuxer should stop getting video packets
-  //    //then return NULL
-  //    if (!m_filter.IsFilterRunning()) return NULL;
-  //    if (m_filter.m_bStopping) return NULL;
-  //    if (m_bEndOfFile) return NULL;
-  //
-  //    //else try to read some packets from the file
-  //    int SizeRead = ReadFromFile(true,false) ;
-  //
-  //    if (IsMediaChanging()) return NULL;
-  //
-  //    if (m_vecVideoBuffers.size()==0) 
-  //    {
-  //      // No buffer
-  //      if ((SizeRead < MIN_READ_SIZE) && m_bAudioVideoReady && !m_filter.m_bRenderingClockTooFast)
-  //      {
-  //        //Running very low on data
-  //        InterlockedIncrement(&m_AVDataLowCount);   
-  //        m_filter.WakeThread();
-  //      }                
-  //      return NULL;
-  //    }
-  //  }
-
-  //  if (IsMediaChanging()) 
-  //  {
-  //    return NULL;
-  //  }
 
   if (m_vecVideoBuffers.size()==0)
   {
@@ -623,7 +581,6 @@ CBuffer* CDeMultiplexer::GetVideo()
   {
     ivecBuffers it = m_vecVideoBuffers.begin();
     CBuffer* videoBuffer = *it;
-    //m_vecVideoBuffers.erase(it);
     return videoBuffer;
   }
 
@@ -656,13 +613,9 @@ CBuffer* CDeMultiplexer::GetAudio()
   {
     m_bReadAheadFromFile = true;
     m_filter.WakeThread();
-    // ReadFromFile(true,false);
     return NULL;
   }
 
-//  if (   ((m_vecAudioBuffers.size() < 2) 
-//      || ((m_LastAudioSample.Millisecs() - m_FirstAudioSample.Millisecs()) < 200))  
-//      && !m_bReadAheadFromFile)
   if ((m_vecAudioBuffers.size() < 2) || !m_bAudioVideoReady)
   {
     //Prefetch some data
@@ -672,34 +625,8 @@ CBuffer* CDeMultiplexer::GetAudio()
 
   // when there are no audio packets at the moment
   // then try to read some from the current file
-  if ((!m_bAudioVideoReady) && (m_vecAudioBuffers.size()>0))
+  if (!m_bAudioVideoReady && (m_vecAudioBuffers.size()>0))
   {
-    //    //if filter is stopped or
-    //    //end of file has been reached or
-    //    //demuxer should stop getting audio packets
-    //    //then return NULL
-    //    if (!m_filter.IsFilterRunning()) return NULL;
-    //    if (m_filter.m_bStopping) return NULL;
-    //
-    //    if (m_bEndOfFile) return NULL;
-    //
-    //    int SizeRead = ReadFromFile(true,false) ;
-    //
-    //    //are there audio packets in the buffer?
-    //    if (m_vecAudioBuffers.size()==0)
-    //    {
-    //       // No buffer and nothing to read....
-    //       if ((SizeRead < MIN_READ_SIZE) && m_bAudioVideoReady && !m_filter.m_bRenderingClockTooFast)
-    //       {
-    //        //Running very low on data
-    //        InterlockedIncrement(&m_AVDataLowCount);   
-    //        m_filter.WakeThread();
-    //       }           
-    //       return NULL;
-    //    }
-    //
-    //    if (IsMediaChanging()) return NULL;
-
     // Goal is to start with at least 200mS audio and 200mS video ahead. ( LiveTv and RTSP as TsReader cannot go ahead by itself)
     if (m_LastAudioSample.Millisecs() - m_FirstAudioSample.Millisecs() < 310) return NULL ;       // Not enough audio to start.
 
@@ -718,21 +645,18 @@ CBuffer* CDeMultiplexer::GetAudio()
     m_bAudioVideoReady=true ;
   }
 
-  // if (IsMediaChanging()) return NULL;
-
   if (m_vecAudioBuffers.size()==0)
   {
     return NULL;
   }
 
-  //yup, then return the next one
+  //Return the next buffer
   CAutoLock lock (&m_sectionAudio);
 
   if (m_vecAudioBuffers.size() > 0)
   {
     ivecBuffers it = m_vecAudioBuffers.begin();
     CBuffer* audiobuffer = *it;
-    //m_vecAudioBuffers.erase(it);
     return audiobuffer;
   }
   
