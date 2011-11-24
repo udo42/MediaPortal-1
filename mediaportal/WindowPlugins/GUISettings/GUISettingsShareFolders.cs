@@ -248,8 +248,8 @@ namespace MediaPortal.GUI.Settings
           _error = false;
           GUIDialogOK dlgOk = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
           dlgOk.SetHeading(257);
-          dlgOk.SetLine(1, GUILocalizeStrings.Get(1476)); // Error in folder data
-          dlgOk.SetLine(2, GUILocalizeStrings.Get(1477)); // Name or path couldn't be empty
+          dlgOk.SetLine(1, "*Error in folder data."); // Error in folder data
+          dlgOk.SetLine(2, "*Name or path couldn't be empty."); // Name or path couldn't be empty
           dlgOk.DoModal(GUIWindowManager.ActiveWindow);
           return;
         }
@@ -289,8 +289,8 @@ namespace MediaPortal.GUI.Settings
           _error = false;
           GUIDialogOK dlgOk = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
           dlgOk.SetHeading(257);
-          dlgOk.SetLine(1, GUILocalizeStrings.Get(1476)); // Error in folder data
-          dlgOk.SetLine(2, GUILocalizeStrings.Get(1477)); // Name or path couldn't be empty
+          dlgOk.SetLine(1, "*Error in folder data."); // Error in folder data
+          dlgOk.SetLine(2, "*Name or path couldn't be empty."); // Name or path couldn't be empty
           dlgOk.DoModal(GUIWindowManager.ActiveWindow);
           _folderName = name;
           _folderPath = path;
@@ -397,7 +397,7 @@ namespace MediaPortal.GUI.Settings
       }
 
       keyboard.DoModal(GUIWindowManager.ActiveWindow);
-      //strLine = string.Empty;
+      
       if (keyboard.IsConfirmed)
       {
         strLine = keyboard.Text;
@@ -521,8 +521,8 @@ namespace MediaPortal.GUI.Settings
       {
         GUIDialogOK dlgOk = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
         dlgOk.SetHeading(GUILocalizeStrings.Get(1020));
-        dlgOk.SetLine(1, "No network resources found.");
-        dlgOk.SetLine(2, "Try manual search.");
+        dlgOk.SetLine(1, "*No network resources found.");
+        dlgOk.SetLine(2, "*Try manual search.");
         dlgOk.DoModal(GetID);
 
         GetStringFromKeyboard(ref netShare, -1);
@@ -709,7 +709,7 @@ namespace MediaPortal.GUI.Settings
 
       dlg.AddLocalizedString(1371); // Name
       dlg.AddLocalizedString(1373); // path
-      dlg.AddLocalizedString(1374); // layout
+      //dlg.AddLocalizedString(1374); // layout
       dlg.AddLocalizedString(1375);// pin
 
       if (_selectedOption != -1)
