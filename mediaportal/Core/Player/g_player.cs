@@ -1286,6 +1286,7 @@ namespace MediaPortal.Player
             type = MediaType.Video;
           }
           // refreshrate change done here.
+          if (extension != ".bdmv")
           RefreshRateChanger.AdaptRefreshRate(strFile, (RefreshRateChanger.MediaType)(int)type);
 
           if (RefreshRateChanger.RefreshRateChangePending)

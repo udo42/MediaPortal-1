@@ -60,6 +60,7 @@ namespace MediaPortal.Configuration.Sections
     private Label label2;
     private Label label1;
     private ComboBox RegionCodeComboBox;
+    private CheckBox SubsEnabled;
     private List<LanguageInfo> ISOLanguagePairs = new List<LanguageInfo>();
 
     //private int 
@@ -117,6 +118,7 @@ namespace MediaPortal.Configuration.Sections
         
         RegionCodeComboBox.SelectedItem = xmlreader.GetValueAsString("bdplayer", "regioncode", "B");
         ParentalControlUpDown.Value = xmlreader.GetValueAsInt("bdplayer", "parentalcontrol", 99);
+        SubsEnabled.Checked = xmlreader.GetValueAsBool("bdplayer", "subtitlesenabled", true);
       }
     }
 
@@ -130,6 +132,7 @@ namespace MediaPortal.Configuration.Sections
         xmlwriter.SetValue("bdplayer", "audiolanguage", defaultAudioLanguageComboBox.Text);
         xmlwriter.SetValue("bdplayer", "regioncode", RegionCodeComboBox.SelectedItem);
         xmlwriter.SetValue("bdplayer", "parentalcontrol", ParentalControlUpDown.Value.ToString());
+        xmlwriter.SetValueAsBool("bdplayer", "subtitlesenabled", SubsEnabled.Checked);
       }
       
     }
@@ -160,6 +163,7 @@ namespace MediaPortal.Configuration.Sections
       this.defaultAudioLanguageComboBox = new MediaPortal.UserInterface.Controls.MPComboBox();
       this.mpLabel8 = new MediaPortal.UserInterface.Controls.MPLabel();
       this.defaultSubtitleLanguageComboBox = new MediaPortal.UserInterface.Controls.MPComboBox();
+      this.SubsEnabled = new System.Windows.Forms.CheckBox();
       this.tabControl1.SuspendLayout();
       this.tabPage1.SuspendLayout();
       this.groupBox1.SuspendLayout();
@@ -171,9 +175,9 @@ namespace MediaPortal.Configuration.Sections
       // 
       // tabControl1
       // 
-      this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                  | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.tabControl1.Controls.Add(this.tabPage1);
       this.tabControl1.Controls.Add(this.mpTabPage1);
       this.tabControl1.Location = new System.Drawing.Point(0, 0);
@@ -195,8 +199,8 @@ namespace MediaPortal.Configuration.Sections
       // 
       // groupBox1
       // 
-      this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.groupBox1.Controls.Add(this.ParentalControlUpDown);
       this.groupBox1.Controls.Add(this.label2);
       this.groupBox1.Controls.Add(this.label1);
@@ -300,8 +304,9 @@ namespace MediaPortal.Configuration.Sections
       // 
       // mpGroupBox4
       // 
-      this.mpGroupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.mpGroupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+      this.mpGroupBox4.Controls.Add(this.SubsEnabled);
       this.mpGroupBox4.Controls.Add(this.mpLabel7);
       this.mpGroupBox4.Controls.Add(this.defaultAudioLanguageComboBox);
       this.mpGroupBox4.Controls.Add(this.mpLabel8);
@@ -309,7 +314,7 @@ namespace MediaPortal.Configuration.Sections
       this.mpGroupBox4.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
       this.mpGroupBox4.Location = new System.Drawing.Point(14, 12);
       this.mpGroupBox4.Name = "mpGroupBox4";
-      this.mpGroupBox4.Size = new System.Drawing.Size(432, 88);
+      this.mpGroupBox4.Size = new System.Drawing.Size(432, 127);
       this.mpGroupBox4.TabIndex = 10;
       this.mpGroupBox4.TabStop = false;
       this.mpGroupBox4.Text = "Default Language";
@@ -324,8 +329,8 @@ namespace MediaPortal.Configuration.Sections
       // 
       // defaultAudioLanguageComboBox
       // 
-      this.defaultAudioLanguageComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.defaultAudioLanguageComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.defaultAudioLanguageComboBox.BorderColor = System.Drawing.Color.Empty;
       this.defaultAudioLanguageComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.defaultAudioLanguageComboBox.Location = new System.Drawing.Point(136, 51);
@@ -344,8 +349,8 @@ namespace MediaPortal.Configuration.Sections
       // 
       // defaultSubtitleLanguageComboBox
       // 
-      this.defaultSubtitleLanguageComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                  | System.Windows.Forms.AnchorStyles.Right)));
+      this.defaultSubtitleLanguageComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
       this.defaultSubtitleLanguageComboBox.BorderColor = System.Drawing.Color.Empty;
       this.defaultSubtitleLanguageComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
       this.defaultSubtitleLanguageComboBox.Location = new System.Drawing.Point(136, 24);
@@ -353,6 +358,16 @@ namespace MediaPortal.Configuration.Sections
       this.defaultSubtitleLanguageComboBox.Size = new System.Drawing.Size(280, 21);
       this.defaultSubtitleLanguageComboBox.Sorted = true;
       this.defaultSubtitleLanguageComboBox.TabIndex = 7;
+      // 
+      // SubsEnabled
+      // 
+      this.SubsEnabled.AutoSize = true;
+      this.SubsEnabled.Location = new System.Drawing.Point(16, 92);
+      this.SubsEnabled.Name = "SubsEnabled";
+      this.SubsEnabled.Size = new System.Drawing.Size(100, 17);
+      this.SubsEnabled.TabIndex = 9;
+      this.SubsEnabled.Text = "Enable subtitles";
+      this.SubsEnabled.UseVisualStyleBackColor = true;
       // 
       // BD
       // 
@@ -368,6 +383,7 @@ namespace MediaPortal.Configuration.Sections
       ((System.ComponentModel.ISupportInitialize)(this.pictureBoxRegions)).EndInit();
       this.mpTabPage1.ResumeLayout(false);
       this.mpGroupBox4.ResumeLayout(false);
+      this.mpGroupBox4.PerformLayout();
       this.ResumeLayout(false);
 
     }
