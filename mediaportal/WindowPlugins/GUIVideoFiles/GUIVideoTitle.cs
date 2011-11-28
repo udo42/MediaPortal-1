@@ -677,7 +677,7 @@ namespace MediaPortal.GUI.Video
         IMDBMovie movie = item.AlbumInfoTag as IMDBMovie;
         movie = new IMDBMovie();
         item.AlbumInfoTag = movie;
-        movie.SetProperties(false);
+        movie.SetProperties(false, string.Empty);
         itemlist.Add(item);
         facadeLayout.Add(item);
       }

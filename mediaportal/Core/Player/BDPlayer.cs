@@ -31,7 +31,7 @@ using DShowNET.Helper;
 using MediaPortal.ExtensionMethods;
 using MediaPortal.GUI.Library;
 using MediaPortal.Player.PostProcessing;
-using MediaPortal.Player.SubtitlesBD;
+using MediaPortal.Player.Subtitles;
 using MediaPortal.Profile;
 using System.Collections.Generic;
 using System.Collections;
@@ -445,8 +445,7 @@ namespace MediaPortal.Player
     protected bool _forceTitle = false;
     protected int _titleToPlay = 0;
     protected VMR9Util _vmr9 = null;
-    //SEB
-    //protected Player.TSReaderPlayer.ISubtitleStream _subtitleStream = null;
+    protected Player.TSReaderPlayer.ISubtitleStream _subtitleStream = null;
     protected IBDReader _ireader = null;
     protected int iSpeed = 1;
     protected int _positionX = 0;
@@ -475,9 +474,6 @@ namespace MediaPortal.Player
     protected IBaseFilter AudioCodec = null;
     protected SubtitleSelector _subSelector = null;
     protected SubtitleRenderer _dvbSubRenderer = null;
-
-    //SEB
-    protected ISubtitleStream _subtitleStream = null;
 
     /// <summary> control interface. </summary>
     protected IMediaControl _mediaCtrl = null;
@@ -526,33 +522,6 @@ namespace MediaPortal.Player
     //UpdateFilter
     protected string audioRendererFilter = "";
     #endregion
-
-    /// <summary>
-    /// Interface to the BDReader filter wich provides information about the 
-    /// subtitle streams and allows us to change the current subtitle stream
-    /// </summary>
-    /// 
-    [Guid("43FED769-C5EE-46aa-912D-7EBDAE4EE93A"),
-     InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    public interface ISubtitleStream
-    {
-      void SetSubtitleStream(Int32 stream);
-      void GetSubtitleStreamType(Int32 stream, ref Int32 type);
-      void GetSubtitleStreamCount(ref Int32 count);
-      void GetCurrentSubtitleStream(ref Int32 stream);
-      void GetSubtitleStreamLanguage(Int32 stream, ref SUBTITLE_LANGUAGE szLanguage);
-      void SetSubtitleResetCallback(IntPtr callBack);
-    }
-
-    /// <summary>
-    /// Structure to pass the subtitle language data from TsReader to this class
-    /// </summary>
-    /// 
-    [StructLayout(LayoutKind.Sequential, Pack = 1)]
-    public struct SUBTITLE_LANGUAGE
-    {
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 4)] public string lang;
-    }
 
     #region ctor/dtor
 
@@ -1217,7 +1186,7 @@ namespace MediaPortal.Player
           {
             if (_basicAudio != null)
             {
-              // Divide by 100 to get equivalent decibel value. For example, ?10,000 is ?100 dB. 
+              // Divide by 100 to get equivalent decibel value. For example, –10,000 is –100 dB. 
               float fPercent = (float)_volume / 100.0f;
               int iVolume = (int)(5000.0f * fPercent);
               _basicAudio.put_Volume((iVolume - 5000));
@@ -2683,7 +2652,7 @@ namespace MediaPortal.Player
           Log.Error(e);
         }
 
-        _subtitleStream = (Player.BDPlayer.ISubtitleStream)_interfaceBDReader;
+        _subtitleStream = (Player.TSReaderPlayer.ISubtitleStream)_interfaceBDReader;
         if (_subtitleStream == null)
         {
           Log.Error("BDPlayer: Unable to get ISubtitleStream interface");

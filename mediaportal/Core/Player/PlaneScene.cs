@@ -882,7 +882,6 @@ namespace MediaPortal.Player
         RenderBlackImage(timePassed);
         GUIGraphicsContext.RenderBlackImage = false;
       }
-      MediaPortal.Player.SubtitlesBD.SubtitleRenderer.GetInstance().Render();
       SubtitleRenderer.GetInstance().Render();
       SubEngine.GetInstance().Render(_subsRect, _destinationRect);
       BDOSDRenderer.GetInstance().Render();
