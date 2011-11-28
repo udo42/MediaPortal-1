@@ -14,8 +14,6 @@
 // You should have received a copy of the GNU General Public License
 // along with MediaPortal. If not, see <http://www.gnu.org/licenses/>.
 
-#pragma once
-
 template <class T> class CMyQueue : public CCritSec {
 	T* m_elements;
 	int m_size;

@@ -107,6 +107,7 @@ namespace MediaPortal.Player
       public string VideoH264 { get; set; }
       public string VideoVC1 { get; set; }
       public string VideoVC1I { get; set; }
+      public string VideoXVID { get; set; }      
       public string Audio { get; set; }
       public string AudioAAC { get; set; }
       public string AudioRenderer { get; set; }
@@ -133,8 +134,9 @@ namespace MediaPortal.Player
         filterConfig.Audio = xmlreader.GetValueAsString("movieplayer", "mpeg2audiocodec", "");
         filterConfig.AudioAAC = xmlreader.GetValueAsString("movieplayer", "aacaudiocodec", "");
         filterConfig.VideoH264 = xmlreader.GetValueAsString("movieplayer", "h264videocodec", "");
-        filterConfig.VideoVC1 = xmlreader.GetValueAsString("movieplayer", "vc1videocodec", "");
+        filterConfig.VideoVC1 = xmlreader.GetValueAsString("movieplayer", "vc1videocodec", "");        
         filterConfig.VideoVC1I = xmlreader.GetValueAsString("movieplayer", "vc1ivideocodec", "");
+        filterConfig.VideoXVID = xmlreader.GetValueAsString("movieplayer", "xvidvideocodec", "");
         filterConfig.AudioRenderer = xmlreader.GetValueAsString("movieplayer", "audiorenderer", "Default DirectSound Device");
         filterConfig.strextAudioSource = xmlreader.GetValueAsString("movieplayer", "AudioExtSplitterFilter", "");
         filterConfig.strextAudioCodec = xmlreader.GetValueAsString("movieplayer", "AudioExtFilter", "");
@@ -1038,9 +1040,10 @@ namespace MediaPortal.Player
       bool vc1Codec = false;
       bool aacCodec = false;
       bool h264Codec = false;
+      bool xvidCodec = false;
 
       //video
-      if (pinOut0 != null)
+      if (pinOut0 != null && format == "Video")
       {
         //Detection if the Video Stream is VC-1 on output pin of the splitter
         IEnumMediaTypes enumMediaTypesVideo;
@@ -1056,34 +1059,23 @@ namespace MediaPortal.Player
             Log.Info("VideoPlayer9: found VC-1 video out pin");
             vc1Codec = true;
           }
-        }
-        DirectShowUtil.ReleaseComObject(enumMediaTypesVideo);
-        enumMediaTypesVideo = null;
-      }
-
-      if (pinOut0 != null)
-      {
-        //Detection if the Video Stream is VC-1 on output pin of the splitter
-        IEnumMediaTypes enumMediaTypesVideo;
-        int hr = pinOut0.EnumMediaTypes(out enumMediaTypesVideo);
-        while (true)
-        {
-          AMMediaType[] mediaTypes = new AMMediaType[1];
-          int typesFetched;
-          hr = enumMediaTypesVideo.Next(1, mediaTypes, out typesFetched);
-          if (hr != 0 || typesFetched == 0) break;
           if (mediaTypes[0].majorType == MediaType.Video && (mediaTypes[0].subType == MediaSubType.H264 || mediaTypes[0].subType == MediaSubType.AVC1))
           {
             Log.Info("VideoPlayer9: found H264 video out pin");
             h264Codec = true;
           }
+          if (mediaTypes[0].majorType == MediaType.Video && (mediaTypes[0].subType == MediaSubType.XVID || mediaTypes[0].subType == MediaSubType.xvid))
+          {
+            Log.Info("VideoPlayer9: found XVID video out pin");
+            xvidCodec = true;
+          }
         }
         DirectShowUtil.ReleaseComObject(enumMediaTypesVideo);
         enumMediaTypesVideo = null;
-      }
+      }      
 
       //audio
-      if (pinOut1 != null)
+      if (pinOut1 != null && format == "Audio")
       {
         //Detection if the Audio Stream is AAC on output pin of the splitter
         IEnumMediaTypes enumMediaTypesAudio;
@@ -1113,8 +1105,10 @@ namespace MediaPortal.Player
       //Detection of AAC Audio
       if (_mediaInfo.AudioCodec.Contains(AACCodec))
         aacCodec = true;
-      if (_mediaInfo.VideoCodec.Equals("XVID") || _mediaInfo.VideoCodec.Equals("DIVX") || _mediaInfo.VideoCodec.Equals("AVC"))
+      if (_mediaInfo.VideoCodec.Equals("AVC"))
         h264Codec = true;
+      if (_mediaInfo.VideoCodec.Equals("XVID") || _mediaInfo.VideoCodec.Equals("DIVX"))
+        xvidCodec = true;
 
       //Video Part
       if (format == "Video")
@@ -1130,6 +1124,10 @@ namespace MediaPortal.Player
         else if (vc1ICodec)
         {
           return filterConfig.VideoVC1I;
+        }
+        else if (xvidCodec)
+        {
+          return filterConfig.VideoXVID;
         }
         else
         {

@@ -14,12 +14,10 @@
 // You should have received a copy of the GNU General Public License
 // along with MediaPortal. If not, see <http://www.gnu.org/licenses/>.
 
-#include "stdafx.h"
-
 #include <queue>
 #include <dxva2api.h>
 #include <evr.h>
-#include "OuterEVR.h"
+
 #include "IAVSyncClock.h"
 #include "callback.h"
 #include "myqueue.h"
@@ -72,42 +70,41 @@ class MPEVRCustomPresenter;
 
 enum MP_RENDER_STATE
 {
-  MP_RENDER_STATE_STARTED = 1,
-  MP_RENDER_STATE_STOPPED,
-  MP_RENDER_STATE_PAUSED,
-  MP_RENDER_STATE_SHUTDOWN
+	MP_RENDER_STATE_STARTED = 1,
+	MP_RENDER_STATE_STOPPED,
+	MP_RENDER_STATE_PAUSED,
+	MP_RENDER_STATE_SHUTDOWN
 };
 
 typedef struct _SchedulerParams
 {
-  MPEVRCustomPresenter* pPresenter;
-  CCritSec csLock;
-  CAMEvent eHasWork;   //Urgent event
-  CAMEvent eHasWorkLP; //Low-priority event
-  CAMEvent eTimerEnd;  //Timer thread event
-  BOOL bDone;
-  long iPause;
-  BOOL bPauseAck;
-  LONGLONG llTime;     //Timer target time
+	MPEVRCustomPresenter* pPresenter;
+	CCritSec csLock;
+	CAMEvent eHasWork;   //Urgent event
+	CAMEvent eHasWorkLP; //Low-priority event
+	CAMEvent eTimerEnd;  //Timer thread event
+	BOOL bDone;
+	long iPause;
+	BOOL bPauseAck;
+	LONGLONG llTime;     //Timer target time
 } SchedulerParams;
 
-class MPEVRCustomPresenter : 
-  public CUnknown, 
-  public IMFVideoDeviceID,
-  public IMFTopologyServiceLookupClient,
-  public IMFVideoPresenter,
-  public IMFGetService,
-  public IMFAsyncCallback,
-  public IQualProp,
-  public IMFRateSupport,
-  public IMFVideoDisplayControl,
-  public IEVRTrustedVideoPlugin,
-  public IMFVideoPositionMapper,
-  public CCritSec
+class MPEVRCustomPresenter
+	: public IMFVideoDeviceID,
+	public IMFTopologyServiceLookupClient,
+	public IMFVideoPresenter,
+	public IMFGetService,
+	public IMFAsyncCallback,
+	public IQualProp,
+	public IMFRateSupport,
+	public IMFVideoDisplayControl,
+	public IEVRTrustedVideoPlugin,
+	public IMFVideoPositionMapper,
+	public CCritSec
 {
 
 public:
-  MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDevice9* direct3dDevice, HMONITOR monitor, IBaseFilter** EVRFilter, BOOL pIsWin7);
+  MPEVRCustomPresenter(IVMR9Callback* pCallback, IDirect3DDevice9* direct3dDevice, HMONITOR monitor, IBaseFilter* EVRFilter, BOOL pIsWin7);
   virtual ~MPEVRCustomPresenter();
 
   //IQualProp (stub)
@@ -168,19 +165,13 @@ public:
   virtual HRESULT STDMETHODCALLTYPE SetConstriction(DWORD dwKPix);
   virtual HRESULT STDMETHODCALLTYPE DisableImageExport(BOOL bDisable);
 
-  // IMFVideoPositionMapper 
+ // IMFVideoPositionMapper 
   virtual HRESULT STDMETHODCALLTYPE MapOutputCoordinateToInputStream(float xOut,float yOut,DWORD dwOutputStreamIndex,DWORD dwInputStreamIndex,float* pxIn,float* pyIn);
 
-  // IUnknown
-  STDMETHODIMP NonDelegatingQueryInterface(REFIID riid, void** ppv);
-  HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppvObject);
-  ULONG STDMETHODCALLTYPE AddRef();
-  ULONG STDMETHODCALLTYPE Release();
-  ULONG STDMETHODCALLTYPE NonDelegatingAddRef();
-  ULONG STDMETHODCALLTYPE NonDelegatingRelease();
-
-  // IBaseFilter delegate
-  bool GetState( DWORD dwMilliSecsTimeout, FILTER_STATE* State, HRESULT& pReturnValue);
+ // IUnknown
+  virtual HRESULT STDMETHODCALLTYPE QueryInterface(REFIID riid, void** ppvObject);
+  virtual ULONG STDMETHODCALLTYPE AddRef();
+  virtual ULONG STDMETHODCALLTYPE Release();
 
   HRESULT        CheckForScheduledSample(LONGLONG *pTargetTime, LONGLONG lastSleepTime, BOOL *idleWait);
   BOOL           CheckForInput(bool setInAvail);
@@ -252,7 +243,6 @@ protected:
   void           GetRealRefreshRate();
   LONGLONG       GetDelayToRasterTarget(LONGLONG *targetTime, LONGLONG *offsetTime);
   void           DwmEnableMMCSSOnOff(bool enable);
-  bool           BufferMoreSamples();
 
   HRESULT EnumFilters(IFilterGraph *pGraph);
   bool GetFilterNames();
@@ -294,7 +284,6 @@ protected:
   BOOL                              m_bInputAvailable;
   BOOL                              m_bFirstInputNotify;
   BOOL                              m_bEndStreaming;
-  bool                              m_bEndBuffering;
   BOOL                              m_bFlush;
   int                               m_iFramesDrawn;
   int                               m_iFramesDropped;
@@ -315,20 +304,20 @@ protected:
   LONGLONG                          m_pllRFP [NB_RFPSIZE];   // timestamp buffer for estimating real frame period
   LONGLONG                          m_llLastRFPts;
   int                               m_nNextRFP;
-  double                            m_fRFPStdDev;				// Estimate the real frame period std dev
-  double                            m_fRFPMean;
+ 	double                            m_fRFPStdDev;				// Estimate the real frame period std dev
+	double                            m_fRFPMean;
 
   LONGLONG                          m_pllCFP [NB_CFPSIZE];   // timestamp buffer for estimating real frame period
   LONGLONG                          m_llLastCFPts;
   int                               m_nNextCFP;
-  LONGLONG                          m_fCFPMean;
-  LONGLONG                          m_llCFPSumAvg;
+	LONGLONG                          m_fCFPMean;
+	LONGLONG                          m_llCFPSumAvg;
 
   double                            m_pllPCD [NB_PCDSIZE];   // timestamp buffer for estimating pres/sys clock delta
   LONGLONG                          m_llLastPCDprsTs;
   LONGLONG                          m_llLastPCDsysTs;
   int                               m_nNextPCD;
-  double                            m_fPCDMean;
+	double                            m_fPCDMean;
   double                            m_fPCDSumAvg;
 	
 	
@@ -340,11 +329,11 @@ protected:
   int       m_nNextSyncOffset;
   LONGLONG  nsSampleTime;
 
-  double    m_fJitterStdDev;				// Estimate the Jitter std dev
-  double    m_fJitterMean;
-  double    m_fSyncOffsetStdDev;
-  double    m_fSyncOffsetAvr;
-  double    m_DetectedRefreshRate;
+	double    m_fJitterStdDev;				// Estimate the Jitter std dev
+	double    m_fJitterMean;
+	double    m_fSyncOffsetStdDev;
+	double    m_fSyncOffsetAvr;
+	double    m_DetectedRefreshRate;
 
   LONGLONG  m_MaxJitter;
   LONGLONG  m_MinJitter;
@@ -353,8 +342,8 @@ protected:
   LONGLONG  m_pllSyncOffset [NB_JITTER];		// Jitter buffer for stats
   unsigned long m_uSyncGlitches;
 
-  LONGLONG  m_PaintTimeMin;
-  LONGLONG  m_PaintTimeMax;
+	LONGLONG  m_PaintTimeMin;
+	LONGLONG  m_PaintTimeMax;
   LONGLONG	m_PaintTime;
 
   bool      m_bResetStats;
@@ -398,8 +387,10 @@ protected:
   
   LONGLONG m_SampDuration;
 
+
   StatsRenderer* m_pStatsRenderer; 
 
+  // dshowhelper owns this
   IBaseFilter*  m_EVRFilter;
 
   // Used for detecting the real frame duration
@@ -445,10 +436,4 @@ protected:
   double        m_dPreviousVariableFreq;
   unsigned int  m_iClockAdjustmentsDone;
   double        m_avPhaseDiff;
-
-  COuterEVR*    m_pOuterEVR;
-  bool          m_bStopping;
-
-  CAMEvent      m_SampleAddedEvent;
-  CAMEvent      m_EndOfStreamingEvent;
 };

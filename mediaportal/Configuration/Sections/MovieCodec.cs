@@ -61,6 +61,7 @@ namespace MediaPortal.Configuration.Sections
         ArrayList availableH264VideoFilters = FilterHelper.GetFilters(MediaType.Video, MediaSubType.H264);
         ArrayList availableVC1VideoFilters = FilterHelper.GetFilters(MediaType.Video, MediaSubType.VC1);
         ArrayList availableVC1IVideoFilters = FilterHelper.GetFilters(MediaType.Video, MediaSubType.VC1);
+        ArrayList availableXVIDVideoFilters = FilterHelper.GetFilters(MediaType.Video, MediaSubType.XVID);
         ArrayList availableAACAudioFilters = FilterHelper.GetFilters(MediaType.Audio, MediaSubType.AAC);
         ArrayList availableFileSyncFilters = FilterHelper.GetFilters(MediaType.Stream, MediaSubType.Null);
         //ArrayList availableFileSyncFilters = FilterHelper.GetFilterSplitter();
@@ -115,6 +116,21 @@ namespace MediaPortal.Configuration.Sections
           availableVC1IVideoFilters.Add("CyberLink Video Decoder (PDVD11)");
           break;
         }
+        while (availableXVIDVideoFilters.Contains("CyberLink Video Decoder (PDVD11)"))
+        {
+          availableXVIDVideoFilters.Remove("CyberLink Video Decoder (PDVD11)");
+          break;
+        }
+        while (availableXVIDVideoFilters.Contains("CyberLink Video Decoder (PDVD10)"))
+        {
+          availableXVIDVideoFilters.Remove("CyberLink Video Decoder (PDVD10)");
+          break;
+        }
+        while (availableXVIDVideoFilters.Contains("ArcSoft Video Decoder"))
+        {
+          availableXVIDVideoFilters.Remove("ArcSoft Video Decoder");
+          break;
+        }
         /*while (availableVC1VideoFilters.Contains("WMVideo Decoder DMO"))
         {
           availableVC1VideoFilters.Remove("WMVideo Decoder DMO");
@@ -123,10 +139,12 @@ namespace MediaPortal.Configuration.Sections
         while (availableVC1IVideoFilters.Contains("MPC - Video decoder"))
         {
           availableVC1IVideoFilters.Remove("MPC - Video decoder");
+          break;
         }
         while (availableVC1IVideoFilters.Contains("WMVideo Decoder DMO"))
         {
           availableVC1IVideoFilters.Remove("WMVideo Decoder DMO");
+          break;
         }
         while (availableFileSyncFilters.Contains("Haali Media Splitter (AR)"))
         {
@@ -142,6 +160,7 @@ namespace MediaPortal.Configuration.Sections
         vc1videoCodecComboBox.Items.AddRange(availableVC1VideoFilters.ToArray());
         vc1ivideoCodecComboBox.Items.AddRange(availableVC1IVideoFilters.ToArray());
         h264videoCodecComboBox.Items.AddRange(availableH264VideoFilters.ToArray());
+        xvidvideoCodecComboBox.Items.AddRange(availableXVIDVideoFilters.ToArray());
         audioRendererComboBox.Items.AddRange(availableAudioRenderers.ToArray());
         aacAudioCodecComboBox.Items.AddRange(availableAACAudioFilters.ToArray());
         _init = true;
@@ -165,6 +184,7 @@ namespace MediaPortal.Configuration.Sections
       h264videoCodecComboBox.Enabled = !autoDecoderSettings.Checked;
       vc1ivideoCodecComboBox.Enabled = !autoDecoderSettings.Checked;
       vc1videoCodecComboBox.Enabled = !autoDecoderSettings.Checked;
+      xvidvideoCodecComboBox.Enabled = !autoDecoderSettings.Checked;
       audioCodecComboBox.Enabled = !autoDecoderSettings.Checked;
       aacAudioCodecComboBox.Enabled = !autoDecoderSettings.Checked;
       SplitterComboBox.Enabled = !autoDecoderSettings.Checked && ForceSourceSplitter.Checked;
@@ -192,6 +212,7 @@ namespace MediaPortal.Configuration.Sections
         string h264videoCodec = xmlreader.GetValueAsString("movieplayer", "h264videocodec", "");
         string vc1ivideoCodec = xmlreader.GetValueAsString("movieplayer", "vc1ivideocodec", "");
         string vc1videoCodec = xmlreader.GetValueAsString("movieplayer", "vc1videocodec", "");
+        string xvidvideoCodec = xmlreader.GetValueAsString("movieplayer", "xvidvideocodec", "");
         string audioCodec = xmlreader.GetValueAsString("movieplayer", "mpeg2audiocodec", "");
         string aacaudioCodec = xmlreader.GetValueAsString("movieplayer", "aacaudiocodec", "");
         string splitterFilter = xmlreader.GetValueAsString("movieplayer", "splitterfilter", "");
@@ -343,6 +364,7 @@ namespace MediaPortal.Configuration.Sections
         h264videoCodecComboBox.Text = h264videoCodec;
         vc1ivideoCodecComboBox.Text = vc1ivideoCodec;
         vc1videoCodecComboBox.Text = vc1videoCodec;
+        xvidvideoCodecComboBox.Text = xvidvideoCodec;
         aacAudioCodecComboBox.Text = aacaudioCodec;
         SplitterComboBox.Text = splitterFilter;
         SplitterFileComboBox.Text = splitterFileFilter;
@@ -369,6 +391,7 @@ namespace MediaPortal.Configuration.Sections
         xmlwriter.SetValue("movieplayer", "h264videocodec", h264videoCodecComboBox.Text);
         xmlwriter.SetValue("movieplayer", "vc1ivideocodec", vc1ivideoCodecComboBox.Text);
         xmlwriter.SetValue("movieplayer", "vc1videocodec", vc1videoCodecComboBox.Text);
+        xmlwriter.SetValue("movieplayer", "xvidvideocodec", xvidvideoCodecComboBox.Text);
         xmlwriter.SetValue("movieplayer", "aacaudiocodec", aacAudioCodecComboBox.Text);
         xmlwriter.SetValue("movieplayer", "splitterfilter", SplitterComboBox.Text);
         xmlwriter.SetValue("movieplayer", "splitterfilefilter", SplitterFileComboBox.Text);
