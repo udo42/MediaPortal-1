@@ -189,6 +189,26 @@ namespace MediaPortal.Player
       #endregion
     }
 
+    protected void disableVobsub()
+    {
+      while (true)
+      {
+        IBaseFilter basefilter;
+        DirectShowUtil.FindFilterByClassID(graphBuilder, ClassId.DirectVobSubAutoload, out basefilter);
+        if (basefilter == null)
+          DirectShowUtil.FindFilterByClassID(graphBuilder, ClassId.DirectVobSubNormal, out basefilter);
+        if (basefilter != null)
+        {
+          graphBuilder.RemoveFilter(basefilter);
+          DirectShowUtil.ReleaseComObject(basefilter);
+          basefilter = null;
+          Log.Info("VideoPlayer9: Cleanup DirectVobSub");
+        }
+        else
+          break;
+      }
+    }
+
     protected void EnableClock()
     {
       //Get Audio Renderer
@@ -663,6 +683,31 @@ namespace MediaPortal.Player
             UpdateFilters("Video");
             break;
         }
+        if (iChangedMediaTypes != 1 && VideoChange)
+        {
+          //Release and init Post Process Filter
+          if (PostProcessingEngine.engine != null)
+          {
+            PostProcessingEngine.GetInstance().FreePostProcess();
+          }
+          IPostProcessingEngine postengine = PostProcessingEngine.GetInstance(true);
+          if (!postengine.LoadPostProcessing(graphBuilder))
+          {
+            PostProcessingEngine.engine = new PostProcessingEngine.DummyEngine();
+          }
+
+          //Reload ffdshow or Directvobsub subtitle engine
+          if (SubEngine.engine.ToString() != "MediaPortal.Player.Subtitles.MpcEngine" && SubEngine.engine.ToString() != "MediaPortal.Player.Subtitles.DummyEngine")
+          {
+            disableVobsub();
+            SubEngine.GetInstance().FreeSubtitles();
+            ISubEngine engine = SubEngine.GetInstance(true);
+            if (!engine.LoadSubtitles(graphBuilder, m_strCurrentFile))
+            {
+              SubEngine.engine = new SubEngine.DummyEngine();
+            }
+          }
+        }
         if (iChangedMediaTypes != 2)
         {
           if (AudioExternal)
@@ -682,27 +727,19 @@ namespace MediaPortal.Player
             EnableClock();
         }
         if (iChangedMediaTypes != 1 && VideoChange)
-        { 
-          SubEngine.GetInstance().FreeSubtitles();
-          if (PostProcessingEngine.engine != null)
-            PostProcessingEngine.GetInstance().FreePostProcess();
-
-          ISubEngine engine = SubEngine.GetInstance(true);
-          if (!engine.LoadSubtitles(graphBuilder, m_strCurrentFile))
-          {
-            SubEngine.engine = new SubEngine.DummyEngine();
-          }
-
-          IPostProcessingEngine postengine = PostProcessingEngine.GetInstance(true);
-          if (!postengine.LoadPostProcessing(graphBuilder))
-          {
-            PostProcessingEngine.engine = new PostProcessingEngine.DummyEngine();
-          }
+        {
           if (SubEngine.engine.ToString() != "MediaPortal.Player.Subtitles.FFDShowEngine" && SubEngine.engine.ToString() != "MediaPortal.Player.Subtitles.DummyEngine")
           {
             FFDShowEngine.DisableFFDShowSubtitles(graphBuilder);
           }
         }
+
+        //remove InternalScriptRenderer as it takes subtitle pin
+        disableISR();
+
+        //disable Closed Captions!
+        disableCC();
+
         DirectShowUtil.RemoveUnusedFiltersFromGraph(graphBuilder);
 
         if (!firstinit && !g_Player.Paused)
@@ -813,28 +850,31 @@ namespace MediaPortal.Player
             }
           }
           PostProcessFilterMPAudio.Clear();
-          Log.Info("VideoPlayer9: UpdateFilters Cleanup PostProcessAudio");
+          Log.Info("VideoPlayer9: UpdateFilters Cleanup PostProcessMPAudio");
         }
       }
 
       // we have to find first filter connected to splitter which will be removed
       IPin pinFrom = FileSync ? DirectShowUtil.FindPin(Splitter, PinDirection.Output, selection) : DirectShowUtil.FindPin(_interfaceSourceFilter, PinDirection.Output, selection);
       IPin pinTo;
-      int hr = pinFrom.ConnectedTo(out pinTo);
-      if (hr >= 0 && pinTo != null)
+      if (pinFrom != null)
       {
-        PinInfo pInfo;
-        pinTo.QueryPinInfo(out pInfo);
-        FilterInfo fInfo;
-        pInfo.filter.QueryFilterInfo(out fInfo);
-        DirectShowUtil.DisconnectAllPins(graphBuilder, pInfo.filter);
-        graphBuilder.RemoveFilter(pInfo.filter);
-        Log.Debug("VideoPlayer9: UpdateFilters Remove filter - {0}", fInfo.achName);
-        DsUtils.FreePinInfo(pInfo);
-        DirectShowUtil.ReleaseComObject(fInfo.pGraph);
-        DirectShowUtil.ReleaseComObject(pinTo); pinTo = null;
+        int hr = pinFrom.ConnectedTo(out pinTo);
+        if (hr >= 0 && pinTo != null)
+        {
+          PinInfo pInfo;
+          pinTo.QueryPinInfo(out pInfo);
+          FilterInfo fInfo;
+          pInfo.filter.QueryFilterInfo(out fInfo);
+          DirectShowUtil.DisconnectAllPins(graphBuilder, pInfo.filter);
+          graphBuilder.RemoveFilter(pInfo.filter);
+          Log.Debug("VideoPlayer9: UpdateFilters Remove filter - {0}", fInfo.achName);
+          DsUtils.FreePinInfo(pInfo);
+          DirectShowUtil.ReleaseComObject(fInfo.pGraph);
+          DirectShowUtil.ReleaseComObject(pinTo); pinTo = null;
+        }
+        DirectShowUtil.ReleaseComObject(pinFrom); pinFrom = null;
       }
-      DirectShowUtil.ReleaseComObject(pinFrom); pinFrom = null;
 
       if (selection == "Video")
       {

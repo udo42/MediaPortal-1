@@ -1324,8 +1324,8 @@ namespace MediaPortal.Player
 
         if (FStreams.GetStreamInfos(StreamType.Audio, value).Filter != MEDIAPORTAL_AUDIOSWITCHER_FILTER && !AutoRenderingCheck && GetInterface)
         {
-          iChangedMediaTypes = 1;
-          DoGraphRebuild();
+          iChangedMediaTypes = 3;
+          //DoGraphRebuild();
         }
         return;
       }
