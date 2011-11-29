@@ -360,14 +360,14 @@ namespace MediaPortal.Player
               pinOut1 = null;
             }
             pinOut1 = DsFindPin.ByDirection((IBaseFilter)Splitter, PinDirection.Output, 1); //audio
-          }          
-          if (pinIn0 != null)
+          }
+          /*if (pinIn0 != null)
           {
             DirectShowUtil.ReleaseComObject(pinIn0);
             pinIn0 = null;
             Cleanup();
             return false;
-          }
+          }*/
         }
 
         // Add preferred video filters
@@ -542,17 +542,13 @@ namespace MediaPortal.Player
         }
         #endregion
 
-        if (filterCodec.VideoCodec != null)
-        DirectShowUtil.RenderUnconnectedOutputPins(graphBuilder, filterCodec.VideoCodec);
-        if (filterCodec.AudioCodec != null)
-        DirectShowUtil.RenderUnconnectedOutputPins(graphBuilder, filterCodec.AudioCodec);
         if (FileSync)
         {
-          DirectShowUtil.RenderUnconnectedOutputPins(graphBuilder, Splitter);
+          DirectShowUtil.RenderGraphBuilderOutputPins(graphBuilder, Splitter);
         }
         else if (_interfaceSourceFilter != null)
         {
-          DirectShowUtil.RenderUnconnectedOutputPins(graphBuilder, _interfaceSourceFilter);
+          DirectShowUtil.RenderGraphBuilderOutputPins(graphBuilder, _interfaceSourceFilter);
         }
 
         //Test and remove orphelin Audio Renderer
@@ -667,10 +663,26 @@ namespace MediaPortal.Player
             UpdateFilters("Video");
             break;
         }
-        if (iChangedMediaTypes != 1 && VideoChange)
+        if (iChangedMediaTypes != 2)
         {
-          if (filterCodec.VideoCodec !=null)
-          DirectShowUtil.RenderUnconnectedOutputPins(graphBuilder, filterCodec.VideoCodec);
+          if (AudioExternal)
+          {
+            RemoveAudioR();
+          }
+        }
+        if (FileSync)
+        {
+          if (Splitter != null)
+            DirectShowUtil.RenderGraphBuilderOutputPins(graphBuilder, Splitter);
+        }
+        else if (_interfaceSourceFilter != null)
+        {
+          DirectShowUtil.RenderGraphBuilderOutputPins(graphBuilder, _interfaceSourceFilter);
+          if (AudioExternal)
+            EnableClock();
+        }
+        if (iChangedMediaTypes != 1 && VideoChange)
+        { 
           SubEngine.GetInstance().FreeSubtitles();
           if (PostProcessingEngine.engine != null)
             PostProcessingEngine.GetInstance().FreePostProcess();
@@ -691,34 +703,9 @@ namespace MediaPortal.Player
             FFDShowEngine.DisableFFDShowSubtitles(graphBuilder);
           }
         }
-        if (iChangedMediaTypes != 2)
-        {
-          if (AudioExternal)
-          {
-            RemoveAudioR();
-          }
-          if (filterCodec.AudioCodec != null)
-          DirectShowUtil.RenderUnconnectedOutputPins(graphBuilder, filterCodec.AudioCodec);
-          EnableClock();
-        }
-        if (FileSync)
-        {
-          if (Splitter != null)
-          DirectShowUtil.RenderUnconnectedOutputPins(graphBuilder, Splitter);
-        }
-        else if (_interfaceSourceFilter != null)
-        {
-          DirectShowUtil.RenderUnconnectedOutputPins(graphBuilder, _interfaceSourceFilter);
-        }
         DirectShowUtil.RemoveUnusedFiltersFromGraph(graphBuilder);
 
-        //remove InternalScriptRenderer as it takes subtitle pin
-        disableISR();
-
-        // disable Closed Captions!
-        disableCC();
-
-        if (!firstinit && !g_Player.Paused)//!DoRebuid)
+        if (!firstinit && !g_Player.Paused)
         {
           try
           {
@@ -783,117 +770,39 @@ namespace MediaPortal.Player
 
     protected void UpdateFilters(string selection)
     {
-
-      VideoChange = false;
-
-      #region remove Post Process Filter
+      if (selection == "Video")
       {
-        // we have to find if first filter connected to TSReader
-        IPin pinFrom = FileSync ? DirectShowUtil.FindPin(Splitter, PinDirection.Output, selection) : DirectShowUtil.FindPin(_interfaceSourceFilter, PinDirection.Output, selection);
-        IPin pinTo;
-        int hr = pinFrom.ConnectedTo(out pinTo);
-        if (hr >= 0 && pinTo != null)
+        VideoChange = false;
+        if (PostProcessFilterVideo.Count > 0)
         {
-          PinInfo pInfo;
-          pinTo.QueryPinInfo(out pInfo);
-          FilterInfo fInfo;
-          pInfo.filter.QueryFilterInfo(out fInfo);
-          if (selection == "Video")
+          foreach (var ppFilter in PostProcessFilterVideo)
           {
-            if (!fInfo.achName.Contains("Enhanced Video Renderer") && !fInfo.achName.Contains("Video Mixing Renderer 9"))
+            if (ppFilter.Value != null)
             {
-              DirectShowUtil.ReleaseComObject(filterCodec.VideoCodec); filterCodec.VideoCodec = null;
-              filterCodec.VideoCodec = DirectShowUtil.GetFilterByName(graphBuilder, fInfo.achName);
-              Log.Debug("VideoPlayer9: Backup Video filter for later use - {0}", fInfo.achName);
-            }
-            foreach (var ppFilter in PostProcessFilterVideo)
-            {
-              if (ppFilter.Value != null)
-              {
-                DirectShowUtil.RemoveFilters(graphBuilder, ppFilter.Key);
-                DirectShowUtil.ReleaseComObject(ppFilter.Value, 5000);
-              }
-            }
-            PostProcessFilterVideo.Clear();
-            Log.Info("VideoPlayer9: Cleanup PostProcessVideo");
-          }
-          else
-          {
-            FilterInfo foundfilterinfos = new FilterInfo();
-            //Get Audio Renderer
-            if (filterConfig.AudioRenderer.Length > 0 && filterCodec._audioRendererFilter == null)
-            {
-              filterCodec._audioRendererFilter = DirectShowUtil.GetFilterByName(graphBuilder, filterConfig.AudioRenderer);
-            }
-            filterCodec._audioRendererFilter.QueryFilterInfo(out foundfilterinfos);
-            audioRendererFilter = foundfilterinfos.achName;
-
-            if (!fInfo.achName.Equals(audioRendererFilter))
-            {
-              DirectShowUtil.ReleaseComObject(filterCodec.AudioCodec); filterCodec.AudioCodec = null;
-              filterCodec.AudioCodec = DirectShowUtil.GetFilterByName(graphBuilder, fInfo.achName);
-              Log.Debug("VideoPlayer9: Backup Audio filter for later use - {0}", fInfo.achName);
-              DirectShowUtil.ReleaseComObject(foundfilterinfos.pGraph);
-            }
-            foreach (var ppFilter in PostProcessFilterAudio)
-            {
-              if (ppFilter.Value != null)
-              {
-                DirectShowUtil.RemoveFilters(graphBuilder, ppFilter.Key);
-                DirectShowUtil.ReleaseComObject(ppFilter.Value, 5000);
-              }
-            }
-            PostProcessFilterAudio.Clear();
-            Log.Info("VideoPlayer9: Cleanup PostProcessAudio");
-
-            if (!AudioExternal)
-            {
-              foreach (var ppFilter in PostProcessFilterMPAudio)
-              {
-                if (ppFilter.Value != null)
-                {
-                  DirectShowUtil.RemoveFilters(graphBuilder, ppFilter.Key);
-                  DirectShowUtil.ReleaseComObject(ppFilter.Value, 5000);
-                }
-              }
-              PostProcessFilterMPAudio.Clear();
-              Log.Info("VideoPlayer9: Cleanup PostProcessMPAudio");
+              DirectShowUtil.RemoveFilters(graphBuilder, ppFilter.Key);
+              DirectShowUtil.ReleaseComObject(ppFilter.Value, 5000);
             }
           }
-          DsUtils.FreePinInfo(pInfo);
-          DirectShowUtil.ReleaseComObject(fInfo.pGraph);
-          DirectShowUtil.ReleaseComObject(pinTo); pinTo = null;
+          PostProcessFilterVideo.Clear();
+          Log.Info("VideoPlayer9: UpdateFilters Cleanup PostProcessVideo");
         }
-        DirectShowUtil.ReleaseComObject(pinFrom); pinFrom = null;
-      }
-
-      /*if (selection == "Video")
-      {
-        foreach (var ppFilter in PostProcessFilterVideo)
-        {
-          if (ppFilter.Value != null)
-          {
-            DirectShowUtil.RemoveFilters(graphBuilder, ppFilter.Key);
-            DirectShowUtil.ReleaseComObject(ppFilter.Value, 5000);
-          }
-        }
-        PostProcessFilterVideo.Clear();
-        Log.Info("VideoPlayer9: Cleanup PostProcessVideo");
       }
       else
       {
-        foreach (var ppFilter in PostProcessFilterAudio)
+        if (PostProcessFilterAudio.Count > 0)
         {
-          if (ppFilter.Value != null)
+          foreach (var ppFilter in PostProcessFilterAudio)
           {
-            DirectShowUtil.RemoveFilters(graphBuilder, ppFilter.Key);
-            DirectShowUtil.ReleaseComObject(ppFilter.Value, 5000);
+            if (ppFilter.Value != null)
+            {
+              DirectShowUtil.RemoveFilters(graphBuilder, ppFilter.Key);
+              DirectShowUtil.ReleaseComObject(ppFilter.Value, 5000);
+            }
           }
+          PostProcessFilterAudio.Clear();
+          Log.Info("VideoPlayer9: UpdateFilters Cleanup PostProcessAudio");
         }
-        PostProcessFilterAudio.Clear();
-        Log.Info("VideoPlayer9: Cleanup PostProcessAudio");
-
-        if (!AudioExternal)
+        if (PostProcessFilterMPAudio.Count > 0 && !AudioExternal)
         {
           foreach (var ppFilter in PostProcessFilterMPAudio)
           {
@@ -904,102 +813,46 @@ namespace MediaPortal.Player
             }
           }
           PostProcessFilterMPAudio.Clear();
-          Log.Info("VideoPlayer9: Cleanup PostProcessMPAudio");
+          Log.Info("VideoPlayer9: UpdateFilters Cleanup PostProcessAudio");
         }
-      }*/
+      }
 
-      #endregion
-
-      #region remove Video and Codec section
+      // we have to find first filter connected to splitter which will be removed
+      IPin pinFrom = FileSync ? DirectShowUtil.FindPin(Splitter, PinDirection.Output, selection) : DirectShowUtil.FindPin(_interfaceSourceFilter, PinDirection.Output, selection);
+      IPin pinTo;
+      int hr = pinFrom.ConnectedTo(out pinTo);
+      if (hr >= 0 && pinTo != null)
+      {
+        PinInfo pInfo;
+        pinTo.QueryPinInfo(out pInfo);
+        FilterInfo fInfo;
+        pInfo.filter.QueryFilterInfo(out fInfo);
+        DirectShowUtil.DisconnectAllPins(graphBuilder, pInfo.filter);
+        graphBuilder.RemoveFilter(pInfo.filter);
+        Log.Debug("VideoPlayer9: UpdateFilters Remove filter - {0}", fInfo.achName);
+        DsUtils.FreePinInfo(pInfo);
+        DirectShowUtil.ReleaseComObject(fInfo.pGraph);
+        DirectShowUtil.ReleaseComObject(pinTo); pinTo = null;
+      }
+      DirectShowUtil.ReleaseComObject(pinFrom); pinFrom = null;
 
       if (selection == "Video")
       {
-        IPin pinFrom = FileSync ? DirectShowUtil.FindPin(Splitter, PinDirection.Output, selection) : DirectShowUtil.FindPin(_interfaceSourceFilter, PinDirection.Output, selection);
-        IPin pinTo;
-        int hr = pinFrom.ConnectedTo(out pinTo);
-        if (hr >= 0 && pinTo != null)
-        {
-          PinInfo pInfo;
-          pinTo.QueryPinInfo(out pInfo);
-          FilterInfo fInfo;
-          pInfo.filter.QueryFilterInfo(out fInfo);
+        //Add Post Process Video Codec
+        PostProcessAddVideo();
 
-          DirectShowUtil.DisconnectAllPins(graphBuilder, pInfo.filter);
-          graphBuilder.RemoveFilter(pInfo.filter);
-          Log.Debug("VideoPlayer9: Remove filter - {0}", fInfo.achName);
-
-          DsUtils.FreePinInfo(pInfo);
-          DirectShowUtil.ReleaseComObject(fInfo.pGraph);
-          DirectShowUtil.ReleaseComObject(pinTo); pinTo = null;
-        }
-        DirectShowUtil.ReleaseComObject(pinFrom); pinFrom = null;
+        //Add Video Codec
         if (filterCodec.VideoCodec != null)
         {
           DirectShowUtil.ReleaseComObject(filterCodec.VideoCodec);
           filterCodec.VideoCodec = null;
         }
-      }
-      else
-      {
-        IPin pinFrom = FileSync ? DirectShowUtil.FindPin(Splitter, PinDirection.Output, selection) : DirectShowUtil.FindPin(_interfaceSourceFilter, PinDirection.Output, selection);
-        IPin pinTo;
-        int hr = pinFrom.ConnectedTo(out pinTo);
-        if (hr >= 0 && pinTo != null)
-        {
-          PinInfo pInfo;
-          pinTo.QueryPinInfo(out pInfo);
-          FilterInfo fInfo;
-          pInfo.filter.QueryFilterInfo(out fInfo);
-          Log.Debug("VideoPlayer9: Remove filter - {0}", fInfo.achName);
-          graphBuilder.RemoveFilter(pInfo.filter);
-          DsUtils.FreePinInfo(pInfo);
-          DirectShowUtil.ReleaseComObject(fInfo.pGraph);
-          DirectShowUtil.ReleaseComObject(pinTo); pinTo = null;
-        }
-        DirectShowUtil.ReleaseComObject(pinFrom); pinFrom = null;
-        if (filterCodec.AudioCodec != null)
-        {
-          DirectShowUtil.ReleaseComObject(filterCodec.AudioCodec);
-          filterCodec.AudioCodec = null;
-        }
-      }
-
-      #endregion
-
-      #region Add Video and Audio Codec section
-      
-      if (selection == "Video")
-      {        
-        //Add Video Codec
         filterCodec.VideoCodec = DirectShowUtil.AddFilterToGraph(this.graphBuilder, MatchFilters(selection));
 
-        //Add Post Process Video Codec
-        PostProcessAddVideo();
-
-        //Try to connect First Selected Video Filter
-        IPin pinInVideo = DsFindPin.ByDirection((IBaseFilter)filterCodec.VideoCodec, PinDirection.Input, 0); //video input
-        if (pinInVideo == null)
-        {
-          Log.Error("VideoPlayer9: ReAddFilters FAILED: unable to get pins of video codec");
-        }
-        int hr = graphBuilder.Connect(pinOut0, pinInVideo);
-        if (hr != 0)
-        {
-          DirectShowUtil.ReleaseComObject(filterCodec.VideoCodec); filterCodec.VideoCodec = null;
-          Log.Error("VideoPlayer9: ReAddFilters FAILED: unable to connect video pins try next");
-        }
-        if (pinInVideo != null)
-        {
-          DirectShowUtil.ReleaseComObject(pinInVideo);
-          pinInVideo = null;
-        }
         VideoChange = true;
       }
       else
       {
-        //Add Audio Codec
-        filterCodec.AudioCodec = DirectShowUtil.AddFilterToGraph(this.graphBuilder, MatchFilters(selection));
-
         //Add Post Process MediaPortal AudioSwitcher Audio Codec
         if (filterConfig.OtherFilters.Contains("MediaPortal AudioSwitcher") && !AudioExternal)
         {
@@ -1009,27 +862,14 @@ namespace MediaPortal.Player
         //Add Post Process Audio Codec
         PostProcessAddAudio();
 
-        //Try to connect First Selected Audio Filter
-        IPin pinInAudio = DsFindPin.ByDirection((IBaseFilter)filterCodec.AudioCodec, PinDirection.Input, 0); //audio input        
-        if (pinInAudio == null)
+        //Add Audio Codec
+        if (filterCodec.AudioCodec != null)
         {
-          Log.Error("VideoPlayer9: ReAddFilters FAILED: unable to get pins of audio codec");
+          DirectShowUtil.ReleaseComObject(filterCodec.AudioCodec);
+          filterCodec.AudioCodec = null;
         }
-        int hr = graphBuilder.Connect(pinOut1, pinInAudio);
-        if (hr != 0)
-        {
-          DirectShowUtil.ReleaseComObject(filterCodec.AudioCodec); filterCodec.AudioCodec = null;
-          Log.Error("VideoPlayer9: ReAddFilters FAILED: unable to connect audio pins try next");
-        }
-        if (pinInAudio != null)
-        {
-          DirectShowUtil.ReleaseComObject(pinInAudio);
-          pinInAudio = null;
-        }
+        filterCodec.AudioCodec = DirectShowUtil.AddFilterToGraph(this.graphBuilder, MatchFilters(selection));
       }
-
-      #endregion
-
     }
 
     protected string MatchFilters(string format)
@@ -1346,6 +1186,12 @@ namespace MediaPortal.Player
         }
         PostProcessFilterAudio.Clear();
         Log.Info("VideoPlayer9: Cleanup PostProcess");
+        foreach (var ppFilter in PostProcessFilterMPAudio)
+        {
+          if (ppFilter.Value != null) DirectShowUtil.ReleaseComObject(ppFilter.Value, 5000);
+        }
+        PostProcessFilterMPAudio.Clear();
+        Log.Info("VideoPlayer9: Cleanup MP Audio Swither");
 
         if (_FFDShowAudio != null)
         {
