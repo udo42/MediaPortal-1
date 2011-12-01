@@ -75,17 +75,17 @@ namespace TvPlugin
       OSD_CLEARBOOKMARKS = 602,
       OSD_BOOKMARKS_LIST_LABEL = 650,
       OSD_VIDEOPOS = 700,
-      OSD_SHARPNESS = 701,
+      /*OSD_SHARPNESS = 701,
       OSD_SATURATIONLABEL = 702,
       OSD_SATURATION = 703,
       OSD_BRIGHTNESS = 704,
       OSD_CONTRAST = 705,
       OSD_GAMMA = 706,
-      OSD_SHARPNESSLABEL = 710,
+      OSD_SHARPNESSLABEL = 710,*/
       OSD_VIDEOPOS_LABEL = 750,
-      OSD_BRIGHTNESSLABEL = 752,
-      OSD_CONTRASTLABEL = 753,
-      OSD_GAMMALABEL = 754,
+      //OSD_BRIGHTNESSLABEL = 752,
+      //OSD_CONTRASTLABEL = 753,
+      //OSD_GAMMALABEL = 754,
       OSD_VIDEO_POSTPROC_DEBLOCK_ONOFF = 707,
       OSD_VIDEO_POSTPROC_RESIZE_ONOFF = 708,
       OSD_VIDEO_POSTPROC_CROP_ONOFF = 709,
@@ -727,20 +727,20 @@ namespace TvPlugin
                 }
 
 
-                UpdateGammaContrastBrightness();
+                //UpdateGammaContrastBrightness();
                 // show the controls on this sub menu
                 ShowControl(GetID, (int)Controls.OSD_VIDEOPOS);
-                ShowControl(GetID, (int)Controls.OSD_SATURATIONLABEL);
+                /*ShowControl(GetID, (int)Controls.OSD_SATURATIONLABEL);
                 ShowControl(GetID, (int)Controls.OSD_SATURATION);
                 ShowControl(GetID, (int)Controls.OSD_SHARPNESSLABEL);
-                ShowControl(GetID, (int)Controls.OSD_SHARPNESS);
+                ShowControl(GetID, (int)Controls.OSD_SHARPNESS);*/
                 ShowControl(GetID, (int)Controls.OSD_VIDEOPOS_LABEL);
-                ShowControl(GetID, (int)Controls.OSD_BRIGHTNESS);
+                /*ShowControl(GetID, (int)Controls.OSD_BRIGHTNESS);
                 ShowControl(GetID, (int)Controls.OSD_BRIGHTNESSLABEL);
                 ShowControl(GetID, (int)Controls.OSD_CONTRAST);
                 ShowControl(GetID, (int)Controls.OSD_CONTRASTLABEL);
                 ShowControl(GetID, (int)Controls.OSD_GAMMA);
-                ShowControl(GetID, (int)Controls.OSD_GAMMALABEL);
+                ShowControl(GetID, (int)Controls.OSD_GAMMALABEL);*/
                 FocusControl(GetID, (int)Controls.OSD_VIDEOPOS, 0); // set focus to the first control in our group
               }
             }
@@ -785,7 +785,7 @@ namespace TvPlugin
       return base.OnMessage(message);
     }
 
-    private void UpdateGammaContrastBrightness()
+    /*private void UpdateGammaContrastBrightness()
     {
       float fBrightNess = (float)GUIGraphicsContext.Brightness;
       float fContrast = (float)GUIGraphicsContext.Contrast;
@@ -798,7 +798,7 @@ namespace TvPlugin
       SetSliderValue(0.0f, 100.0f, (float)fGamma, (int)Controls.OSD_GAMMA);
       SetSliderValue(0.0f, 100.0f, (float)fSaturation, (int)Controls.OSD_SATURATION);
       SetSliderValue(0.0f, 100.0f, (float)fSharpness, (int)Controls.OSD_SHARPNESS);
-    }
+    }*/
 
     private void UpdatePostProcessing()
     {
@@ -940,17 +940,17 @@ namespace TvPlugin
 
       HideControl(GetID, (int)Controls.OSD_AVDELAY);
       GUIPropertyManager.SetProperty("#TvOSD.AudioVideoDelayPossible", " ");
-      HideControl(GetID, (int)Controls.OSD_SHARPNESSLABEL);
+      /*HideControl(GetID, (int)Controls.OSD_SHARPNESSLABEL);
       HideControl(GetID, (int)Controls.OSD_SHARPNESS);
       HideControl(GetID, (int)Controls.OSD_SATURATIONLABEL);
-      HideControl(GetID, (int)Controls.OSD_SATURATION);
+      HideControl(GetID, (int)Controls.OSD_SATURATION);*/
       HideControl(GetID, (int)Controls.OSD_AVDELAY_LABEL);
 
-      HideControl(GetID, (int)Controls.OSD_BRIGHTNESS);
+      /*HideControl(GetID, (int)Controls.OSD_BRIGHTNESS);
       HideControl(GetID, (int)Controls.OSD_BRIGHTNESSLABEL);
 
       HideControl(GetID, (int)Controls.OSD_GAMMA);
-      HideControl(GetID, (int)Controls.OSD_GAMMALABEL);
+      HideControl(GetID, (int)Controls.OSD_GAMMALABEL);*/
 
       HideControl(GetID, (int)Controls.OSD_VIDEO_POSTPROC_DEBLOCK_ONOFF);
       HideControl(GetID, (int)Controls.OSD_VIDEO_POSTPROC_RESIZE_ONOFF);
@@ -961,8 +961,8 @@ namespace TvPlugin
       HideControl(GetID, (int)Controls.OSD_VIDEO_POSTPROC_CROP_VERTICAL_LABEL);
       HideControl(GetID, (int)Controls.OSD_VIDEO_POSTPROC_CROP_HORIZONTAL_LABEL);
 
-      HideControl(GetID, (int)Controls.OSD_CONTRAST);
-      HideControl(GetID, (int)Controls.OSD_CONTRASTLABEL);
+      //HideControl(GetID, (int)Controls.OSD_CONTRAST);
+      //HideControl(GetID, (int)Controls.OSD_CONTRASTLABEL);
 
       HideControl(GetID, (int)Controls.OSD_CREATEBOOKMARK);
       HideControl(GetID, (int)Controls.OSD_BOOKMARKS_LIST);
@@ -1074,7 +1074,7 @@ namespace TvPlugin
             }
           }
           break;
-        case (int)Controls.OSD_SATURATION:
+        /*case (int)Controls.OSD_SATURATION:
           {
             GUISliderControl pControl = GetControl(iControlID) as GUISliderControl;
             if (null != pControl)
@@ -1496,20 +1496,20 @@ namespace TvPlugin
 
       HideControl(GetID, (int)Controls.OSD_AVDELAY);
       GUIPropertyManager.SetProperty("#TvOSD.AudioVideoDelayPossible", " ");
-      HideControl(GetID, (int)Controls.OSD_SATURATIONLABEL);
+      /*HideControl(GetID, (int)Controls.OSD_SATURATIONLABEL);
       HideControl(GetID, (int)Controls.OSD_SATURATION);
       HideControl(GetID, (int)Controls.OSD_SHARPNESSLABEL);
-      HideControl(GetID, (int)Controls.OSD_SHARPNESS);
+      HideControl(GetID, (int)Controls.OSD_SHARPNESS);*/
       HideControl(GetID, (int)Controls.OSD_AVDELAY_LABEL);
 
-      HideControl(GetID, (int)Controls.OSD_BRIGHTNESS);
+      /*HideControl(GetID, (int)Controls.OSD_BRIGHTNESS);
       HideControl(GetID, (int)Controls.OSD_BRIGHTNESSLABEL);
 
       HideControl(GetID, (int)Controls.OSD_GAMMA);
       HideControl(GetID, (int)Controls.OSD_GAMMALABEL);
 
       HideControl(GetID, (int)Controls.OSD_CONTRAST);
-      HideControl(GetID, (int)Controls.OSD_CONTRASTLABEL);
+      HideControl(GetID, (int)Controls.OSD_CONTRASTLABEL);*/
 
       HideControl(GetID, (int)Controls.OSD_CREATEBOOKMARK);
       HideControl(GetID, (int)Controls.OSD_BOOKMARKS_LIST);
