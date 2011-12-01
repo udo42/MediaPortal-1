@@ -96,7 +96,7 @@ namespace MediaPortal.GUI.Settings
       {
         _settingsChanged = false;
       }
-
+      GUIPropertyManager.SetProperty("#currentmodule", "*Settings");
       base.OnPageLoad();
     }
 

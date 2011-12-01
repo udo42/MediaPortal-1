@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <window>
   <id>4</id>
-  <defaultcontrol>4</defaultcontrol>
+  <defaultcontrol>3</defaultcontrol>
   <allowoverlay>no</allowoverlay>
   <rememberLastFocusedControl>yes</rememberLastFocusedControl>
   <controls>
@@ -26,21 +26,20 @@
       <posY>160</posY>
       <layout>StackLayout(0, Horizontal, True)</layout>
       <control>
-        <description>General Skin settings</description>
-        <type>button</type>
-        <id>4</id>
-        <width>350</width>
-        <label>674</label>
-        <hyperlink>1021</hyperlink>
-        <onup>17</onup>
-      </control>
-      <control>
         <description>General Main setttings</description>
         <type>button</type>
         <id>3</id>
         <width>350</width>
-        <label>1400</label>
+        <label>*General</label>
         <hyperlink>1016</hyperlink>
+      </control>
+			<control>
+        <description>General Skin settings</description>
+        <type>button</type>
+        <id>4</id>
+        <width>350</width>
+        <label>*GUI</label>
+        <hyperlink>1021</hyperlink>
       </control>
       <control>
         <description>TV</description>

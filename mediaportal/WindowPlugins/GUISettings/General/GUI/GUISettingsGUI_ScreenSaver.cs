@@ -65,7 +65,7 @@ namespace WindowPlugins.GUISettings
 
     public override bool Init()
     {
-      return Load(GUIGraphicsContext.Skin + @"\settings_screensaver.xml");
+      return Load(GUIGraphicsContext.Skin + @"\settings_GUI_ScreenSaver.xml");
     }
 
     #region Serialisation
@@ -80,6 +80,7 @@ namespace WindowPlugins.GUISettings
 
         _screenSaverDelay = xmlreader.GetValueAsInt("general", "IdleTimeValue", 300);
         bool screenSaverType = xmlreader.GetValueAsBool("general", "IdleBlanking", false);
+        
         if (screenSaverType)
         {
           cmBlankScreen.Selected = true;
@@ -196,14 +197,12 @@ namespace WindowPlugins.GUISettings
       {
         cmBlankScreen.IsEnabled = true;
         cmReduceFrameRate.IsEnabled = true;
-        //btnScreenSaverDelay.IsEnabled = true;
         GUIControl.EnableControl(GetID, (int)Controls.CONTROL_SCREENSAVER_DELAY);
       }
       else
       {
         cmBlankScreen.IsEnabled = false;
         cmReduceFrameRate.IsEnabled = false;
-        //btnScreenSaverDelay.IsEnabled = false;
         GUIControl.DisableControl(GetID, (int)Controls.CONTROL_SCREENSAVER_DELAY);
       }
     }

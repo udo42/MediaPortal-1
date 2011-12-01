@@ -69,7 +69,7 @@ namespace WindowPlugins.GUISettings
 
     public override bool Init()
     {
-      return Load(GUIGraphicsContext.Skin + @"\settings_volume.xml");
+      return Load(GUIGraphicsContext.Skin + @"\settings_General_Volume.xml");
     }
 
     #region Serialisation
@@ -343,7 +343,7 @@ namespace WindowPlugins.GUISettings
       keyboard.Text = strLine;
 
       keyboard.DoModal(GUIWindowManager.ActiveWindow);
-      //strLine = string.Empty;
+      
       if (keyboard.IsConfirmed)
       {
         strLine = keyboard.Text;

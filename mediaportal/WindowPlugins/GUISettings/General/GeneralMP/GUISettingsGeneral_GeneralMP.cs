@@ -76,7 +76,7 @@ namespace WindowPlugins.GUISettings
 
     public override bool Init()
     {
-      return Load(GUIGraphicsContext.Skin + @"\settings_generalMP.xml");
+      return Load(GUIGraphicsContext.Skin + @"\settings_General_MP.xml");
     }
 
     #region Serialization
@@ -92,11 +92,11 @@ namespace WindowPlugins.GUISettings
         
         if (!cmAutoRestart.Selected)
         {
-          GUIControl.HideControl(GetID, (int)Controls.CONTROL_DELAYINSEC);
+          GUIControl.DisableControl(GetID, (int)Controls.CONTROL_DELAYINSEC);
         }
         else
         {
-          GUIControl.ShowControl(GetID, (int)Controls.CONTROL_DELAYINSEC);
+          GUIControl.EnableControl(GetID, (int)Controls.CONTROL_DELAYINSEC);
         }
 
         _iDelay = xmlreader.GetValueAsInt("general", "restart delay", 10);
@@ -183,11 +183,11 @@ namespace WindowPlugins.GUISettings
       {
         if (!cmAutoRestart.Selected)
         {
-          GUIControl.HideControl(GetID, (int)Controls.CONTROL_DELAYINSEC);
+          GUIControl.DisableControl(GetID, (int)Controls.CONTROL_DELAYINSEC);
         }
         else
         {
-          GUIControl.ShowControl(GetID, (int)Controls.CONTROL_DELAYINSEC);
+          GUIControl.EnableControl(GetID, (int)Controls.CONTROL_DELAYINSEC);
         }
         SettingsChanged(true);
       }

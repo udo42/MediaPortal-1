@@ -77,7 +77,7 @@ namespace WindowPlugins.GUISettings
 
     public override bool Init()
     {
-      return Load(GUIGraphicsContext.Skin + @"\settings_GUIgeneral.xml");
+      return Load(GUIGraphicsContext.Skin + @"\settings_GUI_General.xml");
     }
 
     #region Serialisation

@@ -63,7 +63,7 @@ namespace WindowPlugins.GUISettings
 
     public override bool Init()
     {
-      return Load(GUIGraphicsContext.Skin + @"\settings_onscreendisplay.xml");
+      return Load(GUIGraphicsContext.Skin + @"\settings_GUI_OnScreenDisplay.xml");
     }
 
     #region Serialisation
@@ -133,6 +133,7 @@ namespace WindowPlugins.GUISettings
           _zapTimeout = number;
           SettingsChanged(true);
         }
+        
         SetProperties();
       }
 

@@ -110,9 +110,7 @@ namespace WindowPlugins.GUISettings.TV
     #endregion
 
     #region Overrides
-
     
-
     protected override void OnPageLoad()
     {
       base.OnPageLoad();
@@ -331,31 +329,41 @@ namespace WindowPlugins.GUISettings.TV
     private void OnDVDNavigator()
     {
       string strDVDNavigator = "";
+      
       using (Settings xmlreader = new MPSettings())
       {
         strDVDNavigator = xmlreader.GetValueAsString("dvdplayer", "navigator", "DVD Navigator");
       }
+      
       ArrayList availableDVDNavigators = FilterHelper.GetDVDNavigators();
       availableDVDNavigators.Sort();
+      
       GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
-      if (dlg != null)
+
+      if (dlg == null)
       {
-        dlg.Reset();
-        dlg.SetHeading(GUILocalizeStrings.Get(496)); //Menu
-        int selected = 0;
-        int count = 0;
-        foreach (string codec in availableDVDNavigators)
-        {
-          dlg.Add(codec);
-          if (codec == strDVDNavigator)
-          {
-            selected = count;
-          }
-          count++;
-        }
-        dlg.SelectedLabel = selected;
+        return;
       }
+
+      dlg.Reset();
+      dlg.SetHeading(GUILocalizeStrings.Get(496)); //Menu
+      int selected = 0;
+      int count = 0;
+        
+      foreach (string codec in availableDVDNavigators)
+      {
+        dlg.Add(codec);
+          
+        if (codec == strDVDNavigator)
+        {
+          selected = count;
+        }
+        count++;
+      }
+      dlg.SelectedLabel = selected;
+      
       dlg.DoModal(GetID);
+      
       if (dlg.SelectedLabel < 0)
       {
         OnVideo();
@@ -393,35 +401,44 @@ namespace WindowPlugins.GUISettings.TV
       {
         availableVideoFilters.Remove("Nero Mpeg2 Encoder");
       }
+      
       availableVideoFilters.Sort();
       GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
-      if (dlg != null)
+      
+      if (dlg == null)
       {
-        dlg.Reset();
-        dlg.SetHeading(GUILocalizeStrings.Get(496)); //Menu
-        int selected = 0;
-        int count = 0;
-        foreach (string codec in availableVideoFilters)
-        {
-          dlg.Add(codec); //delete
-          if (codec == strVideoCodec)
-          {
-            selected = count;
-          }
-          count++;
-        }
-        dlg.SelectedLabel = selected;
+        return;
       }
+
+      dlg.Reset();
+      dlg.SetHeading(GUILocalizeStrings.Get(496)); //Menu
+      int selected = 0;
+      int count = 0;
+        
+      foreach (string codec in availableVideoFilters)
+      {
+        dlg.Add(codec); //delete
+        if (codec == strVideoCodec)
+        {
+          selected = count;
+        }
+        count++;
+      }
+      dlg.SelectedLabel = selected;
+      
       dlg.DoModal(GetID);
+      
       if (dlg.SelectedLabel < 0)
       {
         OnVideo();
         return;
       }
+      
       using (Settings xmlwriter = new MPSettings())
       {
         xmlwriter.SetValue("dvdplayer", "videocodec", (string)availableVideoFilters[dlg.SelectedLabel]);
       }
+      
       OnVideo();
     }
 
@@ -450,35 +467,44 @@ namespace WindowPlugins.GUISettings.TV
       {
         availableAudioFilters.Remove("Nero Mpeg2 Encoder");
       }
+      
       availableAudioFilters.Sort();
       GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
-      if (dlg != null)
+      
+      if (dlg == null)
       {
-        dlg.Reset();
-        dlg.SetHeading(GUILocalizeStrings.Get(496)); //Menu
-        int selected = 0;
-        int count = 0;
-        foreach (string codec in availableAudioFilters)
-        {
-          dlg.Add(codec); //delete
-          if (codec == strAudioCodec)
-          {
-            selected = count;
-          }
-          count++;
-        }
-        dlg.SelectedLabel = selected;
+        return;
       }
+
+      dlg.Reset();
+      dlg.SetHeading(GUILocalizeStrings.Get(496)); //Menu
+      int selected = 0;
+      int count = 0;
+      
+      foreach (string codec in availableAudioFilters)
+      {
+        dlg.Add(codec); //delete
+        if (codec == strAudioCodec)
+        {
+          selected = count;
+        }
+        count++;
+      }
+      dlg.SelectedLabel = selected;
+      
       dlg.DoModal(GetID);
+      
       if (dlg.SelectedLabel < 0)
       {
         OnAudio();
         return;
       }
+      
       using (Settings xmlwriter = new MPSettings())
       {
         xmlwriter.SetValue("dvdplayer", "audiocodec", (string)availableAudioFilters[dlg.SelectedLabel]);
       }
+      
       OnAudio();
     }
     
@@ -492,16 +518,19 @@ namespace WindowPlugins.GUISettings.TV
       dlg.Reset();
       dlg.SetHeading(941); // Change aspect ratio
 
-      dlg.AddLocalizedString(1285); // Pixel ratio correction
-      dlg.AddLocalizedString(1282); // Correction mode
-      dlg.AddLocalizedString(1283); // Display mode
-      dlg.AddLocalizedString(1284); // Zoom mode
+      dlg.AddLocalizedString(300000); // Pixel ratio correction
+      dlg.AddLocalizedString(300001); // Correction mode
+      dlg.AddLocalizedString(300002); // Display mode
+      dlg.AddLocalizedString(300003); // Zoom mode
 
       if (_selectedOptionLvl2 != -1)
+      {
         dlg.SelectedLabel = _selectedOptionLvl2;
+      }
 
       // show dialog and wait for result
       dlg.DoModal(GetID);
+      
       if (dlg.SelectedId == -1)
       {
         OnVideo();
@@ -512,16 +541,16 @@ namespace WindowPlugins.GUISettings.TV
 
       switch (dlg.SelectedId)
       {
-        case 1285:
+        case 300000:
           OnPixelRatioCorrection();
           break;
-        case 1282:
+        case 300001:
           OnAspectRatioCorrectionMode();
           break;
-        case 1283:
+        case 300002:
           OnAspectRatioDisplayMode();
           break;
-        case 1284:
+        case 300003:
           OnAspectRatioZoomMode();
           break;
       }
@@ -535,14 +564,17 @@ namespace WindowPlugins.GUISettings.TV
         usePixelRatioCorrection = xmlreader.GetValueAsBool("dvdplayer", "pixelratiocorrection", false);
       }
       GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      
       if (dlg == null)
       {
         return;
       }
+      
       dlg.Reset();
       dlg.SetHeading(GUILocalizeStrings.Get(496)); //Menu
       dlg.AddLocalizedString(107);
       dlg.AddLocalizedString(106);
+      
       // set the focus to currently used mode
       if (usePixelRatioCorrection)
       {
@@ -554,11 +586,13 @@ namespace WindowPlugins.GUISettings.TV
       }
       // show dialog and wait for result
       dlg.DoModal(GetID);
+      
       if (dlg.SelectedLabel == -1)
       {
         OnAspectRatio();
         return;
       }
+      
       if (dlg.SelectedLabel == 0)
       {
         usePixelRatioCorrection = true;
@@ -567,10 +601,12 @@ namespace WindowPlugins.GUISettings.TV
       {
         usePixelRatioCorrection = false;
       }
+      
       using (Settings xmlwriter = new MPSettings())
       {
         xmlwriter.SetValueAsBool("dvdplayer", "pixelratiocorrection", usePixelRatioCorrection); ;
       }
+      
       OnAspectRatio();
     }
 
@@ -597,12 +633,15 @@ namespace WindowPlugins.GUISettings.TV
       dlg.SelectedLabel = (int)aspectRatioCorrectionMode;
       // show dialog and wait for result
       dlg.DoModal(GetID);
+      
       if (dlg.SelectedId == -1)
       {
         OnAspectRatio();
         return;
       }
+      
       aspectRatioCorrectionMode = GetAspectRatioCorrectionMode(dlg.SelectedLabelText);
+      
       using (Settings xmlwriter = new MPSettings())
       {
         string aspectRatioCorrectionModetext = GetAspectRatioCorrectionMode(aspectRatioCorrectionMode);
@@ -620,10 +659,12 @@ namespace WindowPlugins.GUISettings.TV
         aspectRatioDisplayMode = GetAspectRatioDisplayMode(aspectRatioDisplayModeText);
       }
       GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      
       if (dlg == null)
       {
         return;
       }
+      
       dlg.Reset();
       dlg.SetHeading(GUILocalizeStrings.Get(496)); //Menu
       dlg.Add("Default");
@@ -634,33 +675,41 @@ namespace WindowPlugins.GUISettings.TV
       dlg.SelectedLabel = (int)aspectRatioDisplayMode;
       // show dialog and wait for result
       dlg.DoModal(GetID);
+      
       if (dlg.SelectedId == -1)
       {
         OnAspectRatio();
         return;
       }
+      
       aspectRatioDisplayMode = GetAspectRatioDisplayMode(dlg.SelectedLabelText);
+      
       using (Settings xmlwriter = new MPSettings())
       {
         string aspectRatioDisplayModetext = GetAspectRatioDisplayMode(aspectRatioDisplayMode);
         xmlwriter.SetValue("dvdplayer", "displaymode", aspectRatioDisplayModetext);
       }
+      
       OnAspectRatio();
     }
 
     private void OnAspectRatioZoomMode()
     {
       Geometry.Type aspectRatio = Geometry.Type.Normal;
+      
       using (Settings xmlreader = new MPSettings())
       {
         string aspectRatioText = xmlreader.GetValueAsString("dvdplayer", "defaultar", "Normal");
         aspectRatio = Utils.GetAspectRatio(aspectRatioText);
       }
+      
       GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      
       if (dlg == null)
       {
         return;
       }
+      
       dlg.Reset();
       dlg.SetHeading(GUILocalizeStrings.Get(496)); //Menu
       dlg.AddLocalizedString(943); // Normal
@@ -674,148 +723,186 @@ namespace WindowPlugins.GUISettings.TV
       dlg.SelectedLabel = (int)aspectRatio;
       // show dialog and wait for result
       dlg.DoModal(GetID);
+      
       if (dlg.SelectedId == -1)
       {
         OnAspectRatio();
         return;
       }
+      
       aspectRatio = Utils.GetAspectRatioByLangID(dlg.SelectedId);
+      
       using (Settings xmlwriter = new MPSettings())
       {
         string aspectRatioText = Utils.GetAspectRatio(aspectRatio);
         xmlwriter.SetValue("dvdplayer", "defaultar", aspectRatioText);
       }
+      
       OnAspectRatio();
     }
 
     private void OnAudioRenderer()
     {
       string strAudioRenderer = "";
+      
       using (Settings xmlreader = new MPSettings())
       {
         strAudioRenderer = xmlreader.GetValueAsString("dvdplayer", "audiorenderer", "Default DirectSound Device");
       }
+      
       ArrayList availableAudioFilters = FilterHelper.GetAudioRenderers();
       GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
-      if (dlg != null)
+      
+      if (dlg == null)
       {
-        dlg.Reset();
-        dlg.SetHeading(GUILocalizeStrings.Get(496)); //Menu
-        int selected = 0;
-        int count = 0;
-        foreach (string codec in availableAudioFilters)
-        {
-          dlg.Add(codec); //delete
-          if (codec == strAudioRenderer)
-          {
-            selected = count;
-          }
-          count++;
-        }
-        dlg.SelectedLabel = selected;
+        return;
       }
+
+      dlg.Reset();
+      dlg.SetHeading(GUILocalizeStrings.Get(496)); //Menu
+      int selected = 0;
+      int count = 0;
+      
+      foreach (string codec in availableAudioFilters)
+      {
+        dlg.Add(codec); //delete
+        if (codec == strAudioRenderer)
+        {
+          selected = count;
+        }
+        count++;
+      }
+      
+      dlg.SelectedLabel = selected;
       dlg.DoModal(GetID);
+      
       if (dlg.SelectedLabel < 0)
       {
         OnAudio();
         return;
       }
+      
       using (Settings xmlwriter = new MPSettings())
       {
         xmlwriter.SetValue("dvdplayer", "audiorenderer", (string)availableAudioFilters[dlg.SelectedLabel]);
       }
+      
       OnAudio();
     }
 
     private void OnSubtitle()
     {
       string defaultSubtitleLanguage = "";
+      
       using (Settings xmlreader = new MPSettings())
       {
         defaultSubtitleLanguage = xmlreader.GetValueAsString("dvdplayer", "subtitlelanguage", "English");
       }
+      
       GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
-      if (dlg != null)
+      
+      if (dlg == null)
       {
-        dlg.Reset();
-        dlg.SetHeading(GUILocalizeStrings.Get(496)); //Menu
-        dlg.ShowQuickNumbers = false;
-        int selected = 0;
-        ArrayList cultures = new ArrayList();
-        CultureInfo[] culturesInfos = CultureInfo.GetCultures(CultureTypes.NeutralCultures);
-        for (int i = 0; i < culturesInfos.Length; ++i)
-        {
-          cultures.Add(culturesInfos[i]);
-        }
-        cultures.Sort(new CultureComparer());
-        for (int i = 0; i < cultures.Count; ++i)
-        {
-          CultureInfo info = (CultureInfo)cultures[i];
-          if (info.EnglishName.Equals(defaultSubtitleLanguage))
-          {
-            selected = i;
-          }
-          dlg.Add(info.EnglishName);
-        }
-        dlg.SelectedLabel = selected;
-        dlg.DoModal(GetID);
-        if (dlg.SelectedLabel < 0)
-        {
-          OnVideo();
-          return;
-        }
-        using (Settings xmlwriter = new MPSettings())
-        {
-          CultureInfo info = (CultureInfo)cultures[dlg.SelectedLabel];
-          xmlwriter.SetValue("dvdplayer", "subtitlelanguage", info.EnglishName);
-        }
+        return;
       }
+      
+      dlg.Reset();
+      dlg.SetHeading(GUILocalizeStrings.Get(496)); //Menu
+      dlg.ShowQuickNumbers = false;
+      int selected = 0;
+      ArrayList cultures = new ArrayList();
+      CultureInfo[] culturesInfos = CultureInfo.GetCultures(CultureTypes.NeutralCultures);
+      
+      for (int i = 0; i < culturesInfos.Length; ++i)
+      {
+        cultures.Add(culturesInfos[i]);
+      }
+      
+      cultures.Sort(new CultureComparer());
+      
+      for (int i = 0; i < cultures.Count; ++i)
+      {
+        CultureInfo info = (CultureInfo)cultures[i];
+        if (info.EnglishName.Equals(defaultSubtitleLanguage))
+        {
+          selected = i;
+        }
+        dlg.Add(info.EnglishName);
+      }
+      
+      dlg.SelectedLabel = selected;
+      dlg.DoModal(GetID);
+      
+      if (dlg.SelectedLabel < 0)
+      {
+        OnVideo();
+        return;
+      }
+      
+      using (Settings xmlwriter = new MPSettings())
+      {
+        CultureInfo info = (CultureInfo)cultures[dlg.SelectedLabel];
+        xmlwriter.SetValue("dvdplayer", "subtitlelanguage", info.EnglishName);
+      }
+      
       OnVideo();
     }
 
     private void OnAudioLanguage()
     {
       string defaultAudioLanguage = "";
+      
       using (Settings xmlreader = new MPSettings())
       {
         defaultAudioLanguage = xmlreader.GetValueAsString("dvdplayer", "audiolanguage", "English");
       }
+      
       GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
-      if (dlg != null)
+      
+      if (dlg == null)
       {
-        dlg.Reset();
-        dlg.SetHeading(GUILocalizeStrings.Get(496)); //Menu
-        dlg.ShowQuickNumbers = false;
-        int selected = 0;
-        ArrayList cultures = new ArrayList();
-        CultureInfo[] culturesInfos = CultureInfo.GetCultures(CultureTypes.NeutralCultures);
-        for (int i = 0; i < culturesInfos.Length; ++i)
-        {
-          cultures.Add(culturesInfos[i]);
-        }
-        cultures.Sort(new CultureComparer());
-        for (int i = 0; i < cultures.Count; ++i)
-        {
-          CultureInfo info = (CultureInfo)cultures[i];
-          if (info.EnglishName.Equals(defaultAudioLanguage))
-          {
-            selected = i;
-          }
-          dlg.Add(info.EnglishName);
-        }
-        dlg.SelectedLabel = selected;
-        dlg.DoModal(GetID);
-        if (dlg.SelectedLabel < 0)
-        {
-          OnAudio();
-          return;
-        }
-        using (Settings xmlwriter = new MPSettings())
-        {
-          CultureInfo info = (CultureInfo)cultures[dlg.SelectedLabel];
-          xmlwriter.SetValue("dvdplayer", "audiolanguage", info.EnglishName);
-        }
+        return;
       }
+
+      dlg.Reset();
+      dlg.SetHeading(GUILocalizeStrings.Get(496)); //Menu
+      dlg.ShowQuickNumbers = false;
+      int selected = 0;
+      ArrayList cultures = new ArrayList();
+      CultureInfo[] culturesInfos = CultureInfo.GetCultures(CultureTypes.NeutralCultures);
+      
+      for (int i = 0; i < culturesInfos.Length; ++i)
+      {
+        cultures.Add(culturesInfos[i]);
+      }
+      
+      cultures.Sort(new CultureComparer());
+      
+      for (int i = 0; i < cultures.Count; ++i)
+      {
+        CultureInfo info = (CultureInfo)cultures[i];
+        if (info.EnglishName.Equals(defaultAudioLanguage))
+        {
+          selected = i;
+        }
+        dlg.Add(info.EnglishName);
+      }
+      
+      dlg.SelectedLabel = selected;
+      dlg.DoModal(GetID);
+      
+      if (dlg.SelectedLabel < 0)
+      {
+        OnAudio();
+        return;
+      }
+      
+      using (Settings xmlwriter = new MPSettings())
+      {
+        CultureInfo info = (CultureInfo)cultures[dlg.SelectedLabel];
+        xmlwriter.SetValue("dvdplayer", "audiolanguage", info.EnglishName);
+      }
+      
       OnAudio();
     }
 

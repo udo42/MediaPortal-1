@@ -21,11 +21,9 @@
 using System;
 using System.Collections;
 using System.Globalization;
-using System.Text;
 using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
 using MediaPortal.Profile;
-using MediaPortal.Util;
 using Action = MediaPortal.GUI.Library.Action;
 
 namespace WindowPlugins.GUISettings
@@ -48,7 +46,7 @@ namespace WindowPlugins.GUISettings
   }
 
   /// <summary>
-  /// Summary description for GUISettingsGeneral.
+  /// Summary description for GUISettingsGeneralRefreshRate.
   /// </summary>
   public class GUISettingsGeneralRefreshRate : GUIInternalWindow
   {
@@ -98,7 +96,7 @@ namespace WindowPlugins.GUISettings
 
     public override bool Init()
     {
-      return Load(GUIGraphicsContext.Skin + @"\settings_dynamicrefreshrate.xml");
+      return Load(GUIGraphicsContext.Skin + @"\settings_General_DynamicRefreshRate.xml");
     }
     
     #region Serialisation
@@ -240,12 +238,14 @@ namespace WindowPlugins.GUISettings
           }
           SettingsChanged(true);
         }
+        
         // Default
         if (control == btnDefault)
         {
           InsertDefaultValues();
           SettingsChanged(true);
         }
+        
         if (control == btnUseDefaultRefreshRate)
         {
           if (btnUseDefaultRefreshRate.Selected)
@@ -258,6 +258,7 @@ namespace WindowPlugins.GUISettings
           }
           SettingsChanged(true);
         }
+        
         // Add
         if (control == btnAdd)
         {
@@ -306,12 +307,14 @@ namespace WindowPlugins.GUISettings
           }
         }
       }
+      
       // Use default
       if (control == btnUseDefaultRefreshRate)
       {
         EnableControls();
         SettingsChanged(true);
       }
+      
       // Select default refreshrate
       if (control == btnSelectDefaultRefreshRate)
       {
@@ -411,11 +414,11 @@ namespace WindowPlugins.GUISettings
 
       if (btnUseDefaultRefreshRate.Selected)
       {
-        btnSelectDefaultRefreshRate.IsVisible = true;
+        btnSelectDefaultRefreshRate.IsEnabled = true;
       }
       else
       {
-        btnSelectDefaultRefreshRate.IsVisible = false;
+        btnSelectDefaultRefreshRate.IsEnabled = false;
       }
     }
 
@@ -530,7 +533,7 @@ namespace WindowPlugins.GUISettings
       }
 
       keyboard.DoModal(GUIWindowManager.ActiveWindow);
-      //strLine = string.Empty;
+      
       if (keyboard.IsConfirmed)
       {
         strLine = keyboard.Text;
@@ -559,10 +562,10 @@ namespace WindowPlugins.GUISettings
       dlg.Reset();
       dlg.SetHeading(496); // Menu
 
-      dlg.AddLocalizedString(1371); // Name
-      dlg.AddLocalizedString(1365); // frame rate
-      dlg.AddLocalizedString(1366); // refresh rate
-      dlg.AddLocalizedString(1367);// Action
+      dlg.AddLocalizedString(300009); // Name
+      dlg.AddLocalizedString(300010); // frame rate
+      dlg.AddLocalizedString(300011); // refresh rate
+      dlg.AddLocalizedString(300012);// Action
       
       // Show dialog menu
       dlg.DoModal(GetID);
@@ -574,16 +577,16 @@ namespace WindowPlugins.GUISettings
 
       switch (dlg.SelectedId)
       {
-        case 1371:
+        case 300009:
           OnAddName();
           break;
-        case 1365:
+        case 300010:
           OnAddFPS();
           break;
-        case 1366:
+        case 300011:
           OnAddRefreshRate();
           break;
-        case 1367:
+        case 300012:
           OnAddAction();
           break;
       }
@@ -603,7 +606,7 @@ namespace WindowPlugins.GUISettings
           if (null != dlgNotify)
           {
             dlgNotify.SetHeading(GUILocalizeStrings.Get(257));
-            dlgNotify.SetText(GUILocalizeStrings.Get(1472));
+            dlgNotify.SetText(GUILocalizeStrings.Get(300013));
             dlgNotify.DoModal(GetID);
             OnAddItem();
             return;
@@ -652,10 +655,10 @@ namespace WindowPlugins.GUISettings
       dlg.Reset();
       dlg.SetHeading(496); // Menu
 
-      dlg.AddLocalizedString(1371); // Name
-      dlg.AddLocalizedString(1365); // frame rate
-      dlg.AddLocalizedString(1366); // refresh rate
-      dlg.AddLocalizedString(1367);// Action
+      dlg.AddLocalizedString(300009); // Name
+      dlg.AddLocalizedString(300010); // frame rate
+      dlg.AddLocalizedString(300011); // refresh rate
+      dlg.AddLocalizedString(300012);// Action
 
       // Show dialog menu
       dlg.DoModal(GetID);
@@ -667,16 +670,16 @@ namespace WindowPlugins.GUISettings
 
       switch (dlg.SelectedId)
       {
-        case 1371:
+        case 300009:
           OnEditName();
           break;
-        case 1365:
+        case 300010:
           OnEditFPS();
           break;
-        case 1366:
+        case 300011:
           OnEditRefreshRate();
           break;
-        case 1367:
+        case 300012:
           OnEditAction();
           break;
       }
@@ -696,7 +699,7 @@ namespace WindowPlugins.GUISettings
           if (null != dlgNotify)
           {
             dlgNotify.SetHeading(GUILocalizeStrings.Get(257));
-            dlgNotify.SetText(GUILocalizeStrings.Get(1472));
+            dlgNotify.SetText(GUILocalizeStrings.Get(300013));
             dlgNotify.DoModal(GetID);
             OnEditItem();
             return;

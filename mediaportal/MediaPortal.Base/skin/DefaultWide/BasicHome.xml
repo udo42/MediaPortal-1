@@ -18,6 +18,17 @@
       <width>1280</width>
       <height>720</height>
     </control>
+    <control>
+      <description>background top overlay</description>
+      <type>image</type>
+      <id>1</id>
+      <posX>0</posX>
+      <posY>0</posY>
+      <width>1280</width>
+      <height>270</height>
+      <texture>overlay_top.png</texture>
+      <colordiffuse>ffffffff</colordiffuse>
+    </control>
     <!--     *******************************************************************************************  -->
     <!--     *************************       ANALOG CLOCK               ********************************  -->
     <!--     *******************************************************************************************  -->
@@ -183,7 +194,7 @@
       <height>275</height>
       <textureFocus>hover_my weather.png</textureFocus>
       <textureNoFocus>hover_my weather.png</textureNoFocus>
-      <hyperlink>2600</hyperlink>
+      <hyperlink>7977</hyperlink>
       <label>8</label>
       <font>font16</font>
       <textalign>center</textalign>

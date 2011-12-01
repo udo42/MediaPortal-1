@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<!--version="1.0" encoding="utf-8" standalone="yes"-->
+<window>
+  <allowoverlay>yes</allowoverlay>
+  <controls>
+    <!-- *** Location *** -->
+    <control>
+      <description>Location label</description>
+      <type>label</type>
+      <id>0</id>
+      <posX>60</posX>
+      <posY>27</posY>
+      <width>600</width>
+      <label>#(L(8))  #(L(716))</label>
+      <font>font16</font>
+      <align>left</align>
+      <textcolor>white</textcolor>
+      <visible>string.equals(#WorldWeather.View,image)</visible>
+    </control>
+    <!-- *** Satellite button *** -->
+    <control>
+      <description>Satellite button</description>
+      <type>button</type>
+      <id>5</id>
+      <posX>346</posX>
+      <posY>112</posY>
+      <width>421</width>
+      <height>237</height>
+      <onleft>2</onleft>
+      <onup>17</onup>
+      <onright>6</onright>
+      <ondown>7</ondown>
+      <keepaspectratio>yes</keepaspectratio>
+      <textureNoFocus>#WorldWeather.ImageSatellite</textureNoFocus>
+      <textureFocus>#WorldWeather.ImageSatellite</textureFocus>
+      <visible allowhiddenfocus="true">string.equals(#WorldWeather.View,Image)+![control.hasfocus(6)|control.hasfocus(7)|control.hasfocus(8)]</visible>
+      <animation effect="zoom" start="100,100" end="220,220" time="150" center="390,110" reversible="true">focus</animation>
+    </control>
+    <!-- *** Satellite Precipitation button *** -->
+    <control>
+      <description>Satellite button</description>
+      <type>button</type>
+      <id>6</id>
+      <posX>815</posX>
+      <posY>112</posY>
+      <width>421</width>
+      <height>237</height>
+      <onleft>5</onleft>
+      <ondown>8</ondown>
+      <onright>7</onright>
+      <onup>17</onup>
+      <keepaspectratio>yes</keepaspectratio>
+      <textureNoFocus>#WorldWeather.ImagePrecipitation</textureNoFocus>
+      <textureFocus>#WorldWeather.ImagePrecipitation</textureFocus>
+      <animation effect="zoom" start="100,100" end="220,220" time="150" center="1250,110" reversible="true">focus</animation>
+      <visible allowhiddenfocus="true">string.equals(#WorldWeather.View,Image)+![control.hasfocus(5)|control.hasfocus(7)|control.hasfocus(8)]</visible>
+    </control>
+    <!-- *** Satellite Temperature button *** -->
+    <control>
+      <description>Satellite button</description>
+      <type>button</type>
+      <id>7</id>
+      <posX>346</posX>
+      <posY>412</posY>
+      <width>421</width>
+      <height>237</height>
+      <onright>8</onright>
+      <onleft>6</onleft>
+      <onup>5</onup>
+      <ondown>5</ondown>
+      <keepaspectratio>yes</keepaspectratio>
+      <textureNoFocus>#WorldWeather.ImageTemperature</textureNoFocus>
+      <textureFocus>#WorldWeather.ImageTemperature</textureFocus>
+      <animation effect="zoom" start="100,100" end="220,220" time="150" center="390,650" reversible="true">focus</animation>
+      <visible allowhiddenfocus="true">string.equals(#WorldWeather.View,Image)+![control.hasfocus(5)|control.hasfocus(6)|control.hasfocus(8)]</visible>
+    </control>
+    <!-- *** Satellite Wind button *** -->
+    <control>
+      <description>Satellite button</description>
+      <type>button</type>
+      <id>8</id>
+      <posX>815</posX>
+      <posY>412</posY>
+      <width>421</width>
+      <height>237</height>
+      <onleft>7</onleft>
+      <onright>5</onright>
+      <onup>6</onup>
+      <ondown>5</ondown>
+      <keepaspectratio>yes</keepaspectratio>
+      <textureNoFocus>#WorldWeather.ImageWind</textureNoFocus>
+      <textureFocus>#WorldWeather.ImageWind</textureFocus>
+      <animation effect="zoom" start="100,100" end="220,220" time="150" center="1250,650" reversible="true">focus</animation>
+      <visible allowhiddenfocus="true">string.equals(#WorldWeather.View,Image)+![control.hasfocus(5)|control.hasfocus(6)|control.hasfocus(7)]</visible>
+    </control>
+  </controls>
+</window>

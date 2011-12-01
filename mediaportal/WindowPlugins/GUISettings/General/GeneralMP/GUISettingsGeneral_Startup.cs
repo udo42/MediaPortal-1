@@ -46,7 +46,7 @@ namespace MediaPortal.GUI.Settings
 
     public override bool Init()
     {
-      return Load(GUIGraphicsContext.Skin + @"\settings_generalstartup.xml");
+      return Load(GUIGraphicsContext.Skin + @"\settings_General_Startup.xml");
     }
 
     #region Serialisation
@@ -79,7 +79,7 @@ namespace MediaPortal.GUI.Settings
           {
             using (RegistryKey subkey = Registry.CurrentUser.OpenSubKey(@"Control Panel\Desktop", true))
             {
-              subkey.SetValue("ForegroundLockTimeout", 0);
+              if (subkey != null) subkey.SetValue("ForegroundLockTimeout", 0);
             }
           }
         }
@@ -97,7 +97,7 @@ namespace MediaPortal.GUI.Settings
                                                                    true)
               )
             {
-              subkey.SetValue("MediaPortal", fileName);
+              if (subkey != null) subkey.SetValue("MediaPortal", fileName);
             }
           }
           else
@@ -107,7 +107,7 @@ namespace MediaPortal.GUI.Settings
                                                                    true)
               )
             {
-              subkey.DeleteValue("MediaPortal", false);
+              if (subkey != null) subkey.DeleteValue("MediaPortal", false);
             }
           }
         }
