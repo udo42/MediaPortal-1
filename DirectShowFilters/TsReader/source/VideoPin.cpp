@@ -369,14 +369,14 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
           //adjust the timestamp with the compensation
           cRefTime -= compTemp;
 
-          // 'fast start' timestamp modification (at start of play)
-          CRefTime AddOffset=m_pTsReaderFilter->AddVideoComp;
+          // 'fast start' timestamp modification (during first 2 sec of play)
+          //CRefTime AddOffset=m_pTsReaderFilter->AddVideoComp;
           cRefTime -= m_pTsReaderFilter->m_ClockOnStart.m_time;
           if (!m_pTsReaderFilter->m_bFastSyncVideo && (cRefTime.m_time < (2*1000*10000)) )
           {
             float startCref = (float)cRefTime.m_time/(1000*10000);
-            //Assume desired timestamp span is zero -> 2 sec, actual span is AddOffset -> 2 sec
-            double offsetRatio = (2*1000*10000)/((2*1000*10000) - (double)AddOffset.m_time);
+            //Assume desired timestamp span is zero to 2 sec, actual span is AddVideoComp to 2 sec
+            double offsetRatio = (2*1000*10000)/((2*1000*10000) - (double)m_pTsReaderFilter->AddVideoComp.m_time);
             double currOffset = (2*1000*10000) - (double)cRefTime.m_time;
             double newOffset = currOffset * offsetRatio;
             cRefTime = (REFERENCE_TIME)((2*1000*10000) - newOffset);   
@@ -384,7 +384,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
             //LogDebug("VFS cOfs %03.3f, nOfs %03.3f, cRefTimeS %03.3f, cRefTimeN %03.3f", (float)currOffset/(1000*10000), (float)newOffset/(1000*10000), startCref, (float)cRefTime.m_time/(1000*10000));         
             if (m_pTsReaderFilter->m_bFastSyncFFDShow)
             {
-              m_bDiscontinuity = true;
+              m_delayedDiscont = 2; //Force I-frame timestamp updates for FFDShow
             }
           }          
           cRefTime += m_pTsReaderFilter->m_ClockOnStart.m_time;
