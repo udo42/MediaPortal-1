@@ -243,23 +243,14 @@ namespace MediaPortal.Player
     protected IBaseFilter _AudioExtSplitterFilter = null;
     protected static MediaInfoWrapper _mediaInfo = null;
     protected IBaseFilter _interfaceSourceFilter = null;
-    protected IBaseFilter SourceFilesync = null;
-    protected IBaseFilter processAudioCodecFilter = null;
-    protected IBaseFilter processVideoCodecFilter = null;
     protected IBaseFilter Splitter = null;    
     protected bool FileSync = false;
-    protected bool _bMediaTypeChanged;
     protected int iChangedMediaTypes;
     protected bool SourceFilesyncFind = false;
     protected bool GetInterface = false;
     protected bool AutoRenderingCheck = false;
     protected bool VideoChange = false;
     protected bool firstinit = false;
-
-    //UpdateFilter
-    protected string ProcessVideoCodec = "";
-    protected string ProcessAudioCodec = "";
-    protected string audioRendererFilter = "";
 
     public override double[] Chapters
     {

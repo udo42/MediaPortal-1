@@ -517,7 +517,9 @@ namespace MediaPortal.Player
     protected bool VideoChange = false;
     protected bool CheckAudioRendererFilter = false;
     Dictionary<string, object> PostProcessFilterVideo = new Dictionary<string, object>();
+    Dictionary<string, object> PostProcessFilterAudio = new Dictionary<string, object>();
     protected ArrayList availableVideoFilters = FilterHelper.GetFiltersBD(MediaType.Video, MediaSubType.Null);
+    protected ArrayList availableAudioFilters = FilterHelper.GetFiltersBD(MediaType.Audio, MediaSubType.Null);
 
     //UpdateFilter
     protected string audioRendererFilter = "";
@@ -2007,7 +2009,7 @@ namespace MediaPortal.Player
         }
         if (_mChangedMediaType != MediaTypeBD.Audio && VideoChange)
         {
-          DirectShowUtil.RenderUnconnectedOutputPins(_graphBuilder, VideoCodec);
+          //Release and init Post Process Filter
           if (PostProcessingEngine.engine != null)
             PostProcessingEngine.GetInstance().FreePostProcess();
 
@@ -2017,10 +2019,10 @@ namespace MediaPortal.Player
             PostProcessingEngine.engine = new PostProcessingEngine.DummyEngine();
           }
         }
-        if (_mChangedMediaType != MediaTypeBD.Video)
-          DirectShowUtil.RenderUnconnectedOutputPins(_graphBuilder, AudioCodec);
-
-        DirectShowUtil.RenderUnconnectedOutputPins(_graphBuilder, _interfaceBDReader);
+        if (_interfaceBDReader != null)
+        {
+          DirectShowUtil.RenderGraphBuilderOutputPins(_graphBuilder, _interfaceBDReader);          
+        }
         DirectShowUtil.RemoveUnusedFiltersFromGraph(_graphBuilder);
 
         //remove InternalScriptRenderer as it takes subtitle pin
@@ -2283,7 +2285,114 @@ namespace MediaPortal.Player
       }
     }
 
+    protected void PostProcessAddAudio()
+    {
+      foreach (string filter in this.filterConfig.OtherFilters)
+      {
+        if (availableAudioFilters.Contains(filter.ToString()) && filter.ToString() != "MediaPortal AudioSwitcher")
+        {
+          var comObject = DirectShowUtil.AddFilterToGraph(_graphBuilder, filter);
+          if (comObject != null)
+          {
+            PostProcessFilterAudio.Add(filter, comObject);
+          }
+        }
+      }
+    }
+
     /// <summary>
+    /// Update graph with proper filters
+    /// </summary>
+    /// <param name="selection">The selection.</param>
+    protected void UpdateFilters(string selection)
+    {
+      if (selection == "Video")
+      {
+        VideoChange = false;
+        if (PostProcessFilterVideo.Count > 0)
+        {
+          foreach (var ppFilter in PostProcessFilterVideo)
+          {
+            if (ppFilter.Value != null)
+            {
+              DirectShowUtil.RemoveFilters(_graphBuilder, ppFilter.Key);
+              DirectShowUtil.ReleaseComObject(ppFilter.Value);//, 5000);
+            }
+          }
+          PostProcessFilterVideo.Clear();
+          Log.Info("BDPlayer: UpdateFilters Cleanup PostProcessVideo");
+        }
+      }
+      else
+      {
+        if (PostProcessFilterAudio.Count > 0)
+        {
+          foreach (var ppFilter in PostProcessFilterAudio)
+          {
+            if (ppFilter.Value != null)
+            {
+              DirectShowUtil.RemoveFilters(_graphBuilder, ppFilter.Key);
+              DirectShowUtil.ReleaseComObject(ppFilter.Value);//, 5000);
+            }
+          }
+          PostProcessFilterAudio.Clear();
+          Log.Info("BDPlayer: UpdateFilters Cleanup PostProcessAudio");
+        }
+      }
+
+      // we have to find first filter connected to splitter which will be removed
+      IPin pinFrom = DirectShowUtil.FindPin(_interfaceBDReader, PinDirection.Output, selection);
+      IPin pinTo;
+      if (pinFrom != null)
+      {
+        int hr = pinFrom.ConnectedTo(out pinTo);
+        if (hr >= 0 && pinTo != null)
+        {
+          PinInfo pInfo;
+          pinTo.QueryPinInfo(out pInfo);
+          FilterInfo fInfo;
+          pInfo.filter.QueryFilterInfo(out fInfo);
+          DirectShowUtil.DisconnectAllPins(_graphBuilder, pInfo.filter);
+          _graphBuilder.RemoveFilter(pInfo.filter);
+          Log.Debug("BDPlayer: UpdateFilters Remove filter - {0}", fInfo.achName);
+          DsUtils.FreePinInfo(pInfo);
+          DirectShowUtil.ReleaseComObject(fInfo.pGraph);
+          DirectShowUtil.ReleaseComObject(pinTo); pinTo = null;
+        }
+        DirectShowUtil.ReleaseComObject(pinFrom); pinFrom = null;
+      }
+
+      if (selection == "Video")
+      {
+        //Add Post Process Video Codec
+        PostProcessAddVideo();
+
+        //Add Video Codec
+        if (VideoCodec != null)
+        {
+          DirectShowUtil.ReleaseComObject(VideoCodec);
+          VideoCodec = null;
+        }
+        VideoCodec = DirectShowUtil.AddFilterToGraph(this._graphBuilder, MatchFilters(selection));
+
+        VideoChange = true;
+      }
+      else
+      {
+        //Add Post Process Audio Codec
+        PostProcessAddAudio();
+
+        //Add Audio Codec
+        if (AudioCodec != null)
+        {
+          DirectShowUtil.ReleaseComObject(AudioCodec);
+          AudioCodec = null;
+        }
+        AudioCodec = DirectShowUtil.AddFilterToGraph(this._graphBuilder, MatchFilters(selection));
+      }
+    }
+
+    /*/// <summary>
     /// Update graph with proper filters
     /// </summary>
     /// <param name="selection">The selection.</param>
@@ -2324,7 +2433,7 @@ namespace MediaPortal.Player
               }
             }
             PostProcessFilterVideo.Clear();
-            Log.Info("VideoPlayer9: Cleanup PostProcessVideo");
+            Log.Info("BDPlayer: Cleanup PostProcessVideo");
           }
           else
           {
@@ -2486,7 +2595,7 @@ namespace MediaPortal.Player
         DirectShowUtil.ReleaseComObject(pinOutAudioBD);
         pinOutAudioBD = null;
       }
-    }
+    }*/
 
     protected bool GetInterfaces(string filename)
     {
@@ -2622,9 +2731,15 @@ namespace MediaPortal.Player
 
         Log.Info("BDPlayer: Render BDReader outputs");
 
-        DirectShowUtil.RenderUnconnectedOutputPins(_graphBuilder, VideoCodec);
-        DirectShowUtil.RenderUnconnectedOutputPins(_graphBuilder, AudioCodec);
-        DirectShowUtil.RenderUnconnectedOutputPins(_graphBuilder, _interfaceBDReader);
+        //DirectShowUtil.RenderUnconnectedOutputPins(_graphBuilder, VideoCodec);
+        //DirectShowUtil.RenderUnconnectedOutputPins(_graphBuilder, AudioCodec);
+        //DirectShowUtil.RenderUnconnectedOutputPins(_graphBuilder, _interfaceBDReader);
+
+        if (_interfaceBDReader != null)
+        {
+          DirectShowUtil.RenderGraphBuilderOutputPins(_graphBuilder, _interfaceBDReader);
+        }
+        
         //remove InternalScriptRenderer as it takes subtitle pin
         disableISR();
 
@@ -2767,12 +2882,26 @@ namespace MediaPortal.Player
         }
 
         //Test to ReleaseComObject from PostProcessFilter list objects.
-        foreach (var ppFilter in PostProcessFilterVideo)
+        if (PostProcessFilterVideo.Count > 0)
         {
-          if (ppFilter.Value != null) DirectShowUtil.ReleaseComObject(ppFilter.Value, 5000);
+          foreach (var ppFilter in PostProcessFilterVideo)
+          {
+            if (ppFilter.Value != null) DirectShowUtil.ReleaseComObject(ppFilter.Value, 5000);
+          }
+          PostProcessFilterVideo.Clear();
+          Log.Info("BDPlayer: Cleanup PostProcessVideo");
         }
-        PostProcessFilterVideo.Clear();
-        Log.Info("BDPlayer: Cleanup PostProcess");
+
+        //Test to ReleaseComObject from PostProcessFilter list objects.
+        if (PostProcessFilterAudio.Count > 0)
+        {
+          foreach (var ppFilter in PostProcessFilterAudio)
+          {
+            if (ppFilter.Value != null) DirectShowUtil.ReleaseComObject(ppFilter.Value, 5000);
+          }
+          PostProcessFilterAudio.Clear();
+          Log.Info("BDPlayer: Cleanup PostProcessAudio");
+        }
 
         #endregion
 
