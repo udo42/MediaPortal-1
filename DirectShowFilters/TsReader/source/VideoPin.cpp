@@ -414,14 +414,14 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
           clock = (double)(RefClock-m_rtStart.m_time)/10000000.0 ;
           fTime = (double)cRefTime.Millisecs()/1000.0f - clock ;
                                                                       
-          if (!ForcePresent && (m_dRateSeeking == 1.0))
+          if (m_dRateSeeking == 1.0)
           {
             //Discard late samples at start of play,
             //and samples outside a sensible timing window during play 
             //(helps with signal corruption recovery)
-            if ((fTime > -0.5) && (fTime < 3.5))
+            if ((ForcePresent || (fTime > -0.5)) && (fTime < 3.0))
             {
-              if (fTime > 2.5)
+              if (fTime > 1.5)
               {
                 //Too early - stall for a while to avoid over-filling of video pipeline buffers
                 Sleep(10);
