@@ -1192,10 +1192,10 @@ namespace MediaPortal.Player
           Log.Info("VideoPlayer9: Cleanup Graphbuilder");
         }
 
-        /*GC.Collect();
         GC.Collect();
         GC.Collect();
-        GC.WaitForPendingFinalizers();*/
+        GC.Collect();
+        GC.WaitForPendingFinalizers();
 
         //Janne
         if (Vmr9 != null)
