@@ -360,9 +360,9 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
           //(helps with signal corruption recovery)
           if ((cRefTime.m_time >= m_pTsReaderFilter->m_ClockOnStart) && (fTime > -0.2) && (fTime < 2.0))
           {
-            //Slowly increase stall point threshold over the first 2 seconds of play
+            //Slowly increase stall point threshold over the first 8 seconds of play
             //to allow audio renderer buffer to build up to 0.4s
-            stallPoint = min(0.4, (0.2 + (((double)(cRefTime.m_time - m_pTsReaderFilter->m_ClockOnStart))/100000000.0)));
+            stallPoint = min(0.4, (0.2 + (((double)(cRefTime.m_time - m_pTsReaderFilter->m_ClockOnStart))/400000000.0)));
             if (fTime > stallPoint)
             {
               //Too early - stall to avoid over-filling of audio decode/renderer buffers
