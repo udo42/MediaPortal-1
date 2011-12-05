@@ -198,8 +198,8 @@ namespace MediaPortal.Player
 
     protected Dictionary<string, object> PostProcessFilterVideo = new Dictionary<string, object>();
     protected Dictionary<string, object> PostProcessFilterAudio = new Dictionary<string, object>();
-    protected ArrayList availableVideoFilters = FilterHelper.GetFilters(MediaType.Video, MediaSubType.Null);
-    protected ArrayList availableAudioFilters = FilterHelper.GetFilters(MediaType.Audio, MediaSubType.Null);
+    //protected ArrayList availableVideoFilters = FilterHelper.GetFilters(MediaType.Video, MediaSubType.Null);
+    //protected ArrayList availableAudioFilters = FilterHelper.GetFilters(MediaType.Audio, MediaSubType.Null);
 
     public TVFilterConfig filterConfig;
     public FilterCodec filterCodec;

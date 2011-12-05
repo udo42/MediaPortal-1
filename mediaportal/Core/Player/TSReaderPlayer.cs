@@ -31,6 +31,8 @@ using MediaPortal.Player.Subtitles;
 using MediaPortal.Player.Teletext;
 using MediaPortal.Profile;
 using MediaPortal.Player.PostProcessing;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace MediaPortal.Player
 {
@@ -202,7 +204,7 @@ namespace MediaPortal.Player
     {
       foreach (string filter in this.filterConfig.OtherFilters)
       {
-        if (availableVideoFilters.Contains(filter.ToString()) && filter.ToString() != "Core CC Parser")
+        if (FilterHelper.GetVideoCodec().Contains(filter.ToString()) && filter.ToString() != "Core CC Parser")
         {
           var comObject = DirectShowUtil.AddFilterToGraph(_graphBuilder, filter);
           if (comObject != null)
@@ -217,7 +219,7 @@ namespace MediaPortal.Player
     {
       foreach (string filter in this.filterConfig.OtherFilters)
       {
-        if (availableAudioFilters.Contains(filter.ToString()))
+        if (FilterHelper.GetAudioCodec().Contains(filter.ToString()))
         {
           var comObject = DirectShowUtil.AddFilterToGraph(_graphBuilder, filter);
           if (comObject != null)
