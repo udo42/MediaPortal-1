@@ -519,8 +519,8 @@ namespace MediaPortal.Player
     protected bool CheckAudioRendererFilter = false;
     Dictionary<string, object> PostProcessFilterVideo = new Dictionary<string, object>();
     Dictionary<string, object> PostProcessFilterAudio = new Dictionary<string, object>();
-    protected ArrayList availableVideoFilters = FilterHelper.GetFiltersBD(MediaType.Video, MediaSubType.Null);
-    protected ArrayList availableAudioFilters = FilterHelper.GetFiltersBD(MediaType.Audio, MediaSubType.Null);
+    //protected ArrayList availableVideoFilters = FilterHelper.GetFiltersBD(MediaType.Video, MediaSubType.Null);
+    //protected ArrayList availableAudioFilters = FilterHelper.GetFiltersBD(MediaType.Audio, MediaSubType.Null);
 
     //UpdateFilter
     protected string audioRendererFilter = "";
@@ -2275,7 +2275,7 @@ namespace MediaPortal.Player
     {
       foreach (string filter in this.filterConfig.OtherFilters)
       {
-        if (availableVideoFilters.Contains(filter.ToString()) && filter.ToString() != "Core CC Parser")
+        if (FilterHelper.GetVideoCodec().Contains(filter.ToString()) && filter.ToString() != "Core CC Parser")
         {
           var comObject = DirectShowUtil.AddFilterToGraph(_graphBuilder, filter);
           if (comObject != null)
@@ -2290,7 +2290,7 @@ namespace MediaPortal.Player
     {
       foreach (string filter in this.filterConfig.OtherFilters)
       {
-        if (availableAudioFilters.Contains(filter.ToString()) && filter.ToString() != "MediaPortal AudioSwitcher")
+        if (FilterHelper.GetAudioCodec().Contains(filter.ToString()) && filter.ToString() != "MediaPortal AudioSwitcher")
         {
           var comObject = DirectShowUtil.AddFilterToGraph(_graphBuilder, filter);
           if (comObject != null)

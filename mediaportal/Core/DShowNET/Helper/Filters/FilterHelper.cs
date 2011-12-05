@@ -262,10 +262,10 @@ namespace DShowNET.Helper
       return GetFilters(mediaType, mediaSubType, (Merit)0x080001);
     }
 
-    public static ArrayList GetFiltersBD(Guid mediaType, Guid mediaSubType)
+    /*public static ArrayList GetFiltersBD(Guid mediaType, Guid mediaSubType)
     {
       return GetFilters(mediaType, mediaSubType, (Merit)0x080001);
-    }
+    }*/
 
     public static ArrayList GetFilters(Guid mediaType, Guid mediaSubType, Merit merit)
     {

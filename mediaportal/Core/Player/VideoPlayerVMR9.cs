@@ -46,8 +46,8 @@ namespace MediaPortal.Player
     Dictionary<string, object> PostProcessFilterMPAudio = new Dictionary<string, object>();
     public FilterConfig filterConfig;
     public FilterCodec filterCodec;
-    protected ArrayList availableVideoFilters = FilterHelper.GetFilters(MediaType.Video, MediaSubType.Null);
-    protected ArrayList availableAudioFilters = FilterHelper.GetFilters(MediaType.Audio, MediaSubType.Null);
+    //protected ArrayList availableVideoFilters = FilterHelper.GetFilters(MediaType.Video, MediaSubType.Null);
+    //protected ArrayList availableAudioFilters = FilterHelper.GetFilters(MediaType.Audio, MediaSubType.Null);
 
     public VideoPlayerVMR9()
     {
@@ -693,7 +693,7 @@ namespace MediaPortal.Player
     {
       foreach (string filter in this.filterConfig.OtherFilters)
       {
-        if (availableVideoFilters.Contains(filter.ToString()) && filter.ToString() != "Core CC Parser")
+        if (FilterHelper.GetVideoCodec().Contains(filter.ToString()) && filter.ToString() != "Core CC Parser")
         {
           var comObject = DirectShowUtil.AddFilterToGraph(graphBuilder, filter);
           if (comObject != null)
@@ -708,7 +708,7 @@ namespace MediaPortal.Player
     {
       foreach (string filter in this.filterConfig.OtherFilters)
       {
-        if (availableAudioFilters.Contains(filter.ToString()) && filter.ToString() != "MediaPortal AudioSwitcher")
+        if (FilterHelper.GetAudioCodec().Contains(filter.ToString()) && filter.ToString() != "MediaPortal AudioSwitcher")
         {
           var comObject = DirectShowUtil.AddFilterToGraph(graphBuilder, filter);
           if (comObject != null)
@@ -723,7 +723,7 @@ namespace MediaPortal.Player
     {
       foreach (string filter in this.filterConfig.OtherFilters)
       {
-        if (availableAudioFilters.Contains(filter.ToString()) && filter.ToString() == "MediaPortal AudioSwitcher")
+        if (FilterHelper.GetAudioCodec().Contains(filter.ToString()) && filter.ToString() == "MediaPortal AudioSwitcher")
         {
           var comObject = DirectShowUtil.AddFilterToGraph(graphBuilder, filter);
           if (comObject != null)
