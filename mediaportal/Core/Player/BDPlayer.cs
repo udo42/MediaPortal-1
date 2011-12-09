@@ -2341,7 +2341,72 @@ namespace MediaPortal.Player
         }
       }
 
-      // we have to find first filter connected to splitter which will be removed
+      if (selection == "Video")
+      {
+        // we have to find first filter connected to interfaceSourceFilter which will be removed
+        IPin pinFrom = DsFindPin.ByDirection((IBaseFilter)_interfaceBDReader, PinDirection.Output, 1);
+        IPin pinTo;
+        int hr = pinFrom.ConnectedTo(out pinTo);
+        if (hr >= 0 && pinTo != null)
+        {
+          PinInfo pInfo;
+          pinTo.QueryPinInfo(out pInfo);
+          FilterInfo fInfo;
+          pInfo.filter.QueryFilterInfo(out fInfo);
+
+          if (!fInfo.achName.Contains("Enhanced Video Renderer") && !fInfo.achName.Contains("Video Mixing Renderer 9"))
+          {
+            Log.Debug("BDPlayer: Remove filter - {0}", fInfo.achName);
+            DirectShowUtil.DisconnectAllPins(_graphBuilder, pInfo.filter);
+            _graphBuilder.RemoveFilter(pInfo.filter);
+          }
+          DsUtils.FreePinInfo(pInfo);
+          DirectShowUtil.ReleaseComObject(fInfo.pGraph);
+          DirectShowUtil.ReleaseComObject(pInfo.filter); pInfo.filter = null;
+          DirectShowUtil.ReleaseComObject(pinTo); pinTo = null;
+        }
+        DirectShowUtil.ReleaseComObject(pinFrom); pinFrom = null;
+      }
+      else
+      {
+        CheckAudioRendererFilter = false;
+        // we have to find first filter connected to interfaceSourceFilter which will be removed
+        IPin pinFrom = DsFindPin.ByDirection((IBaseFilter)_interfaceBDReader, PinDirection.Output, 0);
+        IPin pinTo;
+        int hr = pinFrom.ConnectedTo(out pinTo);
+        if (hr >= 0 && pinTo != null)
+        {
+          PinInfo pInfo;
+          pinTo.QueryPinInfo(out pInfo);
+          FilterInfo fInfo;
+          pInfo.filter.QueryFilterInfo(out fInfo);
+
+          FilterInfo foundfilterinfos = new FilterInfo();
+          _audioRendererFilter.QueryFilterInfo(out foundfilterinfos);
+          audioRendererFilter = foundfilterinfos.achName;
+
+          if (fInfo.achName.Equals(audioRendererFilter))
+          {
+            Log.Debug("BDPlayer: Remove Audio Renderer filter - {0}", fInfo.achName);
+            _graphBuilder.RemoveFilter(pInfo.filter);
+            DirectShowUtil.ReleaseComObject(foundfilterinfos.pGraph);
+            DirectShowUtil.ReleaseComObject(_audioRendererFilter); _audioRendererFilter = null;
+            CheckAudioRendererFilter = true;
+          }
+          else
+          {
+            Log.Debug("BDPlayer: Remove filter - {0}", fInfo.achName);
+            _graphBuilder.RemoveFilter(pInfo.filter);
+          }
+          DsUtils.FreePinInfo(pInfo);
+          DirectShowUtil.ReleaseComObject(fInfo.pGraph);
+          DirectShowUtil.ReleaseComObject(pInfo.filter); pInfo.filter = null;
+          DirectShowUtil.ReleaseComObject(pinTo); pinTo = null;
+        }
+        DirectShowUtil.ReleaseComObject(pinFrom); pinFrom = null;
+      }
+
+      /*// we have to find first filter connected to splitter which will be removed
       IPin pinFrom = DirectShowUtil.FindPin(_interfaceBDReader, PinDirection.Output, selection);
       IPin pinTo;
       if (pinFrom != null)
@@ -2361,7 +2426,7 @@ namespace MediaPortal.Player
           DirectShowUtil.ReleaseComObject(pinTo); pinTo = null;
         }
         DirectShowUtil.ReleaseComObject(pinFrom); pinFrom = null;
-      }
+      }*/
 
       if (selection == "Video")
       {
@@ -2389,7 +2454,17 @@ namespace MediaPortal.Player
           DirectShowUtil.ReleaseComObject(AudioCodec);
           AudioCodec = null;
         }
-        AudioCodec = DirectShowUtil.AddFilterToGraph(this._graphBuilder, MatchFilters(selection));
+        //AudioCodec = DirectShowUtil.AddFilterToGraph(this._graphBuilder, MatchFilters(selection));
+        if (CheckAudioRendererFilter)
+        {
+          AudioCodec = DirectShowUtil.AddFilterToGraph(this._graphBuilder, MatchFilters(selection));
+          _audioRendererFilter = DirectShowUtil.AddAudioRendererToGraph(_graphBuilder, filterConfig.AudioRenderer, true);
+          SyncAudioRenderer();
+        }
+        else
+        {
+          AudioCodec = DirectShowUtil.AddFilterToGraph(this._graphBuilder, MatchFilters(selection));
+        }
       }
     }
 
