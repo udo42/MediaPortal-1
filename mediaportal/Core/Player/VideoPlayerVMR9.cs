@@ -916,7 +916,7 @@ namespace MediaPortal.Player
         aacCodec = true;
       if (_mediaInfo.VideoCodec.Equals("AVC"))
         h264Codec = true;
-      if (_mediaInfo.VideoCodec.Equals("XVID") || _mediaInfo.VideoCodec.Equals("DIVX"))
+      if (_mediaInfo.VideoCodec.Equals("XVID") || _mediaInfo.VideoCodec.Equals("DIVX") || _mediaInfo.VideoCodec.Equals("DX50"))
         xvidCodec = true;
 
       //Video Part
