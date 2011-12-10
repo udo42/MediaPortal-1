@@ -171,7 +171,7 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   GetLogFile(filename);
   ::DeleteFile(filename);
   LogDebug("--- Buffer-empty rate control testing ----");
-  LogDebug("---------- v0.0.35 XXX -------------------");
+  LogDebug("---------- v0.0.36 XXX -------------------");
 
   m_fileReader=NULL;
   m_fileDuration=NULL;
