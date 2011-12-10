@@ -447,7 +447,7 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
           //Discard late samples at start of play,
           //and samples outside a sensible timing window during play 
           //(helps with signal corruption recovery)
-          if ((cRefTime.m_time >= m_pTsReaderFilter->m_ClockOnStart) && (fTime > -0.2) && (fTime < 2.0))
+          if ((cRefTime.m_time >= m_pTsReaderFilter->m_ClockOnStart) && (fTime > -0.3) && (fTime < 2.0))
           {
             //Slowly increase stall point threshold over the first 8 seconds of play
             //to allow audio renderer buffer to build up to 0.4s

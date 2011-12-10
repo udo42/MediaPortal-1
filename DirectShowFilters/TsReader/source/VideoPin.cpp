@@ -407,7 +407,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
             //Discard late samples at start of play,
             //and samples outside a sensible timing window during play 
             //(helps with signal corruption recovery)
-            if ((fTime > (ForcePresent ? -0.5 : 0.1)) && (fTime < 3.0))
+            if ((fTime > (ForcePresent ? -0.5 : 0.05)) && (fTime < 3.0))
             {
               if (fTime > stallPoint)
               {
