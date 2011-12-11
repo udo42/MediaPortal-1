@@ -2526,7 +2526,7 @@ namespace MediaPortal.Player
     {
       get
       {
-        if (IsDVD || IsTV)
+        if (IsDVD || IsTV || IsVideo)
         {
           if (_player is DVDPlayer)
           {
