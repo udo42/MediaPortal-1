@@ -40,6 +40,7 @@
 #define DRIFT_RATE 0.5f
 
 extern void LogDebug(const char *fmt, ...) ;
+extern DWORD m_tGTStartTime;
 
 CVideoPin::CVideoPin(LPUNKNOWN pUnk, CTsReaderFilter *pFilter, HRESULT *phr,CCritSec* section) :
   CSourceStream(NAME("pinVideo"), phr, pFilter, L"Video"),
@@ -58,6 +59,7 @@ CVideoPin::CVideoPin(LPUNKNOWN pUnk, CTsReaderFilter *pFilter, HRESULT *phr,CCri
     //AM_SEEKING_CanGetCurrentPos |
     AM_SEEKING_Source;
 //  m_bSeeking=false;
+  LogDebug("vid:timeGetTime: %d", m_tGTStartTime );
 }
 
 CVideoPin::~CVideoPin()
@@ -284,11 +286,11 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
       GetDuration(NULL);
 
       //Check if we need to wait for a while
-      DWORD timeNow = timeGetTime();
+      DWORD timeNow = GET_TIME_NOW();
       while ( !(((timeNow - m_FillBuffSleepTime) > m_LastFillBuffTime) || (timeNow < m_LastFillBuffTime)) )
       {      
         Sleep(1);
-        timeNow = timeGetTime();
+        timeNow = GET_TIME_NOW();
       }
       m_LastFillBuffTime = timeNow;
       m_FillBuffSleepTime = 1;
@@ -583,7 +585,7 @@ HRESULT CVideoPin::OnThreadStartPlay()
   m_bPresentSample=false;
   m_delayedDiscont = 0;
   m_FillBuffSleepTime = 1;
-  m_LastFillBuffTime = timeGetTime();
+  m_LastFillBuffTime = GET_TIME_NOW();
   m_sampleCount = 0;
 
   m_llLastComp = 0;

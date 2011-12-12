@@ -39,6 +39,8 @@
 
 using namespace std;
 
+#define GET_TIME_NOW() (timeGetTime() - m_tGTStartTime)
+
 class CSubtitlePin;
 class CAudioPin;
 class CVideoPin;
@@ -218,7 +220,7 @@ public:
   bool            m_EnableSlowMotionOnZapping;
 
   CLSID           GetCLSIDFromPin(IPin* pPin);
-
+  
 protected:
   void ThreadProc();
 

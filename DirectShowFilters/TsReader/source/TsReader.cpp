@@ -49,6 +49,8 @@
 static char logFile[MAX_PATH];
 static WORD logFileParsed = -1;
 
+DWORD m_tGTStartTime = 0;
+
 DEFINE_MP_DEBUG_SETTING(DoNotAllowSlowMotionDuringZapping)
 
 void GetLogFile(char *pLog)
@@ -165,6 +167,8 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   m_pCallback(NULL),
   m_pRequestAudioCallback(NULL)
 {
+  m_tGTStartTime = timeGetTime(); 
+  
   // use the following line if you are having trouble setting breakpoints
   // #pragma comment( lib, "strmbasd" )
   TCHAR filename[1024];
@@ -172,6 +176,7 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   ::DeleteFile(filename);
   LogDebug("--- Buffer-empty rate control testing ----");
   LogDebug("---------- v0.0.36 XXX -------------------");
+  LogDebug("timeGetTime: %d", m_tGTStartTime );
 
   m_fileReader=NULL;
   m_fileDuration=NULL;
@@ -228,9 +233,8 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   m_bFastSyncFFDShow=false;
   m_ShowBufferAudio = INIT_SHOWBUFFERAUDIO;
   m_ShowBufferVideo = INIT_SHOWBUFFERVIDEO;
-  m_lastPause = timeGetTime();
-  
   m_MPmainThreadID = GetCurrentThreadId() ;
+  m_lastPause = GET_TIME_NOW();
   
   LogDebug("Start duration thread");
   StartThread();
@@ -468,7 +472,7 @@ STDMETHODIMP CTsReaderFilter::Run(REFERENCE_TIME tStart)
 
   if (m_bStreamCompensated && m_bLiveTv)
   {
-    LogDebug("Elapsed time from pause to Audio/Video ( total zapping time ) : %d mS",timeGetTime()-m_lastPause);
+    LogDebug("Elapsed time from pause to Audio/Video ( total zapping time ) : %d mS",GET_TIME_NOW()-m_lastPause);
   }
  
   //  m_ShowBufferVideo = INIT_SHOWBUFFERVIDEO;
@@ -496,7 +500,7 @@ STDMETHODIMP CTsReaderFilter::Run(REFERENCE_TIME tStart)
 //    m_demultiplexer.SetHoldSubtitle(false);
   }
 
-  m_demultiplexer.m_LastDataFromRtsp=timeGetTime();
+  m_demultiplexer.m_LastDataFromRtsp=GET_TIME_NOW();
   //Set our StreamTime Reference offset to zero
   HRESULT hr= CSource::Run(tStart);
   SetMediaPosnUpdate(m_MediaPos) ;   // reset offset.
@@ -583,7 +587,7 @@ STDMETHODIMP CTsReaderFilter::Pause()
   
     if (m_State == State_Running)
     {
-      m_lastPause = timeGetTime();
+      m_lastPause = GET_TIME_NOW();
       m_RandomCompensation = 0;
     }
   
@@ -614,7 +618,7 @@ STDMETHODIMP CTsReaderFilter::Pause()
             //start streaming
             m_buffer.Run(true);
             m_rtspClient.Play(startTime,0.0);
-    //        m_tickCount = timeGetTime();
+    //        m_tickCount = GET_TIME_NOW();
             LogDebug("  -- Pause()  ->rtsp started");
     
             //update the duration of the stream
@@ -675,7 +679,7 @@ STDMETHODIMP CTsReaderFilter::Pause()
           }
         }
       }
-      m_demultiplexer.m_LastDataFromRtsp = timeGetTime() ;
+      m_demultiplexer.m_LastDataFromRtsp = GET_TIME_NOW() ;
     }
   }
     
@@ -737,7 +741,7 @@ STDMETHODIMP CTsReaderFilter::Load(LPCOLESTR pszFileName,const AM_MEDIA_TYPE *pm
     m_buffer.Clear();
     m_buffer.Run(true);
     m_rtspClient.Play(0.0,0.0);
-    m_tickCount = timeGetTime();
+    m_tickCount = GET_TIME_NOW();
     m_fileReader = new CMemoryReader(m_buffer);
     m_demultiplexer.SetFileReader(m_fileReader);
     m_demultiplexer.Start();
@@ -746,7 +750,7 @@ STDMETHODIMP CTsReaderFilter::Load(LPCOLESTR pszFileName,const AM_MEDIA_TYPE *pm
     LogDebug("close rtsp:%s", url);
     m_rtspClient.Stop();
 
-    m_tickCount = timeGetTime()-m_rtspClient.Duration();   // Will be ready to update "virtual end Pcr" on recording in progress.
+    m_tickCount = GET_TIME_NOW()-m_rtspClient.Duration();   // Will be ready to update "virtual end Pcr" on recording in progress.
 
     double duration = m_rtspClient.Duration() / 1000.0f;
     CPcr pcrstart, pcrEnd, pcrMax;
@@ -789,7 +793,7 @@ STDMETHODIMP CTsReaderFilter::Load(LPCOLESTR pszFileName,const AM_MEDIA_TYPE *pm
     LogDebug("close rtsp:%s", url);
     m_rtspClient.Stop();
 
-    m_tickCount = timeGetTime()-m_rtspClient.Duration();
+    m_tickCount = GET_TIME_NOW()-m_rtspClient.Duration();
 
     //get the duration of the stream
 
@@ -1062,7 +1066,7 @@ void CTsReaderFilter::SeekPreStart(CRefTime& rtAbsSeek)
       else
         m_bLiveTv=false ;
 
-      LogDebug("Zap to File Seek : %d mS ( %f / %f ) LiveTv : %d, Seek : %d",timeGetTime()-m_lastPause, (float)seekTime/1000.0f, (float)duration/1000.0f, m_bLiveTv, doSeek);
+      LogDebug("Zap to File Seek : %d mS ( %f / %f ) LiveTv : %d, Seek : %d",GET_TIME_NOW()-m_lastPause, (float)seekTime/1000.0f, (float)duration/1000.0f, m_bLiveTv, doSeek);
     }
 
     m_seekTime=rtSeek ;
@@ -1209,7 +1213,7 @@ void CTsReaderFilter::ThreadProc()
   int  durationUpdateLoop = 1;
   long Old_rtspDuration = -1 ;
   long PauseDuration =0;
-  DWORD timeNow = timeGetTime();
+  DWORD timeNow = GET_TIME_NOW();
   DWORD  lastFlushTime = timeNow;
   DWORD  lastPosnTime = timeNow;
   DWORD  lastDataLowTime = timeNow;
@@ -1229,7 +1233,7 @@ void CTsReaderFilter::ThreadProc()
       continue;
     }
 
-    timeNow = timeGetTime();
+    timeNow = GET_TIME_NOW();
 
     if (((m_MediaPos/10000)-m_absSeekTime.Millisecs()) < (10*1000))
     {
@@ -1403,7 +1407,7 @@ void CTsReaderFilter::ThreadProc()
           {
             // EndPcr is continuously increasing ( until ~26 hours for rollover that will fail ! )
             // So, we refer duration to End, and just update start.
-            end = (double)(timeGetTime()-m_tickCount)/1000.0 ;
+            end = (double)(GET_TIME_NOW()-m_tickCount)/1000.0 ;
             if(durationUpdateLoop == 0)
             {
               start  = end - duration;
@@ -1708,7 +1712,7 @@ void CTsReaderFilter::SetMediaPosnUpdate(REFERENCE_TIME MediaPos)
   {
     CAutoLock cObjectLock(&m_GetTimeLock);
     m_MediaPos = MediaPos ;
-    m_BaseTime = (REFERENCE_TIME)timeGetTime() * 10000 ; // m_pClock->GetTime(&m_BaseTime) ;
+    m_BaseTime = (REFERENCE_TIME)GET_TIME_NOW() * 10000 ; // m_pClock->GetTime(&m_BaseTime) ;
     m_LastTime=m_BaseTime ;
   }
   //LogDebug("SetMediaPosnUpdate : %f %f",(float)MediaPos/10000,(float)m_LastTime/10000) ; 
@@ -1719,7 +1723,7 @@ void CTsReaderFilter::SetMediaPosition(REFERENCE_TIME MediaPos)
 //  {
 //    CAutoLock cObjectLock(&m_GetTimeLock);
 //    m_MediaPos = MediaPos ;
-//    m_BaseTime = (REFERENCE_TIME)timeGetTime() * 10000 ; // m_pClock->GetTime(&m_BaseTime) ;
+//    m_BaseTime = (REFERENCE_TIME)GET_TIME_NOW() * 10000 ; // m_pClock->GetTime(&m_BaseTime) ;
 //    m_LastTime=m_BaseTime ;
 //  }
   //  LogDebug("SetMediaPos : %f %f",(float)MediaPos/10000,(float)m_LastTime/10000) ; 
@@ -1748,7 +1752,7 @@ void CTsReaderFilter::SetMediaPosition(REFERENCE_TIME MediaPos)
 //        LogDebug("Pause 200mS renderer clock to match provider/RTSP clock...") ; 
 //        ptrMediaCtrl->Pause() ;
 //        Sleep(200) ;
-////        m_TestTime = timeGetTime() ;
+////        m_TestTime = GET_TIME_NOW() ;
 //        ptrMediaCtrl->Run() ;
 //        ptrMediaCtrl->Release() ;
 //        m_bRenderingClockTooFast=false ;
@@ -1783,7 +1787,7 @@ void CTsReaderFilter::BufferingPause(bool longPause)
     }          
     
     //Don't pause too soon after last time
-    if ((timeGetTime()- m_lastPause) < minDelayTime)
+    if ((GET_TIME_NOW()- m_lastPause) < minDelayTime)
     {
       return ;                  
     }
@@ -1849,7 +1853,7 @@ void CTsReaderFilter::GetMediaPosition(REFERENCE_TIME *pMediaPos)
   REFERENCE_TIME Time=0 ;
   if (State() == State_Running)
   {
-    m_LastTime = (REFERENCE_TIME)timeGetTime() * 10000 ; // m_pClock->GetTime(&m_LastTime) ;      LogDebug("GetMediaPos : %f %d",(float)m_LastTime,timeGetTime()) ;
+    m_LastTime = (REFERENCE_TIME)GET_TIME_NOW() * 10000 ; // m_pClock->GetTime(&m_LastTime) ;      LogDebug("GetMediaPos : %f %d",(float)m_LastTime,GET_TIME_NOW()) ;
   }
   *pMediaPos = (m_MediaPos + m_LastTime - m_BaseTime) ;
   return ; 
@@ -1862,7 +1866,7 @@ void CTsReaderFilter::GetMediaPosition(REFERENCE_TIME *pMediaPos)
 //  if (State() == State_Stopped)
 //  {
 //    //m_MediaPos=0 ;
-//    m_BaseTime = (REFERENCE_TIME)timeGetTime() * 10000 ; // m_pClock->GetTime(&m_BaseTime) ;
+//    m_BaseTime = (REFERENCE_TIME)GET_TIME_NOW() * 10000 ; // m_pClock->GetTime(&m_BaseTime) ;
 //    m_LastTime=m_BaseTime ;
 //    // LogDebug("GetMediaPosition on stop...") ; 
 //  }
@@ -1870,7 +1874,7 @@ void CTsReaderFilter::GetMediaPosition(REFERENCE_TIME *pMediaPos)
 //  {
 //    if (State() == State_Running)
 //    {
-//      m_LastTime = (REFERENCE_TIME)timeGetTime() * 10000 ; // m_pClock->GetTime(&m_LastTime) ;      LogDebug("GetMediaPos : %f %d",(float)m_LastTime,timeGetTime()) ;
+//      m_LastTime = (REFERENCE_TIME)GET_TIME_NOW() * 10000 ; // m_pClock->GetTime(&m_LastTime) ;      LogDebug("GetMediaPos : %f %d",(float)m_LastTime,GET_TIME_NOW()) ;
 //    }
 //	}
 //  *pMediaPos = (m_MediaPos + m_LastTime - m_BaseTime) ;
