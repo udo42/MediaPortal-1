@@ -326,7 +326,7 @@ namespace MediaPortal.Player
           }
 
           // Use TsReader for timeshift buffer file for TvEngine3 & .ts recordings etc.
-          if (extension == ".tsbuffer" || extension == ".ts" || extension == ".rec")
+          if (extension == ".tsbuffer" || extension == ".ts" || extension == ".rec" /*|| extension == ".wtv"*/)
             //new support for Topfield recordings
           {
             /*if (aFileName.ToLower().IndexOf("radio.tsbuffer") >= 0)
