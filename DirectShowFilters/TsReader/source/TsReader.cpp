@@ -167,7 +167,10 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   m_pCallback(NULL),
   m_pRequestAudioCallback(NULL)
 {
-  m_tGTStartTime = timeGetTime(); 
+  //Initialise m_tGTStartTime for GET_TIME_NOW() macro.
+  //The macro is used to avoid having to handle timeGetTime()
+  //rollover issues in the body of the code
+  m_tGTStartTime = (timeGetTime() - 0x40000000); 
   
   // use the following line if you are having trouble setting breakpoints
   // #pragma comment( lib, "strmbasd" )
@@ -176,7 +179,7 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   ::DeleteFile(filename);
   LogDebug("--- Buffer-empty rate control testing ----");
   LogDebug("---------- v0.0.36 XXX -------------------");
-  LogDebug("timeGetTime: %d", m_tGTStartTime );
+  LogDebug("timeGetTime():0x%x, m_tGTStartTime:0x%x, GET_TIME_NOW:0x%x", timeGetTime(), m_tGTStartTime, GET_TIME_NOW() );
 
   m_fileReader=NULL;
   m_fileDuration=NULL;
@@ -1276,7 +1279,7 @@ void CTsReaderFilter::ThreadProc()
     
  
     //Update stream position - minimum 50ms between updates
-    if ((m_State != State_Stopped) && (((timeNow - 50) > lastPosnTime) || (timeNow < lastPosnTime) || m_bForcePosnUpdate))
+    if ((m_State != State_Stopped) && (((timeNow - 50) > lastPosnTime) || m_bForcePosnUpdate))
     {      
       lastPosnTime = timeNow;
       IMediaSeeking * ptrMediaPos = NULL;
@@ -1299,7 +1302,7 @@ void CTsReaderFilter::ThreadProc()
     //Flush delegated to this thread
     if (m_demultiplexer.m_bFlushDelegated || m_demultiplexer.m_bFlushDelgNow)
     {
-      if (!m_demultiplexer.m_bFlushDelgNow && ((timeNow - 500) < lastFlushTime) && (timeNow > lastFlushTime)) 
+      if (!m_demultiplexer.m_bFlushDelgNow && ((timeNow - 500) < lastFlushTime)) 
       { 
         // Too early for next flush
         m_demultiplexer.m_bFlushDelegated = false;
@@ -1316,7 +1319,7 @@ void CTsReaderFilter::ThreadProc()
     }
 
     //File read prefetch
-    if (m_demultiplexer.m_bReadAheadFromFile && (((timeNow - 5) > lastFileReadTime) || (timeNow < lastFileReadTime)))
+    if (m_demultiplexer.m_bReadAheadFromFile && ((timeNow - 5) > lastFileReadTime))
     {
       lastFileReadTime = timeNow; 
       m_demultiplexer.ReadAheadFromFile();
@@ -1324,7 +1327,7 @@ void CTsReaderFilter::ThreadProc()
     }
      
     //Execute this loop approx every second
-    if ((((timeNow - 1000) > lastDurTime) || (timeNow < lastDurTime)) && IsFilterRunning())
+    if (((timeNow - 1000) > lastDurTime) && IsFilterRunning())
     {
       lastDurTime = timeNow;
       //are we playing an RTSP stream?

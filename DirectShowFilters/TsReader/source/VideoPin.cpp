@@ -59,7 +59,6 @@ CVideoPin::CVideoPin(LPUNKNOWN pUnk, CTsReaderFilter *pFilter, HRESULT *phr,CCri
     //AM_SEEKING_CanGetCurrentPos |
     AM_SEEKING_Source;
 //  m_bSeeking=false;
-  LogDebug("vid:timeGetTime: %d", m_tGTStartTime );
 }
 
 CVideoPin::~CVideoPin()
@@ -287,7 +286,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
 
       //Check if we need to wait for a while
       DWORD timeNow = GET_TIME_NOW();
-      while ( !(((timeNow - m_FillBuffSleepTime) > m_LastFillBuffTime) || (timeNow < m_LastFillBuffTime)) )
+      while (timeNow < (m_LastFillBuffTime + m_FillBuffSleepTime))
       {      
         Sleep(1);
         timeNow = GET_TIME_NOW();
@@ -596,8 +595,7 @@ HRESULT CVideoPin::OnThreadStartPlay()
   ZeroMemory((void*)&m_pllMTD, sizeof(REFERENCE_TIME) * NB_MTDSIZE);
   
   DWORD thrdID = GetCurrentThreadId();
-
-  LogDebug("vid:OnThreadStartPlay(%f) %02.2f %d 0x%x", (float)m_rtStart.Millisecs()/1000.0f,m_dRateSeeking,m_pTsReaderFilter->IsSeeking(), thrdID);
+  LogDebug("vid:OnThreadStartPlay(%f), rate:%02.2f, threadID:0x%x, GET_TIME_NOW:0x%x", (float)m_rtStart.Millisecs()/1000.0f, m_dRateSeeking, thrdID, GET_TIME_NOW());
 
   //start playing
   DeliverNewSegment(m_rtStart, m_rtStop, m_dRateSeeking);

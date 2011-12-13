@@ -73,7 +73,6 @@ CAudioPin::CAudioPin(LPUNKNOWN pUnk, CTsReaderFilter *pFilter, HRESULT *phr,CCri
     //AM_SEEKING_CanGetCurrentPos |
     AM_SEEKING_Source;
   m_bSubtitleCompensationSet=false;
-  LogDebug("aud:timeGetTime: %d", m_tGTStartTime );
 }
 
 CAudioPin::~CAudioPin()
@@ -276,7 +275,7 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
 
       //Check if we need to wait for a while
       DWORD timeNow = GET_TIME_NOW();
-      while ( !((timeNow - m_FillBuffSleepTime) > m_LastFillBuffTime) )
+      while (timeNow < (m_LastFillBuffTime + m_FillBuffSleepTime))
       {      
         Sleep(1);
         timeNow = GET_TIME_NOW();
@@ -668,8 +667,7 @@ HRESULT CAudioPin::OnThreadStartPlay()
   ClearAverageSampleDur();
 
   DWORD thrdID = GetCurrentThreadId();
-  
-  LogDebug("aud:OnThreadStartPlay(%f) %02.2f 0x%x", (float)m_rtStart.Millisecs()/1000.0f, m_dRateSeeking, thrdID);
+  LogDebug("aud:OnThreadStartPlay(%f), rate:%02.2f, threadID:0x%x, GET_TIME_NOW:0x%x", (float)m_rtStart.Millisecs()/1000.0f, m_dRateSeeking, thrdID, GET_TIME_NOW());
 
   //start playing
   DeliverNewSegment(m_rtStart, m_rtStop, m_dRateSeeking);
