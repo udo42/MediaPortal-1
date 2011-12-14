@@ -2011,14 +2011,28 @@ bool CDeMultiplexer::CheckPrefetchState(bool isVid, bool isAud)
     return true;
   }
 
-  if (isAud && m_filter.GetAudioPin()->IsConnected() && (m_vecAudioBuffers.size() < 2))
+  if (isAud)
   {
-    return true;
+    if (m_filter.GetAudioPin()->IsConnected() && (m_vecAudioBuffers.size() < 2))
+    {
+      return true;
+    }
+    if (m_filter.GetVideoPin()->IsConnected() && (m_vecVideoBuffers.size() < 8))
+    {
+      return true;
+    }
   }
 
-  if (isVid && m_filter.GetVideoPin()->IsConnected() && (m_vecVideoBuffers.size() < 4))
+  if (isVid)
   {
-     return true;
+    if (m_filter.GetVideoPin()->IsConnected() && (m_vecVideoBuffers.size() < 4))
+    {
+      return true;
+    }
+    if (m_filter.GetAudioPin()->IsConnected() && (m_vecAudioBuffers.size() < 1))
+    {
+      return true;
+    }
   }
 
   return false;
@@ -2055,7 +2069,7 @@ void CDeMultiplexer::OnNewChannel(CChannelInfo& info)
   
   //LogDebug("OnNewChannel callback, pat version:%d->%d",m_iPatVersion, info.PatVersion);
 
-  if (info.PatVersion != m_iPatVersion)
+  if ((info.PatVersion != m_iPatVersion) || m_bWaitGoodPat)
   {
     if (!m_bWaitGoodPat)
     {
@@ -2075,10 +2089,10 @@ void CDeMultiplexer::OnNewChannel(CChannelInfo& info)
         {
           m_bWaitGoodPat = true;
           m_WaitGoodPatTmo = timeTemp + 700;   // Set timeout to 0.7 sec
-          LogDebug("OnNewChannel: wait for good PAT");
+          LogDebug("OnNewChannel: wait for good PAT, IDiff:%d, ReqDiff:%d ", PatIDiff, PatReqDiff);
           return; // wait a while for correct PAT version to arrive
         }
-        if ((timeTemp < m_WaitGoodPatTmo) && m_bWaitGoodPat)
+        else if (timeTemp < m_WaitGoodPatTmo)
         {
           return; // wait for correct PAT version
         }
