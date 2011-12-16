@@ -1664,16 +1664,16 @@ namespace MediaPortal.Player
         filterConfig.AudioRenderer = xmlreader.GetValueAsString("bdplayer", "audiorenderer", "Default DirectSound Device");
 
         // get AR setting
-        filterConfig.AR = Util.Utils.GetAspectRatio(xmlreader.GetValueAsString("mytv", "defaultar", "Normal"));
+        filterConfig.AR = Util.Utils.GetAspectRatio(xmlreader.GetValueAsString("bdplayerAR", "defaultar", "Normal"));
         //GUIGraphicsContext.ARType = Util.Utils.GetAspectRatio(strValue);
 
         // get post-processing filter setup
         int i = 0;
-        while (xmlreader.GetValueAsString("movieplayer", "filter" + i, "undefined") != "undefined")
+        while (xmlreader.GetValueAsString("bdplayer", "filter" + i, "undefined") != "undefined")
         {
-          if (xmlreader.GetValueAsBool("movieplayer", "usefilter" + i, false))
+          if (xmlreader.GetValueAsBool("bdplayer", "usefilter" + i, false))
           {
-            filterConfig.OtherFilters.Add(xmlreader.GetValueAsString("movieplayer", "filter" + i, "undefined"));
+            filterConfig.OtherFilters.Add(xmlreader.GetValueAsString("bdplayer", "filter" + i, "undefined"));
           }
           i++;
         }

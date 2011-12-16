@@ -251,6 +251,15 @@
     <Compile Include="AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Sections\BDPostProcessing.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Sections\BDZoom.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Sections\BDZoom.designer.cs">
+      <DependentUpon>BDZoom.cs</DependentUpon>
+    </Compile>
     <Compile Include="Sections\FiltersPowerDVDAudioDecoder.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -636,6 +645,9 @@
     <EmbeddedResource Include="Sections\BaseViews.resx">
       <SubType>Designer</SubType>
       <DependentUpon>BaseViews.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Sections\BDZoom.resx">
+      <DependentUpon>BDZoom.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Sections\FiltersPowerDVDAudioDecoder.resx">
       <DependentUpon>FiltersPowerDVDAudioDecoder.cs</DependentUpon>

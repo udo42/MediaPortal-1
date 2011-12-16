@@ -168,8 +168,8 @@ namespace MediaPortal.GUI.Video
 
         if (BDInternalMenu)
         {
-          key1 = "movieplayer";
-          key2 = "movies";
+          key1 = "bdplayerAR";
+          key2 = "bdplayer";
         }
 
         string aspectRatioText = xmlreader.GetValueAsString(key1, "defaultar", "Normal");
