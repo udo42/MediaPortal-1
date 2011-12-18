@@ -424,7 +424,7 @@ namespace MediaPortal.Player
     }
 
     [Flags]
-    protected enum MediaTypeBD
+    protected enum MediaType
     {
       None = 0,
       Video = 1,
@@ -493,7 +493,7 @@ namespace MediaPortal.Player
     protected DateTime _elapsedTimer = DateTime.Now;
     protected DateTime _updateTimer = DateTime.Now;
     protected Geometry.Type _geometry = Geometry.Type.Normal;
-    protected MediaTypeBD _mChangedMediaType;
+    protected MediaType _mChangedMediaType;
     protected int _lastFrameCounter;    
     protected bool _bMediaTypeChanged;
     protected int _currentTitle = 0xffff;
@@ -519,8 +519,6 @@ namespace MediaPortal.Player
     protected bool CheckAudioRendererFilter = false;
     Dictionary<string, object> PostProcessFilterVideo = new Dictionary<string, object>();
     Dictionary<string, object> PostProcessFilterAudio = new Dictionary<string, object>();
-    //protected ArrayList availableVideoFilters = FilterHelper.GetFiltersBD(MediaType.Video, MediaSubType.Null);
-    //protected ArrayList availableAudioFilters = FilterHelper.GetFiltersBD(MediaType.Audio, MediaSubType.Null);
 
     //UpdateFilter
     protected string audioRendererFilter = "";
@@ -1600,23 +1598,23 @@ namespace MediaPortal.Player
     public int OnMediaTypeChanged(int videoRate, int videoFormat, int audioFormat)
     {
       Log.Info("BDPlayer OnMediaTypeChanged() - Video: {0}({1} fps), Audio: {2}", StreamTypetoString(videoFormat), VideoRatetoDouble(videoRate), StreamTypetoString(audioFormat));
-      _mChangedMediaType = MediaTypeBD.None;
+      _mChangedMediaType = MediaType.None;
 
       if (videoFormat != _currentVideoFormat)
       {
-        _mChangedMediaType |= MediaTypeBD.Video;        
+        _mChangedMediaType |= MediaType.Video;        
         _currentVideoFormat = videoFormat;
       }
 
       if (audioFormat != _currentAudioFormat)
       {
-        _mChangedMediaType |= MediaTypeBD.Audio;
+        _mChangedMediaType |= MediaType.Audio;
         _currentAudioFormat = audioFormat;
       }
 
       UpdateRefreshRate(videoRate);      
 
-      if (_mChangedMediaType != MediaTypeBD.None)
+      if (_mChangedMediaType != MediaType.None)
       {
         _bMediaTypeChanged = Playing ? true : false;
       }
@@ -1903,7 +1901,7 @@ namespace MediaPortal.Player
           case (int)BDEvents.BD_EVENT_PG_TEXTST_STREAM:
             Log.Debug("BDPlayer: Subtitle changed to {0}", bdevent.Param);
             if (bdevent.Param != 0xfff)
-              CurrentSubtitleStream = bdevent.Param - 1;
+              CurrentSubtitleStream = bdevent.Param;
             break;
 
           case (int)BDEvents.BD_EVENT_IG_STREAM:
@@ -2114,27 +2112,27 @@ namespace MediaPortal.Player
         _graphBuilder.FindFilterByName("Microsoft DTV-DVD Video Decoder", out MSVideoCodec);
         if (MSVideoCodec != null)
         {
-          _mChangedMediaType = MediaTypeBD.Audio | MediaTypeBD.Video;
+          _mChangedMediaType = MediaType.Audio | MediaType.Video;
           DirectShowUtil.ReleaseComObject(MSVideoCodec); MSVideoCodec = null;
         }
         // hack end
         switch (_mChangedMediaType)
         {
-          case MediaTypeBD.Audio: // audio changed
+          case MediaType.Audio: // audio changed
             Log.Info("BDPlayer: Rerendering audio pin of BDReader filter.");
             UpdateFilters("Audio");
             break;
-          case MediaTypeBD.Video: // video changed
+          case MediaType.Video: // video changed
             Log.Info("BDPlayer: Rerendering video pin of BDReader filter.");
             UpdateFilters("Video");
             break;
-          case MediaTypeBD.Audio | MediaTypeBD.Video: // both changed
+          case MediaType.Audio | MediaType.Video: // both changed
             Log.Info("BDPlayer: Rerendering audio and video pins of BDReader filter.");
             UpdateFilters("Audio");
             UpdateFilters("Video");
             break;
         }
-        if (_mChangedMediaType != MediaTypeBD.Audio && VideoChange)
+        if (_mChangedMediaType != MediaType.Audio && VideoChange)
         {
           //Release and init Post Process Filter
           if (PostProcessingEngine.engine != null)
@@ -2148,7 +2146,7 @@ namespace MediaPortal.Player
         }
         if (_interfaceBDReader != null)
         {
-          DirectShowUtil.RenderGraphBuilderOutputPins(_graphBuilder, _interfaceBDReader);          
+          DirectShowUtil.RenderGraphBuilderOutputPins(_graphBuilder, _interfaceBDReader);
         }
         DirectShowUtil.RemoveUnusedFiltersFromGraph(_graphBuilder);
 
@@ -2158,7 +2156,7 @@ namespace MediaPortal.Player
         // disable Closed Captions!
         disableCC();
 
-        if (_mChangedMediaType == MediaTypeBD.Audio)
+        if (_mChangedMediaType == MediaType.Audio)
         RemoveAudioR();
 
         if (!firstinit && !g_Player.Paused)
@@ -2594,211 +2592,6 @@ namespace MediaPortal.Player
       }
     }
 
-    /*/// <summary>
-    /// Update graph with proper filters
-    /// </summary>
-    /// <param name="selection">The selection.</param>
-    protected void UpdateFilters(string selection)
-    {
-      // we have to find if Post Process filter is connected to Video and Audio Decoder and it will be removed
-      VideoChange = false;
-      IPin pinOutVideoBD = DsFindPin.ByDirection((IBaseFilter)_interfaceBDReader, PinDirection.Output, 1);
-      IPin pinOutAudioBD = DsFindPin.ByDirection((IBaseFilter)_interfaceBDReader, PinDirection.Output, 0);
-
-      #region Get actual Video and Audio Codec
-
-      {
-        // we have to find if first filter connected to TSReader
-        IPin pinFrom = DirectShowUtil.FindPin(_interfaceBDReader, PinDirection.Output, selection);
-        IPin pinTo;
-        int hr = pinFrom.ConnectedTo(out pinTo);
-        if (hr >= 0 && pinTo != null)
-        {
-          PinInfo pInfo;
-          pinTo.QueryPinInfo(out pInfo);
-          FilterInfo fInfo;
-          pInfo.filter.QueryFilterInfo(out fInfo);
-          if (selection == "Video")
-          {
-            if (!fInfo.achName.Contains("Enhanced Video Renderer") && !fInfo.achName.Contains("Video Mixing Renderer 9"))
-            {
-              DirectShowUtil.ReleaseComObject(VideoCodec); VideoCodec = null;
-              VideoCodec = DirectShowUtil.GetFilterByName(_graphBuilder, fInfo.achName);
-              Log.Debug("BDPlayer: Validate Video filter - {0}", fInfo.achName);
-            }
-            foreach (var ppFilter in PostProcessFilterVideo)
-            {
-              if (ppFilter.Value != null)
-              {
-                DirectShowUtil.RemoveFilters(_graphBuilder, ppFilter.Key);
-                DirectShowUtil.ReleaseComObject(ppFilter.Value, 5000);
-              }
-            }
-            PostProcessFilterVideo.Clear();
-            Log.Info("BDPlayer: Cleanup PostProcessVideo");
-          }
-          else
-          {
-            FilterInfo foundfilterinfos = new FilterInfo();
-            _audioRendererFilter.QueryFilterInfo(out foundfilterinfos);
-            audioRendererFilter = foundfilterinfos.achName;
-
-            if (!fInfo.achName.Equals(audioRendererFilter))
-            {
-              DirectShowUtil.ReleaseComObject(AudioCodec); AudioCodec = null;
-              AudioCodec = DirectShowUtil.GetFilterByName(_graphBuilder, fInfo.achName);
-              Log.Debug("BDPlayer: Validate Audio filter - {0}", fInfo.achName);
-              DirectShowUtil.ReleaseComObject(foundfilterinfos.pGraph);
-            }
-          }
-          DsUtils.FreePinInfo(pInfo);
-          DirectShowUtil.ReleaseComObject(fInfo.pGraph);
-          DirectShowUtil.ReleaseComObject(pinTo); pinTo = null;
-        }
-        DirectShowUtil.ReleaseComObject(pinFrom); pinFrom = null;
-      }
-
-      #endregion
-
-      if (selection == "Video")
-      {
-        // we have to find first filter connected to interfaceSourceFilter which will be removed
-        IPin pinFrom = DsFindPin.ByDirection((IBaseFilter)_interfaceBDReader, PinDirection.Output, 1);
-        IPin pinTo;
-        int hr = pinFrom.ConnectedTo(out pinTo);
-        if (hr >= 0 && pinTo != null)
-        {
-          PinInfo pInfo;
-          pinTo.QueryPinInfo(out pInfo);
-          FilterInfo fInfo;
-          pInfo.filter.QueryFilterInfo(out fInfo);
-
-          if (!fInfo.achName.Contains("Enhanced Video Renderer") && !fInfo.achName.Contains("Video Mixing Renderer 9"))
-          {
-            Log.Debug("BDPlayer: Remove filter - {0}", fInfo.achName);
-            DirectShowUtil.DisconnectAllPins(_graphBuilder, pInfo.filter);
-            _graphBuilder.RemoveFilter(pInfo.filter);
-          }
-          DsUtils.FreePinInfo(pInfo);
-          DirectShowUtil.ReleaseComObject(fInfo.pGraph);
-          DirectShowUtil.ReleaseComObject(pInfo.filter); pInfo.filter = null;
-          DirectShowUtil.ReleaseComObject(pinTo); pinTo = null;
-        }
-        DirectShowUtil.ReleaseComObject(pinFrom); pinFrom = null;
-
-        //Add Post Process Video Codec
-        PostProcessAddVideo();
-
-        //Adding Video Codec
-        if (VideoCodec != null)
-        {
-          DirectShowUtil.ReleaseComObject(VideoCodec);
-          VideoCodec = null;
-        }
-        VideoCodec = DirectShowUtil.AddFilterToGraph(this._graphBuilder, MatchFilters(selection));
-
-        //Try to connect First Selected Video Filter
-        if (VideoCodec != null)
-        {
-          IPin pinInVideo = DsFindPin.ByDirection((IBaseFilter)VideoCodec, PinDirection.Input, 0); //video input
-          if (pinInVideo == null)
-          {
-            Log.Error("BDPlayer: ReAddFilters FAILED: unable to get pins of video codec");
-          }
-          hr = _graphBuilder.Connect(pinOutVideoBD, pinInVideo);
-          if (hr != 0)
-          {
-            DirectShowUtil.ReleaseComObject(VideoCodec); VideoCodec = null;
-            //Log.Error("BDPlayer: ReAddFilters FAILED: unable to connect video pins try next");
-          }
-          DirectShowUtil.ReleaseComObject(pinInVideo); pinInVideo = null;
-        }
-        VideoChange = true;
-      }
-      else
-      {
-        CheckAudioRendererFilter = false;
-        // we have to find first filter connected to interfaceSourceFilter which will be removed
-        IPin pinFrom = DsFindPin.ByDirection((IBaseFilter)_interfaceBDReader, PinDirection.Output, 0);
-        IPin pinTo;
-        int hr = pinFrom.ConnectedTo(out pinTo);
-        if (hr >= 0 && pinTo != null)
-        {
-          PinInfo pInfo;
-          pinTo.QueryPinInfo(out pInfo);
-          FilterInfo fInfo;
-          pInfo.filter.QueryFilterInfo(out fInfo);
-
-          FilterInfo foundfilterinfos = new FilterInfo();
-          _audioRendererFilter.QueryFilterInfo(out foundfilterinfos);
-          audioRendererFilter = foundfilterinfos.achName;
-
-          if (fInfo.achName.Equals(audioRendererFilter))
-          {
-            Log.Debug("BDPlayer: Remove Audio Renderer filter - {0}", fInfo.achName);
-            _graphBuilder.RemoveFilter(pInfo.filter);
-            DirectShowUtil.ReleaseComObject(foundfilterinfos.pGraph);
-            DirectShowUtil.ReleaseComObject(_audioRendererFilter); _audioRendererFilter = null;
-            CheckAudioRendererFilter = true;
-          }
-          else
-          {
-            Log.Debug("BDPlayer: Remove filter - {0}", fInfo.achName);
-            _graphBuilder.RemoveFilter(pInfo.filter);
-          }
-          DsUtils.FreePinInfo(pInfo);
-          DirectShowUtil.ReleaseComObject(fInfo.pGraph);
-          DirectShowUtil.ReleaseComObject(pInfo.filter); pInfo.filter = null;
-          DirectShowUtil.ReleaseComObject(pinTo); pinTo = null;
-        }
-        DirectShowUtil.ReleaseComObject(pinFrom); pinFrom = null;
-
-        //Adding Audio Codec
-        if (AudioCodec != null)
-        {
-          DirectShowUtil.ReleaseComObject(AudioCodec);
-          AudioCodec = null;
-        }
-        if (CheckAudioRendererFilter)
-        {
-          AudioCodec = DirectShowUtil.AddFilterToGraph(this._graphBuilder, MatchFilters(selection));
-          _audioRendererFilter = DirectShowUtil.AddAudioRendererToGraph(_graphBuilder, filterConfig.AudioRenderer, true);
-          SyncAudioRenderer();
-        }
-        else
-        {
-          AudioCodec = DirectShowUtil.AddFilterToGraph(this._graphBuilder, MatchFilters(selection));
-        }
-
-        //Try to connect First Selected Audio Filter
-        if (AudioCodec != null)
-        {
-          IPin pinInAudio = DsFindPin.ByDirection((IBaseFilter)AudioCodec, PinDirection.Input, 0); //audio input
-          if (pinInAudio == null)
-          {
-            Log.Error("BDPlayer: ReAddFilters FAILED: unable to get pins of audio codec");
-          }
-          hr = _graphBuilder.Connect(pinOutAudioBD, pinInAudio);
-          if (hr != 0)
-          {
-            DirectShowUtil.ReleaseComObject(AudioCodec); AudioCodec = null;
-            //Log.Error("BDPlayer: ReAddFilters FAILED: unable to connect audio pins try next");
-          }
-          DirectShowUtil.ReleaseComObject(pinInAudio); pinInAudio = null;
-        }
-      }
-      if (pinOutVideoBD != null)
-      {
-        DirectShowUtil.ReleaseComObject(pinOutVideoBD);
-        pinOutVideoBD = null;
-      }
-      if (pinOutAudioBD != null)
-      {
-        DirectShowUtil.ReleaseComObject(pinOutAudioBD);
-        pinOutAudioBD = null;
-      }
-    }*/
-
     protected bool GetInterfaces(string filename)
     {
       try
@@ -3033,12 +2826,9 @@ namespace MediaPortal.Player
           _mediaCtrl = null;
         }
 
-        //Janne
         if (_vmr9 != null)
         {
           _vmr9.Enable(false);
-          //_vmr9.SafeDispose();
-          //_vmr9 = null;
         }
 
         if (_mediaEvt != null)
@@ -3113,13 +2903,6 @@ namespace MediaPortal.Player
           _interfaceBDReader = null;
         }
 
-        /*if (_vmr9 != null)
-        {
-          _vmr9.Enable(false);
-          _vmr9.SafeDispose();
-          _vmr9 = null;
-        }*/
-
         if (_graphBuilder != null)
         {
           DirectShowUtil.RemoveFilters(_graphBuilder);
@@ -3138,7 +2921,6 @@ namespace MediaPortal.Player
           _dvbSubRenderer = null;
         }
 
-        //Janne
         if (_vmr9 != null)
         {
           _vmr9.SafeDispose();
