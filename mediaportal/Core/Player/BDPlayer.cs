@@ -2641,22 +2641,31 @@ namespace MediaPortal.Player
 
         while (true)
         {
-          _titleToPlay = SelectTitle(titles);
-          if (_titleToPlay > -1)
+          if (titles.Count == 1)
           {
-            // a specific title was selected
+            // BD has only one title (remux one)
             _forceTitle = true;
+            _titleToPlay = 0;
           }
           else
           {
-            if (_titleToPlay == -1)
+            _titleToPlay = SelectTitle(titles);
+            if (_titleToPlay > -1)
             {
-              // user cancelled dialog
-              return false;
+              // a specific title was selected
+              _forceTitle = true;
             }
+            else
+            {
+              if (_titleToPlay == -1)
+              {
+                // user cancelled dialog
+                return false;
+              }
 
-            // user choose to display menu
-            _forceTitle = false;
+              // user choose to display menu
+              _forceTitle = false;
+            }
           }
 
           _ireader.ForceTitleBasedPlayback(_forceTitle, (uint)_titleToPlay);
