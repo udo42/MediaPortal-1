@@ -139,13 +139,11 @@ namespace MediaPortal.Player
             strFile = Util.DaemonTools.GetVirtualDrive() + @"\BDMV\index.bdmv";
 
             if (!File.Exists(strFile))
-            {
-              return;
-            }
+              return;            
           }
         }
-
-        if (strFile.ToLowerInvariant().EndsWith(".ifo"))
+        
+        if (strFile.ToLower().EndsWith(".ifo"))
         {
           string path = Path.GetDirectoryName(strFile);
           string mainTitle = GetLargestFileInDirectory(path, "VTS_*1.VOB");
@@ -167,7 +165,7 @@ namespace MediaPortal.Player
         else if (strFile.ToLower().EndsWith(".bdmv"))
         {
           string path = Path.GetDirectoryName(strFile) + @"\STREAM";
-          strFile = GetLargestFileInDirectory(path, "*.m2ts");
+          strFile = GetLargestFileInDirectory(path, "*.m2ts");          
         }
 
         /*if (strFile.ToLowerInvariant().EndsWith(".bdmv"))
@@ -203,7 +201,7 @@ namespace MediaPortal.Player
         int.TryParse(_mI.Get(StreamKind.Video, 0, "Height"), out _height);
         _aspectRatio = _mI.Get(StreamKind.Video, 0, "Display AspectRatio") == "4:3" ? "fullscreen" : "widescreen";
         _videoCodec = GetFullCodecName(StreamKind.Video);
-        _scanType = _mI.Get(StreamKind.Video, 0, "ScanType").ToLowerInvariant();
+        _scanType = _mI.Get(StreamKind.Video, 0, "ScanType").ToLower();
         _isInterlaced = _scanType.Contains("interlaced");
 
         _videoResolution = _height < 720 ? "SD" : "HD";

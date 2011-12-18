@@ -1225,7 +1225,6 @@ namespace MediaPortal.GUI.Video
         dlg.AddLocalizedString(200073);
       }
 
-
       dlg.AddLocalizedString(970); // Previous window
       if (g_Player.IsDVD)
       {
@@ -1233,12 +1232,13 @@ namespace MediaPortal.GUI.Video
           dlg.AddLocalizedString(974); // Root menu
         if ((g_Player.ShowMenuItems & MenuItems.PopUpMenu) == MenuItems.PopUpMenu)
           dlg.AddLocalizedString(1700); // BD popup menu        
-        if (!g_Player.HasChapters && (g_Player.ShowMenuItems & MenuItems.Chapter) == MenuItems.Chapter)
+        if(!g_Player.HasChapters && (g_Player.ShowMenuItems & MenuItems.Chapter) == MenuItems.Chapter)
         {
           dlg.AddLocalizedString(975); // Previous chapter
           dlg.AddLocalizedString(976); // Next chapter
         }
       }
+
       if (g_Player.HasChapters && (g_Player.ShowMenuItems & MenuItems.Chapter) == MenuItems.Chapter) // For video files with chapters
       {
         dlg.AddLocalizedString(200091);

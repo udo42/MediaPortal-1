@@ -85,7 +85,7 @@ namespace MediaPortal.Player
     private static extern unsafe void Vmr9SetDeinterlacePrefs(uint dwMethod);
 
     [DllImport("dshowhelper.dll", ExactSpelling = true, CharSet = CharSet.Auto, SetLastError = true)]
-    private static extern unsafe bool EvrInit(IVMR9PresentCallback callback, uint dwD3DDevice,
+    private static extern unsafe bool EvrInit(IVMR9PresentCallback callback, uint dwD3DDevice, 
                                               ref IBaseFilter vmr9Filter, uint monitor);
 
     //, uint dwWindow);
