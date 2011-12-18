@@ -158,14 +158,6 @@ namespace MediaPortal.Player
       get { return false; }
     }
 
-    /// Property which indicates what menu items can be shown
-    /// Used only at BDPlayer
-    /// </summary>
-    public virtual MenuItems ShowMenuItems
-    {
-      get { return MenuItems.All; }
-    }
-
     /// <summary>
     /// Property which indicates what menu items can be shown
     /// Used only at BDPlayer
