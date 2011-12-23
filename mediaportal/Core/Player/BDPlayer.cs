@@ -2625,6 +2625,11 @@ namespace MediaPortal.Player
         Log.Debug("BDPlayer: Add BDReader to graph");
 
         IFileSourceFilter interfaceFile = (IFileSourceFilter)_interfaceBDReader;
+
+        LoadSettings(_ireader);
+        _ireader.SetD3DDevice(DirectShowUtil.GetUnmanagedDevice(GUIGraphicsContext.DX9Device));
+        _ireader.SetBDReaderCallback(this);
+
         hr = interfaceFile.Load(filename, null);
 
         DsError.ThrowExceptionForHR(hr);
@@ -2632,10 +2637,6 @@ namespace MediaPortal.Player
         Log.Debug("BDPlayer: BDReader loaded: {0}", filename);
 
         #region setup BDReader
-
-        LoadSettings(_ireader);
-        _ireader.SetD3DDevice(DirectShowUtil.GetUnmanagedDevice(GUIGraphicsContext.DX9Device));
-        _ireader.SetBDReaderCallback(this);
 
         List<BDTitleInfo> titles = GetTitleInfoCollection(_ireader);
 
@@ -2692,8 +2693,6 @@ namespace MediaPortal.Player
 
           break;
         }
-
-        #endregion
 
         #region Filters
 
