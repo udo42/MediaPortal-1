@@ -2636,8 +2636,6 @@ namespace MediaPortal.Player
 
         Log.Debug("BDPlayer: BDReader loaded: {0}", filename);
 
-        #region setup BDReader
-
         List<BDTitleInfo> titles = GetTitleInfoCollection(_ireader);
 
         while (true)
