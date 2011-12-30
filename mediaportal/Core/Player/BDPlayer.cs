@@ -2986,7 +2986,8 @@ namespace MediaPortal.Player
           return discTitle;
       }
 
-      Util.Utils.GetDVDLabel(_currentFile, out discTitle);
+        if (Util.Utils.IsDVD(_currentFile))
+          Util.Utils.GetDVDLabel(_currentFile, out discTitle);
 
       if (String.IsNullOrEmpty(discTitle))
       {
