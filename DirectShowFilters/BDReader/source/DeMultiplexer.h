@@ -53,8 +53,7 @@ public:
   // TODO - not all of these should be puclic!
 
   HRESULT    Start();
-  void       Flush(bool pDiscardData, bool pSeeking);
-  void       IgnoreNextDiscontinuity();
+  void       Flush(bool pDiscardData, bool pSeeking, REFERENCE_TIME rtSeekTime);
   Packet*    GetVideo();
   Packet*    GetAudio();
   Packet*    GetAudio(int playlist, int clip);
@@ -121,10 +120,18 @@ public:
   bool m_bAudioRequiresRebuild;
   bool m_bVideoRequiresRebuild;
   bool m_bRebuildOngoing;
+  bool m_bStreamPaused;
+  bool m_bAudioWaitForSeek;
+  bool m_bAudioAdjustStreamPosition;
+  bool m_bAudioResetStreamPosition;
+
+  CCritSec m_sectionRead;
+
 
 private:
   void PacketDelivery(CAutoPtr<Packet> p);
 
+  bool AudioStreamsAvailable(BLURAY_CLIP_INFO* pClip);
   LPCTSTR StreamFormatAsString(int pStreamType);
 
   struct stAudioStream
@@ -154,7 +161,6 @@ private:
   CCritSec m_sectionVideo;
   CCritSec m_sectionSubtitle;
   CCritSec m_sectionMediaChanging;
-  CCritSec m_sectionRead;
 
   StreamParser* m_videoParser;
   StreamParser* m_audioParser;
@@ -199,9 +205,6 @@ private:
   bool m_bStarting;
   bool m_bReadFailed;
 
-  bool m_bSetAudioDiscontinuity;
-  bool m_bSetVideoDiscontinuity;
-
   int (CALLBACK *m_pSubUpdateCallback)(int c, void* opts, int* bi);
 
   // Used only for H.264 stream demuxing
@@ -233,6 +236,8 @@ private:
   bool m_bUpdateSubtitleOffset;
 
   REFERENCE_TIME m_rtOffset;
+  REFERENCE_TIME m_rtTitleDuration;
+  REFERENCE_TIME m_nMPEG2LastTitleDuration;
 
   unsigned int m_iReadErrors;
   // Used for playlist/clip tracking

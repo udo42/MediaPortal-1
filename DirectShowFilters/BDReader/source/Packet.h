@@ -32,11 +32,14 @@ public:
   virtual ~Packet();
   virtual int GetDataSize();
   void SetData(const void* ptr, DWORD len);
+  void CopyProperties(Packet& pSrc, bool pValidateStartTime = false);
+  void TransferProperties(Packet& pSrc, bool pValidateStartTime, bool pResetClipInfo);
+  void ResetProperties(bool pResetClipInfo);
 
   INT32 nClipNumber;
   INT32 nPlaylist;
-  bool bDiscontinuity, bSyncPoint, bAppendable, bSeekRequired;  
+  bool bDiscontinuity, bSyncPoint, bNewClip, bResuming;  
   static const REFERENCE_TIME INVALID_TIME = _I64_MIN;  
-  REFERENCE_TIME rtStart, rtStop, rtOffset, rtPlaylistTime;
+  REFERENCE_TIME rtStart, rtStop, rtOffset, rtPlaylistTime, rtClipStartTime, rtTitleDuration;
   AM_MEDIA_TYPE* pmt;
 };

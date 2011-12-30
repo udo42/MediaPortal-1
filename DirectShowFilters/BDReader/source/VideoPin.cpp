@@ -96,8 +96,13 @@ CVideoPin::CVideoPin(LPUNKNOWN pUnk, CBDReaderFilter* pFilter, HRESULT* phr, CCr
   m_bSeekDone(true),
   m_bDiscontinuity(false),
   m_bFirstSample(true),
+  m_bInitDuration(true),
   m_bClipEndingNotified(false),
-  m_bStopWait(false)
+  m_bStopWait(false),
+  m_rtPrevSample(_I64_MIN),
+  m_rtStreamTimeOffset(0),
+  m_rtTitleDuration(0),
+  m_bDoFakeSeek(false)
 {
   m_rtStart = 0;
   m_bConnected = false;
@@ -204,20 +209,21 @@ HRESULT CVideoPin::GetMediaType(CMediaType* pmt)
 
 bool CVideoPin::CompareMediaTypes(AM_MEDIA_TYPE* lhs_pmt, AM_MEDIA_TYPE* rhs_pmt)
 {
-  if (lhs_pmt->subtype == rhs_pmt->subtype) return true;
   if (lhs_pmt->subtype == FOURCCMap('1CVW'))
   {
     if (m_decoderType == Arcsoft)
-    {
       lhs_pmt->subtype = MEDIASUBTYPE_WVC1_ARCSOFT;
-    }
     else if (m_decoderType == Cyberlink)
-    {
       lhs_pmt->subtype = MEDIASUBTYPE_WVC1_CYBERLINK;
-    }
-    return (lhs_pmt->subtype == rhs_pmt->subtype);
   }
-  return false;
+
+  return (IsEqualGUID(lhs_pmt->majortype, rhs_pmt->majortype) &&
+    IsEqualGUID(lhs_pmt->subtype, rhs_pmt->subtype) &&
+    IsEqualGUID(lhs_pmt->formattype, rhs_pmt->formattype) &&
+    (lhs_pmt->cbFormat == rhs_pmt->cbFormat) &&
+    ( (lhs_pmt->cbFormat == 0) ||
+      lhs_pmt->pbFormat && rhs_pmt->pbFormat &&
+      (memcmp(lhs_pmt->pbFormat, rhs_pmt->pbFormat, lhs_pmt->cbFormat) == 0))); 
 }
 
 void CVideoPin::SetInitialMediaType(const CMediaType* pmt)
@@ -333,7 +339,7 @@ HRESULT CVideoPin::DoBufferProcessingLoop(void)
         
         // This is the only change for base class implementation of DoBufferProcessingLoop()
         // Cyberlink H.264 decoder seems to crash when we provide empty samples for it 
-        if (pSample->GetActualDataLength() > 0)
+        if (pSample->GetActualDataLength() > 0 || m_decoderType != Cyberlink)
         {
           //static int iFrameNumber = 0;
           //LogMediaSample(pSample, iFrameNumber++);
@@ -402,28 +408,30 @@ void CVideoPin::CheckPlaybackState()
 {
   if (m_demux.m_bVideoPlSeen)
   {
-    DeliverEndOfStream();
-
     m_demux.m_eAudioPlSeen->Wait();
+
+    m_pFilter->SetTitleDuration(m_rtTitleDuration);
+    m_pFilter->ResetPlaybackOffset(m_rtStreamOffset);
 
     if (m_demux.m_bVideoRequiresRebuild || m_demux.m_bAudioRequiresRebuild)
     {
+      LogDebug("vid: REBUILD");
       m_demux.m_bVideoRequiresRebuild = false;
       m_demux.m_bAudioRequiresRebuild = false;
-
-      LogDebug("vid: REBUILD");
       m_pFilter->IssueCommand(REBUILD, m_rtStreamOffset);
       m_demux.m_bRebuildOngoing = true;
+      m_demux.m_bAudioAdjustStreamPosition = true;
     }
-    else if (!m_bStopWait)
+    else if (!m_bStopWait && m_bDoFakeSeek)    
     {
       LogDebug("vid: Request zeroing the stream time");
       m_eFlushStart->Reset();
+      m_demux.m_bAudioWaitForSeek = true;
       m_pFilter->IssueCommand(SEEK, m_rtStreamOffset);
       m_eFlushStart->Wait();
     }
 
-    m_bStopWait = false;
+    m_bStopWait = m_bDoFakeSeek = false;
 
     m_demux.m_eAudioPlSeen->Reset();
     m_demux.m_bVideoPlSeen = false;
@@ -492,6 +500,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample* pSample)
           if (!m_bClipEndingNotified)
           {
             DeliverEndOfStream();
+            pSample->SetMediaType(&m_mt);
             m_bClipEndingNotified = true;
           }
           else
@@ -502,20 +511,35 @@ HRESULT CVideoPin::FillBuffer(IMediaSample* pSample)
       }
       else
       {
-        bool useEmptySample = false;
+        bool checkPlaybackState = false;
 
         {
           CAutoLock lock(m_section);
 
-          if (buffer->bSeekRequired)
+          if (buffer->bNewClip)
           {
-            LogDebug("vid: Playlist changed to %d - bSeekRequired: %d offset: %I64d rtStart: %I64d", buffer->nPlaylist, buffer->bSeekRequired, buffer->rtOffset, buffer->rtStart);
-            m_demux.m_bVideoPlSeen = true;
-            buffer->bSeekRequired = false;
-            useEmptySample = true;
-            m_bClipEndingNotified = false;
+            LogDebug("vid: Playlist changed to %d - bNewClip: %d offset: %6.3f rtStart: %6.3f m_rtPrevSample: %6.3f rtPlaylistTime: %6.3f", 
+              buffer->nPlaylist, buffer->bNewClip, buffer->rtOffset / 10000000.0, buffer->rtStart / 10000000.0, m_rtPrevSample / 10000000.0, buffer->rtPlaylistTime / 10000000.0);
 
-            m_rtStreamOffset = buffer->rtPlaylistTime;
+            m_pFilter->SetTitleDuration(buffer->rtTitleDuration);
+            m_pFilter->ResetPlaybackOffset(buffer->rtPlaylistTime);
+            
+            m_demux.m_bVideoPlSeen = true;
+ 
+            m_bClipEndingNotified = false;
+            checkPlaybackState = true;
+
+            if (buffer->bResuming)
+            {
+              m_bDoFakeSeek = true;
+              m_rtStreamOffset = buffer->rtPlaylistTime;
+              m_rtStreamTimeOffset = buffer->rtStart - buffer->rtClipStartTime;
+              m_demux.m_bAudioResetStreamPosition = true;
+            }
+            else
+              m_rtStreamOffset = 0;
+
+            DeliverEndOfStream();
           }
 
           if (buffer->pmt && !CompareMediaTypes(buffer->pmt, &m_mt))
@@ -541,7 +565,10 @@ HRESULT CVideoPin::FillBuffer(IMediaSample* pSample)
               LogDebug("vid: graph rebuilding required");
 
               m_demux.m_bVideoRequiresRebuild = true;
-              useEmptySample = true;
+              checkPlaybackState = true;
+
+              m_rtStreamOffset = 0;
+              m_rtStreamTimeOffset = buffer->rtStart - buffer->rtClipStartTime;
             }
             else
             {
@@ -550,19 +577,19 @@ HRESULT CVideoPin::FillBuffer(IMediaSample* pSample)
               SetMediaType(&mt);
               pSample->SetMediaType(&mt);
 
-              // Flush the stream if format change is done on the fly
-              if (!buffer->bSeekRequired)
-              {
-                DeliverBeginFlush();
-                DeliverEndFlush();
-                DeliverNewSegment(m_rtStart, m_rtStop, m_dRateSeeking);
-              }
+              CreateEmptySample(pSample);
+              buffer->bNewClip = false;
+              m_pCachedBuffer = buffer;
+              return S_OK;
             }
-          }
+          } // comparemediatypes
         } // lock ends
 
-        if (useEmptySample)
+        m_rtTitleDuration = buffer->rtTitleDuration;
+
+        if (checkPlaybackState)
         {
+          buffer->bNewClip = false;
           m_pCachedBuffer = buffer;
           LogDebug("vid: cached push  %6.3f corr %6.3f clip: %d playlist: %d", m_pCachedBuffer->rtStart / 10000000.0, (m_pCachedBuffer->rtStart - m_rtStart) / 10000000.0, m_pCachedBuffer->nClipNumber, m_pCachedBuffer->nPlaylist);
          
@@ -573,6 +600,8 @@ HRESULT CVideoPin::FillBuffer(IMediaSample* pSample)
         }
 
         bool hasTimestamp = buffer->rtStart != Packet::INVALID_TIME;
+        REFERENCE_TIME rtCorrectedStartTime = 0;
+        REFERENCE_TIME rtCorrectedStopTime = 0;
 
         if (hasTimestamp)
         {
@@ -584,13 +613,25 @@ HRESULT CVideoPin::FillBuffer(IMediaSample* pSample)
             m_bDiscontinuity = false;
           }
 
-          REFERENCE_TIME rtCorrectedStartTime = buffer->rtStart - m_rtStart;
-          REFERENCE_TIME rtCorrectedStopTime = buffer->rtStop - m_rtStart;
+          rtCorrectedStartTime = buffer->rtStart - m_rtStreamTimeOffset;// - m_rtStart;
+          rtCorrectedStopTime = buffer->rtStop - m_rtStreamTimeOffset;// - m_rtStart;
 
           if (abs(m_dRateSeeking - 1.0) > 0.5)
             pSample->SetTime(&rtCorrectedStartTime, &rtCorrectedStopTime);
           else
             pSample->SetTime(&rtCorrectedStartTime, &rtCorrectedStopTime);
+
+          if (m_bInitDuration)
+          {
+            m_pFilter->SetTitleDuration(m_rtTitleDuration);
+            m_pFilter->ResetPlaybackOffset(buffer->rtPlaylistTime);
+            m_bInitDuration = false;
+          }
+
+          // TODO Check if we could use a bit bigger delta time when updating the playback position
+          m_pFilter->OnPlaybackPositionChange();
+
+          m_rtPrevSample = rtCorrectedStopTime;
         }
         else // Buffer has no timestamp
           pSample->SetTime(NULL, NULL);
@@ -605,8 +646,8 @@ HRESULT CVideoPin::FillBuffer(IMediaSample* pSample)
         m_bFirstSample = false;
 
 #ifdef LOG_VIDEO_PIN_SAMPLES
-        LogDebug("vid: %6.3f corr %6.3f clip: %d playlist: %d size: %d", buffer->rtStart / 10000000.0, (buffer->rtStart - m_rtStart) / 10000000.0, 
-          buffer->nClipNumber, buffer->nPlaylist, buffer->GetCount());
+        LogDebug("vid: %6.3f corr %6.3f playlist time %6.3f clip: %d playlist: %d size: %d", buffer->rtStart / 10000000.0, rtCorrectedStartTime / 10000000.0, 
+          buffer->rtPlaylistTime / 10000000.0, buffer->nClipNumber, buffer->nPlaylist, buffer->GetCount());
 #endif
         delete buffer;
       }
@@ -661,6 +702,9 @@ HRESULT CVideoPin::DeliverNewSegment(REFERENCE_TIME tStart, REFERENCE_TIME tStop
 
   LogDebug("vid: DeliverNewSegment start: %6.3f stop: %6.3f rate: %6.3f", tStart / 10000000.0, tStop / 10000000.0, dRate);
   m_rtStart = tStart;
+  m_rtPrevSample = 0;
+
+  m_bInitDuration = true;
   
   HRESULT hr = __super::DeliverNewSegment(tStart, tStop, dRate);
   if (FAILED(hr))
@@ -732,4 +776,3 @@ void CVideoPin::LogMediaType(AM_MEDIA_TYPE* pmt)
       pmt->subtype.Data4[6], pmt->subtype.Data4[7]);
   }
 }
-
