@@ -387,9 +387,7 @@ namespace MediaPortal.Player
       BD_EVENT_POPUP,                  /* 0 - no, 1 - yes */
 
       /* Interactive menu visible */
-      BD_EVENT_MENU,                   /* 0 - no, 1 - yes */
-
-      BD_CUSTOM_EVENT_MENU_VISIBILITY = 1000  /* 0 - not shown, 1 shown*/
+      BD_EVENT_MENU                   /* 0 - no, 1 - yes */
     }
 
     protected enum BluRayStreamFormats
@@ -2985,8 +2983,8 @@ namespace MediaPortal.Player
           return discTitle;
       }
 
-        if (Util.Utils.IsDVD(_currentFile))
-          Util.Utils.GetDVDLabel(_currentFile, out discTitle);
+      if (Util.Utils.IsDVD(_currentFile))
+        Util.Utils.GetDVDLabel(_currentFile, out discTitle);
 
       if (String.IsNullOrEmpty(discTitle))
       {
