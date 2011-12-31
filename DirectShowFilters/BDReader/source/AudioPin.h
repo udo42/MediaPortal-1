@@ -112,8 +112,12 @@ protected:
   bool m_bSeekDone;
   bool m_bDiscontinuity;
   bool m_bFirstSample;
-  bool m_bClipEndingNotified;
 
   bool m_bUsePCM;
+
+  REFERENCE_TIME m_rtPrevSample;
+  REFERENCE_TIME m_rtStreamTimeOffset;
+
+  bool m_bZeroStreamOffset;
 };
 

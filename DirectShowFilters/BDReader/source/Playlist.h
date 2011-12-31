@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "StdAfx.h"
+
 #include "Packet.h"
 #include "Clip.h"
 #include <vector>
@@ -36,10 +38,10 @@ public:
   Packet* ReturnNextAudioPacket();
   Packet* ReturnNextAudioPacket(int clip);
   Packet* ReturnNextVideoPacket();
-  bool CreateNewClip(int clipNumber, REFERENCE_TIME clipStart, REFERENCE_TIME clipOffset, bool audioPresent, REFERENCE_TIME duration, bool discontinuousClip);
+  bool CreateNewClip(int clipNumber, REFERENCE_TIME clipStart, REFERENCE_TIME clipOffset, bool audioPresent, REFERENCE_TIME duration, REFERENCE_TIME playlistClipOffset);
   bool RemoveRedundantClips(); // returns true if no clips left;
-  bool AcceptAudioPacket(Packet*  packet, bool seeking);
-  bool AcceptVideoPacket(Packet*  packet, bool firstPacket, bool seeking);
+  bool AcceptAudioPacket(Packet*  packet);
+  bool AcceptVideoPacket(Packet*  packet);
   void FlushAudio();
   void FlushVideo();
   bool IsEmptiedAudio();
@@ -51,46 +53,46 @@ public:
   void SetFilledVideo();
   void SetFilledAudio();
   int  nPlaylist;
-  int  CurrentAudioSubmissionClip();
-  int  CurrentVideoSubmissionClip();
-  bool IsFakingAudio();
-  bool IsFakeAudioAvailable();
   REFERENCE_TIME playlistFirstPacketTime;
-  void ClearAllButCurrentClip(bool resetClip);
+  REFERENCE_TIME ClearAllButCurrentClip(REFERENCE_TIME totalStreamOffset);
   bool HasAudio();
   bool HasVideo();
-  bool Incomplete();
+  REFERENCE_TIME Incomplete();
+  REFERENCE_TIME PlayedDuration();
   void SetVideoPMT(AM_MEDIA_TYPE * pmt, int nClip);
+  vector<CClip*> Superceed();
 
 protected:
   typedef vector<CClip*>::iterator ivecClip;
 
-  CClip * GetNextAudioClip(CClip * currentClip, int superceedType);
-  CClip * GetNextVideoClip(CClip * currentClip, int superceedType);
-  CClip * GetClip(int nClip);
-
-  REFERENCE_TIME GetPacketTimeStampCorrection(CClip * packetClip);
-  Packet * CorrectTimeStamp(CClip * packetClip, Packet* packet);
   void Reset(int playlistNumber, REFERENCE_TIME firstPacketTime);
 
   vector<CClip*> m_vecClips;
-  CClip * m_currentAudioPlayBackClip;
-  CClip * m_currentVideoPlayBackClip;
-  CClip * m_currentAudioSubmissionClip;
-  CClip * m_currentVideoSubmissionClip;
+  ivecClip m_itCurrentAudioPlayBackClip;
+  ivecClip m_itCurrentVideoPlayBackClip;
+  ivecClip m_itCurrentAudioSubmissionClip;
+  ivecClip m_itCurrentVideoSubmissionClip;
+  int m_itCurrentAudioPlayBackClipPos;
+  int m_itCurrentVideoPlayBackClipPos;
+  int m_itCurrentAudioSubmissionClipPos;
+  int m_itCurrentVideoSubmissionClipPos;
 
   bool playlistFilledAudio;
   bool playlistFilledVideo;
   bool playlistEmptiedVideo;
   bool playlistEmptiedAudio;
 
-  int m_VideoPacketsUntilLatestClip;
-
   bool firstAudioPESPacketSeen;
   bool firstVideoPESPacketSeen;
   REFERENCE_TIME firstAudioPESTimeStamp;
   REFERENCE_TIME firstVideoPESTimeStamp;
 
+  CCritSec m_sectionVector;
+
   bool firstPacketRead;
+
+  void PushClips();
+  void PopClips();
+
 };
 

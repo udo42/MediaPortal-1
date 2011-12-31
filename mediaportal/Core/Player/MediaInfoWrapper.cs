@@ -167,7 +167,7 @@ namespace MediaPortal.Player
         else if (strFile.ToLower().EndsWith(".bdmv"))
         {
           string path = Path.GetDirectoryName(strFile) + @"\STREAM";
-          strFile = GetLargestFileInDirectory(path, "*.m2ts");
+          strFile = GetLargestFileInDirectory(path, "*.m2ts");          
         }
 
         _mI.Open(strFile);

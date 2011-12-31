@@ -157,6 +157,9 @@ namespace MediaPortal.Player
 
     [PreserveSig]
     int OnOSDUpdate([Out] OSDTexture osdTexture);
+
+    [PreserveSig]
+    int OnClockChange([Out] long duration, [Out] long position);
   }
   #endregion
 
@@ -338,6 +341,7 @@ namespace MediaPortal.Player
     {
       BD_EVENT_NONE = 0,
       BD_EVENT_ERROR,
+      BD_EVENT_READ_ERROR,
       BD_EVENT_ENCRYPTED,
 
       /* current playback position */
@@ -371,7 +375,13 @@ namespace MediaPortal.Player
       /* Still playback for n seconds (reached end of still mode play item) */
       BD_EVENT_STILL_TIME,             /* 0 = infinite ; 1...300 = seconds */
 
-      BD_CUSTOM_EVENT_MENU_VISIBILITY = 1000  /* 0 - not shown, 1 shown*/
+      BD_EVENT_SOUND_EFFECT,           /* effect ID */
+
+      /* Pop-Up menu available */
+      BD_EVENT_POPUP,                  /* 0 - no, 1 - yes */
+
+      /* Interactive menu visible */
+      BD_EVENT_MENU                   /* 0 - no, 1 - yes */
     }
 
     protected enum BluRayStreamFormats
@@ -455,9 +465,11 @@ namespace MediaPortal.Player
     protected int _volumeBeforeSeeking = 0;
     protected IGraphBuilder _graphBuilder = null;
     protected IMediaSeeking _mediaSeeking = null;
-    protected IMediaPosition _mediaPos = null;
     protected double _currentPos;
     protected double _duration = -1d;
+    protected DsLong _currentPosDS;
+    protected DsLong _durationDS = -1;
+
     protected DsROTEntry _rotEntry = null;
     protected int _aspectX = 1;
     protected int _aspectY = 1;
@@ -500,9 +512,8 @@ namespace MediaPortal.Player
     protected int _currentVideoFormatRate;
     protected static BDPlayerSettings settings;
     protected MenuState menuState;
-    protected int _iMenuOffPendingCount = -1;
-    protected bool _bMenuOn;
     protected bool _subtitlesEnabled = true;
+    protected bool _bPopupMenuAvailable = true;
     #endregion
 
     #region ctor/dtor
@@ -538,7 +549,7 @@ namespace MediaPortal.Player
         switch (action.wID)
         {
           case GUI.Library.Action.ActionType.ACTION_MOUSE_MOVE:
-            if (!_bMenuOn)
+            if (menuState == MenuState.None)
               return false;
             int x = (int)((action.fAmount1 - PlaneScene.DestRect.X) / ((float)PlaneScene.DestRect.Width / 1920.0f));
             int y = (int)((action.fAmount2 - PlaneScene.DestRect.Y) / ((float)PlaneScene.DestRect.Height / 1080.0f));
@@ -547,42 +558,42 @@ namespace MediaPortal.Player
             return true;
 
           case GUI.Library.Action.ActionType.ACTION_MOUSE_CLICK:
-            if (!_bMenuOn)
+            if (menuState == MenuState.None)
               return false;
             Log.Debug("BDPlayer: Mouse select");
             _ireader.Action((int)BDKeys.BD_VK_MOUSE_ACTIVATE);
             return true;
 
           case GUI.Library.Action.ActionType.ACTION_MOVE_LEFT:
-            if (!_bMenuOn)
+            if (menuState == MenuState.None)
               return false;
             Log.Debug("BDPlayer: Move left");
             _ireader.Action((int)BDKeys.BD_VK_LEFT);
             return true;
 
           case GUI.Library.Action.ActionType.ACTION_MOVE_RIGHT:
-            if (!_bMenuOn)
+            if (menuState == MenuState.None)
               return false;
             Log.Debug("BDPlayer: Move right");
             _ireader.Action((int)BDKeys.BD_VK_RIGHT);
             return true;
 
           case GUI.Library.Action.ActionType.ACTION_MOVE_UP:
-            if (!_bMenuOn)
+            if (menuState == MenuState.None)
               return false;
             Log.Debug("BDPlayer: Move up");
             _ireader.Action((int)BDKeys.BD_VK_UP);
             return true;
 
           case GUI.Library.Action.ActionType.ACTION_MOVE_DOWN:
-            if (!_bMenuOn)
+            if (menuState == MenuState.None)
               return false;
             Log.Debug("BDPlayer: Move down");
             _ireader.Action((int)BDKeys.BD_VK_DOWN);
             return true;
 
           case GUI.Library.Action.ActionType.ACTION_SELECT_ITEM:
-            if (!_bMenuOn)
+            if (menuState == MenuState.None)
               return false;
             Log.Debug("BDPlayer: Select");
             _ireader.Action((int)BDKeys.BD_VK_ENTER);
@@ -598,7 +609,7 @@ namespace MediaPortal.Player
             return true;
 
           case GUI.Library.Action.ActionType.ACTION_BD_POPUP_MENU:
-            if (!Playing || _forceTitle)
+            if (!Playing || _forceTitle || !_bPopupMenuAvailable)
               return true;
             Speed = 1;
             //Log.Debug("BDPlayer: Popup menu toggle");                        
@@ -607,7 +618,7 @@ namespace MediaPortal.Player
             return true;
 
           case GUI.Library.Action.ActionType.ACTION_PREVIOUS_MENU:
-            if (!_bMenuOn || menuState != MenuState.PopUp)
+            if (menuState != MenuState.PopUp)
               return false;
             Speed = 1;
             //Log.Debug("BDPlayer: Popup menu off");
@@ -844,18 +855,10 @@ namespace MediaPortal.Player
       _width = GUIGraphicsContext.VideoWindow.Width;
       _height = GUIGraphicsContext.VideoWindow.Height;
       _geometry = GUIGraphicsContext.ARType;
-      UpdateCurrentPosition();
       OnInitialized();
       Log.Debug("BDPlayer: position:{0}, duration:{1}", CurrentPosition, Duration);
 
-      if (_forceTitle)
-      {
-        menuItems = MenuItems.Chapter | MenuItems.Audio | MenuItems.Subtitle;        
-      }
-      else
-      {
-        menuItems = MenuItems.MainMenu;        
-      }
+      UpdateMenuItems();
       return true;
     }
 
@@ -891,12 +894,6 @@ namespace MediaPortal.Player
       if (ts.TotalMilliseconds >= 200 || iSpeed != 1)
       {
         _updateTimer = DateTime.Now;
-        UpdateCurrentPosition();
-
-        if (_iMenuOffPendingCount > 1)
-          SwitchMenuOff();
-        else if (_iMenuOffPendingCount > 0)
-          _iMenuOffPendingCount++;
 
         if (_videoWin != null)
         {
@@ -1198,9 +1195,6 @@ namespace MediaPortal.Player
         {
           lock (_mediaCtrl)
           {
-            int SeekTries = 3;
-
-            UpdateCurrentPosition();
             if (dTimeInSecs < 0)
             {
               dTimeInSecs = 0;
@@ -1208,35 +1202,12 @@ namespace MediaPortal.Player
             dTimeInSecs *= 10000000d;
 
             long lTime = (long)dTimeInSecs;
+            long pStop = 0;
 
-            while (SeekTries > 0)
-            {
-              long pStop = 0;
-              long lContentStart, lContentEnd;
-              _mediaSeeking.GetAvailable(out lContentStart, out lContentEnd);
-              lTime += lContentStart;
-              Log.Debug("BDPlayer:seekabs:{0} start:{1} end:{2}", lTime, lContentStart, lContentEnd);
+            Log.Debug("BDPlayer:seekabs: {0} duration :{1}", dTimeInSecs, Duration);
 
-              int hr = _mediaSeeking.SetPositions(new DsLong(lTime), AMSeekingSeekingFlags.AbsolutePositioning,
-                                                  new DsLong(pStop), AMSeekingSeekingFlags.NoPositioning);
-              long lStreamPos;
-              _mediaSeeking.GetCurrentPosition(out lStreamPos); // stream position
-              _mediaSeeking.GetAvailable(out lContentStart, out lContentEnd);
-              Log.Debug("BDPlayer: pos: {0} start:{1} end:{2}", lStreamPos, lContentStart, lContentEnd);
-              if (lStreamPos >= lContentStart)
-              {
-                Log.Info("BDPlayer seek done:{0:X}", hr);
-                SeekTries = 0;
-              }
-              else
-              {
-                // This could happen in LiveTv/Rstp when TsBuffers are reused and requested position is before "start"
-                // Only way to recover correct position is to seek again on "start"
-                SeekTries--;
-                lTime = 0;
-                Log.Warn("BDPlayer seek again : pos: {0} lower than start:{1} end:{2} ( Cnt {3} )", lStreamPos, lContentStart, lContentEnd, SeekTries);
-              }
-            }
+            int hr = _mediaSeeking.SetPositions(new DsLong(lTime), AMSeekingSeekingFlags.AbsolutePositioning,
+                                                new DsLong(pStop), AMSeekingSeekingFlags.NoPositioning);
 
             if (VMR9Util.g_vmr9 != null)
             {
@@ -1245,7 +1216,6 @@ namespace MediaPortal.Player
           }
         }
 
-        UpdateCurrentPosition();
         if (_dvbSubRenderer != null)
         {
           _dvbSubRenderer.OnSeek(CurrentPosition);
@@ -1445,8 +1415,7 @@ namespace MediaPortal.Player
 
     public int OnOSDUpdate(OSDTexture osdTexture)
     {
-      if (Playing)
-        BDOSDRenderer.GetInstance().DrawItem(osdTexture);
+      BDOSDRenderer.GetInstance().DrawItem(osdTexture);
       return 0;
     }
 
@@ -1485,6 +1454,17 @@ namespace MediaPortal.Player
         eventBuffer.Set(bdevent);
         //Log.Debug("BDPlayer OnBDEvent: {0}, param: {1}", bdevent.Event, bdevent.Param);
       }
+      return 0;
+    }
+
+    public int OnClockChange(long duration, long position)
+    {
+      _currentPosDS = position;
+      _durationDS = duration;
+
+      _currentPos = position / 10000000.0;
+      _duration = duration / 10000000.0;
+      
       return 0;
     }
 
@@ -1761,27 +1741,14 @@ namespace MediaPortal.Player
           case (int)BDEvents.BD_EVENT_PLAYITEM:
             Log.Debug("BDPlayer: Playitem changed to {0}", bdevent.Param);            
             CurrentStreamInfo();
-            if (menuState == MenuState.Root && chapters != null && _currentTitle != BLURAY_TITLE_FIRST_PLAY && _currentTitle != BLURAY_TITLE_TOP_MENU)
-              menuItems = MenuItems.All;
+            _bPopupMenuAvailable = false;
+            UpdateMenuItems();            
             break;
 
           case (int)BDEvents.BD_EVENT_TITLE:
             Log.Debug("BDPlayer: Title changed to {0}", bdevent.Param);
             _currentTitle = bdevent.Param;
             _currentChapter = 0xffff;
-            switch (bdevent.Param)
-            {
-              case (int)BLURAY_TITLE_TOP_MENU:                
-              case (int)BLURAY_TITLE_FIRST_PLAY:
-                if (!_forceTitle)
-                {
-                  menuItems = MenuItems.None;
-                  menuState = MenuState.Root;
-                }
-                break;
-              default:
-                break;
-            }
             break;
 
           case (int)BDEvents.BD_EVENT_CHAPTER:
@@ -1790,36 +1757,60 @@ namespace MediaPortal.Player
               _currentChapter = bdevent.Param - 1;
             break;
 
-          case (int)BDEvents.BD_CUSTOM_EVENT_MENU_VISIBILITY:
+          case (int)BDEvents.BD_EVENT_POPUP:
+            Log.Debug("BDPlayer: Popup available {0}", bdevent.Param);
+            _bPopupMenuAvailable = bdevent.Param == 1 ? true : false;
+            UpdateMenuItems();
+            break;          
+
+          case (int)BDEvents.BD_EVENT_MENU:
+            Log.Debug("BDPlayer: Menu available {0}", bdevent.Param);
             if (bdevent.Param == 1)
             {
-              Log.Debug("BDPlayer: Toggle menu on");
-              if (menuState == MenuState.PopUp)
-                menuItems = MenuItems.All;
-              else
-                menuItems = MenuItems.None;
-
-              GUIGraphicsContext.DisableTopBar = true;
-              _iMenuOffPendingCount = 0;
-              _bMenuOn = true;
+              if (menuState != MenuState.PopUp)
+                menuState = MenuState.Root;              
+             
+              GUIGraphicsContext.DisableTopBar = true;              
             }
-            else if (_iMenuOffPendingCount == 0)
-            {
-              _iMenuOffPendingCount++;
+            else
+            {              
+              menuState = MenuState.None;
+              GUIGraphicsContext.DisableTopBar = false;
+              GUIGraphicsContext.TopBarHidden = true;   
             }
+            UpdateMenuItems();
             break;
         }
       }
     }
 
-    private void SwitchMenuOff()
+    protected void UpdateMenuItems()
     {
-      Log.Debug("BDPlayer: Toggle menu off");
-      _iMenuOffPendingCount = -1;
-      _bMenuOn = false;
-      menuState = MenuState.Root;
-      GUIGraphicsContext.DisableTopBar = false;
-      GUIGraphicsContext.TopBarHidden = true;      
+      if (_forceTitle)
+        {
+          menuItems = MenuItems.Chapter | MenuItems.Audio | MenuItems.Subtitle;
+          return;
+        }
+      
+      if (menuState == MenuState.Root)
+      {        
+        menuItems = MenuItems.None;
+        return;
+      }
+
+      if (menuState == MenuState.PopUp)
+      {
+        menuItems = MenuItems.All;
+        return;
+      }
+
+      if (chapters != null && _currentTitle != BLURAY_TITLE_FIRST_PLAY && _currentTitle != BLURAY_TITLE_TOP_MENU)
+        if (_bPopupMenuAvailable)
+          menuItems = MenuItems.All;
+        else
+          menuItems = MenuItems.Audio | MenuItems.Chapter | MenuItems.MainMenu | MenuItems.Subtitle;
+      else
+        menuItems = MenuItems.MainMenu;
     }
 
     protected void CurrentStreamInfo()
@@ -1901,15 +1892,6 @@ namespace MediaPortal.Player
           aspectX != _aspectX || aspectY != _aspectY)
       {
         SetVideoWindow();
-      }
-    }
-
-    protected void UpdateCurrentPosition()
-    {
-      if (_mediaPos != null)
-      {
-        _mediaPos.get_CurrentPosition(out _currentPos);
-        _mediaPos.get_Duration(out _duration);
       }
     }
 
@@ -2029,11 +2011,9 @@ namespace MediaPortal.Player
         return;
         // before the StopWhenReady() method has been completed. It results as a kind of mess in the BDReader....
       } // So, it's better to verify a new frame has been pesented.
-      long earliest, latest, current, stop, rewind, pStop;
+      long rewind, pStop;
       lock (_mediaCtrl)
       {
-        _mediaSeeking.GetAvailable(out earliest, out latest);
-        _mediaSeeking.GetPositions(out current, out stop);
 
         //Log.Info(" time from last : {6} {7} {8} earliest:{0} latest:{1} current:{2} stop:{3} speed:{4}, total:{5}",
         //         earliest / 10000000, latest / 10000000, current / 10000000, stop / 10000000, _speedRate, (latest - earliest) / 10000000, (long)ts.TotalMilliseconds, VMR9Util.g_vmr9.FreeFrameCounter, Speed);
@@ -2044,15 +2024,15 @@ namespace MediaPortal.Player
         {
           lTimerInterval = 1000;
         }
-        rewind = (long)(current + ((long)(lTimerInterval) * Speed * 10000));
+        rewind = _currentPosDS + (long)lTimerInterval * Speed * 10000;
         int hr;
         pStop = 0;
         // if we end up before the first moment of time then just
         // start @ the beginning
-        if ((rewind < earliest) && (iSpeed < 0))
+        if ((rewind < 0) && (iSpeed < 0))
         {
-          rewind = earliest;
-          Log.Info("BDPlayer: timeshift SOF seek back:{0}", rewind / 10000000);
+          rewind = 0;
+          Log.Info("BDPlayer: seek to start");
           hr = _mediaSeeking.SetPositions(new DsLong(rewind), AMSeekingSeekingFlags.AbsolutePositioning | AMSeekingSeekingFlags.SeekToKeyFrame,
                                           new DsLong(pStop), AMSeekingSeekingFlags.NoPositioning);
           Speed = 1;
@@ -2062,13 +2042,14 @@ namespace MediaPortal.Player
         // start @ the end -1sec
         long margin = 100000;
 
-        if ((rewind > (latest - margin)) && (iSpeed > 0))
+
+        if ((rewind > (_durationDS - margin)) && (iSpeed > 0))
         {
           Log.Info("BDPlayer: Fastforward reached the end of file, stopping playback");
-          _state = PlayState.Ended;
+          //_state = PlayState.Ended;
           return;
         }
-        //seek to new moment in time
+        // seek to new moment in time
         //Log.Info(" seek :{0}",rewind/10000000);
         if (VMR9Util.g_vmr9 != null)
         {
@@ -2178,17 +2159,16 @@ namespace MediaPortal.Player
         Log.Debug("BDPlayer: Add BDReader to graph");
 
         IFileSourceFilter interfaceFile = (IFileSourceFilter)_interfaceBDReader;
+
+        LoadSettings(_ireader);
+        _ireader.SetD3DDevice(DirectShowUtil.GetUnmanagedDevice(GUIGraphicsContext.DX9Device));
+        _ireader.SetBDReaderCallback(this);
+
         hr = interfaceFile.Load(filename, null);
 
         DsError.ThrowExceptionForHR(hr);
 
         Log.Debug("BDPlayer: BDReader loaded: {0}", filename);
-
-        #region setup BDReader
-
-        LoadSettings(_ireader);
-        _ireader.SetD3DDevice(DirectShowUtil.GetUnmanagedDevice(GUIGraphicsContext.DX9Device));
-        _ireader.SetBDReaderCallback(this);
 
         List<BDTitleInfo> titles = GetTitleInfoCollection(_ireader);
 
@@ -2236,8 +2216,6 @@ namespace MediaPortal.Player
 
           break;
         }
-
-        #endregion
 
         #region Filters
 
@@ -2287,7 +2265,6 @@ namespace MediaPortal.Player
         _mediaCtrl = (IMediaControl)_graphBuilder;
         _mediaEvt = (IMediaEventEx)_graphBuilder;
         _mediaSeeking = (IMediaSeeking)_graphBuilder;
-        _mediaPos = (IMediaPosition)_graphBuilder;
 
         try
         {
@@ -2502,7 +2479,8 @@ namespace MediaPortal.Player
           return discTitle;
       }
 
-      Util.Utils.GetDVDLabel(_currentFile, out discTitle);
+      if (Util.Utils.IsDVD(_currentFile))
+        Util.Utils.GetDVDLabel(_currentFile, out discTitle);
 
       if (String.IsNullOrEmpty(discTitle))
       {

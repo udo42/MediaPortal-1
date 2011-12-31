@@ -107,10 +107,10 @@ namespace MediaPortal.Configuration.Sections
           availableVC1VideoFilters.Add("CyberLink Video Decoder (PDVD11)");
           break;
         }
-        /*while (availableVC1VideoFilters.Contains("WMVideo Decoder DMO"))
+        while (availableVC1VideoFilters.Contains("WMVideo Decoder DMO"))
         {
           availableVC1VideoFilters.Remove("WMVideo Decoder DMO");
-        }*/
+        }
         availableVC1VideoFilters.Sort();
         availableAudioFilters.Sort();
         audioCodecComboBox.Items.AddRange(availableAudioFilters.ToArray());
@@ -140,8 +140,7 @@ namespace MediaPortal.Configuration.Sections
         string videoCodec = xmlreader.GetValueAsString("bdplayer", "mpeg2videocodec", "");
         string h264videoCodec = xmlreader.GetValueAsString("bdplayer", "h264videocodec", "");
         string vc1videoCodec = xmlreader.GetValueAsString("bdplayer", "vc1videocodec", "");
-        string audioCodec = xmlreader.GetValueAsString("bdplayer", "mpeg2audiocodec", "");
-        //string aacaudioCodec = xmlreader.GetValueAsString("bdplayer", "aacaudiocodec", "");
+        string audioCodec = xmlreader.GetValueAsString("bdplayer", "mpeg2audiocodec", "");        
         if (audioCodec == string.Empty)
         {
           ArrayList availableAudioFilters = FilterHelper.GetFilters(MediaType.Audio, MediaSubType.Mpeg2Audio);

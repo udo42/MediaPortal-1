@@ -109,7 +109,15 @@ protected:
   bool m_bSeekDone;
   bool m_bDiscontinuity;
   bool m_bFirstSample;
+  bool m_bInitDuration;
   bool m_bClipEndingNotified;
   bool m_bStopWait;
+
+  REFERENCE_TIME m_rtPrevSample;
+  REFERENCE_TIME m_rtStreamTimeOffset;
+  REFERENCE_TIME m_rtTitleDuration;
+
+  bool m_bDoFakeSeek;
+  bool m_bZeroStreamOffset;
 };
 

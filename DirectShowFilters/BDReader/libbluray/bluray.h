@@ -44,22 +44,24 @@ extern "C" {
 typedef struct bluray BLURAY;
 
 typedef enum {
-    BLURAY_STREAM_TYPE_VIDEO_MPEG1        = 0x01,
-    BLURAY_STREAM_TYPE_VIDEO_MPEG2        = 0x02,
-    BLURAY_STREAM_TYPE_AUDIO_MPEG1        = 0x03,
-    BLURAY_STREAM_TYPE_AUDIO_MPEG2        = 0x04,
-    BLURAY_STREAM_TYPE_AUDIO_LPCM         = 0x80,
-    BLURAY_STREAM_TYPE_AUDIO_AC3          = 0x81,
-    BLURAY_STREAM_TYPE_AUDIO_DTS          = 0x82,
-    BLURAY_STREAM_TYPE_AUDIO_TRUHD        = 0x83,
-    BLURAY_STREAM_TYPE_AUDIO_AC3PLUS      = 0x84,
-    BLURAY_STREAM_TYPE_AUDIO_DTSHD        = 0x85,
-    BLURAY_STREAM_TYPE_AUDIO_DTSHD_MASTER = 0x86,
-    BLURAY_STREAM_TYPE_VIDEO_VC1          = 0xea,
-    BLURAY_STREAM_TYPE_VIDEO_H264         = 0x1b,
-    BLURAY_STREAM_TYPE_SUB_PG             = 0x90,
-    BLURAY_STREAM_TYPE_SUB_IG             = 0x91,
-    BLURAY_STREAM_TYPE_SUB_TEXT           = 0x92
+    BLURAY_STREAM_TYPE_VIDEO_MPEG1              = 0x01,
+    BLURAY_STREAM_TYPE_VIDEO_MPEG2              = 0x02,
+    BLURAY_STREAM_TYPE_AUDIO_MPEG1              = 0x03,
+    BLURAY_STREAM_TYPE_AUDIO_MPEG2              = 0x04,
+    BLURAY_STREAM_TYPE_AUDIO_LPCM               = 0x80,
+    BLURAY_STREAM_TYPE_AUDIO_AC3                = 0x81,
+    BLURAY_STREAM_TYPE_AUDIO_DTS                = 0x82,
+    BLURAY_STREAM_TYPE_AUDIO_TRUHD              = 0x83,
+    BLURAY_STREAM_TYPE_AUDIO_AC3PLUS            = 0x84,
+    BLURAY_STREAM_TYPE_AUDIO_DTSHD              = 0x85,
+    BLURAY_STREAM_TYPE_AUDIO_DTSHD_MASTER       = 0x86,
+    BLURAY_STREAM_TYPE_VIDEO_VC1                = 0xea,
+    BLURAY_STREAM_TYPE_VIDEO_H264               = 0x1b,
+    BLURAY_STREAM_TYPE_SUB_PG                   = 0x90,
+    BLURAY_STREAM_TYPE_SUB_IG                   = 0x91,
+    BLURAY_STREAM_TYPE_SUB_TEXT                 = 0x92,
+    BLURAY_STREAM_TYPE_AUDIO_AC3PLUS_SECONDARY  = 0xa1,
+    BLURAY_STREAM_TYPE_AUDIO_DTSHD_SECONDARY    = 0xa2
 } bd_stream_type_e;
 
 typedef enum {
@@ -167,6 +169,18 @@ typedef struct bd_title_info {
     BLURAY_CLIP_INFO     *clips;
     BLURAY_TITLE_CHAPTER *chapters;
 } BLURAY_TITLE_INFO;
+
+typedef struct bd_sound_effect {
+    uint8_t         num_channels; /* 1 - mono, 2 - stereo */
+    uint32_t        num_frames;
+    const int16_t  *samples;      /* 48000 Hz, 16 bit LPCM. interleaved if stereo */
+} BLURAY_SOUND_EFFECT;
+
+/**
+ *  Get library version
+ *
+ */
+void bd_get_version(int *major, int *minor, int *micro);
 
 /**
  *
@@ -476,14 +490,15 @@ void bd_stop_bdj(BLURAY *bd); // shutdown BD-J and clean up resources
 
 typedef enum {
     BD_EVENT_NONE = 0,
-    BD_EVENT_ERROR,
-    BD_EVENT_ENCRYPTED,
+    BD_EVENT_ERROR,       /* Fatal error. Playback can't be continued. */
+    BD_EVENT_READ_ERROR,  /* Reading of .m2ts aligned unit failed. Next call to read will try next block. */
+    BD_EVENT_ENCRYPTED,   /* .m2ts file is encrypted and can't be played */
 
     /* current playback position */
     BD_EVENT_ANGLE,     /* current angle, 1...N */
     BD_EVENT_TITLE,     /* current title, 1...N (0 = top menu) */
     BD_EVENT_PLAYLIST,  /* current playlist (xxxxx.mpls) */
-    BD_EVENT_PLAYITEM,  /* current play item */
+    BD_EVENT_PLAYITEM,  /* current play item, 0...N-1  */
     BD_EVENT_CHAPTER,   /* current chapter, 1...N */
     BD_EVENT_END_OF_TITLE,
 
@@ -510,8 +525,14 @@ typedef enum {
     /* Still playback for n seconds (reached end of still mode play item) */
     BD_EVENT_STILL_TIME,             /* 0 = infinite ; 1...300 = seconds */
 
-    BD_CUSTOM_EVENT_MENU_VISIBILITY = 1000 /* 0 - not shown, 1 shown*/
+    /* Play sound effect */
+    BD_EVENT_SOUND_EFFECT,           /* effect ID */
 
+    /* Pop-Up menu available */
+    BD_EVENT_POPUP,                  /* 0 - no, 1 - yes */
+
+    /* Interactive menu visible */
+    BD_EVENT_MENU,                   /* 0 - no, 1 - yes */
 } bd_event_e;
 
 typedef struct {
@@ -629,6 +650,17 @@ int bd_user_input(BLURAY *bd, int64_t pts, uint32_t key);
  * @return <0 on error, 0 when mouse is outside of buttons, 1 when mouse is inside button
  */
 int bd_mouse_select(BLURAY *bd, int64_t pts, uint16_t x, uint16_t y);
+
+/**
+ *
+ *  Get sound effect
+ *
+ * @param bd  BLURAY object
+ * @param effect_id  sound effect id (0...N)
+ * @param effect     sound effect data
+ * @return <0 when no effects, 0 when id out of range, 1 on success
+ */
+int bd_get_sound_effect(BLURAY *bd, unsigned sound_id, struct bd_sound_effect *effect);
 
 /*
  *

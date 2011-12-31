@@ -30,24 +30,14 @@
 
 Packet::Packet() 
 { 
-  nClipNumber = -100;
-  nPlaylist = -100;
-  bDiscontinuity = false;
-  bSyncPoint = false;
-  bAppendable = false;
-  bSeekRequired = false;
-  rtStart = -100;
-  rtStop = -100;
-  rtOffset = 0;//-100; /// is this needed? i.e. fixed somewhere else so that all packets will have a valid offset (initial versions did have some packets where this was left at -100)
   pmt = NULL;
+  ResetProperties(true);
 }
 
 Packet::~Packet() 
 {
   if (pmt) 
-  {
     DeleteMediaType(pmt);
-  }
 }
 
 int Packet::GetDataSize() 
@@ -60,3 +50,50 @@ void Packet::SetData(const void* ptr, DWORD len)
   SetCount(len); 
   memcpy(GetData(), ptr, len);
 }
+
+void Packet::CopyProperties(Packet& pSrc, bool pValidateStartTime)
+{
+  nClipNumber = pSrc.nClipNumber;
+  nPlaylist = pSrc.nPlaylist;
+  bDiscontinuity = pSrc.bDiscontinuity;
+  bSyncPoint = pSrc.bSyncPoint;
+  bNewClip = pSrc.bNewClip; 
+  bResuming = pSrc.bResuming;
+  
+  if (!pValidateStartTime || pSrc.rtStart != INVALID_TIME)
+  {
+    rtStart = pSrc.rtStart;
+    rtStop = pSrc.rtStop;
+  }
+  
+  rtOffset = pSrc.rtOffset;
+  rtPlaylistTime = pSrc.rtPlaylistTime;
+  rtTitleDuration = pSrc.rtTitleDuration;
+}
+
+void Packet::ResetProperties(bool pResetClipInfo)
+{
+  if (pResetClipInfo)
+  {
+    nClipNumber = -100;
+    nPlaylist = -100;
+    rtOffset = 0;//-100; /// is this needed? i.e. fixed somewhere else so that all packets will have a valid offset (initial versions did have some packets where this was left at -100)
+    rtPlaylistTime = 0;
+    rtClipStartTime = 0;
+    rtTitleDuration = 0;
+  }
+
+  bDiscontinuity = false;
+  bSyncPoint = false;
+  bNewClip = false;
+  bResuming = false;
+  rtStart = INVALID_TIME;
+  rtStop = INVALID_TIME;
+}
+
+void Packet::TransferProperties(Packet& pSrc, bool pValidateStartTime, bool pResetClipInfo)
+{
+  CopyProperties(pSrc, pValidateStartTime);
+  pSrc.ResetProperties(pResetClipInfo);
+}
+

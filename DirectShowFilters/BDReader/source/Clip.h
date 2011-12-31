@@ -21,10 +21,13 @@
 
 #pragma once
 
-#include "Packet.h"
+#include "StdAfx.h"
+
+#include <streams.h>
 #include <map>
 #include <vector>
 #include <dshow.h>
+#include "Packet.h"
 
 using namespace std;
 
@@ -42,7 +45,7 @@ using namespace std;
 class CClip
 {
 public:
-  CClip(int clipNumber, REFERENCE_TIME playlistFirstPacketTime, REFERENCE_TIME clipOffset, bool audioPresent, REFERENCE_TIME duration, bool seekNeeded);
+  CClip(int clipNumber, int playlistNumber, REFERENCE_TIME playlistFirstPacketTime, REFERENCE_TIME clipOffset, REFERENCE_TIME totalStreamOffset, bool audioPresent, REFERENCE_TIME duration);
   ~CClip(void);
   Packet* ReturnNextAudioPacket(REFERENCE_TIME playlistOffset);
   Packet* ReturnNextVideoPacket(REFERENCE_TIME playlistOffset);
@@ -51,20 +54,42 @@ public:
   void FlushAudio(Packet* pPacketToKeep = NULL);
   void FlushVideo(Packet* pPacketToKeep = NULL);
   int  nClip;
+  int  nPlaylist;
   bool noAudio;
+  bool clipReset;
   void Superceed(int superceedType);
   bool IsSuperceeded(int superceedType);
   REFERENCE_TIME playlistFirstPacketTime;
   REFERENCE_TIME clipPlaylistOffset;
-  void Reset();
+  void Reset(REFERENCE_TIME totalStreamOffset);
   bool FakeAudioAvailable();
   bool HasAudio();
   bool HasVideo();
-  bool Incomplete();
+  REFERENCE_TIME Incomplete();
+  REFERENCE_TIME PlayedDuration();
   void SetVideoPMT(AM_MEDIA_TYPE *pmt);
 
+  // starttime of the last audio packet buffered in the clip
   REFERENCE_TIME lastAudioPosition;
+  // starttime of the last video packet buffered in the clip
   REFERENCE_TIME lastVideoPosition;
+
+  // starttime of the last audio packet returned from the clip to the pin
+  REFERENCE_TIME audioPlaybackPosition;
+  // starttime of the last video packet returned from the clip to the pin
+  REFERENCE_TIME videoPlaybackPosition;
+
+  REFERENCE_TIME earliestPacketAccepted;
+
+  // Clip duration as provided by libbluray 
+  REFERENCE_TIME clipDuration;
+
+  // offset of this clip from the beginning of the playlist
+  REFERENCE_TIME m_playlistOffset;
+
+  // Accurate clip starting time (when known).
+  // Not set when selecting chapter from the menu
+  REFERENCE_TIME m_rtClipStartingOffset;
 
 protected:
   typedef vector<Packet*>::iterator ivecVideoBuffers;
@@ -72,14 +97,21 @@ protected:
   vector<Packet*> m_vecClipAudioPackets;
   vector<Packet*> m_vecClipVideoPackets;
   AM_MEDIA_TYPE *m_videoPmt;
-  REFERENCE_TIME clipDuration;
-  REFERENCE_TIME audioPlaybackpoint;
   int superceeded;
 
+  CCritSec m_sectionRead;
+  CCritSec m_sectionVectorAudio;
+  CCritSec m_sectionVectorVideo;
+
+  // true would indicate that this is the first audio packet
   bool firstAudio;
+  // true would indicate that this is the first video packet
   bool firstVideo;
-  bool bSeekNeededVideo;
-  bool bSeekNeededAudio;
+
+  // indicates if this is the first packet to be buffered in clip
+  bool firstPacketAccepted;
+  // indicates if this is the first packet to be returned from the clip
+  bool firstPacketReturned;
 
   Packet* GenerateFakeAudio(REFERENCE_TIME rtStart);
 };

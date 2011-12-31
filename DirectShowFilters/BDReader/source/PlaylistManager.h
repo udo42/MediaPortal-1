@@ -21,6 +21,8 @@
 
 #pragma once
 
+#include "StdAfx.h"
+
 #include <afx.h>
 #include <atlbase.h>
 #include <atlcoll.h>
@@ -46,8 +48,7 @@ public:
   bool SubmitVideoPacket(Packet * packet);
   void FlushAudio(void);
   void FlushVideo(void);
-  void ClearAllButCurrentClip(bool resetClip);
-  void IgnoreNextDiscontinuity();
+  void ClearAllButCurrentClip();
   Packet* GetNextAudioPacket();
   Packet* GetNextAudioPacket(int playlist, int clip);
   Packet* GetNextVideoPacket();
@@ -56,26 +57,31 @@ public:
 
 protected:
   typedef vector<CPlaylist*>::iterator ivecPlaylists;
-  CPlaylist * GetNextAudioPlaylist(CPlaylist* currentPlaylist);
-  CPlaylist * GetNextVideoPlaylist(CPlaylist* currentPlaylist);
-  CPlaylist * GetNextAudioSubmissionPlaylist(CPlaylist* currentPlaylist);
-  CPlaylist * GetNextVideoSubmissionPlaylist(CPlaylist* currentPlaylist);
-  CPlaylist * GetPlaylist(int playlist);
+  typedef vector<CClip*>::iterator ivecClip;
 
-  bool Incomplete();
+  void PushPlaylists();
+  void PopPlaylists(int difference);
+
+  bool firstVideo, firstAudio;
+
+  REFERENCE_TIME Incomplete();
+  REFERENCE_TIME ClipPlayTime();
+  REFERENCE_TIME m_rtPlaylistOffset;
 
   vector<CPlaylist *> m_vecPlaylists;
-  CPlaylist * m_currentAudioPlayBackPlaylist;
-  CPlaylist * m_currentVideoPlayBackPlaylist;
-  CPlaylist * m_currentAudioSubmissionPlaylist;
-  CPlaylist * m_currentVideoSubmissionPlaylist;
+  vector<CClip*> m_vecNonFilledClips;
 
-  int m_VideoPacketsUntilLatestplaylist;
+  ivecPlaylists m_itCurrentAudioPlayBackPlaylist;
+  ivecPlaylists m_itCurrentVideoPlayBackPlaylist;
+  ivecPlaylists m_itCurrentAudioSubmissionPlaylist;
+  ivecPlaylists m_itCurrentVideoSubmissionPlaylist;
+  int m_itCurrentAudioPlayBackPlaylistPos;
+  int m_itCurrentVideoPlayBackPlaylistPos;
+  int m_itCurrentAudioSubmissionPlaylistPos;
+  int m_itCurrentVideoSubmissionPlaylistPos;
 
   CCritSec m_sectionAudio;
   CCritSec m_sectionVideo;
-
-  bool m_bIgnoreAudioSeeking;
-  bool m_bIgnoreVideoSeeking;
+  CCritSec m_sectionVector;
 };
 

@@ -108,6 +108,10 @@ CBDReaderFilter::CBDReaderFilter(IUnknown *pUnk, HRESULT *phr):
   m_bUpdateStreamPositionOnly(false),
   m_dwThreadId(0),
   m_pMediaSeeking(NULL),
+  m_rtPlaybackOffset(_I64_MIN),
+  m_rtSeekPosition(0),
+  m_rtTitleDuration(0),
+  m_rtCurrentTime(0),
   m_rtStart(0),
   m_rtStop(0),
   m_rtCurrent(0),
@@ -312,6 +316,45 @@ void CBDReaderFilter::TriggerOnMediaChanged()
   }
 }
 
+void CBDReaderFilter::OnPlaybackPositionChange()
+{
+  if (m_pCallback && m_pClock)
+  {
+    REFERENCE_TIME time = 0;
+    m_pClock->GetTime(&time);
+
+    {
+      CAutoLock lock(&m_csClock);
+
+      if (m_rtPlaybackOffset == _I64_MIN)
+        m_rtPlaybackOffset = time;
+
+      m_rtCurrentTime = time - m_rtPlaybackOffset + m_rtSeekPosition;
+
+      m_pCallback->OnClockChange(m_rtTitleDuration, m_rtCurrentTime);
+      //LogDebug("dur: %6.3f pos: %6.3f", m_rtTitleDuration / 10000000.0, (time - m_rtPlaybackOffset + m_rtSeekPosition) / 10000000.0);
+    }
+  }
+}
+
+void CBDReaderFilter::SetTitleDuration(REFERENCE_TIME pTitleDuration)
+{
+  LogDebug("CBDReaderFilter: SetTitleDuration duration: %6.3f", pTitleDuration / 10000000.0);
+  
+  CAutoLock lock(&m_csClock);
+  m_rtTitleDuration = pTitleDuration;
+}
+
+void CBDReaderFilter::ResetPlaybackOffset(REFERENCE_TIME pSeekPosition)
+{
+  LogDebug("CBDReaderFilter: ResetPlaybackOffset seek position: %6.3f", pSeekPosition / 10000000.0);
+  
+  CAutoLock lock(&m_csClock);
+  m_rtSeekPosition = pSeekPosition;
+  m_rtPlaybackOffset = _I64_MIN;
+  m_rtLastStart = 0;
+}
+
 STDMETHODIMP CBDReaderFilter::SetGraphCallback(IBDReaderCallback* pCallback)
 {
   LogDebug("callback set");
@@ -374,9 +417,13 @@ STDMETHODIMP CBDReaderFilter::SetChapter(UINT32 chapter)
   {
     if (current != chapter)
     {
+      CAutoLock(&(m_demultiplexer.m_sectionRead));
       hr = lib.SetChapter(chapter) ? S_OK : S_FALSE;
-      m_eEndChapterChanged.Wait();
-      m_eEndChapterChanged.Reset();
+      // TODO get chapter position in playlist
+      REFERENCE_TIME rtChapterStart = 0LL;
+      m_demultiplexer.Flush(true, true, rtChapterStart);
+      m_eSeekDone.Wait();
+      m_eSeekDone.Reset();
     }
   }
   return hr;
@@ -514,7 +561,10 @@ DWORD WINAPI CBDReaderFilter::CommandThread()
           
             LONGLONG pos = 0;
             if (cmd.refTime.m_time < 0)
-              m_pMediaSeeking->GetCurrentPosition(&pos);
+            {
+              CAutoLock lock(&m_csClock);
+              pos = m_rtCurrentTime;
+            }
             else
               pos = cmd.refTime.m_time;
 
@@ -537,6 +587,7 @@ DWORD WINAPI CBDReaderFilter::CommandThread()
             m_eSeekDone.Reset();
 
             m_demultiplexer.SetMediaChanging(false);
+            m_demultiplexer.m_bRebuildOngoing = false;
 
             break;
 		      }
@@ -566,7 +617,8 @@ DWORD WINAPI CBDReaderFilter::CommandThread()
 
 STDMETHODIMP CBDReaderFilter::Run(REFERENCE_TIME tStart)
 {
-  CRefTime runTime = tStart;
+  tStart=0LL;
+  CRefTime runTime = m_rtStart = tStart;
   double msec = (double)runTime.Millisecs();
   msec /= 1000.0;
   LogDebug("CBDReaderFilter::Run(%05.2f) state %d", msec / 1000.0, m_State);
@@ -751,12 +803,9 @@ void CBDReaderFilter::Seek(REFERENCE_TIME rtAbsSeek)
   if (!m_bUpdateStreamPositionOnly)
   {
     LogDebug("CBDReaderFilter::Seek - Flush");
-    m_demultiplexer.Flush(true, true);
+    m_demultiplexer.Flush(true, true, rtAbsSeek);
     lib.Seek(CONVERT_DS_90KHz(rtAbsSeek));
   }
-
-  if (!m_bChapterChangeRequested)
-    m_demultiplexer.IgnoreNextDiscontinuity();
 
   m_bUpdateStreamPositionOnly = false;
 
@@ -820,18 +869,6 @@ void CBDReaderFilter::HandleOSDUpdate(OSDTexture& pTexture)
   if (m_pCallback)
   {
     m_pCallback->OnOSDUpdate(pTexture);
-  }
-}
-
-void CBDReaderFilter::HandleMenuStateChange(bool pVisible)
-{
-  BD_EVENT ev;
-  ev.event = BD_CUSTOM_EVENT_MENU_VISIBILITY;
-  ev.param = pVisible ? 1 : 0;
-
-  if (m_pCallback && !m_bFirstPlay)
-  {
-    m_pCallback->OnBDEvent(ev);
   }
 }
 
@@ -1040,7 +1077,9 @@ STDMETHODIMP CBDReaderFilter::SetPositionsInternal(void *caller, LONGLONG* pCurr
     rtCurrent = m_rtCurrent,
     rtStop = m_rtStop;
 
-  bool resetStreamPosition = caller == m_pVideoPin && dwCurrentFlags & AM_SEEKING_FakeSeek;
+
+  bool fakeSeek = dwCurrentFlags & AM_SEEKING_FakeSeek;
+  bool resetStreamPosition = caller == m_pVideoPin && fakeSeek;
 
   if (pCurrent) 
   {
@@ -1073,12 +1112,6 @@ STDMETHODIMP CBDReaderFilter::SetPositionsInternal(void *caller, LONGLONG* pCurr
     LogDebug("  ::SetPositions() - already seeked to pos - mark 1");
 #endif
 
-    if (m_bChapterChangeRequested)
-    {
-      m_bChapterChangeRequested = false;
-      m_eEndChapterChanged.Set();
-    }
-
     m_eSeekDone.Set();
     return S_OK;
   }
@@ -1089,16 +1122,15 @@ STDMETHODIMP CBDReaderFilter::SetPositionsInternal(void *caller, LONGLONG* pCurr
     LogDebug("  ::SetPositions() - already seeked to pos - mark 2");
 #endif
 
-    if (m_bChapterChangeRequested)
-    {
-      m_bChapterChangeRequested = false;
-      m_eEndChapterChanged.Set();
-    }
-
     m_eSeekDone.Set();
     m_lastSeekers.insert(caller);
     return S_OK;
   }
+
+  if (fakeSeek)
+    ResetPlaybackOffset(m_rtSeekPosition);
+  else
+    ResetPlaybackOffset(m_rtSeekPosition + rtCurrent - m_rtLastStart);
 
   m_rtLastStart = rtCurrent;
   m_rtLastStop = rtStop;
@@ -1119,11 +1151,6 @@ STDMETHODIMP CBDReaderFilter::SetPositionsInternal(void *caller, LONGLONG* pCurr
     // Do not allow new seek to happen before the old one is completed 
     m_eEndNewSegment.Wait();
 
-    if (m_bChapterChangeRequested)
-    {
-      m_bChapterChangeRequested = false;
-      m_eEndChapterChanged.Set();
-    }
   }
   else
   {
@@ -1131,11 +1158,6 @@ STDMETHODIMP CBDReaderFilter::SetPositionsInternal(void *caller, LONGLONG* pCurr
     LogDebug("  ::SetPositions() - no ThreadExists()");
 #endif
 
-    if (m_bChapterChangeRequested)
-    {
-      m_bChapterChangeRequested = false;
-      m_eEndChapterChanged.Set();
-    }
   }
 
   m_eSeekDone.Set();

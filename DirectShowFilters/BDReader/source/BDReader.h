@@ -64,6 +64,7 @@ DECLARE_INTERFACE_(IBDReaderCallback, IUnknown)
   STDMETHOD(OnMediaTypeChanged)(int videoRate, int videoFormat, int audioFormat)PURE;	
   STDMETHOD(OnBDEvent)(BD_EVENT event)PURE;
   STDMETHOD(OnOSDUpdate)(OSDTexture texture)PURE;
+  STDMETHOD(OnClockChange)(REFERENCE_TIME duration, REFERENCE_TIME position)PURE;
 };
 
 DECLARE_INTERFACE_(IBDReaderAudioChange, IUnknown)
@@ -171,7 +172,6 @@ public:
   // BDEventObserver
   void HandleBDEvent(BD_EVENT& pEv, UINT64 pPos);
   void HandleOSDUpdate(OSDTexture& pTexture);
-  void HandleMenuStateChange(bool pVisible);
 
   // IFileSourceFilter
   STDMETHODIMP    Load(LPCOLESTR pszFileName,const AM_MEDIA_TYPE *pmt);
@@ -189,14 +189,17 @@ public:
   STDMETHODIMP SetPositions(LONGLONG* pCurrent, DWORD dwCurrentFlags, LONGLONG* pStop, DWORD dwStopFlags);
   STDMETHODIMP SetPositionsInternal(void *caller, LONGLONG* pCurrent, DWORD dwCurrentFlags, LONGLONG* pStop, DWORD dwStopFlags);
   
-  bool            IsStopping();
+  bool IsStopping();
 
-  void            IssueCommand(DS_CMD_ID pCommand, REFERENCE_TIME pTime);
-  void            TriggerOnMediaChanged();
+  void IssueCommand(DS_CMD_ID pCommand, REFERENCE_TIME pTime);
+  void TriggerOnMediaChanged();
+  void OnPlaybackPositionChange();
+  void ResetPlaybackOffset(REFERENCE_TIME pSeekAmount);
+  void SetTitleDuration(REFERENCE_TIME pTitleDuration);
 
   CLibBlurayWrapper lib;
 
-  bool            m_bStopping;
+  bool  m_bStopping;
 
 protected:
 
@@ -251,6 +254,12 @@ private:
 
   bool m_bFirstPlay;
 
+  REFERENCE_TIME m_rtPlaybackOffset;
+  REFERENCE_TIME m_rtSeekPosition;
+  REFERENCE_TIME m_rtTitleDuration;
+  REFERENCE_TIME m_rtCurrentTime;
+  CCritSec       m_csClock;
+
   // Times
   REFERENCE_TIME m_rtStart;
   REFERENCE_TIME m_rtStop;
@@ -268,7 +277,6 @@ private:
   bool m_bFlushing;
   CAMEvent m_eEndFlush;
   CAMEvent m_eEndNewSegment;
-  CAMEvent m_eEndChapterChanged;
   CAMEvent m_eSeekDone;
   
   bool m_bChapterChangeRequested;

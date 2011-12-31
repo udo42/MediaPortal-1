@@ -1582,7 +1582,7 @@ namespace MediaPortal.Player
 
           case GUI.Library.Action.ActionType.ACTION_MOUSE_CLICK:
             if (buttonCount > 0)
-            {
+            {              
               _dvdCtrl.ActivateAtPosition(pt);
               return true;
             }

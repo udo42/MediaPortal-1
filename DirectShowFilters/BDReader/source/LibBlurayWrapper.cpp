@@ -303,6 +303,9 @@ bool CLibBlurayWrapper::OpenBluray(const char* pRootPath)
   _bd_set_player_setting_str(m_pBd, BLURAY_PLAYER_SETTING_MENU_LANG, m_playerSettings.menuLang);
   _bd_set_player_setting_str(m_pBd, BLURAY_PLAYER_SETTING_COUNTRY_CODE, m_playerSettings.countryCode);
 
+  // Init event queue
+  _bd_get_event(m_pBd, NULL);
+
   m_numTitles = GetTitles(TITLES_ALL);
 
   _bd_register_overlay_proc(m_pBd, this, StaticOverlayProc);
@@ -375,7 +378,8 @@ bool CLibBlurayWrapper::SetChapter(UINT32 pChapter)
 
 void CLibBlurayWrapper::SetTitle(UINT32 pTitle)
 {
-  m_currentTitle = pTitle;
+  if (pTitle >= 0)
+    m_currentTitle = pTitle;
 }
 
 bool CLibBlurayWrapper::GetAngle(UINT8* pAngle)
@@ -882,6 +886,9 @@ void CLibBlurayWrapper::LogEvent(const BD_EVENT& pEvent, bool pIgnoreNoneEvent)
   case BD_EVENT_ERROR:
     LogDebug("    BD_EVENT_ERROR - %d", pEvent.param);
     break;
+  case BD_EVENT_READ_ERROR:
+    LogDebug("    BD_EVENT_READ_ERROR - %d", pEvent.param);
+    break;
   case BD_EVENT_ENCRYPTED:
     LogDebug("    BD_EVENT_ENCRYPTED - %d", pEvent.param);
     break;
@@ -948,6 +955,15 @@ void CLibBlurayWrapper::LogEvent(const BD_EVENT& pEvent, bool pIgnoreNoneEvent)
   case BD_EVENT_STILL_TIME:
     //LogDebug("    BD_EVENT_STILL_TIME - %d", pEvent.param);
     break;
+  case BD_EVENT_SOUND_EFFECT:
+    //LogDebug("    BD_EVENT_SOUND_EFFECT - %d", pEvent.param);
+    break;
+  case BD_EVENT_POPUP:
+    LogDebug("    BD_EVENT_POPUP - %d", pEvent.param);
+    break;
+  case BD_EVENT_MENU:
+    LogDebug("    BD_EVENT_MENU - %d", pEvent.param);
+    break;
   default:
     LogDebug("    ERROR - no event!");
   }
@@ -1008,16 +1024,6 @@ void CLibBlurayWrapper::HandleOSDUpdate(OSDTexture& texture)
   while (it != m_eventObservers.end())
   {
     (*it)->HandleOSDUpdate(texture);
-    ++it;
-  }
-}
-
-void CLibBlurayWrapper::HandleMenuStateChange(bool pVisible)
-{
-  ivecObservers it = m_eventObservers.begin();
-  while (it != m_eventObservers.end())
-  {
-    (*it)->HandleMenuStateChange(pVisible);
     ++it;
   }
 }

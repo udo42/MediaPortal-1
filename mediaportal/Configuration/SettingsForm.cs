@@ -311,7 +311,7 @@ namespace MediaPortal.Configuration
           {
             FiltersWinDVD7Decoder windvdConfig = new FiltersWinDVD7Decoder();
             AddSection(new ConfigPage(filterSection, windvdConfig, true));
-          }
+          }          
           if (filter.Equals("DScaler Audio Decoder"))
           {
             FiltersDScalerAudio dscalerConfig = new FiltersDScalerAudio();
