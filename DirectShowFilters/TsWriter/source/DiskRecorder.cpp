@@ -1264,8 +1264,7 @@ void CDiskRecorder::WriteFakePMT()
 		pmtLength+=5;
 		if (info.rawDescriptorData!=NULL)
 		{
-			pmt[offset-2]=(info.rawDescriptorSize>>8);
-			pmt[offset-1]=(info.rawDescriptorSize&0xFF);
+			pmt[offset-1]=info.rawDescriptorSize;
 			memcpy(&pmt[offset],info.rawDescriptorData,info.rawDescriptorSize);
 			offset += info.rawDescriptorSize;
 			pmtLength += info.rawDescriptorSize;
