@@ -97,7 +97,15 @@ namespace MediaPortal.TagReader
           }
         }
 
+        string[] artistSorts = tag.Tag.PerformersSort;
+        if (artistSorts.Length > 0)
+        {
+          musictag.ArtistSort = String.Join(";", artistSorts).Trim(trimChars);
+        }
+
         musictag.Album = tag.Tag.Album;
+        musictag.ArtistSort = tag.Tag.AlbumSort;
+
         musictag.HasAlbumArtist = false;
         string[] albumartists = tag.Tag.AlbumArtists;
         if (albumartists.Length > 0)
@@ -110,6 +118,13 @@ namespace MediaPortal.TagReader
             musictag.AlbumArtist = musictag.AlbumArtist.Replace("AC;DC", "AC/DC");
           }
         }
+
+        string[] albumArtistSorts = tag.Tag.AlbumArtistsSort;
+        if (albumArtistSorts.Length > 0)
+        {
+          musictag.AlbumArtistSort = String.Join(";", albumArtistSorts).Trim(trimChars);
+        }
+
         musictag.BitRate = tag.Properties.AudioBitrate;
         musictag.Comment = tag.Tag.Comment;
         string[] composer = tag.Tag.Composers;
@@ -117,6 +132,13 @@ namespace MediaPortal.TagReader
         {
           musictag.Composer = string.Join(";", composer).Trim(trimChars);
         }
+
+        string[] composerSorts = tag.Tag.ComposersSort;
+        if (composerSorts.Length > 0)
+        {
+          musictag.ComposerSort = String.Join(";", composerSorts).Trim(trimChars);
+        }
+
         musictag.Conductor = tag.Tag.Conductor;
         IPicture[] pics = new IPicture[] {};
         pics = tag.Tag.Pictures;
@@ -136,6 +158,7 @@ namespace MediaPortal.TagReader
 
         musictag.Title = (tag.Tag.Title == null ? "" : tag.Tag.Title.Trim(trimChars));
         // Prevent Null Ref execption, when Title is not set
+        musictag.TitleSort = tag.Tag.TitleSort;
         musictag.Track = (int)tag.Tag.Track;
         musictag.TrackTotal = (int)tag.Tag.TrackCount;
         musictag.DiscID = (int)tag.Tag.Disc;
@@ -153,6 +176,7 @@ namespace MediaPortal.TagReader
         musictag.Channels = tag.Properties.AudioChannels;
         musictag.SampleRate = tag.Properties.AudioSampleRate;
         musictag.Year = (int)tag.Tag.Year;
+        musictag.Grouping = tag.Tag.Grouping;
 
         if (tag.MimeType == "taglib/mp3")
         {

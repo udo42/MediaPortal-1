@@ -31,11 +31,14 @@ namespace MediaPortal.TagReader
   {
     #region Variables
 
-    internal string m_strArtist = "";
-    internal string m_strAlbum = "";
-    internal string m_strGenre = "";
-    internal string m_strTitle = "";
-    internal string m_strComment = "";
+    internal string m_strArtist = string.Empty;
+    internal string m_strArtistSort = string.Empty;
+    internal string m_strAlbum = string.Empty;
+    internal string m_strAlbumSort = string.Empty;
+    internal string m_strGenre = string.Empty;
+    internal string m_strTitle = string.Empty;
+    internal string m_strTitleSort = string.Empty;
+    internal string m_strComment = string.Empty;
     internal int m_iYear = 0;
     internal int m_iDuration = 0;
     internal int m_iTrack = 0;
@@ -44,7 +47,9 @@ namespace MediaPortal.TagReader
     internal int m_iRating = 0;
     internal byte[] m_CoverArtImageBytes = null;
     internal string m_AlbumArtist = string.Empty;
+    internal string m_AlbumArtistSort = string.Empty;
     internal string m_Composer = string.Empty;
+    internal string m_ComposerSort = string.Empty;
     internal string m_Conductor = string.Empty;
     internal string m_FileType = string.Empty;
     internal int m_BitRate = 0;
@@ -60,6 +65,7 @@ namespace MediaPortal.TagReader
     internal int m_BPM = 0;
     internal int m_Channels = 0;
     internal int m_SampleRate = 0;
+    internal string m_Grouping = string.Empty;
 
     #endregion
 
@@ -70,34 +76,6 @@ namespace MediaPortal.TagReader
     /// </summary>
     public MusicTag() {}
 
-    /// <summary>
-    /// copy constructor
-    /// </summary>
-    /// <param name="tag"></param>
-    public MusicTag(MusicTag tag)
-    {
-      if (tag == null) return;
-      Artist = tag.Artist;
-      Album = tag.Album;
-      Genre = tag.Genre;
-      Title = tag.Title;
-      Comment = tag.Comment;
-      Year = tag.Year;
-      Duration = tag.Duration;
-      Track = tag.Track;
-      TimesPlayed = tag.m_TimesPlayed;
-      Rating = tag.Rating;
-      BitRate = tag.BitRate;
-      Composer = tag.Composer;
-      CoverArtImageBytes = tag.CoverArtImageBytes;
-      AlbumArtist = tag.AlbumArtist;
-      Lyrics = tag.Lyrics;
-      Comment = tag.Comment;
-
-      DateTimePlayed = tag.DateTimePlayed;
-      DateTimeModified = tag.DateTimeModified;
-    }
-
     #endregion
 
     #region Methods
@@ -107,12 +85,15 @@ namespace MediaPortal.TagReader
     /// </summary>
     public void Clear()
     {
-      m_strArtist = "";
-      m_strAlbum = "";
-      m_strGenre = "";
-      m_strTitle = "";
-      m_strComment = "";
-      m_FileType = "";
+      m_strArtist = string.Empty;
+      m_strArtistSort = string.Empty;
+      m_strAlbum = string.Empty;
+      m_strAlbumSort = string.Empty;
+      m_strGenre = string.Empty;
+      m_strTitle = string.Empty;
+      m_strTitleSort = string.Empty;
+      m_strComment = string.Empty;
+      m_FileType = string.Empty;
       m_iYear = 0;
       m_iDuration = 0;
       m_iTrack = 0;
@@ -120,31 +101,33 @@ namespace MediaPortal.TagReader
       m_TimesPlayed = 0;
       m_iRating = 0;
       m_BitRate = 0;
-      m_Composer = "";
-      m_Conductor = "";
-      m_AlbumArtist = "";
-      m_Lyrics = "";
+      m_Composer = string.Empty;
+      m_ComposerSort = string.Empty;
+      m_Conductor = string.Empty;
+      m_AlbumArtist = string.Empty;
+      m_AlbumArtistSort = string.Empty;
+      m_Lyrics = string.Empty;
       m_iDiscId = 0;
       m_iNumDisc = 0;
       m_hasAlbumArtist = false;
-      m_Codec = "";
-      m_BitRateMode = "";
+      m_Codec = string.Empty;
+      m_BitRateMode = string.Empty;
       m_BPM = 0;
       m_Channels = 0;
       m_SampleRate = 0;
       m_dateTimeModified = DateTime.MinValue;
       m_dateTimePlayed = DateTime.MinValue;
+      m_Grouping = string.Empty;
     }
 
     public bool IsMissingData
     {
       get
       {
-        return Artist.Length == 0
-               || Album.Length == 0
-               || Title.Length == 0
-               || Artist.Length == 0
-               || Genre.Length == 0
+        return string.IsNullOrEmpty(Artist)
+               || string.IsNullOrEmpty(Album)
+               || string.IsNullOrEmpty(Title)
+               || string.IsNullOrEmpty(Artist)
                || Track == 0
                || Duration == 0;
       }
@@ -181,6 +164,19 @@ namespace MediaPortal.TagReader
     }
 
     /// <summary>
+    /// Property to get/set the Title Sort field of the music file
+    /// </summary>
+    public string TitleSort
+    {
+      get { return m_strTitleSort;  }
+      set
+      {
+        if (string.IsNullOrEmpty(value)) return;
+        m_strTitleSort = value.Trim();
+      }
+    }
+
+    /// <summary>
     /// Property to get/set the Artist field of the music file
     /// </summary>
     public string Artist
@@ -194,6 +190,20 @@ namespace MediaPortal.TagReader
     }
 
     /// <summary>
+    /// Property to get/set the Artist Sort field of the music file
+    /// </summary>
+    public string ArtistSort
+    {
+      get { return m_strArtistSort; }
+      set
+      {
+        if (string.IsNullOrEmpty(value)) return;
+        m_strArtistSort = value.Trim();
+      }
+    }
+
+
+    /// <summary>
     /// Property to get/set the comment Album name of the music file
     /// </summary>
     public string Album
@@ -205,6 +215,20 @@ namespace MediaPortal.TagReader
         m_strAlbum = value.Trim();
       }
     }
+
+    /// <summary>
+    /// Property to get/set the Album Sort field of the music file
+    /// </summary>
+    public string AlbumSort
+    {
+      get { return m_strAlbumSort; }
+      set
+      {
+        if (string.IsNullOrEmpty(value)) return;
+        m_strAlbumSort = value.Trim();
+      }
+    }
+
 
     /// <summary>
     /// Property to get/set the Genre field of the music file
@@ -291,22 +315,44 @@ namespace MediaPortal.TagReader
       set { m_TimesPlayed = value; }
     }
 
+    /// <summary>
+    /// Property to get/set the File Type of the music file
+    /// </summary>
     public string FileType
     {
       get { return m_FileType; }
       set { m_FileType = value; }
     }
 
+    /// <summary>
+    /// Property to get/set the Bit Rate field of the music file
+    /// </summary>
     public int BitRate
     {
       get { return m_BitRate; }
       set { m_BitRate = value; }
     }
 
+    /// <summary>
+    /// Property to get/set the Album Artist field of the music file
+    /// </summary>
     public string AlbumArtist
     {
       get { return m_AlbumArtist; }
       set { m_AlbumArtist = value; }
+    }
+
+    /// <summary>
+    /// Property to get/set the Album Artist Sort field of the music file
+    /// </summary>
+    public string AlbumArtistSort
+    {
+      get { return m_AlbumArtistSort; }
+      set
+      {
+        if (string.IsNullOrEmpty(value)) return;
+        m_AlbumArtistSort = value.Trim();
+      }
     }
 
     public bool HasAlbumArtist
@@ -315,54 +361,94 @@ namespace MediaPortal.TagReader
       set { m_hasAlbumArtist = value; }
     }
 
+    /// <summary>
+    /// Property to get/set the Composer field of the music file
+    /// </summary>
     public string Composer
     {
       get { return m_Composer; }
       set { m_Composer = value; }
     }
 
+    /// <summary>
+    /// Property to get/set the Composer Sort field of the music file
+    /// </summary>
+    public string ComposerSort
+    {
+      get { return m_ComposerSort; }
+      set
+      {
+        if (string.IsNullOrEmpty(value)) return;
+        m_ComposerSort = value.Trim();
+      }
+    }
+
+    /// <summary>
+    /// Property to get/set the Conductor field of the music file
+    /// </summary>
     public string Conductor
     {
       get { return m_Conductor; }
       set { m_Conductor = value; }
     }
 
+    /// <summary>
+    /// Property to get/set the File name of the music file
+    /// </summary>
     public string FileName
     {
       get { return m_FileName; }
       set { m_FileName = value; }
     }
-
+    
+    /// <summary>
+    /// Property to get/set the Lyrics field of the music file
+    /// </summary>
     public string Lyrics
     {
       get { return m_Lyrics; }
       set { m_Lyrics = value; }
     }
 
+    /// <summary>
+    /// Property to get/set the Title Codec of the music file
+    /// </summary>
     public string Codec
     {
       get { return m_Codec; }
       set { m_Codec = value; }
     }
 
+    /// <summary>
+    /// Property to get/set the Bit Rate Mode field of the music file (only works for MP3)
+    /// </summary>
     public string BitRateMode
     {
       get { return m_BitRateMode; }
       set { m_BitRateMode = value; }
     }
 
+    /// <summary>
+    /// Property to get/set the BPM field of the music file
+    /// </summary>
     public int BPM
     {
       get { return m_BPM; }
       set { m_BPM = value; }
     }
 
+    /// <summary>
+    /// Property to get/set the Channels field of the music file
+    /// </summary>
     public int Channels
     {
       get { return m_Channels; }
       set { m_Channels = value; }
     }
 
+    /// <summary>
+    /// Property to get/set the Sample Rate field of the music file
+    /// </summary>
     public int SampleRate
     {
       get { return m_SampleRate; }
@@ -394,6 +480,20 @@ namespace MediaPortal.TagReader
     {
       get { return Utils.GetImageFile(m_CoverArtImageBytes, String.Empty); }
     }
+
+    /// <summary>
+    /// Property to get/set the Grouping field of the music file
+    /// </summary>
+    public string Grouping
+    {
+      get { return m_Grouping; }
+      set
+      {
+        if (string.IsNullOrEmpty(value)) return;
+        m_Grouping = value.Trim();
+      }
+    }
+
 
     #endregion
   }
