@@ -25,6 +25,7 @@ using System.Globalization;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using System.Linq;
 using Gentle.Common;
 using MediaPortal.Configuration;
 using MediaPortal.Dialogs;
@@ -372,7 +373,7 @@ namespace TvPlugin
       TVHome.WaitForGentleConnection();
 
       base.OnPageLoad();
-      DeleteInvalidRecordings();
+      //DeleteInvalidRecordings();
 
       if (btnCompress != null)
       {
@@ -735,14 +736,15 @@ namespace TvPlugin
     /// </summary>
     /// <param name="aStartTime">A recordings start time</param>
     /// <returns>The spoken date label</returns>
-    private string GetSpokenViewDate(DateTime aStartTime)
+    private static string GetSpokenViewDate(DateTime aStartTime)
     {
       DateTime compareDate = DateTime.Now.Subtract(DateTime.Now.Subtract(aStartTime));
-      if (DateTime.Now.Subtract(aStartTime) < new TimeSpan(24, 0, 0))
+      
+      if (DateTime.Today.Equals(aStartTime.Date))
         return GUILocalizeStrings.Get(6030); // "Today"
-      else if (DateTime.Now.Subtract(aStartTime) < new TimeSpan(48, 0, 0))
+      else if (DateTime.Today.Subtract(aStartTime.Date) < new TimeSpan(48, 0, 0))
         return GUILocalizeStrings.Get(6040); // "Yesterday"
-      else if (DateTime.Now.Subtract(aStartTime) < new TimeSpan(72, 0, 0))
+      else if (DateTime.Today.Subtract(aStartTime.Date) < new TimeSpan(72, 0, 0))
         return GUILocalizeStrings.Get(6041); // "Two days ago"
       //else if (DateTime.Now.Subtract(aStartTime) < new TimeSpan(168, 0, 0)) // current week
       //{
@@ -771,122 +773,96 @@ namespace TvPlugin
 
     private void LoadDirectory()
     {
-      List<GUIListItem> itemlist = new List<GUIListItem>();
       try
       {
         GUIControl.ClearControl(GetID, facadeLayout.GetID);
+        
+        SwitchLayout();
 
-        IList<RadioGroupMap> radiogroups = RadioGroupMap.ListAll();
-        IList<Recording> recordings = Recording.ListAll();
+        //IList<RadioGroupMap> radiogroups = RadioGroupMap.ListAll();
+        IEnumerable<Recording> recordings = Recording.ListAll();
         if (_currentLabel == string.Empty)
         {
-          foreach (Recording rec in recordings)
+          // we are not browsing individual records
+          // first build up a list of folders based on view
+          // actual program associated will be the latest one for that folder (folder could be
+          // date, channel, genre etc)
+          IEnumerable<Recording> groups = recordings;
+          switch (_currentDbView)
           {
-            // catch exceptions here so MP will go on and list further recs
-            try
+            case DBView.History:
+              groups = recordings.GroupBy(r => GetSpokenViewDate(r.StartTime)).Select(g => g.OrderByDescending(h => h.StartTime).First());
+              break;
+            case DBView.Recordings:
+              groups = recordings.GroupBy(r => r.Title).Select(g => g.OrderByDescending(h => h.StartTime).First());
+              break;
+            case DBView.Channel:
+              groups = recordings.GroupBy(r => r.IdChannel).Select(g => g.OrderByDescending(h => h.StartTime).First());
+              break;
+            case DBView.Genre:
+              groups = recordings.GroupBy(r => r.Genre).Select(g => g.OrderByDescending(h => h.StartTime).First());
+              break;
+          }
+
+          // then sort the groups based on sort option
+          switch (_currentSortMethod)
+          {
+            case SortMethod.Channel:
+              groups = m_bSortAscending ? groups.OrderBy(i => i.IdChannel) : groups.OrderByDescending(i => i.IdChannel);
+              break;
+            case SortMethod.Date:
+              groups = m_bSortAscending ? groups.OrderBy(i => i.StartTime) : groups.OrderByDescending(i => i.StartTime);
+              break;
+            case SortMethod.Genre:
+              groups = m_bSortAscending ? groups.OrderBy(i => i.Genre) : groups.OrderByDescending(i => i.Genre);
+              break;
+            case SortMethod.Name:
+              groups = m_bSortAscending ? groups.OrderBy(i => i.Title) : groups.OrderByDescending(i => i.Title);
+              break;
+            case SortMethod.Played:
+              groups = m_bSortAscending ? groups.OrderBy(i => i.TimesWatched) : groups.OrderByDescending(i => i.TimesWatched);
+              break;
+          }
+
+          foreach (var folder in groups)//recordings.GroupBy(r => r.Title).Select(g => g.OrderByDescending(h => h.StartTime).First()).OrderByDescending(i => i.StartTime))
+          {
+            var i = new GUIListItem();
+            switch (_currentDbView)
             {
-              bool isRadioChannel = false;
-              foreach (RadioGroupMap radiogroup in radiogroups)
-              {
-                if (rec.IdChannel == radiogroup.IdChannel)
-                {
-                  isRadioChannel = true;
-                  break;
-                }
-              }
-              if (isRadioChannel == true) continue;  // only TVChannels are allowed 
-              bool add = true;
-
-              // combine recordings with the same name to a folder located on top
-              foreach (GUIListItem item in itemlist)
-              {
-                if (item.TVTag != null)
-                {
-                  bool merge = false;
-                  Recording listRec = item.TVTag as Recording;
-                  if (listRec != null)
-                  {
-                    switch (_currentDbView)
-                    {
-                      case DBView.History:
-                        merge = GetSpokenViewDate(rec.StartTime).Equals(GetSpokenViewDate(listRec.StartTime));
-                        break;
-                      case DBView.Recordings:
-                        merge = rec.Title.Equals(listRec.Title, StringComparison.InvariantCultureIgnoreCase);
-                        //merge = TVUtil.GetDisplayTitle(rec).Equals(listRec.Title, StringComparison.InvariantCultureIgnoreCase);
-                        break;
-                      case DBView.Channel:
-                        merge = rec.IdChannel == listRec.IdChannel;
-                        break;
-                      case DBView.Genre:
-                        merge = rec.Genre.Equals(listRec.Genre, StringComparison.InvariantCultureIgnoreCase);
-                        break;
-                    }
-                    if (merge)
-                    {
-                      if (listRec.StartTime < rec.StartTime)
-                      {
-                        // Make sure that the folder items shows the information of the most recent subitem
-                        // e.g. the Start time might be relevant for sorting the folders correctly.
-                        item.TVTag = (BuildItemFromRecording(rec)).TVTag;
-                      }
-
-                      item.IsFolder = true;
-                      // NO thumbnails for folders please so we can distinguish between single files and folders
-                      Utils.SetDefaultIcons(item);
-                      item.ThumbnailImage = item.IconImageBig;
-                      add = false;
-                      break;
-                    }
-                  }
-                }
-              }
-
-              GUIListItem it = BuildItemFromRecording(rec);
-              if (it != null)
-              {
-                if (add)
-                {
-                  // Add new list item for this recording
-                  itemlist.Add(it);
-                }
-                else
-                {
-                  if (IsRecordingActual(rec))
-                  {
-                    for (int i = 0; i < itemlist.Count; i++)
-                    {
-                      if (itemlist[i].IsFolder &&
-                          (TVUtil.GetDisplayTitle(rec).Equals(itemlist[i].Label,
-                                                              StringComparison.InvariantCultureIgnoreCase) ||
-                           (itemlist[i].Label.Equals(rec.Title, StringComparison.InvariantCultureIgnoreCase))))
-                      {
-                        it.IsFolder = true;
-                        Utils.SetDefaultIcons(it);
-                        itemlist.RemoveAt(i);
-                        itemlist.Insert(i, it);
-                        break;
-                      }
-                    }
-                  }
-                }
-              }
+              case DBView.History:
+                i.Label = GetSpokenViewDate(folder.StartTime);
+                i.Label2 = string.Empty;
+                break;
+              case DBView.Recordings:
+                i.Label = folder.Title;
+                i.Label2 = GetSpokenViewDate(folder.StartTime);
+                break;
+              case DBView.Channel:
+                i.Label = folder.ReferencedChannel().DisplayName;
+                i.Label2 = GetSpokenViewDate(folder.StartTime);
+                break;
+              case DBView.Genre:
+                i.Label = folder.Genre;
+                i.Label2 = GetSpokenViewDate(folder.StartTime);
+                break;
             }
-            catch (Exception recex)
-            {
-              Log.Error("TVRecorded: error processing recordings - {0}", recex.Message);
-            }
+            i.Label2 = GetSpokenViewDate(folder.StartTime);
+            i.TVTag = folder;
+            i.IsFolder = true;
+            Utils.SetDefaultIcons(i);
+            facadeLayout.Add(i);
           }
         }
         else
         {
-          // Showing a merged folders content
+          // Showing a folders content
+
+          // add parent item
           GUIListItem item = new GUIListItem("..");
           item.IsFolder = true;
           Utils.SetDefaultIcons(item);
-          itemlist.Add(item);
+          facadeLayout.Add(item);
 
-          // Log.Debug("TVRecorded: Currently showing the virtual folder contents of {0}", _currentLabel);
           foreach (Recording rec in recordings)
           {
             bool addToList = true;
@@ -914,9 +890,15 @@ namespace TvPlugin
               // Add new list item for this recording
               item = BuildItemFromRecording(rec);
               item.Label = TVUtil.GetDisplayTitle(rec);
+          TimeSpan ts = rec.EndTime - rec.StartTime;
+
+          string strTime = String.Format("{0} ({1})",
+                                         Utils.GetNamedDate(rec.StartTime),
+                                         Utils.SecondsToHMString((int)ts.TotalSeconds));
+              item.Label2 = strTime;
               if (item != null)
               {
-                itemlist.Add(item);
+                facadeLayout.Add(item);
               }
             }
           }
@@ -927,34 +909,9 @@ namespace TvPlugin
         Log.Error("TvRecorded: Error fetching recordings from database {0}", ex.Message);
       }
 
-      try
-      {
-        foreach (GUIListItem item in itemlist)
-        {
-          // Ugly hack to remove the episode info from merged folders 
-          // Since the first item above does not "known" it will be a folder's start item later
-          // we need to do this here...
-          if (item.IsFolder && _currentDbView == DBView.Recordings)
-          {
-            Recording listRec = item.TVTag as Recording;
-            if (listRec != null)
-            {
-              item.Label = listRec.Title;
-            }
-          }
-
-          facadeLayout.Add(item);
-        }
-      }
-      catch (Exception ex2)
-      {
-        Log.Error("TvRecorded: Error adding recordings to list - {0}", ex2.Message);
-      }
-
       //set object count label
-      GUIPropertyManager.SetProperty("#itemcount", Utils.GetObjectCountLabel(itemlist.Count - (itemlist.Count > 0 && itemlist[0].Label == ".." ? 1 : 0)));
+      GUIPropertyManager.SetProperty("#itemcount", Utils.GetObjectCountLabel(facadeLayout.Count - (facadeLayout.Count > 0 && facadeLayout[0].Label == ".." ? 1 : 0)));
 
-      SwitchLayout();
       OnSort();
       UpdateProperties();
     }
@@ -1329,6 +1286,14 @@ namespace TvPlugin
         _iSelectedItem--;
       }
       GUIControl.SelectItemControl(GetID, facadeLayout.GetID, _iSelectedItem);
+
+      if (facadeLayout!= null && facadeLayout.SelectedListItem != null && facadeLayout.SelectedListItem.Label == "..")
+      {
+        _currentLabel = string.Empty;
+        LoadDirectory();
+        GUIControl.SelectItemControl(GetID, facadeLayout.GetID, _rootItem);
+        _rootItem = 0;
+      }
 
       _resetSMSsearchDelay = DateTime.Now;
       _resetSMSsearch = true;
