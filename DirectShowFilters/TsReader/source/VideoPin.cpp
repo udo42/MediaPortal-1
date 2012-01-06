@@ -337,13 +337,19 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
         // and slow down emptying rate when data available gets really low
         double frameTime;
         int buffCnt = demux.GetVideoBufferCnt(&frameTime);
-        DWORD sampSleepTime = max(1,(DWORD)(frameTime/4.0));
-        
-        if ((buffCnt < 9) && (buffCnt > 5))
-        {
-      	  sampSleepTime = max(1,(DWORD)(frameTime/8.0));
-        }
-        else if ((buffCnt == 0) || (buffCnt > 20))
+
+        //        DWORD sampSleepTime = max(1,(DWORD)(frameTime/4.0));       
+        //        if ((buffCnt < 9) && (buffCnt > 5))
+        //        {
+        //      	  sampSleepTime = max(1,(DWORD)(frameTime/8.0));
+        //        }
+        //        else if ((buffCnt == 0) || (buffCnt > 20))
+        //        {
+        //      	  sampSleepTime = 1;
+        //        }
+
+        DWORD sampSleepTime = max(1,(DWORD)(frameTime/8.0));       
+        if ((buffCnt == 0) || (buffCnt > 4))
         {
       	  sampSleepTime = 1;
         }
@@ -464,9 +470,13 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
             LogDebug("vidPin:set discontinuity L:%d B:%d fTime:%03.3f", m_bDiscontinuity, buffer->GetDiscontinuity(), (float)fTime);
             pSample->SetDiscontinuity(TRUE);           
 
-            CMediaType mt; 
-            demux.GetVideoStreamType(mt);
-            pSample->SetMediaType(&mt);            
+            if (m_sampleCount == 0) 
+            {
+              //Add MediaType info to first sample after OnThreadStartPlay()
+              CMediaType mt; 
+              demux.GetVideoStreamType(mt);
+              pSample->SetMediaType(&mt); 
+            }           
 
             m_bDiscontinuity=FALSE;
           }
