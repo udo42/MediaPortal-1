@@ -467,17 +467,20 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
           //do we need to set the discontinuity flag?
           if (m_bDiscontinuity || buffer->GetDiscontinuity())
           {
-            LogDebug("vidPin:set discontinuity L:%d B:%d fTime:%03.3f", m_bDiscontinuity, buffer->GetDiscontinuity(), (float)fTime);
-            pSample->SetDiscontinuity(TRUE);           
-
             if (m_sampleCount == 0) 
             {
               //Add MediaType info to first sample after OnThreadStartPlay()
               CMediaType mt; 
               demux.GetVideoStreamType(mt);
               pSample->SetMediaType(&mt); 
-            }           
+              LogDebug("vidPin: Add pmt and set discontinuity L:%d B:%d fTime:%03.3f", m_bDiscontinuity, buffer->GetDiscontinuity(), (float)fTime);
+            }   
+            else
+            {        
+              LogDebug("vidPin: Set discontinuity L:%d B:%d fTime:%03.3f", m_bDiscontinuity, buffer->GetDiscontinuity(), (float)fTime);
+            }
 
+            pSample->SetDiscontinuity(TRUE);           
             m_bDiscontinuity=FALSE;
           }
 
