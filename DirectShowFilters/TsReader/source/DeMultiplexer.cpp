@@ -1482,7 +1482,7 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
 
             if (m_vecVideoBuffers.size()<=MAX_BUF_SIZE)
             {
-              if (m_bSecondGopFound)
+              if (m_bFirstGopFound)
               {
                 // ownership is transfered to vector
                 m_vecVideoBuffers.push_back(pCurrentVideoBuffer);
