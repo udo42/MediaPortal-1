@@ -43,11 +43,14 @@ namespace MediaPortal.GUI.Settings
   {
     [SkinControl(11)] protected GUIButtonControl btnMiniDisplay = null;
     [SkinControl(10)] protected GUIButtonControl btnTV = null;
+    [SkinControl(20)] protected GUIToggleButtonControl btnLocked = null;
 
     [DllImport("shlwapi.dll")]
     private static extern bool PathIsNetworkPath(string Path);
 
     private static bool _settingsChanged = false;
+    private static bool _unlocked = true;
+    private static string _pin = string.Empty;
     
     public GUISettings()
     {
@@ -57,6 +60,74 @@ namespace MediaPortal.GUI.Settings
     public override bool Init()
     {
       return Load(GUIGraphicsContext.Skin + @"\settings.xml");
+    }
+
+    #region Serialization
+
+    private void LoadSettings()
+    {
+      using (Profile.Settings xmlreader = new Profile.MPSettings())
+      {
+        _pin = Util.Utils.DecryptPin(xmlreader.GetValueAsString("mpsettings", "pin", string.Empty));
+
+        if (_pin != string.Empty)
+        {
+          btnLocked.Selected = true;
+        }
+      }
+      
+    }
+
+    private void SaveSettings()
+    {
+      using (Profile.Settings xmlwriter = new Profile.MPSettings())
+      {
+        xmlwriter.SetValue("mpsettings", "pin", Util.Utils.EncryptPin(_pin));
+      }
+    }
+
+    #endregion
+
+    protected override void OnPageLoad()
+    {
+      if (!IsGUISettingsWindow(GUIWindowManager.GetPreviousActiveWindow()))
+      {
+        _settingsChanged = false;
+      }
+      GUIPropertyManager.SetProperty("#currentmodule", "*Settings");
+      LoadSettings();
+      base.OnPageLoad();
+
+      if (!IsGUISettingsWindow(GUIWindowManager.GetPreviousActiveWindow()) && _pin != string.Empty)
+      {
+        _unlocked = false;
+        
+        if (!RequestPin())
+        {
+          GUIWindowManager.CloseCurrentWindow();
+          return;
+        }
+        else
+        {
+          _unlocked = true;
+        }
+      }
+    }
+
+    protected override void OnPageDestroy(int new_windowId)
+    {
+      SaveSettings();
+      
+      if (_settingsChanged && !IsGUISettingsWindow(new_windowId))
+      {
+        OnRestartMP();
+      }
+
+      if (!IsGUISettingsWindow(new_windowId))
+      {
+        _unlocked = false;
+      }
+      base.OnPageDestroy(new_windowId);
     }
 
     public override void OnAction(Action action)
@@ -70,6 +141,38 @@ namespace MediaPortal.GUI.Settings
           }
       }
       base.OnAction(action);
+    }
+
+    protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
+    {
+      base.OnClicked(controlId, control, actionType);
+
+      if (control == btnLocked)
+      {
+        // User want's to lock settings with PIN
+        if (btnLocked.Selected)
+        {
+          if (!SetPin())
+          {
+            // No PIN entered, reset control
+            btnLocked.Selected = false;
+          }
+        }
+        else
+        {
+          // User want's to remove or change PIN (need current PIN validation first)
+          if (RequestPin())
+          {
+            _unlocked = true;
+            _pin = string.Empty;
+          }
+          else
+          {
+            // Wrong PIN, reset control
+            btnLocked.Selected = true;
+          }
+        }
+      }
     }
 
     public override bool OnMessage(GUIMessage message)
@@ -89,27 +192,7 @@ namespace MediaPortal.GUI.Settings
       }
       return base.OnMessage(message);
     }
-
-    protected override void OnPageLoad()
-    {
-      if (!IsGUISettingsWindow(GUIWindowManager.GetPreviousActiveWindow()))
-      {
-        _settingsChanged = false;
-      }
-      GUIPropertyManager.SetProperty("#currentmodule", "*Settings");
-      base.OnPageLoad();
-    }
-
-    protected override void OnPageDestroy(int new_windowId)
-    {
-      if (_settingsChanged && !IsGUISettingsWindow(new_windowId))
-      {
-        OnRestartMP();
-      }
-
-      base.OnPageDestroy(new_windowId);
-    }
-
+    
     public static bool IsGUISettingsWindow(int windowId)
     {
       if (windowId == (int)Window.WINDOW_SETTINGS_DVD ||
@@ -161,6 +244,65 @@ namespace MediaPortal.GUI.Settings
     {
       get { return _settingsChanged; }
       set { _settingsChanged = value; }
+    }
+
+    private bool SetPin()
+    {
+      int iPincode = -1;
+      GUIMessage msgGetPassword = new GUIMessage(GUIMessage.MessageType.GUI_MSG_GET_PASSWORD, 0, 0, 0, 0, 0, 0);
+      GUIWindowManager.SendMessage(msgGetPassword);
+        
+      try
+      {
+        iPincode = Int32.Parse(msgGetPassword.Label);
+        _pin = iPincode.ToString();
+        _unlocked = false;
+        return true;
+      }
+      catch (Exception) {}
+      return false;
+    }
+
+    private bool RequestPin()
+    {
+      bool retry = true;
+      bool sucess = false;
+      
+      while (retry)
+      {
+        GUIMessage msgGetPassword = new GUIMessage(GUIMessage.MessageType.GUI_MSG_GET_PASSWORD, 0, 0, 0, 0, 0, 0);
+        GUIWindowManager.SendMessage(msgGetPassword);
+        int iPincode = -1;
+        try
+        {
+          iPincode = Int32.Parse(msgGetPassword.Label);
+        }
+        catch (Exception) { }
+
+        if (iPincode == Convert.ToInt32(_pin))
+        {
+          sucess = true;
+        }
+        
+        if (sucess)
+        {
+          return true;
+        }
+
+        GUIMessage msgWrongPassword = new GUIMessage(GUIMessage.MessageType.GUI_MSG_WRONG_PASSWORD, 0, 0, 0, 0, 0,
+                                                     0);
+        GUIWindowManager.SendMessage(msgWrongPassword);
+
+        if (!(bool)msgWrongPassword.Object)
+        {
+          retry = false;
+        }
+        else
+        {
+          retry = true;
+        }
+      }
+      return false;
     }
 
     #region RestartMP

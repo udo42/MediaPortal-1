@@ -31,6 +31,7 @@
         <id>3</id>
         <width>350</width>
         <label>*General</label>
+				<onup>20</onup>
         <hyperlink>1016</hyperlink>
       </control>
 			<control>
@@ -88,7 +89,14 @@
         <width>350</width>
         <label>9100</label>
         <hyperlink>9000</hyperlink>
-        <ondown>4</ondown>
+      </control>
+			<control>
+        <description>Settings locked</description>
+        <type>togglebutton</type>
+        <id>20</id>
+        <width>350</width>
+        <label>Settings PIN-locked</label>
+        <ondown>3</ondown>
       </control>
     </control>
   </controls>
