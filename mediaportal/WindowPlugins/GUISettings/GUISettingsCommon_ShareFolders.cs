@@ -614,7 +614,7 @@ namespace MediaPortal.GUI.Settings
         {
           GUIListItem folder = new GUIListItem();
           string path = Path.GetFileName(dir);
-          folder.Label = path.ToUpperInvariant();
+          if (path != null) folder.Label = path.ToUpperInvariant();
           folder.Label2 = dir;
           _folders.Add(folder);
         }

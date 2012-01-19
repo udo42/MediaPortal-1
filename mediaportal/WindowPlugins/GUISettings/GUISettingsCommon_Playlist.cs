@@ -55,6 +55,7 @@ namespace MediaPortal.GUI.Settings
     private string _userNetFolder = string.Empty; // user defined network resource
     private ArrayList _folderHistory = new ArrayList(); // Holds directory items from directoryBrowserGUILisCtrl
     private Int32 _folderLvl = 0; // Current directory lvl in directory browser
+    private int _selectedLabelIndex;
 
     
     public GUISettingsPlaylist()
@@ -267,7 +268,7 @@ namespace MediaPortal.GUI.Settings
         if (selectedItem.Label2 == GUILocalizeStrings.Get(145))
         {
           string netShare = @"\\";
-          GetStringFromKeyboard(ref netShare);
+          //GetStringFromKeyboard(ref netShare);
           GetNetworkFolders(netShare);
           return;
         }
@@ -305,9 +306,58 @@ namespace MediaPortal.GUI.Settings
     /// <param name="netShare">Network resource</param>
     private void GetNetworkFolders(string netShare)
     {
-      if (!netShare.StartsWith(@"\\"))
-        return;
+      ArrayList netComputers = NetShareCollection.GetComputersOnNetwork();
 
+      if (netComputers == null || netComputers.Count == 0)
+      {
+        GUIDialogOK dlgOk = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
+        dlgOk.SetHeading(GUILocalizeStrings.Get(1020));
+        dlgOk.SetLine(1, GUILocalizeStrings.Get(300056)); //No network resources found.
+        dlgOk.SetLine(2, GUILocalizeStrings.Get(300057)); // Try manual search.
+        dlgOk.DoModal(GetID);
+
+        GetStringFromKeyboard(ref netShare);
+      }
+      else
+      {
+        GUIDialogSelect dlg = (GUIDialogSelect)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_SELECT);
+        if (dlg == null)
+        {
+          return;
+        }
+        dlg.Reset();
+        dlg.SetHeading(924); // Menu
+        dlg.EnableButton(true);
+        dlg.SetButtonLabel(413); // manual
+
+        // Add list to dlg menu
+        foreach (string netWrkst in netComputers)
+        {
+          dlg.Add(netWrkst);
+        }
+        // Show dialog menu
+        dlg.DoModal(GetID);
+
+        if (dlg.IsButtonPressed)
+        {
+          GetStringFromKeyboard(ref netShare);
+        }
+        else if (dlg.SelectedLabel == -1)
+        {
+          return;
+        }
+        else
+        {
+          netShare = dlg.SelectedLabelText;
+        }
+      }
+
+      if (string.IsNullOrEmpty(netShare) || !netShare.StartsWith(@"\\") || (netShare.StartsWith(@"\\") && netShare.Length <= 2))
+      {
+        netShare = GUILocalizeStrings.Get(145);
+        return;
+      }
+      // Get selected network resource shared folders
       _userNetFolder = netShare;
       NetShareCollection netShares = NetShareCollection.GetShares(netShare);
 
@@ -324,7 +374,7 @@ namespace MediaPortal.GUI.Settings
         {
           GUIListItem netFolder = new GUIListItem();
           string nFolder = Path.GetFileName(share.Root.FullName);
-          if (nFolder != null) netFolder.Label = nFolder.ToUpperInvariant();
+          netFolder.Label = nFolder.ToUpperInvariant();
           netFolder.Label2 = share.Root.FullName;
           _folders.Add(netFolder);
         }
@@ -374,7 +424,14 @@ namespace MediaPortal.GUI.Settings
 
       foreach (GUIListItem item in _folders)
       {
+        item.IsPlayed = false;
         item.Duration = _folderLvl; // holds directory lvl
+
+        if (_folders.IndexOf(item) == _selectedLabelIndex)
+        {
+          item.IsPlayed = true;
+        }
+
         _folderHistory.Add(item);
       }
       _folderLvl++;
@@ -476,6 +533,7 @@ namespace MediaPortal.GUI.Settings
       }
 
       // Browse folders further
+      _selectedLabelIndex = dlg.SelectedLabel;
       GUIListItem selectedItem = (GUIListItem)_folders[dlg.SelectedItemLabelIndexNoFocus];
       GetFolders(selectedItem);
       OnAddPath();
