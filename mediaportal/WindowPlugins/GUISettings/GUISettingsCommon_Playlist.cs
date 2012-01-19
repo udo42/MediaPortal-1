@@ -268,7 +268,6 @@ namespace MediaPortal.GUI.Settings
         if (selectedItem.Label2 == GUILocalizeStrings.Get(145))
         {
           string netShare = @"\\";
-          //GetStringFromKeyboard(ref netShare);
           GetNetworkFolders(netShare);
           return;
         }

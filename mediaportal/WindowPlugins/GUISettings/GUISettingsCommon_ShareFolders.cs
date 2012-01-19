@@ -413,15 +413,7 @@ namespace MediaPortal.GUI.Settings
         SetProperties();
       }
     }
-
-    // Reset directoryBrowser and parameters related to directoryBrowser
-    private void ClearFolders()
-    {
-      _folderLvl = 0;
-      _folderHistory.Clear();
-      _folders.Clear();
-    }
-
+    
     // Clear folder info data (needed for adding new folder)
     private void ClearFolderInfoData()
     {
@@ -447,6 +439,14 @@ namespace MediaPortal.GUI.Settings
       {
         _error = true;
       }
+    }
+
+    // Reset directoryBrowser and parameters related to directoryBrowser
+    private void ClearFolders()
+    {
+      _folderLvl = 0;
+      _folderHistory.Clear();
+      _folders.Clear();
     }
 
     // Folders browser
@@ -477,7 +477,6 @@ namespace MediaPortal.GUI.Settings
         if (selectedItem.Label2 == GUILocalizeStrings.Get(145))
         {
           string netShare = @"\\";
-          //GetStringFromKeyboard(ref netShare, -1);
           GetNetworkFolders(netShare);
           return;
         }
