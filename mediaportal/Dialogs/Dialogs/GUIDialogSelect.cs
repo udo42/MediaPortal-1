@@ -181,11 +181,18 @@ namespace MediaPortal.Dialogs
             if (m_bNewBehaviour)
             {
               int iControl = message.TargetControlId;
+              
               if ((int)Controls.CONTROL_LIST == iControl)
               {
                 if (GetSelectedItem() != null)
                 {
-                  GetSelectedItem().Selected = false;
+                  //GetSelectedItem().Selected = false;
+                  int itemCount = GUIControl.GetItemCount(GetID, (int)Controls.CONTROL_LIST);
+
+                  for (int i = 0; i < itemCount; i++)
+                  {
+                    GUIControl.GetListItem(GetID, (int)Controls.CONTROL_LIST, i).Selected = false;
+                  }
                 }
               }
               if ((int)Controls.CONTROL_BUTTON == iControl)

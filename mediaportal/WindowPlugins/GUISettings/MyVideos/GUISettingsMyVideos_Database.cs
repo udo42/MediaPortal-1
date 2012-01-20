@@ -108,13 +108,14 @@ namespace MediaPortal.GUI.Settings
       {
         // Automatch
         btnNearestmatch.Selected = xmlreader.GetValueAsBool("movies", "fuzzyMatching", true);
-        // FanArt setting
-        btnUsefanart.Selected = xmlreader.GetValueAsBool("moviedatabase", "usefanart", false);
+        
         string configDir;
         FanArt.GetFanArtFolder(out configDir);
         
         if (Directory.Exists(configDir))
         {
+          // FanArt setting
+          btnUsefanart.Selected = xmlreader.GetValueAsBool("moviedatabase", "usefanart", false);
           btnUsefanartonshare.Selected = xmlreader.GetValueAsBool("moviedatabase", "usefanartshare", true);
           
           if (btnUsefanart.Selected)
