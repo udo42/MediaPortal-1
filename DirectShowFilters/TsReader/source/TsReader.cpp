@@ -1398,7 +1398,12 @@ void CTsReaderFilter::ThreadProc()
     }
 
     //Buffer underrun handling for timeshifting
-    if (m_demultiplexer.m_AVDataLowCount > underRunLimit)
+    if (m_State != State_Running)
+    {
+      lastDataLowTime = timeNow;
+      _InterlockedAnd(&m_demultiplexer.m_AVDataLowCount, 0);
+    }
+    else if (m_demultiplexer.m_AVDataLowCount > underRunLimit)
     {      
       if (timeNow < (lastDataLowTime + pauseWaitTime))
       {
@@ -1478,7 +1483,7 @@ void CTsReaderFilter::ThreadProc()
                 isLiveCount = 2;
       
                 // Is graph running?
-                if (m_State == State_Running||m_State==State_Paused)
+                if (m_State != State_Stopped)
                 {
                   //yes, then send a EC_LENGTH_CHANGED event to the graph
                   NotifyEvent(EC_LENGTH_CHANGED, NULL, NULL);
@@ -1518,7 +1523,7 @@ void CTsReaderFilter::ThreadProc()
             m_duration.Set( pcrStart, pcrEnd, pcrMax); // Continuous update
   
             // Is graph running?
-            if ((m_State == State_Running) || (m_State==State_Paused))
+            if (m_State != State_Stopped)
             {
               //yes, then send a EC_LENGTH_CHANGED event to the graph
               NotifyEvent(EC_LENGTH_CHANGED, NULL, NULL);
