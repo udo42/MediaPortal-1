@@ -22,6 +22,7 @@ using System;
 using System.Collections;
 using System.IO;
 using System.Threading;
+using MediaPortal.CoreServices;
 using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
 using MediaPortal.Util;

@@ -27,7 +27,7 @@ using System.Linq;
 using TvControl;
 using TvDatabase;
 using TvLibrary.Interfaces;
-using TvLibrary.Log;
+using MediaPortal.CoreServices;
 
 #endregion
 
@@ -90,11 +90,11 @@ namespace TvService
       Stopwatch stopwatch = Stopwatch.StartNew();
       try
       {
-        //Log.Info("GetFreeCardsForChannel st {0}", Environment.StackTrace);
+        //GlobalServiceProvider.Instance.Get<ILogger>().Info("GetFreeCardsForChannel st {0}", Environment.StackTrace);
         //construct list of all cards we can use to tune to the new channel
         if (LogEnabled)
         {
-          Log.Info("Controller: find free card for channel {0}", dbChannel.DisplayName);
+          GlobalServiceProvider.Instance.Get<ILogger>().Info("Controller: find free card for channel {0}", dbChannel.DisplayName);
         }
         var cardsAvailable = new List<CardDetail>();
 
@@ -126,7 +126,7 @@ namespace TvService
         }
         if (LogEnabled)
         {
-          Log.Info("Controller: found {0} free card(s)", cardsAvailable.Count);
+          GlobalServiceProvider.Instance.Get<ILogger>().Info("Controller: found {0} free card(s)", cardsAvailable.Count);
         }
 
         return cardsAvailable;
@@ -134,13 +134,13 @@ namespace TvService
       catch (Exception ex)
       {
         result = TvResult.UnknownError;
-        Log.Write(ex);
+        GlobalServiceProvider.Instance.Get<ILogger>().Error(ex);
         return null;
       }
       finally
       {
         stopwatch.Stop();
-        Log.Info("AdvancedCardAllocation.GetFreeCardsForChannel took {0} msec", stopwatch.ElapsedMilliseconds);
+        GlobalServiceProvider.Instance.Get<ILogger>().Info("AdvancedCardAllocation.GetFreeCardsForChannel took {0} msec", stopwatch.ElapsedMilliseconds);
       }
     }
 
@@ -179,12 +179,12 @@ namespace TvService
       cardsUnAvailable = new Dictionary<int, TvResult>();
       try
       {
-        //Log.Info("GetFreeCardsForChannel st {0}", Environment.StackTrace);
+        //GlobalServiceProvider.Instance.Get<ILogger>().Info("GetFreeCardsForChannel st {0}", Environment.StackTrace);
         //construct list of all cards we can use to tune to the new channel
         var cardsAvailable = new List<CardDetail>();        
         if (LogEnabled)
         {
-          Log.Info("Controller: find card for channel {0}", dbChannel.DisplayName);
+          GlobalServiceProvider.Instance.Get<ILogger>().Info("Controller: find card for channel {0}", dbChannel.DisplayName);
         }
         //get the tuning details for the channel
         List<IChannel> tuningDetails = _businessLayer.GetTuningChannelsByDbChannel(dbChannel);
@@ -195,14 +195,14 @@ namespace TvService
           //no tuning details??
           if (LogEnabled)
           {
-            Log.Info("Controller:  No tuning details for channel:{0}", dbChannel.DisplayName);
+            GlobalServiceProvider.Instance.Get<ILogger>().Info("Controller:  No tuning details for channel:{0}", dbChannel.DisplayName);
           }
           return cardsAvailable;
         }
 
         if (LogEnabled)
         {
-          Log.Info("Controller:   got {0} tuning details for {1}", tuningDetails.Count, dbChannel.DisplayName);
+          GlobalServiceProvider.Instance.Get<ILogger>().Info("Controller:   got {0} tuning details for {1}", tuningDetails.Count, dbChannel.DisplayName);
         }
         int number = 0;
         Dictionary<int, ITvCardHandler>.ValueCollection cardHandlers = cards.Values;
@@ -213,7 +213,7 @@ namespace TvService
           number++;
           if (LogEnabled)
           {
-            Log.Info("Controller:   channel #{0} {1} ", number, tuningDetail.ToString());
+            GlobalServiceProvider.Instance.Get<ILogger>().Info("Controller:   channel #{0} {1} ", number, tuningDetail.ToString());
           }
           foreach (ITvCardHandler cardHandler in cardHandlers)
           {
@@ -223,7 +223,7 @@ namespace TvService
             {
               if (LogEnabled)
               {
-                Log.Info("Controller:    card:{0} has already been queried, skipping.", cardId);
+                GlobalServiceProvider.Instance.Get<ILogger>().Info("Controller:    card:{0} has already been queried, skipping.", cardId);
               }
               continue;
             }
@@ -243,12 +243,12 @@ namespace TvService
             bool isSameTransponder = IsSameTransponder(cardHandler, tuningDetail);
             if (LogEnabled)
             {
-              Log.Info("Controller:    card:{0} type:{1} can tune to channel", cardId, cardHandler.Type);
+              GlobalServiceProvider.Instance.Get<ILogger>().Info("Controller:    card:{0} type:{1} can tune to channel", cardId, cardHandler.Type);
             }
             int nrOfOtherUsers = NumberOfOtherUsersOnCard(cardHandler, user);
             if (LogEnabled)
             {
-              Log.Info("Controller:    card:{0} type:{1} users: {2}", cardId, cardHandler.Type, nrOfOtherUsers);
+              GlobalServiceProvider.Instance.Get<ILogger>().Info("Controller:    card:{0} type:{1} users: {2}", cardId, cardHandler.Type, nrOfOtherUsers);
             }
             CardDetail cardInfo = new CardDetail(cardId, cardHandler.DataBaseCard, tuningDetail, isSameTransponder,
                                                  nrOfOtherUsers);
@@ -261,20 +261,20 @@ namespace TvService
         cardsAvailable.Sort();
         if (LogEnabled)
         {
-          Log.Info("Controller: found {0} card(s) for channel", cardsAvailable.Count);
+          GlobalServiceProvider.Instance.Get<ILogger>().Info("Controller: found {0} card(s) for channel", cardsAvailable.Count);
         }
 
         return cardsAvailable;
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        GlobalServiceProvider.Instance.Get<ILogger>().Error(ex);
         return null;
       }
       finally
       {
         stopwatch.Stop();
-        Log.Info("AdvancedCardAllocation.GetAvailableCardsForChannel took {0} msec", stopwatch.ElapsedMilliseconds);
+        GlobalServiceProvider.Instance.Get<ILogger>().Info("AdvancedCardAllocation.GetAvailableCardsForChannel took {0} msec", stopwatch.ElapsedMilliseconds);
       }
     }
 
@@ -284,7 +284,7 @@ namespace TvService
       int cardId = cardHandler.DataBaseCard.IdCard;
       if (!tuningDetail.FreeToAir && !cardHandler.DataBaseCard.CAM)
       {
-        Log.Info("Controller:    card:{0} type:{1} channel is encrypted but card has no CAM", cardId, cardHandler.Type);
+        GlobalServiceProvider.Instance.Get<ILogger>().Info("Controller:    card:{0} type:{1} channel is encrypted but card has no CAM", cardId, cardHandler.Type);
         canCardDecodeChannel = false;
       }
       return canCardDecodeChannel;
@@ -299,7 +299,7 @@ namespace TvService
         //not enabled, so skip the card
         if (LogEnabled)
         {
-          Log.Info("Controller:    card:{0} type:{1} is disabled", cardId, cardHandler.Type);
+          GlobalServiceProvider.Instance.Get<ILogger>().Info("Controller:    card:{0} type:{1} is disabled", cardId, cardHandler.Type);
         }
         return false;
       }
@@ -307,7 +307,7 @@ namespace TvService
       bool isCardPresent = IsCardPresent(cardId);
       if (!isCardPresent)
       {
-        Log.Error("card: unable to connect to slave controller at:{0}",
+        GlobalServiceProvider.Instance.Get<ILogger>().Error("card: unable to connect to slave controller at:{0}",
                   cardHandler.DataBaseCard.ReferencedServer().HostName);
         return false;
       }
@@ -317,7 +317,7 @@ namespace TvService
         //card cannot tune to this channel, so skip it
         if (LogEnabled)
         {
-          Log.Info("Controller:    card:{0} type:{1} cannot tune to channel", cardId, cardHandler.Type);
+          GlobalServiceProvider.Instance.Get<ILogger>().Info("Controller:    card:{0} type:{1} cannot tune to channel", cardId, cardHandler.Type);
         }
         return false;
       }
@@ -328,7 +328,7 @@ namespace TvService
       {
         if (LogEnabled)
         {
-          Log.Info("Controller:    card:{0} type:{1} channel not mapped", cardId, cardHandler.Type);
+          GlobalServiceProvider.Instance.Get<ILogger>().Info("Controller:    card:{0} type:{1} channel not mapped", cardId, cardHandler.Type);
         }
         return false;
       }
