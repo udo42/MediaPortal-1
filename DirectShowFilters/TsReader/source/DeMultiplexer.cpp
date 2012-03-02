@@ -1543,6 +1543,7 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
             {
               LogDebug("DeMultiplexer: triggering OnVideoFormatChanged");
               m_filter.OnVideoFormatChanged(m_mpegPesParser->basicVideoInfo.streamType,m_mpegPesParser->basicVideoInfo.width,m_mpegPesParser->basicVideoInfo.height,m_mpegPesParser->basicVideoInfo.arx,m_mpegPesParser->basicVideoInfo.ary,15000000,m_mpegPesParser->basicVideoInfo.isInterlaced);
+              m_filter.GetVideoPin()->SetAddPMT();
             }
             
             if ((m_lastVidResX!=m_mpegPesParser->basicVideoInfo.width || m_lastVidResY!=m_mpegPesParser->basicVideoInfo.height) && !m_filter.m_bDisableVidSizeRebuildH264)
@@ -1565,7 +1566,7 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
             }
             else //video resolution is unchanged, but there may be other format changes
             {
-              if (m_mpegParserTriggerFormatChange && Gop && !IsAudioChanging())
+              if (m_mpegParserTriggerFormatChange && !IsAudioChanging())
               {
                 LogDebug("DeMultiplexer: Got GOP after channel change detected, format change, aud %d, vid %d", m_audioChanged, m_videoChanged);
                 if (m_audioChanged || m_videoChanged)
@@ -1931,6 +1932,7 @@ void CDeMultiplexer::FillVideoMPEG2(CTsHeader& header, byte* tsPacket)
               {
                 LogDebug("DeMultiplexer: triggering OnVideoFormatChanged");
                 m_filter.OnVideoFormatChanged(m_mpegPesParser->basicVideoInfo.streamType,m_mpegPesParser->basicVideoInfo.width,m_mpegPesParser->basicVideoInfo.height,m_mpegPesParser->basicVideoInfo.arx,m_mpegPesParser->basicVideoInfo.ary,15000000,m_mpegPesParser->basicVideoInfo.isInterlaced);
+                m_filter.GetVideoPin()->SetAddPMT();
               }
               
               if ((m_lastVidResX!=m_mpegPesParser->basicVideoInfo.width || m_lastVidResY!=m_mpegPesParser->basicVideoInfo.height) && !m_filter.m_bDisableVidSizeRebuildMPEG2)
@@ -1953,7 +1955,7 @@ void CDeMultiplexer::FillVideoMPEG2(CTsHeader& header, byte* tsPacket)
               }
               else //video resolution is unchanged, but there may be other format changes
               {
-                if (m_mpegParserTriggerFormatChange && Gop && !IsAudioChanging())
+                if (m_mpegParserTriggerFormatChange && !IsAudioChanging())
                 {
                   LogDebug("DeMultiplexer: Got GOP after channel change detected, format change, aud %d, vid %d", m_audioChanged, m_videoChanged);
                   if (m_audioChanged || m_videoChanged)
