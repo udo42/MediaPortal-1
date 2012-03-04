@@ -423,17 +423,18 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
           cRefTime -= m_rtStart;
           //adjust the timestamp with the compensation
           cRefTime -= compTemp;
-
-          // 'fast start' timestamp modification (during first 2 sec of play)
           cRefTime -= m_pTsReaderFilter->m_ClockOnStart.m_time;
-          if (m_pTsReaderFilter->m_EnableSlowMotionOnZapping && (cRefTime.m_time < FS_TIM_LIM) )
+          
+          // 'fast start' timestamp modification, during first (AddVideoComp + 1 sec) of play
+          double fsAdjLimit = (double)m_pTsReaderFilter->AddVideoComp.m_time + FS_ADDON_LIM; //vid comp + 1 second
+          if (m_pTsReaderFilter->m_EnableSlowMotionOnZapping && ((double)cRefTime.m_time < fsAdjLimit) )
           {
             //float startCref = (float)cRefTime.m_time/(1000*10000); //used in LogDebug below only
-            //Assume desired timestamp span is zero to FS_TIM_LIM, actual span is AddVideoComp to FS_TIM_LIM
-            double offsetRatio = FS_TIM_LIM/(FS_TIM_LIM - (double)m_pTsReaderFilter->AddVideoComp.m_time);
-            double currOffset = FS_TIM_LIM - (double)cRefTime.m_time;
+            //Assume desired timestamp span is zero to fsAdjLimit, actual span is AddVideoComp to fsAdjLimit
+            double offsetRatio = fsAdjLimit/FS_ADDON_LIM; // == fsAdjLimit/(fsAdjLimit - (double)m_pTsReaderFilter->AddVideoComp.m_time);
+            double currOffset = fsAdjLimit - (double)cRefTime.m_time;
             double newOffset = currOffset * offsetRatio;
-            cRefTime = (REFERENCE_TIME)(FS_TIM_LIM - newOffset);   
+            cRefTime = (fsAdjLimit > newOffset) ? (REFERENCE_TIME)(fsAdjLimit - newOffset) : 0;  //Don't allow negative cRefTime
             ForcePresent = true;
             //LogDebug("VFS cOfs %03.3f, nOfs %03.3f, cRefTimeS %03.3f, cRefTimeN %03.3f", (float)currOffset/(1000*10000), (float)newOffset/(1000*10000), startCref, (float)cRefTime.m_time/(1000*10000));         
             if (m_pTsReaderFilter->m_bFastSyncFFDShow)

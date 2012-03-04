@@ -374,7 +374,7 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
               if (lastAudio.Millisecs() - 500 < firstVideo.Millisecs()) //Less than 500ms A/V overlap
               {
                 BestCompensation = lastAudio - (500*10000) - m_pTsReaderFilter->m_RandomCompensation - m_rtStart ;
-                AddVideoCompensation = ( firstVideo - lastAudio + (200*10000) ) ; //Do not fully compensate video - helps with smooth startup
+                AddVideoCompensation = firstVideo - (lastAudio - (300*10000)) ;
                 LogDebug("Compensation : ( Rnd : %d mS ) Audio pts greatly ahead Video pts . Add %03.3f sec of extra video comp to start now !...( real time TV )",(DWORD)m_pTsReaderFilter->m_RandomCompensation/10000,(float)AddVideoCompensation.Millisecs()/1000.0f) ;
               }
               else
