@@ -128,13 +128,8 @@ HRESULT CVideoPin::DecideBufferSize(IMemAllocator *pAlloc, ALLOCATOR_PROPERTIES 
   CheckPointer(pAlloc, E_POINTER);
   CheckPointer(pRequest, E_POINTER);
 
-  if (pRequest->cBuffers == 0)
-  {
-    pRequest->cBuffers = 1;
-  }
-
-  // Would be better if this would be allocated on sample basis
-  pRequest->cbBuffer = 0x1000000;
+  pRequest->cBuffers = max(4, pRequest->cBuffers);
+  pRequest->cbBuffer = max(4194304, (ULONG)pRequest->cbBuffer);
 
   ALLOCATOR_PROPERTIES Actual;
   hr = pAlloc->SetProperties(pRequest, &Actual);
@@ -250,6 +245,7 @@ HRESULT CVideoPin::DoBufferProcessingLoop(void)
 {
   Command com;
   OnThreadStartPlay();
+  SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_ABOVE_NORMAL);
 
   do 
   {
@@ -373,7 +369,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
         //Sleep(min(10,sampSleepTime));
         m_FillBuffSleepTime = min(10,sampSleepTime);
                  
-        CAutoLock flock (&demux.m_sectionFlushVideo);
+        //CAutoLock flock (&demux.m_sectionFlushVideo);
         // Get next video buffer from demultiplexer
         buffer=demux.GetVideo(earlyStall);
       }
@@ -456,7 +452,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
             //Discard late samples at start of play,
             //and samples outside a sensible timing window during play 
             //(helps with signal corruption recovery)
-            if ((fTime > (ForcePresent ? -0.5 : -0.3)) && (fTime < 3.0))
+            if ((fTime > (ForcePresent ? -0.5 : -0.3)) && (fTime < 3.5))
             {
               if ((fTime > stallPoint) && (m_pTsReaderFilter->State() == State_Running))
               {
@@ -564,7 +560,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
             {              
               //Samples are running very late - check if this is a persistant problem by counting over a period of time 
               //(m_AVDataLowCount is checked in CTsReaderFilter::ThreadProc())
-              _InterlockedExchangeAdd(&demux.m_AVDataLowCount, 4);   
+              _InterlockedExchangeAdd(&demux.m_AVDataLowCount, 2);   
             }
             
             if (m_pTsReaderFilter->m_ShowBufferVideo) m_pTsReaderFilter->m_ShowBufferVideo--;
