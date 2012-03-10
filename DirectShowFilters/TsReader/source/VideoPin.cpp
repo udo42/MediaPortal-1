@@ -128,8 +128,8 @@ HRESULT CVideoPin::DecideBufferSize(IMemAllocator *pAlloc, ALLOCATOR_PROPERTIES 
   CheckPointer(pAlloc, E_POINTER);
   CheckPointer(pRequest, E_POINTER);
 
-  pRequest->cBuffers = max(4, pRequest->cBuffers);
-  pRequest->cbBuffer = max(4194304, (ULONG)pRequest->cbBuffer);
+  pRequest->cBuffers = max(2, pRequest->cBuffers);
+  pRequest->cbBuffer = max(8388608, (ULONG)pRequest->cbBuffer);
 
   ALLOCATOR_PROPERTIES Actual;
   hr = pAlloc->SetProperties(pRequest, &Actual);
