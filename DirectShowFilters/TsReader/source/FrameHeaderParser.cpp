@@ -42,6 +42,24 @@ extern void LogDebug(const char *fmt, ...) ;
 #define countof(array) (sizeof(array)/sizeof(array[0]))
 #define DNew new
 
+//AVC Profile IDC definitions
+#define AVC_PROF_BASELINE  66      
+#define AVC_PROF_MAIN      77      
+#define AVC_PROF_EXTENDED  88      
+#define AVC_PROF_HP        100      
+#define AVC_PROF_Hi10P     110      
+#define AVC_PROF_Hi422     122      
+#define AVC_PROF_Hi444     244      
+#define AVC_PROF_CAVLC444  44      
+#define AVC_PROF_83        83      
+#define AVC_PROF_86        86     
+
+//AVC Chroma format IDC definitions
+#define YUV400  0     
+#define YUV420  1     
+#define YUV422  2     
+#define YUV444  3     
+
 int CFrameHeaderParser::MakeAACInitData(BYTE* pData, int profile, int freq, int channels)
 {
 	int srate_idx;
@@ -1282,16 +1300,22 @@ bool CFrameHeaderParser::Read(avchdr& h, int len, CMediaType* pmt, bool reset)
 			h.level = (BYTE)gb.BitRead(8);
 
 			gb.UExpGolombRead(); // seq_parameter_set_id
+			
+			//Initialise to normal values
+		  h.chromaFormat = YUV420;
+			h.lumaDepth = 8; // bit_depth_luma_minus8
+			h.chromaDepth = 8; // bit_depth_chroma_minus8
 
-			if(h.profile >= 100) // high profile
+			if(h.profile >= AVC_PROF_HP || h.profile==AVC_PROF_CAVLC444 || h.profile==AVC_PROF_83 || h.profile==AVC_PROF_86) // high profile etc
 			{
-				if(gb.UExpGolombRead() == 3) // chroma_format_idc
+			  h.chromaFormat = gb.UExpGolombRead();
+				if(h.chromaFormat == YUV444) // chroma_format_idc
 				{
 					gb.BitRead(1); // residue_transform_flag
 				}
 
-				gb.UExpGolombRead(); // bit_depth_luma_minus8
-				gb.UExpGolombRead(); // bit_depth_chroma_minus8
+				h.lumaDepth = (WORD)gb.UExpGolombRead() + 8; // bit_depth_luma_minus8
+				h.chromaDepth = (WORD)gb.UExpGolombRead() + 8; // bit_depth_chroma_minus8
 
 				gb.BitRead(1); // qpprime_y_zero_transform_bypass_flag
 
@@ -1486,7 +1510,25 @@ bool CFrameHeaderParser::Read(avchdr& h, int len, CMediaType* pmt, bool reset)
 		//vi->hdr.bmiHeader.biCompression = '462h';
 		vi->hdr.bmiHeader.biCompression = '1CVA';
 		vi->hdr.bmiHeader.biPlanes=1;
-		vi->hdr.bmiHeader.biBitCount=24;
+
+    switch (h.chromaFormat)
+    {
+      case YUV420 :
+  		  vi->hdr.bmiHeader.biBitCount = h.lumaDepth + (h.chromaDepth/2);
+        break;
+      case YUV422 :
+  		  vi->hdr.bmiHeader.biBitCount = h.lumaDepth + h.chromaDepth;
+        break;
+      case YUV444 :
+  		  vi->hdr.bmiHeader.biBitCount = h.lumaDepth + (2*h.chromaDepth);
+        break;
+      case YUV400 : //Monochrome
+		    vi->hdr.bmiHeader.biBitCount = h.lumaDepth;
+        break;
+      default :
+  		  vi->hdr.bmiHeader.biBitCount = h.lumaDepth + (h.chromaDepth/2);
+    }
+
 		vi->hdr.bmiHeader.biClrUsed=0;
     vi->hdr.bmiHeader.biSizeImage = DIBSIZE(vi->hdr.bmiHeader);
 		vi->hdr.bmiHeader.biSize = sizeof(vi->hdr.bmiHeader);
@@ -1705,6 +1747,9 @@ void CFrameHeaderParser::DumpAvcHeader(avchdr h)
 	LogDebug("profile: %i",h.profile);
 	LogDebug("PPS len: %i",h.ppslen);
 	LogDebug("SPS len: %i",h.spslen);
+	LogDebug("chromaFormat: %i",h.chromaFormat);
+	LogDebug("lumaDepth: %i",h.lumaDepth);
+	LogDebug("chromaDepth: %i",h.chromaDepth);
 	LogDebug("=================================");
 }
 

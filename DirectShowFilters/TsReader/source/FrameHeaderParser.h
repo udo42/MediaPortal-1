@@ -304,6 +304,8 @@ struct pshdr
 	struct avchdr
 	{
 		BYTE profile, level;
+		UINT64 chromaFormat;
+		WORD lumaDepth, chromaDepth;
 		unsigned int width, height;
 		bool progressive;
 		BYTE * sps;
