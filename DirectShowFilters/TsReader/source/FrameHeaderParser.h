@@ -351,7 +351,7 @@ struct BasicVideoInfo
 {
 	int width;
 	int height;
-	int fps;
+	double fps;
 	int arx;
 	int ary;
 	int isInterlaced;

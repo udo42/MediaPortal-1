@@ -536,7 +536,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
                    //Use delayed discontinuity
                    pSample->SetDiscontinuity(TRUE);
                    m_delayedDiscont--;
-                   LogDebug("vidPin:set I-frame discontinuity");
+                   LogDebug("vidPin:set I-frame discontinuity, count %d", m_delayedDiscont);
                 }
                 else
                 {
