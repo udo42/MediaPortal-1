@@ -432,8 +432,9 @@ bool CFrameHeaderParser::Read(seqhdr& h, int len, CMediaType* pmt, bool reset)
     vi->hdr.rcSource.bottom = h.height;
     vi->hdr.rcTarget.right = h.width;
     vi->hdr.rcTarget.bottom = h.height;
+		vi->hdr.bmiHeader.biCompression = '1GPM';
 		vi->hdr.bmiHeader.biPlanes=1;
-		vi->hdr.bmiHeader.biBitCount=24;
+		vi->hdr.bmiHeader.biBitCount=12;
 		vi->hdr.bmiHeader.biClrUsed=0;
     vi->hdr.bmiHeader.biSizeImage = DIBSIZE(vi->hdr.bmiHeader);
 		vi->hdr.bmiHeader.biSize = sizeof(vi->hdr.bmiHeader);
@@ -465,7 +466,7 @@ bool CFrameHeaderParser::Read(seqhdr& h, int len, CMediaType* pmt, bool reset)
 		vi->hdr.bmiHeader.biHeight = h.height;
 		vi->hdr.bmiHeader.biCompression = '2GPM';
 		vi->hdr.bmiHeader.biPlanes=1;
-		vi->hdr.bmiHeader.biBitCount=24;
+		vi->hdr.bmiHeader.biBitCount=12;
 		vi->hdr.bmiHeader.biClrUsed=0;
     vi->hdr.bmiHeader.biSizeImage = DIBSIZE(vi->hdr.bmiHeader);
 		vi->hdr.bmiHeader.biSize = sizeof(vi->hdr.bmiHeader);

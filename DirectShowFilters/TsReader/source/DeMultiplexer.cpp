@@ -1924,26 +1924,36 @@ void CDeMultiplexer::FillVideoMPEG2(CTsHeader& header, byte* tsPacket)
               }
               m_bVideoAtEof = false ;
 
-            { //Scoped for CAutoLock
-              CAutoLock lock (&m_sectionVideo);
-              if (m_vecVideoBuffers.size()<=MAX_VID_BUF_SIZE)
-              {
-                // ownership is transfered to vector
-                m_vecVideoBuffers.push_back(pCurrentVideoBuffer);
+              { //Scoped for CAutoLock
+                CAutoLock lock (&m_sectionVideo);
+                if (m_vecVideoBuffers.size()<=MAX_VID_BUF_SIZE)
+                {
+                  if (m_bFirstGopFound)
+                  {
+                    // ownership is transfered to vector
+                    m_vecVideoBuffers.push_back(pCurrentVideoBuffer);
+                  }
+                  else
+                  {
+                    delete pCurrentVideoBuffer;
+                    pCurrentVideoBuffer = NULL;
+                    m_bSetVideoDiscontinuity = true;            
+                    //LogDebug("DeMultiplexer: Delete video buffer");
+                  }
+                }
+                else
+                {
+                  delete pCurrentVideoBuffer;
+                  pCurrentVideoBuffer = NULL;
+                  m_bSetVideoDiscontinuity = true;
+                  //Something is going wrong - abort play
+                  LogDebug("DeMultiplexer: Video buffer overrun error - aborting");
+                  m_filter.NotifyEvent(EC_ERRORABORT, 0x88780078, NULL); // forces player to abort..."No sound driver is available for use"   
+                  SetEndOfFile(true);
+                  //m_bFlushDelegated = true;
+                  //WakeThread();            
+                }
               }
-              else
-              {
-                delete pCurrentVideoBuffer;
-                pCurrentVideoBuffer = NULL;
-                m_bSetVideoDiscontinuity = true;
-                //Something is going wrong - abort play
-                LogDebug("DeMultiplexer: Video buffer overrun error - aborting");
-                m_filter.NotifyEvent(EC_ERRORABORT, 0x88780078, NULL); // forces player to abort..."No sound driver is available for use"   
-                SetEndOfFile(true);
-                //m_bFlushDelegated = true;
-                //WakeThread();            
-              }
-            }
               
             }
             m_CurrentVideoPts.IsValid=false ;   
@@ -2123,11 +2133,23 @@ int CDeMultiplexer::GetVideoBufferCnt(double* frameTime)
 //Decide if we need to prefetch more data
 bool CDeMultiplexer::CheckPrefetchState(bool isVid, bool isAud)
 {  
+  //Check for near-overflow conditions first
+  if (m_filter.GetAudioPin()->IsConnected() && (m_vecAudioBuffers.size() > (MAX_AUD_BUF_SIZE - 10)))
+  {
+    return false;
+  }
+  if (m_filter.GetVideoPin()->IsConnected() && (m_vecVideoBuffers.size() > (MAX_VID_BUF_SIZE - 10)))
+  {
+    return false;
+  }
+
+  //Start-of-play situation
   if (!m_bAudioVideoReady)
   {
     return true;
   }
 
+  //Normal play
   if (isAud || isVid)
   {
     if (m_filter.GetAudioPin()->IsConnected() && (m_vecAudioBuffers.size() < 3))
@@ -2139,18 +2161,6 @@ bool CDeMultiplexer::CheckPrefetchState(bool isVid, bool isAud)
       return true;
     }
   }
-
-  //  if (isVid)
-  //  {
-  //    if (m_filter.GetVideoPin()->IsConnected() && (m_vecVideoBuffers.size() < 4))
-  //    {
-  //      return true;
-  //    }
-  //    if (m_filter.GetAudioPin()->IsConnected() && (m_vecAudioBuffers.size() < 1))
-  //    {
-  //      return true;
-  //    }
-  //  }
 
   return false;
 }
