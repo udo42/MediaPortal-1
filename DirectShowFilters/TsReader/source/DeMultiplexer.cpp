@@ -1152,9 +1152,9 @@ void CDeMultiplexer::FillAudio(CTsHeader& header, byte* tsPacket)
               m_vecAudioBuffers.erase(it);
               
               //Something is going wrong - abort play
-              LogDebug("DeMultiplexer: Audio buffer overrun error - aborting");
-              m_filter.NotifyEvent(EC_ERRORABORT, 0x88780078, NULL); // forces player to abort..."No sound driver is available for use"   
-              SetEndOfFile(true);
+              //LogDebug("DeMultiplexer: Audio buffer overrun error - aborting");
+              //m_filter.NotifyEvent(EC_ERRORABORT, 0x88780078, NULL); // forces player to abort..."No sound driver is available for use"   
+              //SetEndOfFile(true);
               //m_bFlushDelegated = true;
               //WakeThread();            
             }
@@ -1545,9 +1545,9 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
                 pCurrentVideoBuffer = NULL;
                 m_bSetVideoDiscontinuity = true;            
                 //Something is going wrong - abort play
-                LogDebug("DeMultiplexer: Video buffer overrun error - aborting");
-                m_filter.NotifyEvent(EC_ERRORABORT, 0x88780078, NULL); // forces player to abort..."No sound driver is available for use"   
-                SetEndOfFile(true);
+                //LogDebug("DeMultiplexer: Video buffer overrun error - aborting");
+                //m_filter.NotifyEvent(EC_ERRORABORT, 0x88780078, NULL); // forces player to abort..."No sound driver is available for use"   
+                //SetEndOfFile(true);
                 //m_bFlushDelegated = true;
                 //WakeThread();            
               }
@@ -1947,9 +1947,9 @@ void CDeMultiplexer::FillVideoMPEG2(CTsHeader& header, byte* tsPacket)
                   pCurrentVideoBuffer = NULL;
                   m_bSetVideoDiscontinuity = true;
                   //Something is going wrong - abort play
-                  LogDebug("DeMultiplexer: Video buffer overrun error - aborting");
-                  m_filter.NotifyEvent(EC_ERRORABORT, 0x88780078, NULL); // forces player to abort..."No sound driver is available for use"   
-                  SetEndOfFile(true);
+                  //LogDebug("DeMultiplexer: Video buffer overrun error - aborting");
+                  //m_filter.NotifyEvent(EC_ERRORABORT, 0x88780078, NULL); // forces player to abort..."No sound driver is available for use"   
+                  //SetEndOfFile(true);
                   //m_bFlushDelegated = true;
                   //WakeThread();            
                 }
