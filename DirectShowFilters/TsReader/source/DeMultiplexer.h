@@ -202,7 +202,6 @@ private:
 
   CBuffer* m_pCurrentTeletextBuffer;
   CBuffer* m_pCurrentSubtitleBuffer;
-//  CBuffer* m_pCurrentVideoBuffer;
   CBuffer* m_pCurrentAudioBuffer;
   CPcr     m_streamPcr;
   CPcr     m_lastVideoPTS;
