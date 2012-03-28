@@ -146,6 +146,8 @@ public:
   bool m_bFlushRunning;
   bool m_bReadAheadFromFile;
 
+  bool m_bVideoSampleLate;
+  bool m_bAudioSampleLate;
   //  long m_AudioDataLowCount;
   //  long m_VideoDataLowCount;
   long m_AVDataLowCount;

@@ -181,7 +181,7 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   GetLogFile(filename);
   ::DeleteFile(filename);
   LogDebug("----- Experimental noStopMod version -----");
-  LogDebug("---------- v0.0.50 XXX -------------------");
+  LogDebug("---------- v0.0.51 XXX -------------------");
   
   m_fileReader=NULL;
   m_fileDuration=NULL;
@@ -1436,14 +1436,14 @@ void CTsReaderFilter::ThreadProc()
     }
     else if (m_isUNCfile)
     {
-      pauseWaitTime = 2000;
-      underRunLimit = 15;
+      pauseWaitTime = 3000;
+      underRunLimit = 10;
       longPause = false;
     }
     else
     {
-      pauseWaitTime = 2000;
-      underRunLimit = 30;
+      pauseWaitTime = 3000;
+      underRunLimit = 20;
       longPause = false;
     }
 
@@ -1469,11 +1469,15 @@ void CTsReaderFilter::ThreadProc()
         }
         _InterlockedAnd(&m_demultiplexer.m_AVDataLowCount, 0);
         m_bRenderingClockTooFast=false ;
+        m_demultiplexer.m_bVideoSampleLate=false;
+        m_demultiplexer.m_bAudioSampleLate=false;
       }
       else
       {
         lastDataLowTime = timeNow;
         _InterlockedAnd(&m_demultiplexer.m_AVDataLowCount, 0);
+        m_demultiplexer.m_bVideoSampleLate=false;
+        m_demultiplexer.m_bAudioSampleLate=false;
       }
     }
     

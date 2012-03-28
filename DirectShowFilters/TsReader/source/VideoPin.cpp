@@ -446,8 +446,21 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
                                                                       
           if (m_dRateSeeking == 1.0)
           {
+            if (fTime < 0.2)
+            {              
+              if (!demux.m_bVideoSampleLate) 
+              {
+                LogDebug("vidPin : Video to render too late= %03.3f", (float)fTime) ;
+              }
+              //Samples times are getting close to presentation time
+              demux.m_bVideoSampleLate = true;   
+            }
+
             //Slowly increase stall point threshold over the first 8 seconds of play
-            stallPoint = min(1.8, (1.3 + (((double)cRefTime.m_time)/160000000.0)));
+            //stallPoint = min(1.8, (1.3 + (((double)cRefTime.m_time)/160000000.0)));
+            //stallPoint = min(1.3, (0.8 + (((double)cRefTime.m_time)/160000000.0)));
+            //stallPoint = min(1.1, (0.8 + (((double)cRefTime.m_time)/160000000.0)));
+            stallPoint = 1.2;
             
             //Discard late samples at start of play,
             //and samples outside a sensible timing window during play 
