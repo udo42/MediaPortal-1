@@ -357,17 +357,17 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
       {       
         // Avoid excessive video Fill buffer preemption
         // and slow down emptying rate when data available gets really low
-        double frameTime;
-        int buffCnt = demux.GetVideoBufferCnt(&frameTime);
+          //        double frameTime;
+          //        int buffCnt = demux.GetVideoBufferCnt(&frameTime);
+          //        DWORD sampSleepTime = max(1,(DWORD)(frameTime/4.0));       
+          //        if ((buffCnt == 0) || (buffCnt > 5) || (m_dRateSeeking != 1.0))
+          //        {
+          //      	  sampSleepTime = 1;
+          //        }                       
+          //        //Sleep(min(10,sampSleepTime));
+          //        m_FillBuffSleepTime = min(8,sampSleepTime);
 
-        DWORD sampSleepTime = max(1,(DWORD)(frameTime/4.0));       
-        if ((buffCnt == 0) || (buffCnt > 5) || (m_dRateSeeking != 1.0))
-        {
-      	  sampSleepTime = 1;
-        }
-                        
-        //Sleep(min(10,sampSleepTime));
-        m_FillBuffSleepTime = min(10,sampSleepTime);
+        m_FillBuffSleepTime = 2;
                  
         //CAutoLock flock (&demux.m_sectionFlushVideo);
         // Get next video buffer from demultiplexer
@@ -450,7 +450,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
             {              
               if (!demux.m_bVideoSampleLate) 
               {
-                LogDebug("vidPin : Video to render too late= %03.3f", (float)fTime) ;
+                LogDebug("vidPin : Video to render late= %03.3f", (float)fTime) ;
               }
               //Samples times are getting close to presentation time
               demux.m_bVideoSampleLate = true;   
