@@ -2099,7 +2099,12 @@ int CDeMultiplexer::GetAudioBufferCnt()
   return m_vecAudioBuffers.size();
 }
 
-int CDeMultiplexer::GetVideoBufferCnt(double* frameTime)
+int CDeMultiplexer::GetVideoBufferCnt()
+{
+  return m_vecVideoBuffers.size();
+}
+
+int CDeMultiplexer::GetVideoBuffCntFt(double* frameTime)
 {
   double fps = m_mpegPesParser->basicVideoInfo.fps;
   if ((fps > 22.0) && (fps < 130.0))

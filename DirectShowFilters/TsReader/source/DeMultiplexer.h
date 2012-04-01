@@ -87,7 +87,8 @@ public:
   int        GetAudioBufferPts(CRefTime& First, CRefTime& Last) ;
   int        GetAudioBufferCnt();
   int        GetVideoBufferPts(CRefTime& First, CRefTime& Last) ;
-  int        GetVideoBufferCnt(double* frameTime);
+  int        GetVideoBufferCnt();
+  int        GetVideoBuffCntFt(double* frameTime);
   void       GetBufferCounts(int* ACnt, int* VCnt);
 
   bool       SetAudioStream(__int32 stream);

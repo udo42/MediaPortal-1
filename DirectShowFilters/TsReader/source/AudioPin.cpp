@@ -337,7 +337,7 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
       if (!demux.m_bAudioVideoReady || (buffer==NULL))
       {
         //Sleep(10);
-        m_FillBuffSleepTime = 10;
+        m_FillBuffSleepTime = 5;
         buffer=NULL; //Continue looping
         if (!demux.m_bAudioVideoReady && (m_nNextASD != 0))
         {
@@ -500,11 +500,11 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
           cRefTime += m_pTsReaderFilter->m_ClockOnStart.m_time;
           
           //Calculate sleep times (average sample duration/4)
-          m_sampleDuration = GetAverageSampleDur(RefTime.GetUnits());
-          if ((m_dRateSeeking == 1.0) && (demux.GetAudioBufferCnt() < 10))
-          {
-            m_FillBuffSleepTime = (DWORD)min(20, max(1, m_sampleDuration/40000));
-          }
+          //  m_sampleDuration = GetAverageSampleDur(RefTime.GetUnits());
+          //  if ((m_dRateSeeking == 1.0) && (demux.GetAudioBufferCnt() < 10))
+          //  {
+          //    m_FillBuffSleepTime = (DWORD)min(20, max(1, m_sampleDuration/40000));
+          //  }
         }
 
         if (m_bPresentSample && (m_dRateSeeking == 1.0) && (buffer->Length() > 0))
