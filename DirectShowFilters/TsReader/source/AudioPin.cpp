@@ -659,6 +659,11 @@ bool CAudioPin::IsInFillBuffer()
   return m_bInFillBuffer;
 }
 
+bool CAudioPin::HasDeliveredSample()
+{
+  return (m_sampleCount > 0);
+}
+
 bool CAudioPin::IsConnected()
 {
   return m_bConnected;

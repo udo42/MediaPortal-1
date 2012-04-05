@@ -152,6 +152,7 @@ public:
   //  long m_AudioDataLowCount;
   //  long m_VideoDataLowCount;
   long m_AVDataLowCount;
+  DWORD m_targetAVready;
 
 private:
   struct stAudioStream
