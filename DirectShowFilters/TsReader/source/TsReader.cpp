@@ -490,7 +490,8 @@ STDMETHODIMP CTsReaderFilter::GetState(DWORD dwMilliSecsTimeout, FILTER_STATE *p
     }
 
     bool isAVReady =  m_demultiplexer.m_bAudioVideoReady
-                      && GetVideoPin()->HasDeliveredSample() && GetAudioPin()->HasDeliveredSample()
+                      && GetVideoPin()->HasDeliveredSample()
+                      && GetAudioPin()->HasDeliveredSample()
                       && (GET_TIME_NOW() > m_demultiplexer. m_targetAVready);
     
     //FFWD is more responsive if we return VFW_S_CANT_CUE when rate != 1.0

@@ -76,7 +76,7 @@ bool CVideoPin::IsInFillBuffer()
 
 bool CVideoPin::HasDeliveredSample()
 {
-  return (m_sampleCount > 0);
+  return ((m_sampleCount > 0) || !m_bConnected);
 }
 
 bool CVideoPin::IsConnected()
