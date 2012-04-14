@@ -414,7 +414,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
         CRefTime RefTime, cRefTime;
         double fTime = 0.0;
         double clock = 0.0;
-        double stallPoint = 1.2;
+        double stallPoint = 2.5;
         //check if it has a timestamp
         bool HasTimestamp=buffer->MediaTime(RefTime);
         if (HasTimestamp)
@@ -477,7 +477,8 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
             //(helps with signal corruption recovery)
             if ((fTime > (ForcePresent ? -0.5 : -0.3)) && (fTime < 3.5))
             {
-              if ((fTime > stallPoint) && (m_pTsReaderFilter->State() == State_Running))
+              //if ((fTime > stallPoint) && (m_pTsReaderFilter->State() == State_Running))
+              if ((fTime > stallPoint) && (m_sampleCount > 10))
               {
                 //Too early - stall for a while to avoid over-filling of video pipeline buffers
                 //Sleep(10);
@@ -612,7 +613,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
           demux.EraseVideoBuff();
           m_bDiscontinuity = TRUE; //Next good sample will be discontinuous
           buffer = NULL;
-          m_FillBuffSleepTime = (m_dRateSeeking == 1.0) ? 0 : 5;
+          m_FillBuffSleepTime = 1;
         }
       }      
       earlyStall = false;

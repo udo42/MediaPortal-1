@@ -365,7 +365,7 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
         bool HasTimestamp ;
         double fTime = 0.0;
         double clock = 0.0;
-        double stallPoint = 1.0;
+        double stallPoint = 1.5;
         //check if it has a timestamp
         if ((HasTimestamp=buffer->MediaTime(RefTime)))
         {
@@ -383,7 +383,9 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
           //and samples outside a sensible timing window during play 
           //(helps with signal corruption recovery)
           cRefTime -= m_pTsReaderFilter->m_ClockOnStart.m_time;
-          if ((cRefTime.m_time >= PRESENT_DELAY) && (fTime > ((cRefTime.m_time >= FS_TIM_LIM) ? -0.3 : -0.5)) && (fTime < 2.0))
+          
+          if ((cRefTime.m_time >= PRESENT_DELAY) && 
+              (fTime > ((cRefTime.m_time >= FS_TIM_LIM) ? -0.3 : -0.5)) && (fTime < 2.5))
           {
             if ((fTime < 0.3) && (m_dRateSeeking == 1.0) && (m_pTsReaderFilter->State() == State_Running))
             {              
@@ -398,7 +400,8 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
             //Slowly increase stall point threshold over the first 8 seconds of play
             //to allow audio renderer buffer to build up to 0.4s
             // stallPoint = min(0.4, (0.2 + (((double)cRefTime.m_time)/400000000.0)));
-            if ((fTime > stallPoint) && (m_pTsReaderFilter->State() == State_Running))
+            // if ((fTime > stallPoint) && (m_pTsReaderFilter->State() == State_Running))
+            if ((fTime > stallPoint) && (m_sampleCount > 2))
             {
               //Too early - stall to avoid over-filling of audio decode/renderer buffers
               //Sleep(10);
@@ -495,7 +498,7 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
           delete buffer;
           demux.EraseAudioBuff();
           buffer=NULL ;
-          m_FillBuffSleepTime = (m_dRateSeeking == 1.0) ? 0 : 5;
+          m_FillBuffSleepTime = (m_dRateSeeking == 1.0) ? 1 : 2;
           m_bDiscontinuity = TRUE; //Next good sample will be discontinuous
           //Sleep(1) ;
         }
