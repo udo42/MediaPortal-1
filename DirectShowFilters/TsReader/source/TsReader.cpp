@@ -181,7 +181,7 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   GetLogFile(filename);
   ::DeleteFile(filename);
   LogDebug("----- Experimental noStopMod version -----");
-  LogDebug("---------- v0.0.54 XXX -------------------");
+  LogDebug("---------- v0.0.54b XXX -------------------");
   
   m_fileReader=NULL;
   m_fileDuration=NULL;
@@ -496,7 +496,7 @@ STDMETHODIMP CTsReaderFilter::GetState(DWORD dwMilliSecsTimeout, FILTER_STATE *p
 
    
   *pState = m_State;
-  if (m_State == State_Paused)
+  if ((m_State == State_Paused) && m_pVideoPin->IsConnected())
   {    
     double playRate = 1.0;
     if (m_pAudioPin->IsConnected())
@@ -513,7 +513,7 @@ STDMETHODIMP CTsReaderFilter::GetState(DWORD dwMilliSecsTimeout, FILTER_STATE *p
     //              && (GET_TIME_NOW() > m_demultiplexer. m_targetAVready);
 
     bool isAVReady =  m_bStreamCompensated
-              && (GET_TIME_NOW() > m_demultiplexer. m_targetAVready);
+              && (GET_TIME_NOW() > m_demultiplexer.m_targetAVready);
     
     //FFWD is more responsive if we return VFW_S_CANT_CUE when rate != 1.0
     if (isAVReady || (playRate != 1.0))
@@ -1348,18 +1348,24 @@ HRESULT CTsReaderFilter::SeekPreStart(CRefTime& rtAbsSeek)
     
     SetSeeking(false); //Unblock the pins - allow sample delivery to downstream
     
-    //Wait until enough stream has been read
-    while (!m_bStreamCompensated && !m_demultiplexer.IsAudioChanging() && !m_demultiplexer.IsMediaChanging() 
+    int i=0;
+    //Wait until enough stream has been read or timeout is reached
+    while ((i < 2000) && !m_bStreamCompensated && !m_demultiplexer.IsAudioChanging() && !m_demultiplexer.IsMediaChanging() 
             && !m_bStopping && (m_State != State_Stopped) && !m_demultiplexer.EndOfFile() )
     {
       Sleep(1);
+      i++;
+    }
+    if (i >= 2000)
+    {
+      LogDebug("CTsReaderFilter: SeekPreStart: Wait data timeout");
     }
 
     //Wait for video pin sample delivery - check that video decoder is accepting samples....
     if (GetVideoPin()->IsConnected())
     {  
       //LogDebug("CTsReaderFilter::--SeekPreStart() Wait vid sample delivery"); 
-      int i=0;
+      i=0;
       while ((i < 3000) && !m_demultiplexer.IsAudioChanging() && !m_demultiplexer.IsMediaChanging() 
                 && !m_bStopping && (m_State != State_Stopped) && !GetVideoPin()->HasDeliveredSample() && !m_demultiplexer.EndOfFile() )
       {
@@ -1940,7 +1946,7 @@ bool CTsReaderFilter::IsStreaming()
 
 void CTsReaderFilter::SetWaitDataAfterSeek(bool onOff)
 {
-  CAutoLock lock (&m_sectionSeeking);  
+  CAutoLock lock (&m_sectionSeekWaitData);  
   m_WaitDataAfterSeek = onOff;
 }
 

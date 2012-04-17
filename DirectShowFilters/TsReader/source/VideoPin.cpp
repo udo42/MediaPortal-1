@@ -544,7 +544,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
               }                             
             }
 
-            if (m_pTsReaderFilter->m_ShowBufferVideo || ((fTime < 0.02) && (m_dRateSeeking == 1.0)))
+            if (m_pTsReaderFilter->m_ShowBufferVideo || ((fTime < 0.02) && (m_dRateSeeking == 1.0)) || (m_sampleCount < 3))
             {
               int cntA, cntV;
               CRefTime firstAudio, lastAudio;
@@ -655,8 +655,8 @@ bool CVideoPin::TimestampDisconChecker(REFERENCE_TIME timeStamp)
 ///
 HRESULT CVideoPin::OnThreadStartPlay()
 {  
-  //DWORD thrdID = GetCurrentThreadId();
-  //LogDebug("vidPin:OnThreadStartPlay(%f), rate:%02.2f, threadID:0x%x, GET_TIME_NOW:0x%x", (float)m_rtStart.Millisecs()/1000.0f, m_dRateSeeking, thrdID, GET_TIME_NOW());
+  DWORD thrdID = GetCurrentThreadId();
+  LogDebug("vidPin:OnThreadStartPlay(%f), rate:%02.2f, threadID:0x%x, GET_TIME_NOW:0x%x", (float)m_rtStart.Millisecs()/1000.0f, m_dRateSeeking, thrdID, GET_TIME_NOW());
 
   //set discontinuity flag indicating to codec that the new data
   //is not belonging to any previous data

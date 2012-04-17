@@ -449,7 +449,7 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
             pSample->SetSyncPoint(TRUE);
 
             pSample->SetTime(&refTime,&refTime);
-            if (m_pTsReaderFilter->m_ShowBufferAudio || fTime < 0.02)
+            if (m_pTsReaderFilter->m_ShowBufferAudio || fTime < 0.02 || (m_sampleCount < 3))
             {
               int cntA, cntV;
               CRefTime firstAudio, lastAudio;
@@ -615,8 +615,8 @@ HRESULT CAudioPin::ChangeRate()
 ///
 HRESULT CAudioPin::OnThreadStartPlay()
 {
-  //DWORD thrdID = GetCurrentThreadId();
-  //LogDebug("audPin:OnThreadStartPlay(%f), rate:%02.2f, threadID:0x%x, GET_TIME_NOW:0x%x", (float)m_rtStart.Millisecs()/1000.0f, m_dRateSeeking, thrdID, GET_TIME_NOW());
+  DWORD thrdID = GetCurrentThreadId();
+  LogDebug("audPin:OnThreadStartPlay(%f), rate:%02.2f, threadID:0x%x, GET_TIME_NOW:0x%x", (float)m_rtStart.Millisecs()/1000.0f, m_dRateSeeking, thrdID, GET_TIME_NOW());
 
   //set flag to compensate any differences in the stream time & file time
   m_pTsReaderFilter->m_bStreamCompensated = false;

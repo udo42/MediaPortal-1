@@ -676,14 +676,14 @@ bool CDeMultiplexer::CheckCompensation(CRefTime rtStartTime)
     cntV = GetVideoBufferPts(firstVideo, lastVideo);
     
     // Goal is to start with at least 500mS audio and 400mS video ahead. ( LiveTv and RTSP as TsReader cannot go ahead by itself)
-    if (lastAudio.Millisecs() - firstAudio.Millisecs() < (510+INITIAL_BUFF_DELAY)) return false ;       // Not enough audio to start.
+    if (lastAudio.Millisecs() - firstAudio.Millisecs() < (310+INITIAL_BUFF_DELAY)) return false ;       // Not enough audio to start.
 
     if (m_filter.GetVideoPin()->IsConnected())
     {
       if (!m_bFrame0Found) return NULL ;
         
       //if (lastVideo.Millisecs() - firstVideo.Millisecs() < 310) return NULL ;   // Not enough video to start.
-      if (lastVideo.Millisecs() - firstVideo.Millisecs() < (410+INITIAL_BUFF_DELAY)) return false ;   // Not enough video to start.
+      if (lastVideo.Millisecs() - firstVideo.Millisecs() < (210+INITIAL_BUFF_DELAY)) return false ;   // Not enough video to start.
       
       if (!m_filter.m_EnableSlowMotionOnZapping)
       {
@@ -701,7 +701,12 @@ bool CDeMultiplexer::CheckCompensation(CRefTime rtStartTime)
     {
       if (firstAudio.Millisecs() < firstVideo.Millisecs())
       {
-        CRefTime targFirstAudio = ((firstVideo - firstAudio) > (800*10000)) ? (firstVideo - (800*10000)) : firstAudio; //Limit to 800ms difference
+        CRefTime targFirstAudio = ((firstVideo - firstAudio) > (500*10000)) ? (firstVideo - (500*10000)) : firstAudio; //Limit to 500ms difference
+          
+        if (targFirstAudio > (lastAudio-(100*10000))) //Make sure there is an audio sample available at the start
+        {
+          targFirstAudio = lastAudio-(100*10000);
+        }
         
         BestCompensation = targFirstAudio - m_filter.m_RandomCompensation - rtStartTime ;
         AddVideoCompensation = firstVideo - targFirstAudio;
