@@ -84,6 +84,7 @@ CDeMultiplexer::CDeMultiplexer(CTsDuration& duration,CTsReaderFilter& filter)
   m_iAudioIdx = -1;
   m_iPatVersion = -1;
   m_ReqPatVersion = -1;
+  m_bPatParsed = false;
   m_bWaitGoodPat = false;
   m_receivedPackets = 0;
   m_bSetAudioDiscontinuity = false;
@@ -795,6 +796,7 @@ void CDeMultiplexer::Start()
   m_bEndOfFile=false;
   m_iPatVersion=-1;
   m_ReqPatVersion=-1;
+  m_bPatParsed = false;
   m_bWaitGoodPat = false;
   m_bSetAudioDiscontinuity=false;
   m_bSetVideoDiscontinuity=false;
@@ -2540,6 +2542,8 @@ void CDeMultiplexer::OnNewChannel(CChannelInfo& info)
       SetSubtitleStream(bitmap_index);
     }
   }
+  
+  m_bPatParsed = true;
 }
 
 
@@ -2628,6 +2632,26 @@ bool CDeMultiplexer::IsNewPatReady(void)
 void CDeMultiplexer::ResetPatInfo(void)
 {
   m_pids.Reset();
+}
+
+bool CDeMultiplexer::VidPidGood(void)
+{
+  return (m_pids.videoPids.size() > 0);
+}
+
+bool CDeMultiplexer::AudPidGood(void)
+{
+  return (m_pids.audioPids.size() > 0);
+}
+
+bool CDeMultiplexer::SubPidGood(void)
+{
+  return (m_pids.subtitlePids.size() > 0);
+}
+
+bool CDeMultiplexer::PatParsed(void)
+{
+  return m_bPatParsed;
 }
 
 void CDeMultiplexer::SetTeletextEventCallback(int (CALLBACK *pTeletextEventCallback)(int eventcode, DWORD64 eval))

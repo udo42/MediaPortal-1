@@ -181,7 +181,7 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   GetLogFile(filename);
   ::DeleteFile(filename);
   LogDebug("----- Experimental noStopMod version -----");
-  LogDebug("---------- v0.0.54c XXX -------------------");
+  LogDebug("---------- v0.0.54d XXX -------------------");
   
   m_fileReader=NULL;
   m_fileDuration=NULL;

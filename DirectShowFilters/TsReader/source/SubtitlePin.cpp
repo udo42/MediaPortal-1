@@ -90,13 +90,34 @@ STDMETHODIMP CSubtitlePin::NonDelegatingQueryInterface( REFIID riid, void ** ppv
 
 HRESULT CSubtitlePin::GetMediaType(CMediaType *pmt)
 {
-  pmt->InitMediaType();
-  pmt->SetType      (& MEDIATYPE_Stream);
-  pmt->SetSubtype   (& MEDIASUBTYPE_MPEG2_TRANSPORT);
-  pmt->SetSampleSize(1);
-  pmt->SetTemporalCompression(FALSE);
-  pmt->SetVariableSize();
+  LogDebug("subPin:GetMediaType()");
+  CDeMultiplexer& demux=m_pTsReaderFilter->GetDemultiplexer();
 
+  for (int i=0; i < 1000; i++) //Wait up to 1 sec for pmt to be valid
+  {
+    if (demux.PatParsed())
+    {
+      if (!demux.SubPidGood())
+      {
+        //No subtitle stream
+        pmt->InitMediaType();
+        return E_UNEXPECTED;
+      }
+      else 
+      {
+        pmt->InitMediaType();
+        pmt->SetType      (& MEDIATYPE_Stream);
+        pmt->SetSubtype   (& MEDIASUBTYPE_MPEG2_TRANSPORT);
+        pmt->SetSampleSize(1);
+        pmt->SetTemporalCompression(FALSE);
+        pmt->SetVariableSize();    
+        return S_OK;
+      }
+    }
+    Sleep(1);
+  }
+
+  pmt->InitMediaType();
   return S_OK;
 }
 
@@ -198,14 +219,15 @@ HRESULT CSubtitlePin::CompleteConnect(IPin *pReceivePin)
 
 HRESULT CSubtitlePin::BreakConnect()
 {
-  LogDebug("subPin:BreakConnect() start");
-  int i=0;
-  while ((i < 1000) && m_pTsReaderFilter->IsSeeking())
-  {
-    Sleep(1);
-    i++;
-  }
-  LogDebug("subPin:BreakConnect() ok");
+  //  LogDebug("subPin:BreakConnect() start");
+  //  int i=0;
+  //  while ((i < 1000) && m_pTsReaderFilter->IsSeeking())
+  //  {
+  //    Sleep(1);
+  //    i++;
+  //  }
+  //  LogDebug("subPin:BreakConnect() ok");
+  
   m_bConnected = false;
   return CSourceStream::BreakConnect();
 }

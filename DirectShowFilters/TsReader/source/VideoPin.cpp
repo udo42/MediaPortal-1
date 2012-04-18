@@ -99,18 +99,29 @@ STDMETHODIMP CVideoPin::NonDelegatingQueryInterface( REFIID riid, void ** ppv )
 
 HRESULT CVideoPin::GetMediaType(CMediaType *pmt)
 {
+  LogDebug("vidPin:GetMediaType() 0");
   CDeMultiplexer& demux=m_pTsReaderFilter->GetDemultiplexer();
-  //LogDebug("vidPin:GetMediaType() 0");
+  
   for (int i=0; i < 1000; i++) //Wait up to 1 sec for pmt to be valid
   {
-    if (demux.GetVideoStreamType(*pmt)) 
+    if (demux.PatParsed())
     {
-      //LogDebug("vidPin:GetMediaType() 1");
-      return S_OK;
+      if (!demux.VidPidGood())
+      {
+        //No video stream
+        pmt->InitMediaType();
+        return E_UNEXPECTED;
+      }
+      else if (demux.GetVideoStreamType(*pmt))
+      {
+        //LogDebug("vidPin:GetMediaType() 1");
+        return S_OK;
+      }
     }
     Sleep(1);
   }
   //LogDebug("vidPin:GetMediaType() 2");
+  pmt->InitMediaType();
   return S_OK;
 }
 
@@ -212,14 +223,15 @@ HRESULT CVideoPin::CompleteConnect(IPin *pReceivePin)
 
 HRESULT CVideoPin::BreakConnect()
 {
-  LogDebug("vidPin:BreakConnect() start");
-  int i=0;
-  while ((i < 1000) && m_pTsReaderFilter->IsSeeking())
-  {
-    Sleep(1);
-    i++;
-  }
-  LogDebug("vidPin:BreakConnect() ok");
+  //  LogDebug("vidPin:BreakConnect() start");
+  //  int i=0;
+  //  while ((i < 1000) && m_pTsReaderFilter->IsSeeking())
+  //  {
+  //    Sleep(1);
+  //    i++;
+  //  }
+  //  LogDebug("vidPin:BreakConnect() ok");
+  
   m_bConnected=false;
   return CSourceStream::BreakConnect();
 }

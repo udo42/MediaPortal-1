@@ -97,14 +97,31 @@ STDMETHODIMP CAudioPin::NonDelegatingQueryInterface( REFIID riid, void ** ppv )
 
 HRESULT CAudioPin::GetMediaType(CMediaType *pmt)
 {
-  //LogDebug("audPin:GetMediaType()");
+  LogDebug("audPin:GetMediaType()");
   CDeMultiplexer& demux=m_pTsReaderFilter->GetDemultiplexer();
 
-  int audioIndex = 0;
-  demux.GetAudioStream(audioIndex);
+  for (int i=0; i < 1000; i++) //Wait up to 1 sec for pmt to be valid
+  {
+    if (demux.PatParsed())
+    {
+      if (!demux.AudPidGood())
+      {
+        //No audio stream
+        pmt->InitMediaType();
+        return E_UNEXPECTED;
+      }
+      else
+      {
+        int audioIndex = 0;
+        demux.GetAudioStream(audioIndex);
+        demux.GetAudioStreamType(audioIndex, *pmt);
+        return S_OK;
+      }
+    }
+    Sleep(1);
+  }
 
-  //demux.GetAudioStreamType(demux.GetAudioStream(), *pmt);
-  demux.GetAudioStreamType(audioIndex, *pmt);
+  pmt->InitMediaType();
   return S_OK;
 }
 
@@ -186,15 +203,16 @@ HRESULT CAudioPin::CompleteConnect(IPin *pReceivePin)
 
 HRESULT CAudioPin::BreakConnect()
 {
-  LogDebug("audPin:BreakConnect() start");
-  int i=0;
-  while ((i < 1000) && m_pTsReaderFilter->IsSeeking())
-  {
-    Sleep(1);
-    i++;
-  }
+  //  LogDebug("audPin:BreakConnect() start");
+  //  int i=0;
+  //  while ((i < 1000) && m_pTsReaderFilter->IsSeeking())
+  //  {
+  //    Sleep(1);
+  //    i++;
+  //  } 
+  //  LogDebug("audPin:BreakConnect() ok");
+  
   m_bConnected=false;
-  LogDebug("audPin:BreakConnect() ok");
   return CSourceStream::BreakConnect();
 }
 
