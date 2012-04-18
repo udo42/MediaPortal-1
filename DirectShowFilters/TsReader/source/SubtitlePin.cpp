@@ -97,22 +97,13 @@ HRESULT CSubtitlePin::GetMediaType(CMediaType *pmt)
   {
     if (demux.PatParsed())
     {
-      if (!demux.SubPidGood())
-      {
-        //No subtitle stream
-        pmt->InitMediaType();
-        return E_UNEXPECTED;
-      }
-      else 
-      {
-        pmt->InitMediaType();
-        pmt->SetType      (& MEDIATYPE_Stream);
-        pmt->SetSubtype   (& MEDIASUBTYPE_MPEG2_TRANSPORT);
-        pmt->SetSampleSize(1);
-        pmt->SetTemporalCompression(FALSE);
-        pmt->SetVariableSize();    
-        return S_OK;
-      }
+      pmt->InitMediaType();
+      pmt->SetType      (& MEDIATYPE_Stream);
+      pmt->SetSubtype   (& MEDIASUBTYPE_MPEG2_TRANSPORT);
+      pmt->SetSampleSize(1);
+      pmt->SetTemporalCompression(FALSE);
+      pmt->SetVariableSize();    
+      return S_OK;
     }
     Sleep(1);
   }
