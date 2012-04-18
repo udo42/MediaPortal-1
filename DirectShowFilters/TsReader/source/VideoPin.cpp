@@ -71,7 +71,7 @@ CVideoPin::~CVideoPin()
 
 bool CVideoPin::IsInFillBuffer()
 {
-  return m_bInFillBuffer;
+  return (m_bInFillBuffer && m_bConnected);
 }
 
 bool CVideoPin::HasDeliveredSample()
@@ -206,13 +206,20 @@ HRESULT CVideoPin::CompleteConnect(IPin *pReceivePin)
     m_pTsReaderFilter->GetDuration(&refTime);
     m_rtDuration=CRefTime(refTime);
   }
-  //LogDebug("vidPin:CompleteConnect() ok");
+  LogDebug("vidPin:CompleteConnect() ok");
   return hr;
 }
 
 HRESULT CVideoPin::BreakConnect()
 {
-  //LogDebug("vidPin:BreakConnect() ok");
+  LogDebug("vidPin:BreakConnect() start");
+  int i=0;
+  while ((i < 1000) && m_pTsReaderFilter->IsSeeking())
+  {
+    Sleep(1);
+    i++;
+  }
+  LogDebug("vidPin:BreakConnect() ok");
   m_bConnected=false;
   return CSourceStream::BreakConnect();
 }

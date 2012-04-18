@@ -711,21 +711,7 @@ bool CDeMultiplexer::CheckCompensation(CRefTime rtStartTime)
         BestCompensation = targFirstAudio - m_filter.m_RandomCompensation - rtStartTime ;
         AddVideoCompensation = firstVideo - targFirstAudio;
         AddVideoCompensation = (AddVideoCompensation > (2000*10000)) ? (2000*10000) : AddVideoCompensation; //Limit to 2.0 seconds
-        LogDebug("Compensation : ( Rnd : %d mS ) Audio pts ahead Video pts . Add %03.3f sec of extra video comp to start now !...",(DWORD)m_filter.m_RandomCompensation/10000,(float)AddVideoCompensation.Millisecs()/1000.0f) ;
-       
-        //        if ((lastAudio.Millisecs() - (500+INITIAL_BUFF_DELAY)) < firstVideo.Millisecs()) //Less than (500+INITIAL_BUFF_DELAY)ms A/V overlap
-        //        {
-        //          BestCompensation = lastAudio - ((450+INITIAL_BUFF_DELAY)*10000) - m_filter.m_RandomCompensation - rtStartTime ;
-        //          AddVideoCompensation = firstVideo - (lastAudio - ((450+INITIAL_BUFF_DELAY)*10000)) ;
-        //          AddVideoCompensation = (AddVideoCompensation > (2500*10000)) ? (2500*10000) : AddVideoCompensation; //Limit to 2.5 seconds
-        //          LogDebug("Compensation : ( Rnd : %d mS ) Audio pts greatly ahead Video pts . Add %03.3f sec of extra video comp to start now !...( real time TV )",(DWORD)m_filter.m_RandomCompensation/10000,(float)AddVideoCompensation.Millisecs()/1000.0f) ;
-        //        }
-        //        else
-        //        {
-        //          BestCompensation = firstVideo - m_filter.m_RandomCompensation - rtStartTime ;
-        //          AddVideoCompensation = 0 ; // ( demux.m_IframeSample-firstAudio ) ;
-        //          LogDebug("Compensation : ( Rnd : %d mS ) Audio pts ahead Video Pts ( Recover skipping Audio ) ....",m_filter.m_RandomCompensation/10000) ;
-        //        }
+        LogDebug("Compensation : ( Rnd : %d mS ) Audio pts ahead Video pts . Add %03.3f sec of extra video comp to start now !...",(DWORD)m_filter.m_RandomCompensation/10000,(float)AddVideoCompensation.Millisecs()/1000.0f) ;       
       }
       else
       {
@@ -738,7 +724,7 @@ bool CDeMultiplexer::CheckCompensation(CRefTime rtStartTime)
     }
     else
     {
-      BestCompensation = firstAudio-rtStartTime - 4000000 ;   // Need add delay before playing...
+      BestCompensation = firstAudio-rtStartTime;
       AddVideoCompensation = 0 ;
     }
 

@@ -180,14 +180,21 @@ HRESULT CAudioPin::CompleteConnect(IPin *pReceivePin)
     m_pTsReaderFilter->GetDuration(&refTime);
     m_rtDuration=CRefTime(refTime);
   }
-  //LogDebug("audPin:CompleteConnect() ok");
+  LogDebug("audPin:CompleteConnect() ok");
   return hr;
 }
 
 HRESULT CAudioPin::BreakConnect()
 {
+  LogDebug("audPin:BreakConnect() start");
+  int i=0;
+  while ((i < 1000) && m_pTsReaderFilter->IsSeeking())
+  {
+    Sleep(1);
+    i++;
+  }
   m_bConnected=false;
-  //LogDebug("audPin:BreakConnect()");
+  LogDebug("audPin:BreakConnect() ok");
   return CSourceStream::BreakConnect();
 }
 
@@ -385,7 +392,7 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
           if ((cRefTime.m_time >= PRESENT_DELAY) && 
               (fTime > ((cRefTime.m_time >= FS_TIM_LIM) ? -0.3 : -0.5)) && (fTime < 2.5))
           {
-            if ((fTime < 0.3) && (m_dRateSeeking == 1.0) && (m_pTsReaderFilter->State() == State_Running))
+            if ((fTime < 0.2) && (m_dRateSeeking == 1.0) && (m_pTsReaderFilter->State() == State_Running))
             {              
               if (!demux.m_bAudioSampleLate) 
               {
@@ -567,7 +574,7 @@ LONGLONG CAudioPin::GetAverageSampleDur(LONGLONG timeStamp)
 
 bool CAudioPin::IsInFillBuffer()
 {
-  return m_bInFillBuffer;
+  return (m_bInFillBuffer && m_bConnected);
 }
 
 bool CAudioPin::HasDeliveredSample()

@@ -66,7 +66,7 @@ CSubtitlePin::~CSubtitlePin()
 
 bool CSubtitlePin::IsInFillBuffer()
 {
-  return m_bInFillBuffer;
+  return (m_bInFillBuffer && m_bConnected);
 }
 
 bool CSubtitlePin::IsConnected()
@@ -198,7 +198,14 @@ HRESULT CSubtitlePin::CompleteConnect(IPin *pReceivePin)
 
 HRESULT CSubtitlePin::BreakConnect()
 {
-  //LogDebug("subPin:BreakConnect() ok");
+  LogDebug("subPin:BreakConnect() start");
+  int i=0;
+  while ((i < 1000) && m_pTsReaderFilter->IsSeeking())
+  {
+    Sleep(1);
+    i++;
+  }
+  LogDebug("subPin:BreakConnect() ok");
   m_bConnected = false;
   return CSourceStream::BreakConnect();
 }
