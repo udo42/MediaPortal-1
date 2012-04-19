@@ -99,7 +99,7 @@ STDMETHODIMP CVideoPin::NonDelegatingQueryInterface( REFIID riid, void ** ppv )
 
 HRESULT CVideoPin::GetMediaType(CMediaType *pmt)
 {
-  LogDebug("vidPin:GetMediaType() 0");
+  //LogDebug("vidPin:GetMediaType() 0");
   CDeMultiplexer& demux=m_pTsReaderFilter->GetDemultiplexer();
   
   for (int i=0; i < 1000; i++) //Wait up to 1 sec for pmt to be valid
@@ -569,7 +569,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
               CRefTime firstAudio, lastAudio;
               CRefTime firstVideo, lastVideo;
               cntA = demux.GetAudioBufferPts(firstAudio, lastAudio); 
-              cntV = demux.GetVideoBufferPts(firstVideo, lastVideo) + 1;
+              cntV = demux.GetVideoBufferPts(firstVideo, lastVideo);
 
               LogDebug("Vid/Ref : %03.3f, %c-frame(%02d), Compensated = %03.3f ( %0.3f A/V buffers=%02d/%02d), Clk : %f, SampCnt %d, stallPt %03.3f", (float)RefTime.Millisecs()/1000.0f,buffer->GetFrameType(),buffer->GetFrameCount(), (float)cRefTime.Millisecs()/1000.0f, fTime, cntA,cntV,clock, m_sampleCount, (float)stallPoint);              
             }

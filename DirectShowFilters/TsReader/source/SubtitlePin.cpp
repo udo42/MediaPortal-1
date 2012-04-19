@@ -90,7 +90,7 @@ STDMETHODIMP CSubtitlePin::NonDelegatingQueryInterface( REFIID riid, void ** ppv
 
 HRESULT CSubtitlePin::GetMediaType(CMediaType *pmt)
 {
-  LogDebug("subPin:GetMediaType()");
+  //LogDebug("subPin:GetMediaType()");
   CDeMultiplexer& demux=m_pTsReaderFilter->GetDemultiplexer();
 
   for (int i=0; i < 1000; i++) //Wait up to 1 sec for pmt to be valid
