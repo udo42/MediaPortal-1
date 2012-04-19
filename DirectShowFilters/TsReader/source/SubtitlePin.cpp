@@ -90,7 +90,10 @@ STDMETHODIMP CSubtitlePin::NonDelegatingQueryInterface( REFIID riid, void ** ppv
 
 HRESULT CSubtitlePin::GetMediaType(CMediaType *pmt)
 {
+  CheckPointer(pmt, E_POINTER);
+
   //LogDebug("subPin:GetMediaType()");
+  
   CDeMultiplexer& demux=m_pTsReaderFilter->GetDemultiplexer();
 
   for (int i=0; i < 1000; i++) //Wait up to 1 sec for pmt to be valid
@@ -109,7 +112,7 @@ HRESULT CSubtitlePin::GetMediaType(CMediaType *pmt)
   }
 
   pmt->InitMediaType();
-  return S_OK;
+  return E_UNEXPECTED;
 }
 
 HRESULT CSubtitlePin::DecideBufferSize(IMemAllocator *pAlloc, ALLOCATOR_PROPERTIES *pRequest)
@@ -174,15 +177,16 @@ HRESULT CSubtitlePin::CheckConnect(IPin *pReceivePin)
   }
   return CBaseOutputPin::CheckConnect(pReceivePin);
 }
+
 HRESULT CSubtitlePin::CompleteConnect(IPin *pReceivePin)
 {
   m_bInFillBuffer=false;
-  LogDebug("subPin:CompleteConnect()");
+  //LogDebug("subPin:CompleteConnect()");
   HRESULT hr = CBaseOutputPin::CompleteConnect(pReceivePin);
 
   if (SUCCEEDED(hr))
   {
-    LogDebug("subPin:CompleteConnect() done");
+    LogDebug("subPin:CompleteConnect() ok");
     m_bConnected=true;
   }
   else
@@ -203,7 +207,7 @@ HRESULT CSubtitlePin::CompleteConnect(IPin *pReceivePin)
     m_pTsReaderFilter->GetDuration(&refTime);
     m_rtDuration=CRefTime(refTime);
   }
-  LogDebug("subPin:CompleteConnect() ok");
+  LogDebug("subPin:CompleteConnect() end");
   return hr;
 }
 

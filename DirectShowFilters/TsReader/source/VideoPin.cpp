@@ -97,9 +97,40 @@ STDMETHODIMP CVideoPin::NonDelegatingQueryInterface( REFIID riid, void ** ppv )
   return CSourceStream::NonDelegatingQueryInterface(riid, ppv);
 }
 
-HRESULT CVideoPin::GetMediaType(CMediaType *pmt)
+HRESULT CVideoPin::CheckMediaType(const CMediaType* pmt)
 {
-  //LogDebug("vidPin:GetMediaType() 0");
+  CDeMultiplexer& demux=m_pTsReaderFilter->GetDemultiplexer();
+  CMediaType pmti;  
+  demux.GetVideoStreamType(pmti);
+  CMediaType* ppmti = &pmti;
+
+  if(*pmt == *ppmti)
+  {
+    LogDebug("vidPin:CheckMediaType() ok");  
+    return S_OK;
+  }
+
+  //LogDebug("vidPin:CheckMediaType() fail");  
+  return E_FAIL;
+}
+
+HRESULT CVideoPin::GetMediaType(int iPosition, CMediaType *pmt)
+{
+  CheckPointer(pmt, E_POINTER);
+
+  //LogDebug("vidPin:GetMediaType() index = %d", iPosition);
+  
+  // This should never happen          
+  if (iPosition < 0) 
+  {              
+    return E_INVALIDARG;
+  }                                        
+  if (iPosition > 0)   
+  {           
+    //LogDebug("vidPin:GetMediaType() - idx > 0");
+    return VFW_S_NO_MORE_ITEMS;
+  }   
+
   CDeMultiplexer& demux=m_pTsReaderFilter->GetDemultiplexer();
   
   for (int i=0; i < 1000; i++) //Wait up to 1 sec for pmt to be valid
@@ -109,20 +140,20 @@ HRESULT CVideoPin::GetMediaType(CMediaType *pmt)
       if (!demux.VidPidGood())
       {
         //No video stream
-        pmt->InitMediaType();
-        return E_UNEXPECTED;
+        //LogDebug("vidPin:GetMediaType() - no pid");
+        return VFW_S_NO_MORE_ITEMS;
       }
       else if (demux.GetVideoStreamType(*pmt))
       {
-        //LogDebug("vidPin:GetMediaType() 1");
+        //LogDebug("vidPin:GetMediaType() - good pid");
         return S_OK;
       }
     }
     Sleep(1);
   }
-  //LogDebug("vidPin:GetMediaType() 2");
+
   pmt->InitMediaType();
-  return S_OK;
+  return E_UNEXPECTED;
 }
 
 //HRESULT CVideoPin::GetMediaType(CMediaType *pmt)
@@ -197,7 +228,7 @@ HRESULT CVideoPin::CompleteConnect(IPin *pReceivePin)
     }
     
     m_bConnected=true;    
-    LogDebug("vidPin:CompleteConnect() done");
+    LogDebug("vidPin:CompleteConnect() ok");
   }
   else
   {
@@ -217,7 +248,7 @@ HRESULT CVideoPin::CompleteConnect(IPin *pReceivePin)
     m_pTsReaderFilter->GetDuration(&refTime);
     m_rtDuration=CRefTime(refTime);
   }
-  LogDebug("vidPin:CompleteConnect() ok");
+  LogDebug("vidPin:CompleteConnect() end");
   return hr;
 }
 

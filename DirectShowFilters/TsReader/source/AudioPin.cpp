@@ -95,9 +95,41 @@ STDMETHODIMP CAudioPin::NonDelegatingQueryInterface( REFIID riid, void ** ppv )
   return CSourceStream::NonDelegatingQueryInterface(riid, ppv);
 }
 
-HRESULT CAudioPin::GetMediaType(CMediaType *pmt)
+HRESULT CAudioPin::CheckMediaType(const CMediaType* pmt)
 {
-  //LogDebug("audPin:GetMediaType()");
+  CDeMultiplexer& demux=m_pTsReaderFilter->GetDemultiplexer();
+  CMediaType pmti;
+  int audioIndex = 0;
+  demux.GetAudioStream(audioIndex);
+  demux.GetAudioStreamType(audioIndex, pmti);
+  CMediaType* ppmti = &pmti;
+
+  if(*pmt == *ppmti)
+  {
+    LogDebug("audPin:CheckMediaType() ok");  
+    return S_OK;
+  }
+
+  //LogDebug("audPin:CheckMediaType() fail");  
+  return E_FAIL;
+}
+
+HRESULT CAudioPin::GetMediaType(int iPosition, CMediaType *pmt)
+{
+  CheckPointer(pmt, E_POINTER);
+
+  //LogDebug("audPin:GetMediaType() index = %d", iPosition);
+  
+  // This should never happen          
+  if (iPosition < 0) 
+  {              
+    return E_INVALIDARG;
+  }                                        
+  if (iPosition > 0)   
+  {           
+    return VFW_S_NO_MORE_ITEMS;
+  }   
+
   CDeMultiplexer& demux=m_pTsReaderFilter->GetDemultiplexer();
 
   for (int i=0; i < 1000; i++) //Wait up to 1 sec for pmt to be valid
@@ -107,11 +139,12 @@ HRESULT CAudioPin::GetMediaType(CMediaType *pmt)
       if (!demux.AudPidGood())
       {
         //No audio stream
-        pmt->InitMediaType();
-        return E_UNEXPECTED;
+        //LogDebug("audPin:GetMediaType() - no pid");
+        return VFW_S_NO_MORE_ITEMS;
       }
       else
       {
+        //LogDebug("audPin:GetMediaType() - good pid");
         int audioIndex = 0;
         demux.GetAudioStream(audioIndex);
         demux.GetAudioStreamType(audioIndex, *pmt);
@@ -122,7 +155,7 @@ HRESULT CAudioPin::GetMediaType(CMediaType *pmt)
   }
 
   pmt->InitMediaType();
-  return S_OK;
+  return E_UNEXPECTED;
 }
 
 void CAudioPin::SetDiscontinuity(bool onOff)
@@ -172,11 +205,11 @@ HRESULT CAudioPin::CompleteConnect(IPin *pReceivePin)
   m_bInFillBuffer = false;
   m_bPinNoAddPMT = false;
   m_bAddPMT = true;
-  LogDebug("audPin:CompleteConnect()");
+  //LogDebug("audPin:CompleteConnect()");
   HRESULT hr = CBaseOutputPin::CompleteConnect(pReceivePin);
   if (SUCCEEDED(hr))
   {
-    LogDebug("audPin:CompleteConnect() done");
+    LogDebug("audPin:CompleteConnect() ok");
     m_bConnected=true;
   }
   else
@@ -197,7 +230,7 @@ HRESULT CAudioPin::CompleteConnect(IPin *pReceivePin)
     m_pTsReaderFilter->GetDuration(&refTime);
     m_rtDuration=CRefTime(refTime);
   }
-  LogDebug("audPin:CompleteConnect() ok");
+  LogDebug("audPin:CompleteConnect() end");
   return hr;
 }
 

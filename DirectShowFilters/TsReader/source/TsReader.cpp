@@ -181,7 +181,7 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   GetLogFile(filename);
   ::DeleteFile(filename);
   LogDebug("----- Experimental noStopMod version -----");
-  LogDebug("---------- v0.0.54e XXX -------------------");
+  LogDebug("---------- v0.0.54f XXX -------------------");
   
   m_fileReader=NULL;
   m_fileDuration=NULL;
@@ -1940,7 +1940,7 @@ bool CTsReaderFilter::SetSeeking(bool onOff)
 {
   CAutoLock lock (&m_sectionSeeking);
   
-  LogDebug("CTsReaderFilter: SetSeeking :%d", onOff);
+  //LogDebug("CTsReaderFilter: SetSeeking :%d", onOff);
   
   if (m_WaitForSeekToEof == onOff)
   {
