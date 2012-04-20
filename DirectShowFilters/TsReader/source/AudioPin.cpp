@@ -98,6 +98,16 @@ STDMETHODIMP CAudioPin::NonDelegatingQueryInterface( REFIID riid, void ** ppv )
 HRESULT CAudioPin::CheckMediaType(const CMediaType* pmt)
 {
   CDeMultiplexer& demux=m_pTsReaderFilter->GetDemultiplexer();
+
+  if (!demux.PatParsed())
+  {
+    return E_FAIL;
+  }
+  if (!demux.AudPidGood())
+  {
+    return E_FAIL;
+  }
+
   CMediaType pmti;
   int audioIndex = 0;
   demux.GetAudioStream(audioIndex);

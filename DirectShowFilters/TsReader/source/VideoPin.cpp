@@ -100,6 +100,16 @@ STDMETHODIMP CVideoPin::NonDelegatingQueryInterface( REFIID riid, void ** ppv )
 HRESULT CVideoPin::CheckMediaType(const CMediaType* pmt)
 {
   CDeMultiplexer& demux=m_pTsReaderFilter->GetDemultiplexer();
+  
+  if (!demux.PatParsed())
+  {
+    return E_FAIL;
+  }
+  if (!demux.VidPidGood())
+  {
+    return E_FAIL;
+  }
+
   CMediaType pmti;  
   demux.GetVideoStreamType(pmti);
   CMediaType* ppmti = &pmti;
