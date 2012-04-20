@@ -127,13 +127,12 @@ HRESULT CVideoPin::GetMediaType(int iPosition, CMediaType *pmt)
   }                                        
   if (iPosition > 0)   
   {           
-    //LogDebug("vidPin:GetMediaType() - idx > 0");
     return VFW_S_NO_MORE_ITEMS;
   }   
 
   CDeMultiplexer& demux=m_pTsReaderFilter->GetDemultiplexer();
   
-  for (int i=0; i < 1000; i++) //Wait up to 1 sec for pmt to be valid
+  for (int i=0; i < 200; i++) //Wait up to 1 sec for pmt to be valid
   {
     if (demux.PatParsed())
     {
@@ -149,11 +148,12 @@ HRESULT CVideoPin::GetMediaType(int iPosition, CMediaType *pmt)
         return S_OK;
       }
     }
-    Sleep(1);
+    Sleep(5);
   }
 
+  //Return a null media type
   pmt->InitMediaType();
-  return E_UNEXPECTED;
+  return S_OK;
 }
 
 //HRESULT CVideoPin::GetMediaType(CMediaType *pmt)

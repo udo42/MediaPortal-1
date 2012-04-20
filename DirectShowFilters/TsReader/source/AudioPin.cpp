@@ -132,7 +132,7 @@ HRESULT CAudioPin::GetMediaType(int iPosition, CMediaType *pmt)
 
   CDeMultiplexer& demux=m_pTsReaderFilter->GetDemultiplexer();
 
-  for (int i=0; i < 1000; i++) //Wait up to 1 sec for pmt to be valid
+  for (int i=0; i < 200; i++) //Wait up to 1 sec for pmt to be valid
   {
     if (demux.PatParsed())
     {
@@ -151,11 +151,12 @@ HRESULT CAudioPin::GetMediaType(int iPosition, CMediaType *pmt)
         return S_OK;
       }
     }
-    Sleep(1);
+    Sleep(5);
   }
 
+  //Return a null media type
   pmt->InitMediaType();
-  return E_UNEXPECTED;
+  return S_OK;
 }
 
 void CAudioPin::SetDiscontinuity(bool onOff)
