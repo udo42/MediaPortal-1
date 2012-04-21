@@ -50,6 +50,9 @@
 #define AUDIO_CHANGE 0x1
 #define VIDEO_CHANGE 0x2
 
+//NALU start code macro borrowed from LAV splitter...
+#define MOVE_TO_H264_START_CODE(b, e) while(b <= e-4 && !((*(DWORD *)b == 0x01000000) || ((*(DWORD *)b & 0x00FFFFFF) == 0x00010000))) b++; if((b <= e-4) && *(DWORD *)b == 0x01000000) b++;
+
 extern void LogDebug(const char *fmt, ...);
 
 // *** UNCOMMENT THE NEXT LINE TO ENABLE DYNAMIC VIDEO PIN HANDLING!!!! ******
@@ -1203,7 +1206,7 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
     BYTE* start = m_p->GetData();
     BYTE* end = start + m_p->GetCount();
 
-    while(start <= end-4 && *(DWORD*)start != 0x01000000) start++;
+    MOVE_TO_H264_START_CODE(start, end);
 
     while(start <= end-4)
     {
@@ -1213,7 +1216,7 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
         next = m_p->GetData() + m_lastStart;
       }
 
-      while(next <= end-4 && *(DWORD*)next != 0x01000000) next++;
+      MOVE_TO_H264_START_CODE(next, end);
 
       if(next >= end-4)
       {
