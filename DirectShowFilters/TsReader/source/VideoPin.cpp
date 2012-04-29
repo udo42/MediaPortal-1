@@ -720,7 +720,7 @@ HRESULT CVideoPin::OnThreadStartPlay()
   m_sampleCount = 0;
   m_bInFillBuffer=false;
 
-  m_pTsReaderFilter->m_ShowBufferVideo = 4;
+  m_pTsReaderFilter->m_ShowBufferVideo = INIT_SHOWBUFFERVIDEO;
 
   m_llLastComp = 0;
   m_llLastMTDts = 0;

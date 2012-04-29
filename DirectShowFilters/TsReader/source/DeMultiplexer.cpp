@@ -1361,7 +1361,9 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
     m_p.Attach(new Packet());
     m_p->bDiscontinuity = false ;
     m_p->rtStart = Packet::INVALID_TIME;
+    m_p->rtPrevStart = Packet::INVALID_TIME; 
     m_lastStart = 0;
+    //LogDebug("DeMultiplexer::FillVideoH264 New m_p");
   }
 
   if (header.PayloadUnitStart)
@@ -1407,6 +1409,7 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
       m_VideoValidPES=false;
       m_mVideoValidPES = false;
       m_p->rtStart = Packet::INVALID_TIME;
+      m_p->rtPrevStart = Packet::INVALID_TIME; 
       m_WaitHeaderPES = -1;
       m_bSetVideoDiscontinuity=true;
       //Flushing is delegated to CDeMultiplexer::ThreadProc()
@@ -1448,15 +1451,17 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
           }
           else
           {
-            //LogDebug("DeMultiplexer::FillVideoH264 pts diff : %f, rtStart : %d ", (float)pts.ToClock(), pts.PcrReferenceBase);
+            //LogDebug("DeMultiplexer::FillVideoH264 pts: %f, dts: %f, rtStart : %d ", (float)pts.ToClock(), (float)dts.ToClock(), pts.PcrReferenceBase);
             m_lastVideoPTS=pts;
           }
         }
         m_lastStart -= 9+start[8];
         m_p->RemoveAt(m_WaitHeaderPES, 9+start[8]);
-
+                
+        m_p->rtPrevStart = m_p->rtStart;
         m_p->rtStart = pts.IsValid ? (pts.PcrReferenceBase) : Packet::INVALID_TIME;
         m_WaitHeaderPES = -1;
+        //LogDebug("m_p->rtStart: %d, m_p->rtPrevStart: %d",(int)m_p->rtStart, (int)m_p->rtPrevStart);
       }
     }
   }
@@ -1501,24 +1506,46 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
         CAutoPtr<Packet> p3(new Packet());
 
         p3->SetCount (Nalu.GetDataLength()+sizeof(dwNalLength));
-
+        
         memcpy (p3->GetData(), &dwNalLength, sizeof(dwNalLength));
         memcpy (p3->GetData()+sizeof(dwNalLength), Nalu.GetDataBuffer(), Nalu.GetDataLength());
+        //LogDebug("Input p3 NALU Type: %d (%d), m_p->rtStart: %d, m_p->rtPrevStart: %d", (*(p3->GetData()+4)&0x1f), p3->GetCount(), (int)m_p->rtStart, (int)m_p->rtPrevStart);
 
         if (p2 == NULL)
+        {
           p2 = p3;
+        }
         else
+        {
           p2->Append(*p3);
+        }
+        
+        if ((m_p->rtStart != m_p->rtPrevStart) && (m_p->rtPrevStart != Packet::INVALID_TIME))
+        {
+          // new rtStart/PES packet transition - use previous rtStart value since 
+          // this NALU is the last one from the previous PES packet
+			    p2->rtStart = m_p->rtPrevStart;
+			    m_p->rtPrevStart = m_p->rtStart; 
+        }
+        else
+        {
+			    p2->rtStart = m_p->rtStart;
+        }
       }
 
-      if((*(p2->GetData()+4)&0x1f) == 0x09) m_fHasAccessUnitDelimiters = true;
-      if((*(p2->GetData()+4)&0x1f) == 0x09 || (!m_fHasAccessUnitDelimiters && m_p->rtStart != Packet::INVALID_TIME))
+      if((*(p2->GetData()+4)&0x1f) == 0x09) 
+      {
+        m_fHasAccessUnitDelimiters = true;
+      }
+        
+      if(((*(p2->GetData()+4)&0x1f) == 0x09) || (!m_fHasAccessUnitDelimiters && p2->rtStart != Packet::INVALID_TIME))
       {
         if ((m_pl.GetCount()>0) && m_mVideoValidPES)
         {
+          //Copy available NALUs into new packet 'p' (for the next video buffer)
           CAutoPtr<Packet> p(new Packet());
           p = m_pl.RemoveHead();
-          //LogDebug("Output NALU Type: %d (%d)", p->GetAt(4)&0x1f,p->GetCount());
+          //LogDebug("Output p1 NALU Type: %d (%d), rtStart: %d", p->GetAt(4)&0x1f,p->GetCount(), (int)p->rtStart);
           //CH246IFrameScanner iFrameScanner;
           //iFrameScanner.ProcessNALU(p);
 
@@ -1527,7 +1554,7 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
             CAutoPtr<Packet> p2 = m_pl.RemoveHead();
             //if (!iFrameScanner.SeenEnough())
             //  iFrameScanner.ProcessNALU(p2);
-            //LogDebug("Output NALU Type: %d (%d)", p2->GetAt(4)&0x1f,p2->GetCount());
+            //LogDebug("Output p2 NALU Type: %d (%d), rtStart: %d", p2->GetAt(4)&0x1f, p2->GetCount(), (int)p->rtStart);
             p->Append(*p2);
           }
 
@@ -1537,7 +1564,7 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
             timestamp.PcrReferenceBase = p->rtStart;
             timestamp.IsValid=true;
           }
-          //LogDebug("frame len %d, p->timestamp %f, p->rtStart %d", p->GetCount(), timestamp.ToClock(), p->rtStart);
+          //LogDebug("NALU Type: %d (%d) %d, p->timestamp %f, p->rtStart %d",  p->GetAt(4)&0x1f, p->GetCount(), timestamp.ToClock(), (int)p->rtStart);
 
           bool Gop = m_mpegPesParser->OnTsPacket(p->GetData(), p->GetCount(), false, m_mpegParserReset);
           if (Gop)
@@ -1562,6 +1589,7 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
             pCurrentVideoBuffer->SetPts(timestamp);   
             pCurrentVideoBuffer->SetPcr(m_duration.FirstStartPcr(),m_duration.MaxPcr());
             pCurrentVideoBuffer->MediaTime(Ref);
+            //LogDebug("...> Store NALU type (length) = %d (%d), p->rtStart = %d, timestamp %f", (*(p->GetData()+4) & 0x1F), p->GetCount(), (int)p->rtStart, timestamp.ToClock()) ;
             // Must use p->rtStart as CPcr is UINT64 and INVALID_TIME is LONGLONG
             // Too risky to change CPcr implementation at this time 
             if(p->rtStart != Packet::INVALID_TIME)
@@ -1710,18 +1738,18 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
         
         m_pl.RemoveAll();
           
-        p2->bDiscontinuity = m_p->bDiscontinuity; 
-        m_p->bDiscontinuity = FALSE;
-        p2->rtStart = m_p->rtStart; 
-        m_p->rtStart = Packet::INVALID_TIME;
+        //p2->bDiscontinuity = m_p->bDiscontinuity; 
+        //m_p->bDiscontinuity = FALSE;
+        //p2->rtStart = m_p->rtStart; 
+        //m_p->rtStart = Packet::INVALID_TIME;
       }
       else
       {
-        p2->bDiscontinuity = FALSE;
+        //p2->bDiscontinuity = FALSE;
         p2->rtStart = Packet::INVALID_TIME;
       }
 
-      //LogDebug(".......> Store NALU length = %d (%d), p2->rtStart = %d", (*(p2->GetData()+4) & 0x1F), p2->GetCount(), p2->rtStart) ;
+      //LogDebug(".......> Store NALU type (length) = %d (%d), p2->rtStart = %d", (*(p2->GetData()+4) & 0x1F), p2->GetCount(), (int)p2->rtStart) ;
       m_pl.AddTail(p2);
 
       start = next;
