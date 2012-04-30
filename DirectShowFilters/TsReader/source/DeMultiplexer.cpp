@@ -1457,8 +1457,12 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
         m_lastStart -= 9+start[8];
         m_p->RemoveAt(m_WaitHeaderPES, 9+start[8]);
                 
-        m_p->rtPrevStart = m_p->rtStart;
-        m_p->rtStart = pts.IsValid ? (pts.PcrReferenceBase) : Packet::INVALID_TIME;
+        if (pts.IsValid)
+        {
+          m_p->rtPrevStart = m_p->rtStart;
+          m_p->rtStart = (pts.PcrReferenceBase);
+        }
+        //m_p->rtStart = pts.IsValid ? (pts.PcrReferenceBase) : Packet::INVALID_TIME;
         m_WaitHeaderPES = -1;
         //LogDebug("m_p->rtStart: %d, m_p->rtPrevStart: %d",(int)m_p->rtStart, (int)m_p->rtPrevStart);
       }
@@ -1533,6 +1537,7 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
         if ((m_pl.GetCount()>0) && m_mVideoValidPES)
         {
           bool Gop = false;
+          char nalID = 0;
           
           //Copy available NALUs into new packet 'p' (for the next video buffer)
           CAutoPtr<Packet> p(new Packet());
@@ -1540,8 +1545,9 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
           //LogDebug("Output p1 NALU Type: %d (%d), rtStart: %d", p->GetAt(4)&0x1f,p->GetCount(), (int)p->rtStart);
           //CH246IFrameScanner iFrameScanner;
           //iFrameScanner.ProcessNALU(p); 
-          //if (((p->GetAt(4)&0x9f == 0x07) || (p->GetAt(4)&0x9f == 0x08)) && (p->GetAt(4)&0x60 != 0)) //Process SPS & PPS data
-          if ((p->GetAt(4) == 0x67) || (p->GetAt(4) == 0x68)) //Process SPS & PPS data
+          
+          nalID = p->GetAt(4);
+          if ((((nalID & 0x9f) == 0x07) || ((nalID & 0x9f) == 0x08)) && ((nalID & 0x60) != 0)) //Process SPS & PPS data
           {
             Gop = m_mpegPesParser->OnTsPacket(p->GetData(), p->GetCount(), false, m_mpegParserReset);
             m_mpegParserReset = false;
@@ -1554,8 +1560,9 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
             //if (!iFrameScanner.SeenEnough())
             //  iFrameScanner.ProcessNALU(p2);
             //LogDebug("Output p4 NALU Type: %d (%d), rtStart: %d", p4->GetAt(4)&0x1f, p4->GetCount(), (int)p->rtStart);
-            //if (!Gop && (((p4->GetAt(4)&0x9f == 0x07) || (p4->GetAt(4)&0x9f == 0x08)) && (p4->GetAt(4)&0x60 != 0))) //Process SPS & PPS data
-            if (!Gop && ((p4->GetAt(4) == 0x67) || (p4->GetAt(4) == 0x68))) //Process SPS & PPS data
+            
+            nalID = p4->GetAt(4);
+            if ((((nalID & 0x9f) == 0x07) || ((nalID & 0x9f) == 0x08)) && ((nalID & 0x60) != 0)) //Process SPS & PPS data
             {
               Gop = m_mpegPesParser->OnTsPacket(p4->GetData(), p4->GetCount(), false, m_mpegParserReset);
               m_mpegParserReset = false;
