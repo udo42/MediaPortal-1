@@ -1359,7 +1359,6 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
   if(!m_p)
   {
     m_p.Attach(new Packet());
-    m_p->bDiscontinuity = false ;
     m_p->rtStart = Packet::INVALID_TIME;
     m_p->rtPrevStart = Packet::INVALID_TIME; 
     m_lastStart = 0;
@@ -1494,31 +1493,22 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
       CH264Nalu Nalu;
       Nalu.SetBuffer(start, size, 0);
 
-      CAutoPtr<Packet> p2;
+      CAutoPtr<Packet> p2(new Packet());
+      p2->rtStart = Packet::INVALID_TIME;
 
-      while (Nalu.ReadNext())
+      if (Nalu.ReadNext())
       {
         DWORD dwNalLength = 
           ((Nalu.GetDataLength() >> 24) & 0x000000ff) |
           ((Nalu.GetDataLength() >>  8) & 0x0000ff00) |
           ((Nalu.GetDataLength() <<  8) & 0x00ff0000) |
           ((Nalu.GetDataLength() << 24) & 0xff000000);
-        CAutoPtr<Packet> p3(new Packet());
 
-        p3->SetCount (Nalu.GetDataLength()+sizeof(dwNalLength));
+        p2->SetCount (Nalu.GetDataLength()+sizeof(dwNalLength));
         
-        memcpy (p3->GetData(), &dwNalLength, sizeof(dwNalLength));
-        memcpy (p3->GetData()+sizeof(dwNalLength), Nalu.GetDataBuffer(), Nalu.GetDataLength());
-        //LogDebug("Input p3 NALU Type: %d (%d), m_p->rtStart: %d, m_p->rtPrevStart: %d", (*(p3->GetData()+4)&0x1f), p3->GetCount(), (int)m_p->rtStart, (int)m_p->rtPrevStart);
-
-        if (p2 == NULL)
-        {
-          p2 = p3;
-        }
-        else
-        {
-          p2->Append(*p3);
-        }
+        memcpy (p2->GetData(), &dwNalLength, sizeof(dwNalLength));
+        memcpy (p2->GetData()+sizeof(dwNalLength), Nalu.GetDataBuffer(), Nalu.GetDataLength());
+        //LogDebug("Input p2 NALU Type: %d (%d), m_p->rtStart: %d, m_p->rtPrevStart: %d", (*(p2->GetData()+4)&0x1f), p2->GetCount(), (int)m_p->rtStart, (int)m_p->rtPrevStart);
         
         if ((m_p->rtStart != m_p->rtPrevStart) && (m_p->rtPrevStart != Packet::INVALID_TIME))
         {
@@ -1542,20 +1532,45 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
       {
         if ((m_pl.GetCount()>0) && m_mVideoValidPES)
         {
+          bool Gop = false;
+          
           //Copy available NALUs into new packet 'p' (for the next video buffer)
           CAutoPtr<Packet> p(new Packet());
           p = m_pl.RemoveHead();
           //LogDebug("Output p1 NALU Type: %d (%d), rtStart: %d", p->GetAt(4)&0x1f,p->GetCount(), (int)p->rtStart);
           //CH246IFrameScanner iFrameScanner;
-          //iFrameScanner.ProcessNALU(p);
+          //iFrameScanner.ProcessNALU(p); 
+          //if (((p->GetAt(4)&0x9f == 0x07) || (p->GetAt(4)&0x9f == 0x08)) && (p->GetAt(4)&0x60 != 0)) //Process SPS & PPS data
+          if ((p->GetAt(4) == 0x67) || (p->GetAt(4) == 0x68)) //Process SPS & PPS data
+          {
+            Gop = m_mpegPesParser->OnTsPacket(p->GetData(), p->GetCount(), false, m_mpegParserReset);
+            m_mpegParserReset = false;
+          }
 
           while(m_pl.GetCount())
           {
-            CAutoPtr<Packet> p2 = m_pl.RemoveHead();
+            CAutoPtr<Packet> p4(new Packet());
+            p4 = m_pl.RemoveHead();
             //if (!iFrameScanner.SeenEnough())
             //  iFrameScanner.ProcessNALU(p2);
-            //LogDebug("Output p2 NALU Type: %d (%d), rtStart: %d", p2->GetAt(4)&0x1f, p2->GetCount(), (int)p->rtStart);
-            p->Append(*p2);
+            //LogDebug("Output p4 NALU Type: %d (%d), rtStart: %d", p4->GetAt(4)&0x1f, p4->GetCount(), (int)p->rtStart);
+            //if (!Gop && (((p4->GetAt(4)&0x9f == 0x07) || (p4->GetAt(4)&0x9f == 0x08)) && (p4->GetAt(4)&0x60 != 0))) //Process SPS & PPS data
+            if (!Gop && ((p4->GetAt(4) == 0x67) || (p4->GetAt(4) == 0x68))) //Process SPS & PPS data
+            {
+              Gop = m_mpegPesParser->OnTsPacket(p4->GetData(), p4->GetCount(), false, m_mpegParserReset);
+              m_mpegParserReset = false;
+            }
+            p->Append(*p4);
+          }
+
+          if (Gop)
+          {
+            m_mpegParserReset = true; //Reset next time around (so that it always searches for a full 'Gop' header)
+            if (!m_bFirstGopParsed)
+            {
+              m_bFirstGopParsed = true;
+              LogDebug("DeMultiplexer: First Gop after new PAT, %dx%d @ %d:%d, %.3fHz %s",m_mpegPesParser->basicVideoInfo.width,m_mpegPesParser->basicVideoInfo.height,m_mpegPesParser->basicVideoInfo.arx,m_mpegPesParser->basicVideoInfo.ary,(float)m_mpegPesParser->basicVideoInfo.fps, m_mpegPesParser->basicVideoInfo.isInterlaced ? "interlaced":"progressive");
+            }
           }
 
           CPcr timestamp;
@@ -1566,20 +1581,6 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
           }
           //LogDebug("NALU Type: %d (%d) %d, p->timestamp %f, p->rtStart %d",  p->GetAt(4)&0x1f, p->GetCount(), timestamp.ToClock(), (int)p->rtStart);
 
-          bool Gop = m_mpegPesParser->OnTsPacket(p->GetData(), p->GetCount(), false, m_mpegParserReset);
-          if (Gop)
-          {
-            m_mpegParserReset = true; //Reset next time around (so that it always searches for a full 'Gop' header)
-            if (!m_bFirstGopParsed)
-            {
-              m_bFirstGopParsed = true;
-              LogDebug("DeMultiplexer: First Gop after new PAT, %dx%d @ %d:%d, %.3fHz %s",m_mpegPesParser->basicVideoInfo.width,m_mpegPesParser->basicVideoInfo.height,m_mpegPesParser->basicVideoInfo.arx,m_mpegPesParser->basicVideoInfo.ary,(float)m_mpegPesParser->basicVideoInfo.fps, m_mpegPesParser->basicVideoInfo.isInterlaced ? "interlaced":"progressive");
-            }
-          }
-          else
-          {
-            m_mpegParserReset = false;
-          }
 
           if ((Gop || m_bFirstGopFound) && m_filter.GetVideoPin()->IsConnected())
           {
@@ -1738,15 +1739,8 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
         
         m_pl.RemoveAll();
           
-        //p2->bDiscontinuity = m_p->bDiscontinuity; 
-        //m_p->bDiscontinuity = FALSE;
         //p2->rtStart = m_p->rtStart; 
         //m_p->rtStart = Packet::INVALID_TIME;
-      }
-      else
-      {
-        //p2->bDiscontinuity = FALSE;
-        p2->rtStart = Packet::INVALID_TIME;
       }
 
       //LogDebug(".......> Store NALU type (length) = %d (%d), p2->rtStart = %d", (*(p2->GetData()+4) & 0x1F), p2->GetCount(), (int)p2->rtStart) ;
@@ -1779,7 +1773,6 @@ void CDeMultiplexer::FillVideoMPEG2(CTsHeader& header, byte* tsPacket)
   if(!m_p)
   {
     m_p.Attach(new Packet());
-    m_p->bDiscontinuity = false;
     m_p->rtStart = Packet::INVALID_TIME;
     m_lastStart = 0;
     m_bInBlock=false;
