@@ -51,7 +51,7 @@
 #define MIN_READ_SIZE_UNC (READ_SIZE/4)
 #define INITIAL_READ_SIZE (READ_SIZE * 512)
 
-//Macro borrowed from LAV splitter...
+//Macro borrowed from MPC-HC/LAV splitter...
 #define MOVE_TO_H264_START_CODE(b, e) while(b <= e-4 && !((*(DWORD *)b == 0x01000000) || ((*(DWORD *)b & 0x00FFFFFF) == 0x00010000))) b++; if((b <= e-4) && *(DWORD *)b == 0x01000000) b++;
 
 // uncomment the //LogDebug to enable extra logging
@@ -1549,8 +1549,7 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
       
       if ((m_p->rtStart != m_p->rtPrevStart) && (m_p->rtPrevStart != Packet::INVALID_TIME))
       {
-        // new rtStart/PES packet transition - use previous rtStart value
-        // as this NALU started in the previous PES packet.
+        // new rtStart/PES packet transition - use previous rtStart value as this NALU started in the previous PES packet.
         // This is important for streams without Access Unit Delimiters e.g. some IPTV streams
 		    p2->rtStart = m_p->rtPrevStart;
 		    m_p->rtPrevStart = m_p->rtStart; 
@@ -1561,50 +1560,19 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
 		    p2->rtStart = m_p->rtStart;
       }
 
-//      CH264Nalu Nalu;
-//      Nalu.SetBuffer(start, size, 0);
-//
-//      if (Nalu.ReadNext())
-//      {
-//        DWORD dwNalLength = 
-//          ((Nalu.GetDataLength() >> 24) & 0x000000ff) |
-//          ((Nalu.GetDataLength() >>  8) & 0x0000ff00) |
-//          ((Nalu.GetDataLength() <<  8) & 0x00ff0000) |
-//          ((Nalu.GetDataLength() << 24) & 0xff000000);
-//
-//        LogDebug("DeMux: NALU size %d, GetDataLength() %d, start %d, GetDataBuffer() %d", size, Nalu.GetDataLength(), start, Nalu.GetDataBuffer());
-//
-//        p2->SetCount (Nalu.GetDataLength()+sizeof(dwNalLength));
-//        
-//        memcpy (p2->GetData(), &dwNalLength, sizeof(dwNalLength));
-//        memcpy (p2->GetData()+sizeof(dwNalLength), Nalu.GetDataBuffer(), Nalu.GetDataLength());
-//        LOG_SAMPLES("Input p2 NALU Type: %d (%d), m_p->rtStart: %d, m_p->rtPrevStart: %d", (*(p2->GetData()+4)&0x1f), p2->GetCount(), (int)m_p->rtStart, (int)m_p->rtPrevStart);
-//        
-//        if ((m_p->rtStart != m_p->rtPrevStart) && (m_p->rtPrevStart != Packet::INVALID_TIME))
-//        {
-//          // new rtStart/PES packet transition - use previous rtStart value
-//          // as this NALU started in the previous PES packet
-//			    p2->rtStart = m_p->rtPrevStart;
-//			    m_p->rtPrevStart = m_p->rtStart; 
-//			    isNewTimestamp = true;
-//        }
-//        else
-//        {
-//			    p2->rtStart = m_p->rtStart;
-//        }
-//      }
-
+      //Decide if we should transfer NALU packets to output sample
+      
       if((*(p2->GetData()+4)&0x1f) == 0x09) 
       {
         m_fHasAccessUnitDelimiters = true;
       }
         
-      //if(((*(p2->GetData()+4)&0x1f) == 0x09) || (!m_fHasAccessUnitDelimiters && p2->rtStart != Packet::INVALID_TIME))
       if(((*(p2->GetData()+4)&0x1f) == 0x09) || (!m_fHasAccessUnitDelimiters && m_isNewNALUTimestamp))
       {
         m_isNewNALUTimestamp = false;
         if ((m_pl.GetCount()>0) && m_mVideoValidPES)
         {
+          //Transfer NALU packets to output sample
           bool Gop = false;
           char nalID = 0;
           
