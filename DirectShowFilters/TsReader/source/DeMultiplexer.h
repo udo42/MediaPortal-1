@@ -217,7 +217,6 @@ private:
   CPcr     m_lastVideoPTS;
   CPcr     m_lastAudioPTS;
   double   m_minVideoPTSdiff;
-  int      m_videoPTSroff;
   CTsDuration& m_duration;
   CTsReaderFilter& m_filter;
   unsigned int m_iAudioStream;
