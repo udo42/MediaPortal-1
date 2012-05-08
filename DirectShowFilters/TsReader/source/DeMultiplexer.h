@@ -291,4 +291,5 @@ private:
   bool m_bPatParsed;
   
   bool m_isNewNALUTimestamp;
+  bool m_bVideoPTSroff;
 };

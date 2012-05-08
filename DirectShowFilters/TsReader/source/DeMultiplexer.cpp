@@ -1379,6 +1379,7 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
     m_lastStart = 0;
     m_isNewNALUTimestamp = false;
     m_minVideoPTSdiff = DBL_MAX;
+    m_bVideoPTSroff = false;
     //LogDebug("DeMultiplexer::FillVideoH264 New m_p");
   }
 
@@ -1473,18 +1474,20 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
             {
               m_minVideoPTSdiff = diff;
             }
-            if ((diff < 0.002) && (pts.IsValid))
+            if ((diff < 0.002) && (pts.IsValid) && !m_fHasAccessUnitDelimiters)
             {
               LOG_SAMPLES("DeMultiplexer::FillVideoH264 - PTS is same, diff %f, pts %f ", (float)diff, (float)pts.ToClock());
               double d = pts.ToClock();
               if (m_minVideoPTSdiff < 0.05) //We've seen a few PES timestamps/video frames
               {
-                d += m_minVideoPTSdiff ;
+                d += m_minVideoPTSdiff;
               }
-              else //Guess - add 15ms
+              else //Guess - add 36.6 ms
               {
-                d += 0.015 ;
+                d += 0.0366 ;
               }
+              d += (m_bVideoPTSroff ? 0.0015 : -0.0015); //Ensure PTS always changes
+              m_bVideoPTSroff = !m_bVideoPTSroff;
               pts.FromClock(d);
               pts.IsValid=true;
               isSamePTS = true;
@@ -1503,7 +1506,6 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
           }
           m_p->rtStart = (pts.PcrReferenceBase);
         }
-        //m_p->rtStart = pts.IsValid ? (pts.PcrReferenceBase) : Packet::INVALID_TIME;
         m_WaitHeaderPES = -1;
         //LogDebug("m_p->rtStart: %d, m_p->rtPrevStart: %d",(int)m_p->rtStart, (int)m_p->rtPrevStart);
       }
