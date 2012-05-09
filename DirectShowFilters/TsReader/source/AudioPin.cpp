@@ -387,7 +387,7 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
         m_bInFillBuffer = false;
         if (demux.m_bFlushRunning)
         {
-          m_bDownstreamFlush=true;
+          //m_bDownstreamFlush=true;
           //Force discon on next good sample
           m_sampleCount = 0;
           m_bDiscontinuity=true;
