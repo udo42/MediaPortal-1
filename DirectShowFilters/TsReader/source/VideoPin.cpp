@@ -415,7 +415,7 @@ HRESULT CVideoPin::FillBuffer(IMediaSample *pSample)
         m_FillBuffSleepTime = 5;
         CreateEmptySample(pSample);
         m_bInFillBuffer = false;
-        if (demux.m_bFlushRunning)
+        if (demux.m_bFlushRunning || !m_pTsReaderFilter->m_bStreamCompensated)
         {
           //m_bDownstreamFlush=true;
           //Force discon on next good sample

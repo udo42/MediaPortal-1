@@ -334,7 +334,7 @@ HRESULT CSubtitlePin::FillBuffer(IMediaSample *pSample)
       {
         CreateEmptySample(pSample);
         m_bInFillBuffer = false;
-        //m_bDiscontinuity = TRUE; //Next good sample will be discontinuous
+        m_bDiscontinuity = TRUE; //Next good sample will be discontinuous
         Sleep(5);
         return NOERROR;
       }

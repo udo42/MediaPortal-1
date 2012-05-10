@@ -293,7 +293,7 @@ HRESULT CAudioPin::DoBufferProcessingLoop(void)
         // Some decoders seem to crash when we provide empty samples 
         if ((pSample->GetActualDataLength() > 0) && !m_pTsReaderFilter->IsStopping())
         {
-          hr = Deliver(pSample);     
+          hr = Deliver(pSample); 
           m_sampleCount++ ;
         }
         else
@@ -421,6 +421,14 @@ HRESULT CAudioPin::FillBuffer(IMediaSample *pSample)
         if (!m_pTsReaderFilter->m_bStreamCompensated && (m_nNextASD != 0))
         {
           ClearAverageSampleDur();
+        }
+        
+        if (!m_pTsReaderFilter->m_bStreamCompensated)
+        {
+          m_sampleCount = 0;
+          CreateEmptySample(pSample);
+          m_bInFillBuffer = false;
+          return NOERROR;
         }
       }
       else
