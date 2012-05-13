@@ -181,7 +181,7 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   GetLogFile(filename);
   ::DeleteFile(filename);
   LogDebug("----- Experimental noStopMod version -----");
-  LogDebug("---------- v0.0.58a XXX -------------------");
+  LogDebug("---------- v0.0.58 XXX -------------------");
   
   m_fileReader=NULL;
   m_fileDuration=NULL;
@@ -505,18 +505,13 @@ STDMETHODIMP CTsReaderFilter::GetState(DWORD dwMilliSecsTimeout, FILTER_STATE *p
       }
     }
 
-    //    bool isAVReady =  m_bStreamCompensated
-    //              && GetVideoPin()->HasDeliveredSample()
-    //              && GetAudioPin()->HasDeliveredSample()
-    //              && (GET_TIME_NOW() > m_demultiplexer. m_targetAVready);
-
     bool isAVReady =  m_bStreamCompensated
               && (GET_TIME_NOW() > m_demultiplexer.m_targetAVready);
     
     //FFWD is more responsive if we return VFW_S_CANT_CUE when rate != 1.0
     if (isAVReady || (playRate != 1.0))
     {
-      LogDebug("CTsReaderFilter::GetState(), VFW_S_CANT_CUE, playRate %f",(float)playRate);
+      //LogDebug("CTsReaderFilter::GetState(), VFW_S_CANT_CUE, playRate %f",(float)playRate);
       return VFW_S_CANT_CUE;
     }
     else

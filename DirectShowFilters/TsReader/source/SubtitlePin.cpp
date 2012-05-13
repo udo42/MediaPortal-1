@@ -94,7 +94,13 @@ HRESULT CSubtitlePin::CheckMediaType(const CMediaType* pmt)
 
   CDeMultiplexer& demux=m_pTsReaderFilter->GetDemultiplexer();
   
-  if (!demux.PatParsed() || !m_pTsReaderFilter->CheckCallback())
+  if (!m_pTsReaderFilter->CheckCallback())
+  {
+    //LogDebug("subPin: Not running in MP - CheckMediaType() fail");
+    return E_FAIL;
+  }
+
+  if (!demux.PatParsed())
   {
     return E_FAIL;
   }
@@ -111,7 +117,7 @@ HRESULT CSubtitlePin::CheckMediaType(const CMediaType* pmt)
 
   if(*pmt == *ppmti)
   {
-    LogDebug("subPin:CheckMediaType() ok");  
+    //LogDebug("subPin:CheckMediaType() ok");  
     return S_OK;
   }
 
@@ -231,14 +237,28 @@ HRESULT CSubtitlePin::CompleteConnect(IPin *pReceivePin)
   //LogDebug("subPin:CompleteConnect()");
   HRESULT hr = CBaseOutputPin::CompleteConnect(pReceivePin);
 
-  if (SUCCEEDED(hr))
+  PIN_INFO pinInfo;
+  FILTER_INFO filterInfo;
+  hr=pReceivePin->QueryPinInfo(&pinInfo);
+  if (!SUCCEEDED(hr)) return E_FAIL;
+  else if (pinInfo.pFilter==NULL) return E_FAIL;
+  else pinInfo.pFilter->Release(); // we dont need the filter just the info
+    
+  hr=pinInfo.pFilter->QueryFilterInfo(&filterInfo);
+  filterInfo.pGraph->Release();
+
+  if (SUCCEEDED(hr)) 
   {
-    LogDebug("subPin:CompleteConnect() ok");
+    char szName[MAX_FILTER_NAME];
+    int cch = WideCharToMultiByte(CP_ACP, 0, filterInfo.achName, MAX_FILTER_NAME, szName, MAX_FILTER_NAME, 0, 0);
+    LogDebug("subPin:CompleteConnect() ok, filter: %s", szName);
+    
     m_bConnected=true;
   }
   else
   {
     LogDebug("subPin:CompleteConnect() failed:%x",hr);
+    return E_FAIL;
   }
 
   if (m_pTsReaderFilter->IsTimeShifting())
@@ -254,7 +274,8 @@ HRESULT CSubtitlePin::CompleteConnect(IPin *pReceivePin)
     m_pTsReaderFilter->GetDuration(&refTime);
     m_rtDuration=CRefTime(refTime);
   }
-  LogDebug("subPin:CompleteConnect() end");
+
+  //LogDebug("subPin:CompleteConnect() end");
   return hr;
 }
 
