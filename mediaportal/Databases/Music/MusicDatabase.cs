@@ -178,18 +178,18 @@ namespace MediaPortal.Music.Database
         }
         catch (Exception) {}
 
-        if (!File.Exists(Config.GetFile(Config.Dir.Database, "MusicDatabaseV12.db3")))
+        if (!File.Exists(Config.GetFile(Config.Dir.Database, "MusicDatabaseV13.db3")))
         {
-          if (File.Exists(Config.GetFile(Config.Dir.Database, "MusicDatabaseV11.db3")))
+          if (File.Exists(Config.GetFile(Config.Dir.Database, "MusicDatabaseV12.db3")))
           {
             Log.Info("MusicDatabase: Found older version of database. Upgrade to new layout.");
-            File.Copy(Config.GetFile(Config.Dir.Database, "MusicDatabaseV11.db3"),
-                      Config.GetFile(Config.Dir.Database, "MusicDatabaseV12.db3"));
+            File.Copy(Config.GetFile(Config.Dir.Database, "MusicDatabaseV12.db3"),
+                      Config.GetFile(Config.Dir.Database, "MusicDatabaseV13.db3"));
 
             // Get the DB handle or create it if necessary
             MusicDbClient = DbConnection;
 
-            UpgradeDBV11_V12();
+            UpgradeDBV12_V13();
             return;
           }
 
@@ -217,12 +217,12 @@ namespace MediaPortal.Music.Database
       Log.Info("MusicDatabase: Database opened");
     }
 
-    private void UpgradeDBV11_V12()
+    private void UpgradeDBV12_V13()
     {
       try
       {
         // First rename the tracks table
-        string strSQL = "alter table tracks rename to tracksV11";
+        string strSQL = "alter table tracks rename to tracksV12";
         MusicDbClient.Execute(strSQL);
 
         // Now call the Create Datbase function to create the new table
@@ -232,15 +232,16 @@ namespace MediaPortal.Music.Database
           return;
         }
 
-        // Now copy the content of the old V11 tracks table to the new V12 tracks table
+        // Now copy the content of the old V12 tracks table to the new V13 tracks table
         strSQL =
           "insert into tracks select idTrack, strPath, strArtist, strAlbumArtist, strAlbum, strGenre, strComposer, strConductor, " +
           "strTitle, iTRack, iNumTracks, iDuration, iYear, iTimesPlayed, iRating, iFavorite, iResumeAt, iDisc, iNumDisc, " +
-          "strLyrics, '', '', '', '', 0, 0, 0, 0, dateLastPlayed, dateAdded from tracksV11";
+          "strLyrics, strComment, strFileType, strFullCodec, strBitRateMode, iBPM, iBitRate, iChannels, iSampleRate, " +
+          "'', '', '', '', '', '', dateLastPlayed, dateAdded from tracksV12";
 
         MusicDbClient.Execute(strSQL);
 
-        strSQL = "drop table tracksV11";
+        strSQL = "drop table tracksV12";
         MusicDbClient.Execute(strSQL);
 
         Log.Info("MusicDatabase: Finished upgrading database.");
@@ -289,6 +290,12 @@ namespace MediaPortal.Music.Database
           "iBitRate integer, " + // Bitrate
           "iChannels integer, " + // Channels
           "iSampleRate integer, " + // Sample Rate    
+          "strArtistSort text, " + // Artist Sort
+          "strAlbumSort text, " + // Album Sort
+          "strTitleSort text, " + // Title Sort
+          "strAlbumArtistSort text, " + // Album Artist Sort
+          "strComposerSort text, " + // Composer Sort
+          "strGrouping text, " + // Grouping
           "dateLastPlayed timestamp, " + // Date, Last Time Played
           "dateAdded timestamp" + // Date added. Either Insertion date, Creation date, LastWrite
           ")"

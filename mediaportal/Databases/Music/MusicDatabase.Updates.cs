@@ -1307,15 +1307,17 @@ namespace MediaPortal.Music.Database
                                strPath, strArtist, strAlbumArtist, strAlbum, strGenre, strComposer, strConductor, strTitle, 
                                iTrack, iNumTracks, iDuration, iYear, iTimesPlayed, iRating, iFavorite, 
                                iResumeAt, iDisc, iNumDisc, strLyrics, strComment, strFileType, strFullCodec, strBitRateMode, 
-                               iBPM, iBitRate, iChannels, iSampleRate, dateLastPlayed, dateAdded) 
+                               iBPM, iBitRate, iChannels, iSampleRate, strArtistSort, strAlbumSort, strTitleSort, strAlbumArtistSort,
+                               strComposerSort, strGrouping, dateLastPlayed, dateAdded) 
                                values ( 
-                               '{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}',
-                               {8}, {9}, {10}, {11}, {12}, {13}, {14}, 
-                               {15}, {16}, {17}, '{18}', '{19}',  '{20}', '{21}',  '{22}',  {23}, {24}, {25}, {26}, '{27}', '{28}' )",
+                               '{0}', '{1}', '{2}', '{3}', '{4}', '{5}', '{6}', '{7}', {8}, {9}, {10}, {11}, {12}, {13}, {14}, 
+                               {15}, {16}, {17}, '{18}', '{19}',  '{20}', '{21}',  '{22}',  {23}, {24}, {25}, {26}, '{27}', '{28}',
+                               '{29}',  '{30}', '{31}', '{32}', '{33}', '{34}')",
             strFileName, tag.Artist, tag.AlbumArtist, tag.Album, tag.Genre, tag.Composer, tag.Conductor, tag.Title,
             tag.Track, tag.TrackTotal, tag.Duration, tag.Year, 0, tag.Rating, 0,
             0, tag.DiscID, tag.DiscTotal, tag.Lyrics, tag.Comment, tag.FileType, tag.Codec, tag.BitRateMode,
-            tag.BPM, tag.BitRate, tag.Channels, tag.SampleRate, DateTime.MinValue.ToString("yyyy-MM-dd HH:mm:ss"), dateadded.ToString("yyyy-MM-dd HH:mm:ss")
+            tag.BPM, tag.BitRate, tag.Channels, tag.SampleRate, tag.ArtistSort, tag.AlbumSort, tag.TitleSort,
+            tag.AlbumArtistSort, tag.ComposerSort, tag.Grouping, DateTime.MinValue.ToString("yyyy-MM-dd HH:mm:ss"), dateadded.ToString("yyyy-MM-dd HH:mm:ss")
             );
         try
         {
@@ -1418,14 +1420,17 @@ namespace MediaPortal.Music.Database
                                  strLyrics = '{12}', strComposer = '{13}', strConductor = '{14}',
                                  strComment = '{15}', strFileType = '{16}', strFullCodec = '{17}',
                                  strBitRateMode = '{18}', iBPM = {19}, iBitRate = {20}, iChannels = {21},
-                                 iSampleRate = {22}, dateAdded = '{23}' 
-                                 where strPath = '{24}'",
+                                 iSampleRate = {22}, strArtistSort = {23}, strAlbumSort = {24}, 
+                                 strTitleSort = {25}, strAlbumArtistSort = {26}, strComposerSort = {27}, 
+                                 strGrouping = {28}, dateAdded = '{29}' 
+                                 where strPath = '{30}'",
               tag.Artist, tag.AlbumArtist, tag.Album,
               tag.Genre, tag.Title, tag.Track, tag.TrackTotal,
               tag.Duration, tag.Year, tag.Rating, tag.DiscID, tag.DiscTotal,
               tag.Lyrics, tag.Composer, tag.Conductor, tag.Comment, tag.FileType, tag.Codec,
-              tag.BitRateMode, tag.BPM, tag.BitRate, tag.Channels, tag.SampleRate, dateadded.ToString("yyyy-MM-dd HH:mm:ss"),
-              strFileName
+              tag.BitRateMode, tag.BPM, tag.BitRate, tag.Channels, tag.SampleRate, 
+              tag.ArtistSort, tag.AlbumSort, tag.TitleSort, tag.AlbumArtistSort, tag.ComposerSort,
+              tag.Grouping, dateadded.ToString("yyyy-MM-dd HH:mm:ss"), strFileName
               );
           try
           {
