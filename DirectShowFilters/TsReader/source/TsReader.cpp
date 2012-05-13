@@ -181,7 +181,7 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   GetLogFile(filename);
   ::DeleteFile(filename);
   LogDebug("----- Experimental noStopMod version -----");
-  LogDebug("---------- v0.0.58 XXX -------------------");
+  LogDebug("---------- v0.0.59 XXX -------------------");
   
   m_fileReader=NULL;
   m_fileDuration=NULL;
@@ -1618,20 +1618,12 @@ void CTsReaderFilter::ThreadProc()
       {
         CRefTime firstAudio, lastAudio;
         CRefTime firstVideo, lastVideo;
-        DWORD  audSampleSleep = 0;
-        float  audSampleDur = 0.0;
         int cntA = m_demultiplexer.GetAudioBufferPts(firstAudio, lastAudio);
         int cntV = m_demultiplexer.GetVideoBufferPts(firstVideo, lastVideo);
-        
-        if (m_pAudioPin->IsConnected())
+                
+        if ((cntA > 100) || (cntV > 100))
         {
-          audSampleDur = ((float)m_pAudioPin->m_sampleDuration)/10000.0;
-          audSampleSleep = m_pAudioPin->m_FillBuffSleepTime;
-        }
-        
-        if ( ((cntA < 1) && (cntV < 1)) || (cntA > 100) || (cntV > 100))
-        {
-          LogDebug("Buffers : A/V = %d/%d, A last : %03.3f, V Last : %03.3f, ADur : %03.3f ms, ASlp : %d ms", cntA, cntV, (float)lastAudio.Millisecs()/1000.0f,(float)lastVideo.Millisecs()/1000.0f, audSampleDur, audSampleSleep);
+          LogDebug("Buffers : A/V = %d/%d, A last : %03.3f, V Last : %03.3f", cntA, cntV, (float)lastAudio.Millisecs()/1000.0f, (float)lastVideo.Millisecs()/1000.0f);
         }
       }
                         

@@ -516,16 +516,19 @@ void CDeMultiplexer::Flush(bool clearAVready)
 
   m_bFlushRunning = true; //Stall GetVideo()/GetAudio()/GetSubtitle() calls from pins 
 
-  //Wait for output pin data sample delivery to stop - timeout after 100 loop iterations in case pin delivery threads are stalled
-  int i = 0;
-  while ((i < 100) && (m_filter.GetAudioPin()->IsInFillBuffer() || m_filter.GetVideoPin()->IsInFillBuffer() || m_filter.GetSubtitlePin()->IsInFillBuffer()) )
+  if (!m_bShuttingDown)
   {
-    Sleep(5);
-    i++;
-  }
-  if (i >= 100)
-  {
-    LogDebug("demux: Flush: InFillBuffer() wait timeout, %d %d %d", m_filter.GetAudioPin()->IsInFillBuffer(), m_filter.GetVideoPin()->IsInFillBuffer(), m_filter.GetSubtitlePin()->IsInFillBuffer());
+    //Wait for output pin data sample delivery to stop - timeout after 100 loop iterations in case pin delivery threads are stalled
+    int i = 0;
+    while ((i < 100) && (m_filter.GetAudioPin()->IsInFillBuffer() || m_filter.GetVideoPin()->IsInFillBuffer() || m_filter.GetSubtitlePin()->IsInFillBuffer()) )
+    {
+      Sleep(5);
+      i++;
+    }
+    if (i >= 100)
+    {
+      LogDebug("demux: Flush: InFillBuffer() wait timeout, %d %d %d", m_filter.GetAudioPin()->IsInFillBuffer(), m_filter.GetVideoPin()->IsInFillBuffer(), m_filter.GetSubtitlePin()->IsInFillBuffer());
+    }
   }
 
   m_iAudioReadCount = 0;
@@ -1096,7 +1099,7 @@ void CDeMultiplexer::OnTsPacket(byte* tsPacket)
   }
   
   //Buffers about to be flushed
-  if (m_bFlushDelgNow || m_bFlushRunning)
+  if (m_bFlushDelgNow || m_bFlushRunning || m_bShuttingDown)
   {
   	return;
   }
@@ -1351,11 +1354,6 @@ void CDeMultiplexer::FillVideo(CTsHeader& header, byte* tsPacket)
 
   m_VideoPrevCC = header.ContinuityCounter;
 
-
-  if (m_bShuttingDown) return;
-
-  //CAutoLock lock (&m_sectionVideo);
-
   if (m_pids.videoPids[0].VideoServiceType == SERVICE_TYPE_VIDEO_MPEG1 ||
       m_pids.videoPids[0].VideoServiceType == SERVICE_TYPE_VIDEO_MPEG2)
   {
@@ -1399,9 +1397,25 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
     p->SetData(&tsPacket[headerlen],dataLen);
 
     m_p->Append(*p);
+
+    if (m_p->GetCount() > 4194303) //Sanity check
+    {
+      //Let's start again...
+      m_p.Free();
+      m_pl.RemoveAll();
+      m_bSetVideoDiscontinuity = true;
+      m_mpegParserReset = true;
+      m_VideoValidPES = false;
+      m_mVideoValidPES = false;
+      m_WaitHeaderPES = -1;
+      LogDebug("DeMux: H264 PES size out-of-bounds");
+      return;
+    }
   }
   else
+  {
     return;
+  }
 
   if (m_WaitHeaderPES >= 0)
   {
@@ -1545,13 +1559,17 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
           
       size -= 3; //Adjust to allow for start code
       
-      if ((size < 0) || (size > 4194303)) //Sanity check
+      if ((size <= 0) || (size > 4194303)) //Sanity check
       {
         //Let's start again...
         m_p.Free();
         m_pl.RemoveAll();
         m_bSetVideoDiscontinuity = true;
         m_mpegParserReset = true;
+        m_VideoValidPES = false;
+        m_mVideoValidPES = false;
+        m_WaitHeaderPES = -1;
+        LogDebug("DeMux: H264 NALU size out-of-bounds %d", size);
         return;
       }
       
@@ -1884,6 +1902,20 @@ void CDeMultiplexer::FillVideoMPEG2(CTsHeader& header, byte* tsPacket)
     p->SetData(&tsPacket[headerlen],dataLen);
 
     m_p->Append(*p);
+
+    if (m_p->GetCount() > 4194303) //Sanity check
+    {
+      //Let's start again...
+      m_p.Free();
+      m_pl.RemoveAll();
+      m_bSetVideoDiscontinuity = true;
+      m_mpegParserReset = true;
+      m_VideoValidPES = false;
+      m_mVideoValidPES = false;
+      m_WaitHeaderPES = -1;
+      LogDebug("DeMux: MPEG2 PES size out-of-bounds");
+      return;
+    }
   }
   else
     return;
