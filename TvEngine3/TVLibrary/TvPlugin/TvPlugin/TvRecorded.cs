@@ -781,6 +781,7 @@ namespace TvPlugin
 
         //IList<RadioGroupMap> radiogroups = RadioGroupMap.ListAll();
         IEnumerable<Recording> recordings = Recording.ListAll();
+        bool singleRecording = false; // check if this is a single recording and therefore should be placed in a folder
         if (_currentLabel == string.Empty)
         {
           // we are not browsing individual records
@@ -794,7 +795,9 @@ namespace TvPlugin
               groups = recordings.GroupBy(r => GetSpokenViewDate(r.StartTime)).Select(g => g.OrderByDescending(h => h.StartTime).First());
               break;
             case DBView.Recordings:
-              groups = recordings.GroupBy(r => r.Title).Select(g => g.OrderByDescending(h => h.StartTime).First());
+              var yt = recordings.GroupBy(r => r.Title).Select(g => g.OrderByDescending(h => h.StartTime));
+              singleRecording = (yt.Count() == 1);
+              groups = yt.First();
               break;
             case DBView.Channel:
               groups = recordings.GroupBy(r => r.IdChannel).Select(g => g.OrderByDescending(h => h.StartTime).First());
@@ -803,6 +806,7 @@ namespace TvPlugin
               groups = recordings.GroupBy(r => r.Genre).Select(g => g.OrderByDescending(h => h.StartTime).First());
               break;
           }
+          
 
           // then sort the groups based on sort option
           switch (_currentSortMethod)
@@ -834,8 +838,20 @@ namespace TvPlugin
                 i.Label2 = string.Empty;
                 break;
               case DBView.Recordings:
-                i.Label = folder.Title;
-                i.Label2 = GetSpokenViewDate(folder.StartTime);
+                if (singleRecording)
+                {
+                  i.Label = TVUtil.GetDisplayTitle(folder);
+                  var ts = folder.EndTime - folder.StartTime;
+                  i.Label2 = String.Format("{0} ({1})",
+                                           Utils.GetNamedDate(folder.StartTime),
+                                           Utils.SecondsToHMString((int)ts.TotalSeconds));
+                }
+                else
+                {
+                  i.Label = folder.Title;
+                  i.Label2 = GetSpokenViewDate(folder.StartTime);                  
+                }
+
                 break;
               case DBView.Channel:
                 i.Label = folder.ReferencedChannel().DisplayName;
@@ -846,10 +862,15 @@ namespace TvPlugin
                 i.Label2 = GetSpokenViewDate(folder.StartTime);
                 break;
             }
-            i.Label2 = GetSpokenViewDate(folder.StartTime);
             i.TVTag = folder;
-            i.IsFolder = true;
+            i.IsFolder = !singleRecording;
             Utils.SetDefaultIcons(i);
+
+            if (string.IsNullOrEmpty(i.Label))
+            {
+              i.Label = "[]";
+            }
+
             facadeLayout.Add(i);
           }
         }
@@ -858,49 +879,45 @@ namespace TvPlugin
           // Showing a folders content
 
           // add parent item
-          GUIListItem item = new GUIListItem("..");
-          item.IsFolder = true;
+          var item = new GUIListItem("..") {IsFolder = true};
           Utils.SetDefaultIcons(item);
           facadeLayout.Add(item);
 
-          foreach (Recording rec in recordings)
+          var actualLabel = _currentLabel == "[]" ? string.Empty : _currentLabel;
+
+          foreach (var rec in recordings)
           {
-            bool addToList = true;
+            var addToList = true;
             switch (_currentDbView)
             {
               case DBView.History:
-                addToList = GetSpokenViewDate(rec.StartTime).Equals(_currentLabel);
+                addToList = GetSpokenViewDate(rec.StartTime).Equals(actualLabel);
                 break;
               case DBView.Recordings:
-                addToList = rec.Title.Equals(_currentLabel, StringComparison.InvariantCultureIgnoreCase) ||
-                            TVUtil.GetDisplayTitle(rec).Equals(_currentLabel,
+                addToList = rec.Title.Equals(actualLabel, StringComparison.InvariantCultureIgnoreCase) ||
+                            TVUtil.GetDisplayTitle(rec).Equals(actualLabel,
                                                                StringComparison.InvariantCultureIgnoreCase);
                 break;
               case DBView.Channel:
-                addToList = GetRecordingDisplayName(rec).Equals(_currentLabel,
+                addToList = GetRecordingDisplayName(rec).Equals(actualLabel,
                                                                 StringComparison.InvariantCultureIgnoreCase);
                 break;
               case DBView.Genre:
-                addToList = rec.Genre.Equals(_currentLabel, StringComparison.InvariantCultureIgnoreCase);
+                addToList = rec.Genre.Equals(actualLabel, StringComparison.InvariantCultureIgnoreCase);
                 break;
             }
 
-            if (addToList)
-            {
-              // Add new list item for this recording
-              item = BuildItemFromRecording(rec);
-              item.Label = TVUtil.GetDisplayTitle(rec);
-          TimeSpan ts = rec.EndTime - rec.StartTime;
+            if (!addToList) continue;
 
-          string strTime = String.Format("{0} ({1})",
-                                         Utils.GetNamedDate(rec.StartTime),
-                                         Utils.SecondsToHMString((int)ts.TotalSeconds));
-              item.Label2 = strTime;
-              if (item != null)
-              {
-                facadeLayout.Add(item);
-              }
-            }
+            // Add new list item for this recording
+            item = BuildItemFromRecording(rec);
+            item.Label = TVUtil.GetDisplayTitle(rec);
+            var ts = rec.EndTime - rec.StartTime; 
+            var strTime = String.Format("{0} ({1})",
+                                           Utils.GetNamedDate(rec.StartTime),
+                                           Utils.SecondsToHMString((int)ts.TotalSeconds));
+            item.Label2 = strTime;
+            facadeLayout.Add(item);
           }
         }
       }
