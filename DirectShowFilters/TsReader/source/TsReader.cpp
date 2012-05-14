@@ -181,7 +181,7 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   GetLogFile(filename);
   ::DeleteFile(filename);
   LogDebug("----- Experimental noStopMod version -----");
-  LogDebug("---------- v0.0.59 XXX -------------------");
+  LogDebug("---------- v0.0.59b XXX -------------------");
   
   m_fileReader=NULL;
   m_fileDuration=NULL;
@@ -1821,11 +1821,18 @@ HRESULT CTsReaderFilter::FindSubtitleFilter()
       FILTER_INFO filterInfo;
       if (pFilter->QueryFilterInfo(&filterInfo) == S_OK)
       {
-        if ((!wcsicmp(L"MediaPortal DVBSub2", filterInfo.achName)) || (!wcsicmp(L"MediaPortal DVBSub3", filterInfo.achName)))
+       if (!wcsicmp(L"MediaPortal DVBSub3", filterInfo.achName))
+        {
+          HRESULT fhr = pFilter->QueryInterface( IID_IDVBSubtitle3, ( void**)&m_pDVBSubtitle );
+          assert( fhr == S_OK);
+          //LogDebug("Testing that DVBSub3 works");
+          m_pDVBSubtitle->Test(1);
+        }
+        else if (!wcsicmp(L"MediaPortal DVBSub2", filterInfo.achName))
         {
           HRESULT fhr = pFilter->QueryInterface( IID_IDVBSubtitle2, ( void**)&m_pDVBSubtitle );
           assert( fhr == S_OK);
-          //LogDebug("Testing that DVBSub2/DVBSub3 works");
+          //LogDebug("Testing that DVBSub2 works");
           m_pDVBSubtitle->Test(1);
         }
         filterInfo.pGraph->Release();
