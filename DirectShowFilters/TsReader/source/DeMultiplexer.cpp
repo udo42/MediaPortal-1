@@ -1222,14 +1222,26 @@ void CDeMultiplexer::FillAudio(CTsHeader& header, byte* tsPacket)
             if (Delta < m_MinAudioDelta)
             {
               m_MinAudioDelta=Delta;
-              LogDebug("Demux : Audio to render %03.3f Sec", Delta);
-              if (Delta < 0.1)
+              if (Delta < -2.0)
               {
-                //_InterlockedIncrement(&m_AudioDataLowCount);              
+                //Large negative delta - flush the world...
+                LogDebug("Demux : Audio to render too late= %03.3f Sec, flushing", Delta) ;
+                m_MinAudioDelta+=1.0;
+                m_MinVideoDelta+=1.0;                
+                //Flushing is delegated to CDeMultiplexer::ThreadProc()
+                m_bFlushDelegated = true;
+                WakeThread();            
+              }
+              else if (Delta < 0.1)
+              {
                 LogDebug("Demux : Audio to render too late= %03.3f Sec", Delta) ;
                 //  m_filter.m_bRenderingClockTooFast=true;
                 m_MinAudioDelta+=1.0;
                 m_MinVideoDelta+=1.0;                
+              }
+              else
+              {
+                LogDebug("Demux : Audio to render %03.3f Sec", Delta);
               }
             }
           }
@@ -1739,9 +1751,18 @@ void CDeMultiplexer::FillVideoH264(CTsHeader& header, byte* tsPacket)
               if (Delta < m_MinVideoDelta)
               {
                 m_MinVideoDelta=Delta;
-                if (Delta < 0.2)
+                if (Delta < -2.0)
                 {
-                  //_InterlockedIncrement(&m_VideoDataLowCount);              
+                  //Large negative delta - flush the world...
+                  LogDebug("Demux : Video to render too late= %03.3f Sec, flushing", Delta) ;
+                  m_MinAudioDelta+=1.0;
+                  m_MinVideoDelta+=1.0;                
+                  //Flushing is delegated to CDeMultiplexer::ThreadProc()
+                  m_bFlushDelegated = true;
+                  WakeThread();            
+                }
+                else if (Delta < 0.2)
+                {
                   LogDebug("Demux : Video to render too late= %03.3f Sec", Delta) ;
                   //  m_filter.m_bRenderingClockTooFast=true;
                   m_MinAudioDelta+=1.0;
@@ -2145,7 +2166,17 @@ void CDeMultiplexer::FillVideoMPEG2(CTsHeader& header, byte* tsPacket)
                 if (Delta < m_MinVideoDelta)
                 {
                   m_MinVideoDelta=Delta;
-                  if (Delta < 0.2)
+                  if (Delta < -2.0)
+                  {
+                    //Large negative delta - flush the world...
+                    LogDebug("Demux : Video to render too late= %03.3f Sec, flushing", Delta) ;
+                    m_MinAudioDelta+=1.0;
+                    m_MinVideoDelta+=1.0;                
+                    //Flushing is delegated to CDeMultiplexer::ThreadProc()
+                    m_bFlushDelegated = true;
+                    WakeThread();            
+                  }
+                  else if (Delta < 0.2)
                   {
                     //_InterlockedIncrement(&m_VideoDataLowCount);              
                     LogDebug("Demux : Video to render too late= %03.3f Sec", Delta) ;
