@@ -795,9 +795,7 @@ namespace TvPlugin
               groups = recordings.GroupBy(r => GetSpokenViewDate(r.StartTime)).Select(g => g.OrderByDescending(h => h.StartTime).First());
               break;
             case DBView.Recordings:
-              var yt = recordings.GroupBy(r => r.Title).Select(g => g.OrderByDescending(h => h.StartTime));
-              singleRecording = (yt.Count() == 1);
-              groups = yt.First();
+              groups = recordings.GroupBy(r => r.Title).Select(g => g.OrderByDescending(h => h.StartTime).First());
               break;
             case DBView.Channel:
               groups = recordings.GroupBy(r => r.IdChannel).Select(g => g.OrderByDescending(h => h.StartTime).First());
@@ -838,6 +836,7 @@ namespace TvPlugin
                 i.Label2 = string.Empty;
                 break;
               case DBView.Recordings:
+                singleRecording = (recordings.Count(r => r.Title == folder.Title) == 1);
                 if (singleRecording)
                 {
                   i.Label = TVUtil.GetDisplayTitle(folder);
@@ -1571,15 +1570,6 @@ namespace TvPlugin
         {
           return -1;
         }
-        if (item1.IsFolder && !item2.IsFolder)
-        {
-          return -1;
-        }
-        else if (!item1.IsFolder && item2.IsFolder)
-        {
-          return 1;
-        }
-
         int iComp = 0;
         TimeSpan ts;
         Recording rec1 = (Recording)item1.TVTag;
