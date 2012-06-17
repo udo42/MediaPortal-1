@@ -2769,6 +2769,7 @@ namespace TvService
         }
         finally
         {
+          cardIteration++;
           if (failedCardId > 0)
           {
             user.FailedCardId = failedCardId;
@@ -2785,7 +2786,6 @@ namespace TvService
           {
             cardChanged = GetCardChanged(card, intialTimeshiftingFilename);
           }
-          cardIteration++;
         }
         break; //if we made it to the bottom, then we have a successful timeshifting.          
       } //end of foreach      
