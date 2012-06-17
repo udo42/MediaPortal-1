@@ -193,11 +193,14 @@ namespace TvService
     public static ICardStopReservationTicket RequestAndWaitForCardStopReservation(ITvCardHandler tvcard, IUser user)
     {
       ICardStopReservationTicket ticket = null;
-      
-      while (ticket == null)
+
+      int tries = 0;
+
+      while (ticket == null && tries < 10)
       {
         ticket = RequestCardStopReservation(tvcard, user);
         Thread.Sleep(100);
+        tries++;
       }
 
       return ticket;
