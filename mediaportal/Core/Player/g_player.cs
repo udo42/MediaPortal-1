@@ -101,6 +101,7 @@ namespace MediaPortal.Player
     private static double[] _jumpPoints = null;
     private static bool _autoComSkip = false;
     private static bool _loadAutoComSkipSetting = true;
+    private static bool _BDInternalMenu = false;
 
     private static string _externalPlayerExtensions = string.Empty;
 
@@ -1258,6 +1259,8 @@ namespace MediaPortal.Player
           return false;
         }
 
+        bool AskForRefresh = true;
+
         string extension = Path.GetExtension(strFile).ToLower();
         bool isImageFile = Util.VirtualDirectory.IsImageFile(extension);
         if (isImageFile)
@@ -1287,21 +1290,29 @@ namespace MediaPortal.Player
             type = MediaType.Video;
           }
           // refreshrate change done here.
-          RefreshRateChanger.AdaptRefreshRate(strFile, (RefreshRateChanger.MediaType)(int)type);
-
-          if (RefreshRateChanger.RefreshRateChangePending)
+          using (MediaPortal.Profile.Settings xmlreader = new MediaPortal.Profile.MPSettings())
           {
-            TimeSpan ts = DateTime.Now - RefreshRateChanger.RefreshRateChangeExecutionTime;
-            if (ts.TotalSeconds > RefreshRateChanger.WAIT_FOR_REFRESHRATE_RESET_MAX)
+            _BDInternalMenu = xmlreader.GetValueAsBool("bdplayer", "useInternalBDMenu", true);
+          }
+          if (_BDInternalMenu && extension == ".bdmv")
+            AskForRefresh = false;
+          if (AskForRefresh)
+          {
+            RefreshRateChanger.AdaptRefreshRate(strFile, (RefreshRateChanger.MediaType) (int) type);
+            if (RefreshRateChanger.RefreshRateChangePending)
             {
-              Log.Info(
-                "g_Player.Play - waited {0}s for refreshrate change, but it never took place (check your config). Proceeding with playback.",
-                RefreshRateChanger.WAIT_FOR_REFRESHRATE_RESET_MAX);
-              RefreshRateChanger.ResetRefreshRateState();
-            }
-            else
-            {
-              return true;
+              TimeSpan ts = DateTime.Now - RefreshRateChanger.RefreshRateChangeExecutionTime;
+              if (ts.TotalSeconds > RefreshRateChanger.WAIT_FOR_REFRESHRATE_RESET_MAX)
+              {
+                Log.Info(
+                  "g_Player.Play - waited {0}s for refreshrate change, but it never took place (check your config). Proceeding with playback.",
+                  RefreshRateChanger.WAIT_FOR_REFRESHRATE_RESET_MAX);
+                RefreshRateChanger.ResetRefreshRateState();
+              }
+              else
+              {
+                return true;
+              }
             }
           }
         }

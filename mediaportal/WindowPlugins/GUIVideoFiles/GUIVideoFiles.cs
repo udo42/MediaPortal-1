@@ -168,6 +168,10 @@ namespace MediaPortal.GUI.Video
 
     private int _resetCount;
 
+    //Internal BDInternalMenu
+    private static bool _BDInternalMenu = true;
+    private static bool _BDDetect = false;
+
     #endregion
 
     #region constructors
@@ -291,7 +295,8 @@ namespace MediaPortal.GUI.Video
         _howToPlayAll = xmlreader.GetValueAsInt("movies", "playallinfolder", 3);
         _watchedPercentage = xmlreader.GetValueAsInt("movies", "playedpercentagewatched", 95);
         _videoInfoInShare = xmlreader.GetValueAsBool("moviedatabase", "movieinfoshareview", false);
-        
+        _BDInternalMenu = xmlreader.GetValueAsBool("bdplayer", "useInternalBDMenu", true);
+
         _virtualDirectory = VirtualDirectories.Instance.Movies;
 		    // External player
         _useInternalVideoPlayer = xmlreader.GetValueAsBool("movieplayer", "internal", true);
@@ -841,7 +846,7 @@ namespace MediaPortal.GUI.Video
               StackedMovieFiles = movies;
             }
 
-            // Ask for rersume
+            // Ask for resume
             if (askForResumeMovie)
             {
               GUIDialogFileStacking dlg =
@@ -1746,6 +1751,7 @@ namespace MediaPortal.GUI.Video
 
     public static void PlayMovieFromPlayList(bool askForResumeMovie, int iMovieIndex, bool requestPin)
     {
+      _BDDetect = false;
       string filename;
       if (iMovieIndex == -1)
       {
@@ -1806,6 +1812,12 @@ namespace MediaPortal.GUI.Video
             }
             if (askForResumeMovie)
             {
+              //Resume BD only for Title mode
+              if (filename.EndsWith(@"\BDMV\index.bdmv"))
+              {
+                _BDDetect = true;
+              }
+
               GUIResumeDialog.Result result =
                 GUIResumeDialog.ShowResumeDialog(title, timeMovieStopped,
                                                  GUIResumeDialog.MediaType.Video);
@@ -1842,7 +1854,7 @@ namespace MediaPortal.GUI.Video
 
       if (g_Player.Playing && timeMovieStopped > 0)
       {
-        if (g_Player.IsDVD)
+        if (g_Player.IsDVD && !_BDDetect)
         {
           g_Player.Player.SetResumeState(resumeData);
         }
