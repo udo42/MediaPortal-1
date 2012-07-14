@@ -65,7 +65,7 @@ namespace TvService
       _scanner = new ChannelScanning(this);
       _epgGrabbing = new EpgGrabbing(this);
       _audioStreams = new AudioStreams(this);
-      _tuner = new CardTuner(this);
+      _tuner = new CardTuner(this, tvController);
       _recorder = new Recorder(this);            
       _timerShifter = new TimeShifter(this);
       _tuner = new CardTuner(this, tvController);
