@@ -171,18 +171,6 @@ INSERT INTO Version (versionNumber) VALUES (38)
 GO
 
 
-CREATE TABLE Server(
-	idServer int IDENTITY(1,1) NOT NULL,
-	isMaster bit NOT NULL,
-	hostName varchar(256) NOT NULL,
- CONSTRAINT PK_Server PRIMARY KEY CLUSTERED 
-(
-	idServer ASC
-)
-)
-GO
-
-
 CREATE TABLE Channel(
 	idChannel int IDENTITY(1,1) NOT NULL,
 	name varchar(200) NOT NULL,
@@ -366,7 +354,6 @@ CREATE TABLE Card(
 	grabEPG bit NOT NULL,
 	lastEpgGrab datetime NOT NULL,
 	recordingFolder varchar(256) NOT NULL,
-	idServer int NOT NULL,
 	enabled bit NOT NULL,
 	camType int NOT NULL,
 	timeshiftingFolder varchar(256) NOT NULL,
@@ -392,7 +379,6 @@ CREATE TABLE Recording(
 	keepUntil int NOT NULL,
 	keepUntilDate datetime NOT NULL,
 	timesWatched int NOT NULL,
-	idServer int NOT NULL,
 	stopTime int NOT NULL,
  CONSTRAINT PK_Recordings PRIMARY KEY CLUSTERED 
 (

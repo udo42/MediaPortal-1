@@ -395,7 +395,7 @@ namespace SetupTv.Sections
               {
                 int idCard = Int32.Parse(nodeMap.Attributes["IdCard"].Value);
                 XmlNode nodeCard =
-                  doc.SelectSingleNode(String.Format("/tvserver/servers/server/cards/card[@IdCard={0}]", idCard));
+                  doc.SelectSingleNode(String.Format("/tvserver/cards/card[@IdCard={0}]", idCard));
                 Card dbCard = layer.GetCardByDevicePath(nodeCard.Attributes["DevicePath"].Value);
                 if (dbCard != null)
                 {

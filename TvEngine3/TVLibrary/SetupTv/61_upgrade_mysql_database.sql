@@ -9,4 +9,4 @@ ALTER TABLE card DROP COLUMN idServer, DROP INDEX FK_Card_Server;
 
 DROP TABLE server;
 
-UPDATE Version SET versionNumber=59;
+UPDATE Version SET versionNumber=61;

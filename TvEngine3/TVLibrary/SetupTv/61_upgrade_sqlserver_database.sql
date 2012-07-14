@@ -2,6 +2,18 @@ USE %TvLibrary%;
 GO
 
 INSERT INTO setting (tag, `value`) values ("hostName", (SELECT TOP 1 hostName FROM server))
+GO
 
-UPDATE Version SET versionNumber=59
+INSERT INTO setting (tag, `value`) values ("rtspPort", (SELECT rtspPort FROM server LIMIT 1))
+GO
+
+ALTER TABLE recording DROP COLUMN idServer
+GO
+
+ALTER TABLE card DROP COLUMN idServer
+GO
+
+DROP TABLE server;
+
+UPDATE Version SET versionNumber=61
 GO
