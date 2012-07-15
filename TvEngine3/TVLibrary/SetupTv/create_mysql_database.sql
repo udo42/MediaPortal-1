@@ -52,13 +52,15 @@ CREATE TABLE "Card" (
   "grabEPG" bit(1) NOT NULL,
   "lastEpgGrab" datetime NOT NULL,
   "recordingFolder" varchar(256) NOT NULL,
+  "idServer" int(11) NOT NULL,
   "enabled" bit(1) NOT NULL,
   "camType" int(11) NOT NULL,
   "timeshiftingFolder" varchar(256) NOT NULL,
   "recordingFormat" int(11) NOT NULL,
   "decryptLimit" int(11) NOT NULL,
-  PRIMARY KEY  ("idCard")
-  ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+  PRIMARY KEY  ("idCard"),
+  KEY "FK_Card_Server" ("idServer")
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 #
 
 --
@@ -395,9 +397,11 @@ CREATE TABLE "Recording" (
   "keepUntil" int(11) NOT NULL,
   "keepUntilDate" datetime NOT NULL,
   "timesWatched" int(11) NOT NULL,
+  "idServer" int(11) NOT NULL,
   "stopTime" int(11) NOT NULL,
   PRIMARY KEY  ("idRecording"),
-    KEY "FK_Recordings_Channels" ("idChannel")
+  KEY "FK_Recording_Server" ("idServer"),
+  KEY "FK_Recordings_Channels" ("idChannel")
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 #
 
@@ -451,6 +455,21 @@ CREATE TABLE "Schedule" (
 
 --
 -- Dumping data for table "Schedule"
+--
+
+--
+-- Definition of table "Server"
+--
+CREATE TABLE "Server" (
+  "idServer" int(11) NOT NULL auto_increment,
+  "isMaster" bit(1) NOT NULL,
+  "hostName" varchar(256) NOT NULL,
+  PRIMARY KEY  ("idServer")
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
+#
+
+--
+-- Dumping data for table "Server"
 --
 
 --
