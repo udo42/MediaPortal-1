@@ -630,6 +630,22 @@ namespace TvPlugin
 
     protected abstract string SkinPropertyPrefix { get; }
 
+    protected abstract string SettingPrefix { get; }
+
+    protected abstract string SettingPrefix2 { get; }
+
+    protected abstract string SerializeName { get; }
+
+    protected abstract Channel CurrentChannel { get; set; }
+
+    protected abstract int GroupCount { get; }
+
+    protected abstract int CurrentGroupIndex { get; set; }
+
+    protected abstract string CurrentGroupName { get; }
+
+    protected abstract void Play();
+
     protected void UpdateChannelCount()
     {
       GetChannels(false);

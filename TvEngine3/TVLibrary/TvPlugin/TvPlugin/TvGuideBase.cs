@@ -52,13 +52,10 @@ namespace TvPlugin
     private int _loopDelay = 100; // wait at the last item this amount of msec until loop to the first item
 
     private const string _skinPropertyPrefix = "#TV";
+    private const string _settingPrefix = "tvguide";
+    private const string _settingPrefix2 = "mytv";
 
     #endregion
-
-    protected override string SkinPropertyPrefix
-    {
-      get { return _skinPropertyPrefix; }
-    }
 
     #region variables
 
@@ -115,7 +112,7 @@ namespace TvPlugin
         GUIControl btnChannelGroup = GetControl((int)Controls.CHANNEL_GROUP_BUTTON) as GUIControl;
 
         // visible only if more than one group? and not in single channel, and button exists in skin!
-        return (TVHome.Navigator.Groups.Count > 1 && !_singleChannelView && btnChannelGroup != null);
+        return (GroupCount > 1 && !_singleChannelView && btnChannelGroup != null);
       }
     }
 
@@ -135,7 +132,7 @@ namespace TvPlugin
     {
       using (Settings xmlreader = new MPSettings())
       {
-        String channelName = xmlreader.GetValueAsString("mytv", "channel", String.Empty);
+        String channelName = xmlreader.GetValueAsString(SettingPrefix2, "channel", String.Empty);
         TvBusinessLayer layer = new TvBusinessLayer();
         IList<Channel> channels = layer.GetChannelsByName(channelName);
         if (channels != null && channels.Count > 0)
@@ -144,12 +141,12 @@ namespace TvPlugin
         }
         PositionGuideCursorToCurrentChannel();
 
-        _byIndex = xmlreader.GetValueAsBool("mytv", "byindex", true);
-        _showChannelNumber = xmlreader.GetValueAsBool("mytv", "showchannelnumber", false);
-        _channelNumberMaxLength = xmlreader.GetValueAsInt("mytv", "channelnumbermaxlength", 3);
-        _timePerBlock = xmlreader.GetValueAsInt("tvguide", "timeperblock", 30);
-        _hdtvProgramText = xmlreader.GetValueAsString("mytv", "hdtvProgramText", "(HDTV)");
-        _guideContinuousScroll = xmlreader.GetValueAsBool("mytv", "continuousScrollGuide", false);
+        _byIndex = xmlreader.GetValueAsBool(SettingPrefix2, "byindex", true);
+        _showChannelNumber = xmlreader.GetValueAsBool(SettingPrefix2, "showchannelnumber", false);
+        _channelNumberMaxLength = xmlreader.GetValueAsInt(SettingPrefix2, "channelnumbermaxlength", 3);
+        _timePerBlock = xmlreader.GetValueAsInt(SettingPrefix, "timeperblock", 30);
+        _hdtvProgramText = xmlreader.GetValueAsString(SettingPrefix2, "hdtvProgramText", "(HDTV)");
+        _guideContinuousScroll = xmlreader.GetValueAsBool(SettingPrefix2, "continuousScrollGuide", false);
         _loopDelay = xmlreader.GetValueAsInt("gui", "listLoopDelay", 0);
 
         // Load the genre map.
@@ -310,14 +307,61 @@ namespace TvPlugin
     {
       using (Settings xmlwriter = new MPSettings())
       {
-        xmlwriter.SetValue("mytv", "channel", _currentChannel.DisplayName);
-        xmlwriter.SetValue("tvguide", "timeperblock", _timePerBlock);
+        xmlwriter.SetValue(SettingPrefix2, "channel", _currentChannel.DisplayName);
+        xmlwriter.SetValue(SettingPrefix, "timeperblock", _timePerBlock);
       }
     }
 
     #endregion
 
     #region overrides
+
+    protected override string SkinPropertyPrefix
+    {
+      get { return _skinPropertyPrefix; }
+    }
+
+    protected override string SettingPrefix
+    {
+      get { return _settingPrefix; }
+    }
+
+    protected override string SettingPrefix2
+    {
+      get { return _settingPrefix2; }
+    }
+
+    protected override string SerializeName
+    {
+      get { return "tvguidebase"; }
+    }
+
+    protected override Channel CurrentChannel
+    {
+      get { return TVHome.Navigator.Channel; }
+      set { TVHome.Navigator.UpdateCurrentChannel(); }
+    }
+
+    protected override void Play()
+    {
+      TVHome.ViewChannelAndCheck(_currentProgram.ReferencedChannel());
+    }
+
+    protected override int GroupCount
+    {
+      get { return TVHome.Navigator.Groups.Count; }
+    }
+
+    protected override int CurrentGroupIndex
+    {
+      get { return TVHome.Navigator.CurrentGroupIndex; }
+      set { TVHome.Navigator.SetCurrentGroup(value); }
+    }
+
+    protected override string CurrentGroupName
+    {
+      get { return TVHome.Navigator.CurrentGroup.GroupName; }
+    }
 
     public override int GetFocusControlId()
     {
@@ -632,9 +676,10 @@ namespace TvPlugin
       // in single channel view there would be errors when changing group
       if (_singleChannelView) return;
       int newIndex, oldIndex;
-      int countGroups = TVHome.Navigator.Groups.Count; // all
+      int countGroups = GroupCount; // all
 
-      newIndex = oldIndex = TVHome.Navigator.CurrentGroupIndex;
+      newIndex = oldIndex = CurrentGroupIndex;
+
       if (
         (newIndex >= 1 && Direction < 0) ||
         (newIndex < countGroups - 1 && Direction > 0)
@@ -656,8 +701,8 @@ namespace TvPlugin
       {
         // update list
         GUIWaitCursor.Show();
-        TVHome.Navigator.SetCurrentGroup(newIndex);
-        GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Group", TVHome.Navigator.CurrentGroup.GroupName);
+        CurrentGroupIndex = newIndex;
+        GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Group", CurrentGroupName);
 
         GetChannels(true);
         PositionGuideCursorToCurrentChannel();
@@ -825,7 +870,7 @@ namespace TvPlugin
                 _showChannelLogos = false;
                 if (TVHome.Card.IsTimeShifting)
                 {
-                  _currentChannel = TVHome.Navigator.Channel;
+                  _currentChannel = CurrentChannel;
                   PositionGuideCursorToCurrentChannel();
                 }
               }
@@ -876,7 +921,7 @@ namespace TvPlugin
               }
               else
               {
-                Log.Debug("TvGuideBase: SpinControl cntlDay is null!");
+                Log.Debug(SerializeName + ":  SpinControl cntlDay is null!");
               }
 
               GUISpinControl cntlTimeInterval = GetControl((int)Controls.SPINCONTROL_TIME_INTERVAL) as GUISpinControl;
@@ -891,7 +936,7 @@ namespace TvPlugin
               }
               else
               {
-                Log.Debug("TvGuideBase: SpinControl cntlTimeInterval is null!");
+                Log.Debug(SerializeName + ":  SpinControl cntlTimeInterval is null!");
               }
 
               if (message.Param1 != (int)Window.WINDOW_TV_PROGRAM_INFO)
@@ -968,7 +1013,7 @@ namespace TvPlugin
       }
       catch (Exception ex)
       {
-        Log.Debug("TvGuideBase: {0}", ex);
+        Log.Debug(SerializeName + ":  {0}", ex);
       }
       return base.OnMessage(message);
       ;
@@ -980,7 +1025,7 @@ namespace TvPlugin
     protected virtual void OnSelectChannelGroup()
     {
       // only if more groups present and not in singleChannelView
-      if (TVHome.Navigator.Groups.Count > 1 && !_singleChannelView)
+      if (GroupCount > 1 && !_singleChannelView)
       {
         int prevGroup = TVHome.Navigator.CurrentGroup.IdGroup;
 
@@ -3088,12 +3133,12 @@ namespace TvPlugin
       if (GroupButtonAvail)
       {
         MinYIndex = -1; // allow focus of button
-        GroupButtonText = String.Format("{0}: {1}", GUILocalizeStrings.Get(971), TVHome.Navigator.CurrentGroup.GroupName);
-        GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Group", TVHome.Navigator.CurrentGroup.GroupName);
+        GroupButtonText = String.Format("{0}: {1}", GUILocalizeStrings.Get(971), CurrentGroupName);
+        GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Group", CurrentGroupName);
       }
       else
       {
-        GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Group", TVHome.Navigator.CurrentGroup.GroupName);
+        GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Group", CurrentGroupName);
         MinYIndex = 0;
       }
 
@@ -3436,7 +3481,7 @@ namespace TvPlugin
         }
         //dlg.AddLocalizedString(937);// Reload tvguide
 
-        if (TVHome.Navigator.Groups.Count > 1)
+        if (GroupCount > 1)
         {
           dlg.AddLocalizedString(971); // Group
         }
@@ -3453,7 +3498,7 @@ namespace TvPlugin
 
           case 1041:
             ShowProgramInfo();
-            Log.Debug("TVGuide: show episodes or repeatings for current show");
+            Log.Debug(SerializeName + ":  show episodes or repeatings for current show");
             break;
           case 368: // IMDB
             OnGetIMDBInfo();
@@ -3469,7 +3514,7 @@ namespace TvPlugin
           case 938: // view channel
 
             Log.Debug("viewch channel:{0}", _currentChannel);
-            TVHome.ViewChannelAndCheck(_currentProgram.ReferencedChannel());
+            Play();
             if (TVHome.Card.IsTimeShifting && TVHome.Card.IdChannel == _currentProgram.ReferencedChannel().IdChannel)
             {
               g_Player.ShowFullScreenWindow();
@@ -3575,11 +3620,12 @@ namespace TvPlugin
     private bool OnSelectItem(bool isItemSelected)
     {
       bool tuneAttempted = false;
-      TVHome.Navigator.UpdateCurrentChannel();
+      CurrentChannel = _currentChannel;
       if (_currentProgram == null)
       {
         return tuneAttempted;
       }
+
       if (isItemSelected)
       {
         if (_currentProgram.IsRunningAt(DateTime.Now) || _currentProgram.EndTime <= DateTime.Now)
@@ -3608,7 +3654,7 @@ namespace TvPlugin
 
             if (!string.IsNullOrEmpty(fileName)) //are we really recording ?
             {
-              Log.Info("TVGuide: clicked on a currently running recording");
+              Log.Info(SerializeName + ":  clicked on a currently running recording");
               GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
               if (dlg == null)
               {
@@ -3627,7 +3673,7 @@ namespace TvPlugin
               }
               if (_recordingList != null)
               {
-                Log.Debug("TVGuide: Found current program {0} in recording list", _currentTitle);
+                Log.Debug(SerializeName + ":  Found current program {0} in recording list", _currentTitle);
                 switch (dlg.SelectedId)
                 {
                   case 979: // Play recording from beginning
@@ -3642,7 +3688,7 @@ namespace TvPlugin
 
                   case 938: // View this channel
                     {
-                      TVHome.ViewChannelAndCheck(_currentProgram.ReferencedChannel());
+                      Play();
                       if (g_Player.Playing)
                       {
                         g_Player.ShowFullScreenWindow();
@@ -3660,7 +3706,7 @@ namespace TvPlugin
 
               if (string.IsNullOrEmpty(fileName))
               {
-                TVHome.ViewChannelAndCheck(_currentProgram.ReferencedChannel());
+                Play();
                 if (g_Player.Playing)
                 {
                   g_Player.ShowFullScreenWindow();
@@ -3671,9 +3717,9 @@ namespace TvPlugin
             else //not recording
             {
               // clicked the show we're currently watching
-              if (TVHome.Navigator.Channel != null && TVHome.Navigator.Channel.IdChannel == _currentChannel.IdChannel && g_Player.Playing && g_Player.IsTV)
+              if (CurrentChannel != null && CurrentChannel.IdChannel == _currentChannel.IdChannel && g_Player.Playing && g_Player.IsTV)
               {
-                Log.Debug("TVGuide: clicked on a currently running show");
+                Log.Debug(SerializeName + ":  clicked on a currently running show");
                 GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
                 if (dlg == null)
                 {
@@ -3695,12 +3741,12 @@ namespace TvPlugin
                 {
                   case 1041:
                     ShowProgramInfo();
-                    Log.Debug("TVGuide: show episodes or repeatings for current show");
+                    Log.Debug(SerializeName + ":  show episodes or repeatings for current show");
                     break;
                   case 938:
-                    Log.Debug("TVGuide: switch currently running show to fullscreen");
+                    Log.Debug(SerializeName + ":  switch currently running show to fullscreen");
                     GUIWaitCursor.Show();
-                    TVHome.ViewChannelAndCheck(_currentProgram.ReferencedChannel());
+                    Play();
                     GUIWaitCursor.Hide();
                     if (g_Player.Playing)
                     {
@@ -3708,7 +3754,7 @@ namespace TvPlugin
                     }
                     else
                     {
-                      Log.Debug("TVGuide: no show currently running to switch to fullscreen");
+                      Log.Debug(SerializeName + ":  no show currently running to switch to fullscreen");
                     }
                     tuneAttempted = true;
                     break;
@@ -3721,7 +3767,7 @@ namespace TvPlugin
                 TVHome.UserChannelChanged = true;
                 // fixing mantis 1874: TV doesn't start when from other playing media to TVGuide & select program
                 GUIWaitCursor.Show();
-                TVHome.ViewChannelAndCheck(_currentProgram.ReferencedChannel());
+                Play();
                 GUIWaitCursor.Hide();
                 if (g_Player.Playing)
                 {

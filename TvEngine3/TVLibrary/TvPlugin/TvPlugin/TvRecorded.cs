@@ -183,7 +183,7 @@ namespace TvPlugin
     private bool _resetSMSsearch = false;
     private bool _oldStateSMSsearch;
     private DateTime _resetSMSsearchDelay;
-    private readonly const string SkinPrefix = "#TV.RecordedTV";
+    private const string SkinPrefix = "#TV.RecordedTV";
 
     private RecordingThumbCacher thumbworker = null;
     
@@ -725,7 +725,7 @@ namespace TvPlugin
         {
           return true;
         }
-        Log.Info(SerializeName + " ShowFullScreenWindow switching to fullscreen video");
+        Log.Info("ShowFullScreenWindow switching to fullscreen video");
         GUIWindowManager.ActivateWindow((int)Window.WINDOW_TVFULLSCREEN);
         GUIGraphicsContext.IsFullScreenVideo = true;
         return true;
@@ -745,7 +745,7 @@ namespace TvPlugin
       }
       catch (Exception ex)
       {
-        Log.Error(SerializeName + " Error in ShowUpcomingEpisodes - {0}", ex.ToString());
+        Log.Error("Error in ShowUpcomingEpisodes - {0}", ex.ToString());
       }
     }
 
