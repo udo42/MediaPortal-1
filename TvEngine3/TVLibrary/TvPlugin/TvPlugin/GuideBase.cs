@@ -139,8 +139,8 @@ namespace TvPlugin
     protected bool GroupButtonAvail
     {
       get
-      {
-        // show/hide channel group button
+      { 
+       // show/hide channel group button
         GUIControl btnChannelGroup = GetControl((int)Controls.CHANNEL_GROUP_BUTTON) as GUIControl;
 
         // visible only if more than one group? and not in single channel, and button exists in skin!
@@ -1344,6 +1344,8 @@ namespace TvPlugin
       bool channelInGroup = false;
       for (int i = 0; i < _channelList.Count; i++)
       {
+        if (_currentChannel == null)
+          break;
         Channel chan = ((GuideChannel)_channelList[i]).channel;
         if (chan.IdChannel == _currentChannel.IdChannel)
         {

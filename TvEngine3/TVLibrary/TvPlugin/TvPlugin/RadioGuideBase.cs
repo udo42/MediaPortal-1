@@ -61,7 +61,16 @@ namespace TvPlugin
       using (Settings xmlreader = new MPSettings())
       {
         String channelName = xmlreader.GetValueAsString(SettingPrefix, "channel", String.Empty);
-        TvBusinessLayer layer = new TvBusinessLayer();
+
+        var layer = new TvBusinessLayer();
+        if (string.IsNullOrEmpty(channelName))
+        { // is there is no value then pickup the first channel in the current group (or first group)
+          IList<Channel> radioChannels = layer.GetRadioGuideChannelsForGroup(Radio.SelectedGroup.IdGroup);
+          if (radioChannels.Count > 0)
+          {
+            channelName = radioChannels[0].DisplayName;
+          }
+        }
         IList<Channel> channels = layer.GetChannelsByName(channelName);
         if (channels != null && channels.Count > 0)
         {
