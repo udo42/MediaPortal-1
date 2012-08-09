@@ -1165,13 +1165,22 @@ void CBDReaderFilter::DeliverBeginFlush()
   m_bFlushing = true;
 
   if (m_pVideoPin && m_pVideoPin->IsConnected())
+  {
     m_pVideoPin->DeliverBeginFlush();
+    m_pVideoPin->Stop();
+  }
 
   if (m_pAudioPin && m_pAudioPin->IsConnected())
+  {
     m_pAudioPin->DeliverBeginFlush();
+    m_pVideoPin->Stop();
+  }
 
   if (m_pSubtitlePin && m_pSubtitlePin->IsConnected())
+  {
     m_pSubtitlePin->DeliverBeginFlush();
+    m_pVideoPin->Stop();
+  }
 }
 
 void CBDReaderFilter::DeliverEndFlush()
