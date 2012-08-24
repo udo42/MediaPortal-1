@@ -906,8 +906,25 @@ namespace TvDatabase
                                              innerFecRate, pilot, rollOff, url, 0);
       detail.Persist();
       return detail;
-    }
+    } 
 
+    public Channel GetChannelbyExternalID(string ExternalId)
+    {
+         SqlBuilder sb = new SqlBuilder(StatementType.Select, typeof(Channel));
+         sb.AddConstraint(Operator.Equals, "externalId", ExternalId);
+         SqlStatement stmt = sb.GetStatement(true);
+         IList<Channel> channels = ObjectFactory.GetCollection<Channel>(stmt.Execute());
+         if (channels == null)
+         {
+             return null;
+         }
+        if (channels.Count == 0)
+         {
+             return null;
+         }
+         return channels[0];
+    }
+    
     public TuningDetail UpdateTuningDetails(Channel channel, IChannel tvChannel, TuningDetail detail)
     {
       string channelName = "";
@@ -1454,7 +1471,8 @@ namespace TvDatabase
           Convert.ToString(prog["classification"]),
           Convert.ToInt32(prog["parentalRating"])
           );
-
+        p.SeriesId = Convert.ToString(prog["seriesId"]);
+        p.SeriesTermination = Convert.ToInt32((prog.IsNull("seriesTermination") ? 0 : prog["seriesTermination"]));
         int idChannel = p.IdChannel;
         if (!maps.ContainsKey(idChannel))
         {
@@ -2470,7 +2488,7 @@ namespace TvDatabase
       List<Program> currentInserts = new List<Program>(aProgramList);
 
       sqlCmd.CommandText =
-        "INSERT INTO Program (idChannel, startTime, endTime, title, description, seriesNum, episodeNum, genre, originalAirDate, classification, starRating, state, parentalRating, episodeName, episodePart) VALUES (?idChannel, ?startTime, ?endTime, ?title, ?description, ?seriesNum, ?episodeNum, ?genre, ?originalAirDate, ?classification, ?starRating, ?state, ?parentalRating, ?episodeName, ?episodePart)";
+        "INSERT INTO Program (idChannel, startTime, endTime, title, description, seriesNum, episodeNum, genre, originalAirDate, classification, starRating, state, parentalRating, episodeName, episodePart, seriesId, seriesTermination) VALUES (?idChannel, ?startTime, ?endTime, ?title, ?description, ?seriesNum, ?episodeNum, ?genre, ?originalAirDate, ?classification, ?starRating, ?state, ?parentalRating, ?episodeName, ?episodePart, ?seriesId, ?seriesTermination)";
 
       sqlCmd.Parameters.Add("?idChannel", MySqlDbType.Int32);
       sqlCmd.Parameters.Add("?startTime", MySqlDbType.DateTime);
@@ -2487,7 +2505,8 @@ namespace TvDatabase
       sqlCmd.Parameters.Add("?parentalRating", MySqlDbType.Int32);
       sqlCmd.Parameters.Add("?episodeName", MySqlDbType.Text);
       sqlCmd.Parameters.Add("?episodePart", MySqlDbType.Text);
-
+      sqlCmd.Parameters.Add("?seriesId", MySqlDbType.String);
+      sqlCmd.Parameters.Add("?seriesTermination", MySqlDbType.Int32);
       try
       {
         sqlCmd.Connection = aConnection;
@@ -2517,6 +2536,8 @@ namespace TvDatabase
         sqlCmd.Parameters["?parentalRating"].Value = prog.ParentalRating;
         sqlCmd.Parameters["?episodeName"].Value = prog.EpisodeName;
         sqlCmd.Parameters["?episodePart"].Value = prog.EpisodePart;
+        sqlCmd.Parameters["?seriesTermination"].Value = prog.SeriesTermination;
+        sqlCmd.Parameters["?seriesId"].Value = prog.SeriesId;
         try
         {
           // Finally insert all our data
@@ -2660,8 +2681,8 @@ namespace TvDatabase
       List<Program> currentInserts = new List<Program>(aProgramList);
 
       sqlCmd.CommandText =
-        "INSERT INTO Program (idChannel, startTime, endTime, title, description, seriesNum, episodeNum, genre, originalAirDate, classification, starRating, state, parentalRating, episodeName, episodePart) VALUES (@idChannel, @startTime, @endTime, @title, @description, @seriesNum, @episodeNum, @genre, @originalAirDate, @classification, @starRating, @state, @parentalRating, @episodeName, @episodePart)";
-
+        "INSERT INTO Program (idChannel, startTime, endTime, title, description, seriesNum, episodeNum, genre, originalAirDate, classification, starRating, state, parentalRating, episodeName, episodePart, seriesId, seriesTermination ) VALUES (@idChannel, @startTime, @endTime, @title, @description, @seriesNum, @episodeNum, @genre, @originalAirDate, @classification, @starRating, @state, @parentalRating, @episodeName, @episodePart, @seriesId, @seriesTermination)";
+ 
       sqlCmd.Parameters.Add("idChannel", SqlDbType.Int);
       sqlCmd.Parameters.Add("startTime", SqlDbType.DateTime);
       sqlCmd.Parameters.Add("endTime", SqlDbType.DateTime);
@@ -2677,7 +2698,9 @@ namespace TvDatabase
       sqlCmd.Parameters.Add("parentalRating", SqlDbType.Int);
       sqlCmd.Parameters.Add("episodeName", SqlDbType.VarChar);
       sqlCmd.Parameters.Add("episodePart", SqlDbType.VarChar);
-
+      sqlCmd.Parameters.Add("seriesId", SqlDbType.VarChar);
+      sqlCmd.Parameters.Add("seriesTermination", SqlDbType.Int);
+      
       try
       {
         sqlCmd.Connection = aConnection;
@@ -2706,7 +2729,9 @@ namespace TvDatabase
         sqlCmd.Parameters["parentalRating"].Value = prog.ParentalRating;
         sqlCmd.Parameters["episodeName"].Value = prog.EpisodeName;
         sqlCmd.Parameters["episodePart"].Value = prog.EpisodePart;
-
+        sqlCmd.Parameters["seriesId"].Value = prog.SeriesId;
+        sqlCmd.Parameters["seriesTermination"].Value = prog.SeriesTermination;
+        
         try
         {
           // Finally insert all our data
