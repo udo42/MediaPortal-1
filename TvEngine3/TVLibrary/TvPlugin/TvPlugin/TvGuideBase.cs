@@ -3948,7 +3948,8 @@ namespace TvPlugin
       }
        //  Else show the program info screen
        else
-         ShowProgramInfo();
+      {
+          ShowProgramInfo();
       }
     }
 
