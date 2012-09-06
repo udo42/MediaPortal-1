@@ -33,6 +33,7 @@
 
 const double SEEKING_ACCURACY = (double)0.16; // 1/25 *4 (4 frames in PAL)
 const int MAX_SEEKING_ITERATIONS = 50;
+const int MAX_BUFFER_ITERATIONS = 100;
 
 extern void LogDebug(const char *fmt, ...) ;
 CTsFileSeek::CTsFileSeek( CTsDuration& duration)
@@ -82,6 +83,9 @@ void CTsFileSeek::Seek(CRefTime refTime)
   __int64 binaryMin=0;
   __int64 lastFilePos=0;
   int seekingIteration=0;
+  __int64 firstFilePos=filePos;
+  int noPCRIteration=0;
+  bool noPCRloop = false;
 
   Reset() ;   // Reset "PacketSync"
   while (true)
@@ -130,16 +134,17 @@ void CTsFileSeek::Seek(CRefTime refTime)
       // Make sure that seeking position is at least the target one
       if (0 <= diff && diff <= SEEKING_ACCURACY)
       {
-        LogDebug(" stop seek: %f at %x - target: %f, diff: %f",
+        LogDebug("FileSeek: stop seek: %f at %x - target: %f, diff: %f",
           clockFound, (DWORD)filePos, seekTimeStamp, diff);
         m_reader->SetFilePointer(filePos,FILE_BEGIN);
         return;
       }
 
+      noPCRIteration = 0;
       seekingIteration++;
       if( seekingIteration > MAX_SEEKING_ITERATIONS )
       {
-        LogDebug(" stop seek max iterations reached (%d): %f at %x - target: %f, diff: %f",
+        LogDebug("FileSeek: stop seek max iterations reached (%d): %f at %x - target: %f, diff: %f",
           MAX_SEEKING_ITERATIONS, clockFound, (DWORD)filePos, seekTimeStamp, diff);
         m_reader->SetFilePointer(filePos,FILE_BEGIN);
         return;
@@ -162,7 +167,7 @@ void CTsFileSeek::Seek(CRefTime refTime)
 
       if (lastFilePos==filePos)
       {
-        LogDebug(" stop seek closer target found : %f at %x - target: %f, diff: %f",
+        LogDebug("FileSeek: stop seek closer target found : %f at %x - target: %f, diff: %f",
           clockFound, (DWORD)filePos, seekTimeStamp, diff);
         m_reader->SetFilePointer(filePos,FILE_BEGIN);
         return;
@@ -174,6 +179,23 @@ void CTsFileSeek::Seek(CRefTime refTime)
     {
       //move filepointer forward and continue searching for a PCR
       filePos += sizeof(buffer);
+      noPCRIteration++;
+      if (noPCRIteration > MAX_BUFFER_ITERATIONS)
+      {
+        if (noPCRloop) //second time this has happened
+        {
+          LogDebug("FileSeek: stop seek, no PCR found, max iterations reached (%d)", MAX_BUFFER_ITERATIONS);
+          m_reader->SetFilePointer(firstFilePos,FILE_BEGIN);
+          return;
+        }
+        //Let's try looking for any PCR pid 
+        //starting again from the initial position
+        LogDebug("FileSeek: No PCR found (pid = %d), trying for any PCR pid", m_seekPid);
+        m_seekPid = -1;
+        filePos = firstFilePos;
+        noPCRIteration = 0;
+        noPCRloop = true;
+      }
     }
   }
 }

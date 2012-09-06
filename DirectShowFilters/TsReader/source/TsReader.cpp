@@ -181,7 +181,7 @@ CTsReaderFilter::CTsReaderFilter(IUnknown *pUnk, HRESULT *phr):
   GetLogFile(filename);
   ::DeleteFile(filename);
   LogDebug("----- Experimental noStopMod version -----");
-  LogDebug("---------- v0.0.61 XXX -------------------");
+  LogDebug("---------- v0.0.62 XXX -------------------");
   
   m_fileReader=NULL;
   m_fileDuration=NULL;
@@ -1475,6 +1475,11 @@ void CTsReaderFilter::ThreadProc()
             //did we find a duration?
             if (duration.Duration().Millisecs()>0)
             {
+              if (duration.GetPid() > 0) //in case the PCR pid has changed
+              {
+                m_duration.SetVideoPid(duration.GetPid());
+              }
+
               //yes, is it different then the one we determined last time?
               if (duration.StartPcr().PcrReferenceBase!=pcrStartLast.PcrReferenceBase ||
                   duration.EndPcr().PcrReferenceBase!=pcrEndLast.PcrReferenceBase)
