@@ -14,4 +14,4 @@ ALTER TABLE schedule
 GO
 
 UPDATE Version SET versionNumber=61
-GO#
+GO
