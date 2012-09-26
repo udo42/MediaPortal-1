@@ -31,8 +31,8 @@
 // For more details for memory leak detection see the alloctracing.h header
 #include "..\..\alloctracing.h"
 
-const double SEEKING_ACCURACY = (double)0.16; // 1/25 *4 (4 frames in PAL)
-const int MAX_SEEKING_ITERATIONS = 50;
+const double SEEKING_ACCURACY = (double)0.24; // 1/25 *6 (6 frames in PAL)
+const int MAX_SEEKING_ITERATIONS = 30;
 const int MAX_BUFFER_ITERATIONS = 100;
 
 extern void LogDebug(const char *fmt, ...) ;
@@ -134,8 +134,8 @@ void CTsFileSeek::Seek(CRefTime refTime)
       // Make sure that seeking position is at least the target one
       if (0 <= diff && diff <= SEEKING_ACCURACY)
       {
-        LogDebug("FileSeek: stop seek: %f at %x - target: %f, diff: %f",
-          clockFound, (DWORD)filePos, seekTimeStamp, diff);
+        LogDebug("FileSeek: stop seek: %f at %x - target: %f, diff: %f, iterations: %d",
+          clockFound, (DWORD)filePos, seekTimeStamp, diff, seekingIteration);
         m_reader->SetFilePointer(filePos,FILE_BEGIN);
         return;
       }
@@ -146,7 +146,16 @@ void CTsFileSeek::Seek(CRefTime refTime)
       {
         LogDebug("FileSeek: stop seek max iterations reached (%d): %f at %x - target: %f, diff: %f",
           MAX_SEEKING_ITERATIONS, clockFound, (DWORD)filePos, seekTimeStamp, diff);
-        m_reader->SetFilePointer(filePos,FILE_BEGIN);
+          
+        if (fabs(diff) < 2.0)
+        {
+          m_reader->SetFilePointer(filePos,FILE_BEGIN);
+        }
+        else
+        {
+          //Set the file pointer to the initial estimate - the best we can do...
+          m_reader->SetFilePointer(firstFilePos,FILE_BEGIN);
+        }
         return;
       }
 
@@ -185,6 +194,7 @@ void CTsFileSeek::Seek(CRefTime refTime)
         if (noPCRloop) //second time this has happened
         {
           LogDebug("FileSeek: stop seek, no PCR found, max iterations reached (%d)", MAX_BUFFER_ITERATIONS);
+          //Set the file pointer to the initial estimate - the best we can do...
           m_reader->SetFilePointer(firstFilePos,FILE_BEGIN);
           return;
         }
@@ -218,7 +228,7 @@ void CTsFileSeek::OnTsPacket(byte* tsPacket)
   if (field.Pcr.IsValid)
   {
     //got a pcr, is it the correct pid?
-    if ( (header.Pid==m_seekPid) || (m_seekPid<0) )
+    if ( (m_seekPid>0 && (header.Pid==m_seekPid)) || (m_seekPid<0) )
     {
       // pid is valid
       // did we have a pcr rollover ??
