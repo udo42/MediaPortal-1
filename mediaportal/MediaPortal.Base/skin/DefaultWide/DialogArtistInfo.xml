@@ -32,7 +32,7 @@
     </control>
     <control Style="NoShadow">
       <description>Artist value</description>
-      <type>label</type>
+      <type>fadelabel</type>
       <id>20</id>
       <posX>0</posX>
       <posY>93</posY>
@@ -110,7 +110,7 @@
     </control>    
     <control Style="NoShadow">
       <description>Born value</description>
-      <type>label</type>
+      <type>fadelabel</type>
       <id>22</id>
       <posX>332</posX>
       <posY>123</posY>
@@ -121,7 +121,7 @@
     </control>
     <control Style="NoShadow">
       <description>Years Active value</description>
-      <type>label</type>
+      <type>fadelabel</type>
       <id>23</id>
       <posX>332</posX>
       <posY>150</posY>
@@ -132,7 +132,7 @@
     </control>
     <control Style="NoShadow">
       <description>Genres value</description>
-      <type>label</type>
+      <type>fadelabel</type>
       <id>24</id>
       <posX>332</posX>
       <posY>176</posY>
@@ -165,7 +165,7 @@
     </control>
     <control Style="NoShadow">
       <description>Instruments value</description>
-      <type>label</type>
+      <type>fadelabel</type>
       <id>27</id>
       <posX>332</posX>
       <posY>256</posY>
@@ -196,7 +196,7 @@
       <height>240</height>
       <keepaspectratio>yes</keepaspectratio>
       <centered>yes</centered>
-      <texture mask="picturethumbmask.png">#selectedthumb</texture>
+      <texture mask="picturethumbmask.png">#ArtistInfo.Thumb</texture>
       <zoom>yes</zoom>
       <colorkey>FFFFFFFF</colorkey>      
     </control>
@@ -225,7 +225,26 @@
       <spinPosX>1150</spinPosX>
       <spinPosY>680</spinPosY>
 	  <label>#ArtistInfo.Bio</label>
+	  <visible>skin.hassetting(#ArtistInfo.ShowAlbums)</visible>
     </control>
+    <control Style="NoShadow">
+      <description>textarea</description>
+      <type>textbox</type>
+      <id>40</id>
+      <posX>332</posX>
+      <posY>300</posY>
+      <height>400</height>
+      <width>900</width>
+      <onleft>5</onleft>
+      <onright>5</onright>
+      <onup>5</onup>
+      <ondown>5</ondown>
+      <font>font13</font>
+      <spinPosX>1150</spinPosX>
+      <spinPosY>680</spinPosY>
+	  <label>#ArtistInfo.Albums</label>
+	  <visible>!skin.hassetting(#ArtistInfo.ShowAlbums)</visible>
+    </control>	
     <control Style="NoShadow">
       <description>Bio/Albums</description>
       <type>button</type>
@@ -233,11 +252,12 @@
       <posX>50</posX>
       <posY>573</posY>
       <width>220</width>
-      <label>689</label>
+      <label>#(L(iif(skin.hassetting('#ArtistInfo.ShowAlbums'), 689, 132)))</label>
       <onleft>4</onleft>
       <onright>4</onright>
       <onup>6</onup>
-      <ondown>6</ondown>      
+      <ondown>6</ondown>
+	  <onclick>#(skin.togglesetting('#ArtistInfo.ShowAlbums'))</onclick>
     </control>
     <control Style="NoShadow">
       <description>Refresh</description>
@@ -252,52 +272,6 @@
       <onright>4</onright>
       <onup>5</onup>
       <ondown>5</ondown>
-    </control>
-
-    <!-- NOT USED -->
-
-    <control Style="NoShadow">
-      <description>Artist</description>
-      <type>label</type>
-      <id>1</id>
-      <posX>2300</posX>
-      <posY>133</posY>
-      <label>171</label>
-      <font>font13</font>
-      <align>right</align>
-      <textcolor>ff6FAFE1</textcolor>
-    </control>
-    <control Style="NoShadow">
-      <description>Artist value</description>
-      <type>label</type>
-      <id>20</id>
-      <posX>2300</posX>
-      <posY>66</posY>
-      <label>-</label>
-      <font>font16</font>
-      <align>right</align>
-      <textcolor>ivory</textcolor>
-    </control>
-    <control Style="NoShadow">
-      <description>Artist value</description>
-      <type>label</type>
-      <id>21</id>
-      <posX>2332</posX>
-      <posY>133</posY>
-      <label>-</label>
-      <font>font13</font>
-      <width>900</width>
-      <textcolor>ivory</textcolor>
-    </control>
-    <control>
-      <description>ArtistImage (Not Use)</description>
-      <type>image</type>
-      <id>3</id>
-      <posX>2050</posX>
-      <posY>10</posY>
-      <width>10</width>
-      <height>10</height>
-      <visible>no</visible>
     </control>
   </controls>
 </window>

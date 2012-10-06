@@ -18,9 +18,12 @@
 
 #endregion
 
+using System;
+using System.ComponentModel;
 using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
 using MediaPortal.Music.Database;
+using Action = MediaPortal.GUI.Library.Action;
 
 namespace MediaPortal.GUI.Music
 {
@@ -33,10 +36,14 @@ namespace MediaPortal.GUI.Music
 
     private bool m_bRefresh = false;
     private MusicArtistInfo artistInfo = null;
+    private BackgroundWorker bw;
 
     public GUIMusicArtistInfo()
     {
       GetID = (int)Window.WINDOW_ARTIST_INFO;
+      bw = new BackgroundWorker();
+      bw.DoWork += bw_DoWork;
+      bw.RunWorkerCompleted += bw_RunWorkerCompleted;
     }
 
     public override bool Init()
@@ -63,6 +70,7 @@ namespace MediaPortal.GUI.Music
     {
       base.OnPageLoad();
 
+      GUIPropertyManager.SetProperty("#ArtistInfo.Thumb", string.Empty);
       GUIPropertyManager.SetProperty("#ArtistInfo.Artist", string.Empty);
       GUIPropertyManager.SetProperty("#ArtistInfo.Bio", string.Empty);
       GUIPropertyManager.SetProperty("#ArtistInfo.Born", string.Empty);
@@ -76,7 +84,7 @@ namespace MediaPortal.GUI.Music
       GUIPropertyManager.SetProperty("#ArtistInfo.Singles", string.Empty);
       GUIPropertyManager.SetProperty("#ArtistInfo.MiscAlbums", string.Empty);
 
-      Refresh();
+      Update();
     }
 
     protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
@@ -102,6 +110,16 @@ namespace MediaPortal.GUI.Music
         return;
       }
 
+      string coverArtFileName = GUIMusicBaseWindow.GetArtistCoverArtName(artistInfo.Artist);
+      if (Util.Utils.FileExistsInCache(coverArtFileName))
+      {
+        GUIPropertyManager.SetProperty("#ArtistInfo.Thumb", coverArtFileName);
+      }
+      else if (!string.IsNullOrEmpty(artistInfo.ImageURL))
+      {
+        bw.RunWorkerAsync();
+      }
+
       GUIPropertyManager.SetProperty("#ArtistInfo.Artist", artistInfo.Artist);
       GUIPropertyManager.SetProperty("#ArtistInfo.Bio", artistInfo.AMGBiography);
       GUIPropertyManager.SetProperty("#ArtistInfo.Born", artistInfo.Born);
@@ -116,25 +134,31 @@ namespace MediaPortal.GUI.Music
       GUIPropertyManager.SetProperty("#ArtistInfo.MiscAlbums", artistInfo.Misc);
     }
 
-
-    private void Refresh()
-    {
-      string coverArtUrl = artistInfo.ImageURL;
-      string coverArtFileName = GUIMusicBaseWindow.GetArtistCoverArtName(artistInfo.Artist);
-      // do not overwrite existing artist thumb
-      if (!string.IsNullOrEmpty(coverArtFileName) && !Util.Utils.FileExistsInCache(coverArtFileName))
-      {
-        //	Download image and save as permanent thumb
-        Util.Utils.DownLoadImage(coverArtUrl, coverArtFileName);
-      }
-
-      Update();
-    }
-
     public bool NeedsRefresh
     {
       get { return m_bRefresh; }
     }
+
+    #region bw methods
+
+    private void bw_DoWork(object sender, DoWorkEventArgs e)
+    {
+      string coverArtFileName = GUIMusicBaseWindow.GetArtistCoverArtName(artistInfo.Artist);
+      Log.Debug("downloading thumbnail for artist: {0}", artistInfo.Artist);
+      Util.Utils.DownLoadImage(artistInfo.ImageURL, coverArtFileName);
+    }
+
+    private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+    {
+      if (e.Error != null) return;
+      string coverArtFileName = GUIMusicBaseWindow.GetArtistCoverArtName(artistInfo.Artist);
+      if (Util.Utils.FileExistsInCache(coverArtFileName))
+      {
+        GUIPropertyManager.SetProperty("#ArtistInfo.Thumb", coverArtFileName);
+      }
+    }
+
+    #endregion
 
   }
 }

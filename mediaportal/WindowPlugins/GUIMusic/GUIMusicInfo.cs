@@ -19,11 +19,10 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
 using MediaPortal.Music.Database;
-using MediaPortal.TagReader;
-using Microsoft.DirectX.Direct3D;
 using Action = MediaPortal.GUI.Library.Action;
 
 namespace MediaPortal.GUI.Music
@@ -37,10 +36,14 @@ namespace MediaPortal.GUI.Music
 
     private bool needsRefresh = false;
     private MusicAlbumInfo albumInfo = null;
+    private BackgroundWorker bw;
 
     public GUIMusicInfo()
     {
       GetID = (int)Window.WINDOW_MUSIC_INFO;
+      bw = new BackgroundWorker();
+      bw.DoWork += bw_DoWork;
+      bw.RunWorkerCompleted += bw_RunWorkerCompleted;
     }
 
     public override bool Init()
@@ -67,6 +70,7 @@ namespace MediaPortal.GUI.Music
     {
       base.OnPageLoad();
 
+      GUIPropertyManager.SetProperty("#AlbumInfo.Thumb", string.Empty);
       GUIPropertyManager.SetProperty("#AlbumInfo.Title", string.Empty);
       GUIPropertyManager.SetProperty("#AlbumInfo.Artist", string.Empty);
       GUIPropertyManager.SetProperty("#AlbumInfo.Year", string.Empty);
@@ -77,7 +81,7 @@ namespace MediaPortal.GUI.Music
       GUIPropertyManager.SetProperty("#AlbumInfo.Review", string.Empty);
       GUIPropertyManager.SetProperty("#AlbumInfo.Tracks", string.Empty);
 
-      Refresh();
+      Update();
     }
 
     protected override void OnClicked(int controlId, GUIControl control, Action.ActionType actionType)
@@ -108,6 +112,16 @@ namespace MediaPortal.GUI.Music
       {
         rating = String.Format("{0}/9", albumInfo.Rating);
       }
+
+      string thumbNailFileName = Util.Utils.GetAlbumThumbName(albumInfo.Artist, albumInfo.Title);
+      if (Util.Utils.FileExistsInCache(thumbNailFileName))
+      {
+        GUIPropertyManager.SetProperty("#AlbumInfo.Thumb", thumbNailFileName);
+      }
+      else if (!string.IsNullOrEmpty(albumInfo.ImageURL))
+      {
+        bw.RunWorkerAsync();
+      }
       
       GUIPropertyManager.SetProperty("#AlbumInfo.Title", albumInfo.Title);
       GUIPropertyManager.SetProperty("#AlbumInfo.Artist", albumInfo.Artist);
@@ -120,22 +134,31 @@ namespace MediaPortal.GUI.Music
       GUIPropertyManager.SetProperty("#AlbumInfo.Tracks", albumInfo.Tracks);
     }
 
-    private void Refresh()
-    {
-      string imageFileName = albumInfo.ImageURL;
-      string thumbNailFileName = Util.Utils.GetAlbumThumbName(albumInfo.Artist, albumInfo.Title);
-      if (!Util.Utils.FileExistsInCache(thumbNailFileName))
-      {
-        //	Download image and save as permanent thumb
-        Util.Utils.DownLoadImage(imageFileName, thumbNailFileName);
-      }
-      Update();
-    }
-
     public bool NeedsRefresh
     {
       get { return needsRefresh; }
     }
+
+    #region bw methods
+
+    private void bw_DoWork(object sender, DoWorkEventArgs e)
+    {
+      string thumbNailFileName = Util.Utils.GetAlbumThumbName(albumInfo.Artist, albumInfo.Title);
+      Log.Debug("downloading album image for: {0} - {1}", albumInfo.Artist, albumInfo.Title);
+      Util.Utils.DownLoadImage(albumInfo.ImageURL, thumbNailFileName);
+    }
+
+    private void bw_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+    {
+      if (e.Error != null) return;
+      string thumbNailFileName = Util.Utils.GetAlbumThumbName(albumInfo.Artist, albumInfo.Title);
+      if (Util.Utils.FileExistsInCache(thumbNailFileName))
+      {
+        GUIPropertyManager.SetProperty("#AlbumInfo.Thumb", thumbNailFileName);
+      }
+    }
+
+    #endregion
 
   }
 }

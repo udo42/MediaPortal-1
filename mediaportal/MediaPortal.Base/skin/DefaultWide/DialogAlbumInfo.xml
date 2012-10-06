@@ -32,7 +32,7 @@
     </control>
     <control Style="NoShadow">
       <description>Album value</description>
-      <type>label</type>
+      <type>fadelabel</type>
       <id>20</id>
       <posX>0</posX>
       <posY>93</posY>
@@ -110,7 +110,7 @@
     </control>
     <control Style="NoShadow">
       <description>Artist value</description>
-      <type>label</type>
+      <type>fadelabel</type>
       <id>21</id>
       <posX>332</posX>
       <posY>123</posY>
@@ -120,7 +120,7 @@
     </control>
     <control Style="NoShadow">
       <description>Date of Release value</description>
-      <type>label</type>
+      <type>fadelabel</type>
       <id>22</id>
       <posX>332</posX>
       <posY>150</posY>
@@ -130,7 +130,7 @@
     </control>
     <control Style="NoShadow">
       <description>Rating value</description>
-      <type>label</type>
+      <type>fadelabel</type>
       <id>23</id>
       <posX>332</posX>
       <posY>176</posY>
@@ -140,7 +140,7 @@
     </control>
     <control Style="NoShadow">
       <description>Genre value</description>
-      <type>label</type>
+      <type>fadelabel</type>
       <id>24</id>
       <posX>332</posX>
       <posY>203</posY>
@@ -192,7 +192,7 @@
       <height>240</height>
       <keepaspectratio>yes</keepaspectratio>
       <centered>yes</centered>
-      <texture mask="picturethumbmask.png">#selectedthumb</texture>
+      <texture mask="picturethumbmask.png">#AlbumInfo.Thumb</texture>
       <zoom>yes</zoom>
       <colorkey>FFFFFFFF</colorkey>      
     </control>
@@ -222,7 +222,26 @@
       <spinPosX>1150</spinPosX>
       <spinPosY>680</spinPosY>
 	  <label>#AlbumInfo.Review</label>
+      <visible>!skin.hassetting(#AlbumInfo.ShowTracks)</visible>
     </control>
+    <control Style="NoShadow">
+      <description>textarea</description>
+      <type>textbox</type>
+      <id>40</id>
+      <posX>332</posX>
+      <posY>300</posY>
+      <width>900</width>
+      <height>400</height>      
+      <onleft>5</onleft>
+      <onright>5</onright>
+      <onup>5</onup>
+      <ondown>5</ondown>
+      <font>font13</font>
+      <spinPosX>1150</spinPosX>
+      <spinPosY>680</spinPosY>
+	  <label>#AlbumInfo.Tracks</label>
+      <visible>skin.hassetting(#AlbumInfo.ShowTracks)</visible>
+    </control>	
     <control Style="NoShadow">
       <description>Tracks/Review</description>
       <type>button</type>
@@ -235,6 +254,7 @@
       <onright>4</onright>
       <onup>6</onup>
       <ondown>6</ondown>
+      <onclick>#(skin.togglesetting('#AlbumInfo.ShowTracks'))</onclick>
     </control>
     <control Style="NoShadow">
       <description>Refresh</description>
@@ -251,18 +271,5 @@
       <onup>5</onup>
       <ondown>5</ondown>
     </control>
-
-    <!-- NOT USED -->
-
-    <control>
-      <description>Album Art (Not Use)</description>
-      <type>image</type>
-      <id>3</id>
-      <posX>2050</posX>
-      <posY>313</posY>
-      <width>10</width>
-      <height>10</height>
-      <visible>no</visible>      
-    </control>    
   </controls>
 </window>
