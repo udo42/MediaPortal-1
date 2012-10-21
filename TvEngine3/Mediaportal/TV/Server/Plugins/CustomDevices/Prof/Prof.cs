@@ -24,9 +24,9 @@ using DirectShowLib;
 using DirectShowLib.BDA;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Integration;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.Device;
-using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
 {
@@ -238,16 +238,16 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
     /// <returns><c>true</c> if the interfaces are successfully initialised, otherwise <c>false</c></returns>
     public override bool Initialise(IBaseFilter tunerFilter, CardType tunerType, String tunerDevicePath)
     {
-      Log.Debug("Prof: initialising device");
+      this.LogDebug("initialising device");
 
       if (tunerFilter == null)
       {
-        Log.Debug("Prof: tuner filter is null");
+        this.LogDebug("tuner filter is null");
         return false;
       }
       if (_isProf)
       {
-        Log.Debug("Prof: device is already initialised");
+        this.LogDebug("device is already initialised");
         return true;
       }
 
@@ -255,7 +255,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       _propertySet = pin as IKsPropertySet;
       if (_propertySet == null)
       {
-        Log.Debug("Prof: pin is not a property set");
+        this.LogDebug("pin is not a property set");
         return false;
       }
 
@@ -264,11 +264,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       // The original Conexant interface uses the set method; this interface uses the get method.
       if (hr != 0 || (support & KSPropertySupport.Get) == 0)
       {
-        Log.Debug("Prof: device does not support the Prof property set, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("device does not support the Prof property set, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         return false;
       }
 
-      Log.Debug("Prof: supported device detected");
+      this.LogDebug("supported device detected");
       _isProf = true;
       // Note: this buffer is shared between the Prof and ProfUsb classes. It must be large enough to
       // accomodate the largest struct from either class. At present the largest struct is the
@@ -288,12 +288,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
     /// <param name="action">The action to take, if any.</param>
     public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel, out DeviceAction action)
     {
-      Log.Debug("Prof: on before tune callback");
+      this.LogDebug("on before tune callback");
       action = DeviceAction.Default;
 
       if (!_isProf || _propertySet == null)
       {
-        Log.Debug("Prof: device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return;
       }
 
@@ -309,7 +309,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
 
       // FEC rate
       command.InnerFecRate = ch.InnerFecRate;
-      Log.Debug("  inner FEC rate = {0}", command.InnerFecRate);
+      this.LogDebug("  inner FEC rate = {0}", command.InnerFecRate);
 
       // Modulation
       if (ch.ModulationType == ModulationType.ModNotSet)
@@ -328,7 +328,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
         command.DvbsStandard = ProfDvbsStandard.Dvbs2;
       }
       command.ModulationType = ch.ModulationType;
-      Log.Debug("  modulation     = {0}", ch.ModulationType);
+      this.LogDebug("  modulation     = {0}", ch.ModulationType);
 
       // Pilot
       command.Pilot = ProfPilot.Off;
@@ -336,7 +336,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       {
         command.Pilot = ProfPilot.On;
       }
-      Log.Debug("  pilot          = {0}", command.Pilot);
+      this.LogDebug("  pilot          = {0}", command.Pilot);
 
       // Roll-off
       if (ch.RollOff == RollOff.Twenty)
@@ -355,13 +355,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       {
         command.RollOff = ProfRollOff.Undefined;
       }
-      Log.Debug("  roll-off       = {0}", command.RollOff);
+      this.LogDebug("  roll-off       = {0}", command.RollOff);
 
       KSPropertySupport support;
       int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.NbcParams, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
-        Log.Debug("Prof: NBC tuning parameter property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("NBC tuning parameter property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         return;
       }
 
@@ -374,11 +374,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       );
       if (hr == 0)
       {
-        Log.Debug("Prof: result = success");
+        this.LogDebug("result = success");
       }
       else
       {
-        Log.Debug("Prof: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       }
     }
 
@@ -395,11 +395,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
     /// <returns><c>true</c> if the power state is set successfully, otherwise <c>false</c></returns>
     public virtual bool SetPowerState(bool powerOn)
     {
-      Log.Debug("Prof: set power state, on = {0}", powerOn);
+      this.LogDebug("set power state, on = {0}", powerOn);
 
       if (!_isProf || _propertySet == null)
       {
-        Log.Debug("Prof: device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return false;
       }
 
@@ -422,11 +422,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       );
       if (hr == 0)
       {
-        Log.Debug("Prof: result = success");
+        this.LogDebug("result = success");
         return true;
       }
 
-      Log.Debug("Prof: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 
@@ -442,11 +442,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
     /// <returns><c>true</c> if the tone state is set successfully, otherwise <c>false</c></returns>
     public virtual bool SetToneState(ToneBurst toneBurstState, Tone22k tone22kState)
     {
-      Log.Debug("Prof: set tone state, burst = {0}, 22 kHz = {1}", toneBurstState, tone22kState);
+      this.LogDebug("set tone state, burst = {0}, 22 kHz = {1}", toneBurstState, tone22kState);
 
       if (!_isProf || _propertySet == null)
       {
-        Log.Debug("Prof: device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return false;
       }
 
@@ -481,11 +481,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       );
       if (hr == 0)
       {
-        Log.Debug("Prof: result = success");
+        this.LogDebug("result = success");
         return true;
       }
 
-      Log.Debug("Prof: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 
@@ -496,21 +496,21 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
     /// <returns><c>true</c> if the command is sent successfully, otherwise <c>false</c></returns>
     public virtual bool SendCommand(byte[] command)
     {
-      Log.Debug("Prof: send DiSEqC command");
+      this.LogDebug("send DiSEqC command");
 
       if (!_isProf || _propertySet == null)
       {
-        Log.Debug("Prof: device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return false;
       }
       if (command == null || command.Length == 0)
       {
-        Log.Debug("Prof: command not supplied");
+        this.LogDebug("command not supplied");
         return true;
       }
       if (command.Length > MaxDiseqcTxMessageLength)
       {
-        Log.Debug("Prof: command too long, length = {0}", command.Length);
+        this.LogDebug("command too long, length = {0}", command.Length);
         return false;
       }
 
@@ -534,11 +534,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       );
       if (hr == 0)
       {
-        Log.Debug("Prof: result = success");
+        this.LogDebug("result = success");
         return true;
       }
 
-      Log.Debug("Prof: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 

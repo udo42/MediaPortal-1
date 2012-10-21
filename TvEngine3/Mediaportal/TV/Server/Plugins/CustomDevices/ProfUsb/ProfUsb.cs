@@ -24,9 +24,9 @@ using DirectShowLib;
 using DirectShowLib.BDA;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Integration;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.Device;
-using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
 {
@@ -164,24 +164,24 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
     /// </summary>
     private void ReadDeviceInfo()
     {
-      Log.Debug("Prof (USB): read device information");
+      this.LogDebug("read device information");
 
       // Check whether custom tuning is supported.
-      Log.Debug("Prof (USB): checking for tuning property support");
+      this.LogDebug("checking for tuning property support");
       KSPropertySupport support;
       int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.Tuner, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
-        Log.Debug("Prof (USB): property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       }
       else
       {
-        Log.Debug("Prof (USB): property supported");
+        this.LogDebug("property supported");
         _isCustomTuningSupported = true;
       }
 
       // MAC address.
-      Log.Debug("Prof (USB): reading MAC address");
+      this.LogDebug("reading MAC address");
       for (int i = 0; i < MacAddressLength; i++)
       {
         Marshal.WriteByte(_generalBuffer, i, 0);
@@ -194,7 +194,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       );
       if (hr != 0 || returnedByteCount != MacAddressLength)
       {
-        Log.Debug("Prof (USB): result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       }
       else
       {
@@ -203,11 +203,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
         {
           address += String.Format("{0:x2}-", Marshal.ReadByte(_generalBuffer, i));
         }
-        Log.Debug("  MAC address = {0}", address.Substring(0, (returnedByteCount * 3) - 1));
+        this.LogDebug("  MAC address = {0}", address.Substring(0, (returnedByteCount * 3) - 1));
       }
 
       // Device ID.
-      Log.Debug("Prof (USB): reading device ID");
+      this.LogDebug("reading device ID");
       for (int i = 0; i < DeviceIdLength; i++)
       {
         Marshal.WriteByte(_generalBuffer, i, 0);
@@ -219,13 +219,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       );
       if (hr != 0 || returnedByteCount != DeviceIdLength)
       {
-        Log.Debug("Prof (USB): result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       }
       else
       {
         // I'm unsure of the meaning of the first, fifth, sixth, seventh and eighth bytes.
-        Log.Debug("  vendor ID   = {0:x4}", Marshal.ReadInt16(_generalBuffer, 1));
-        Log.Debug("  device ID   = {0:x4}", Marshal.ReadInt16(_generalBuffer, 3));
+        this.LogDebug("  vendor ID   = {0:x4}", Marshal.ReadInt16(_generalBuffer, 1));
+        this.LogDebug("  device ID   = {0:x4}", Marshal.ReadInt16(_generalBuffer, 3));
       }
     }
 
@@ -269,24 +269,24 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
     /// <returns><c>true</c> if the interfaces are successfully initialised, otherwise <c>false</c></returns>
     public override bool Initialise(IBaseFilter tunerFilter, CardType tunerType, String tunerDevicePath)
     {
-      Log.Debug("Prof (USB): initialising device");
+      this.LogDebug("initialising device");
 
       if (_isProfUsb)
       {
-        Log.Debug("Prof (USB): device is already initialised");
+        this.LogDebug("device is already initialised");
         return true;
       }
 
       if (!base.Initialise(tunerFilter, tunerType, tunerDevicePath))
       {
-        Log.Debug("Prof (USB): base Prof interface not supported");
+        this.LogDebug("base Prof interface not supported");
         return false;
       }
 
       _propertySet = tunerFilter as IKsPropertySet;
       if (_propertySet == null)
       {
-        Log.Debug("Prof (USB): tuner filter is not a property set");
+        this.LogDebug("tuner filter is not a property set");
         return false;
       }
 
@@ -294,11 +294,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.Motor, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
-        Log.Debug("Prof (USB): device does not support the Prof USB property set, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("device does not support the Prof USB property set, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         return false;
       }
 
-      Log.Debug("Prof (USB): tuner supports the USB interface");
+      this.LogDebug("tuner supports the USB interface");
       _isProfUsb = true;
       ReadDeviceInfo();
       return true;
@@ -315,12 +315,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
     /// <param name="action">The action to take, if any.</param>
     public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel, out DeviceAction action)
     {
-      Log.Debug("Prof (USB): on before tune callback");
+      this.LogDebug("on before tune callback");
       action = DeviceAction.Default;
 
       if (!_isProfUsb || _propertySet == null)
       {
-        Log.Debug("Prof (USB): device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return;
       }
 
@@ -339,7 +339,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       {
         ch.LnbType.HighBandFrequency = ch.LnbType.LowBandFrequency;
       }
-      Log.Debug("  LNB LOF    = {0}", ch.LnbType.LowBandFrequency);
+      this.LogDebug("  LNB LOF    = {0}", ch.LnbType.LowBandFrequency);
 
       base.OnBeforeTune(tuner, currentChannel, ref channel, out action);
     }
@@ -357,11 +357,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
     /// <returns><c>true</c> if the power state is set successfully, otherwise <c>false</c></returns>
     public override bool SetPowerState(bool powerOn)
     {
-      Log.Debug("Prof (USB): set power state, on = {0}", powerOn);
+      this.LogDebug("set power state, on = {0}", powerOn);
 
       if (!_isProfUsb || _propertySet == null)
       {
-        Log.Debug("Prof (USB): device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return false;
       }
 
@@ -369,7 +369,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.LnbPower, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
-        Log.Debug("Prof (USB): property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         return false;
       }
 
@@ -392,11 +392,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       );
       if (hr == 0)
       {
-        Log.Debug("Prof (USB): result = success");
+        this.LogDebug("result = success");
         return true;
       }
 
-      Log.Debug("Prof (USB): result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 
@@ -425,16 +425,16 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
     /// <returns><c>true</c> if the channel is successfully tuned, otherwise <c>false</c></returns>
     public bool Tune(IChannel channel)
     {
-      Log.Debug("Prof (USB): tune to channel");
+      this.LogDebug("tune to channel");
 
       if (!_isProfUsb || _propertySet == null)
       {
-        Log.Debug("Prof (USB): device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return false;
       }
       if (!CanTuneChannel(channel))
       {
-        Log.Debug("Prof (USB): tuning is not supported for this channel");
+        this.LogDebug("tuning is not supported for this channel");
         return false;
       }
 
@@ -489,11 +489,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       );
       if (hr == 0)
       {
-        Log.Debug("Prof (USB): result = success");
+        this.LogDebug("result = success");
         return true;
       }
 
-      Log.Debug("Prof (USB): result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 
@@ -509,11 +509,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
     /// <returns><c>true</c> if the tone state is set successfully, otherwise <c>false</c></returns>
     public override bool SetToneState(ToneBurst toneBurstState, Tone22k tone22kState)
     {
-      Log.Debug("Prof (USB): set tone state, burst = {0}, 22 kHz = {1}", toneBurstState, tone22kState);
+      this.LogDebug("set tone state, burst = {0}, 22 kHz = {1}", toneBurstState, tone22kState);
 
       if (!_isProfUsb || _propertySet == null)
       {
-        Log.Debug("Prof (USB): device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return false;
       }
 
@@ -522,7 +522,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
                                   out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
-        Log.Debug("Prof (USB): property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         return false;
       }
 
@@ -551,11 +551,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       );
       if (hr == 0)
       {
-        Log.Debug("Prof (USB): result = success");
+        this.LogDebug("result = success");
         return true;
       }
 
-      Log.Debug("Prof (USB): result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 
@@ -566,21 +566,21 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
     /// <returns><c>true</c> if the command is sent successfully, otherwise <c>false</c></returns>
     public override bool SendCommand(byte[] command)
     {
-      Log.Debug("Prof (USB): send DiSEqC command");
+      this.LogDebug("send DiSEqC command");
 
       if (!_isProfUsb || _propertySet == null)
       {
-        Log.Debug("Prof (USB): device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return false;
       }
       if (command == null || command.Length == 0)
       {
-        Log.Debug("Prof (USB): command not supplied");
+        this.LogDebug("command not supplied");
         return true;
       }
       if (command.Length > MaxDiseqcMessageLength)
       {
-        Log.Debug("Prof (USB): command too long, length = {0}", command.Length);
+        this.LogDebug("command too long, length = {0}", command.Length);
         return false;
       }
 
@@ -597,11 +597,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       );
       if (hr == 0)
       {
-        Log.Debug("Prof (USB): result = success");
+        this.LogDebug("result = success");
         return true;
       }
 
-      Log.Debug("Prof (USB): result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 

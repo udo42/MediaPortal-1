@@ -24,9 +24,9 @@ using DirectShowLib;
 using DirectShowLib.BDA;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Integration;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.Device;
-using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
 {
@@ -160,23 +160,23 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
     /// <returns><c>true</c> if the interfaces are successfully initialised, otherwise <c>false</c></returns>
     public override bool Initialise(IBaseFilter tunerFilter, CardType tunerType, String tunerDevicePath)
     {
-      Log.Debug("Genpix: initialising device");
+      this.LogDebug("initialising device");
 
       if (tunerFilter == null)
       {
-        Log.Debug("Genpix: tuner filter is null");
+        this.LogDebug("tuner filter is null");
         return false;
       }
       if (_isGenpix)
       {
-        Log.Debug("Genpix: device is already initialised");
+        this.LogDebug("device is already initialised");
         return true;
       }
 
       _propertySet = tunerFilter as IKsPropertySet;
       if (_propertySet == null)
       {
-        Log.Debug("Genpix: tuner filter is not a property set");
+        this.LogDebug("tuner filter is not a property set");
         return false;
       }
 
@@ -184,11 +184,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
       int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.Diseqc, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
-        Log.Debug("Genpix: device does not support the Genpix property set, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("device does not support the Genpix property set, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         return false;
       }
 
-      Log.Debug("Genpix: supported device detected");
+      this.LogDebug("supported device detected");
       _isGenpix = true;
       _generalBuffer = Marshal.AllocCoTaskMem(BdaExtensionParamsSize);
       _instanceBuffer = Marshal.AllocCoTaskMem(InstanceSize);
@@ -206,12 +206,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
     /// <param name="action">The action to take, if any.</param>
     public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel, out DeviceAction action)
     {
-      Log.Debug("Genpix: on before tune callback");
+      this.LogDebug("on before tune callback");
       action = DeviceAction.Default;
 
       if (!_isGenpix)
       {
-        Log.Debug("Genpix: device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return;
       }
 
@@ -304,7 +304,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
       {
         ch.ModulationType = ModulationType.Mod96Qam;
       }
-      Log.Debug("  modulation = {0}", ch.ModulationType);
+      this.LogDebug("  modulation = {0}", ch.ModulationType);
     }
 
     #endregion
@@ -335,16 +335,16 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
     /// <returns><c>true</c> if the channel is successfully tuned, otherwise <c>false</c></returns>
     public bool Tune(IChannel channel)
     {
-      Log.Debug("Genpix: tune to channel");
+      this.LogDebug("tune to channel");
 
       if (!_isGenpix || _propertySet == null)
       {
-        Log.Debug("Genpix: device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return false;
       }
       if (!CanTuneChannel(channel))
       {
-        Log.Debug("Genpix: tuning is not supported for this channel");
+        this.LogDebug("tuning is not supported for this channel");
         return false;
       }
 
@@ -370,11 +370,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
       );
       if (hr == 0)
       {
-        Log.Debug("Genpix: result = success");
+        this.LogDebug("result = success");
         return true;
       }
 
-      Log.Debug("Genpix: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 
@@ -394,17 +394,17 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
     /// <returns><c>true</c> if the tone state is set successfully, otherwise <c>false</c></returns>
     public bool SetToneState(ToneBurst toneBurstState, Tone22k tone22kState)
     {
-      Log.Debug("Genpix: set tone state, burst = {0}, 22 kHz = {1}", toneBurstState, tone22kState);
+      this.LogDebug("set tone state, burst = {0}, 22 kHz = {1}", toneBurstState, tone22kState);
 
       if (!_isGenpix || _propertySet == null)
       {
-        Log.Debug("Genpix: device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return false;
       }
 
       if (toneBurstState == ToneBurst.None)
       {
-        Log.Debug("Genpix: result = success");
+        this.LogDebug("result = success");
         return true;
       }
 
@@ -431,11 +431,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
       );
       if (hr == 0)
       {
-        Log.Debug("Genpix: result = success");
+        this.LogDebug("result = success");
         return true;
       }
 
-      Log.Debug("Genpix: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 
@@ -446,21 +446,21 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
     /// <returns><c>true</c> if the command is sent successfully, otherwise <c>false</c></returns>
     public bool SendCommand(byte[] command)
     {
-      Log.Debug("Genpix: send DiSEqC command");
+      this.LogDebug("send DiSEqC command");
 
       if (!_isGenpix || _propertySet == null)
       {
-        Log.Debug("Genpix: device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return false;
       }
       if (command == null || command.Length == 0)
       {
-        Log.Debug("Genpix: command not supplied");
+        this.LogDebug("command not supplied");
         return true;
       }
       if (command.Length > MaxDiseqcMessageLength)
       {
-        Log.Debug("Genpix: command too long, length = {0}", command.Length);
+        this.LogDebug("command too long, length = {0}", command.Length);
         return false;
       }
 
@@ -478,11 +478,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
       );
       if (hr == 0)
       {
-        Log.Debug("Genpix: result = success");
+        this.LogDebug("result = success");
         return true;
       }
 
-      Log.Debug("Genpix: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 

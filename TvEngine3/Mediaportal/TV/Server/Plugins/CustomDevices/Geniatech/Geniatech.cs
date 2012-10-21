@@ -24,9 +24,9 @@ using DirectShowLib;
 using DirectShowLib.BDA;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Integration;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.Device;
-using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
 {
@@ -133,18 +133,18 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
     /// <returns><c>true</c> if the interfaces are successfully initialised, otherwise <c>false</c></returns>
     public override bool Initialise(IBaseFilter tunerFilter, CardType tunerType, String tunerDevicePath)
     {
-      Log.Debug("Geniatech: initialising device");
+      this.LogDebug("initialising device");
 
       if (_isGeniatech)
       {
-        Log.Debug("Geniatech: device is already initialised");
+        this.LogDebug("device is already initialised");
         return true;
       }
 
       bool result = base.Initialise(tunerFilter, tunerType, tunerDevicePath);
       if (!result)
       {
-        Log.Debug("Geniatech: base Conexant interface not supported");
+        this.LogDebug("base Conexant interface not supported");
         return false;
       }
 
@@ -152,11 +152,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
       int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.NbcParams, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
-        Log.Debug("Geniatech: device does not support the NBC parameter property, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("device does not support the NBC parameter property, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         return false;
       }
 
-      Log.Debug("Geniatech: supported device detected");
+      this.LogDebug("supported device detected");
       _isGeniatech = true;
       return true;
     }
@@ -172,12 +172,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
     /// <param name="action">The action to take, if any.</param>
     public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel, out DeviceAction action)
     {
-      Log.Debug("Geniatech: on before tune callback");
+      this.LogDebug("on before tune callback");
       action = DeviceAction.Default;
 
       if (!_isGeniatech || _propertySet == null)
       {
-        Log.Debug("Geniatech: device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return;
       }
 
@@ -196,7 +196,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
       {
         ch.ModulationType = ModulationType.ModNbc8Psk;
       }
-      Log.Debug("  modulation = {0}", ch.ModulationType);
+      this.LogDebug("  modulation = {0}", ch.ModulationType);
 
       NbcParams nbcParams = new NbcParams();
       if (ch.Pilot == Pilot.On)
@@ -207,7 +207,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
       {
         nbcParams.Pilot = GtPilot.Off;
       }
-      Log.Debug("  pilot      = {0}", nbcParams.Pilot);
+      this.LogDebug("  pilot      = {0}", nbcParams.Pilot);
 
       if (ch.RollOff == RollOff.Twenty)
       {
@@ -225,7 +225,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
       {
         nbcParams.RollOff = GtRollOff.Undefined;
       }
-      Log.Debug("  roll-off   = {0}", nbcParams.RollOff);
+      this.LogDebug("  roll-off   = {0}", nbcParams.RollOff);
 
       Marshal.StructureToPtr(nbcParams, _paramBuffer, true);
       int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.NbcParams,
@@ -234,7 +234,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
       );
       if (hr != 0)
       {
-        Log.Debug("Geniatech: failed to set pilot and roll-off, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("failed to set pilot and roll-off, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       }
     }
 
@@ -251,11 +251,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
     /// <returns><c>true</c> if the power state is set successfully, otherwise <c>false</c></returns>
     public bool SetPowerState(bool powerOn)
     {
-      Log.Debug("Geniatech: set power state, on = {0}", powerOn);
+      this.LogDebug("set power state, on = {0}", powerOn);
 
       if (!_isGeniatech || _propertySet == null)
       {
-        Log.Debug("Geniatech: device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return false;
       }
 
@@ -263,7 +263,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
       int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.LnbPower, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
-        Log.Debug("Geniatech: LNB power property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("LNB power property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       }
 
       if (powerOn)
@@ -280,11 +280,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
       );
       if (hr == 0)
       {
-        Log.Debug("Geniatech: result = success");
+        this.LogDebug("result = success");
         return true;
       }
 
-      Log.Debug("Geniatech: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 

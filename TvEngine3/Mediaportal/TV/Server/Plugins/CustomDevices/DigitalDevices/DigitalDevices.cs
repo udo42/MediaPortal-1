@@ -28,9 +28,9 @@ using Mediaportal.TV.Server.Plugins.Base.Interfaces;
 using Mediaportal.TV.Server.TVControl.Interfaces.Services;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Integration;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.Device;
-using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
 {
@@ -211,19 +211,19 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <returns>a property set that supports the IBDA_DiseqCommand interface if successful, otherwise <c>null</c></returns>
     private IKsPropertySet CheckDiseqcSupport(IBaseFilter filter)
     {
-      Log.Debug("Digital Devices: check for IBDA_DiseqCommand DiSEqC support");
+      this.LogDebug("check for IBDA_DiseqCommand DiSEqC support");
 
       IPin pin = DsFindPin.ByDirection(filter, PinDirection.Input, 0);
       if (pin == null)
       {
-        Log.Debug("Digital Devices: failed to find input pin");
+        this.LogDebug("failed to find input pin");
         return null;
       }
 
       IKsPropertySet ps = pin as IKsPropertySet;
       if (ps == null)
       {
-        Log.Debug("Digital Devices: input pin is not a property set");
+        this.LogDebug("input pin is not a property set");
         DsUtils.ReleaseComObject(pin);
         pin = null;
         return null;
@@ -233,7 +233,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       int hr = ps.QuerySupported(typeof(IBDA_DiseqCommand).GUID, (int)BdaDiseqcProperty.Send, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
-        Log.Debug("Digital Devices: property set not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("property set not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         DsUtils.ReleaseComObject(pin);
         pin = null;
         return null;
@@ -258,13 +258,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       // Check if an existing thread is still alive. It will be terminated in case of errors, i.e. when CI callback failed.
       if (_mmiHandlerThread != null && !_mmiHandlerThread.IsAlive)
       {
-        Log.Debug("Digital Devices: aborting old MMI handler thread");
+        this.LogDebug("aborting old MMI handler thread");
         _mmiHandlerThread.Abort();
         _mmiHandlerThread = null;
       }
       if (_mmiHandlerThread == null)
       {
-        Log.Debug("Digital Devices: starting new MMI handler thread");
+        this.LogDebug("starting new MMI handler thread");
         _stopMmiHandlerThread = false;
         _mmiHandlerThread = new Thread(new ThreadStart(MmiHandler));
         _mmiHandlerThread.Name = "Digital Devices MMI handler";
@@ -279,7 +279,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// </summary>
     private void MmiHandler()
     {
-      Log.Debug("Digital Devices: MMI handler thread start polling");
+      this.LogDebug("MMI handler thread start polling");
       _camMessagesDisabled = false;
       try
       {
@@ -297,28 +297,28 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
             MenuData menu;
             if (ReadMmi(i, out menu))
             {
-              Log.Debug("  slot      = {0}", i + 1);
-              Log.Debug("  id        = {0}", menu.Id);
-              Log.Debug("  type      = {0}", menu.Type);
-              Log.Debug("  length    = {0}", menu.Length);
+              this.LogDebug("  slot      = {0}", i + 1);
+              this.LogDebug("  id        = {0}", menu.Id);
+              this.LogDebug("  type      = {0}", menu.Type);
+              this.LogDebug("  length    = {0}", menu.Length);
 
               if (_camMessagesDisabled)
               {
-                Log.Debug("Digital Devices: CAM messages are currently disabled");
+                this.LogDebug("CAM messages are currently disabled");
               }
               else if (_ciMenuCallbacks == null)
               {
-                Log.Debug("Digital Devices: menu callbacks are not set");
+                this.LogDebug("menu callbacks are not set");
               }
 
               try
               {
                 if (menu.Type == 1 || menu.Type == 2)
                 {
-                  Log.Debug("  title     = {0}", menu.Title);
-                  Log.Debug("  sub-title = {0}", menu.SubTitle);
-                  Log.Debug("  footer    = {0}", menu.Footer);
-                  Log.Debug("  # entries = {0}", menu.EntryCount);
+                  this.LogDebug("  title     = {0}", menu.Title);
+                  this.LogDebug("  sub-title = {0}", menu.SubTitle);
+                  this.LogDebug("  footer    = {0}", menu.Footer);
+                  this.LogDebug("  # entries = {0}", menu.EntryCount);
 
                   if (_ciMenuCallbacks != null && !_camMessagesDisabled)
                   {
@@ -328,7 +328,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
                   for (int j = 0; j < menu.EntryCount; j++)
                   {
                     String entry = menu.Entries[j];
-                    Log.Debug("  entry {0,-2}  = {1}", j + 1, entry);
+                    this.LogDebug("  entry {0,-2}  = {1}", j + 1, entry);
                     if (_ciMenuCallbacks != null && !_camMessagesDisabled)
                     {
                       _ciMenuCallbacks.OnCiMenuChoice(j, entry);
@@ -337,8 +337,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
                 }
                 else if (menu.Type == 3 || menu.Type == 4)
                 {
-                  Log.Debug("  text      = {0}", menu.Title);
-                  Log.Debug("  length    = {0}", menu.EntryCount);
+                  this.LogDebug("  text      = {0}", menu.Title);
+                  this.LogDebug("  length    = {0}", menu.EntryCount);
                   if (_ciMenuCallbacks != null && !_camMessagesDisabled)
                   {
                     _ciMenuCallbacks.OnCiRequest(false, (uint)menu.EntryCount, menu.Title);
@@ -347,7 +347,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
               }
               catch (Exception ex)
               {
-                Log.Debug("Digital Devices: callback threw exception\r\n{0}", ex.ToString());
+                this.LogDebug("callback threw exception\r\n{0}", ex.ToString());
               }
             }
           }
@@ -359,7 +359,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       }
       catch (Exception ex)
       {
-        Log.Debug("Digital Devices: exception in MMI handler thread\r\n{0}", ex.ToString());
+        this.LogDebug("exception in MMI handler thread\r\n{0}", ex.ToString());
         return;
       }
     }
@@ -387,7 +387,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         // opened seems to fail (HRESULT 0x8007001f). Don't flood the logs...
         if (_menuContext != -1)
         {
-          Log.Debug("Digital Devices: read MMI failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+          this.LogDebug("read MMI failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         }
         return false;
       }
@@ -464,27 +464,27 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <returns><c>true</c> if the interfaces are successfully initialised, otherwise <c>false</c></returns>
     public override bool Initialise(IBaseFilter tunerFilter, CardType tunerType, String tunerDevicePath)
     {
-      Log.Debug("Digital Devices: initialising device");
+      this.LogDebug("initialising device");
 
       // Digital Devices components have a common section in their device path.
       if (String.IsNullOrEmpty(tunerDevicePath))
       {
-        Log.Debug("Digital Devices: tuner device path is not set");
+        this.LogDebug("tuner device path is not set");
         return false;
       }
       if (_isDigitalDevices)
       {
-        Log.Debug("Digital Devices: device is already initialised");
+        this.LogDebug("device is already initialised");
         return true;
       }
 
       if (!tunerDevicePath.ToLowerInvariant().Contains(DigitalDevicesCiSlots.CommonDevicePathSection))
       {
-        Log.Debug("Digital Devices: device path does not contain the Digital Devices common section");
+        this.LogDebug("device path does not contain the Digital Devices common section");
         return false;
       }
 
-      Log.Debug("Digital Devices: supported device detected");
+      this.LogDebug("supported device detected");
       _isDigitalDevices = true;
       _tunerDevicePath = tunerDevicePath;
 
@@ -498,7 +498,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       }
       if (hr != 0 || String.IsNullOrEmpty(tunerFilterInfo.achName))
       {
-        Log.Debug("Digital Devices: failed to get the tuner filter name, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("failed to get the tuner filter name, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       }
       else
       {
@@ -506,7 +506,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         {
           if (tunerFilterInfo.achName.StartsWith(prefix))
           {
-            Log.Debug("Digital Devices: \"{0}\", {1} variant", tunerFilterInfo.achName, prefix);
+            this.LogDebug("\"{0}\", {1} variant", tunerFilterInfo.achName, prefix);
             _name = prefix;
             break;
           }
@@ -519,7 +519,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         _propertySet = CheckDiseqcSupport(tunerFilter);
         if (_propertySet != null)
         {
-          Log.Debug("Digital Devices: DiSEqC support detected");
+          this.LogDebug("DiSEqC support detected");
           _deviceControl = tunerFilter as IBDA_DeviceControl;
           _instanceBuffer = Marshal.AllocCoTaskMem(InstanceSize);
           _paramBuffer = Marshal.AllocCoTaskMem(BdaDiseqcMessageSize);
@@ -558,21 +558,21 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <returns><c>true</c> if the device was successfully added to the graph, otherwise <c>false</c></returns>
     public bool AddToGraph(ref IBaseFilter lastFilter)
     {
-      Log.Debug("Digital Devices: add to graph");
+      this.LogDebug("add to graph");
 
       if (!_isDigitalDevices)
       {
-        Log.Debug("Digital Devices: device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return false;
       }
       if (lastFilter == null)
       {
-        Log.Debug("Digital Devices: upstream filter is null");
+        this.LogDebug("upstream filter is null");
         return false;
       }
       if (_ciContexts != null && _ciContexts.Count > 0)
       {
-        Log.Debug("Digital Devices: {0} device filter(s) already in graph", _ciContexts.Count);
+        this.LogDebug("{0} device filter(s) already in graph", _ciContexts.Count);
         return true;
       }
 
@@ -581,13 +581,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       int hr = lastFilter.QueryFilterInfo(out filterInfo);
       if (hr != 0)
       {
-        Log.Debug("Digital Devices: failed to get filter info, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("failed to get filter info, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         return false;
       }
       _graph = filterInfo.pGraph as IFilterGraph2;
       if (_graph == null)
       {
-        Log.Debug("Digital Devices: failed to get graph reference");
+        this.LogDebug("failed to get graph reference");
         return false;
       }
 
@@ -600,13 +600,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         hr = _graph.AddFilter(tmpDemux, "Temp MPEG2 Demultiplexer");
         if (hr != 0)
         {
-          Log.Debug("Digital Devices: failed to add test demux to graph, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+          this.LogDebug("failed to add test demux to graph, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
           return false;
         }
         demuxInputPin = DsFindPin.ByDirection(tmpDemux, PinDirection.Input, 0);
         if (demuxInputPin == null)
         {
-          Log.Debug("Digital Devices: failed to find the demux input pin");
+          this.LogDebug("failed to find the demux input pin");
           return false;
         }
 
@@ -615,7 +615,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         IPin lastFilterOutputPin = DsFindPin.ByDirection(lastFilter, PinDirection.Output, 0);
         if (lastFilterOutputPin == null)
         {
-          Log.Debug("Digital Devices: upstream filter doesn't have an output pin");
+          this.LogDebug("upstream filter doesn't have an output pin");
           return false;
         }
 
@@ -631,7 +631,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
           // to render [capture]->[CI]->[demux].
           if (_graph.Connect(lastFilterOutputPin, demuxInputPin) == 0)
           {
-            Log.Debug("Digital Devices: no [more] CI filters available or configured for this tuner");
+            this.LogDebug("no [more] CI filters available or configured for this tuner");
             lastFilterOutputPin.Disconnect();
             break;
           }
@@ -650,12 +650,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
             }
 
             // Stage 3: okay, we've got a CI filter device. Let's try and connect it into the graph.
-            Log.Debug("Digital Devices: adding filter for device \"{0}\"", captureDevice.Name);
+            this.LogDebug("adding filter for device \"{0}\"", captureDevice.Name);
             IBaseFilter tmpCiFilter = null;
             hr = _graph.AddSourceFilterForMoniker(captureDevice.Mon, null, captureDevice.Name, out tmpCiFilter);
             if (hr != 0 || tmpCiFilter == null)
             {
-              Log.Debug("Digital Devices: failed to add the filter to the graph, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+              this.LogDebug("failed to add the filter to the graph, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
               continue;
             }
 
@@ -668,13 +668,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
             {
               if (tmpFilterInputPin == null || tmpFilterOutputPin == null)
               {
-                Log.Debug("Digital Devices: the filter doesn't have required pin(s)");
+                this.LogDebug("the filter doesn't have required pin(s)");
                 continue;
               }
               hr = _graph.Connect(lastFilterOutputPin, tmpFilterInputPin);
               if (hr != 0)
               {
-                Log.Debug("Digital Devices: failed to connect the filter into the graph, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+                this.LogDebug("failed to connect the filter into the graph, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
                 continue;
               }
             }
@@ -703,7 +703,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
 
             // Excellent - CI filter successfully added!
             _ciContexts.Add(new CiContext(tmpCiFilter, captureDevice));
-            Log.Debug("Digital Devices: total of {0} CI filter(s) in the graph", _ciContexts.Count);
+            this.LogDebug("total of {0} CI filter(s) in the graph", _ciContexts.Count);
             lastFilter = tmpCiFilter;
             addedFilter = true;
             _isCiSlotPresent = true;
@@ -712,7 +712,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
           // Insurance: we don't want to get stuck in an endless loop.
           if (!addedFilter)
           {
-            Log.Debug("Digital Devices: filter not added, exiting loop");
+            this.LogDebug("filter not added, exiting loop");
             break;
           }
         }
@@ -810,26 +810,26 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <returns><c>true</c> if the interface is successfully opened, otherwise <c>false</c></returns>
     public bool OpenInterface()
     {
-      Log.Debug("Digital Devices: open conditional access interface");
+      this.LogDebug("open conditional access interface");
 
       if (!_isDigitalDevices)
       {
-        Log.Debug("Digital Devices: device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return false;
       }
       if (_ciContexts == null)
       {
-        Log.Debug("Digital Devices: device filter(s) not added to the BDA filter graph");
+        this.LogDebug("device filter(s) not added to the BDA filter graph");
         return false;
       }
       if (!_isCiSlotPresent)
       {
-        Log.Debug("Digital Devices: CI slot not present");
+        this.LogDebug("CI slot not present");
         return false;
       }
       if (_mmiBuffer != IntPtr.Zero)
       {
-        Log.Debug("Digital Devices: interface is already open");
+        this.LogDebug("interface is already open");
         return false;
       }
 
@@ -839,17 +839,17 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       String menuTitle;
       for (byte i = 0; i < _ciContexts.Count; i++)
       {
-        Log.Debug("Digital Devices: slot {0} read CAM menu title", i);
+        this.LogDebug("slot {0} read CAM menu title", i);
         int hr = DigitalDevicesCiSlots.GetMenuTitle(_ciContexts[i].Filter, out menuTitle);
         if (hr == 0)
         {
-          Log.Debug("  title = {0}", menuTitle);
-          Log.Debug("Digital Devices: result = success");
+          this.LogDebug("  title = {0}", menuTitle);
+          this.LogDebug("result = success");
           _ciContexts[i].CamMenuTitle = "CI #" + (i + 1) + ": " + menuTitle;
         }
         else
         {
-          Log.Debug("Digital Devices: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+          this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
           _ciContexts[i].CamMenuTitle = "CI #" + (i + 1);
         }
       }
@@ -871,7 +871,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         {
           if (en.Current.Providers.Count != 0 || en.Current.DecryptLimit != 0)
           {
-            Log.Debug("Digital Devices: CI slots have configuration");
+            this.LogDebug("CI slots have configuration");
             _ciSlotsConfigured = true;
             break;
           }
@@ -880,7 +880,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
 
       StartMmiHandlerThread();
 
-      Log.Debug("Digital Devices: result = success");
+      this.LogDebug("result = success");
       return true;
     }
 
@@ -890,7 +890,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <returns><c>true</c> if the interface is successfully closed, otherwise <c>false</c></returns>
     public bool CloseInterface()
     {
-      Log.Debug("Digital Devices: close conditional access interface");
+      this.LogDebug("close conditional access interface");
       if (_mmiHandlerThread != null && _mmiHandlerThread.IsAlive)
       {
         _stopMmiHandlerThread = true;
@@ -908,7 +908,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
 
       // We reserve the removal of the filters from the graph for when the device is disposed, otherwise
       // the interface cannot easily be re-opened.
-      Log.Debug("Digital Devices: result = true");
+      this.LogDebug("result = true");
       return true;
     }
 
@@ -920,18 +920,18 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <returns><c>true</c> if the interface is successfully reopened, otherwise <c>false</c></returns>
     public bool ResetInterface(out bool rebuildGraph)
     {
-      Log.Debug("Digital Devices: reset conditional access interface");
+      this.LogDebug("reset conditional access interface");
 
       rebuildGraph = false;
 
       if (!_isDigitalDevices || _ciContexts == null)
       {
-        Log.Debug("Digital Devices: device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return false;
       }
       if (!_isCiSlotPresent)
       {
-        Log.Debug("Digital Devices: CI slot not present");
+        this.LogDebug("CI slot not present");
         return false;
       }
 
@@ -944,18 +944,18 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       int returnedByteCount = 0;
       for (int i = 0; i < _ciContexts.Count; i++)
       {
-        Log.Debug("Digital Devices: reset slot {0} \"{1}\"", i + 1, _ciContexts[i].FilterName);
+        this.LogDebug("reset slot {0} \"{1}\"", i + 1, _ciContexts[i].FilterName);
         KsMethod method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.Reset, (int)KsMethodFlag.Send);
         int hr = ((IKsControl)_ciContexts[i].Filter).KsMethod(ref method, KsMethodSize, IntPtr.Zero, 0, ref returnedByteCount);
         if (hr == 0)
         {
-          Log.Debug("Digital Devices: result = success");
+          this.LogDebug("result = success");
           // Reset the menu depth tracker.
           _ciContexts[i].CamMenuId = 0;
         }
         else
         {
-          Log.Debug("Digital Devices: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+          this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
           success = false;
         }
       }
@@ -968,7 +968,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <returns><c>true</c> if the interface is ready, otherwise <c>false</c></returns>
     public bool IsInterfaceReady()
     {
-      Log.Debug("Digital Devices: is conditional access interface ready");
+      this.LogDebug("is conditional access interface ready");
 
       // Unfortunately We can't directly determine if the CAM(s) are ready. We could
       // attempt to read the CAM name and assume that the CAM is ready if that operation
@@ -976,7 +976,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       // for the impending operation. We also can't expect that all CI slots would
       // be populated at all times. Therefore we simply return true if at least one
       // CI filter has been added to the graph.
-      Log.Debug("Digital Devices: result = {0}", _isCiSlotPresent);
+      this.LogDebug("result = {0}", _isCiSlotPresent);
       return _isCiSlotPresent;
     }
 
@@ -993,27 +993,27 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <returns><c>true</c> if the command is successfully sent, otherwise <c>false</c></returns>
     public bool SendCommand(IChannel channel, CaPmtListManagementAction listAction, CaPmtCommand command, Pmt pmt, Cat cat)
     {
-      Log.Debug("Digital Devices: send conditional access command, list action = {0}, command = {1}", listAction, command);
+      this.LogDebug("send conditional access command, list action = {0}, command = {1}", listAction, command);
 
       if (!_isDigitalDevices)
       {
-        Log.Debug("Digital Devices: interface not supported");
+        this.LogDebug("interface not supported");
         return false;
       }
       if (!_isCiSlotPresent || _ciContexts == null || _ciContexts.Count == 0)
       {
-        Log.Debug("Digital Devices: CI slot not present");
+        this.LogDebug("CI slot not present");
         // If there are no CI slots then there is no point retrying.
         return true;
       }
       if (command == CaPmtCommand.OkMmi || command == CaPmtCommand.Query)
       {
-        Log.Debug("Digital Devices: command type {0} is not supported", command);
+        this.LogDebug("command type {0} is not supported", command);
         return false;
       }
       if (pmt == null)
       {
-        Log.Debug("Digital Devices: PMT not supplied");
+        this.LogDebug("PMT not supplied");
         return true;
       }
 
@@ -1028,7 +1028,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
             en.Current.CurrentTunerSet.Remove(_tunerDevicePath);
           }
         }
-        Log.Debug("Digital Devices: result = success");
+        this.LogDebug("result = success");
         return true;
       }
 
@@ -1039,13 +1039,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       {
         provider = dvbChannel.Provider;
       }
-      Log.Debug("Digital Devices: service ID = {0} (0x{0:x}), provider = {1}", serviceId, provider);
+      this.LogDebug("service ID = {0} (0x{0:x}), provider = {1}", serviceId, provider);
 
       // Find the CI slot (context) that we should use.
       int context = -1;
       if (_ciContexts.Count == 1 || !_ciSlotsConfigured)
       {
-        Log.Debug("Digital Devices: chaining restrictions not applied");
+        this.LogDebug("chaining restrictions not applied");
         context = 0;
         serviceId |= (uint)DecryptChainingRestriction.None;
 
@@ -1064,12 +1064,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         // In this case we try to select a specific slot. If the channel provider is not set, we
         // look for a slot that has the provider not set. Otherwise look for a slot that can decrypt
         // services for the provider. The slot must also have decrypt limit "headroom".
-        Log.Debug("Digital Devices: chaining restrictions applied");
+        this.LogDebug("chaining restrictions applied");
         serviceId |= (uint)DecryptChainingRestriction.NoBackwardChaining | (uint)DecryptChainingRestriction.NoForwardChaining;
         // For each slot available to this tuner...
         for (int i = 0; i < _ciContexts.Count; i++)
         {
-          Log.Debug("  {0}...", _ciContexts[i].CamMenuTitle);
+          this.LogDebug("  {0}...", _ciContexts[i].CamMenuTitle);
           if (_ciSlotSettings.ContainsKey(_ciContexts[i].Device.DevicePath))
           {
             lock (_ciSlotSettings)
@@ -1077,7 +1077,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
               DigitalDevicesCiSlot globalSlot = _ciSlotSettings[_ciContexts[i].Device.DevicePath];
               if ((provider.Equals(String.Empty) && globalSlot.Providers.Count == 0) || globalSlot.Providers.Contains(provider))
               {
-                Log.Debug("    provider supported, decrypt limit status = {0}/{1}", globalSlot.CurrentTunerSet.Count, globalSlot.DecryptLimit);
+                this.LogDebug("    provider supported, decrypt limit status = {0}/{1}", globalSlot.CurrentTunerSet.Count, globalSlot.DecryptLimit);
                 if (globalSlot.DecryptLimit == 0 || globalSlot.CurrentTunerSet.Count < globalSlot.DecryptLimit)
                 {
                   context = i;
@@ -1090,7 +1090,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
           else
           {
             // If we don't have configuration for one of the slots then we'll use it blindly.
-            Log.Debug("    using slot with missing configuration");
+            this.LogDebug("    using slot with missing configuration");
             context = i;
             break;
           }
@@ -1098,7 +1098,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       }
       if (context == -1)
       {
-        Log.Debug("Digital Devices: no slots available");
+        this.LogDebug("no slots available");
         return true;   // Don't bother retrying.
       }
 
@@ -1113,11 +1113,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       Marshal.FreeCoTaskMem(buffer);
       if (hr == 0)
       {
-        Log.Debug("Digital Devices: result = success");
+        this.LogDebug("result = success");
         return true;
       }
 
-      Log.Debug("Digital Devices: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 
@@ -1148,16 +1148,16 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <returns><c>true</c> if the request is successfully passed to and processed by the CAM, otherwise <c>false</c></returns>
     public bool EnterCIMenu()
     {
-      Log.Debug("Digital Devices: enter menu");
+      this.LogDebug("enter menu");
 
       if (!_isDigitalDevices)
       {
-        Log.Debug("Digital Devices: interface not supported");
+        this.LogDebug("interface not supported");
         return false;
       }
       if (!_isCiSlotPresent || _ciContexts == null || _ciContexts.Count == 0)
       {
-        Log.Debug("Digital Devices: CI slot not present");
+        this.LogDebug("CI slot not present");
         // If there are no CI slots then there is no point retrying.
         return true;
       }
@@ -1165,17 +1165,17 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       // If this tuner is only configured with one CI slot then enter the menu directly.
       if (_ciContexts.Count == 1)
       {
-        Log.Debug("Digital Devices: there is only one CI slot present => entering menu directly");
+        this.LogDebug("there is only one CI slot present => entering menu directly");
         return EnterMenu(0);
       }
 
       // If there are multiple CI filters in the graph then we present the user with a
       // "fake" menu that allows them to choose which CAM they are interested in. The
       // choices are the root menu names for each of the CAMs.
-      Log.Debug("Digital Devices: there are {0} CI slots present => opening root menu", _ciContexts.Count);
+      this.LogDebug("there are {0} CI slots present => opening root menu", _ciContexts.Count);
       if (_ciMenuCallbacks == null)
       {
-        Log.Debug("Digital Devices: menu callbacks are not set");
+        this.LogDebug("menu callbacks are not set");
         return false;
       }
 
@@ -1185,15 +1185,15 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         for (int i = 0; i < _ciContexts.Count; i++)
         {
           _ciMenuCallbacks.OnCiMenuChoice(i, _ciContexts[i].CamMenuTitle);
-          Log.Debug("  {0} = {1}", i + 1, _ciContexts[i].CamMenuTitle);
+          this.LogDebug("  {0} = {1}", i + 1, _ciContexts[i].CamMenuTitle);
         }
         _menuContext = -1;  // Reset the CAM context - the user will choose which CAM to use.
-        Log.Debug("Digital Devices: result = success");
+        this.LogDebug("result = success");
         return true;
       }
       catch (Exception ex)
       {
-        Log.Debug("Digital Devices: enter menu exception\r\n{0}", ex.ToString());
+        this.LogDebug("enter menu exception\r\n{0}", ex.ToString());
       }
       return false;
     }
@@ -1205,16 +1205,16 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <returns><c>true</c> if the request is successfully passed to and processed by the CAM, otherwise <c>false</c></returns>
     private bool EnterMenu(int slot)
     {
-      Log.Debug("Digital Devices: slot {0} enter menu", slot + 1);
+      this.LogDebug("slot {0} enter menu", slot + 1);
 
       if (!_isDigitalDevices)
       {
-        Log.Debug("Digital Devices: interface not supported");
+        this.LogDebug("interface not supported");
         return false;
       }
       if (!_isCiSlotPresent || _ciContexts == null || _menuContext >= _ciContexts.Count)
       {
-        Log.Debug("Digital Devices: CI slot not present");
+        this.LogDebug("CI slot not present");
         // If there are no CI slots then there is no point retrying.
         return true;
       }
@@ -1224,7 +1224,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       int hr = ((IKsControl)_ciContexts[slot].Filter).KsMethod(ref method, KsMethodSize, IntPtr.Zero, 0, ref returnedByteCount);
       if (hr == 0)
       {
-        Log.Debug("Digital Devices: result = success");
+        this.LogDebug("result = success");
         // Future menu interactions will be passed to this CI slot/CAM.
         _menuContext = slot;
         // Reset the menu depth tracker.
@@ -1232,7 +1232,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         return true;
       }
 
-      Log.Debug("Digital Devices: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 
@@ -1242,16 +1242,16 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <returns><c>true</c> if the request is successfully passed to and processed by the CAM, otherwise <c>false</c></returns>
     public bool CloseCIMenu()
     {
-      Log.Debug("Digital Devices: slot {0} close menu", _menuContext + 1);
+      this.LogDebug("slot {0} close menu", _menuContext + 1);
 
       if (!_isDigitalDevices)
       {
-        Log.Debug("Digital Devices: interface not supported");
+        this.LogDebug("interface not supported");
         return false;
       }
       if (!_isCiSlotPresent || _ciContexts == null || _menuContext >= _ciContexts.Count)
       {
-        Log.Debug("Digital Devices: CI slot not present");
+        this.LogDebug("CI slot not present");
         // If there are no CI slots then there is no point retrying.
         return true;
       }
@@ -1261,11 +1261,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       int hr = ((IKsControl)_ciContexts[_menuContext].Filter).KsMethod(ref method, KsMethodSize, IntPtr.Zero, 0, ref returnedByteCount);
       if (hr == 0)
       {
-        Log.WriteFile("Digital Devices: result = success");
+        this.LogInfo("result = success");
         return true;
       }
 
-      Log.Debug("Digital Devices: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 
@@ -1282,7 +1282,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       {
         if (choice == 0)
         {
-          Log.Debug("Digital Devices: close root menu");
+          this.LogDebug("close root menu");
           try
           {
             if (_ciMenuCallbacks != null)
@@ -1291,13 +1291,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
             }
             else
             {
-              Log.Debug("Digital Devices: menu callbacks are not set");
+              this.LogDebug("menu callbacks are not set");
             }
             return true;
           }
           catch (Exception ex)
           {
-            Log.Debug("Digital Devices: select menu exception\r\n{0}", ex.ToString());
+            this.LogDebug("select menu exception\r\n{0}", ex.ToString());
           }
         }
         else
@@ -1306,16 +1306,16 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         }
       }
 
-      Log.Debug("Digital Devices: slot {0} select menu entry, choice = {1}", _menuContext + 1, choice);
+      this.LogDebug("slot {0} select menu entry, choice = {1}", _menuContext + 1, choice);
 
       if (!_isDigitalDevices)
       {
-        Log.Debug("Digital Devices: interface not supported");
+        this.LogDebug("interface not supported");
         return false;
       }
       if (!_isCiSlotPresent || _ciContexts == null || _menuContext >= _ciContexts.Count)
       {
-        Log.Debug("Digital Devices: CI slot not present");
+        this.LogDebug("CI slot not present");
         // If there are no CI slots then there is no point retrying.
         return true;
       }
@@ -1330,11 +1330,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       int hr = ((IKsControl)_ciContexts[_menuContext].Filter).KsMethod(ref method, KsMethodSize, _mmiBuffer, MenuChoiceSize, ref returnedByteCount);
       if (hr == 0)
       {
-        Log.WriteFile("Digital Devices: result = success");
+        this.LogInfo("result = success");
         return true;
       }
 
-      Log.Debug("Digital Devices: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 
@@ -1350,16 +1350,16 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       {
         answer = String.Empty;
       }
-      Log.Debug("Digital Devices: slot {0} send menu answer, answer = {1}, cancel = {2}", _menuContext + 1, answer, cancel);
+      this.LogDebug("slot {0} send menu answer, answer = {1}, cancel = {2}", _menuContext + 1, answer, cancel);
 
       if (!_isDigitalDevices)
       {
-        Log.Debug("Digital Devices: interface not supported");
+        this.LogDebug("interface not supported");
         return false;
       }
       if (!_isCiSlotPresent || _ciContexts == null || _menuContext >= _ciContexts.Count)
       {
-        Log.Debug("Digital Devices: CI slot not present");
+        this.LogDebug("CI slot not present");
         // If there are no CI slots then there is no point retrying.
         return true;
       }
@@ -1382,11 +1382,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       int hr = ((IKsControl)_ciContexts[_menuContext].Filter).KsMethod(ref method, KsMethodSize, _mmiBuffer, bufferSize, ref returnedByteCount);
       if (hr == 0)
       {
-        Log.WriteFile("Digital Devices: result = success");
+        this.LogInfo("result = success");
         return true;
       }
 
-      Log.Debug("Digital Devices: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 
@@ -1424,21 +1424,21 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <returns><c>true</c> if the command is sent successfully, otherwise <c>false</c></returns>
     public bool SendCommand(byte[] command)
     {
-      Log.Debug("Digital Devices: send DiSEqC command");
+      this.LogDebug("send DiSEqC command");
 
       if (!_isDigitalDevices || _propertySet == null || _deviceControl == null)
       {
-        Log.Debug("Digital Devices: device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return false;
       }
       if (command == null || command.Length == 0)
       {
-        Log.Debug("Digital Devices: command not supplied");
+        this.LogDebug("command not supplied");
         return true;
       }
       if (command.Length > MaxDiseqcMessageLength)
       {
-        Log.Debug("Digital Devices: command too long, length = {0}", command.Length);
+        this.LogDebug("command too long, length = {0}", command.Length);
         return false;
       }
 
@@ -1448,7 +1448,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       int hr = _deviceControl.StartChanges();
       if (hr != 0)
       {
-        Log.Debug("Digital Devices: failed to start device control changes, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("failed to start device control changes, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         success = false;
       }
 
@@ -1457,7 +1457,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       hr = _propertySet.Set(typeof(IBDA_DiseqCommand).GUID, (int)BdaDiseqcProperty.Enable, _instanceBuffer, InstanceSize, _paramBuffer, 4);
       if (hr != 0)
       {
-        Log.Debug("Digital Devices: failed to enable DiSEqC commands, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("failed to enable DiSEqC commands, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         success = false;
       }
 
@@ -1471,7 +1471,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       hr = _propertySet.Set(typeof(IBDA_DiseqCommand).GUID, (int)BdaDiseqcProperty.Send, _instanceBuffer, InstanceSize, _paramBuffer, BdaDiseqcMessageSize);
       if (hr != 0)
       {
-        Log.Debug("Digital Devices: failed to send command, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("failed to send command, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         success = false;
       }
 
@@ -1479,17 +1479,17 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       hr = _deviceControl.CheckChanges();
       if (hr != 0)
       {
-        Log.Debug("Digital Devices: failed to check device control changes, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("failed to check device control changes, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         success = false;
       }
       hr = _deviceControl.CommitChanges();
       if (hr != 0)
       {
-        Log.Debug("Digital Devices: failed to commit device control changes, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("failed to commit device control changes, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         success = false;
       }
 
-      Log.Debug("Digital Devices: result = {0}", success);
+      this.LogDebug("result = {0}", success);
       return success;
     }
 
@@ -1501,12 +1501,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <returns><c>true</c> if the response is read successfully, otherwise <c>false</c></returns>
     public bool ReadResponse(out byte[] response)
     {
-      Log.Debug("Digital Devices: read DiSEqC response");
+      this.LogDebug("read DiSEqC response");
       response = null;
 
       if (!_isDigitalDevices || _propertySet == null)
       {
-        Log.Debug("Digital Devices: device not initialised or interface not supported");
+        this.LogDebug("device not initialised or interface not supported");
         return false;
       }
 
@@ -1522,16 +1522,16 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         BdaDiseqcMessage message = (BdaDiseqcMessage)Marshal.PtrToStructure(_paramBuffer, typeof(BdaDiseqcMessage));
         if (message.PacketLength > MaxDiseqcMessageLength)
         {
-          Log.Debug("Digital Devices: response length is out of bounds, response length = {0}", message.PacketLength);
+          this.LogDebug("response length is out of bounds, response length = {0}", message.PacketLength);
           return false;
         }
-        Log.Debug("Digital Devices: result = success");
+        this.LogDebug("result = success");
         response = new byte[message.PacketLength];
         Buffer.BlockCopy(message.PacketData, 0, response, 0, (int)message.PacketLength);
         return true;
       }
 
-      Log.Debug("Digital Devices: result = failure, response length = {0}, hr = 0x{1:x} ({2})", returnedByteCount, hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("result = failure, response length = {0}, hr = 0x{1:x} ({2})", returnedByteCount, hr, HResult.GetDXErrorString(hr));
       return false;
     }
 
