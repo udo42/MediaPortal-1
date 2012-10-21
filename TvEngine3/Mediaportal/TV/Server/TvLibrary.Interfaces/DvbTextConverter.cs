@@ -22,7 +22,7 @@ using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.TVLibrary.Interfaces
 {
@@ -31,11 +31,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
   /// </summary>
   public class DvbTextConverter
   {
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof (DvbTextConverter)); }
-    }
     /// <summary>
     /// Convert DVB string to Unicode according to provided language
     /// </summary>
@@ -174,7 +169,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "Error while converting dvb text");        
+        Log.WriteFile("Error while converting dvb text", ex);
       }
       byte[] text = new byte[len - pos];
       for (int i = 0; i < len - pos; i++)

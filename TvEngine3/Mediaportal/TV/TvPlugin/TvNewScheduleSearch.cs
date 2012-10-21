@@ -21,7 +21,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using MediaPortal.Common.Utils;
 using MediaPortal.GUI.Library;
 using MediaPortal.Util;
 using Mediaportal.TV.Server.TVControl;
@@ -36,15 +35,6 @@ namespace Mediaportal.TV.TvPlugin
 {
   public class TvNewScheduleSearch : GUIInternalWindow
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-      get { return LogHelper.GetLogger(typeof(TvNewScheduleSearch)); }
-    }
-
-    #endregion
-
     #region enums
 
     public enum SearchType : int
@@ -73,7 +63,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public TvNewScheduleSearch()
     {
-      Log.InfoFormat("newsearch ctor");
+      Log.Info("newsearch ctor");
       GetID = (int)Window.WINDOW_TV_SEARCH;
     }
 
@@ -86,10 +76,10 @@ namespace Mediaportal.TV.TvPlugin
 
     public override bool Init()
     {
-      Log.InfoFormat("newsearch init");
+      Log.Info("newsearch init");
       bool bResult = Load(GUIGraphicsContext.Skin + @"\mytvschedulerserverSearch.xml");
 
-      Log.InfoFormat("newsearch init result:{0}", bResult);
+      Log.Info("newsearch init result:{0}", bResult);
       return bResult;
     }
 
@@ -122,13 +112,13 @@ namespace Mediaportal.TV.TvPlugin
     protected override void OnPageLoad()
     {
       _searchKeyword = string.Empty;
-      Log.InfoFormat("newsearch OnPageLoad");
+      Log.Info("newsearch OnPageLoad");
       base.OnPageLoad();
     }
 
     protected override void OnPageDestroy(int new_windowId)
     {
-      Log.InfoFormat("newsearch OnPageDestroy");
+      Log.Info("newsearch OnPageDestroy");
       base.OnPageDestroy(new_windowId);
     }
 
@@ -236,7 +226,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private void Search()
     {
-      Log.InfoFormat("newsearch Search:{0} {1}", _searchKeyword, SearchFor);
+      Log.Info("newsearch Search:{0} {1}", _searchKeyword, SearchFor);
       GUIControl.ClearControl(GetID, listResults.GetID);
       IList<Program> listPrograms = null;
       StringComparisonEnum stringComparison = StringComparisonEnum.StartsWith;
@@ -266,7 +256,7 @@ namespace Mediaportal.TV.TvPlugin
       {
         return;
       }
-      Log.InfoFormat("newsearch found:{0} progs", listPrograms.Count);
+      Log.Info("newsearch found:{0} progs", listPrograms.Count);
       foreach (Program program in listPrograms)
       {
         GUIListItem item = new GUIListItem();

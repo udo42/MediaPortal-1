@@ -20,7 +20,7 @@
 using System.Collections.Generic;
 using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Mediaportal.TV.Server.TVLibrary.Scheduler;
 using Mediaportal.TV.Server.TVLibrary.Services;
 using Mediaportal.TV.Server.TVService.Interfaces.CardHandler;
@@ -33,15 +33,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
 
   public class AdvancedCardAllocationTicket : AdvancedCardAllocation
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(AdvancedCardAllocationTicket)); }
-    }
-
-    #endregion
-
     private readonly IDictionary<int, ICardTuneReservationTicket> _tickets;
 
     public AdvancedCardAllocationTicket(IEnumerable<ICardTuneReservationTicket> tickets)     
@@ -67,7 +58,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
         if (ServiceManager.Instance.InternalControllerService != null)
         {
           var card = ServiceManager.Instance.InternalControllerService.CardCollection[cardDetail.Card.IdCard];
-          Log.InfoFormat("Controller:    card:{0} type:{1} users: {2}", cardDetail.Card.IdCard, card.Type, cardDetail.NumberOfOtherUsers);              
+          Log.Info("Controller:    card:{0} type:{1} users: {2}", cardDetail.Card.IdCard, card.Type, cardDetail.NumberOfOtherUsers);              
         }
       }
     }

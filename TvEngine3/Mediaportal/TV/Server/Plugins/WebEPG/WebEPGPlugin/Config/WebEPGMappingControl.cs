@@ -29,7 +29,7 @@ using Mediaportal.TV.Server.TVControl.ServiceAgents;
 using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 using System.Globalization;
 using WebEPG.config.WebEPG;
@@ -42,15 +42,6 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
 
   public partial class WebEPGMappingControl : UserControl
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(WebEPGMappingControl)); }
-    }
-
-    #endregion
-
     private class CBChannelGroup
     {
       public string groupName;
@@ -143,22 +134,22 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
       }
       catch (Exception e)
       {
-        Log.ErrorFormat("Failed to load groups {0}", e.Message);
+        Log.Error("Failed to load groups {0}", e.Message);
       }
     }
 
     public void DoImportChannels()
     {
-      Log.InfoFormat("WebEPG Config: Button: Import");
+      Log.Info("WebEPG Config: Button: Import");
       try
       {
-        Log.InfoFormat("WebEPG Config: Importing from TV Server Database");
+        Log.Info("WebEPG Config: Importing from TV Server Database");
         getTvServerChannels();
         RedrawList(null);
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "WebEPG Config: Import failed");
+        Log.Error("WebEPG Config: Import failed - {0}", ex.Message);
         MessageBox.Show("An error occured while trying to import channels. See log for more details.", "Import Error",
                         MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
       }
@@ -413,7 +404,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
         if (info != null)
         {
           tbChannelName.Text = info.FullName;
-          Log.InfoFormat("WebEPG Config: Selection: {0}", info.FullName);
+          Log.Info("WebEPG Config: Selection: {0}", info.FullName);
 
           GrabberConfigInfo gInfo = (GrabberConfigInfo)info.GrabberList[grabberId];
           if (gInfo != null)

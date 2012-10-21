@@ -35,7 +35,7 @@ using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.SetupTV
 {
@@ -44,15 +44,6 @@ namespace Mediaportal.TV.Server.SetupTV
   /// </summary>
   public class SetupTvSettingsForm : SettingsForm
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(SetupTvSettingsForm)); }
-    }
-
-    #endregion
-
     private readonly PluginLoaderSetupTv _pluginLoader = new PluginLoaderSetupTv();
     private Sections.Plugins pluginsRoot;
     private Servers servers;
@@ -76,7 +67,8 @@ namespace Mediaportal.TV.Server.SetupTV
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "Failed to startup cause of exception");        
+        Log.Error("Failed to startup cause of exception");
+        Log.Write(ex);
       }
     }
 
@@ -99,8 +91,8 @@ namespace Mediaportal.TV.Server.SetupTV
       catch (Exception ex)
       {
         MessageBox.Show("Failed to open WCF connection to server");
-        Log.ErrorFormat("Unable to get list of servers");
-        Log.ErrorFormat(ex, "");
+        Log.Error("Unable to get list of servers");
+        Log.Write(ex);
       }
 
       Project project = new Project();
@@ -136,7 +128,7 @@ namespace Mediaportal.TV.Server.SetupTV
                                                   MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
               if (dlg == DialogResult.Yes)
               {
-                Log.InfoFormat("Controller: server {0} changed to {1}", RemoteControl.HostName, localHostname);                      
+                Log.Info("Controller: server {0} changed to {1}", RemoteControl.HostName, localHostname);                      
                 ServiceAgents.Instance.SettingServiceAgent.SaveSetting("hostname", localHostname);
                 if (!ServiceHelper.IsRestrictedMode)
                 {
@@ -152,8 +144,8 @@ namespace Mediaportal.TV.Server.SetupTV
             }
             else
             {
-              Log.ErrorFormat("Cannot connect to server {0}", RemoteControl.HostName);
-              Log.ErrorFormat(ex, "");
+              Log.Error("Cannot connect to server {0}", RemoteControl.HostName);
+              Log.Write(ex);
               DialogResult dlg = MessageBox.Show("Unable to connect to <" + RemoteControl.HostName + ">.\n" +
                                                   "Please check the TV Server logs for details.\n\n" +
                                                   "Setup will now close.");
@@ -551,7 +543,7 @@ namespace Mediaportal.TV.Server.SetupTV
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "");
+        Log.Write(ex);
       }
       finally
       {
@@ -701,7 +693,7 @@ namespace Mediaportal.TV.Server.SetupTV
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "");
+        Log.Write(ex);
       }
     }
 

@@ -20,7 +20,6 @@
 
 using System;
 using System.Runtime.Serialization;
-using MediaPortal.Common.Utils;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
 
@@ -35,7 +34,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
   [KnownType(typeof(DVBSChannel))]
   [KnownType(typeof(DVBIPChannel))]
   [KnownType(typeof(ATSCChannel))]
-    public abstract class DVBBaseChannel : IChannel
+  public abstract class DVBBaseChannel : IChannel
   {
     #region variables
 

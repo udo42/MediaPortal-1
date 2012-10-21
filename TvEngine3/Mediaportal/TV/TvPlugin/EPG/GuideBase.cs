@@ -25,7 +25,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows.Media.Animation;
-using MediaPortal.Common.Utils;
 using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
 using MediaPortal.Profile;
@@ -43,16 +42,7 @@ using Action = MediaPortal.GUI.Library.Action;
 namespace Mediaportal.TV.TvPlugin.EPG
 {
   public abstract class GuideBase : GUIDialogWindow
-  {
-    #region logging
-
-    private static ILogManager Log
-    {
-      get { return LogHelper.GetLogger(typeof(GuideBase)); }
-    }
-
-    #endregion
-
+  {    
     #region consts
 
     protected int _previousChannelCount = 0;
@@ -3565,7 +3555,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
       }
       catch (Exception ex)
       {
-        Log.DebugFormat("GuideBase: {0}", ex);
+        Log.Debug("GuideBase: {0}", ex);
       }
       return base.OnMessage(message);
     }

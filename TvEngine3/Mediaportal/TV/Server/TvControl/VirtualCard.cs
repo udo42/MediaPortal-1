@@ -29,7 +29,7 @@ using Mediaportal.TV.Server.TVControl.Interfaces.Services;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Mediaportal.TV.Server.TVService.Interfaces;
 using Mediaportal.TV.Server.TVService.Interfaces.Enums;
 using Mediaportal.TV.Server.TVService.Interfaces.Services;
@@ -45,11 +45,6 @@ namespace Mediaportal.TV.Server.TVControl
   [DataContract]
   public class VirtualCard : IVirtualCard
   {
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(VirtualCard)); }
-    }
     #region variables
 
     [DataMember]
@@ -1419,19 +1414,19 @@ namespace Mediaportal.TV.Server.TVControl
     /// <returns></returns>
     public bool SetCiMenuHandler(ICiMenuCallbacks CallbackHandler)
     {
-      Log.DebugFormat("VC: SetCiMenuHandler");
+      Log.Debug("VC: SetCiMenuHandler");
       try
       {
         if (User.CardId < 0 || !IsOwner())
         {
           return false;
         }
-        Log.DebugFormat("VC: SetCiMenuHandler card: {0}, {1}", User.CardId, CallbackHandler);
+        Log.Debug("VC: SetCiMenuHandler card: {0}, {1}", User.CardId, CallbackHandler);
         return GlobalServiceProvider.Get<IControllerService>().SetCiMenuHandler(User.CardId, CallbackHandler);
       }
-      catch (Exception ex)
+      catch (Exception Ex)
       {
-        Log.ErrorFormat(ex, "Exception");
+        Log.Error("Exception: {0}", Ex.ToString());
         //HandleFailure();
       }
       return false;

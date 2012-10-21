@@ -33,21 +33,12 @@ using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.SetupTV.Sections
 {  
   public partial class ChannelsInGroupControl : UserControl
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(ChannelsInGroupControl)); }
-    }
-
-    #endregion
-
     private string _allChannelsGroupName = TvConstants.TvGroupNames.AllChannels;
     private MediaTypeEnum _mediaTypeEnum = MediaTypeEnum.TV;
     private readonly MPListViewStringColumnSorter lvwColumnSorter;
@@ -135,7 +126,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
       catch (Exception exp)
       {
-        Log.ErrorFormat("OnActivated error: {0}", exp.Message);
+        Log.Error("OnActivated error: {0}", exp.Message);
       }
       finally
       {

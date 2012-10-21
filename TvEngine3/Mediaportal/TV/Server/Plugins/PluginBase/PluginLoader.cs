@@ -25,15 +25,14 @@ using Castle.Windsor;
 using Castle.Windsor.Configuration.Interpreters;
 using MediaPortal.Common.Utils;
 using Mediaportal.TV.Server.Plugins.Base.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.Plugins.Base
 {
-  public class PluginLoader : LogProvider
+  public class PluginLoader
   {
     private List<ITvServerPlugin> _plugins = new List<ITvServerPlugin>();
     private readonly List<Type> _incompatiblePlugins = new List<Type>();
-    
 
     /// <summary>
     /// returns a list of all plugins loaded.
@@ -68,9 +67,9 @@ namespace Mediaportal.TV.Server.Plugins.Base
 
       try
       {
-        
-        var assemblyFilter = new AssemblyFilter("plugins");
-        WindsorService.Register(
+        var container = new WindsorContainer(new XmlInterpreter());        
+        var assemblyFilter = new AssemblyFilter("plugins");                
+        container.Register(
         AllTypes.FromAssemblyInDirectory(assemblyFilter).                        
             BasedOn<ITvServerPlugin>().
             If(t => IsPluginCompatible(t)).            
@@ -78,17 +77,17 @@ namespace Mediaportal.TV.Server.Plugins.Base
             LifestyleSingleton()
             );
 
-        _plugins = new List<ITvServerPlugin>(WindsorService.ResolveAll<ITvServerPlugin>());
+        _plugins = new List<ITvServerPlugin>(container.ResolveAll<ITvServerPlugin>());
 
         foreach (ITvServerPlugin plugin in _plugins)
         {
-          Log.DebugFormat("PluginManager: Loaded {0} version:{1} author:{2}", plugin.Name, plugin.Version,
+          Log.WriteFile("PluginManager: Loaded {0} version:{1} author:{2}", plugin.Name, plugin.Version,
                         plugin.Author);
         }      
       }
       catch (Exception ex)
       {
-        Log.DebugFormat("PluginManager: Error while loading dll's.", ex);
+        Log.WriteFile("PluginManager: Error while loading dll's.", ex);
       }
     }
 
@@ -98,7 +97,7 @@ namespace Mediaportal.TV.Server.Plugins.Base
       if (!isPluginCompatible)
       {
         _incompatiblePlugins.Add(type);
-        Log.DebugFormat("PluginManager: {0} is incompatible with the current tvserver version and won't be loaded!", type.FullName);
+        Log.WriteFile("PluginManager: {0} is incompatible with the current tvserver version and won't be loaded!", type.FullName);
       }
       return isPluginCompatible;
     }    

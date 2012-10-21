@@ -24,7 +24,7 @@ using System.Text;
 using System.Xml;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.GraphComponents;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog
 {
@@ -33,12 +33,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog
   /// </summary>
   public class Configuration
   {
-
-      private static ILogManager Log
-      {
-          get { return LogHelper.GetLogger(typeof (Configuration)); }
-      }
-
     #region variables
 
     private string _name;
@@ -257,7 +251,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog
         }
         catch
         {
-          Log.DebugFormat("Error while reading analog card configuration file");
+          Log.WriteFile("Error while reading analog card configuration file");
           _configuration = new Configuration();
           _configuration.Name = name;
           _configuration.DevicePath = devicePath;

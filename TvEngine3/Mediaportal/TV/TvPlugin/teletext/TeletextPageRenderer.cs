@@ -22,21 +22,11 @@ using System;
 using System.Drawing;
 using System.Globalization;
 using System.Text;
-using MediaPortal.Common.Utils;
 
 namespace Mediaportal.TV.TvPlugin.Teletext
 {
   public class TeletextPageRenderer
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-      get { return LogHelper.GetLogger(typeof(TeletextPageRenderer)); }
-    }
-
-    #endregion
-
     #region constructors
 
     public TeletextPageRenderer()
@@ -760,9 +750,9 @@ namespace Mediaportal.TV.TvPlugin.Teletext
       bool isSubtitlePage = Hamming.IsSubtitleBitSet(0, ref byPage);
       bool isNewsflash = Hamming.IsNewsflash(0, ref byPage);
       isBoxed = isNewsflash | isSubtitlePage;
-      Log.DebugFormat("Newsflash: " + isNewsflash);
-      Log.DebugFormat("Subtitle: " + isSubtitlePage);
-      Log.DebugFormat("Boxed: " + isBoxed);
+      MediaPortal.GUI.Library.Log.Debug("Newsflash: " + isNewsflash);
+      MediaPortal.GUI.Library.Log.Debug("Subtitle: " + isSubtitlePage);
+      MediaPortal.GUI.Library.Log.Debug("Boxed: " + isBoxed);
 
       // Determine if the header or toptext line sould be displayed.
       bool displayHeaderAndTopText = !_fullscreenMode || !isBoxed || (isBoxed && _selectedPageText.IndexOf("-") != -1)
@@ -1149,7 +1139,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
         _fontTeletext = new Font("Lucida Console", fntSize, FontStyle.Bold, GraphicsUnit.Pixel);
         fntHeight = _fontTeletext.GetHeight(renderGraphics);
       }
-      Log.DebugFormat("FONT SIZE OF TELETEXT: " + fntSize);
+      MediaPortal.GUI.Library.Log.Debug("FONT SIZE OF TELETEXT: " + fntSize);
 
       try
       {

@@ -20,7 +20,7 @@
 
 using System.Collections;
 using System.IO;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using WebEPG.MPCode;
 
 namespace WebEPG.config
@@ -30,15 +30,6 @@ namespace WebEPG.config
   /// </summary>
   public class EPGConfig
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(EPGConfig)); }
-    }
-
-    #endregion
-
     #region Variables
 
     private ArrayList _ConfigList;
@@ -150,7 +141,7 @@ namespace WebEPG.config
         return;
       }
 
-      Log.InfoFormat("WebEPG Config: Loading Existing WebEPG.xml");
+      Log.Info("WebEPG Config: Loading Existing WebEPG.xml");
       using (var xmlreader = new Xml(configFile)) 
       {
         _MaxGrab = xmlreader.GetValueAsInt("General", "MaxDays", 1);

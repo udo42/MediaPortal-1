@@ -2,22 +2,13 @@ using System;
 using System.Collections.Generic;
 using Mediaportal.TV.Server.TVControl.Events;
 using Mediaportal.TV.Server.TVControl.Interfaces.Services;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Mediaportal.TV.Server.TVLibrary.Services;
 
 namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
 {
   public class TvServerEventDispatcher : EventDispatcher
-  {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(TvServerEventDispatcher)); }
-    }
-
-    #endregion
-
+  {            
     private void OnTvServerEvent(object sender, EventArgs eventArgs)
     {
       var tvEvent = eventArgs as TvServerEventArgs;
@@ -59,12 +50,12 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
           }
           else
           {
-            Log.DebugFormat("TvServerEventDispatcher.DoOnTvServerEventAsynch : tvserver event received but no users found...");
+            Log.Debug("TvServerEventDispatcher.DoOnTvServerEventAsynch : tvserver event received but no users found...");
           }
         }
         catch (Exception ex)
         {
-          Log.DebugFormat("DoOnTvServerEventAsynch failed : {0}", ex);        
+          Log.Debug("DoOnTvServerEventAsynch failed : {0}", ex);        
         }            
       }
     }
@@ -73,14 +64,14 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
 
     public override void Start()
     {
-      Log.InfoFormat("TvServerEventDispatcher: start");
+      Log.Info("TvServerEventDispatcher: start");
       ServiceManager.Instance.InternalControllerService.OnTvServerEvent -= new TvServerEventHandler(OnTvServerEvent);
       ServiceManager.Instance.InternalControllerService.OnTvServerEvent += new TvServerEventHandler(OnTvServerEvent);
     }
 
     public override void Stop()
     {
-      Log.InfoFormat("TvServerEventDispatcher: stop");
+      Log.Info("TvServerEventDispatcher: stop");
       ServiceManager.Instance.InternalControllerService.OnTvServerEvent -= new TvServerEventHandler(OnTvServerEvent);
     }
 

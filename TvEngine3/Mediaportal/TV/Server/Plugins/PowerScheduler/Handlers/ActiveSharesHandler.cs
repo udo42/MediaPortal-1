@@ -26,7 +26,7 @@ using System.Collections.Generic;
 using Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces.Interfaces;
 using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using MediaPortal.Common.Utils;
 using TvEngine.PowerScheduler.Interfaces;
 
@@ -39,15 +39,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
   /// </summary>
   public class ActiveSharesHandler : IStandbyHandler
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-      get { return LogHelper.GetLogger(typeof(ActiveSharesHandler)); }
-    }
-
-    #endregion
-
     #region Structs
 
     internal class ShareMonitor
@@ -118,7 +109,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
         {
           MonitoringType = ShareType.UserFromHostUsingShare;
         }
-        Log.DebugFormat("ShareMonitor: Monitor user '{0}' from host '{1}' on share '{2}' Type '{3}'", _user, _host, _share,
+        Log.Debug("ShareMonitor: Monitor user '{0}' from host '{1}' on share '{2}' Type '{3}'", _user, _host, _share,
                   MonitoringType);
       }
 
@@ -176,7 +167,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
             }
             break;
           default:
-            Log.DebugFormat("Invalid share monitoring configuration.");
+            Log.Debug("Invalid share monitoring configuration.");
             break;
         }
         return serverConnectionMatches;
@@ -264,15 +255,15 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
               _sharesToMonitor.Add(new ShareMonitor(shareItem[0], shareItem[1], shareItem[2]));
             }
           }
-          Log.DebugFormat("{0}: Share monitoring is enabled.", HandlerName);
+          Log.Debug("{0}: Share monitoring is enabled.", HandlerName);
           return true;
         }
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "{0}: Error loading shares to monitor", HandlerName);
+        Log.Error("{0}: Error >{1}< loading shares to monitor", HandlerName, ex.Message);
       }
-      Log.DebugFormat("{0}: Share monitoring is disabled.", HandlerName);
+      Log.Debug("{0}: Share monitoring is disabled.", HandlerName);
       return false;
     }
 
@@ -312,13 +303,13 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
             {
               if (shareBeingMonitored.Equals(connection))
               {
-                Log.DebugFormat("{0}: Standby cancelled due to connection '{1}:{2}' on share '{3}'", HandlerName,
+                Log.Debug("{0}: Standby cancelled due to connection '{1}:{2}' on share '{3}'", HandlerName,
                           connection.UserName, connection.ComputerName, connection.ShareName);
                 return true;
               }
             }
           }
-          Log.DebugFormat("{0}: have not found any matching connections - will allow standby", HandlerName);
+          Log.Debug("{0}: have not found any matching connections - will allow standby", HandlerName);
           return false;
         }
         return false;

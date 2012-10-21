@@ -24,7 +24,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Permissions;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using DirectShowLib;
 using System.Runtime.InteropServices.ComTypes;
 using Mediaportal.TV.Server.TvLibrary.Utils.Util;
@@ -40,15 +40,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
   /// </summary>
   public static class FilterGraphTools
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(FilterGraphTools)); }
-    }
-
-    #endregion
-
     #region structs
 
     private static readonly byte[] Mpeg2ProgramVideo =
@@ -374,7 +365,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
       }
       catch (Exception ex)
       {
-        Log.DebugFormat("Error occured while adding filter by device path: ", ex);
+        Log.WriteFile("Error occured while adding filter by device path: ", ex);
         // An error occur. Just returning null...
       }
       finally
@@ -828,7 +819,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
           }
           catch (Exception ex)
           {
-            Log.DebugFormat("Error while disconnecting all pins: ", ex);
+            Log.WriteFile("Error while disconnecting all pins: ", ex);
           }
           Release.ComObject(filters[0]);
         }
@@ -870,14 +861,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         {
           FilterInfo info;
           filter.QueryFilterInfo(out info);
-          Log.DebugFormat("Remove filter from graph: {0}", info.achName);
+          Log.WriteFile("Remove filter from graph: {0}", info.achName);
           graphBuilder.RemoveFilter(filter);
           while (Release.ComObject(filter) > 0) ;
         }
       }
       catch (Exception)
       {
-        Log.DebugFormat("Remove filter error!");
+        Log.WriteFile("Remove filter error!");
         return;
       }
       finally
@@ -1269,8 +1260,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     /// <returns></returns>
     public static bool ConnectFilter(IGraphBuilder graphBuilder, IPin pinSource, IBaseFilter destinationFilter)
     {
-      //Log.DebugFormat("analog: ConnectFilter()");
-      Log.DebugFormat("analog:  PinSource:{0}", LogPinInfo(pinSource));
+      //Log.WriteFile("analog: ConnectFilter()");
+      Log.WriteFile("analog:  PinSource:{0}", LogPinInfo(pinSource));
       for (int i = 0; i <= 10; ++i)
       {
         IPin pinIn = DsFindPin.ByDirection(destinationFilter, PinDirection.Input, i);
@@ -1282,11 +1273,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 
         if (connectedToPin == null)
         {
-          Log.DebugFormat("analog:  pinDest {0}:{1}", i, LogPinInfo(pinIn));
+          Log.WriteFile("analog:  pinDest {0}:{1}", i, LogPinInfo(pinIn));
           int hr = graphBuilder.Connect(pinSource, pinIn);
           if (hr == 0)
           {
-            Log.DebugFormat("analog:  pins connected");
+            Log.WriteFile("analog:  pins connected");
             Release.ComObject("pindest" + i, pinIn);
             return true;
           }
@@ -1311,8 +1302,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     public static bool ConnectFilter(IGraphBuilder graphBuilder, IPin pinSource, IBaseFilter destinationFilter,
                                      out int destinationPinIndex)
     {
-      //Log.DebugFormat("analog: ConnectFilter()");
-      Log.DebugFormat("analog:  PinSource:{0}", LogPinInfo(pinSource));
+      //Log.WriteFile("analog: ConnectFilter()");
+      Log.WriteFile("analog:  PinSource:{0}", LogPinInfo(pinSource));
       destinationPinIndex = -1;
       for (int i = 0; i <= 10; ++i)
       {
@@ -1326,11 +1317,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 
         if (connectedToPin == null)
         {
-          Log.DebugFormat("analog:  pinDest {0}:{1}", i, LogPinInfo(pinIn));
+          Log.WriteFile("analog:  pinDest {0}:{1}", i, LogPinInfo(pinIn));
           int hr = graphBuilder.Connect(pinSource, pinIn);
           if (hr == 0)
           {
-            Log.DebugFormat("analog:  pins connected");
+            Log.WriteFile("analog:  pins connected");
             Release.ComObject("pindest" + i, pinIn);
             return true;
           }
@@ -1353,18 +1344,18 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     /// <returns></returns>
     public static bool ConnectFilter(IGraphBuilder graphBuilder, IBaseFilter sourceFilter, IPin pinDestination)
     {
-      //Log.DebugFormat("analog: ConnectFilter()");
-      Log.DebugFormat("analog:  PinDest:{0}", LogPinInfo(pinDestination));
+      //Log.WriteFile("analog: ConnectFilter()");
+      Log.WriteFile("analog:  PinDest:{0}", LogPinInfo(pinDestination));
       for (int i = 0; i <= 10; ++i)
       {
         IPin pinOut = DsFindPin.ByDirection(sourceFilter, PinDirection.Output, i);
         if (pinOut == null)
           return false;
-        Log.DebugFormat("analog:  pinSource {0}:{1}", i, LogPinInfo(pinOut));
+        Log.WriteFile("analog:  pinSource {0}:{1}", i, LogPinInfo(pinOut));
         int hr = graphBuilder.Connect(pinOut, pinDestination);
         if (hr == 0)
         {
-          Log.DebugFormat("analog:  pins connected");
+          Log.WriteFile("analog:  pins connected");
           Release.ComObject("pindest" + i, pinOut);
           return true;
         }
@@ -1384,19 +1375,19 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     public static bool ConnectFilter(IGraphBuilder graphBuilder, IBaseFilter sourceFilter, IPin pinDestination,
                                      out int sourcePinIndex)
     {
-      //Log.DebugFormat("analog: ConnectFilter()");
-      Log.DebugFormat("analog:  PinDest:{0}", LogPinInfo(pinDestination));
+      //Log.WriteFile("analog: ConnectFilter()");
+      Log.WriteFile("analog:  PinDest:{0}", LogPinInfo(pinDestination));
       sourcePinIndex = -1;
       for (int i = 0; i <= 10; ++i)
       {
         IPin pinOut = DsFindPin.ByDirection(sourceFilter, PinDirection.Output, i);
         if (pinOut == null)
           return false;
-        Log.DebugFormat("analog:  pinSource {0}:{1}", i, LogPinInfo(pinOut));
+        Log.WriteFile("analog:  pinSource {0}:{1}", i, LogPinInfo(pinOut));
         int hr = graphBuilder.Connect(pinOut, pinDestination);
         if (hr == 0)
         {
-          Log.DebugFormat("analog:  pins connected");
+          Log.WriteFile("analog:  pins connected");
           Release.ComObject("pindest" + i, pinOut);
           sourcePinIndex = i;
           return true;
@@ -1415,17 +1406,17 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     /// <returns></returns>
     public static bool ConnectFilter(IGraphBuilder graphBuilder, IBaseFilter sourceFilter, IBaseFilter destinationFilter)
     {
-      //Log.DebugFormat("analog: ConnectFilter()");
+      //Log.WriteFile("analog: ConnectFilter()");
       IPin pinIn = DsFindPin.ByDirection(destinationFilter, PinDirection.Input, 0);
-      Log.DebugFormat("analog:  PinDest:{0}", LogPinInfo(pinIn));
+      Log.WriteFile("analog:  PinDest:{0}", LogPinInfo(pinIn));
       for (int i = 0; i <= 10; ++i)
       {
         IPin pinOut = DsFindPin.ByDirection(sourceFilter, PinDirection.Output, i);
-        Log.DebugFormat("analog:  pinSource {0}:{1}", i, LogPinInfo(pinOut));
+        Log.WriteFile("analog:  pinSource {0}:{1}", i, LogPinInfo(pinOut));
         int hr = graphBuilder.Connect(pinOut, pinIn);
         if (hr == 0)
         {
-          Log.DebugFormat("analog:  pins connected");
+          Log.WriteFile("analog:  pins connected");
           Release.ComObject("pinIn", pinIn);
           Release.ComObject("pinOut", pinOut);
           return true;
@@ -1447,15 +1438,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     public static bool ConnectFilter(IGraphBuilder graphBuilder, IBaseFilter sourceFilter, IBaseFilter destinationFilter,
                                      string deviceName)
     {
-      //Log.DebugFormat("analog: ConnectFilter()");
+      //Log.WriteFile("analog: ConnectFilter()");
       IPin pinIn = DsFindPin.ByDirection(destinationFilter, PinDirection.Input, 0);
-      Log.DebugFormat("analog:  PinDest:{0}", LogPinInfo(pinIn));
+      Log.WriteFile("analog:  PinDest:{0}", LogPinInfo(pinIn));
       for (int i = 0; i <= 10; ++i)
       {
         IPin pinOut = DsFindPin.ByDirection(sourceFilter, PinDirection.Output, i);
         if (pinOut == null)
           return false;
-        Log.DebugFormat("analog:  pinSource {0}:{1}", i, LogPinInfo(pinOut));
+        Log.WriteFile("analog:  pinSource {0}:{1}", i, LogPinInfo(pinOut));
 
         //Hauppauge hack - sorry, i attempted to do this right, but hauppauge drivers report incorrect values
         //and it takes a very long time to reject the audio to video connection - diehard2
@@ -1468,13 +1459,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         }
         catch (Exception ex)
         {
-          Log.DebugFormat("Error while connecting a filter: ", ex);
+          Log.WriteFile("Error while connecting a filter: ", ex);
         }
         if (testPin != null)
         {
           Release.ComObject("outPin", pinOut);
           Release.ComObject("testPin", testPin);
-          Log.DebugFormat("analog: skipping pin");
+          Log.WriteFile("analog: skipping pin");
           continue;
         }
         if (deviceName.Contains("Hauppauge") &&
@@ -1488,7 +1479,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 
         if (hr == 0)
         {
-          Log.DebugFormat("analog:  pins connected");
+          Log.WriteFile("analog:  pins connected");
           Release.ComObject("pinIn", pinIn);
           Release.ComObject("pinOut", pinOut);
           return true;

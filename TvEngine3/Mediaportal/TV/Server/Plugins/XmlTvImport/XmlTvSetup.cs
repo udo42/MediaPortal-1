@@ -38,21 +38,12 @@ using Mediaportal.TV.Server.TVControl.ServiceAgents;
 using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 {
   public partial class XmlTvSetup : SectionSettings
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(XmlTvSetup)); }
-    }
-
-    #endregion
-
     private const string _shortTimePattern24Hrs = "HH:mm";
     private const string _shortTimePattern12Hrs = "hh:mm";
 
@@ -174,7 +165,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       }
       catch (Exception e)
       {
-        Log.ErrorFormat("Failed to load groups {0}", e.Message);
+        Log.Error("Failed to load groups {0}", e.Message);
       }
     }
 
@@ -202,7 +193,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
         textBoxAction.Text = "Loading";
         this.Refresh();
 
-        Log.DebugFormat("Loading all channels from the tvguide[s]");
+        Log.Debug("Loading all channels from the tvguide[s]");
         // used for partial matches
         TstDictionary guideChannels = new TstDictionary();
 
@@ -231,7 +222,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
           }
         }
 
-        Log.DebugFormat("Loading all channels from the database");
+        Log.Debug("Loading all channels from the database");
 
         CBChannelGroup chGroup = (CBChannelGroup)comboBoxGroup.SelectedItem;
 
@@ -351,7 +342,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                 }
                 catch (Exception ex)
                 {
-                  Log.ErrorFormat(ex, "Error while searching for matching guide channel");
+                  Log.Error("Error while searching for matching guide channel :" + ex.Message);
                 }
               }
             }
@@ -420,7 +411,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "Failed loading channels/mappings : channel {0}", name);        
+        Log.Error("Failed loading channels/mappings : channel {0} erro {1} ", name, ex.Message);
+        Log.Error(ex.StackTrace);
         textBoxAction.Text = "Error";
       }
     }
@@ -486,13 +478,13 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
           if (canRead)
           {
               // all ok, get channels
-              Log.DebugFormat(@"plugin:xmltv loading " + fileName);
+              Log.WriteFile(@"plugin:xmltv loading " + fileName);
               listChannels.AddRange(readTVGuideChannelsFromFile(fileName));
           }
           else
           {
               MessageBox.Show("Can't open tvguide.xml for reading");
-              Log.ErrorFormat(@"plugin:xmltv StartImport - Exception when reading [" + fileName + "].");
+              Log.Error(@"plugin:xmltv StartImport - Exception when reading [" + fileName + "].");
           }*/
 
           try
@@ -501,14 +493,14 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
             IOUtil.CheckFileAccessRights(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
 
             // all ok, get channels
-            Log.DebugFormat(@"plugin:xmltv loading " + fileName);
+            Log.WriteFile(@"plugin:xmltv loading " + fileName);
 
             listChannels.AddRange(readTVGuideChannelsFromFile(fileName));
           }
           catch (Exception e)
           {
             MessageBox.Show("Can't open tvguide.xml for reading");
-            Log.ErrorFormat(@"plugin:xmltv StartImport - Exception when reading [" + fileName + "] : " + e.Message);
+            Log.Error(@"plugin:xmltv StartImport - Exception when reading [" + fileName + "] : " + e.Message);
           }
         }
 
@@ -538,7 +530,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                 tvguideFileName = System.IO.Path.Combine(folder, tvguideFileName);
               }
 
-              Log.DebugFormat(@"plugin:xmltv loading " + tvguideFileName);
+              Log.WriteFile(@"plugin:xmltv loading " + tvguideFileName);
 
               // get channels
               listChannels.AddRange(readTVGuideChannelsFromFile(tvguideFileName));
@@ -549,7 +541,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
           catch (Exception e)
           {
             MessageBox.Show("Can't read file(s) from the tvguide.lst");
-            Log.ErrorFormat(@"plugin:xmltv StartImport - Exception when reading [" + fileName + "] : " + e.Message);
+            Log.Error(@"plugin:xmltv StartImport - Exception when reading [" + fileName + "] : " + e.Message);
           }
           finally
           {
@@ -593,7 +585,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
               String id = xmlReader.GetAttribute("id");
               if (id == null || id.Length == 0)
               {
-                Log.ErrorFormat("  channel#{0} doesnt contain an id", iChannel);
+                Log.Error("  channel#{0} doesnt contain an id", iChannel);
               }
               else
               {
@@ -692,7 +684,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       catch (Exception ex)
       {
         textBoxAction.Text = "Save failed";
-        Log.ErrorFormat(ex, "Error while saving channelmappings");        
+        Log.Error("Error while saving channelmappings : {0}", ex.Message);
+        Log.Error(ex.StackTrace);
       }
     }
 
@@ -767,11 +760,11 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       catch (UnauthorizedAccessException ex)
       {
         MessageBox.Show("Can't open the file for writing");
-        Log.ErrorFormat(ex, "Failed to export guidechannels");
+        Log.Error("Failed to export guidechannels {0}", ex.Message);
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "Failed to export guidechannels");
+        Log.Error("Failed to export guidechannels {0}", ex.Message);
       }
     }
 

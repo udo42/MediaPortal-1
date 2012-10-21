@@ -20,7 +20,7 @@
 
 using Mediaportal.TV.Server.TVLibrary.Interfaces.CiMenu;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.SetupTV.Sections.CIMenu
 {
@@ -32,15 +32,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.CIMenu
   /// </summary>
   public class CiMenuEventHandler : ICiMenuEventCallback
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(CiMenuEventHandler)); }
-    }
-
-    #endregion
-
     private CI_Menu_Dialog _refDlg;
 
     public void SetCaller(CI_Menu_Dialog caller)
@@ -56,7 +47,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.CIMenu
     {
       try
       {
-        Log.DebugFormat("Callback from tvserver {0}", menu.Title);
+        Log.Debug("Callback from tvserver {0}", menu.Title);
 
         // pass menu to calling dialog
         if (_refDlg != null)

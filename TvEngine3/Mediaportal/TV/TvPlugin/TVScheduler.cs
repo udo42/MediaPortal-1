@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
-using MediaPortal.Common.Utils;
 using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
 using MediaPortal.Player;
@@ -47,15 +46,6 @@ namespace Mediaportal.TV.TvPlugin
   /// </summary>
   public class TvScheduler : GUIInternalWindow, IComparer<GUIListItem>
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-      get { return LogHelper.GetLogger(typeof(TvScheduler)); }
-    }
-
-    #endregion
-
     #region variables, ctor/dtor
 
     private enum SortMethod
@@ -871,7 +861,7 @@ namespace Mediaportal.TV.TvPlugin
         return;
       }
 
-      Log.InfoFormat("OnShowContextMenu: Rec = {0}", rec.ToString());
+      Log.Info("OnShowContextMenu: Rec = {0}", rec.ToString());
       GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
       if (dlg == null)
       {
@@ -931,7 +921,7 @@ namespace Mediaportal.TV.TvPlugin
           fileName = card.RecordingFileName;
         }
       }
-      Log.InfoFormat("recording fname:{0}", fileName);
+      Log.Info("recording fname:{0}", fileName);
       switch (dlg.SelectedId)
       {
         case 888: ////Episodes management

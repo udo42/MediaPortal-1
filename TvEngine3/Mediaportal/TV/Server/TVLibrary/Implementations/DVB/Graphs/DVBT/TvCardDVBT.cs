@@ -24,7 +24,7 @@ using Mediaportal.TV.Server.TVLibrary.Implementations.Helper;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBT
 {
@@ -33,15 +33,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBT
   /// </summary>
   public class TvCardDVBT : TvCardDvbBase
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(TvCardDVBT)); }
-    }
-
-    #endregion
-
     #region variables
 
     /// <summary>
@@ -78,14 +69,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBT
     /// </summary>
     protected override void CreateTuningSpace()
     {
-      Log.DebugFormat("TvCardDvbT: create tuning space");
+      Log.Debug("TvCardDvbT: create tuning space");
 
       // Check if the system already has an appropriate tuning space.
       SystemTuningSpaces systemTuningSpaces = new SystemTuningSpaces();
       ITuningSpaceContainer container = systemTuningSpaces as ITuningSpaceContainer;
       if (container == null)
       {
-        Log.ErrorFormat("TvCardDvbT: failed to get the tuning space container");
+        Log.Error("TvCardDvbT: failed to get the tuning space container");
         return;
       }
 
@@ -109,7 +100,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBT
           spaces[0].get_UniqueName(out name);
           if (name.Equals("MediaPortal DVBT TuningSpace"))
           {
-            Log.DebugFormat("TvCardDvbT: found correct tuningspace");
+            Log.Debug("TvCardDvbT: found correct tuningspace");
             _tuningSpace = (IDVBTuningSpace)spaces[0];
             tuner.put_TuningSpace(_tuningSpace);
             _tuningSpace.CreateTuneRequest(out request);
@@ -126,7 +117,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBT
       }
 
       // We didn't find our tuning space registered in the system, so create a new one.
-      Log.DebugFormat("TvCardDvbT: create new tuningspace");
+      Log.Debug("TvCardDvbT: create new tuningspace");
       _tuningSpace = (IDVBTuningSpace)new DVBTuningSpace();
       _tuningSpace.put_UniqueName("MediaPortal DVBT TuningSpace");
       _tuningSpace.put_FriendlyName("MediaPortal DVBT TuningSpace");
@@ -167,7 +158,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBT
       DVBTChannel dvbtChannel = channel as DVBTChannel;
       if (dvbtChannel == null)
       {
-        Log.DebugFormat("TvCardDvbT: channel is not a DVB-T channel!!! {0}", channel.GetType().ToString());
+        Log.Debug("TvCardDvbT: channel is not a DVB-T channel!!! {0}", channel.GetType().ToString());
         return null;
       }
 

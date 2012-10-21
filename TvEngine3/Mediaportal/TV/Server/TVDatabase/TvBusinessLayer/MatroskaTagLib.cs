@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 using System.Data.SqlTypes;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 {
@@ -47,14 +47,6 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
   /// </summary>
   public class MatroskaTagHandler
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(MatroskaTagHandler)); }
-    }
-
-    #endregion
     #region Event delegates
 
     public delegate void TagLookupSuccessful(Dictionary<string, MatroskaTagInfo> FoundTags);
@@ -109,7 +101,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         }
         catch (Exception ex)
         {
-          Log.InfoFormat("Error while reading subdirectories of {0}: {1}", aDirectory, ex);
+          Log.Info("Error while reading subdirectories of {0}: {1}", aDirectory, ex);
         }
         List<string> searchDirs = new List<string>(importDirs);
         foreach (string subDir in searchDirs)
@@ -132,18 +124,18 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
             }
             catch (Exception ex)
             {
-              Log.InfoFormat("Error while reading matroska informations in file {0}: {1}", xmlFile, ex);
+              Log.Info("Error while reading matroska informations in file {0}: {1}", xmlFile, ex);
             }
           }
         }
         catch (Exception ex)
         {
-          Log.InfoFormat("Error while reading matroska informations in directory {0}: {1}", aDirectory, ex);
+          Log.Info("Error while reading matroska informations in directory {0}: {1}", aDirectory, ex);
         }
       }
       catch (Exception ex)
       {
-        Log.InfoFormat("Error while reading all matroska informations : ", ex);
+        Log.Info("Error while reading all matroska informations : ", ex);
       }
       return foundTagInfo;
     }

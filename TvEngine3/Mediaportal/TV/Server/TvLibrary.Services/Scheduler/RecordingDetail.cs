@@ -26,7 +26,7 @@ using Mediaportal.TV.Server.TVDatabase.Entities.Factories;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Mediaportal.TV.Server.TVService.Interfaces.Services;
 
 namespace Mediaportal.TV.Server.TVLibrary.Scheduler
@@ -36,15 +36,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
   /// </summary>
   public class RecordingDetail
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(RecordingDetail)); }
-    }
-
-    #endregion
-
     #region variables
     
     
@@ -197,7 +188,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
         }
         catch (Exception e)
         {
-          Log.ErrorFormat("RecordingDetail: exception occured {0}", e);
+          Log.Error("RecordingDetail: exception occured {0}", e);
         }
 
         return isRecording;
@@ -231,12 +222,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       Setting setting;
       if (!IsSerie)
       {
-        Log.DebugFormat("Scheduler: MakeFileName() using \"moviesformat\" (_isSerie={0})", _isSerie);
+        Log.Debug("Scheduler: MakeFileName() using \"moviesformat\" (_isSerie={0})", _isSerie);
         setting = SettingsManagement.GetSetting("moviesformat", "%title%");
       }
       else
       {
-        Log.DebugFormat("Scheduler: MakeFileName() using \"seriesformat\" (_isSerie={0})", _isSerie);
+        Log.Debug("Scheduler: MakeFileName() using \"seriesformat\" (_isSerie={0})", _isSerie);
         setting = SettingsManagement.GetSetting("seriesformat", "%title%");
       }
 

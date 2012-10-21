@@ -4,21 +4,12 @@ using System.Linq;
 using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
 {
   public class ScheduleBLL
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(ScheduleBLL)); }
-    }
-
-    #endregion
-
     private Schedule _entity;    
     public ScheduleBLL(Schedule entity)
     {      
@@ -206,7 +197,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
       }
       else
       {
-        Log.InfoFormat(
+        Log.Info(
           "IsPartialRecording: program ({0} {1} - {2} is not (at least partially) included in the schedule {3:hh:mm} - {4:hh:mm}",
           prg.Title, prg.StartTime, prg.EndTime, _entity.StartTime, _entity.EndTime);
         return false;

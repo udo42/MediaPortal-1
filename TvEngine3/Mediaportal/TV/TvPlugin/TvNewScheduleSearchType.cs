@@ -20,7 +20,6 @@
 
 using System;
 using System.Collections.Generic;
-using MediaPortal.Common.Utils;
 using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
 using MediaPortal.Util;
@@ -36,15 +35,6 @@ namespace Mediaportal.TV.TvPlugin
 {
   public class TvNewScheduleSearchType : GUIInternalWindow
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-      get { return LogHelper.GetLogger(typeof(TvNewScheduleSearchType)); }
-    }
-
-    #endregion
-
     [SkinControl(2)] protected GUIButtonControl btnQuickRecord = null;
     [SkinControl(3)] protected GUIButtonControl btnAdvancedRecord = null;
     [SkinControl(6)] protected GUIButtonControl btnTvGuide = null;
@@ -52,7 +42,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public TvNewScheduleSearchType()
     {
-      Log.InfoFormat("newsearch ctor");
+      Log.Info("newsearch ctor");
       GetID = (int)Window.WINDOW_TV_SEARCHTYPE;
     }
 

@@ -33,7 +33,7 @@ using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.SetupTV
 {
@@ -51,15 +51,6 @@ namespace Mediaportal.TV.Server.SetupTV
   /// </summary>
   public class Startup
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(Startup)); }
-    }
-
-    #endregion
-
     private const string TypeValidHostnameForTvServerOrExitApplication = "Type valid hostname for tv server (or exit application):";
     private const string TvserviceNotFoundMaybeYouLackUserRightsToAccessControlRemoteWindowsService = "TvService not found (maybe you lack user rights to access/control remote windows service).";
     private static StartupMode _startupMode = StartupMode.Normal;
@@ -106,7 +97,9 @@ namespace Mediaportal.TV.Server.SetupTV
 
     public static void Application_ThreadException(object sender, ThreadExceptionEventArgs e)
     {
-      Log.ErrorFormat(e.Exception, "Exception in setuptv");      
+      Log.Write("Exception in setuptv");
+      Log.Write(e.ToString());
+      Log.Write(e.Exception);
     }
 
     [STAThread]
@@ -133,10 +126,10 @@ namespace Mediaportal.TV.Server.SetupTV
 
       if (tvserviceInstalled)
       {
-        Log.InfoFormat("---- check if tvservice is running ----");
+        Log.Info("---- check if tvservice is running ----");
         if (!ServiceHelper.IsRestrictedMode && !ServiceHelper.IsRunning)
         {
-          Log.InfoFormat("---- tvservice is not running ----");
+          Log.Info("---- tvservice is not running ----");
           if (_startupMode != StartupMode.DeployMode)
           {
             DialogResult result = ShowStartTvServiceDialog();
@@ -145,7 +138,7 @@ namespace Mediaportal.TV.Server.SetupTV
               Environment.Exit(0);
             }
           }
-          Log.InfoFormat("---- start tvservice----");
+          Log.Info("---- start tvservice----");
           ServiceHelper.Start();
         }
         ServiceHelper.WaitInitialized();
@@ -193,7 +186,7 @@ namespace Mediaportal.TV.Server.SetupTV
           switch (param.Substring(0, 12))
           {
             case "--DeployMode":
-              Log.DebugFormat("---- started in Deploy mode ----");
+              Log.Debug("---- started in Deploy mode ----");
               _startupMode = StartupMode.DeployMode;
               break;
 
@@ -216,7 +209,7 @@ namespace Mediaportal.TV.Server.SetupTV
 
       FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(Application.ExecutablePath);
 
-      Log.InfoFormat("---- SetupTv v" + versionInfo.FileVersion + " is starting up on " + OSInfo.OSInfo.GetOSDisplayVersion());
+      Log.Info("---- SetupTv v" + versionInfo.FileVersion + " is starting up on " + OSInfo.OSInfo.GetOSDisplayVersion());
 
       //Check for unsupported operating systems
       OSPrerequisites.OSPrerequisites.OsCheck(true);      
@@ -225,7 +218,7 @@ namespace Mediaportal.TV.Server.SetupTV
 
        
 
-      /*Log.InfoFormat("---- check if database needs to be updated/created ----");
+      /*Log.Info("---- check if database needs to be updated/created ----");
       int currentSchemaVersion = dlg.GetCurrentShemaVersion(startupMode);
       if (currentSchemaVersion <= 36) // drop pre-1.0 DBs and handle -1
       {
@@ -238,17 +231,17 @@ namespace Mediaportal.TV.Server.SetupTV
               MessageBoxDefaultButton.Button2) == DialogResult.Cancel)
             return;
 
-        Log.InfoFormat("---- create database ----");
+        Log.Info("---- create database ----");
         if (!dlg.ExecuteSQLScript("create"))
         {
           MessageBox.Show("Failed to create the database.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
           return;
         }
-        Log.InfoFormat("- Database created.");
+        Log.Info("- Database created.");
         currentSchemaVersion = dlg.GetCurrentShemaVersion(startupMode);
       }
 
-      Log.InfoFormat("---- upgrade database schema ----");
+      Log.Info("---- upgrade database schema ----");
       if (!dlg.UpgradeDBSchema(currentSchemaVersion))
       {
         MessageBox.Show("Failed to upgrade the database.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -276,7 +269,7 @@ namespace Mediaportal.TV.Server.SetupTV
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "");
+        Log.Write(ex);
       }
       _serverMonitor.Stop();
     }
@@ -341,7 +334,7 @@ namespace Mediaportal.TV.Server.SetupTV
         {
           if (tvserviceInstalled)
           {
-            Log.InfoFormat("---- restart tvservice----");
+            Log.Info("---- restart tvservice----");
             DialogResult result = ShowStartTvServiceDialog();
             if (result == DialogResult.Yes)
             {
@@ -352,7 +345,7 @@ namespace Mediaportal.TV.Server.SetupTV
               }
               catch (Exception ex)
               {
-                Log.ErrorFormat("SetupTV: failed to start tvservice : {0}", ex);
+                Log.Error("SetupTV: failed to start tvservice : {0}", ex);
               }              
             }
             else
@@ -372,7 +365,7 @@ namespace Mediaportal.TV.Server.SetupTV
 
     private static void HandleRestrictiveMode()
     {
-      Log.InfoFormat(
+      Log.Info(
         "---- unable to restart tvservice, possible multiseat setup with no access to remote windows service ----");
       string newHostName;
       bool inputNewHost = ConnectionLostPrompt(TypeValidHostnameForTvServerOrExitApplication,
@@ -390,7 +383,7 @@ namespace Mediaportal.TV.Server.SetupTV
 
     private static void UpdateTvServerConfiguration(string newHostName)
     {
-      Log.InfoFormat("UpdateTvServerConfiguration newHostName = {0}", newHostName);
+      Log.Info("UpdateTvServerConfiguration newHostName = {0}", newHostName);
       Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
       ServiceAgents.Instance.Hostname = newHostName;
       ConfigurationManager.AppSettings["tvserver"] = newHostName;

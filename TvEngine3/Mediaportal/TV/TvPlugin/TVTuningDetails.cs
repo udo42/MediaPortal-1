@@ -21,7 +21,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using MediaPortal.Common.Utils;
 using MediaPortal.GUI.Library;
 using Mediaportal.TV.Server.TVControl.ServiceAgents;
 using Mediaportal.TV.Server.TVDatabase.Entities;
@@ -34,15 +33,6 @@ namespace Mediaportal.TV.TvPlugin
 {
   public class TVTuningDetails : GUIInternalWindow
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-      get { return LogHelper.GetLogger(typeof(TVTuningDetails)); }
-    }
-
-    #endregion
-
     public TVTuningDetails()
     {
       GetID = (int)Window.WINDOW_TV_TUNING_DETAILS;
@@ -70,7 +60,7 @@ namespace Mediaportal.TV.TvPlugin
         }
         catch (System.Exception ex)
         {
-          Log.ErrorFormat("Error loading TuningDetails /  HasCiMenuSupport:" + ex.StackTrace);
+          Log.Error("Error loading TuningDetails /  HasCiMenuSupport:" + ex.StackTrace);
         }
 
         IList<TuningDetail> details = chan.TuningDetails;

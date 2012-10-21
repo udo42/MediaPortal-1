@@ -22,7 +22,7 @@ using System;
 using System.Collections.Generic;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Epg;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Mediaportal.TV.Server.TVService.Interfaces.CardHandler;
 using Mediaportal.TV.Server.TVService.Interfaces.Services;
 
@@ -30,16 +30,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 {
   public class EpgGrabbing : IEpgGrabbing
   {
-    // TODO log4net gibman : we want fileappender specifically for EPG / Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.EpgDBUpdater
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(EpgGrabbing)); }
-    }
-
-    #endregion
-
     private readonly ITvCardHandler _cardHandler;
 
     /// <summary>
@@ -57,7 +47,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     /// <returns></returns>
     public bool Start(BaseEpgGrabber grabber)
     {
-      Log.Info("EpgGrabbing: Start");
+      Log.Epg("EpgGrabbing: Start");
       try
       {
         if (_cardHandler.DataBaseCard.Enabled == false)
@@ -74,7 +64,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "");
+        Log.Write(ex);
         return false;
       }
     }
@@ -84,7 +74,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     /// </summary>
     public void Abort()
     {
-        Log.Info("EpgGrabbing: Abort");
+      Log.Epg("EpgGrabbing: Abort");
       try
       {
         if (_cardHandler.DataBaseCard.Enabled == false)
@@ -96,7 +86,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "");
+        Log.Write(ex);
       }
     }
 
@@ -136,7 +126,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         }
         catch (Exception ex)
         {
-          Log.ErrorFormat(ex, "");
+          Log.Write(ex);
           return false;
         }
       }
@@ -148,7 +138,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     /// <param name="user">User</param>
     public void Stop(IUser user)
     {
-      Log.InfoFormat("EpgGrabbing: Stop - user {0}", user.Name);
+      Log.Epg("EpgGrabbing: Stop - user {0}", user.Name);
       _cardHandler.UserManagement.RemoveUser(user);
       int recentSubChannelId = _cardHandler.UserManagement.GetRecentSubChannelId(user.Name);
       if (recentSubChannelId > -1 && !_cardHandler.UserManagement.ContainsUsersForSubchannel(recentSubChannelId))

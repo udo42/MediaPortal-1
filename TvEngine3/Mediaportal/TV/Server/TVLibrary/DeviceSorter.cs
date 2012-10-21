@@ -21,22 +21,13 @@
 using System;
 using System.Collections.Generic;
 using DirectShowLib;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Simmetrics;
 
 namespace Mediaportal.TV.Server.TVLibrary
 {
   internal class DeviceSorter
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(DeviceSorter)); }
-    }
-
-    #endregion
-
     private class SortItem : IComparable
     {
       public float rate;
@@ -133,7 +124,7 @@ namespace Mediaportal.TV.Server.TVLibrary
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "");
+        Log.Write(ex);
         return devices;
       }
     }

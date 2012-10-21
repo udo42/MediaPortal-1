@@ -8,22 +8,13 @@ using Mediaportal.TV.Server.TVDatabase.EntityModel.Interfaces;
 using Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities;
 using Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Channel = Mediaportal.TV.Server.TVDatabase.Entities.Channel;
 
 namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 {
   public static class ScheduleManagement
   {
-
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(ScheduleManagement)); }
-    }
-
-    #endregion
 
     public static IList<Schedule> ListAllSchedules()
     {
@@ -236,7 +227,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     public static IList<Schedule> GetConflictingSchedules(Schedule sched)
     {      
       sched.Channel = ChannelManagement.GetChannel(sched.IdChannel);
-      Log.InfoFormat("GetConflictingSchedules: Schedule = " + sched);
+      Log.Info("GetConflictingSchedules: Schedule = " + sched);
       var conflicts = new List<Schedule>();
       IEnumerable<Schedule> schedulesList = ListAllSchedules();
 
@@ -245,7 +236,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       {
         return conflicts;
       }
-      Log.InfoFormat("GetConflictingSchedules: Cards.Count = {0}", cards.Count);
+      Log.Info("GetConflictingSchedules: Cards.Count = {0}", cards.Count);
 
       List<Schedule>[] cardSchedules = new List<Schedule>[cards.Count];
       for (int i = 0; i < cards.Count; i++)
@@ -289,7 +280,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         List<Schedule> overlapping;
         if (!AssignSchedulesToCard(newEpisode, cardSchedules, out overlapping))
         {
-          Log.InfoFormat("GetConflictingSchedules: newEpisode can not be assigned to a card = " + newEpisode);
+          Log.Info("GetConflictingSchedules: newEpisode can not be assigned to a card = " + newEpisode);
           conflicts.AddRange(overlapping);
         }
       }
@@ -300,7 +291,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
                                              out List<Schedule> overlappingSchedules)
     {
       overlappingSchedules = new List<Schedule>();
-      Log.InfoFormat("AssignSchedulesToCard: schedule = " + schedule);
+      Log.Info("AssignSchedulesToCard: schedule = " + schedule);
       IEnumerable<Card> cards = CardManagement.ListAllCards(CardIncludeRelationEnum.None); //SEB
       bool assigned = false;
       int count = 0;
@@ -313,7 +304,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
           bool free = true;
           foreach (Schedule assignedSchedule in cardSchedules[count])
           {
-            Log.InfoFormat("AssignSchedulesToCard: card {0}, ID = {1} has schedule = " + assignedSchedule, count, card.IdCard);
+            Log.Info("AssignSchedulesToCard: card {0}, ID = {1} has schedule = " + assignedSchedule, count, card.IdCard);
             bool hasOverlappingSchedule = scheduleBll.IsOverlapping(assignedSchedule);
             if (hasOverlappingSchedule)
             {
@@ -321,7 +312,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
               if (!isSameTransponder)
               {
                 overlappingSchedules.Add(assignedSchedule);
-                Log.InfoFormat("AssignSchedulesToCard: overlapping with " + assignedSchedule + " on card {0}, ID = {1}", count,
+                Log.Info("AssignSchedulesToCard: overlapping with " + assignedSchedule + " on card {0}, ID = {1}", count,
                          card.IdCard);
                 free = false;
                 break;
@@ -330,7 +321,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
           }
           if (free)
           {
-            Log.InfoFormat("AssignSchedulesToCard: free on card {0}, ID = {1}", count, card.IdCard);
+            Log.Info("AssignSchedulesToCard: free on card {0}, ID = {1}", count, card.IdCard);
             cardSchedules[count].Add(schedule);
             assigned = true;
             break;
@@ -490,14 +481,14 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       IEnumerable<Program> programs;
       if (recBLL.Entity.ScheduleType == (int)ScheduleRecordingType.WeeklyEveryTimeOnThisChannel)
       {
-        //Log.DebugFormat("get {0} {1} EveryTimeOnThisChannel", rec.ProgramName, rec.ReferencedChannel().Name);
+        //Log.Debug("get {0} {1} EveryTimeOnThisChannel", rec.ProgramName, rec.ReferencedChannel().Name);
         programs = ProgramManagement.GetProgramsByChannelAndTitleAndStartEndTimes(recBLL.Entity.IdChannel,
                                                                         recBLL.Entity.ProgramName, dtDay,
                                                                         dtDay.AddDays(days));        
         foreach (Program prog in programs)
         {
           // dtDay.DayOfWeek == rec.startTime.DayOfWeek
-          // Log.DebugFormat("BusinessLayer.cs Program prog in programs WeeklyEveryTimeOnThisChannel: {0} {1} prog.startTime.DayOfWeek == rec.startTime.DayOfWeek {2} == {3}", rec.ProgramName, rec.ReferencedChannel().Name, prog.startTime.DayOfWeek, rec.startTime.DayOfWeek);
+          // Log.Debug("BusinessLayer.cs Program prog in programs WeeklyEveryTimeOnThisChannel: {0} {1} prog.startTime.DayOfWeek == rec.startTime.DayOfWeek {2} == {3}", rec.ProgramName, rec.ReferencedChannel().Name, prog.startTime.DayOfWeek, rec.startTime.DayOfWeek);
           if (prog.StartTime.DayOfWeek == recBLL.Entity.StartTime.DayOfWeek && recBLL.IsRecordingProgram(prog, false))
           {
             Schedule recNew = ScheduleFactory.Clone(recBLL.Entity);
@@ -511,7 +502,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
               recNew.Canceled = recNew.StartTime;
             }
             recordings.Add(recNew);
-            //Log.DebugFormat("BusinessLayer.cs Added Recording WeeklyEveryTimeOnThisChannel: {0} {1} prog.startTime.DayOfWeek == rec.startTime.DayOfWeek {2} == {3}", rec.ProgramName, rec.ReferencedChannel().Name, prog.startTime.DayOfWeek, rec.startTime.DayOfWeek);
+            //Log.Debug("BusinessLayer.cs Added Recording WeeklyEveryTimeOnThisChannel: {0} {1} prog.startTime.DayOfWeek == rec.startTime.DayOfWeek {2} == {3}", rec.ProgramName, rec.ReferencedChannel().Name, prog.startTime.DayOfWeek, rec.startTime.DayOfWeek);
           }
         }
         return recordings;
@@ -567,7 +558,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
         if (schedules.Count > 0)
         {
-          Log.DebugFormat("DeleteOrphanedOnceSchedules: Orphaned once schedule(s) found  - removing");
+          Log.Debug("DeleteOrphanedOnceSchedules: Orphaned once schedule(s) found  - removing");
 
           foreach (var schedule in schedules)
           {

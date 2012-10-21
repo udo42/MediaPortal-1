@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Mediaportal.TV.Server.TVLibrary.Services;
 using Mediaportal.TV.Server.TVService.Interfaces.CardHandler;
 using Mediaportal.TV.Server.TVService.Interfaces.Enums;
@@ -11,15 +11,6 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
 {
   public class HeartbeatManager : EventDispatcher
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(HeartbeatManager)); }
-    }
-
-    #endregion
-
     private const int HEARTBEAT_REQUEST_INTERVAL_SECS = 15;
     private const int HEARTBEAT_MAX_SECS_EXCEED_ALLOWED = 30;
 
@@ -46,7 +37,7 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
       }
       //else
      // {
-      //  Log.InfoFormat("HeartbeatManager: will not monitor parked user '{0}'", username);
+      //  Log.Info("HeartbeatManager: will not monitor parked user '{0}'", username);
      // }
     }
 
@@ -54,14 +45,14 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
     
     public override void Start()
     {
-      Log.InfoFormat("HeartbeatManager: start");
+      Log.Info("HeartbeatManager: start");
       SetupHeartbeatThreads();      
       EventService.UserDisconnectedFromService += UserDisconnectedFromService;
     }
 
     public override void Stop()
     {
-      Log.InfoFormat("HeartbeatManager: stop");
+      Log.Info("HeartbeatManager: stop");
       StopHeartbeatThreads();
       EventService.UserDisconnectedFromService -= UserDisconnectedFromService;
     }
@@ -134,7 +125,7 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
               // more than 30 seconds have elapsed since last heartbeat was received. lets kick the client
               if (ts.TotalSeconds < (-1 * HEARTBEAT_MAX_SECS_EXCEED_ALLOWED))
               {
-                Log.DebugFormat("HeartbeatManager: idle user found: {0}", username);
+                Log.Write("HeartbeatManager: idle user found: {0}", username);
                 IDictionary<int, ITvCardHandler> cards = ServiceManager.Instance.InternalControllerService.CardCollection;
                 foreach (ITvCardHandler card in cards.Values)
                 {                  
@@ -146,7 +137,7 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
                     int timeshiftingChannelId = card.UserManagement.GetTimeshiftingChannelId(tmpUser.Name);
                     if (timeshiftingChannelId > 0)
                     {
-                      Log.DebugFormat("Controller: Heartbeat Monitor - kicking idle user {0}", tmpUser.Name);
+                      Log.Write("Controller: Heartbeat Monitor - kicking idle user {0}", tmpUser.Name);
                       ServiceManager.Instance.InternalControllerService.StopTimeShifting(ref tmpUser,
                                                                                        TvStoppedReason.HeartBeatTimeOut, timeshiftingChannelId);
                     }
@@ -167,10 +158,10 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
         }
         catch (Exception ex)
         {
-          Log.ErrorFormat("HeartbeatManager: HeartBeatMonitorThread exception - {0}", ex);
+          Log.Error("HeartbeatManager: HeartBeatMonitorThread exception - {0}", ex);
         }
       }
-      Log.InfoFormat("HeartbeatManager: HeartBeatMonitorThread stopped...");
+      Log.Info("HeartbeatManager: HeartBeatMonitorThread stopped...");
     }
 
     private void RequestHeartBeatThread()
@@ -192,7 +183,7 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
         }
         catch(Exception ex)
         {
-          Log.ErrorFormat("HeartbeatManager: RequestHeartBeatThread exception - {0}", ex);
+          Log.Error("HeartbeatManager: RequestHeartBeatThread exception - {0}", ex);
         }
         finally
         {
@@ -202,7 +193,7 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
           }
         }
       }
-      Log.InfoFormat("HeartbeatManager: RequestHeartBeatThread stopped...");
+      Log.Info("HeartbeatManager: RequestHeartBeatThread stopped...");
       //#endif
     }
 

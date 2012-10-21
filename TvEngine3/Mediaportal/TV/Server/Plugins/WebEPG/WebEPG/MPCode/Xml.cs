@@ -22,20 +22,12 @@ using System;
 using System.IO;
 using System.Text;
 using System.Xml;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace WebEPG.MPCode
 {
   public class Xml : IDisposable
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(Xml)); }
-    }
-
-    #endregion
     // Fields
     //private static string		_rootName = "profile";
     //private static Encoding _encoding = Encoding.UTF8;
@@ -188,7 +180,7 @@ namespace WebEPG.MPCode
           }
           catch (Exception ex)
           {
-            Log.ErrorFormat(ex, "Unable to save {0}");
+            Log.Error("Unable to save {0} {1}", ex.Message);
           }
           _doc = null;
         }

@@ -34,7 +34,7 @@ using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using System.Xml.Serialization;
 using System.Collections.Generic;
 using System.Xml;
@@ -44,16 +44,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class CardDvbT : SectionSettings
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(CardDvbT)); }
-    }
-
-    #endregion
-
-
     #region Member variables
 
     private readonly int _cardNumber;
@@ -220,7 +210,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "Error saving tuningdetails");
+        Log.Error("Error saving tuningdetails: {0}", ex.ToString());
         MessageBox.Show("Transponder list could not be saved, check error.log for details.");
       }
     }
@@ -240,7 +230,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "Error loading tuningdetails");
+        Log.Error("Error loading tuningdetails: {0}", ex.ToString());
         MessageBox.Show("Transponder list could not be loaded, check error.log for details.");
       }
     }
@@ -636,7 +626,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "");
+        Log.Write(ex);
       }
       finally
       {

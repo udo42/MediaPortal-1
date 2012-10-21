@@ -23,7 +23,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Windows.Forms;
-using MediaPortal.Common.Utils;
 using MediaPortal.GUI.Library;
 using MediaPortal.Profile;
 using Mediaportal.TV.Server.TVControl;
@@ -42,14 +41,6 @@ namespace Mediaportal.TV.TvPlugin
 {
   public class TvNotifyManager : ITvServerEventCallbackClient
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-      get { return LogHelper.GetLogger(typeof(TvNotifyManager)); }
-    }
-
-    #endregion
     private readonly Timer _timer;
     // flag indicating that notifies have been added/changed/removed
     private readonly IRecordingService _recordingServiceAgent = ServiceAgents.Instance.RecordingServiceAgent;
@@ -84,7 +75,7 @@ namespace Mediaportal.TV.TvPlugin
       Schedule failedSchedule = ServiceAgents.Instance.ScheduleServiceAgent.GetSchedule(idSchedule);
       if (failedSchedule != null)
       {
-          Log.DebugFormat("TVPlugIn: No free card available for {0}. Notifying user.", failedSchedule.ProgramName);
+          Log.Debug("TVPlugIn: No free card available for {0}. Notifying user.", failedSchedule.ProgramName);
 
           Notify(GUILocalizeStrings.Get(1004),
                  String.Format("{0}. {1}", failedSchedule.ProgramName, GUILocalizeStrings.Get(200055)),
@@ -150,7 +141,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public void Start()
       {
-      Log.InfoFormat("TvNotify: start");
+      Log.Info("TvNotify: start");
 
       if (_enableRecNotification)
       {
@@ -161,7 +152,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public void Stop()
     {
-      Log.InfoFormat("TvNotify: stop");
+      Log.Info("TvNotify: stop");
 
       if (_enableRecNotification)
       {
@@ -178,7 +169,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public static void OnNotifiesChanged()
     {
-      Log.InfoFormat("TvNotify:OnNotifiesChanged");
+      Log.Info("TvNotify:OnNotifiesChanged");
       _notifiesListChanged = true;
     }
 
@@ -186,7 +177,7 @@ namespace Mediaportal.TV.TvPlugin
     {
       try
       {
-        Log.InfoFormat("TvNotify:LoadNotifies");
+        Log.Info("TvNotify:LoadNotifies");
         IEnumerable<Program> prgs = ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByState(ProgramState.Notify);
         _notifiesList.Clear();
         foreach (var program in prgs)
@@ -196,23 +187,23 @@ namespace Mediaportal.TV.TvPlugin
 
         if (_notifiesList != null)
         {
-          Log.InfoFormat("TvNotify: {0} notifies", _notifiesList.Count);
+          Log.Info("TvNotify: {0} notifies", _notifiesList.Count);
         }
 
       }
       catch (Exception e)
       {
-        Log.ErrorFormat("TvNotify:LoadNotifies exception : {0}", e.Message);
+        Log.Error("TvNotify:LoadNotifies exception : {0}", e.Message);
       }
     }
 
     private void Notify(string heading, string mainMsg, Channel channel)
     {
-      Log.InfoFormat("send rec notify");
+      Log.Info("send rec notify");
       var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_NOTIFY_REC, 0, 0, 0, 0, 0, null)
                   {Label = heading, Label2 = mainMsg, Object = channel};
       GUIGraphicsContext.SendMessage(msg);
-      Log.InfoFormat("send rec notify done");
+      Log.Info("send rec notify done");
     }
 
     private void ProcessNotifies(DateTime preNotifySecs)
@@ -228,7 +219,7 @@ namespace Mediaportal.TV.TvPlugin
         {
           if (preNotifySecs > program.Entity.StartTime)
           {
-            Log.InfoFormat("Notify {0} on {1} start {2}", program.Entity.Title, program.Entity.Channel.DisplayName,
+            Log.Info("Notify {0} on {1} start {2}", program.Entity.Title, program.Entity.Channel.DisplayName,
                      program.Entity.StartTime);
             program.Notify = false;
             ServiceAgents.Instance.ProgramServiceAgent.SaveProgram(program.Entity);
@@ -243,12 +234,12 @@ namespace Mediaportal.TV.TvPlugin
                            };
 
             _notifiesList.Remove(program);
-            Log.InfoFormat("send notify");
+            Log.Info("send notify");
             GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_NOTIFY_TV_PROGRAM, 0, 0, 0, 0, 0, null);
             msg.Object = tvProg;
             GUIGraphicsContext.SendMessage(msg);
             msg = null;
-            Log.InfoFormat("send notify done");
+            Log.Info("send notify done");
             return;
           }
         }
@@ -282,7 +273,7 @@ namespace Mediaportal.TV.TvPlugin
       }
       catch (Exception ex)
       {        
-        Log.ErrorFormat(ex, "Tv NotifyManager: Exception at timer_tick");
+        Log.Error("Tv NotifyManager: Exception at timer_tick {0} st : {1}", ex.ToString(), Environment.StackTrace);
       }
       finally
       {

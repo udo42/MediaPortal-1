@@ -33,7 +33,7 @@ using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using DirectShowLib.BDA;
 using System.Collections.Generic;
 using Mediaportal.TV.Server.TVService.Interfaces.Services;
@@ -42,15 +42,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class CardAtsc : SectionSettings
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(CardAtsc)); }
-    }
-
-    #endregion
-
     [Serializable]
     public class ATSCTuning
     {
@@ -214,19 +205,19 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           tuneChannel.MajorChannel = -1;
           if (checkBoxQAM.Checked)
           {
-            Log.DebugFormat("ATSC tune: QAM checkbox selected... using Modulation 256Qam");
+            Log.WriteFile("ATSC tune: QAM checkbox selected... using Modulation 256Qam");
             tuneChannel.PhysicalChannel = index + 1;
             tuneChannel.Frequency = _atscChannels[index].frequency;
             tuneChannel.ModulationType = ModulationType.Mod256Qam;
           }
           else
           {
-            Log.DebugFormat("ATSC tune: QAM checkbox not selected... using Modulation 8Vsb");
+            Log.WriteFile("ATSC tune: QAM checkbox not selected... using Modulation 8Vsb");
             tuneChannel.PhysicalChannel = index;
             tuneChannel.Frequency = -1;
             tuneChannel.ModulationType = ModulationType.Mod8Vsb;
           }
-          Log.DebugFormat("ATSC tune: PhysicalChannel: {0} Frequency: {1} Modulation: {2}", tuneChannel.PhysicalChannel,
+          Log.WriteFile("ATSC tune: PhysicalChannel: {0} Frequency: {1} Modulation: {2}", tuneChannel.PhysicalChannel,
                         tuneChannel.Frequency, tuneChannel.ModulationType);
           string line = String.Format("physical channel:{0} frequency:{1} modulation:{2}", tuneChannel.PhysicalChannel,
                                       tuneChannel.Frequency, tuneChannel.ModulationType);
@@ -357,7 +348,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "");
+        Log.Write(ex);
       }
       finally
       {

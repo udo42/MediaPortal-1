@@ -26,7 +26,7 @@ using System.Diagnostics;
 using System.Text;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.TVService
 {
@@ -35,15 +35,6 @@ namespace Mediaportal.TV.Server.TVService
   /// </summary>
   public class Utils
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(Utils)); }
-    }
-
-    #endregion
-
     [DllImport("kernel32.dll")]
     private static extern bool GetDiskFreeSpaceEx(string lpDirectoryName, out UInt64 lpFreeBytesAvailable,
                                                   out UInt64 lpTotalNumberOfBytes, out UInt64 lpTotalNumberOfFreeBytes);
@@ -715,7 +706,7 @@ namespace Mediaportal.TV.Server.TVService
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "ReplaceTag: Regex generated the following error");
+        Log.Error("ReplaceTag: Regex generated the following error: {0}", ex.Message);
         return line;
       }
 

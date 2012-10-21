@@ -22,7 +22,7 @@
 
 using System.Collections.Generic;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Mediaportal.TV.Server.TVService.Interfaces.CardHandler;
 using Mediaportal.TV.Server.TVService.Interfaces.Services;
 
@@ -32,21 +32,16 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
 {
   public abstract class CardAllocationBase
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(CardAllocationBase)); }
-    }
-
-    #endregion
-
     private bool _logEnabled = true;
 
     protected bool LogEnabled
     {
       get { return _logEnabled; }
       set { _logEnabled = value; }
+    }    
+
+    protected CardAllocationBase()
+    {           
     }
 
     #region protected members            
@@ -134,7 +129,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
       {
         if (LogEnabled)
         {
-          Log.InfoFormat("Controller:    card:{0} type:{1} is available", cardId, tvcard.Type);
+          Log.Info("Controller:    card:{0} type:{1} is available", cardId, tvcard.Type);
         }
       }
       else
@@ -172,7 +167,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
               {
                 if (LogEnabled)
                 {
-                  Log.InfoFormat(
+                  Log.Info(
                     "Controller:    card:{0} type:{1} is available, tuned to same transponder decrypting {2}/{3} channels",
                     cardId, tvcard.Type, NumberOfChannelsDecrypting(tvcard), decryptLimit);
                 }
@@ -181,7 +176,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
               {
                 if (LogEnabled)
                 {
-                  Log.InfoFormat(
+                  Log.Info(
                     "Controller:    card:{0} type:{1} is available, tuned to same transponder",
                     cardId, tvcard.Type);
                 }
@@ -192,7 +187,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
               //it is not, skip this card
               if (LogEnabled)
               {
-                Log.InfoFormat(
+                Log.Info(
                   "Controller:    card:{0} type:{1} is not available, tuned to same transponder decrypting {2}/{3} channels (cam limit reached)",
                   cardId, tvcard.Type, NumberOfChannelsDecrypting(tvcard), decryptLimit);
               }
@@ -204,7 +199,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
         {
           if (LogEnabled)
           {
-            Log.InfoFormat("Controller:    card:{0} type:{1} is not available, tuned to different transponder",
+            Log.Info("Controller:    card:{0} type:{1} is not available, tuned to different transponder",
                      cardId, tvcard.Type);
           }
           checkTransponder = false;

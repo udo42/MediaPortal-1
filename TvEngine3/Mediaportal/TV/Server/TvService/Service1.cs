@@ -26,7 +26,7 @@ using System.ServiceProcess;
 using System.Threading;
 using System.Windows.Forms;
 using Mediaportal.TV.Server.TVLibrary;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.TVService
 {
@@ -34,15 +34,7 @@ namespace Mediaportal.TV.Server.TVService
 
   public partial class Service1 : ServiceBase
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(Service1)); }
-    }
-
-    #endregion
-
+    
     //private Thread _tvServiceThread = null;
     private static Thread _unhandledExceptionInThread = null;
 
@@ -77,7 +69,7 @@ namespace Mediaportal.TV.Server.TVService
     {
       try
       {
-        Log.DebugFormat("Tvservice stopped due to an unhandled app domain exception {0}", e.ExceptionObject);
+        Log.WriteFile("Tvservice stopped due to an unhandled app domain exception {0}", e.ExceptionObject);
         _unhandledExceptionInThread = Thread.CurrentThread;
         ExitCode = -1; //tell windows that the service failed.      
         OnStop(); //cleanup
@@ -300,7 +292,7 @@ namespace Mediaportal.TV.Server.TVService
     protected override void OnStop()
     { 
       RequestAdditionalTime(300000); // we want to make sure all services etc. are closed before tearing down the process.
-      Log.DebugFormat("service.OnStop");
+      Log.Write("service.OnStop");
       if (_tvServiceThread != null)
       {
         _tvServiceThread.Stop(60000);        

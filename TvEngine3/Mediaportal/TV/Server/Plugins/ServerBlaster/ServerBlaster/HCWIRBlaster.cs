@@ -20,7 +20,7 @@
 
 using System;
 using System.Runtime.InteropServices;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 //using MediaPortal.GUI.Library;
 
@@ -31,16 +31,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
   /// </summary>
   public class HCWIRBlaster
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(HCWIRBlaster)); }
-    }
-
-    #endregion
-
-
     [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     private static extern IntPtr LoadLibraryEx(string fileName, IntPtr dummy, int flags);
 
@@ -89,7 +79,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
     public void blast(string channel_data, bool ExLogging)
     {
       if (ExLogging)
-        Log.InfoFormat("HCWBlaster: Changing channels: {0}", channel_data);
+        Log.Info("HCWBlaster: Changing channels: {0}", channel_data);
 
       int iChannel = Convert.ToInt32(channel_data);
 
@@ -98,7 +88,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
         HCWRetVal = UIR_Open(0, 0);
         if (HCWRetVal == 0)
         {
-          Log.InfoFormat("HCWBlaster: Failed to get Blaster Handle");
+          Log.Info("HCWBlaster: Failed to get Blaster Handle");
           return;
         }
 
@@ -114,11 +104,11 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
 
           if (ExLogging)
           {
-            Log.InfoFormat("HCWBlaster: " + devset1);
-            Log.InfoFormat("HCWBlaster: " + devset2);
-            Log.InfoFormat("HCWBlaster: " + devset3);
-            Log.InfoFormat("HCWBlaster: " + devset4);
-            Log.InfoFormat("HCWBlaster: " + devset5);
+            Log.Info("HCWBlaster: " + devset1);
+            Log.Info("HCWBlaster: " + devset2);
+            Log.Info("HCWBlaster: " + devset3);
+            Log.Info("HCWBlaster: " + devset4);
+            Log.Info("HCWBlaster: " + devset5);
           }
         }
         else
@@ -130,10 +120,10 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
       int RetChg = UIR_GotoChannel(HCWIRConfig.d, HCWIRConfig.f, iChannel);
       if (RetChg != 0)
       {
-        Log.InfoFormat("HCWBlaster: UIR_GotoChannel() failed: " + RetChg);
+        Log.Info("HCWBlaster: UIR_GotoChannel() failed: " + RetChg);
       }
       if (ExLogging)
-        Log.InfoFormat("HCWBlaster: Finished Changing channels: {0}", channel_data);
+        Log.Info("HCWBlaster: Finished Changing channels: {0}", channel_data);
     }
   }
 }

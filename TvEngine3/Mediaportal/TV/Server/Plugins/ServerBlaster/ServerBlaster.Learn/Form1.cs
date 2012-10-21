@@ -24,7 +24,6 @@ using System.Windows.Forms;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
-using MediaPortal.Common.Utils;
 using Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView;
 
 namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
@@ -34,15 +33,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
   /// </summary>
   public class Form1 : System.Windows.Forms.Form
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(Form1)); }
-    }
-
-    #endregion
-
     #region Form members
 
     #endregion Form members
@@ -666,7 +656,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
     private void OnDeviceRemoval()
     {
-      Log.DebugFormat("Device removal");
+      Log.Write("Device removal");
 
 //			// are we currently learning?
 //			if(buttonStart.Enabled) return;
@@ -827,24 +817,24 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
                 }
                 else
                 {
-                  Log.DebugFormat("Form1.LoadConfig: Unexpected value type '{0}'", objectValue.GetType());
+                  Log.Write("Form1.LoadConfig: Unexpected value type '{0}'", objectValue.GetType());
                 }
               }
               else
               {
-                Log.DebugFormat("Form1.LoadConfig: Unexpected key type '{0}'", objectKey.GetType());
+                Log.Write("Form1.LoadConfig: Unexpected key type '{0}'", objectKey.GetType());
               }
             }
           }
           else
           {
-            Log.DebugFormat("Form1.LoadConfig: Unexpected root object");
+            Log.Write("Form1.LoadConfig: Unexpected root object");
           }
         }
       }
       catch (Exception ex)
       {
-        Log.DebugFormat(ex, "Form1.LoadConfig");
+        Log.Write("Form1.LoadConfig: {0}", ex.Message);
       }
     }
   }

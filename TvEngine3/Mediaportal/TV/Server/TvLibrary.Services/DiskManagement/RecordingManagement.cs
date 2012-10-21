@@ -23,20 +23,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
 {
   public class RecordingManagement
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(RecordingManagement)); }
-    }
-
-    #endregion
     private readonly System.Timers.Timer _timer;    
 
     public RecordingManagement()
@@ -65,7 +57,7 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
       IList<Recording> recordings = TVDatabase.TVBusinessLayer.RecordingManagement.ListAllRecordingsByMediaType(MediaTypeEnum.TV);
       foreach (Recording recording in recordings.Where(ShouldBeDeleted))
       {
-        Log.DebugFormat("Recorder: delete old recording:{0} date:{1}",
+        Log.Write("Recorder: delete old recording:{0} date:{1}",
                   recording.FileName,
                   recording.StartTime.ToShortDateString());
         recordings.Remove(recording);        

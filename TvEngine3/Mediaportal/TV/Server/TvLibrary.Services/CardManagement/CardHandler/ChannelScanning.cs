@@ -22,22 +22,13 @@ using System;
 using System.Collections.Generic;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Mediaportal.TV.Server.TVService.Interfaces.CardHandler;
 
 namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 {
   public class ChannelScanning : IChannelScanning
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(ChannelScanning)); }
-    }
-
-    #endregion
-
     private readonly ITvCardHandler _cardHandler;
 
     /// <summary>
@@ -68,7 +59,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         }
         catch (Exception ex)
         {
-          Log.ErrorFormat(ex, "");
+          Log.Write(ex);
           return false;
         }
       }
@@ -106,7 +97,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "");
+        Log.Write(ex);
         return null;
       }
     }
@@ -131,7 +122,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "");
+        Log.Write(ex);
         return null;
       }
     }

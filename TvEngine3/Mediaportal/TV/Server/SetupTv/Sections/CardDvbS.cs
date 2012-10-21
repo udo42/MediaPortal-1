@@ -41,7 +41,7 @@ using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.Device;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Mediaportal.TV.Server.TVService.Interfaces.Services;
 using Mediaportal.TV.Server.SetupControls.UserInterfaceControls;
 
@@ -49,15 +49,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class CardDvbS : SectionSettings
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(CardDvbS)); }
-    }
-
-    #endregion
-
     #region private classes
 
     private class SatelliteContext : IComparable<SatelliteContext>
@@ -475,7 +466,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "Error loading tuningdetails");
+        Log.Error("Error loading tuningdetails: {0}", ex.ToString());
         MessageBox.Show("Transponder list could not be loaded, check error.log for details.");
       }
     }
@@ -921,7 +912,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
       catch (Exception ex)
       {
-        Log.ErrorFormat(ex, "");
+        Log.Write(ex);
       }
       finally
       {

@@ -30,23 +30,13 @@ using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Epg;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 
 namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class EpgGrabber : SectionSettings
   {
-
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(EpgGrabber)); }
-    }
-
-    #endregion
-
     private bool _loaded;
     private readonly MPListViewStringColumnSorter lvwColumnSorter;
 
@@ -443,7 +433,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           value += code;
           value += ",";
         }
-        //Log.DebugFormat("tvsetup:epggrabber:all: epglang={0}", setting.value);
+        //Log.WriteFile("tvsetup:epggrabber:all: epglang={0}", setting.value);
         Setting setting = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("epgLanguages", value);
       }
       finally
@@ -462,7 +452,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           mpListView2.Items[i].Checked = false;
         }
         Setting setting = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("epgLanguages", ",");
-        Log.DebugFormat("tvsetup:epggrabber:none: epglang={0}", setting.Value);
+        Log.WriteFile("tvsetup:epggrabber:none: epglang={0}", setting.Value);
       }
       finally
       {

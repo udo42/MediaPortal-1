@@ -20,22 +20,12 @@
 
 using System;
 using System.Diagnostics;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.SetupTV
 {
   public static class HelpSystem
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(HelpSystem)); }
-    }
-
-    #endregion
-
-
     private const string baseURL = @"http://wiki.team-mediaportal.com/REDIRECTS/";
 
     public static void ShowHelp(string sectionName)
@@ -46,7 +36,7 @@ namespace Mediaportal.TV.Server.SetupTV
       }
       catch (Exception exception)
       {
-        Log.ErrorFormat(exception, "");
+        Log.Write(exception);
       }
     }
   }

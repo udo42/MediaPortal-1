@@ -21,7 +21,6 @@
 #region usings
 
 using System;
-using MediaPortal.Common.Utils;
 using MediaPortal.GUI.Library;
 using MediaPortal.Player;
 using MediaPortal.Profile;
@@ -32,25 +31,17 @@ namespace Mediaportal.TV.TvPlugin
 {
   internal class TvCropManager
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-      get { return LogHelper.GetLogger(typeof(TvCropManager)); }
-    }
-
-    #endregion
     #region Ctor/Dtor
 
     public TvCropManager()
     {
       g_Player.PlayBackStarted += new g_Player.StartedHandler(g_Player_PlayBackStarted);
-      Log.InfoFormat("TvCropManager: Started");
+      Log.Info("TvCropManager: Started");
     }
 
     ~TvCropManager()
     {
-      Log.InfoFormat("TvCropManager: Stopped");
+      Log.Info("TvCropManager: Stopped");
       g_Player.PlayBackStarted -= new g_Player.StartedHandler(g_Player_PlayBackStarted);
     }
 
@@ -81,7 +72,7 @@ namespace Mediaportal.TV.TvPlugin
           xmlwriter.SetValue("tv", "cropleft", cropSettings.Left);
           xmlwriter.SetValue("tv", "cropright", cropSettings.Right);
         }
-        Log.InfoFormat("TvCropManager.SendCropMessage(): {0}, {1}, {2}, {3}", cropSettings.Top, cropSettings.Bottom,
+        Log.Info("TvCropManager.SendCropMessage(): {0}, {1}, {2}, {3}", cropSettings.Top, cropSettings.Bottom,
                  cropSettings.Left, cropSettings.Right);
         GUIWindowManager.SendThreadMessage(new GUIMessage(GUIMessage.MessageType.GUI_MSG_PLANESCENE_CROP, 0, 0, 0, 0, 0,
                                                           cropSettings));
@@ -102,7 +93,7 @@ namespace Mediaportal.TV.TvPlugin
         {
           if (CropSettings.Top > 0 || CropSettings.Bottom > 0 || CropSettings.Left > 0 || CropSettings.Right > 0)
           {
-            Log.InfoFormat("TvCropManager.SendCropMessage(): {0}, {1}, {2}, {3}", CropSettings.Top, CropSettings.Bottom,
+            Log.Info("TvCropManager.SendCropMessage(): {0}, {1}, {2}, {3}", CropSettings.Top, CropSettings.Bottom,
                      CropSettings.Left, CropSettings.Right);
             GUIWindowManager.SendThreadMessage(new GUIMessage(GUIMessage.MessageType.GUI_MSG_PLANESCENE_CROP, 0, 0, 0, 0,
                                                               0, CropSettings));

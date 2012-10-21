@@ -23,7 +23,7 @@ using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.TVLibrary.Implementations.RadioWebStream
 {
@@ -34,16 +34,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.RadioWebStream
   /// </summary>
   public class RadioWebStreamCard : TvCardBase
   {
-
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(RadioWebStreamCard)); }
-    }
-
-    #endregion
-
     #region variables
 
     private DateTime _dateRecordingStarted = DateTime.MinValue;
@@ -94,7 +84,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.RadioWebStream
     /// <returns>the subchannel associated with the tuned channel</returns>
     public override ITvSubChannel Tune(int subChannelId, IChannel channel)
     {
-      Log.DebugFormat("RadioWebStream:  Tune:{0}", channel);
+      Log.WriteFile("RadioWebStream:  Tune:{0}", channel);
       return null;
     }
 
@@ -106,7 +96,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.RadioWebStream
     /// <returns>the subchannel associated with the scanned channel</returns>
     public override ITvSubChannel Scan(int subChannelId, IChannel channel)
     {
-      Log.DebugFormat("RadioWebStream:  Scan:{0}", channel);
+      Log.WriteFile("RadioWebStream:  Scan:{0}", channel);
       return null;
     }
 
@@ -116,7 +106,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.RadioWebStream
     /// <param name="channel">The channel to tune to.</param>
     protected override void PerformTuning(IChannel channel)
     {
-      Log.DebugFormat("RadioWebStream: perform tuning");
+      Log.WriteFile("RadioWebStream: perform tuning");
     }
 
     /// <summary>
@@ -161,7 +151,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.RadioWebStream
     /// </summary>
     public override void Dispose()
     {
-      Log.DebugFormat("RadioWebStream:Dispose()");
+      Log.WriteFile("RadioWebStream:Dispose()");
     }
 
     #endregion

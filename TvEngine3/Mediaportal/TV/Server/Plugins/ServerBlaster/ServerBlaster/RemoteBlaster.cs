@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 using System.IO;
 using System.Windows.Forms;
 using System.Collections;
-using MediaPortal.Common.Utils;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 //Logging
 
@@ -115,15 +115,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
   /// </summary>
   internal sealed class Remote : Device
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(Remote)); }
-    }
-
-    #endregion
-
     #region Constructor
 
     static Remote()
@@ -157,7 +148,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
       }
       catch (Exception e)
       {
-        Log.DebugFormat("Remote.Init: {0}", e.Message);
+        Log.Write("Remote.Init: {0}", e.Message);
       }
     }
 
@@ -246,15 +237,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
   /// </summary>
   internal sealed class Blaster : Device
   {
-    #region logging
-
-    private static ILogManager Log
-    {
-        get { return LogHelper.GetLogger(typeof(Blaster)); }
-    }
-
-    #endregion
-
     #region Constructor
 
     static Blaster()
@@ -269,19 +251,19 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
 
     public static void Send(int blasterPort, byte[] packet, int deviceType, int deviceSpeed, bool debug)
     {
-      if (debug) Log.DebugFormat("Blaster.Send: Checking if  Singleton is null.");
+      if (debug) Log.Write("Blaster.Send: Checking if  Singleton is null.");
       if (_deviceSingleton == null) return;
-      if (debug) Log.DebugFormat("Blaster.Send: Checking if Device Singleton Stream is null.");
+      if (debug) Log.Write("Blaster.Send: Checking if Device Singleton Stream is null.");
       if (_deviceSingleton._deviceStream == null) return;
-      if (debug) Log.DebugFormat("Blaster.Send: Done Initial Checking. Will check arguments.");
+      if (debug) Log.Write("Blaster.Send: Done Initial Checking. Will check arguments.");
       if (blasterPort < 0 || blasterPort > 2) throw new ArgumentException("blasterPort must be 1, 2 or 0 (both)");
-      if (debug) Log.DebugFormat("Blaster.Send: BlasterPort Done.");
+      if (debug) Log.Write("Blaster.Send: BlasterPort Done.");
       if (deviceType < 0 || deviceType > 1) throw new ArgumentException("blasterType must be 1, or 0 (0 - MS, 1- SMK)");
-      if (debug) Log.DebugFormat("Blaster.Send: BlasterType Done.");
+      if (debug) Log.Write("Blaster.Send: BlasterType Done.");
       if (deviceSpeed < 0 || deviceSpeed > 2)
         throw new ArgumentException("blasterSpeed must be between 0 and 2 (0 - Fast, 2 - Slow)");
       _currentSpeed = deviceSpeed;
-      if (debug) Log.DebugFormat("Blaster.Send: BlasterSpeed Done.");
+      if (debug) Log.Write("Blaster.Send: BlasterSpeed Done.");
 
 
       byte[][] packetSpeed = new[]
@@ -322,17 +304,17 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
       }
 
 
-      if (debug) Log.DebugFormat("Blaster.Send: Type {0}, Speed {1}", deviceType, s);
-      if (debug) Log.DebugFormat("Blaster.Send: Port {0}", blasterPort == 0 ? "1 & 2" : blasterPort.ToString());
-      if (debug) Log.DebugFormat("Seding packets");
+      if (debug) Log.Write("Blaster.Send: Type {0}, Speed {1}", deviceType, s);
+      if (debug) Log.Write("Blaster.Send: Port {0}", blasterPort == 0 ? "1 & 2" : blasterPort.ToString());
+      if (debug) Log.Write("Seding packets");
       _deviceSingleton._deviceStream.Write(packetSpeed[s], 0, packetSpeed[s].Length);
-      if (debug) Log.DebugFormat("Blaster.Send: Wrote speed packets");
+      if (debug) Log.Write("Blaster.Send: Wrote speed packets");
       _deviceSingleton._deviceStream.Write(packetPorts[p], 0, packetPorts[p].Length);
-      if (debug) Log.DebugFormat("Blaster.Send: Wrote port packets");
+      if (debug) Log.Write("Blaster.Send: Wrote port packets");
       _deviceSingleton._deviceStream.Write(packet, 0, packet.Length);
-      if (debug) Log.DebugFormat("Blaster.Send: Wrote channel data  packets");
+      if (debug) Log.Write("Blaster.Send: Wrote channel data  packets");
       _deviceSingleton._deviceStream.Flush();
-      if (debug) Log.DebugFormat("Blaster.Send: Flushed");
+      if (debug) Log.Write("Blaster.Send: Flushed");
     }
 
     public static void BeginLearn(LearnCallback learnCallback)
@@ -437,7 +419,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
       }
       catch (Exception e)
       {
-        Log.DebugFormat("Blaster.OnReadComplete: {0}", e.Message);
+        Log.Write("Blaster.OnReadComplete: {0}", e.Message);
       }
     }
 
@@ -469,7 +451,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
         }
       }
 
-      Log.DebugFormat("Blaster.FinalizePacket: {0} ({1} bytes)", BitConverter.ToString(packetFinal).Replace("-", ""),
+      Log.Write("Blaster.FinalizePacket: {0} ({1} bytes)", BitConverter.ToString(packetFinal).Replace("-", ""),
                 packetFinal.Length);
 
       _packetArray = new ArrayList();
