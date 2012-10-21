@@ -258,7 +258,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         }
         catch (Exception ex)
         {
-          Log.Write(ex);
+          Log.Error(ex);
           return CardType.Analog;
         }
       }
@@ -282,7 +282,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         }
         catch (Exception ex)
         {
-          Log.Write(ex);
+          Log.Error(ex);
           return "";
         }
       }
@@ -304,7 +304,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
         return "";
       }
     }
@@ -332,7 +332,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         }
         catch (Exception ex)
         {
-          Log.Write(ex);
+          Log.Error(ex);
           return false;
         }
       }
@@ -360,7 +360,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         }
         catch (Exception ex)
         {
-          Log.Write(ex);
+          Log.Error(ex);
           return 0;
         }
       }
@@ -388,7 +388,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         }
         catch (Exception ex)
         {
-          Log.Write(ex);
+          Log.Error(ex);
           return 0;
         }
       }
@@ -412,7 +412,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
       }
     }
 
@@ -439,7 +439,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         }
         catch (Exception ex)
         {
-          Log.Write(ex);
+          Log.Error(ex);
           return 0;
         }
       }
@@ -467,7 +467,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         }
         catch (Exception ex)
         {
-          Log.Write(ex);
+          Log.Error(ex);
           return 0;
         }
       }
@@ -568,7 +568,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
         return null;
       }
     }
@@ -595,7 +595,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
         return -1;
       }
     }
@@ -642,7 +642,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
         return "";
       }
     }
@@ -677,7 +677,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
         return false;
       }
     }
@@ -705,7 +705,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
         return false;
       }
     }
@@ -749,7 +749,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
       }
     }
 

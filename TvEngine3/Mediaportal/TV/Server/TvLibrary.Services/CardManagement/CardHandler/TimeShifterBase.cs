@@ -69,7 +69,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
       }
       finally
       {

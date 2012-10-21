@@ -1948,7 +1948,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
         Dispose();
         _isDeviceInitialised = false;
         throw new TvExceptionGraphBuildingFailed("Graph building failed", ex);

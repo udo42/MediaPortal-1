@@ -171,8 +171,7 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
           }
           catch (Exception e)
           {
-            Log.Error("DiskManagement: Exception at building FileInfo ({0})", recorded.FileName);
-            Log.Write(e);
+            Log.Error(e, "DiskManagement: Exception at building FileInfo ({0})", recorded.FileName);
           }
         }
       }

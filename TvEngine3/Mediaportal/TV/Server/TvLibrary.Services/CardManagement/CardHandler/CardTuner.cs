@@ -153,7 +153,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (TvExceptionSWEncoderMissing ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
         if (result != null)
         {
           _cardHandler.Card.FreeSubChannel(result.SubChannelId);
@@ -162,7 +162,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (TvExceptionGraphBuildingFailed ex2)
       {
-        Log.Write(ex2);
+        Log.Error(ex2);
         if (result != null)
         {
           _cardHandler.Card.FreeSubChannel(result.SubChannelId);
@@ -189,7 +189,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
         if (result != null)
         {
           _cardHandler.Card.FreeSubChannel(result.SubChannelId);
@@ -344,7 +344,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       catch (TvExceptionSWEncoderMissing ex)
       {
         user.FailedCardId = _cardHandler.DataBaseCard.IdCard;
-        Log.Write(ex);
+        Log.Error(ex);
         if (result != null)
         {
           _cardHandler.Card.FreeSubChannel(result.SubChannelId);
@@ -354,7 +354,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       catch (TvExceptionGraphBuildingFailed ex2)
       {
         user.FailedCardId = _cardHandler.DataBaseCard.IdCard;
-        Log.Write(ex2);
+        Log.Error(ex2);
         if (result != null)
         {
           _cardHandler.Card.FreeSubChannel(result.SubChannelId);
@@ -373,7 +373,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       catch (Exception ex)
       {
         user.FailedCardId = _cardHandler.DataBaseCard.IdCard;
-        Log.Write(ex);
+        Log.Error(ex);
         if (result != null)
         {
           _cardHandler.Card.FreeSubChannel(result.SubChannelId);
@@ -552,7 +552,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
         return TvResult.UnknownError;
       }
     }
@@ -594,7 +594,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
         return false;
       }
     }

@@ -1162,7 +1162,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
             catch (Exception ex)
             {
               CardReservationHelper.CancelCardReservationAndRemoveTicket(cardInfo, tickets);
-              Log.Write(ex);
+              Log.Error(ex);
               StopFailedRecord(recDetail);
             }
           }
@@ -1263,7 +1263,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
           catch (Exception ex)
           {
             //consume exception, since it isn't catastrophic
-            Log.Write(ex);
+            Log.Error(ex);
           }
 
           Log.Write("Scheduler: recList: count: {0} add scheduleid: {1} card: {2}",
@@ -1319,7 +1319,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
       }
     }
 
@@ -1621,7 +1621,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
       }
     }
 

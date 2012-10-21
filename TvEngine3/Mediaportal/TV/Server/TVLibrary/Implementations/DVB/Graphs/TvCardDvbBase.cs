@@ -489,7 +489,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
         Dispose();
         _isDeviceInitialised = false;
         throw new TvExceptionGraphBuildingFailed("Graph building failed.", ex);
@@ -1501,7 +1501,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         }
         catch (Exception ex)
         {
-          Log.Write(ex);
+          Log.Error(ex);
           return new List<PortalChannel>();
         }
       }
@@ -1818,7 +1818,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
                 }
                 catch (Exception ex)
                 {
-                  Log.Write(ex);
+                  Log.Error(ex);
                 }
               } //for (uint i = 0; i < eventCount; ++i)
               if (epgChannel.Programs.Count > 0)
@@ -1839,7 +1839,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         }
         catch (Exception ex)
         {
-          Log.Write(ex);
+          Log.Error(ex);
           return new List<EpgChannel>();
         }
       }

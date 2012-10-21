@@ -691,7 +691,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       catch (Exception ex)
       {
         Log.Info("TvMovie plugin error:");
-        Log.Write(ex);
+        Log.Error(ex);
         buttonImportNow.Enabled = true;
       }
     }

@@ -350,7 +350,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
         Dispose();
         _isDeviceInitialised = false;
         throw;

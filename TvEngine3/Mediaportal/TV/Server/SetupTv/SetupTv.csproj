@@ -421,6 +421,7 @@
     <Compile Include="ServiceHelper.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Util.cs" />
+    <None Include="log4net.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\Common-MP-TVE3\Common.Utils\Common.Utils.csproj">

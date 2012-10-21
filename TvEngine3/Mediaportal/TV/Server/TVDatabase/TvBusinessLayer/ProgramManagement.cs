@@ -478,7 +478,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
             catch (Exception ex)
             {
               Log.Error("BusinessLayer: InsertMySQL/InsertMSSQL caused an exception:");
-              Log.Write(ex);
+              Log.Error(ex);
             }
           }
         }

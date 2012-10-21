@@ -888,7 +888,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
         catch (Exception ex)
         {
           Log.Error(@"plugin:xmltv import failed");
-          Log.Write(ex);
+          Log.Error(ex);
         }
 
         SettingsManagement.SaveSetting("xmlTvLastUpdate", param._importDate.ToString());

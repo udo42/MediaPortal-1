@@ -387,7 +387,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
         catch (Exception ex)
         {
           Log.Info("TVMovie: An error occured checking the last import time {0}", ex.Message);
-          Log.Write(ex);
+          Log.Error(ex);
           return true;
         }
       }

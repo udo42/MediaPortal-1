@@ -120,7 +120,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.CIMenu
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
       }
     }
 
@@ -142,7 +142,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.CIMenu
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
       }
     }
 
@@ -163,7 +163,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.CIMenu
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
       }
     }
 

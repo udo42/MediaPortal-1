@@ -185,7 +185,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
         Dispose();
         _isDeviceInitialised = false;
         throw new TvExceptionGraphBuildingFailed("TvCardDvbIp: graph building failed", ex);

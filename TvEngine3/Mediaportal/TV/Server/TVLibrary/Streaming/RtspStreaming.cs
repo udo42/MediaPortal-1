@@ -146,7 +146,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
       }
     }
 
@@ -348,7 +348,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
       }
       Log.WriteFile("RTSP: Streamer stopped");
       _running = false;

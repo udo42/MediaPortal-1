@@ -36,7 +36,7 @@ namespace Mediaportal.TV.Server.SetupTV
       }
       catch (Exception exception)
       {
-        Log.Write(exception);
+        Log.Error(exception);
       }
     }
   }

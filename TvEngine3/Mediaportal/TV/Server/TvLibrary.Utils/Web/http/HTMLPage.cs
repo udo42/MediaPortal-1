@@ -277,7 +277,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
           }
           catch (System.ArgumentException e)
           {
-            Log.Write(e);
+            Log.Error(e);
           }
         }
         return true;
