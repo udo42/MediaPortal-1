@@ -42,6 +42,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     {
       GlobalServiceProvider.Instance.Get<IIntegrationProvider>().Logger.Error(BuildPrefix(caller, message), args);
     }
+    public static void LogError(this object caller, Exception exception)
+    {
+      LogError(caller, exception, string.Empty);
+    }
     public static void LogError(this object caller, Exception exception, string message, params object[] args)
     {
       GlobalServiceProvider.Instance.Get<IIntegrationProvider>().Logger.Error(BuildPrefix(caller, message), exception, args);

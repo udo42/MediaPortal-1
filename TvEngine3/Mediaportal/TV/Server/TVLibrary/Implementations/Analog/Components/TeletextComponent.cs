@@ -22,6 +22,7 @@ using System;
 using DirectShowLib;
 using Mediaportal.TV.Server.TVLibrary.Implementations.Helper;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.GraphComponents;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Integration;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
@@ -99,7 +100,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     /// <returns>true, if the building was successful; false otherwise</returns>
     public bool CreateFilterInstance(Graph graph, IFilterGraph2 graphBuilder, Capture capture)
     {
-      Log.WriteFile("analog: SetupTeletext()");
+      this.LogDebug("SetupTeletext()");
       Guid guidBaseFilter = typeof(IBaseFilter).GUID;
       object obj;
       //find and add tee/sink to sink filter
@@ -127,7 +128,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       }
       if (!string.IsNullOrEmpty(graph.Teletext.Name))
       {
-        Log.WriteFile("analog: Using Teletext-Component configuration from stored graph");
+        this.LogDebug("Using Teletext-Component configuration from stored graph");
         devices = DsDevice.GetDevicesOfCat(graph.Teletext.Category);
         foreach (DsDevice device in devices)
         {
@@ -151,7 +152,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       }
       if (_filterWstDecoder == null)
       {
-        Log.WriteFile("analog: No stored or invalid graph for Teletext component - Trying to detect");
+        this.LogDebug("No stored or invalid graph for Teletext component - Trying to detect");
 
         //find the WST codec filter
         devices = DsDevice.GetDevicesOfCat(FilterCategory.AMKSVBICodec);
@@ -234,7 +235,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
         return false;
       }
       //done
-      Log.WriteFile("analog: teletext setup");
+      this.LogDebug("teletext setup");
 
       if (_filterWstDecoder != null)
       {

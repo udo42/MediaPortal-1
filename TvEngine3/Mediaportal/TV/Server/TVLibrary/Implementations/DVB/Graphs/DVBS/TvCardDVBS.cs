@@ -25,9 +25,9 @@ using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 using Mediaportal.TV.Server.TVLibrary.Implementations.Helper;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Integration;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.Device;
-using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Mediaportal.TV.Server.TVDatabase.Entities;
 
 namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
@@ -106,7 +106,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
     /// </summary>
     public override void BuildGraph()
     {
-      Log.Debug("TvCardDvbS: build graph");
+      this.LogDebug("build graph");
       base.BuildGraph();
 
       // Check if one of the supported interfaces is capable of sending DiSEqC commands.
@@ -115,7 +115,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
         IDiseqcDevice diseqcDevice = deviceInterface as IDiseqcDevice;
         if (diseqcDevice != null)
         {
-          Log.Debug("TvCardDvbS: found DiSEqC command interface");
+          this.LogDebug("found DiSEqC command interface");
           _diseqcController = new DiseqcController(diseqcDevice, _alwaysSendDiseqcCommands, _diseqcCommandRepeatCount);
           break;
         }
@@ -127,14 +127,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
     /// </summary>
     protected override void CreateTuningSpace()
     {
-      Log.Debug("TvCardDvbS: create tuning space");
+      this.LogDebug("create tuning space");
 
       // Check if the system already has an appropriate tuning space.
       SystemTuningSpaces systemTuningSpaces = new SystemTuningSpaces();
       ITuningSpaceContainer container = systemTuningSpaces as ITuningSpaceContainer;
       if (container == null)
       {
-        Log.Error("TvCardDvbS: failed to get the tuning space container");
+        this.LogError("failed to get the tuning space container");
         return;
       }
 
@@ -162,7 +162,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
           spaces[0].get_UniqueName(out name);
           if (name.Equals("MediaPortal DVBS TuningSpace"))
           {
-            Log.Debug("TvCardDvbS: found correct tuningspace");
+            this.LogDebug("found correct tuningspace");
             _tuningSpace = (IDVBSTuningSpace)spaces[0];
             _tuningSpace.put_SpectralInversion(SpectralInversion.Automatic);
             _tuningSpace.put_LowOscillator(lowOsc);
@@ -181,7 +181,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
       }
 
       // We didn't find our tuning space registered in the system, so create a new one.
-      Log.Debug("TvCardDvbS: create new tuningspace");
+      this.LogDebug("create new tuningspace");
       _tuningSpace = (IDVBSTuningSpace)new DVBSTuningSpace();
       _tuningSpace.put_UniqueName("MediaPortal DVBS TuningSpace");
       _tuningSpace.put_FriendlyName("MediaPortal DVBS TuningSpace");
@@ -238,7 +238,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
       DVBSChannel dvbsChannel = channel as DVBSChannel;
       if (dvbsChannel == null)
       {
-        Log.Debug("TvCardDvbS: channel is not a DVB-S channel!!! {0}", channel.GetType().ToString());
+        this.LogDebug("channel is not a DVB-S channel!!! {0}", channel.GetType().ToString());
         return null;
       }
 

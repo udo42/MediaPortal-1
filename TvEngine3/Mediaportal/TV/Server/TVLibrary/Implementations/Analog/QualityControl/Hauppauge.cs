@@ -22,8 +22,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Text;
 using DirectShowLib;
-using Mediaportal.TV.Server.TVLibrary.Implementations.Helper;
-using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Integration;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 
 namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
@@ -137,11 +136,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
         string card = Encoding.Unicode.GetString(encodedstring);
 
         hr = new HResult(_Init(filter, card));
-        Log.WriteFile("Hauppauge Quality Control Initializing " + hr.ToDXString());
+        this.LogDebug("Quality Control Initializing " + hr.ToDXString());
       }
       catch (Exception ex)
       {
-        Log.WriteFile("Hauppauge Init failed " + ex.Message);
+        this.LogError(ex, "Init failed");
       }
     }
 
@@ -163,7 +162,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
       }
       catch (Exception ex)
       {
-        Log.WriteFile("Hauppauge SetDNR failed " + ex.Message);
+        this.LogError(ex, "SetDNR failed");
       }
       return false;
     }
@@ -187,7 +186,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
       }
       catch (Exception ex)
       {
-        Log.WriteFile("Hauppauge Error GetBitrate " + ex.Message);
+        this.LogError(ex, "Error GetBitrate");
       }
 
       return true;
@@ -205,14 +204,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
           if (_IsHauppauge())
           {
             hr.Set(_SetVidBitRate(maxKbps, minKbps, isVBR));
-            Log.WriteFile("Hauppauge Set Bit Rate " + hr.ToDXString());
+            this.LogInfo("Set Bit Rate " + hr.ToDXString());
             return true;
           }
         }
       }
       catch (Exception ex)
       {
-        Log.WriteFile("Hauppauge Set Vid Rate " + ex.Message);
+        this.LogError(ex, "Set Vid Rate ");
       }
       return false;
     }
@@ -236,7 +235,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
       }
       catch (Exception ex)
       {
-        Log.WriteFile("Hauppauge Get Audio Bitrate " + ex.Message);
+        this.LogError(ex, "Get Audio Bitrate");
       }
       return false;
     }
@@ -259,7 +258,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
       }
       catch (Exception ex)
       {
-        Log.WriteFile("Hauppauge Set Audio Bit Rate " + ex.Message);
+        this.LogError(ex,"Set Audio Bit Rate");
       }
       return false;
     }
@@ -283,7 +282,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
       }
       catch (Exception ex)
       {
-        Log.WriteFile("Hauppauge Get Stream " + ex.Message);
+        this.LogError(ex, "Get Stream");
       }
       return false;
     }
@@ -306,7 +305,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
       }
       catch (Exception ex)
       {
-        Log.WriteFile("Hauppauge Set Stream Type " + ex.Message);
+        this.LogError(ex, "Hauppauge Set Stream Type");
       }
       return false;
     }
@@ -346,8 +345,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
         }
         catch (Exception ex)
         {
-          Log.WriteFile("Hauppauge exception " + ex.Message);
-          Log.WriteFile("Hauppauge Disposed hcw.txt");
+          this.LogError(ex, "Hauppauge exception");
+          this.LogError(ex, "Disposed hcw.txt");
         }
       }
       disposed = true;

@@ -70,7 +70,7 @@ namespace Mediaportal.TV.Server.TVLibrary
       }
       catch (Exception ex)
       {
-        Log.Write(ex);
+        Log.Error(ex);
       }
     }
 
@@ -419,8 +419,7 @@ namespace Mediaportal.TV.Server.TVLibrary
           }
           catch (Exception ex)
           {
-            Log.Info("TV Service:  Plugin: {0} failed to start", plugin.Name);
-            Log.Write(ex);
+            Log.Error(ex, "TV Service:  Plugin: {0} failed to start", plugin.Name);
           }
         }
         else
@@ -443,8 +442,7 @@ namespace Mediaportal.TV.Server.TVLibrary
           }
           catch (Exception ex)
           {
-            Log.Info("TV Service: Plugin: {0} failed to startedAll", plugin.Name);
-            Log.Write(ex);
+            Log.Error(ex, "TV Service: Plugin: {0} failed to startedAll", plugin.Name);
           }
         }
       }
@@ -463,8 +461,7 @@ namespace Mediaportal.TV.Server.TVLibrary
           }
           catch (Exception ex)
           {
-            Log.Info("TV Service: plugin: {0} failed to stop", plugin.Name);
-            Log.Write(ex);
+            Log.Error(ex, "TV Service: plugin: {0} failed to stop", plugin.Name);
           }
         }
         _pluginsStarted = new List<ITvServerPlugin>();

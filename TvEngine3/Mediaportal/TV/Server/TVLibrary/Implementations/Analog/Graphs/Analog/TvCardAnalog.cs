@@ -30,6 +30,7 @@ using Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.GraphComponents;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Integration;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Capture = Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components.Capture;
@@ -328,7 +329,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
       Release.ComObject("Graphbuilder", _graphBuilder);
       _graphBuilder = null;
       _isDeviceInitialised = false;
-      Log.WriteFile("analog: dispose completed");
+      this.LogDebug("dispose completed");
     }
 
     #endregion
@@ -347,12 +348,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
       }
       _lastSignalUpdate = DateTime.MinValue;
       _tunerLocked = false;
-      Log.WriteFile("analog: build graph");
+      this.LogDebug("build graph");
       try
       {
         if (_isDeviceInitialised)
         {
-          Log.WriteFile("analog: Graph already build");
+          this.LogDebug("Graph already build");
           throw new TvException("Graph already build");
         }
         //create a new filter graph
@@ -407,13 +408,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
           Log.Error("analog: unable to add encoding filter");
           throw new TvException("Analog: unable to add capture filter");
         }
-        Log.WriteFile("analog: Check quality control");
+        this.LogDebug("Check quality control");
         _qualityControl = QualityControlFactory.createQualityControl(_configuration, _encoder.VideoEncoderFilter,
                                                                      _capture.VideoFilter, _encoder.MultiplexerFilter,
                                                                      _encoder.VideoCompressorFilter);
         if (_qualityControl == null)
         {
-          Log.WriteFile("analog: No quality control support found");
+          this.LogDebug("No quality control support found");
           //If a hauppauge analog card, set bitrate to default
           //As the graph is stopped, we don't need to pass in the deviceID
           //However, if we wish to change quality for a live graph, the deviceID must be passed in
@@ -439,7 +440,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
         {
           throw new TvException("Analog: unable to add mpfilewriter");
         }
-        Log.WriteFile("analog: Graph is built");
+        this.LogDebug("Graph is built");
         FilterGraphTools.SaveGraphFile(_graphBuilder, "analog.grf");
         ReloadCardConfiguration();
         _isDeviceInitialised = true;

@@ -21,7 +21,7 @@
 using DirectShowLib;
 using Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
-using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Integration;
 
 namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
 {
@@ -61,7 +61,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
     /// </summary>
     public override void OnGraphRunning()
     {
-      Log.Debug("HDPVRChannel: subchannel {0} OnGraphRunning()", _subChannelId);
+      this.LogDebug("subchannel {0} OnGraphRunning()", _subChannelId);
 
       if (!WaitForPmt(ServiceId, PmtPid))
       {

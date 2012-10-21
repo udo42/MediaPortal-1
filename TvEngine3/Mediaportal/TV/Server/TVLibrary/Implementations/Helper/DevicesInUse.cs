@@ -20,7 +20,7 @@
 
 using System.Collections.Generic;
 using DirectShowLib;
-using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Integration;
 
 namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 {
@@ -93,10 +93,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         if (_devicesInUse[i].Mon == device.Mon && _devicesInUse[i].Name == device.Name &&
             _devicesInUse[i].DevicePath == device.DevicePath)
         {
-          Log.WriteFile("device in use", device.Name);
-          Log.WriteFile("  moniker   :{0} ", device.Mon);
-          Log.WriteFile("  name      :{0} ", device.Name);
-          Log.WriteFile("  devicepath:{0} ", device.DevicePath);
+          this.LogInfo("device in use", device.Name);
+          this.LogInfo("  moniker   :{0} ", device.Mon);
+          this.LogInfo("  name      :{0} ", device.Name);
+          this.LogInfo("  devicepath:{0} ", device.DevicePath);
           return true;
         }
       }

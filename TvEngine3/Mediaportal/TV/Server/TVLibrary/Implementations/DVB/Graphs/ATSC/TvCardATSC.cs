@@ -24,8 +24,8 @@ using DirectShowLib.BDA;
 using Mediaportal.TV.Server.TVLibrary.Implementations.Helper;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Integration;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
-using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
 {
@@ -70,14 +70,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
     /// </summary>
     protected override void CreateTuningSpace()
     {
-      Log.Debug("TvCardAtsc: create tuning space");
+      this.LogDebug("create tuning space");
 
       // Check if the system already has an appropriate tuning space.
       SystemTuningSpaces systemTuningSpaces = new SystemTuningSpaces();
       ITuningSpaceContainer container = systemTuningSpaces as ITuningSpaceContainer;
       if (container == null)
       {
-        Log.Error("TvCardAtsc: failed to get the tuning space container");
+        this.LogError("failed to get the tuning space container");
         return;
       }
 
@@ -101,7 +101,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
           spaces[0].get_UniqueName(out name);
           if (name.Equals("MediaPortal ATSC TuningSpace"))
           {
-            Log.Debug("TvCardAtsc: found correct tuningspace");
+            this.LogDebug("found correct tuningspace");
             _tuningSpace = (IATSCTuningSpace)spaces[0];
             tuner.put_TuningSpace(_tuningSpace);
             _tuningSpace.CreateTuneRequest(out request);
@@ -118,7 +118,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
       }
 
       // We didn't find our tuning space registered in the system, so create a new one.
-      Log.Debug("TvCardAtsc: create new tuningspace");
+      this.LogDebug("create new tuningspace");
       _tuningSpace = (IATSCTuningSpace)new ATSCTuningSpace();
       _tuningSpace.put_UniqueName("MediaPortal ATSC TuningSpace");
       _tuningSpace.put_FriendlyName("MediaPortal ATSC TuningSpace");
@@ -168,7 +168,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
       ATSCChannel atscChannel = channel as ATSCChannel;
       if (atscChannel == null)
       {
-        Log.Debug("TvCardAtsc: channel is not an ATSC/QAM channel!!! {0}", channel.GetType().ToString());
+        this.LogDebug("channel is not an ATSC/QAM channel!!! {0}", channel.GetType().ToString());
         return null;
       }
 

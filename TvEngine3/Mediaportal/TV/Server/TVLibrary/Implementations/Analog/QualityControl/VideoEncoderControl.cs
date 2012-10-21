@@ -22,7 +22,7 @@ using System;
 using DirectShowLib;
 using Mediaportal.TV.Server.TVLibrary.Implementations.Helper;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog;
-using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Integration;
 
 namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
 {
@@ -51,8 +51,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
       : base(configuration)
     {
       _videoEncoder = videoEncoder;
-      Log.WriteFile("analog: IVideoEncoder supported by: " +
-                        FilterGraphTools.GetFilterName(_videoEncoder as IBaseFilter) + "; Checking capabilities ");
+      this.LogInfo("IVideoEncoder supported by: " + FilterGraphTools.GetFilterName(_videoEncoder as IBaseFilter) + "; Checking capabilities ");
       CheckCapabilities();
     }
 
