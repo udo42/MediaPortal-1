@@ -13,6 +13,7 @@
 #include "TextPassThruFilter.h"
 #include "IPinHook.h"
 #include "ITrackInfo.h"
+#include "../DSUtil/WinAPIUtils.h"
 
 STSStyle g_style;
 BOOL g_overrideUserStyles;
@@ -34,7 +35,7 @@ CSubManager::CSubManager(IDirect3DDevice9* d3DDev, SIZE size, HRESULT& hr)
 	m_lastSize(size)
 {
 	ATLTRACE("CSubManager constructor: texture size %dx%d, buffer ahead: %d, pow2tex: %d", g_textureSize.cx, g_textureSize.cy, g_subPicsBufferAhead, g_pow2tex);
-	m_pAllocator = new CDX9SubPicAllocator(d3DDev, g_textureSize, g_pow2tex/*AfxGetAppSettings().fSPCPow2Tex*/);
+	m_pAllocator = new CDX9SubPicAllocator(d3DDev, g_textureSize, g_pow2tex/*AfxGetAppSettings().fSPCPow2Tex*/, false);
 	hr = S_OK;
 	if (g_subPicsBufferAhead > 0)
 		m_pSubPicQueue = new CSubPicQueue(g_subPicsBufferAhead, g_disableAnim, m_pAllocator, &hr);
