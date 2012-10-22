@@ -20,19 +20,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Windows.Forms;
-using System.Collections.Specialized;
 using System.Configuration;
 using System.Reflection;
 using System.Threading;
 using System.Diagnostics;
-using Mediaportal.TV.Server.TVControl;
 using Mediaportal.TV.Server.TVControl.ServiceAgents;
-using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
-using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
+using Mediaportal.TV.Server.TVLibrary.Interfaces.Integration;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.SetupTV
@@ -103,6 +99,9 @@ namespace Mediaportal.TV.Server.SetupTV
     [STAThread]
     public static void Main(string[] arguments)
     {
+      // Initialize hosting environment
+      IntegrationProviderHelper.Register();
+
       if (System.IO.File.Exists("c:\\debug_setuptv.txt"))
       {
         System.Diagnostics.Debugger.Launch();
