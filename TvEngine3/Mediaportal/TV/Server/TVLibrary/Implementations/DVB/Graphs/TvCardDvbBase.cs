@@ -918,7 +918,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     {
       this.LogDebug("add Mediaportal TsWriter filter");
 
-      _filterTsWriter = FilterLoader.LoadFilterFromDll("TsWriter.ax", typeof(MpTsAnalyzer).GUID);
+      _filterTsWriter = FilterLoader.LoadFilterFromDll("TsWriter.ax", typeof(MpTsAnalyzer).GUID, true);
       if (_filterTsWriter == null)
       {
         this.LogError("failed to marshal TsWriter filter");
