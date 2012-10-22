@@ -110,7 +110,6 @@ namespace MediaPortal.Player
     [DllImport("dshowhelper.dll", ExactSpelling = true, CharSet = CharSet.Auto, SetLastError = true)]
     private static extern unsafe void EVRUpdateDisplayFPS();
 
-
     #endregion
 
     #region static vars
@@ -527,6 +526,11 @@ namespace MediaPortal.Player
     /// Gets EVR frame rate 
     /// Get video FPS - returns FPS from filter graph if 'getReported' is true,
     /// otherwise returns FPS estimated from video timestamps
+    ///
+    /// FPS_SOURCE_ADAPTIVE = 0
+    /// FPS_SOURCE_SAMPLE_TIMESTAMP = 1
+    /// FPS_SOURCE_SAMPLE_DURATION= 2
+    /// FPS_SOURCE_EVR_MIXER = 3
     /// </summary>
     public double GetEVRVideoFPS(int fpsSource)
     {

@@ -79,6 +79,24 @@ enum MP_RENDER_STATE
   MP_RENDER_STATE_SHUTDOWN
 };
 
+enum FPS_SOURCE_METHOD
+{
+  FPS_SOURCE_ADAPTIVE = 0,
+  FPS_SOURCE_SAMPLE_TIMESTAMP,
+  FPS_SOURCE_SAMPLE_DURATION,
+  FPS_SOURCE_EVR_MIXER
+};
+
+typedef struct 
+{
+  UINT     maxScanLine;
+  UINT     minVisScanLine;
+  UINT     maxVisScanLine;    
+  double   dDetectedScanlineTime;
+  double   dEstRefreshCycle; 
+  bool     estRefreshLock;
+} DisplayParams;
+
 typedef struct _SchedulerParams
 {
   MPEVRCustomPresenter* pPresenter;
@@ -193,7 +211,7 @@ public:
   double         GetCycleDifference();
   double         GetDetectedFrameTime();
   double         GetRealFramePeriod();
-  double         GetVideoFramePeriod(int fpsSource);
+  double         GetVideoFramePeriod(FPS_SOURCE_METHOD fpsSource);
   void           GetFrameRateRatio();
 
   void           NotifyTimer(LONGLONG targetTime);
@@ -221,8 +239,8 @@ protected:
   void           GetAVSyncClockInterface();
   void           SetupAudioRenderer();
   void           AdjustAVSync(double currentPhaseDiff);
-  int            MeasureScanLines(LONGLONG startTime, double *times, double *scanLines, int n, UINT *maxScanLine);
-  BOOL           EstimateRefreshTimings(int numFrames, int thrdPrio);
+  int            MeasureScanLines(LONGLONG startTime, double *times, double *scanLines, int n, UINT* maxScanLine);
+  BOOL           EstimateRefreshTimings(int numFrames, int threadPriority);
   void           ReleaseSurfaces();
   HRESULT        Paint(CComPtr<IDirect3DSurface9> pSurface);
   HRESULT        SetMediaType(CComPtr<IMFMediaType> pType, BOOL* pbHasChanged);
@@ -275,6 +293,7 @@ protected:
   CCritSec                          m_lockSamples;
   CCritSec                          m_lockScheduledSamples;
   CCritSec                          m_lockRasterData;
+  CCritSec                          m_lockRefreshEstimator;
   CCritSec                          m_lockCallback;
   int                               m_iFreeSamples;
   IMFSample*                        m_vFreeSamples[NUM_SURFACES];
@@ -382,9 +401,6 @@ protected:
   bool QueryFpsFromVideoMSDecoder();
   bool ExtractAvgTimePerFrame(const AM_MEDIA_TYPE* pmt, REFERENCE_TIME& rtAvgTimePerFrame);
 
-  double m_dDetectedScanlineTime;
-  double m_dEstRefreshCycle; 
-  bool   m_estRefreshLock;
   double m_dOptimumDisplayCycle;
   double m_dFrameCycle;
   double m_dCycleDifference;
@@ -392,15 +408,14 @@ protected:
   double m_pllRasterSyncOffset[NB_JITTER];
   UINT   m_LastStartOfPaintScanline;
   UINT   m_LastEndOfPaintScanline;
-  UINT   m_maxScanLine;
-  UINT   m_minVisScanLine;
-  UINT   m_maxVisScanLine;
+
+  DisplayParams m_displayParams;
 
   UINT   m_rasterLimitLow; 
   UINT   m_rasterTargetPosn;
   UINT   m_rasterLimitHigh;
-  UINT   m_rasterLimitTop;    
-  UINT   m_rasterLimitNP;    
+  UINT   m_rasterLimitTop;
+  UINT   m_rasterLimitNP;
 
   double m_dEstRefCycDiff; 
   

@@ -112,11 +112,12 @@ namespace MediaPortal.Util
             {
               DeleteFanart(movieId, index);
               File.Copy(localFile, dbFile, true);
+              File.SetAttributes(dbFile, FileAttributes.Normal);
             }
           }
           catch (Exception ex)
           {
-            Log.Error(ex);
+            Log.Error("GetlocalFanart (local file) error: {0}", ex.Message);
           }
 
         }
@@ -129,7 +130,10 @@ namespace MediaPortal.Util
             webClient.DownloadFile(localFile, dbFile);
             webClient.Dispose();
           }
-          catch (Exception) { }
+          catch (Exception ex)
+          {
+            Log.Error("GetlocalFanart (url) error: {0}", ex.Message);
+          }
         }
 
       }
@@ -273,7 +277,10 @@ namespace MediaPortal.Util
           }
         }
       }
-      catch (Exception) { }
+      catch (Exception ex)
+      {
+        Log.Error("GetFanart TMDB API error: {0}", ex.Message);
+      }
       finally { }
     }
 
@@ -307,7 +314,10 @@ namespace MediaPortal.Util
           webClient.Dispose();
         }
       }
-      catch (Exception) { }
+      catch (Exception ex)
+      {
+        Log.Error("GetFanartByUrl error: {0}", ex.Message);
+      }
       finally { }
     }
 
@@ -513,7 +523,10 @@ namespace MediaPortal.Util
         _fanartUrl = _fanartList[0].ToString();
         webClient.Dispose();
       }
-      catch (Exception) { }
+      catch (Exception ex)
+      {
+        Log.Error("Download fanart error: {0}", ex.Message);
+      }
     }
 
     // Randomize fanart array list
@@ -531,9 +544,16 @@ namespace MediaPortal.Util
 
     private static void DeleteFile(string file)
     {
-      if (File.Exists(file))
+      try
       {
-        File.Delete(file);
+        if (File.Exists(file))
+        {
+          File.Delete(file);
+        }
+      }
+      catch (Exception ex)
+      {
+        Log.Error("Fanart/covers delete error: {0}", ex.Message);
       }
     }
 

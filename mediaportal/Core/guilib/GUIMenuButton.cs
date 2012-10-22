@@ -382,7 +382,7 @@ namespace MediaPortal.GUI.Library
     private void bindToValue(string strValue)
     {
       string strTemp = strValue;
-      strValue = GUIPropertyManager.GetProperty(strValue);
+      strValue = GUIPropertyManager.Parse(strValue, GUIExpressionManager.ExpressionOptions.EVALUATE_ALWAYS);
       if (strValue == null || strValue == "")
       {
         strValue = strTemp;
@@ -1616,7 +1616,7 @@ namespace MediaPortal.GUI.Library
             dialogItemSelect.Add(_listMenuLabels[i] + ""); // Convert to string since menu item may not be a string (e.g., int).
             if (_listMenuLabels[_listSelected] == _listMenuLabels[i])
             {
-              dialogItemSelect.SelectOption("" + (_listSelected + 1));  // The dialog list is 1-based, our array is 0-based.
+              dialogItemSelect.selectOption("" + (_listSelected + 1));  // The dialog list is 1-based, our array is 0-based.
             }
           }
           dialogItemSelect.DoModal(ParentID);
