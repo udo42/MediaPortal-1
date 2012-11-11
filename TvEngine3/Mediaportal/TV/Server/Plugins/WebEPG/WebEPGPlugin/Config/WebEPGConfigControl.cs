@@ -46,7 +46,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
     private WebepgConfigFile _configFile;
     private string _configFileDir;
     private Dictionary<string, string> _countryList;
-    private bool _initialized = false;
+    private bool _initialized;
     private string _webepgFilesDir;
     private Hashtable hChannelConfigInfo;
     private Hashtable hGrabberConfigInfo;
@@ -250,7 +250,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
         selection = new fSelection(tGrabbers); //, true, this.DoSelect);
         selection.GrabberSelected += DoSelect;
         selection.MinimizeBox = false;
-        selection.Closed += new EventHandler(CloseSelect);
+        selection.Closed += CloseSelect;
         selection.Show();
       }
       else

@@ -102,8 +102,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Compro
 
     private IntPtr _commandBuffer = IntPtr.Zero;
     private IntPtr _generalBuffer = IntPtr.Zero;
-    private bool _isCompro = false;
-    private IKsPropertySet _propertySet = null;
+    private bool _isCompro;
+    private IKsPropertySet _propertySet;
 
     #endregion
 

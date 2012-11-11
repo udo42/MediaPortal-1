@@ -37,10 +37,10 @@ namespace Mediaportal.TV.TvPlugin
   {
     #region variables, ctor/dtor
 
-    [SkinControl(10)] protected GUIListControl listConflicts = null;
+    [SkinControl(10)] protected GUIListControl listConflicts;
 
-    private int m_iSelectedItem = 0;
-    private GUIListItem selectedItem = null;
+    private int m_iSelectedItem;
+    private GUIListItem selectedItem;
 
     public GUITVConflicts()
     {
@@ -95,7 +95,7 @@ namespace Mediaportal.TV.TvPlugin
         GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, control.GetID, 0, 0,
                                         null);
         OnMessage(msg);
-        int iItem = (int)msg.Param1;
+        int iItem = msg.Param1;
         if (actionType == Action.ActionType.ACTION_SELECT_ITEM)
         {
           OnClick(iItem);
@@ -131,7 +131,7 @@ namespace Mediaportal.TV.TvPlugin
       GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, listConflicts.GetID, 0, 0,
                                       null);
       OnMessage(msg);
-      int iItem = (int)msg.Param1;
+      int iItem = msg.Param1;
       return iItem;
     }
 

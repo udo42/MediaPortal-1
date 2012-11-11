@@ -26,10 +26,10 @@ namespace Mediaportal.TV.TvPlugin
 {
   public class TVNotifyYesNoDialog: GUIDialogYesNo
   {
-    [SkinControl(12)] protected GUIImage imgLogo = null;
+    [SkinControl(12)] protected GUIImage imgLogo;
 
     private string logoUrl = string.Empty;
-    private bool m_bNeedRefresh = false;
+    private bool m_bNeedRefresh;
 
     public TVNotifyYesNoDialog()
     {

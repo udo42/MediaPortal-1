@@ -14,7 +14,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
     private Channel _entity;
     private Program _nextProgram;
     private DateTime _updateNowAndNextLastRun = DateTime.MinValue;
-    private bool _updateNowAndNextRun = false;
+    private bool _updateNowAndNextRun;
 
     public ChannelBLL (Channel entity)
     {      

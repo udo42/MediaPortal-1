@@ -31,9 +31,9 @@ namespace Mediaportal.TV.TvPlugin
 {
   public class TvEpgSettings : GUIInternalWindow
   {
-    [SkinControl(2)] protected GUIButtonControl btnSelectAll = null;
-    [SkinControl(3)] protected GUIButtonControl btnSelectNone = null;
-    [SkinControl(10)] protected GUICheckListControl listChannels = null;
+    [SkinControl(2)] protected GUIButtonControl btnSelectAll;
+    [SkinControl(3)] protected GUIButtonControl btnSelectNone;
+    [SkinControl(10)] protected GUICheckListControl listChannels;
 
     public TvEpgSettings()
     {

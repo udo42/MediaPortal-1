@@ -36,7 +36,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
   {
     #region Variables
 
-    private bool _disAllowShutdown = false;
+    private bool _disAllowShutdown;
     private string _handlerName = "GenericStandbyHandler";
     private DateTime _lastUpdate = DateTime.MinValue;
     private int _timeout = 5;
@@ -52,7 +52,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     {
       if (GlobalServiceProvider.Instance.IsRegistered<IPowerScheduler>())
         GlobalServiceProvider.Instance.Get<IPowerScheduler>().OnPowerSchedulerEvent +=
-          new PowerSchedulerEventHandler(GenericStandbyHandler_OnPowerSchedulerEvent);
+          GenericStandbyHandler_OnPowerSchedulerEvent;
     }
 
     /// <summary>

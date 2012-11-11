@@ -41,7 +41,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     public const string DefaultUserAgent = "Mozilla/4.0 (compatible; MSIE 7.0; WindowsNT 5.0; .NET CLR 1 .1.4322)";
 
     // not really threadsafe but this is only used for the following param - no harm if overwritten
-    private int _requestDelay = 0;
+    private int _requestDelay;
     public event AsyncGetRequestCompleted workerFinished;
     public event AsyncGetRequestError workerError;
 
@@ -50,7 +50,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
       using (var worker = new BackgroundWorker()) 
       {
         _requestDelay = 0;
-        worker.DoWork += new DoWorkEventHandler(RequestWorker_DoWork);
+        worker.DoWork += RequestWorker_DoWork;
         worker.RunWorkerAsync(_url);
       }
     }
@@ -60,7 +60,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
       using (var worker = new BackgroundWorker()) 
       {
         _requestDelay = _delayMSecs;
-        worker.DoWork += new DoWorkEventHandler(RequestWorker_DoWork);
+        worker.DoWork += RequestWorker_DoWork;
         worker.RunWorkerAsync(_url);
       }
     }

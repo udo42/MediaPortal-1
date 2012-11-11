@@ -33,12 +33,12 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {  
   public partial class ChannelsInGroupControl : UserControl
   {
-    private static bool _userConfirmedAutoReorder = false;
+    private static bool _userConfirmedAutoReorder;
     private readonly MPListViewStringColumnSorter lvwColumnSorter;
     private string _allChannelsGroupName = TvConstants.TvGroupNames.AllChannels;
 
     private ChannelGroup _channelGroup;
-    private bool _ignoreItemCheckedEvent = false;
+    private bool _ignoreItemCheckedEvent;
     private SortOrder _lastSortOrder = SortOrder.None;
     private MediaTypeEnum _mediaTypeEnum = MediaTypeEnum.TV;
 

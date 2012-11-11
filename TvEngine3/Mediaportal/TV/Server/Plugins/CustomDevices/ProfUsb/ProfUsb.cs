@@ -173,9 +173,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
 
     #region variables
 
-    private bool _isCustomTuningSupported = false;
-    private bool _isProfUsb = false;
-    private IKsPropertySet _propertySet = null;
+    private bool _isCustomTuningSupported;
+    private bool _isProfUsb;
+    private IKsPropertySet _propertySet;
 
     #endregion
 

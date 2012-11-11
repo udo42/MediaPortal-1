@@ -37,7 +37,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.GenpixOpenSource
 
     #region Nested type: BdaExtensionProperty
 
-    private enum BdaExtensionProperty : int
+    private enum BdaExtensionProperty
     {
       Diseqc = 0
     }
@@ -82,8 +82,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.GenpixOpenSource
 
     private IntPtr _diseqcBuffer = IntPtr.Zero;
     private IntPtr _instanceBuffer = IntPtr.Zero;
-    private bool _isGenpixOpenSource = false;
-    private IKsPropertySet _propertySet = null;
+    private bool _isGenpixOpenSource;
+    private IKsPropertySet _propertySet;
 
     #endregion
 

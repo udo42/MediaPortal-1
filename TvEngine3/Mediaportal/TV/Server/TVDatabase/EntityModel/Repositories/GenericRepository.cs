@@ -24,7 +24,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
     private readonly string _connectionStringName;
     private readonly PluralizationService _pluralizer = PluralizationService.CreateService(CultureInfo.GetCultureInfo("en"));
 
-    private readonly bool _trackingEnabled = false;
+    private readonly bool _trackingEnabled;
     private bool _disposed;
     private TEntity _objectContext;
     private IUnitOfWork _unitOfWork;
@@ -231,20 +231,20 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 
     public void Delete<TEntity>(Expression<Func<TEntity, bool>> criteria) where TEntity : class
     {
-      IEnumerable<TEntity> records = Find<TEntity>(criteria);                  
+      IEnumerable<TEntity> records = Find(criteria);                  
 
       foreach (TEntity record in records)
       {
-        Delete<TEntity>(record);
+        Delete(record);
       }
     }
 
     public void Delete<TEntity>(ISpecification<TEntity> criteria) where TEntity : class
     {
-      IEnumerable<TEntity> records = Find<TEntity>(criteria);      
+      IEnumerable<TEntity> records = Find(criteria);      
       foreach (TEntity record in records)
       {
-        Delete<TEntity>(record);
+        Delete(record);
       }
     }
 
@@ -345,7 +345,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
         return e => false;
       }
       var equals = values.Select(value => (Expression)Expression.Equal(valueSelector.Body, Expression.Constant(value, typeof(TValue))));
-      var body = @equals.Aggregate<Expression>((accumulate, equal) => Expression.Or(accumulate, equal));
+      var body = @equals.Aggregate((accumulate, equal) => Expression.Or(accumulate, equal));
       return Expression.Lambda<Func<TElement, bool>>(body, p);
 
     }

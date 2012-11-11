@@ -137,9 +137,9 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
         _notifyWindow = new NotifyWindow();
         _notifyWindow.Create();
         _notifyWindow.Class = _deviceClass;
-        _notifyWindow.DeviceArrival += new DeviceEventHandler(OnDeviceArrival);
-        _notifyWindow.DeviceRemoval += new DeviceEventHandler(OnDeviceRemoval);
-        _notifyWindow.SettingsChanged += new SettingsChanged(OnSettingsChanged);
+        _notifyWindow.DeviceArrival += OnDeviceArrival;
+        _notifyWindow.DeviceRemoval += OnDeviceRemoval;
+        _notifyWindow.SettingsChanged += OnSettingsChanged;
         _notifyWindow.RegisterDeviceArrival();
 
         Open();
@@ -166,7 +166,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
       // open a stream from the device and begin an asynchronous read
       _deviceStream = new FileStream(deviceHandle, FileAccess.Read, true, 128, true);
-      _deviceStream.BeginRead(_deviceBuffer, 0, _deviceBuffer.Length, new AsyncCallback(OnReadComplete), null);
+      _deviceStream.BeginRead(_deviceBuffer, 0, _deviceBuffer.Length, OnReadComplete, null);
     }
 
     private void OnReadComplete(IAsyncResult asyncResult)
@@ -190,7 +190,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
         }
 
         // begin another asynchronous read from the device
-        _deviceStream.BeginRead(_deviceBuffer, 0, _deviceBuffer.Length, new AsyncCallback(OnReadComplete), null);
+        _deviceStream.BeginRead(_deviceBuffer, 0, _deviceBuffer.Length, OnReadComplete, null);
       }
       catch (Exception) {}
     }
@@ -211,8 +211,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
     #region Events
 
-    public static RemoteEventHandler Click = null;
-    public static RemoteEventHandler DoubleClick = null;
+    public static RemoteEventHandler Click;
+    public static RemoteEventHandler DoubleClick;
 
     #endregion Events
 
@@ -220,7 +220,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
     private static Remote _deviceSingleton;
     private RemoteButton _doubleClickButton;
-    private int _doubleClickTick = 0;
+    private int _doubleClickTick;
     private int _doubleClickTime = -1;
 
     #endregion Members
@@ -253,14 +253,14 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       if (_deviceSingleton._deviceStream == null) return;
       if (blasterPort < 0 || blasterPort > 2) throw new ArgumentException("blasterPort must be 1, 2 or 0 (both)");
 
-      byte[][] packetSpeed = new byte[][]
+      byte[][] packetSpeed = new[]
                                {
                                  new byte[] {0x9F, 0x06, 0x01, 0x44}, // fast
                                  new byte[] {0x9F, 0x06, 0x01, 0x4A}, // medium
                                  new byte[] {0x9F, 0x06, 0x01, 0x50}, // slow???
                                };
 
-      byte[][] packetPorts = new byte[][]
+      byte[][] packetPorts = new[]
                                {
                                  new byte[] {0x9F, 0x08, 0x06}, // both
                                  new byte[] {0x9F, 0x08, 0x04}, // 1
@@ -290,7 +290,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
         _deviceSingleton._learnStartTick = Environment.TickCount;
         _deviceSingleton._deviceStream.BeginRead(_deviceSingleton._deviceBuffer, 0,
                                                  _deviceSingleton._deviceBuffer.Length,
-                                                 new AsyncCallback(_deviceSingleton.OnReadComplete), learnCallback);
+                                                 _deviceSingleton.OnReadComplete, learnCallback);
       }
       catch
       {
@@ -310,8 +310,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       _notifyWindow = new NotifyWindow();
       _notifyWindow.Create();
       _notifyWindow.Class = _deviceClass;
-      _notifyWindow.DeviceArrival += new DeviceEventHandler(OnDeviceArrival);
-      _notifyWindow.DeviceRemoval += new DeviceEventHandler(OnDeviceRemoval);
+      _notifyWindow.DeviceArrival += OnDeviceArrival;
+      _notifyWindow.DeviceRemoval += OnDeviceRemoval;
       _notifyWindow.RegisterDeviceArrival();
 
       // we need somewhere to store the smaller packets as they arrive
@@ -357,7 +357,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
         if (_deviceBuffer[0] == 0x9F || (_deviceBuffer[0] & 0x80) != 0x80)
         {
           // ignore garbage - begin another asynchronous read from the device
-          _deviceStream.BeginRead(_deviceBuffer, 0, _deviceBuffer.Length, new AsyncCallback(OnReadComplete),
+          _deviceStream.BeginRead(_deviceBuffer, 0, _deviceBuffer.Length, OnReadComplete,
                                   asyncResult.AsyncState);
           return;
         }
@@ -375,7 +375,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
         }
 
         // begin another asynchronous read from the device
-        _deviceStream.BeginRead(_deviceBuffer, 0, _deviceBuffer.Length, new AsyncCallback(OnReadComplete),
+        _deviceStream.BeginRead(_deviceBuffer, 0, _deviceBuffer.Length, OnReadComplete,
                                 asyncResult.AsyncState);
       }
       catch (Exception e)
@@ -501,8 +501,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     #region Members
 
     private static Blaster _deviceSingleton;
-    private static int _currentSpeed = 0;
-    private int _learnStartTick = 0;
+    private static int _currentSpeed;
+    private int _learnStartTick;
     private ArrayList _packetArray;
 
     #endregion Members
@@ -740,8 +740,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
     #region Events
 
-    public static DeviceEventHandler DeviceArrival = null;
-    public static DeviceEventHandler DeviceRemoval = null;
+    public static DeviceEventHandler DeviceArrival;
+    public static DeviceEventHandler DeviceRemoval;
 
     #endregion Events
 

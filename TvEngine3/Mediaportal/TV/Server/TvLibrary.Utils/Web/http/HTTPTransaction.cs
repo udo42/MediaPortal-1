@@ -170,10 +170,10 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
         request.AllowAutoRedirect = false;
         if (pageRequest.Cookies != string.Empty)
         {
-          string[] cookiesArray = pageRequest.Cookies.Split(new Char[] {';'});
+          string[] cookiesArray = pageRequest.Cookies.Split(new[] {';'});
           foreach (string cookie in cookiesArray)
           {
-            string[] cookieParts = cookie.Split(new Char[] {'='});
+            string[] cookieParts = cookie.Split(new[] {'='});
             if (cookieParts.Length >= 2)
             {
               if (_cookies == null)

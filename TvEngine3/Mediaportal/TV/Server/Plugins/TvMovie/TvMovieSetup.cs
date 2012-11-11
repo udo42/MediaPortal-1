@@ -662,7 +662,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       SaveDbSettings();
       try
       {
-        Thread manualThread = new Thread(new ThreadStart(ManualImportThread));
+        Thread manualThread = new Thread(ManualImportThread);
         manualThread.Name = "TV Movie manual importer";
         manualThread.Priority = ThreadPriority.Normal;
         manualThread.IsBackground = false;
@@ -681,7 +681,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       try
       {
         _database.LaunchTVMUpdater(false);
-        _database.OnStationsChanged += new TvMovieDatabase.StationsChanged(_database_OnStationsChanged);
+        _database.OnStationsChanged += _database_OnStationsChanged;
         if (_database.Connect())
           _database.Import();
         buttonImportNow.Enabled = true;

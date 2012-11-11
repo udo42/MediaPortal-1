@@ -71,7 +71,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         string values = "";
         for (int j = 0; j < list.Count; j++)
         {
-          ListViewItem item = new ListViewItem(new string[] { list[j], codes[j] });
+          ListViewItem item = new ListViewItem(new[] { list[j], codes[j] });
           mpListView2.Items.Add(item);
           item.Tag = codes[j];
           if (setting.Value == "")

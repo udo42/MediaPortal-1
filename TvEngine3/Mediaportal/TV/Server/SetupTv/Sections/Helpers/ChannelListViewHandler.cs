@@ -40,11 +40,11 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
 
     private const int MS_SLEEP_BEFORE_FILTERING = 150;
 
-    internal Dictionary<int, CardType> _allCards = null; //all available cards
-    internal IList<Channel> _allChannels = null; //all available channels
-    internal TextBox _currentText = null; //the textbox that contains the text for filtering
+    internal Dictionary<int, CardType> _allCards; //all available cards
+    internal IList<Channel> _allChannels; //all available channels
+    internal TextBox _currentText; //the textbox that contains the text for filtering
     private Thread _fillListViewThread; //the currently active thread
-    internal ListView _listView = null; //the listview control that displays the items
+    internal ListView _listView; //the listview control that displays the items
     private Dictionary<int, ListViewItem> _listViewCache; //A list of allready created listviewitems
     private MediaTypeEnum _type; //the type of the texbox, currently that's tv or radio
 
@@ -77,7 +77,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
     /// <param name="searchText"></param>
     internal void FilterListView(String searchText)
     {
-      _fillListViewThread = new Thread(new ParameterizedThreadStart(FillListViewChannels));
+      _fillListViewThread = new Thread(FillListViewChannels);
       _fillListViewThread.Priority = ThreadPriority.BelowNormal;
       _fillListViewThread.Start(searchText);
     }
@@ -108,7 +108,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
       try
       {
         this.LogDebug("Filter listview for " + filterText);
-        _listView.Invoke(new MethodInvoker(delegate()
+        _listView.Invoke(new MethodInvoker(delegate
                                              {
                                                _listView.Items.Clear();
                                                _listView.BeginUpdate();
@@ -129,7 +129,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
           if (ch.DisplayName != null &&
               (filterText.Equals("") || ContainsCaseInvariant(ch.DisplayName, filterText)))
           {
-            _listView.Invoke(new MethodInvoker(delegate() { items.Add(CreateListViewItemForChannel(ch, _allCards)); }));
+            _listView.Invoke(new MethodInvoker(delegate { items.Add(CreateListViewItemForChannel(ch, _allCards)); }));
           }
         }
 
@@ -137,7 +137,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
         if (!InvokeHasTextChanged(filterText))
         {
 //after filtering is done the filter is still valid
-          _listView.Invoke(new MethodInvoker(delegate()
+          _listView.Invoke(new MethodInvoker(delegate
                                                {
                                                  _listView.Items.Clear();
                                                  _listView.Items.AddRange(items.ToArray());
@@ -156,7 +156,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
       }
       finally
       {
-        _listView.Invoke(new MethodInvoker(delegate()
+        _listView.Invoke(new MethodInvoker(delegate
                                              {
                                                _listView.EndUpdate();
                                                Application.UseWaitCursor = false;
@@ -174,7 +174,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
       bool textChanged = false;
       _currentText.Invoke(
         new MethodInvoker(
-          delegate() { textChanged = !_currentText.Text.Equals(filterText, StringComparison.InvariantCultureIgnoreCase); }));
+          delegate { textChanged = !_currentText.Text.Equals(filterText, StringComparison.InvariantCultureIgnoreCase); }));
       return textChanged;
     }
 

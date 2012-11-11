@@ -43,7 +43,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     private BinaryConvolutionCodeRate _innerFecRate = BinaryConvolutionCodeRate.RateNotSet;
 
     [DataMember]
-    private LnbType _lnbType = null;
+    private LnbType _lnbType;
 
     [DataMember]
     private ModulationType _modulation = ModulationType.ModQpsk;

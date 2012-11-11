@@ -75,15 +75,15 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         {
           return ScanTypes.Predefined;
         }
-        if (scanPredefProvider.Checked == true)
+        if (scanPredefProvider.Checked)
         {
           return ScanTypes.Predefined;
         }
-        if (scanSingleTransponder.Checked == true)
+        if (scanSingleTransponder.Checked)
         {
           return ScanTypes.SingleTransponder;
         }
-        if (scanNIT.Checked == true)
+        if (scanNIT.Checked)
         {
           return ScanTypes.NIT;
         }
@@ -108,7 +108,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       InitializeComponent();
       //insert complete ci menu dialog to tab
       Card dbCard = ServiceAgents.Instance.CardServiceAgent.GetCard(_cardNumber, CardIncludeRelationEnum.None);
-      if (dbCard.UseConditionalAccess == true)
+      if (dbCard.UseConditionalAccess)
       {
         ciMenuDialog = new CI_Menu_Dialog(_cardNumber);
         tabPageCIMenu.Controls.Add(ciMenuDialog);

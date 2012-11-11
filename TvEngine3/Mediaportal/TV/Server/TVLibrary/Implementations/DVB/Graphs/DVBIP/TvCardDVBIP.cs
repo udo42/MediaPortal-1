@@ -44,12 +44,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
     /// <summary>
     /// The DVB-IP source filter.
     /// </summary>
-    private IBaseFilter _filterStreamSource = null;
+    private IBaseFilter _filterStreamSource;
 
     /// <summary>
     /// The input pin for the first filter connected to the source filter.
     /// </summary>
-    private IPin _firstFilterInputPin = null;
+    private IPin _firstFilterInputPin;
 
     /// <summary>
     /// The instance number of this DVB-IP tuner.
@@ -286,7 +286,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
       DVBIPChannel dvbipChannel = channel as DVBIPChannel;
       if (dvbipChannel == null)
       {
-        throw new TvException("TvCardDvbIp: channel is not a DVB-IP channel!!! " + channel.GetType().ToString());
+        throw new TvException("TvCardDvbIp: channel is not a DVB-IP channel!!! " + channel.GetType());
       }
 
       if (_useCustomTuning)

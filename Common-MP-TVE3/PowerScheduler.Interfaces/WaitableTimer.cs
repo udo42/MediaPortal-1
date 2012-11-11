@@ -51,13 +51,13 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
     /// <see cref="DateTime.ToFileTime"/> of the time when the timer should
     /// expire.
     /// </summary>
-    private long m_Interval = 0;
+    private long m_Interval;
 
     /// <summary>
     /// This <see cref="Thread"/> will be create by <see cref="SecondsToWait"/> and
     /// runs <see cref="WaitThread"/>.
     /// </summary>
-    private Thread m_Waiting = null;
+    private Thread m_Waiting;
 
     /// <summary>
     /// Create the timer. The caller should call <see cref="Close"/> as soon as
@@ -104,7 +104,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
           m_Interval = DateTime.UtcNow.AddSeconds(value).ToFileTimeUtc();
 
           // Create thread
-          m_Waiting = new Thread(new ParameterizedThreadStart(WaitThread));
+          m_Waiting = new Thread(WaitThread);
           m_Waiting.Priority = ThreadPriority.AboveNormal;
           m_Waiting.Name = "PowerScheduler Waiter";
 

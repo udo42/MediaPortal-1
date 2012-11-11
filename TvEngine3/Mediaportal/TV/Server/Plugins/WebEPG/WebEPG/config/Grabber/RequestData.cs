@@ -30,10 +30,10 @@ namespace WebEPG.config.Grabber
     #region Variables
 
     [XmlAttribute("baseDate")] public string BaseDate;
-    [XmlIgnore()] public string ChannelId;
+    [XmlIgnore] public string ChannelId;
     [XmlArray("DayNames")] [XmlArrayItem("Day")] public string[] DayNames;
-    [XmlAttribute("listStart")] public int ListStart = 0;
-    [XmlAttribute("maxlistings")] public int MaxListingCount = 0;
+    [XmlAttribute("listStart")] public int ListStart;
+    [XmlAttribute("maxlistings")] public int MaxListingCount;
     [XmlAttribute("startOffset")] public int OffsetStart;
     [XmlAttribute("endPage")] public int PageEnd;
     [XmlAttribute("startPage")] public int PageStart;

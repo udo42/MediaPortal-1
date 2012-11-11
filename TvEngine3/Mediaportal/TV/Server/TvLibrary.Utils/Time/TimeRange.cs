@@ -145,7 +145,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
 
     public override string ToString()
     {
-      return _start.ToString() + "-" + _end.ToString();
+      return _start + "-" + _end;
     }
 
     #endregion

@@ -50,9 +50,9 @@ namespace Mediaportal.TV.TvPlugin.Teletext
   {
     #region gui controls
 
-    [SkinControl(501)] protected GUIImage imgTeletextBackground = null;
-    [SkinControl(500)] protected GUIImage imgTeletextForeground = null;
-    [SkinControl(27)] protected GUILabelControl lblMessage = null;
+    [SkinControl(501)] protected GUIImage imgTeletextBackground;
+    [SkinControl(500)] protected GUIImage imgTeletextForeground;
+    [SkinControl(27)] protected GUILabelControl lblMessage;
 
     #endregion
 
@@ -64,7 +64,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
     protected bool _redrawForeground = true;
     protected bool _rememberLastValues;
     protected TeletextPageRenderer _renderer = new TeletextPageRenderer();
-    protected bool _showFirstAvailableSubPage = false;
+    protected bool _showFirstAvailableSubPage;
     protected DateTime _startTime = DateTime.MinValue;
     protected bool _transparentMode;
     protected DateTime _trottling = DateTime.MinValue;

@@ -44,7 +44,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
 
     #region enums
 
-    private enum SmarDtvCiState : int
+    private enum SmarDtvCiState
     {
       Unplugged = 0,
       Empty,
@@ -152,17 +152,17 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     // tuner at any given time, and only one CI device of each brand may be connected to a single system.
     private static HashSet<String> _devicesInUse = new HashSet<string>();
 
-    private bool _isSmarDtvUsbCi = false;
+    private bool _isSmarDtvUsbCi;
     #pragma warning disable 0414
-    private bool _isCamPresent = false;
+    private bool _isCamPresent;
     #pragma warning restore 0414
-    private bool _isCamReady = false;
+    private bool _isCamReady;
     private SmarDtvCiState _ciState = SmarDtvCiState.Empty;
 
-    private IBaseFilter _ciFilter = null;
-    private Type _ciType = null;
-    private DsDevice _ciDevice = null;
-    private IFilterGraph2 _graph = null;
+    private IBaseFilter _ciFilter;
+    private Type _ciType;
+    private DsDevice _ciDevice;
+    private IFilterGraph2 _graph;
 
     // Callbacks
     private ICiMenuCallbacks _ciMenuCallbacks;
@@ -551,10 +551,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
 
       // Set up callbacks and open the interface.
       _ciCallbacks = new SmarDtvUsbCiCallbacks();
-      _ciCallbacks.OnApdu = new OnSmarDtvUsbCiApdu(OnApdu);
-      _ciCallbacks.OnApplicationInfo = new OnSmarDtvUsbCiApplicationInfo(OnApplicationInfo);
-      _ciCallbacks.OnCiState = new OnSmarDtvUsbCiState(OnCiState);
-      _ciCallbacks.OnCloseMmi = new OnSmarDtvUsbCiCloseMmi(OnCloseMmi);
+      _ciCallbacks.OnApdu = OnApdu;
+      _ciCallbacks.OnApplicationInfo = OnApplicationInfo;
+      _ciCallbacks.OnCiState = OnCiState;
+      _ciCallbacks.OnCloseMmi = OnCloseMmi;
       _ciCallbackBuffer = Marshal.AllocCoTaskMem(20);
       Marshal.StructureToPtr(_ciCallbacks, _ciCallbackBuffer, true);
       int hr = (int)_ciType.GetMethod("USB2CI_Init").Invoke(_ciFilter, new object[] { _ciCallbackBuffer });

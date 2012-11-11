@@ -120,7 +120,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// <summary>
     /// A flag used by the TV service as a signal to abort the tuning process before it is completed.
     /// </summary>
-    protected bool _cancelTune = false;
+    protected bool _cancelTune;
 
     /// <summary>
     /// The db card id
@@ -136,7 +136,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// A list containing the custom device interfaces supported by this device. The list is ordered by
     /// interface priority.
     /// </summary>
-    protected List<ICustomDevice> _customDeviceInterfaces = null;
+    protected List<ICustomDevice> _customDeviceInterfaces;
 
     /// <summary>
     /// The number of times to re-attempt decrypting the current service set when one or more services are
@@ -153,7 +153,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// The number of channels that the device is capable of or permitted to decrypt simultaneously. Zero means
     /// there is no limit.
     /// </summary>
-    protected int _decryptLimit = 0;
+    protected int _decryptLimit;
 
     /// <summary>
     /// Main device of the card
@@ -185,7 +185,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// An indicator: has the device been initialised? For most devices this indicates whether the DirectShow/BDA
     /// filter graph has been built.
     /// </summary>
-    protected bool _isDeviceInitialised = false;
+    protected bool _isDeviceInitialised;
 
     /// <summary>
     /// Indicates, if the card is a hybrid one
@@ -254,7 +254,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// The previous channel that the device was tuned to. This variable is reset each time the device
     /// is stopped, paused or reset.
     /// </summary>
-    protected IChannel _previousChannel = null;
+    protected IChannel _previousChannel;
 
     /// <summary>
     /// Value of the signal level
@@ -308,7 +308,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// Custom/direct tuning may be faster or more reliable than regular tuning methods. Equally, it can
     /// also be slower (eg. TeVii) or more limiting (eg. Digital Everywhere) than regular tuning methods.
     /// </remarks>
-    protected bool _useCustomTuning = false;
+    protected bool _useCustomTuning;
 
     /// <summary>
     /// Enable or disable waiting for the conditional interface to be ready before sending commands.
@@ -728,7 +728,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
             }
             else
             {
-              throw new TvException("TvCardBase: service type not recognised, unable to count number of services being decrypted\r\n" + service.ToString());
+              throw new TvException("TvCardBase: service type not recognised, unable to count number of services being decrypted\r\n" + service);
             }
           }
         }
@@ -1082,7 +1082,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
           }
           else
           {
-            throw new TvException("TvCardBase: service type not recognised, unable to assemble decrypt service list\r\n" + service.ToString());
+            throw new TvException("TvCardBase: service type not recognised, unable to assemble decrypt service list\r\n" + service);
           }
         }
 
@@ -1116,7 +1116,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
               }
               else
               {
-                throw new TvException("TvCardBase: service type not recognised, unable to assemble decrypt service list\r\n" + service.ToString());
+                throw new TvException("TvCardBase: service type not recognised, unable to assemble decrypt service list\r\n" + service);
               }
             }
           }
@@ -1691,8 +1691,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         LockInOnSignal();
 
         // Subchannel OnGraphRunning().
-        _mapSubChannels[subChannelId].AfterTuneEvent -= new BaseSubChannel.OnAfterTuneDelegate(FireAfterTuneEvent);
-        _mapSubChannels[subChannelId].AfterTuneEvent += new BaseSubChannel.OnAfterTuneDelegate(FireAfterTuneEvent);
+        _mapSubChannels[subChannelId].AfterTuneEvent -= FireAfterTuneEvent;
+        _mapSubChannels[subChannelId].AfterTuneEvent += FireAfterTuneEvent;
         _mapSubChannels[subChannelId].OnGraphRunning();
 
         // At this point we should know which data/streams form the service(s) that are being accessed. We need to

@@ -8,12 +8,7 @@ using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 namespace Mediaportal.TV.Server.TVLibrary.Services
 {  
   public class ProgramService : IProgramService
-  {    
-
-    public ProgramService ()
-    {
-    }
-
+  {
     #region IProgramService Members
 
     public IDictionary<int, NowAndNext> GetNowAndNextForChannelGroup(int idGroup)

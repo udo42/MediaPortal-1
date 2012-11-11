@@ -63,8 +63,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DvbSky
 
     #region variables
 
-    private Conexant.Conexant _conexantInterface = null;
-    private bool _isDvbSky = false;
+    private Conexant.Conexant _conexantInterface;
+    private bool _isDvbSky;
 
     #endregion
 

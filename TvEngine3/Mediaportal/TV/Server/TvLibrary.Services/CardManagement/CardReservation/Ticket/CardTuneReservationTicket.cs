@@ -45,7 +45,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Ticket
     private readonly int _numberOfOtherUsersOnCurrentCard;
     private readonly int _numberOfOtherUsersOnSameChannel;
     private readonly int _numberOfUsersOnSameCurrentChannel;
-    private readonly ISubChannel _ownerSubchannel = null;
+    private readonly ISubChannel _ownerSubchannel;
 
     private readonly List<IUser> _recordingUsers = new List<IUser>();
     private readonly IList<IUser> _timeshiftingUsers = new List<IUser>();

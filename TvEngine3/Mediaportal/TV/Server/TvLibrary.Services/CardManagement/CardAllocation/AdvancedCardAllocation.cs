@@ -42,10 +42,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
   {
     #region private members
 
-    public AdvancedCardAllocation()
-    {
-    }
-
     private static bool IsCardEnabled(ITvCardHandler cardHandler)
     {
       return cardHandler.DataBaseCard.Enabled;

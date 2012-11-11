@@ -70,7 +70,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
   public class WeekEndTool
   {
 
-    private static bool _startDayLoaded = false;
+    private static bool _startDayLoaded;
     private static DayOfWeek _firstWorkingDay = DayOfWeek.Monday;
 
     #region public method

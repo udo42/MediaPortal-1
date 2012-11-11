@@ -48,19 +48,19 @@ namespace Mediaportal.TV.TvPlugin
   {
     #region variables, ctor/dtor
 
-    [SkinControl(7)] protected GUIButtonControl btnCleanup = null;
-    [SkinControl(9)] protected GUIButtonControl btnConflicts = null;
-    [SkinControl(6)] protected GUIButtonControl btnNew = null;
-    [SkinControl(8)] protected GUIButtonControl btnPriorities = null;
-    [SkinControl(11)] protected GUIToggleButtonControl btnSeries = null;
-    [SkinControl(2)] protected GUISortButtonControl btnSortBy = null;
+    [SkinControl(7)] protected GUIButtonControl btnCleanup;
+    [SkinControl(9)] protected GUIButtonControl btnConflicts;
+    [SkinControl(6)] protected GUIButtonControl btnNew;
+    [SkinControl(8)] protected GUIButtonControl btnPriorities;
+    [SkinControl(11)] protected GUIToggleButtonControl btnSeries;
+    [SkinControl(2)] protected GUISortButtonControl btnSortBy;
 
     private SortMethod currentSortMethod = SortMethod.Date;
-    [SkinControl(10)] protected GUIListControl listSchedules = null;
+    [SkinControl(10)] protected GUIListControl listSchedules;
     private bool m_bSortAscending = true;
-    private int m_iSelectedItem = 0;
-    private bool needUpdate = false;
-    private ScheduleBLL selectedItem = null;
+    private int m_iSelectedItem;
+    private bool needUpdate;
+    private ScheduleBLL selectedItem;
 
 
     public TvScheduler()
@@ -91,7 +91,7 @@ namespace Mediaportal.TV.TvPlugin
       using (Settings xmlreader = new MPSettings())
       {
         string strTmp = String.Empty;
-        strTmp = (string)xmlreader.GetValue("tvscheduler", "sort");
+        strTmp = xmlreader.GetValue("tvscheduler", "sort");
         if (strTmp != null)
         {
           if (strTmp == "channel")
@@ -175,7 +175,7 @@ namespace Mediaportal.TV.TvPlugin
       }
       GUIControl.SelectItemControl(GetID, listSchedules.GetID, m_iSelectedItem);
 
-      btnSortBy.SortChanged += new SortEventHandler(SortChanged);
+      btnSortBy.SortChanged += SortChanged;
     }
 
     protected override void OnPageDestroy(int newWindowId)
@@ -239,7 +239,7 @@ namespace Mediaportal.TV.TvPlugin
         GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, control.GetID, 0, 0,
                                         null);
         OnMessage(msg);
-        int iItem = (int)msg.Param1;
+        int iItem = msg.Param1;
         if (actionType == Action.ActionType.ACTION_SELECT_ITEM)
         {
           OnClick(iItem);
@@ -289,7 +289,7 @@ namespace Mediaportal.TV.TvPlugin
       GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, listSchedules.GetID, 0, 0,
                                       null);
       OnMessage(msg);
-      int iItem = (int)msg.Param1;
+      int iItem = msg.Param1;
       return iItem;
     }
 
@@ -586,7 +586,7 @@ namespace Mediaportal.TV.TvPlugin
               IList<Schedule> seriesList = TVHome.Util.GetRecordingTimes(rec);
               for (int serieNr = 0; serieNr < seriesList.Count; ++serieNr)
               {
-                Schedule recSeries = (Schedule)seriesList[serieNr];
+                Schedule recSeries = seriesList[serieNr];
                 if (DateTime.Now > recSeries.EndTime)
                 {
                   continue;

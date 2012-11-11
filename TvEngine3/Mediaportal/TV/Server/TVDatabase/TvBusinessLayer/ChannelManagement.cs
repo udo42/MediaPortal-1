@@ -514,7 +514,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
           Recording recording = channel.Recordings[i];
           recording.Schedule = null;
         }
-        channelRepository.ApplyChanges<Channel>(channelRepository.ObjectContext.Channels, channel);
+        channelRepository.ApplyChanges(channelRepository.ObjectContext.Channels, channel);
       }
     }
 

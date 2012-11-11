@@ -45,7 +45,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     Success,
   }
 
-  [Serializable(), DefaultProperty("Name")]
+  [Serializable, DefaultProperty("Name")]
   public class BlasterCommand //: ISerializable
   {
     #region Construction
@@ -166,9 +166,9 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     private Port _commandPort = Port.One;
     private Speed _commandSpeed = Speed.Fast;
 
-    [NonSerialized()] private Status _commandStatus;
+    [NonSerialized] private Status _commandStatus;
 
-    [NonSerialized()] private string _deviceName;
+    [NonSerialized] private string _deviceName;
 
     #endregion Members
   }

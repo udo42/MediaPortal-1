@@ -120,23 +120,23 @@ namespace Mediaportal.TV.TvPlugin
     private readonly List<int> RecordingIntervalValues = new List<int>();
     private int _postRec;
     private int _preRec;
-    [SkinControl(3)] protected GUIButtonControl btnAdvancedRecord = null;
-    [SkinControl(7)] protected GUIButtonControl btnEpisodes = null;
-    [SkinControl(4)] protected GUIButtonControl btnKeep = null;
-    [SkinControl(9)] protected GUIButtonControl btnPostRecord = null;
-    [SkinControl(8)] protected GUIButtonControl btnPreRecord = null;
-    [SkinControl(6)] protected GUIButtonControl btnQuality = null;
-    [SkinControl(2)] protected GUIButtonControl btnRecord = null;
-    [SkinControl(16)] protected GUIFadeLabel lblProgramChannel = null;
-    [SkinControl(15)] protected GUITextScrollUpControl lblProgramDescription = null;
-    [SkinControl(17)] protected GUILabelControl lblProgramGenre = null;
-    [SkinControl(14)] protected GUILabelControl lblProgramTime = null;
-    [SkinControl(13)] protected GUIFadeLabel lblProgramTitle = null;
+    [SkinControl(3)] protected GUIButtonControl btnAdvancedRecord;
+    [SkinControl(7)] protected GUIButtonControl btnEpisodes;
+    [SkinControl(4)] protected GUIButtonControl btnKeep;
+    [SkinControl(9)] protected GUIButtonControl btnPostRecord;
+    [SkinControl(8)] protected GUIButtonControl btnPreRecord;
+    [SkinControl(6)] protected GUIButtonControl btnQuality;
+    [SkinControl(2)] protected GUIButtonControl btnRecord;
+    [SkinControl(16)] protected GUIFadeLabel lblProgramChannel;
+    [SkinControl(15)] protected GUITextScrollUpControl lblProgramDescription;
+    [SkinControl(17)] protected GUILabelControl lblProgramGenre;
+    [SkinControl(14)] protected GUILabelControl lblProgramTime;
+    [SkinControl(13)] protected GUIFadeLabel lblProgramTitle;
 
     [SkinControl(11)]
-    protected GUILabelControl lblUpcomingEpsiodes = null;
-    [SkinControl(10)] protected GUIListControl lstUpcomingEpsiodes = null;
-    private object updateLock = null;
+    protected GUILabelControl lblUpcomingEpsiodes;
+    [SkinControl(10)] protected GUIListControl lstUpcomingEpsiodes;
+    private object updateLock;
 
     #endregion
 

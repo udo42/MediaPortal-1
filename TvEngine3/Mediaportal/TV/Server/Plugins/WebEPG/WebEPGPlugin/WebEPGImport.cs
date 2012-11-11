@@ -51,16 +51,11 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
     #region variables
 
     private System.Timers.Timer _scheduleTimer;
-    private bool _workerThreadRunning = false;
+    private bool _workerThreadRunning;
 
     #endregion
 
     #region Constructor
-
-    /// <summary>
-    /// Create a new instance of a generic standby handler
-    /// </summary>
-    public WebEPGImport() {}
 
     #endregion
 
@@ -112,7 +107,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
 
       //CheckNewTVGuide();
       _scheduleTimer = new System.Timers.Timer {Interval = 60000, Enabled = true};
-      _scheduleTimer.Elapsed += new System.Timers.ElapsedEventHandler(_scheduleTimer_Elapsed);
+      _scheduleTimer.Elapsed += _scheduleTimer_Elapsed;
     }
 
     /// <summary>
@@ -168,7 +163,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
       _workerThreadRunning = true;
       ThreadParams param = new ThreadParams();
       param.showProgress = showProgress;
-      Thread workerThread = new Thread(new ParameterizedThreadStart(ThreadFunctionImportTVGuide));
+      Thread workerThread = new Thread(ThreadFunctionImportTVGuide);
       workerThread.Name = "WebEPGImporter";
       workerThread.IsBackground = true;
       workerThread.Priority = ThreadPriority.Lowest;
@@ -304,7 +299,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
         IEpgHandler handler = GlobalServiceProvider.Instance.Get<IEpgHandler>();
         if (handler != null)
         {
-          handler.EPGScheduleDue += new EPGScheduleHandler(EPGScheduleDue);
+          handler.EPGScheduleDue += EPGScheduleDue;
           this.LogDebug("WebEPGImporter: registered with PowerScheduler EPG handler");
           return;
         }
@@ -316,7 +311,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
     {
       if (GlobalServiceProvider.Instance.IsRegistered<IPowerScheduler>())
       {
-        GlobalServiceProvider.Instance.Get<IPowerScheduler>().Register(this as IWakeupHandler);
+        GlobalServiceProvider.Instance.Get<IPowerScheduler>().Register(this);
         this.LogDebug("WebEPGImporter: registered WakeupHandler with PowerScheduler ");
         return;
       }
@@ -327,7 +322,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
     {
       if (GlobalServiceProvider.Instance.IsRegistered<IPowerScheduler>())
       {
-        GlobalServiceProvider.Instance.Get<IPowerScheduler>().Unregister(this as IWakeupHandler);
+        GlobalServiceProvider.Instance.Get<IPowerScheduler>().Unregister(this);
         this.LogDebug("WebEPGImporter: unregistered WakeupHandler with PowerScheduler ");
       }
     }

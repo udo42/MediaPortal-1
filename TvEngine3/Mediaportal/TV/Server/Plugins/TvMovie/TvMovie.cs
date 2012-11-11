@@ -51,7 +51,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       @"Software\Classes\VirtualStore\MACHINE\SOFTWARE\Wow6432Node\Ewe\TVGhost\Gemeinsames";
 
     private TvMovieDatabase _database;
-    private bool _isImporting = false;
+    private bool _isImporting;
     private System.Timers.Timer _stateTimer;
 
     #endregion
@@ -195,7 +195,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
         IEpgHandler handler = GlobalServiceProvider.Instance.Get<IEpgHandler>();
         if (handler != null)
         {
-          handler.EPGScheduleDue += new EPGScheduleHandler(EPGScheduleDue);
+          handler.EPGScheduleDue += EPGScheduleDue;
           this.LogDebug("TVMovie: registered with PowerScheduler EPG handler");
           return;
         }
@@ -287,7 +287,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       {
         try
         {
-          Thread importThread = new Thread(new ThreadStart(ImportThread));
+          Thread importThread = new Thread(ImportThread);
           importThread.Name = "TV Movie importer";
           importThread.IsBackground = true;
           importThread.Priority = ThreadPriority.Lowest;
@@ -307,7 +307,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
         if (_stateTimer == null)
         {
           _stateTimer = new System.Timers.Timer();
-          _stateTimer.Elapsed += new ElapsedEventHandler(StartImportThread);
+          _stateTimer.Elapsed += StartImportThread;
           _stateTimer.Interval = _timerIntervall;
           _stateTimer.AutoReset = true;
 

@@ -30,7 +30,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Xml
   {
     #region Variables
 
-    private bool _skipAttribute = false;
+    private bool _skipAttribute;
 
     #endregion
 

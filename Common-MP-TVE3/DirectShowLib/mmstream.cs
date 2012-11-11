@@ -33,9 +33,9 @@ namespace DirectShowLib.MultimediaStreaming
 
   public sealed class MsResults
   {
-    public const int S_Pending = unchecked((int) 0x00040001);
-    public const int S_NoUpdate = unchecked((int) 0x00040002);
-    public const int S_EndOfStream = unchecked((int) 0x00040003);
+    public const int S_Pending = unchecked(0x00040001);
+    public const int S_NoUpdate = unchecked(0x00040002);
+    public const int S_EndOfStream = unchecked(0x00040003);
     public const int E_SampleAlloc = unchecked((int) 0x80040401);
     public const int E_PurposeId = unchecked((int) 0x80040402);
     public const int E_NoStream = unchecked((int) 0x80040403);

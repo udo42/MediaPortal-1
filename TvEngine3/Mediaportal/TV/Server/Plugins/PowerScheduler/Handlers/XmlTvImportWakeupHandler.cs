@@ -47,8 +47,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
     #region Constructor
 
-    public XmlTvImportWakeupHandler() {}
-
     #endregion
 
     #region Private methods

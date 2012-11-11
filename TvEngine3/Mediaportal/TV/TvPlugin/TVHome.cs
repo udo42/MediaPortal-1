@@ -108,37 +108,37 @@ namespace Mediaportal.TV.TvPlugin
     private static DateTime _updateProgressTimer = DateTime.MinValue;
     private static ChannelNavigator m_navigator;
     private static TVUtil _util;
-    private static IVirtualCard _card = null;
+    private static IVirtualCard _card;
     private static DateTime _updateTimer = DateTime.Now;
-    private static bool _autoTurnOnTv = false;
-    private static int _waitonresume = 0;
-    public static bool settingsLoaded = false;
+    private static bool _autoTurnOnTv;
+    private static int _waitonresume;
+    public static bool settingsLoaded;
     private static List<string> _preferredLanguages;
     private static bool _usertsp;
     private static string _recordingpath = "";
     private static string _timeshiftingpath = "";
-    private static bool _preferAC3 = false;
-    private static bool _preferAudioTypeOverLang = false;
-    private static bool _autoFullScreen = false;
-    private static bool _suspended = false;
-    private static bool _showlastactivemodule = false;
-    private static bool _showlastactivemoduleFullscreen = false;
-    private static bool _playbackStopped = false;
-    private static bool _onPageLoadDone = false;
-    private static bool _userChannelChanged = false;
+    private static bool _preferAC3;
+    private static bool _preferAudioTypeOverLang;
+    private static bool _autoFullScreen;
+    private static bool _suspended;
+    private static bool _showlastactivemodule;
+    private static bool _showlastactivemoduleFullscreen;
+    private static bool _playbackStopped;
+    private static bool _onPageLoadDone;
+    private static bool _userChannelChanged;
     private static bool _showChannelStateIcons = true;
-    private static bool _doingHandleServerNotConnected = false;
-    private static bool _doingChannelChange = false;
-    private static bool _ServerNotConnectedHandled = false;
-    private static bool _recoverTV = false;
-    private static bool _connected = false;
-    private static bool _isAnyCardRecording = false;
+    private static bool _doingHandleServerNotConnected;
+    private static bool _doingChannelChange;
+    private static bool _ServerNotConnectedHandled;
+    private static bool _recoverTV;
+    private static bool _connected;
+    private static bool _isAnyCardRecording;
 
 
-    private static ManualResetEvent _waitForBlackScreen = null;
-    private static ManualResetEvent _waitForVideoReceived = null;
+    private static ManualResetEvent _waitForBlackScreen;
+    private static ManualResetEvent _waitForVideoReceived;
 
-    private static int FramesBeforeStopRenderBlackImage = 0;
+    private static int FramesBeforeStopRenderBlackImage;
     private static BitHelper<LiveTvStatus> _status = new BitHelper<LiveTvStatus>();
 
     public static ChannelErrorInfo _lastError = new ChannelErrorInfo();
@@ -147,16 +147,16 @@ namespace Mediaportal.TV.TvPlugin
     // CI Menu
     private static CiMenuEventEventHandler _ciMenuEventEventHandler;
     public static GUIDialogCIMenu dlgCiMenu;
-    public static GUIDialogNotify _dialogNotify = null;
+    public static GUIDialogNotify _dialogNotify;
 
-    private static CiMenu currentCiMenu = null;
+    private static CiMenu currentCiMenu;
     private static object CiMenuLock = new object();
-    private static bool CiMenuActive = false;
+    private static bool CiMenuActive;
 
     private static List<CiMenu> CiMenuList = new List<CiMenu>();
 
     // EPG Channel
-    private static Channel _lastTvChannel = null;
+    private static Channel _lastTvChannel;
 
     // notification
     protected static int _notifyTVTimeout = 15;
@@ -165,33 +165,33 @@ namespace Mediaportal.TV.TvPlugin
 
     private static readonly ServerMonitor _serverMonitor = new ServerMonitor();
     private TvNotifyManager _notifyManager;
-    private Channel _resumeChannel = null;
+    private Channel _resumeChannel;
 
     [SkinControl(14)]
-    protected GUIButtonControl btnActiveRecordings = null;
+    protected GUIButtonControl btnActiveRecordings;
 
     [SkinControl(9)]
-    protected GUIButtonControl btnActiveStreams = null;
+    protected GUIButtonControl btnActiveStreams;
 
     [SkinControl(7)]
-    protected GUIButtonControl btnChannel = null;
+    protected GUIButtonControl btnChannel;
 
     [SkinControl(3)]
-    protected GUIButtonControl btnRecord = null;
+    protected GUIButtonControl btnRecord;
 
     [SkinControl(13)]
-    protected GUIButtonControl btnTeletext = null;
+    protected GUIButtonControl btnTeletext;
 
     [SkinControl(2)]
-    protected GUIButtonControl btnTvGuide = null;
+    protected GUIButtonControl btnTvGuide;
 
     [SkinControl(8)]
-    protected GUIToggleButtonControl btnTvOnOff = null;
+    protected GUIToggleButtonControl btnTvOnOff;
 
     [SkinControl(24)]
-    protected GUIImage imgRecordingIcon = null;
+    protected GUIImage imgRecordingIcon;
     [SkinControl(99)]
-    protected GUIVideoControl videoWindow = null;
+    protected GUIVideoControl videoWindow;
 
     #region Nested type: ChannelErrorInfo
 
@@ -269,31 +269,31 @@ namespace Mediaportal.TV.TvPlugin
       IntegrationProviderHelper.Register();
       this.LogInfo("TVHome:OnAdded");
 
-      GUIGraphicsContext.OnBlackImageRendered += new BlackImageRenderedHandler(OnBlackImageRendered);
-      GUIGraphicsContext.OnVideoReceived += new VideoReceivedHandler(OnVideoReceived);
+      GUIGraphicsContext.OnBlackImageRendered += OnBlackImageRendered;
+      GUIGraphicsContext.OnVideoReceived += OnVideoReceived;
 
       _waitForBlackScreen = new ManualResetEvent(false);
       _waitForVideoReceived = new ManualResetEvent(false);
 
-      Application.ApplicationExit += new EventHandler(Application_ApplicationExit);
+      Application.ApplicationExit += Application_ApplicationExit;
 
-      g_Player.PlayBackStarted += new g_Player.StartedHandler(OnPlayBackStarted);
-      g_Player.PlayBackStopped += new g_Player.StoppedHandler(OnPlayBackStopped);
-      g_Player.AudioTracksReady += new g_Player.AudioTracksReadyHandler(OnAudioTracksReady);
+      g_Player.PlayBackStarted += OnPlayBackStarted;
+      g_Player.PlayBackStopped += OnPlayBackStopped;
+      g_Player.AudioTracksReady += OnAudioTracksReady;
 
-      GUIWindowManager.Receivers += new SendMessageHandler(OnGlobalMessage);
+      GUIWindowManager.Receivers += OnGlobalMessage;
 
       // replace g_player's ShowFullScreenWindowTV
       g_Player.ShowFullScreenWindowTV = ShowFullScreenWindowTVHandler;
 
       try
       {
-        TVHome.OnChannelChanged -= new OnChannelChangedDelegate(ForceUpdates);
-        TVHome.OnChannelChanged += new OnChannelChangedDelegate(ForceUpdates);
+        TVHome.OnChannelChanged -= ForceUpdates;
+        TVHome.OnChannelChanged += ForceUpdates;
 
         m_navigator = new ChannelNavigator();
-        m_navigator.OnZapChannel -= new ChannelNavigator.OnZapChannelDelegate(ForceUpdates);
-        m_navigator.OnZapChannel += new ChannelNavigator.OnZapChannelDelegate(ForceUpdates);
+        m_navigator.OnZapChannel -= ForceUpdates;
+        m_navigator.OnZapChannel += ForceUpdates;
 
         // Make sure that we have valid hostname for the TV server
         SetRemoteControlHostName();
@@ -434,16 +434,16 @@ namespace Mediaportal.TV.TvPlugin
     {
       OnPageDestroy(-1);
 
-      GUIGraphicsContext.OnBlackImageRendered -= new BlackImageRenderedHandler(OnBlackImageRendered);
-      GUIGraphicsContext.OnVideoReceived -= new VideoReceivedHandler(OnVideoReceived);
+      GUIGraphicsContext.OnBlackImageRendered -= OnBlackImageRendered;
+      GUIGraphicsContext.OnVideoReceived -= OnVideoReceived;
 
-      Application.ApplicationExit -= new EventHandler(Application_ApplicationExit);
+      Application.ApplicationExit -= Application_ApplicationExit;
 
-      g_Player.PlayBackStarted -= new g_Player.StartedHandler(OnPlayBackStarted);
-      g_Player.PlayBackStopped -= new g_Player.StoppedHandler(OnPlayBackStopped);
-      g_Player.AudioTracksReady -= new g_Player.AudioTracksReadyHandler(OnAudioTracksReady);
+      g_Player.PlayBackStarted -= OnPlayBackStarted;
+      g_Player.PlayBackStopped -= OnPlayBackStopped;
+      g_Player.AudioTracksReady -= OnAudioTracksReady;
 
-      GUIWindowManager.Receivers -= new SendMessageHandler(OnGlobalMessage);
+      GUIWindowManager.Receivers -= OnGlobalMessage;
     }
 
     public override void OnAction(Action action)
@@ -566,7 +566,7 @@ namespace Mediaportal.TV.TvPlugin
         {
           if (Navigator.CurrentGroup.GroupMaps.Count > 0)
           {
-            GroupMap gm = (GroupMap)Navigator.CurrentGroup.GroupMaps[0];
+            GroupMap gm = Navigator.CurrentGroup.GroupMaps[0];
             channel = gm.Channel;
           }
         }
@@ -976,7 +976,7 @@ namespace Mediaportal.TV.TvPlugin
       //call g_player.stop only on main thread.
       if (GUIGraphicsContext.form.InvokeRequired)
       {
-        StopPlayerMainThreadDelegate d = new StopPlayerMainThreadDelegate(StopPlayerMainThread);
+        StopPlayerMainThreadDelegate d = StopPlayerMainThread;
         GUIGraphicsContext.form.Invoke(d);
         return;
       }
@@ -989,7 +989,7 @@ namespace Mediaportal.TV.TvPlugin
       //show dialogue only on main thread.
       if (GUIGraphicsContext.form.InvokeRequired)
       {
-        ShowDlgAsynchDelegate d = new ShowDlgAsynchDelegate(ShowDlgAsynch);
+        ShowDlgAsynchDelegate d = ShowDlgAsynch;
         GUIGraphicsContext.form.Invoke(d);
         return;
       }
@@ -1463,7 +1463,7 @@ namespace Mediaportal.TV.TvPlugin
       // show dialogue only on main thread.
       if (GUIGraphicsContext.form.InvokeRequired)
       {
-        ShowDlgMessageAsynchDelegate d = new ShowDlgMessageAsynchDelegate(NotifyUser);
+        ShowDlgMessageAsynchDelegate d = NotifyUser;
         GUIGraphicsContext.form.Invoke(d, errMsg);
         return;
       }
@@ -1472,7 +1472,7 @@ namespace Mediaportal.TV.TvPlugin
 
       if (pDlgOK != null)
       {
-        if (GUIWindowManager.ActiveWindow == (int)(int)Window.WINDOW_TVFULLSCREEN)
+        if (GUIWindowManager.ActiveWindow == (int)Window.WINDOW_TVFULLSCREEN)
         {
           GUIWindowManager.ActivateWindow((int)Window.WINDOW_TV, true);
         }
@@ -2030,13 +2030,13 @@ namespace Mediaportal.TV.TvPlugin
 
     public static bool ManualRecord(ChannelBLL channel, int dialogId)
     {
-      if (GUIWindowManager.ActiveWindowEx == (int)(int)Window.WINDOW_TVFULLSCREEN)
+      if (GUIWindowManager.ActiveWindowEx == (int)Window.WINDOW_TVFULLSCREEN)
       {
         Log.Info("send message to fullscreen tv");
         GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_RECORD, GUIWindowManager.ActiveWindow, 0, 0, 0, 0,
                                         null);
         msg.SendToTargetWindow = true;
-        msg.TargetWindowId = (int)(int)Window.WINDOW_TVFULLSCREEN;
+        msg.TargetWindowId = (int)Window.WINDOW_TVFULLSCREEN;
         GUIGraphicsContext.SendMessage(msg);
         return false;
       }
@@ -2943,7 +2943,7 @@ namespace Mediaportal.TV.TvPlugin
       if (GUIGraphicsContext.IsFullScreenVideo)
       {
         // where in fullscreen so delayzap channel instead of immediatly tune..
-        TvFullScreen TVWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)(int)Window.WINDOW_TVFULLSCREEN);
+        TvFullScreen TVWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)Window.WINDOW_TVFULLSCREEN);
         if (TVWindow != null)
         {
           TVWindow.ZapPreviousChannel();
@@ -3051,7 +3051,7 @@ namespace Mediaportal.TV.TvPlugin
       pDlgNotify.SetText(sbMessage.ToString());
 
       // Fullscreen shows the TVZapOSD to handle error messages
-      if (GUIWindowManager.ActiveWindow == (int)(int)Window.WINDOW_TVFULLSCREEN)
+      if (GUIWindowManager.ActiveWindow == (int)Window.WINDOW_TVFULLSCREEN)
       {
         // If failed and wasPlaying TV, left screen as it is and show osd with error message 
         Log.Info("send message to fullscreen tv");
@@ -3059,7 +3059,7 @@ namespace Mediaportal.TV.TvPlugin
                                         0, 0, 0,
                                         null);
         msg.SendToTargetWindow = true;
-        msg.TargetWindowId = (int)(int)Window.WINDOW_TVFULLSCREEN;
+        msg.TargetWindowId = (int)Window.WINDOW_TVFULLSCREEN;
         msg.Object = _lastError; // forward error info object
         msg.Param1 = 3; // sec timeout
         GUIGraphicsContext.SendMessage(msg);
@@ -3068,7 +3068,7 @@ namespace Mediaportal.TV.TvPlugin
       else
       {
         // show notify dialog 
-        pDlgNotify.DoModal((int)GUIWindowManager.ActiveWindowEx);
+        pDlgNotify.DoModal(GUIWindowManager.ActiveWindowEx);
       }
     }
 
@@ -3194,7 +3194,7 @@ namespace Mediaportal.TV.TvPlugin
         //modified by joboehl. Avoids other video being played instead of TV. 
         {
           //if we're already watching this channel, then simply return
-          if (Card.IsTimeShifting == true && Card.IdChannel == channel.IdChannel)
+          if (Card.IsTimeShifting && Card.IdChannel == channel.IdChannel)
           {
             return true;
           }
@@ -3485,7 +3485,7 @@ namespace Mediaportal.TV.TvPlugin
       if (GUIGraphicsContext.IsFullScreenVideo)
       {
         // where in fullscreen so delayzap channel instead of immediatly tune..
-        TvFullScreen TVWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)(int)Window.WINDOW_TVFULLSCREEN);
+        TvFullScreen TVWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)Window.WINDOW_TVFULLSCREEN);
         if (TVWindow != null)
         {
           TVWindow.ZapNextChannel();
@@ -3776,8 +3776,7 @@ namespace Mediaportal.TV.TvPlugin
         case CiMenuState.Request:
           String result = "";
           if (
-            GetKeyboard(currentCiMenu.RequestText, currentCiMenu.AnswerLength, currentCiMenu.Password, ref result) ==
-            true)
+            GetKeyboard(currentCiMenu.RequestText, currentCiMenu.AnswerLength, currentCiMenu.Password, ref result))
           {
             TVHome.Card.SendMenuAnswer(false, result); // send answer, cancel=false
           }

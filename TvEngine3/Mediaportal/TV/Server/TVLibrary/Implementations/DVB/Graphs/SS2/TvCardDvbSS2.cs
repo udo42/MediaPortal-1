@@ -1359,15 +1359,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
 
     #region variables
 
-    private IBaseFilter _filterB2c2Adapter = null;
-    private IB2C2MPEG2DataCtrl6 _dataInterface = null;
-    private IB2C2MPEG2TunerCtrl4 _tunerInterface = null;
+    private IBaseFilter _filterB2c2Adapter;
+    private IB2C2MPEG2DataCtrl6 _dataInterface;
+    private IB2C2MPEG2TunerCtrl4 _tunerInterface;
 
     private DeviceInfo _deviceContext;
     private IntPtr _generalBuffer = IntPtr.Zero;
 
     // PID filter variables - especially important for DVB-S2 devices.
-    private int _maxPidCount = 0;
+    private int _maxPidCount;
     private HashSet<Int32> _filterPids = new HashSet<Int32>();
 
     #region DiSEqC
@@ -1375,12 +1375,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     /// <summary>
     /// The DiSEqC control interface for this device.
     /// </summary>
-    private IDiseqcController _diseqcController = null;
+    private IDiseqcController _diseqcController;
 
     /// <summary>
     /// <c>True</c> if the device is capable of sending raw DiSEqC commands, otherwise <c>false</c>.
     /// </summary>
-    private bool _isRawDiseqcSupported = false;
+    private bool _isRawDiseqcSupported;
 
     /// <summary>
     /// Enable or disable always sending DiSEqC commands.
@@ -1390,7 +1390,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     /// different positioner location. Enabling this option will cause DiSEqC commands to be sent on each
     /// channel change.
     /// </remarks>
-    private bool _alwaysSendDiseqcCommands = false;
+    private bool _alwaysSendDiseqcCommands;
 
     /// <summary>
     /// The number of times to repeat DiSEqC commands.
@@ -1398,7 +1398,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     /// <remarks>
     /// When set to zero, commands are sent once; when set to one, commands are sent twice... etc.
     /// </remarks>
-    private ushort _diseqcCommandRepeatCount = 0;
+    private ushort _diseqcCommandRepeatCount;
 
     #endregion
 

@@ -44,42 +44,42 @@ namespace Mediaportal.TV.TvPlugin.Radio
   /// </summary>
   public class RadioSearch : GUIInternalWindow
   {
-    [SkinControl(9)] protected GUISelectButtonControl btnEpisode = null;
-    [SkinControl(7)] protected GUISelectButtonControl btnLetter = null;
-    [SkinControl(19)] protected GUIButtonControl btnSMSInput = null;
-    [SkinControl(6)] protected GUIToggleButtonControl btnSearchByDescription = null;
-    [SkinControl(4)] protected GUIToggleButtonControl btnSearchByGenre = null;
-    [SkinControl(5)] protected GUIToggleButtonControl btnSearchByTitle = null;
-    [SkinControl(21)] protected GUIButtonControl btnSearchDescription = null; // is replacing btnSearchByDescription 
-    [SkinControl(8)] protected GUISelectButtonControl btnShow = null;
-    [SkinControl(2)] protected GUISortButtonControl btnSortBy = null;
-    [SkinControl(20)] protected GUIButtonControl btnViewBy = null; // is replacing btnSearchByTitle, btnSearchByGenre
+    [SkinControl(9)] protected GUISelectButtonControl btnEpisode;
+    [SkinControl(7)] protected GUISelectButtonControl btnLetter;
+    [SkinControl(19)] protected GUIButtonControl btnSMSInput;
+    [SkinControl(6)] protected GUIToggleButtonControl btnSearchByDescription;
+    [SkinControl(4)] protected GUIToggleButtonControl btnSearchByGenre;
+    [SkinControl(5)] protected GUIToggleButtonControl btnSearchByTitle;
+    [SkinControl(21)] protected GUIButtonControl btnSearchDescription; // is replacing btnSearchByDescription 
+    [SkinControl(8)] protected GUISelectButtonControl btnShow;
+    [SkinControl(2)] protected GUISortButtonControl btnSortBy;
+    [SkinControl(20)] protected GUIButtonControl btnViewBy; // is replacing btnSearchByTitle, btnSearchByGenre
     private SortMethod chosenSortMethod = SortMethod.Auto;
     private string currentGenre = String.Empty;
-    private int currentLevel = 0;
+    private int currentLevel;
     private SearchMode currentSearchMode = SearchMode.Title;
     private SortMethod currentSortMethod = SortMethod.Name;
     private string filterEpisode = String.Empty;
     private string filterLetter = "A";
     private string filterShow = String.Empty;
     private DirectoryHistory history = new DirectoryHistory();
-    [SkinControl(18)] protected GUIImage imgChannelLogo = null;
-    [SkinControl(16)] protected GUILabelControl lblChannel = null;
-    [SkinControl(12)] protected GUILabelControl lblNumberOfItems = null;
-    [SkinControl(15)] protected GUITextScrollUpControl lblProgramDescription = null;
-    [SkinControl(17)] protected GUILabelControl lblProgramGenre = null;
-    [SkinControl(14)] protected GUILabelControl lblProgramTime = null;
-    [SkinControl(13)] protected GUIFadeLabel lblProgramTitle = null;
+    [SkinControl(18)] protected GUIImage imgChannelLogo;
+    [SkinControl(16)] protected GUILabelControl lblChannel;
+    [SkinControl(12)] protected GUILabelControl lblNumberOfItems;
+    [SkinControl(15)] protected GUITextScrollUpControl lblProgramDescription;
+    [SkinControl(17)] protected GUILabelControl lblProgramGenre;
+    [SkinControl(14)] protected GUILabelControl lblProgramTime;
+    [SkinControl(13)] protected GUIFadeLabel lblProgramTitle;
     private IList<ScheduleBLL> listRecordings;
-    [SkinControl(10)] protected GUIListControl listView = null;
+    [SkinControl(10)] protected GUIListControl listView;
     private string prevcurrentGenre = String.Empty;
-    private int prevcurrentLevel = 0;
+    private int prevcurrentLevel;
     private SearchMode prevcurrentSearchMode = SearchMode.Title;
     private string prevfilterEpisode = String.Empty;
     private string prevfilterLetter = "a";
     private string prevfilterShow = String.Empty;
     private bool sortAscending = true;
-    [SkinControl(11)] protected GUIListControl titleView = null;
+    [SkinControl(11)] protected GUIListControl titleView;
 
     #region Serialisation
 
@@ -182,7 +182,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
       }
       Update();
 
-      btnSortBy.SortChanged += new SortEventHandler(SortChanged);
+      btnSortBy.SortChanged += SortChanged;
       if (btnSearchByDescription != null) btnSearchByDescription.Disabled = true;
     }
 
@@ -323,7 +323,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
         GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, control.GetID, 0, 0,
                                         null);
         OnMessage(msg);
-        int iItem = (int)msg.Param1;
+        int iItem = msg.Param1;
         if (actionType == Action.ActionType.ACTION_SELECT_ITEM)
         {
           OnClick(iItem);
@@ -928,7 +928,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
       {
         foreach (Program prog in programs)
         {
-          btnShow.Add(prog.Title.ToString());
+          btnShow.Add(prog.Title);
           if (filterShow == prog.Title)
           {
             selItem = count;
@@ -949,7 +949,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
           string strTime = String.Format("{0} {1}",
                                          Utils.GetShortDayString(prog.StartTime),
                                          prog.StartTime.ToString("t", CultureInfo.CurrentCulture.DateTimeFormat));
-          btnEpisode.Add(strTime.ToString());
+          btnEpisode.Add(strTime);
           if (filterEpisode == strTime)
           {
             selItem = count;

@@ -821,7 +821,7 @@ namespace Mediaportal.TV.Server.SetupTV
             ErrorMsg =
               String.Format(
                 "Found {0} occurences of outdated Psisdecd.dll! \nMost recent installed version: {1} \nPlease clean up your system and check our Wiki's requirements page.",
-                dllPaths.Count.ToString(), mostRecentVer.ToString());
+                dllPaths.Count.ToString(), mostRecentVer);
           if (dllPaths.Count < 1)
             ErrorMsg = "Psisdecd.dll may not be registered properly! \nPlease check our Wiki's requirements page.";
 

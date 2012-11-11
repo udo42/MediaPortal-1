@@ -33,10 +33,10 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.CIMenu
   /// </summary>
   public partial class CI_Menu_Dialog : SectionSettings
   {
-    private bool InitSuccess = false;
+    private bool InitSuccess;
     private CiMenuEventHandler _ciMenuEventHandler;
-    private int cardNumber = 0;
-    private int ciMenuChoices = 0;
+    private int cardNumber;
+    private int ciMenuChoices;
     private CiMenuState ciMenuState = CiMenuState.Closed;
 
     /// <summary>
@@ -214,7 +214,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.CIMenu
           ciMenuState = CiMenuState.Request;
           SetButtonState();
           CiRequest.Text = String.Format("{0} ({1} Zeichen)", Menu.RequestText, Menu.AnswerLength);
-          CiAnswer.MaxLength = (int)Menu.AnswerLength;
+          CiAnswer.MaxLength = Menu.AnswerLength;
           CiAnswer.Text = "";
           CiAnswer.Focus();
           break;

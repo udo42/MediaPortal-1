@@ -50,17 +50,17 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
 
     private List<byte[]> _commands = new List<byte[]>();        // A cache of commands.
     private HashSet<UInt16> _currentPids = new HashSet<UInt16>();
-    private IBDA_DeviceControl _deviceControl = null;
-    private IKsPropertySet _diseqcPropertySet = null;           // IBDA_DiseqCommand
+    private IBDA_DeviceControl _deviceControl;
+    private IKsPropertySet _diseqcPropertySet;           // IBDA_DiseqCommand
 
     private IntPtr _instanceBuffer = IntPtr.Zero;
-    private bool _isMicrosoft = false;
-    private IBDA_FrequencyFilter _oldDiseqcInterface = null;    // IBDA_FrequencyFilter
+    private bool _isMicrosoft;
+    private IBDA_FrequencyFilter _oldDiseqcInterface;    // IBDA_FrequencyFilter
     private IntPtr _paramBuffer = IntPtr.Zero;
-    private IMPEG2PIDMap _pidFilterInterface = null;
-    private IKsPropertySet _qamPropertySet = null;
+    private IMPEG2PIDMap _pidFilterInterface;
+    private IKsPropertySet _qamPropertySet;
     private uint _requestId = 1;                                // Unique request ID for raw DiSEqC commands.
-    private bool _useToneBurst = false;
+    private bool _useToneBurst;
 
     #endregion
 
@@ -293,7 +293,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
         else
         {
           // Fallback to IBDA_FrequencyFilter.put_Range().
-          _oldDiseqcInterface = (IBDA_FrequencyFilter)CheckPutRangeDiseqcSupport(tunerFilter);
+          _oldDiseqcInterface = CheckPutRangeDiseqcSupport(tunerFilter);
           if (_oldDiseqcInterface != null)
           {
             this.LogDebug("Microsoft: supported device detected (IBDA_FrequencyFilter.put_Range() DiSEqC)");

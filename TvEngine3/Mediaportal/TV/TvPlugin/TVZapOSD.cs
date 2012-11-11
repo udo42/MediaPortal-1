@@ -39,18 +39,18 @@ namespace Mediaportal.TV.TvPlugin
     private string channelName = "";
     private string channelNr = "";
     private int idChannel;
-    [SkinControl(39)] protected GUIImage imgRecIcon = null;
-    [SkinControl(10)] protected GUIImage imgTvChannelLogo = null;
-    [SkinControl(35)] protected GUILabelControl lblCurrentChannel = null;
-    [SkinControl(100)] protected GUILabelControl lblCurrentTime = null;
-    [SkinControl(102)] protected GUILabelControl lblEndTime = null;
-    [SkinControl(37)] protected GUITextControl lblOnTvNext = null;
-    [SkinControl(36)] protected GUITextControl lblOnTvNow = null;
-    [SkinControl(101)] protected GUILabelControl lblStartTime = null;
-    [SkinControl(38)] protected GUILabelControl lblZapToCannelNo = null;
+    [SkinControl(39)] protected GUIImage imgRecIcon;
+    [SkinControl(10)] protected GUIImage imgTvChannelLogo;
+    [SkinControl(35)] protected GUILabelControl lblCurrentChannel;
+    [SkinControl(100)] protected GUILabelControl lblCurrentTime;
+    [SkinControl(102)] protected GUILabelControl lblEndTime;
+    [SkinControl(37)] protected GUITextControl lblOnTvNext;
+    [SkinControl(36)] protected GUITextControl lblOnTvNow;
+    [SkinControl(101)] protected GUILabelControl lblStartTime;
+    [SkinControl(38)] protected GUILabelControl lblZapToCannelNo;
 
 
-    private bool m_bNeedRefresh = false;
+    private bool m_bNeedRefresh;
     private DateTime m_dateTime = DateTime.Now;
 
     private TVHome.ChannelErrorInfo m_lastError;
@@ -192,7 +192,7 @@ namespace Mediaportal.TV.TvPlugin
 
       foreach (CPosition pos in _listPositions)
       {
-        pos.control.SetPosition((int)pos.XPos, (int)pos.YPos + iCalibrationY);
+        pos.control.SetPosition(pos.XPos, pos.YPos + iCalibrationY);
       }
       foreach (CPosition pos in _listPositions)
       {
@@ -219,7 +219,7 @@ namespace Mediaportal.TV.TvPlugin
           GUIControl pControl = pos.control;
           int dwPosX = pControl.XPosition;
           int dwPosY = pControl.YPosition;
-          if (dwPosY < (int)100)
+          if (dwPosY < 100)
           {
             dwPosY += Math.Abs(iMin);
             pControl.SetPosition(dwPosX, dwPosY);
@@ -468,7 +468,7 @@ namespace Mediaportal.TV.TvPlugin
       double iTotalSecs = ts.TotalSeconds;
       ts = DateTime.Now - prog.StartTime;
       double iCurSecs = ts.TotalSeconds;
-      double fPercent = ((double)iCurSecs) / ((double)iTotalSecs);
+      double fPercent = (iCurSecs) / (iTotalSecs);
       fPercent *= 100.0d;
       GUIPropertyManager.SetProperty("#TV.View.Percentage", fPercent.ToString());
     }

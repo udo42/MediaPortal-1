@@ -88,7 +88,7 @@ namespace MediaPortal.Common.Utils
         {
           if (!(o is ServiceCreatorCallback<T>))
           {
-            throw new ArgumentException(string.Format("A service of type {0} is already present", t.ToString()));
+            throw new ArgumentException(string.Format("A service of type {0} is already present", t));
           }
           _services[t] = service;
           return;
@@ -127,7 +127,7 @@ namespace MediaPortal.Common.Utils
       {
         if (_services.ContainsKey(t))
         {
-          throw new ArgumentException(string.Format("A service of type {0} is already present", t.ToString()));
+          throw new ArgumentException(string.Format("A service of type {0} is already present", t));
         }
         _services.Add(t, callback);
       }
@@ -191,7 +191,7 @@ namespace MediaPortal.Common.Utils
     public void Replace<T>(T service)
     {
       Remove<T>();
-      Add<T>(service);
+      Add(service);
     }
 
     /// <summary>
@@ -202,7 +202,7 @@ namespace MediaPortal.Common.Utils
     public void Replace<T>(ServiceCreatorCallback<T> callback)
     {
       Remove<T>();
-      Add<T>(callback);
+      Add(callback);
     }
 
     #endregion

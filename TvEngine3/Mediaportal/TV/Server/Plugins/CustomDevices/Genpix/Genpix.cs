@@ -39,7 +39,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
 
     #region Nested type: BdaExtensionProperty
 
-    private enum BdaExtensionProperty : int
+    private enum BdaExtensionProperty
     {
       Tune = 0,               // For custom tuning implementation.
       Diseqc,                 // For DiSEqC messaging.
@@ -154,8 +154,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
 
     private IntPtr _generalBuffer = IntPtr.Zero;
     private IntPtr _instanceBuffer = IntPtr.Zero;
-    private bool _isGenpix = false;
-    private IKsPropertySet _propertySet = null;
+    private bool _isGenpix;
+    private IKsPropertySet _propertySet;
 
     #endregion
 

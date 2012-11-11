@@ -195,8 +195,8 @@ namespace Mediaportal.TV.Server.TVLibrary
       _ciMenuManager = new CiMenuManager();
       _cardAllocation = new AdvancedCardAllocation();
 
-      _channelStates.OnChannelStatesSet -= new ChannelStates.OnChannelStatesSetDelegate(channelStates_OnChannelStatesSet);
-      _channelStates.OnChannelStatesSet += new ChannelStates.OnChannelStatesSetDelegate(channelStates_OnChannelStatesSet);
+      _channelStates.OnChannelStatesSet -= channelStates_OnChannelStatesSet;
+      _channelStates.OnChannelStatesSet += channelStates_OnChannelStatesSet;
     }
 
     public IDictionary<int, ITvCardHandler> CardCollection
@@ -2330,7 +2330,7 @@ namespace Mediaportal.TV.Server.TVLibrary
       try
       {
         TsCopier copier = new TsCopier(position1, bufferFile1, position2, bufferFile2, recordingFile);
-        Thread worker = new Thread(new ThreadStart(copier.DoCopy));
+        Thread worker = new Thread(copier.DoCopy);
         worker.Start();
       }
       catch (Exception e)

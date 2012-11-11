@@ -55,7 +55,7 @@ namespace Mediaportal.TV.Server.SetupTV
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.Container components = null;
+    private System.ComponentModel.Container components;
 
     public SearchSHOUTcast()
     {
@@ -241,7 +241,7 @@ namespace Mediaportal.TV.Server.SetupTV
         radiostation.name = station.name;
         radiostation.url = station.url;
         radiostation.bitrate = station.bitrate;
-        ListViewItem listItem = new ListViewItem(new string[]
+        ListViewItem listItem = new ListViewItem(new[]
                                                    {
                                                      radiostation.bitrate.ToString(),
                                                      radiostation.name,

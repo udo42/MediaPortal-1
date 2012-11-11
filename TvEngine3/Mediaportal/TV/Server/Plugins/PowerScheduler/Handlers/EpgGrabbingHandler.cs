@@ -109,7 +109,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       _controllerService = controllerService;
       _extGrabbers = new Dictionary<object, GrabberSource>();
       GlobalServiceProvider.Instance.Get<IPowerScheduler>().OnPowerSchedulerEvent +=
-        new PowerSchedulerEventHandler(EpgGrabbingHandler_OnPowerSchedulerEvent);
+        EpgGrabbingHandler_OnPowerSchedulerEvent;
       if (GlobalServiceProvider.Instance.IsRegistered<IEpgHandler>())
         GlobalServiceProvider.Instance.Remove<IEpgHandler>();
       GlobalServiceProvider.Instance.Add<IEpgHandler>(this);
@@ -191,7 +191,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
           {
             // kick off EPG thread
             _epgThreadRunning = true;
-            Thread workerThread = new Thread(new ThreadStart(EPGThreadFunction));
+            Thread workerThread = new Thread(EPGThreadFunction);
             workerThread.Name = "EPG Grabbing Handler";
             workerThread.IsBackground = true;
             workerThread.Priority = ThreadPriority.Lowest;

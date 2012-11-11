@@ -165,11 +165,11 @@ namespace Mediaportal.TV.Server.TVLibrary
       if (dwFileSize < 1024)
       {
         //  substract the integer part of the float value
-        float fRemainder = (((float)dwFileSize) / 1024.0f) - (((float)dwFileSize) / 1024.0f);
+        float fRemainder = ((dwFileSize) / 1024.0f) - ((dwFileSize) / 1024.0f);
         float fToAdd = 0.0f;
         if (fRemainder < 0.01f)
           fToAdd = 0.1f;
-        szTemp = String.Format("{0:f} KB", (((float)dwFileSize) / 1024.0f) + fToAdd);
+        szTemp = String.Format("{0:f} KB", ((dwFileSize) / 1024.0f) + fToAdd);
         return szTemp;
       }
       long iOneMeg = 1024 * 1024;
@@ -177,16 +177,16 @@ namespace Mediaportal.TV.Server.TVLibrary
       // file < 1 megabyte?
       if (dwFileSize < iOneMeg)
       {
-        szTemp = String.Format("{0:f} KB", ((float)dwFileSize) / 1024.0f);
+        szTemp = String.Format("{0:f} KB", (dwFileSize) / 1024.0f);
         return szTemp;
       }
 
       // file < 1 GByte?
       long iOneGigabyte = iOneMeg;
-      iOneGigabyte *= (long)1000;
+      iOneGigabyte *= 1000;
       if (dwFileSize < iOneGigabyte)
       {
-        szTemp = String.Format("{0:f} MB", ((float)dwFileSize) / ((float)iOneMeg));
+        szTemp = String.Format("{0:f} MB", (dwFileSize) / ((float)iOneMeg));
         return szTemp;
       }
       //file > 1 GByte
@@ -196,7 +196,7 @@ namespace Mediaportal.TV.Server.TVLibrary
         dwFileSize -= iOneGigabyte;
         iGigs++;
       }
-      float fMegs = ((float)dwFileSize) / ((float)iOneMeg);
+      float fMegs = (dwFileSize) / ((float)iOneMeg);
       fMegs /= 1000.0f;
       fMegs += iGigs;
       szTemp = String.Format("{0:f} GB", fMegs);
@@ -401,7 +401,7 @@ namespace Mediaportal.TV.Server.TVLibrary
         if (fHandle.ToInt64() != -1) //INVALID_HANDLE_VALUE)
         {
           uint Result;
-          if (DeviceIoControl(fHandle, 0x002d4808, IntPtr.Zero, 0, IntPtr.Zero, 0, out Result, IntPtr.Zero) == true)
+          if (DeviceIoControl(fHandle, 0x002d4808, IntPtr.Zero, 0, IntPtr.Zero, 0, out Result, IntPtr.Zero))
           {
             result = true;
           }
@@ -446,11 +446,11 @@ namespace Mediaportal.TV.Server.TVLibrary
       try
       {
         long iSec = 0; //(long)dt.Second;
-        long iMin = (long)dt.Minute;
-        long iHour = (long)dt.Hour;
-        long iDay = (long)dt.Day;
-        long iMonth = (long)dt.Month;
-        long iYear = (long)dt.Year;
+        long iMin = dt.Minute;
+        long iHour = dt.Hour;
+        long iDay = dt.Day;
+        long iMonth = dt.Month;
+        long iYear = dt.Year;
 
         long lRet = (iYear);
         lRet = lRet * 100L + iMonth;
@@ -573,9 +573,9 @@ namespace Mediaportal.TV.Server.TVLibrary
 
     public static void RGB2YUV(int R, int G, int B, out int Y, out int U, out int V)
     {
-      Y = (int)(((float)R) * 0.257f + ((float)G) * 0.504f + ((float)B) * 0.098f + 16.0f);
-      U = (int)(((float)R) * -0.148f + ((float)G) * -0.291f + ((float)B) * 0.439f + 128.0f);
-      V = (int)(((float)R) * 0.439f + ((float)G) * -0.368f + ((float)B) * -0.071f + 128.0f);
+      Y = (int)((R) * 0.257f + (G) * 0.504f + (B) * 0.098f + 16.0f);
+      U = (int)((R) * -0.148f + (G) * -0.291f + (B) * 0.439f + 128.0f);
+      V = (int)((R) * 0.439f + (G) * -0.368f + (B) * -0.071f + 128.0f);
       Y = Y & 0xff;
       U = U & 0xff;
       V = V & 0xff;

@@ -63,35 +63,35 @@ namespace Mediaportal.TV.TvPlugin
     private readonly string local736 = GUILocalizeStrings.Get(736); // No data available
     private readonly string local789 = GUILocalizeStrings.Get(789); // Now:
     private readonly string local790 = GUILocalizeStrings.Get(790); // Next:
-    private bool _byIndex = false;
-    private bool _canceled = false;
-    private List<ChannelGroup> _channelGroupList = null;
+    private bool _byIndex;
+    private bool _canceled;
+    private List<ChannelGroup> _channelGroupList;
     private List<Channel> _channelList = new List<Channel>();
     private int _channelNumberMaxLength = 3;
     private IDictionary<int, IDictionary<int, NowAndNext>> _listNowNext = new Dictionary<int, IDictionary<int, NowAndNext>>();
     private Dictionary<int, DateTime> _nextEPGupdate = new Dictionary<int, DateTime>();
     private Channel _selectedChannel;
-    private bool _showChannelNumber = false;
-    private Dictionary<int, List<Channel>> _tvGroupChannelListCache = null;
+    private bool _showChannelNumber;
+    private Dictionary<int, List<Channel>> _tvGroupChannelListCache;
     private bool _zap = true;
-    private Stopwatch benchClock = null;
+    private Stopwatch benchClock;
 
     [SkinControl(34)]
-    protected GUIButtonControl cmdExit = null;
+    protected GUIButtonControl cmdExit;
 
-    protected GUIListControl lstChannels = null;
+    protected GUIListControl lstChannels;
 
     [SkinControl(35)]
-    protected GUIListControl lstChannelsNoStateIcons = null;
+    protected GUIListControl lstChannelsNoStateIcons;
 
     [SkinControl(37)]
-    protected GUIListControl lstChannelsWithStateIcons = null;
+    protected GUIListControl lstChannelsWithStateIcons;
 
     private StringBuilder sb = new StringBuilder();
     private StringBuilder sbTmp = new StringBuilder();
 
     [SkinControl(36)]
-    protected GUISpinControl spinGroup = null;
+    protected GUISpinControl spinGroup;
 
     #region Serialisation
 
@@ -211,7 +211,7 @@ namespace Mediaportal.TV.TvPlugin
                     List<Server.TVDatabase.Entities.Channel> tvChannelList = GetChannelListByGroup();
                     if (tvChannelList != null)
                     {
-                      changeChannel = tvChannelList[lstChannels.SelectedListItemIndex] as Server.TVDatabase.Entities.Channel;
+                      changeChannel = tvChannelList[lstChannels.SelectedListItemIndex];
                     }
                   }
                 }
@@ -576,7 +576,7 @@ namespace Mediaportal.TV.TvPlugin
 
           sbTmp.Length = 0;
 
-          if (_showChannelNumber == true)
+          if (_showChannelNumber)
           {
             sb.Append(" - ");
             if (!_byIndex)

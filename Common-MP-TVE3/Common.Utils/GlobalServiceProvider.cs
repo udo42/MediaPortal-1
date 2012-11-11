@@ -29,7 +29,7 @@ namespace MediaPortal.Common.Utils
     /// <param name="service">The new service.</param>
     public static void Replace<T>(T service)
     {
-      Instance.Replace<T>(service);
+      Instance.Replace(service);
     }
 
     /// <summary>
@@ -38,7 +38,7 @@ namespace MediaPortal.Common.Utils
     /// <param name="service">The service.</param>
     public static void Add<T>(T service)
     {
-      Instance.Add<T>(service);
+      Instance.Add(service);
     }
 
     /// <summary>

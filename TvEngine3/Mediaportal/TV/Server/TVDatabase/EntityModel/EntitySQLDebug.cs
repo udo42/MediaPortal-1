@@ -60,7 +60,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel
         {
           MethodInfo createCommand = dynUpdate.
           GetMethod("CreateCommand", flags);
-          object[] mParams = new object[] { updTranslator, new Dictionary<int, object>() };
+          object[] mParams = new[] { updTranslator, new Dictionary<int, object>() };
           dbCommands.Add((DbCommand)createCommand.Invoke(obj, mParams));
         }
         else

@@ -523,22 +523,22 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
 
     #region variables
 
-    private bool _isDigitalEverywhere = false;
+    private bool _isDigitalEverywhere;
     #pragma warning disable 0414
-    private bool _isCamPresent = false;
+    private bool _isCamPresent;
     #pragma warning restore 0414
-    private bool _isCamReady = false;
+    private bool _isCamReady;
 
     private IntPtr _generalBuffer = IntPtr.Zero;
     private IntPtr _mmiBuffer = IntPtr.Zero;
     private IntPtr _pmtBuffer = IntPtr.Zero;
 
-    private IKsPropertySet _propertySet = null;
+    private IKsPropertySet _propertySet;
     private CardType _tunerType = CardType.Unknown;
 
-    private Thread _mmiHandlerThread = null;
-    private bool _stopMmiHandlerThread = false;
-    private ICiMenuCallbacks _ciMenuCallbacks = null;
+    private Thread _mmiHandlerThread;
+    private bool _stopMmiHandlerThread;
+    private ICiMenuCallbacks _ciMenuCallbacks;
 
     #endregion
 
@@ -805,7 +805,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
       {
         this.LogDebug("Digital Everywhere: starting new MMI handler thread");
         _stopMmiHandlerThread = false;
-        _mmiHandlerThread = new Thread(new ThreadStart(MmiHandler));
+        _mmiHandlerThread = new Thread(MmiHandler);
         _mmiHandlerThread.Name = "Digital Everywhere MMI handler";
         _mmiHandlerThread.IsBackground = true;
         _mmiHandlerThread.Priority = ThreadPriority.Lowest;

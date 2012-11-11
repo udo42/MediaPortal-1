@@ -40,11 +40,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
 
     #region Constructor
 
-    /// <summary>
-    /// Creates a new PowerSchedulerPlugin
-    /// </summary>
-    public PowerSchedulerPlugin() {}
-
     #endregion
 
     #region ITvServerPlugin implementation

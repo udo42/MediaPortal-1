@@ -39,7 +39,7 @@ namespace DirectShowLib.DES
     public const int E_MustInitRenderer = unchecked((int) 0x80040402);
     public const int E_NotDetermind = unchecked((int) 0x80040403);
     public const int E_NoTimeline = unchecked((int) 0x80040404);
-    public const int S_WarnOutputReset = unchecked((int) 40404);
+    public const int S_WarnOutputReset = unchecked(40404);
 
     private DESResults()
     {

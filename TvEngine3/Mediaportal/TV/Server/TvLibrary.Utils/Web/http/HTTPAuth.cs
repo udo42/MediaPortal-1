@@ -38,11 +38,6 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
 
     #region Constructors/Destructors
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HTTPAuth"/> class.
-    /// </summary>
-    public HTTPAuth() {}
-
     #endregion
 
     #region Public Methods

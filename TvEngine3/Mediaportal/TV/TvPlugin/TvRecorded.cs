@@ -63,7 +63,7 @@ namespace Mediaportal.TV.TvPlugin
 
       public RecordingThumbCacher()
       {
-        work = new Work(new DoWorkHandler(PerformRequest));
+        work = new Work(PerformRequest);
         work.ThreadPriority = ThreadPriority.BelowNormal;
         GlobalServiceProvider.Get<IThreadPool>().Add(work, QueuePriority.Low);
       }
@@ -119,26 +119,26 @@ namespace Mediaportal.TV.TvPlugin
 
     #region Variables
 
-    private static Recording _activeRecording = null;
-    private static bool _bIsLiveRecording = false;
-    private static bool _thumbCreationActive = false;
+    private static Recording _activeRecording;
+    private static bool _bIsLiveRecording;
+    private static bool _thumbCreationActive;
     private static bool _createRecordedThumbs = true;
     private DBView _currentDbView = DBView.Recordings;
     private string _currentLabel = string.Empty;
     private SortMethod _currentSortMethod = SortMethod.Date;
-    private bool _deleteWatchedShows = false;
-    private int _iSelectedItem = 0;
+    private bool _deleteWatchedShows;
+    private int _iSelectedItem;
     private bool _oldStateSMSsearch;
-    private bool _resetSMSsearch = false;
+    private bool _resetSMSsearch;
     private DateTime _resetSMSsearchDelay;
-    private int _rootItem = 0;
+    private int _rootItem;
 
     [SkinControl(6)]
-    protected GUIButtonControl btnCleanup = null;
+    protected GUIButtonControl btnCleanup;
     [SkinControl(7)]
-    protected GUIButtonControl btnCompress = null;
+    protected GUIButtonControl btnCompress;
 
-    private RecordingThumbCacher thumbworker = null;
+    private RecordingThumbCacher thumbworker;
 
     #region Nested type: Controls
 
@@ -279,10 +279,10 @@ namespace Mediaportal.TV.TvPlugin
 
     public override bool Init()
     {
-      g_Player.PlayBackStopped += new g_Player.StoppedHandler(OnPlayRecordingBackStopped);
-      g_Player.PlayBackEnded += new g_Player.EndedHandler(OnPlayRecordingBackEnded);
-      g_Player.PlayBackStarted += new g_Player.StartedHandler(OnPlayRecordingBackStarted);
-      g_Player.PlayBackChanged += new g_Player.ChangedHandler(OnPlayRecordingBackChanged);
+      g_Player.PlayBackStopped += OnPlayRecordingBackStopped;
+      g_Player.PlayBackEnded += OnPlayRecordingBackEnded;
+      g_Player.PlayBackStarted += OnPlayRecordingBackStarted;
+      g_Player.PlayBackChanged += OnPlayRecordingBackChanged;
 
       bool bResult = Load(GUIGraphicsContext.Skin + @"\mytvrecordedtv.xml");
       //LoadSettings();
@@ -365,7 +365,7 @@ namespace Mediaportal.TV.TvPlugin
       }
       GUIControl.SelectItemControl(GetID, facadeLayout.GetID, _iSelectedItem);
 
-      btnSortBy.SortChanged += new SortEventHandler(SortChanged);
+      btnSortBy.SortChanged += SortChanged;
       if (thumbworker == null)
       {
         if (_createRecordedThumbs)
@@ -539,7 +539,7 @@ namespace Mediaportal.TV.TvPlugin
     public override void Process()
     {
       TVHome.UpdateProgressPercentageBar();
-      if ((_resetSMSsearch == true) && (_resetSMSsearchDelay.Subtract(DateTime.Now).Seconds < -2))
+      if (_resetSMSsearch && (_resetSMSsearchDelay.Subtract(DateTime.Now).Seconds < -2))
       {
         _resetSMSsearchDelay = DateTime.Now;
         _resetSMSsearch = true;
@@ -1620,12 +1620,12 @@ namespace Mediaportal.TV.TvPlugin
               if (m_bSortAscending)
               {
                 ts = rec1.StartTime - rec2.StartTime;
-                return (int)(ts.Minutes);
+                return (ts.Minutes);
               }
               else
               {
                 ts = rec2.StartTime - rec1.StartTime;
-                return (int)(ts.Minutes);
+                return (ts.Minutes);
               }
             }
             if (rec1.IdChannel != rec2.IdChannel)

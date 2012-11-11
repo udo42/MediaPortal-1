@@ -37,13 +37,13 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
   public class XPListView : System.Windows.Forms.ListView
   {
     private IntPtr _apiRetVal;
-    private bool _autoGroup = false;
-    private ColumnHeader _autoGroupCol = null;
+    private bool _autoGroup;
+    private ColumnHeader _autoGroupCol;
     private ArrayList _autoGroupList = new ArrayList();
     private string _emptyAutoGroupText = "";
     private XPListViewGroupCollection _groups;
     private XPListViewItemCollection _items;
-    private bool _showInGroups = false;
+    private bool _showInGroups;
 
     public XPListView()
     {
@@ -197,7 +197,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       SuspendLayout();
 
       int param = 0;
-      _apiRetVal = ListViewAPI.SendMessage((System.IntPtr)Handle, ListViewAPI.LVM_GETVIEW, ListViewAPI.LV_VIEW_TILE,
+      _apiRetVal = ListViewAPI.SendMessage(Handle, ListViewAPI.LVM_GETVIEW, ListViewAPI.LV_VIEW_TILE,
                                            ref param);
       if ((int)_apiRetVal != ListViewAPI.LV_VIEW_TILE)
       {
@@ -458,7 +458,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       {
         int param = 0;
         ListViewAPI.SendMessage(Handle, ListViewAPI.LVM_ENABLEGROUPVIEW, 1, ref param);
-        if (_autoGroup == true)
+        if (_autoGroup)
         {
           AutoGroupByColumn(_autoGroupCol.Index);
         }
@@ -481,14 +481,14 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
           switch (lmsg.code)
           {
-            case (int)ListViewAPI.NM_CUSTOMDRAW:
+            case ListViewAPI.NM_CUSTOMDRAW:
               NotifyListCustomDraw(ref m);
               break;
 
-            case (int)ListViewAPI.LVN_GETDISPINFOW:
+            case ListViewAPI.LVN_GETDISPINFOW:
               break;
 
-            case (int)ListViewAPI.LVN_ITEMCHANGING:
+            case ListViewAPI.LVN_ITEMCHANGING:
               break;
 
             default:
@@ -511,13 +511,13 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
       switch (nmcd.dwDrawStage)
       {
-        case (int)ListViewAPI.CDDS_PREPAINT:
+        case ListViewAPI.CDDS_PREPAINT:
           m.Result = (IntPtr)ListViewAPI.CDRF_NOTIFYITEMDRAW;
           break;
-        case (int)ListViewAPI.CDDS_ITEMPREPAINT:
+        case ListViewAPI.CDDS_ITEMPREPAINT:
           m.Result = (IntPtr)ListViewAPI.CDRF_NOTIFYSUBITEMDRAW;
           break;
-        case (int)(ListViewAPI.CDDS_ITEMPREPAINT | ListViewAPI.CDDS_SUBITEM):
+        case (ListViewAPI.CDDS_ITEMPREPAINT | ListViewAPI.CDDS_SUBITEM):
           break;
         default:
           break;

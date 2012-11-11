@@ -82,7 +82,7 @@ namespace Mediaportal.TV.Server.SetupControls
         Provider = provider,
         ChannelType = channelType,
         ChannelNumber = channelNumber,
-        Frequency = (int)channelFrequency,
+        Frequency = channelFrequency,
         CountryId = country,
         NetworkId = networkId,
         TransportId = transportId,

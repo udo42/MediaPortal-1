@@ -231,7 +231,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
     #region variables
 
     private int _deviceIndex = -1;
-    private bool _isTeVii = false;
+    private bool _isTeVii;
     private Tone22k _toneState = Tone22k.Auto;
     private CardType _tunerType = CardType.Unknown;
 

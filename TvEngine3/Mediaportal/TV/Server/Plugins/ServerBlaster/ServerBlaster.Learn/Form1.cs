@@ -107,8 +107,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
     private void Form1_Load(object sender, System.EventArgs e)
     {
-      Blaster.DeviceArrival += new DeviceEventHandler(OnDeviceArrival);
-      Blaster.DeviceRemoval += new DeviceEventHandler(OnDeviceRemoval);
+      Device.DeviceArrival += OnDeviceArrival;
+      Device.DeviceRemoval += OnDeviceRemoval;
 
       LoadConfig();
 
@@ -451,7 +451,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       timerLearn.Enabled = true;
       listButtons.Focus();
 
-      Blaster.BeginLearn(new LearnCallback(OnLearnComplete));
+      Blaster.BeginLearn(OnLearnComplete);
     }
 
     private void buttonStop_Click(object sender, System.EventArgs e)
@@ -717,7 +717,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
     #region Members
 
-    public bool _gumboTest = false;
+    public bool _gumboTest;
     private ListViewItem _selectedItem;
     private int _timeoutMax = 10;
     private int _timeoutRemaining;

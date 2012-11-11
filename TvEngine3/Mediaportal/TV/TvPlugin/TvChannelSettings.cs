@@ -28,8 +28,8 @@ namespace Mediaportal.TV.TvPlugin
 {
   public class ChannelSettings : GUIInternalWindow, IComparer<Channel>
   {
-    [SkinControl(24)] protected GUIButtonControl btnTvGroup = null;
-    [SkinControl(10)] protected GUIUpDownListControl listChannels = null;
+    [SkinControl(24)] protected GUIButtonControl btnTvGroup;
+    [SkinControl(10)] protected GUIUpDownListControl listChannels;
 
     public ChannelSettings()
     {
@@ -114,7 +114,7 @@ namespace Mediaportal.TV.TvPlugin
         GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, control.GetID, 0, 0,
                                         null);
         OnMessage(msg);
-        int iItem = (int)msg.Param1;
+        int iItem = msg.Param1;
         OnMoveUp(iItem);
       }
     }
@@ -126,7 +126,7 @@ namespace Mediaportal.TV.TvPlugin
         GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, control.GetID, 0, 0,
                                         null);
         OnMessage(msg);
-        int iItem = (int)msg.Param1;
+        int iItem = msg.Param1;
         OnMoveDown(iItem);
       }
     }

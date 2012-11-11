@@ -58,66 +58,66 @@ namespace Mediaportal.TV.TvPlugin
 
     private class FullScreenState
     {
-      public bool ContextMenuVisible = false;
-      public bool MsgBoxVisible = false;
-      public bool OsdVisible = false;
-      public bool Paused = false;
+      public bool ContextMenuVisible;
+      public bool MsgBoxVisible;
+      public bool OsdVisible;
+      public bool Paused;
       public int SeekStep = 1;
-      public bool ShowGroup = false;
-      public bool ShowInput = false;
+      public bool ShowGroup;
+      public bool ShowInput;
       //public bool MsnVisible = false;       // msn related can be removed
-      public bool ShowStatusLine = false;
-      public bool ShowTime = false;
+      public bool ShowStatusLine;
+      public bool ShowTime;
       public int Speed = 1;
-      public bool ZapOsdVisible = false;
-      public bool _bottomDialogMenuVisible = false;
-      public bool _dialogYesNoVisible = false;
-      public bool _notifyDialogVisible = false;
-      public bool volumeVisible = false;
-      public bool wasVMRBitmapVisible = false;
+      public bool ZapOsdVisible;
+      public bool _bottomDialogMenuVisible;
+      public bool _dialogYesNoVisible;
+      public bool _notifyDialogVisible;
+      public bool volumeVisible;
+      public bool wasVMRBitmapVisible;
     }
 
     #endregion
 
     #region variables
 
-    private bool _IsClosingDialog = false;
+    private bool _IsClosingDialog;
     private List<Geometry.Type> _allowedArModes = new List<Geometry.Type>();
-    private bool _autoZapMode = false;
+    private bool _autoZapMode;
     private Timer _autoZapTimer = new Timer();
-    private bool _bottomDialogMenuVisible = false;
-    private bool _byIndex = false;
-    private bool _channelInputVisible = false;
+    private bool _bottomDialogMenuVisible;
+    private bool _byIndex;
+    private bool _channelInputVisible;
     private string _channelName = "";
     private int _channelNumberMaxLength = 3;
-    private GUIDialogMenuBottomRight _dialogBottomMenu = null;
-    private bool _dialogYesNoVisible = false;
-    private GUIDialogYesNo _dlgYesNo = null;
-    private TvPlugin.TVHome.ChannelErrorInfo _gotTvErrorMessage = null;
+    private GUIDialogMenuBottomRight _dialogBottomMenu;
+    private bool _dialogYesNoVisible;
+    private GUIDialogYesNo _dlgYesNo;
+    private TvPlugin.TVHome.ChannelErrorInfo _gotTvErrorMessage;
     private DateTime _groupTimeOutTimer;
-    private bool _groupVisible = false;
+    private bool _groupVisible;
     private bool _immediateSeekIsRelative = true;
     private int _immediateSeekValue = 10;
-    private bool _isDialogVisible = false;
+    private bool _isDialogVisible;
     //		string			m_sZapChannel;
     //		long				m_iZapDelay;
-    private volatile bool _isOsdVisible = false;
-    private volatile bool _isPauseOsdVisible = false;
-    private bool _isStartingTSForRecording = false;
-    private bool _isVolumeVisible = false;
+    private volatile bool _isOsdVisible;
+    private volatile bool _isPauseOsdVisible;
+    private bool _isStartingTSForRecording;
+    private bool _isVolumeVisible;
     private DateTime _keyPressedTimer = DateTime.Now;
-    private bool _lastPause = false;
+    private bool _lastPause;
     private int _lastSpeed = 1;
-    private bool _messageBoxVisible = false;
-    private int _msgBoxTimeout = 0;
+    private bool _messageBoxVisible;
+    private int _msgBoxTimeout;
     private DateTime _msgTimer = DateTime.Now;
-    private bool _needToClearScreen = false;
-    private bool _notifyDialogVisible = false;
+    private bool _needToClearScreen;
+    private bool _notifyDialogVisible;
 
     ///GUITVMSNOSD _msnWindow = null;       // msn related can be removed
     private DateTime _osdTimeoutTimer;
 
-    private TvOsd _osdWindow = null;
+    private TvOsd _osdWindow;
 
     ///@
     ///VMR9OSD _vmr9OSD = null;
@@ -125,21 +125,21 @@ namespace Mediaportal.TV.TvPlugin
 
     private bool _settingsLoaded;
     private DateTime _statusTimeOutTimer = DateTime.Now;
-    private bool _statusVisible = false;
-    private bool _stepSeekVisible = false;
+    private bool _statusVisible;
+    private bool _stepSeekVisible;
     private long _timeOsdOnscreen;
     private DateTime _updateTimer = DateTime.Now;
     private DateTime _updateTimerProgressbar = DateTime.Now;
-    private bool _useVMR9Zap = false;
+    private bool _useVMR9Zap;
     private DateTime _vmr7UpdateTimer = DateTime.Now;
 
     private DateTime _volumeTimer = DateTime.MinValue;
-    private volatile bool _zapOsdVisible = false;
+    private volatile bool _zapOsdVisible;
     private DateTime _zapTimeOutTimer;
     private long _zapTimeOutValue;
 
     ///@
-    private TvZapOsd _zapWindow = null;
+    private TvZapOsd _zapWindow;
 
     private GUIDialogMenu dlg;
 
@@ -205,7 +205,7 @@ namespace Mediaportal.TV.TvPlugin
     public override void DeInit()
     {
       OnPageDestroy(-1);
-      _autoZapTimer.Elapsed -= new ElapsedEventHandler(_autoZapTimer_Elapsed);
+      _autoZapTimer.Elapsed -= _autoZapTimer_Elapsed;
     }
 
     public override bool Init()
@@ -221,9 +221,9 @@ namespace Mediaportal.TV.TvPlugin
 
       SettingsLoaded = false;
 
-      g_Player.PlayBackEnded += new g_Player.EndedHandler(g_Player_PlayBackEnded);
-      g_Player.PlayBackStopped += new g_Player.StoppedHandler(g_Player_PlayBackStopped);
-      g_Player.PlayBackChanged += new g_Player.ChangedHandler(g_Player_PlayBackChanged);
+      g_Player.PlayBackEnded += g_Player_PlayBackEnded;
+      g_Player.PlayBackStopped += g_Player_PlayBackStopped;
+      g_Player.PlayBackChanged += g_Player_PlayBackChanged;
 
       this.LogDebug("TvFullScreen:Init");
       return true;
@@ -240,7 +240,7 @@ namespace Mediaportal.TV.TvPlugin
 
 			foreach (CPosition pos in _listPositions)
 			{
-				pos.control.SetPosition((int)pos.XPos, (int)pos.YPos + iCalibrationY);
+				pos.control.SetPosition(pos.XPos, pos.YPos + iCalibrationY);
 			}
 			foreach (CPosition pos in _listPositions)
 			{
@@ -267,7 +267,7 @@ namespace Mediaportal.TV.TvPlugin
 					GUIControl pControl = pos.control;
 					int dwPosX = pControl.XPosition;
 					int dwPosY = pControl.YPosition;
-					if (dwPosY < (int)100)
+					if (dwPosY < 100)
 					{
 						dwPosY += Math.Abs(iMin);
 						pControl.SetPosition(dwPosX, dwPosY);
@@ -2075,7 +2075,7 @@ namespace Mediaportal.TV.TvPlugin
       {
         return;
       }
-      ChannelLinkageMap lmap = (ChannelLinkageMap)linkages[dlg.SelectedLabel];
+      ChannelLinkageMap lmap = linkages[dlg.SelectedLabel];
       TVHome.Navigator.ZapToChannel(lmap.ChannelLink, false);
     }
 
@@ -2270,8 +2270,8 @@ namespace Mediaportal.TV.TvPlugin
       //check if the tv recording has reached the end ...if so, stop it.
       if (g_Player.IsTVRecording && !TvRecorded.IsLiveRecording())
       {
-        double currentPosition = (double)(g_Player.CurrentPosition);
-        double duration = (double)(g_Player.Duration);
+        double currentPosition = (g_Player.CurrentPosition);
+        double duration = (g_Player.Duration);
 
         if (currentPosition > duration)
         {
@@ -2515,7 +2515,7 @@ namespace Mediaportal.TV.TvPlugin
         }
       }
 
-      if (_useVMR9Zap == true)
+      if (_useVMR9Zap)
       {
         TimeSpan ts = DateTime.Now - _zapTimeOutTimer;
         if (ts.TotalMilliseconds > _zapTimeOutValue)
@@ -2994,7 +2994,7 @@ namespace Mediaportal.TV.TvPlugin
       }
 
       this.LogDebug("ChangeChannelNr()");
-      if (_byIndex == true)
+      if (_byIndex)
       {
         TVHome.Navigator.ZapToChannel(channelNr, useZapDelay);
       }
@@ -3048,7 +3048,7 @@ namespace Mediaportal.TV.TvPlugin
 
       this.LogDebug("TVFullscreen: Start autozap mode");
       _autoZapMode = true;
-      _autoZapTimer.Elapsed += new ElapsedEventHandler(_autoZapTimer_Elapsed);
+      _autoZapTimer.Elapsed += _autoZapTimer_Elapsed;
       using (Settings xmlreader = new MPSettings())
       {
         _autoZapTimer.Interval = xmlreader.GetValueAsInt("capture", "autoZapTimer", 10000);
@@ -3072,7 +3072,7 @@ namespace Mediaportal.TV.TvPlugin
     public void StopAutoZap()
     {
       this.LogDebug("Stop zap mode");
-      _autoZapTimer.Elapsed -= new ElapsedEventHandler(_autoZapTimer_Elapsed);
+      _autoZapTimer.Elapsed -= _autoZapTimer_Elapsed;
       _autoZapMode = false;
     }
 

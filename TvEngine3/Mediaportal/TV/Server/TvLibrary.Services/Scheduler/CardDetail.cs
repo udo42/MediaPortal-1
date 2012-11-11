@@ -31,7 +31,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
   {
     public static void SortStable<T>(this List<T> list) where T : IComparable<T>
     {
-      var listStableOrdered = list.OrderBy<T, T>(x => x, new ComparableComparer<T>()).ToList();
+      var listStableOrdered = list.OrderBy(x => x, new ComparableComparer<T>()).ToList();
       list.Clear();
       list.AddRange(listStableOrdered);
     }

@@ -96,8 +96,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
       ITvServerEvent events = GlobalServiceProvider.Instance.Get<ITvServerEvent>();
       events.OnTvServerEvent += events_OnTvServerEvent;
 
-      Blaster.DeviceArrival += OnDeviceArrival;
-      Blaster.DeviceRemoval += OnDeviceRemoval;
+      Device.DeviceArrival += OnDeviceArrival;
+      Device.DeviceRemoval += OnDeviceRemoval;
       LoadRemoteCodes();
 
       this.LogDebug("plugin: ServerBlaster start sender");

@@ -42,12 +42,12 @@ namespace DirectShowLib.BDA
 
     public short Reserved
     {
-      get { return (short) ((int) Bits & 0x0007); }
+      get { return (short) (Bits & 0x0007); }
     }
 
     public short ProgramId
     {
-      get { return (short) (((int) Bits & 0xfff8) >> 3); }
+      get { return (short) ((Bits & 0xfff8) >> 3); }
     }
   }
 
@@ -61,22 +61,22 @@ namespace DirectShowLib.BDA
 
     public short SectionLength
     {
-      get { return (short) ((int) Bits & 0x0fff); }
+      get { return (short) (Bits & 0x0fff); }
     }
 
     public short Reserved
     {
-      get { return (short) (((int) Bits & 0x3000) >> 12); }
+      get { return (short) ((Bits & 0x3000) >> 12); }
     }
 
     public short PrivateIndicator
     {
-      get { return (short) (((int) Bits & 0x4000) >> 14); }
+      get { return (short) ((Bits & 0x4000) >> 14); }
     }
 
     public short SectionSyntaxIndicator
     {
-      get { return (short) (((int) Bits & 0x8000) >> 15); }
+      get { return (short) ((Bits & 0x8000) >> 15); }
     }
   }
 
@@ -90,17 +90,17 @@ namespace DirectShowLib.BDA
 
     public byte CurrentNextIndicator
     {
-      get { return (byte) ((int) Bits & 0x1); }
+      get { return (byte) (Bits & 0x1); }
     }
 
     public byte VersionNumber
     {
-      get { return (byte) (((int) Bits & 0x3e) >> 1); }
+      get { return (byte) ((Bits & 0x3e) >> 1); }
     }
 
     public byte Reserved
     {
-      get { return (byte) (((int) Bits & 0xc0) >> 6); }
+      get { return (byte) ((Bits & 0xc0) >> 6); }
     }
   }
 

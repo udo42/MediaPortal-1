@@ -54,7 +54,7 @@ namespace WebEPG
     private List<ProgramData> _programs;
     private RequestBuilder _reqBuilder;
     private RequestData _reqData;
-    private WorldTimeZone _siteTimeZone = null;
+    private WorldTimeZone _siteTimeZone;
     private string _strBaseDir = string.Empty;
     private string _strID = string.Empty;
     private ListingTimeControl _timeControl;
@@ -340,7 +340,7 @@ namespace WebEPG
       {
         for (int i = _dbLastProg; i < _dbPrograms.Count; i++)
         {
-          Program prog = (Program)_dbPrograms[i];
+          Program prog = _dbPrograms[i];
 
           if (prog.Title == title && prog.StartTime == start)
           {
@@ -351,7 +351,7 @@ namespace WebEPG
 
         for (int i = 0; i < _dbLastProg; i++)
         {
-          Program prog = (Program)_dbPrograms[i];
+          Program prog = _dbPrograms[i];
 
           if (prog.Title == title && prog.StartTime == start)
           {

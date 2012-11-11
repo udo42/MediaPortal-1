@@ -29,14 +29,14 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   /// </summary>
   public class MPTabControl : System.Windows.Forms.TabControl
   {
-    private bool allowReorderTabs = false;
+    private bool allowReorderTabs;
 
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.Container components = null;
+    private System.ComponentModel.Container components;
 
-    private int dragMoveCounter = 0;
+    private int dragMoveCounter;
     private int lastHoverTabIndex = -1;
 
     public MPTabControl()
@@ -143,7 +143,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
                          new Point(x + 1, tabRect.Y + tabRect.Height));
 
               g.FillPolygon(new SolidBrush(lineColor),
-                            new Point[]
+                            new[]
                               {
                                 new Point(x - 6,
                                           tabRect.Y),

@@ -55,7 +55,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     /// Set by the TsWriter OnPmtReceived() callback. Indicates whether the service
     /// that this subchannel represents is currently active.
     /// </summary>
-    private bool _isServiceRunning = false;
+    private bool _isServiceRunning;
 
     private List<UInt16> _pids;
     private Pmt _pmt;

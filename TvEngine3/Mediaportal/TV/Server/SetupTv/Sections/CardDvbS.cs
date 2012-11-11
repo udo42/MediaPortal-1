@@ -183,15 +183,15 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         {
           return ScanTypes.Predefined;
         }
-        if (scanPredefProvider.Checked == true)
+        if (scanPredefProvider.Checked)
         {
           return ScanTypes.Predefined;
         }
-        if (scanSingleTransponder.Checked == true)
+        if (scanSingleTransponder.Checked)
         {
           return ScanTypes.SingleTransponder;
         }
-        if (scanNIT.Checked == true)
+        if (scanNIT.Checked)
         {
           return ScanTypes.NIT;
         }
@@ -217,7 +217,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       InitializeComponent();
       //insert complete ci menu dialog to tab
       Card dbCard = ServiceAgents.Instance.CardServiceAgent.GetCard(_cardNumber, CardIncludeRelationEnum.None);
-      if (dbCard.UseConditionalAccess == true)
+      if (dbCard.UseConditionalAccess)
       {
         ciMenuDialog = new CI_Menu_Dialog(_cardNumber);
         tabPageCIMenu.Controls.Add(ciMenuDialog);
@@ -296,7 +296,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
                         continue;
                       try
                       {
-                        String[] tpdata = line.Split(new char[] {','});
+                        String[] tpdata = line.Split(new[] {','});
                         if (tpdata.Length >= 3)
                         {
                           if (tpdata[0].IndexOf("=") >= 0)
@@ -664,10 +664,10 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       LnbType[] lnbTypes = new LnbType[tempLnbTypes.Count];
       tempLnbTypes.CopyTo(lnbTypes, 0);
 
-      MPComboBox[] mpTrans = new MPComboBox[] {mpTransponder1, mpTransponder2, mpTransponder3, mpTransponder4};
-      MPComboBox[] mpComboDiseqc = new MPComboBox[] {mpComboDiseqc1, mpComboDiseqc2, mpComboDiseqc3, mpComboDiseqc4};
-      MPComboBox[] mpComboLnbType = new MPComboBox[] {mpComboLnbType1, mpComboLnbType2, mpComboLnbType3, mpComboLnbType4};
-      MPCheckBox[] mpLNBs = new MPCheckBox[] {mpLNB1, mpLNB2, mpLNB3, mpLNB4};
+      MPComboBox[] mpTrans = new[] {mpTransponder1, mpTransponder2, mpTransponder3, mpTransponder4};
+      MPComboBox[] mpComboDiseqc = new[] {mpComboDiseqc1, mpComboDiseqc2, mpComboDiseqc3, mpComboDiseqc4};
+      MPComboBox[] mpComboLnbType = new[] {mpComboLnbType1, mpComboLnbType2, mpComboLnbType3, mpComboLnbType4};
+      MPCheckBox[] mpLNBs = new[] {mpLNB1, mpLNB2, mpLNB3, mpLNB4};
       MPComboBox curBox;
       MPCheckBox curCheck;
       for (int ctlIndex = 0; ctlIndex < 4; ctlIndex++)
@@ -723,7 +723,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
         curBox = mpComboLnbType[ctlIndex];
         curBox.Items.Clear();
-        curBox.Items.AddRange((object[])lnbTypes);
+        curBox.Items.AddRange(lnbTypes);
         if (curBox.Items.Count > 0)
         {
           curBox.SelectedIndex =
@@ -827,7 +827,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private void DoScan()
     {
-      MethodInvoker updateControls = new MethodInvoker(SetControlStates);
+      MethodInvoker updateControls = SetControlStates;
       try
       {
         scanState = ScanState.Scanning;

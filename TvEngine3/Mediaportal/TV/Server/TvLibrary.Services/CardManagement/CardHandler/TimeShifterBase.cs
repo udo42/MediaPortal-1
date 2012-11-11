@@ -39,7 +39,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 
       if (_cardHandler != null && _cardHandler.Tuner != null)
       {
-        _cardHandler.Tuner.OnAfterCancelTuneEvent += new OnAfterCancelTuneDelegate(Tuner_OnAfterCancelTuneEvent);
+        _cardHandler.Tuner.OnAfterCancelTuneEvent += Tuner_OnAfterCancelTuneEvent;
       }
     }
 

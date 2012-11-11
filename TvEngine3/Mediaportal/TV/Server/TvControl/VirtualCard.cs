@@ -83,7 +83,7 @@ namespace Mediaportal.TV.Server.TVControl
     private string _name;
 
     [DataMember]
-    private int _nrOfOtherUsersTimeshiftingOnCard = 0;
+    private int _nrOfOtherUsersTimeshiftingOnCard;
 
     [DataMember]
     private string _recordingFileName;

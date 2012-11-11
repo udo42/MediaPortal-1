@@ -41,15 +41,15 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
   {
     private readonly MPListViewStringColumnSorter lvwColumnSorter;
     private readonly MPListViewStringColumnSorter lvwColumnSorter2;
-    private bool _abortScanning = false;
-    private IList<Channel> _allChannels = null;
-    private Dictionary<int, CardType> _cards = null;
-    private bool _ignoreItemCheckedEvent = false;
-    private bool _isScanning = false;
+    private bool _abortScanning;
+    private IList<Channel> _allChannels;
+    private Dictionary<int, CardType> _cards;
+    private bool _ignoreItemCheckedEvent;
+    private bool _isScanning;
     private ChannelListViewHandler _lvChannelHandler;
     private MediaTypeEnum _mediaTypeEnum = MediaTypeEnum.TV;
     private Thread _scanThread;
-    private bool _suppressRefresh = false;
+    private bool _suppressRefresh;
 
 
     public Channels(string name, MediaTypeEnum mediaType)

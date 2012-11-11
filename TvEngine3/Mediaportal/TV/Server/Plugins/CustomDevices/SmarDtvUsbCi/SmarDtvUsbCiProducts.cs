@@ -168,7 +168,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
 
     #endregion
 
-    private static List<SmarDtvUsbCiProduct> _products = null;
+    private static List<SmarDtvUsbCiProduct> _products;
 
     /// <summary>
     /// Get a list of the USB CI products that this plugin supports and which are based on the SmarDTV

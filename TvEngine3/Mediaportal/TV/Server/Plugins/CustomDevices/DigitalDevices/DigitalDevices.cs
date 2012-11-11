@@ -183,7 +183,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     private const int BdaDiseqcMessageSize = 16;
     private const int MaxDiseqcMessageLength = 8;
 
-    private static readonly string[] ValidDeviceNamePrefixes = new string[]
+    private static readonly string[] ValidDeviceNamePrefixes = new[]
                                                                  {
                                                                    "Digital Devices",
                                                                    "Mystique SaTiX-S2 Dual"
@@ -197,35 +197,35 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
 
     // We use these global CI settings to apply decrypt limits and commands to each CI slot/CAM.
     // Structure: device path -> settings
-    private static Dictionary<String, DigitalDevicesCiSlot> _ciSlotSettings = null;
+    private static Dictionary<String, DigitalDevicesCiSlot> _ciSlotSettings;
     private DateTime _camMessageEnableTs = DateTime.MinValue;
-    private bool _camMessagesDisabled = false;
+    private bool _camMessagesDisabled;
 
     // Indicates whether one or more CI slots have global configuration (ie. that the user has actually
     // filled in the configuration). If there is no configuration, we can't apply decrypt limits
     // properly.
 
     // For CI/CAM interaction.
-    private List<CiContext> _ciContexts = null;
-    private ICiMenuCallbacks _ciMenuCallbacks = null;
-    private bool _ciSlotsConfigured = false;
-    private IBDA_DeviceControl _deviceControl = null;
-    private IFilterGraph2 _graph = null;
+    private List<CiContext> _ciContexts;
+    private ICiMenuCallbacks _ciMenuCallbacks;
+    private bool _ciSlotsConfigured;
+    private IBDA_DeviceControl _deviceControl;
+    private IFilterGraph2 _graph;
     private IntPtr _instanceBuffer = IntPtr.Zero;
-    private bool _isCiSlotPresent = false;
-    private bool _isDigitalDevices = false;
+    private bool _isCiSlotPresent;
+    private bool _isDigitalDevices;
     private int _menuContext = -1;
 
     private IntPtr _mmiBuffer = IntPtr.Zero;
 
-    private Thread _mmiHandlerThread = null;
+    private Thread _mmiHandlerThread;
     private String _name = "Digital Devices";
     private IntPtr _paramBuffer = IntPtr.Zero;
 
     // For DiSEqC support only.
-    private IKsPropertySet _propertySet = null;
+    private IKsPropertySet _propertySet;
     private uint _requestId = 1;
-    private bool _stopMmiHandlerThread = false;
+    private bool _stopMmiHandlerThread;
     private String _tunerDevicePath = String.Empty;
 
     #endregion
@@ -292,7 +292,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       {
         this.LogDebug("Digital Devices: starting new MMI handler thread");
         _stopMmiHandlerThread = false;
-        _mmiHandlerThread = new Thread(new ThreadStart(MmiHandler));
+        _mmiHandlerThread = new Thread(MmiHandler);
         _mmiHandlerThread.Name = "Digital Devices MMI handler";
         _mmiHandlerThread.IsBackground = true;
         _mmiHandlerThread.Priority = ThreadPriority.Lowest;
@@ -1583,7 +1583,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
           {
             if (_graph != null)
             {
-              _graph.RemoveFilter(context.Filter as IBaseFilter);
+              _graph.RemoveFilter(context.Filter);
             }
             DsUtils.ReleaseComObject(context.Filter);
             context.Filter = null;

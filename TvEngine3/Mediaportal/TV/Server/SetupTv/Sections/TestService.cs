@@ -58,8 +58,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       InitializeComponent();
       Init();
 
-      _serverMonitor.OnServerConnected += new ServerMonitor.ServerConnectedDelegate(_serverMonitor_OnServerConnected);
-      _serverMonitor.OnServerDisconnected += new ServerMonitor.ServerDisconnectedDelegate(_serverMonitor_OnServerDisconnected);
+      _serverMonitor.OnServerConnected += _serverMonitor_OnServerConnected;
+      _serverMonitor.OnServerDisconnected += _serverMonitor_OnServerDisconnected;
       _serverMonitor.Start();
       
     }

@@ -43,7 +43,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
       if (container == null)
       {
         container = new WindsorContainer(new XmlInterpreter());
-        GlobalServiceProvider.Instance.Add<IWindsorContainer>(container);
+        GlobalServiceProvider.Instance.Add(container);
       }
             
       var assemblyFilter = new AssemblyFilter(searchPath, "*.Integration.*.dll");

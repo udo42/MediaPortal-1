@@ -46,10 +46,10 @@ namespace Mediaportal.TV.TvPlugin
   {
     #region variables, ctor/dtor
 
-    [SkinControl(10)] protected GUIListControl listPriorities = null;
+    [SkinControl(10)] protected GUIListControl listPriorities;
 
-    private int m_iSelectedItem = 0;
-    private TVUtil util = null;
+    private int m_iSelectedItem;
+    private TVUtil util;
 
     public TvPriorities()
     {
@@ -125,7 +125,7 @@ namespace Mediaportal.TV.TvPlugin
         GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, control.GetID, 0, 0,
                                         null);
         OnMessage(msg);
-        int iItem = (int)msg.Param1;
+        int iItem = msg.Param1;
         if (actionType == Action.ActionType.ACTION_SELECT_ITEM)
         {
           OnClick(iItem);
@@ -140,7 +140,7 @@ namespace Mediaportal.TV.TvPlugin
         GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, control.GetID, 0, 0,
                                         null);
         OnMessage(msg);
-        int iItem = (int)msg.Param1;
+        int iItem = msg.Param1;
         OnMoveUp(iItem);
       }
     }
@@ -152,7 +152,7 @@ namespace Mediaportal.TV.TvPlugin
         GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, control.GetID, 0, 0,
                                         null);
         OnMessage(msg);
-        int iItem = (int)msg.Param1;
+        int iItem = msg.Param1;
         OnMoveDown(iItem);
       }
     }
@@ -196,7 +196,7 @@ namespace Mediaportal.TV.TvPlugin
       GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, listPriorities.GetID, 0, 0,
                                       null);
       OnMessage(msg);
-      int iItem = (int)msg.Param1;
+      int iItem = msg.Param1;
       return iItem;
     }
 

@@ -34,7 +34,7 @@ namespace MediaPortal.Common.Utils
     public static readonly Version SkinVersion = new Version(1, 3, 0, 0);
     private static readonly string MinRequiredVersionDefault = "1.1.8.0"; // 1.2.0 RC1
 
-    static readonly Dictionary<Version, string> MpReleaseApi = new Dictionary<Version, string>()
+    static readonly Dictionary<Version, string> MpReleaseApi = new Dictionary<Version, string>
                                                                  {
                                                                    { new Version("1.1.6.27644"), "1.2.0 Beta" },
                                                                    { new Version("1.2.100.0"), "1.3.0 Alpha" }

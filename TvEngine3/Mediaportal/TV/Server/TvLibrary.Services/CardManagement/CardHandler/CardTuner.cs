@@ -48,7 +48,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     private readonly IDictionary<int,ManualResetEvent> _tuneEvents = new Dictionary<int, ManualResetEvent>();
     private readonly object _tuneEvtLock = new object();
 
-    private ICardTuneReservationTicket _activeCardTuneReservationTicket = null;
+    private ICardTuneReservationTicket _activeCardTuneReservationTicket;
     private CardStopState _cardStopState = CardStopState.Idle;
     private CardTuneState _cardTuneState = CardTuneState.Idle;
 
@@ -60,7 +60,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     public CardTuner(ITvCardHandler cardHandler)
     {
       _cardHandler = cardHandler;
-      _cardHandler.Card.OnNewSubChannelEvent = new OnNewSubChannelDelegate(Card_OnNewSubChannelEvent);
+      _cardHandler.Card.OnNewSubChannelEvent = Card_OnNewSubChannelEvent;
     }
 
     #region ICardTuner Members
@@ -588,7 +588,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         OnBeforeTuneEvent(_cardHandler);
       }
 
-      _cardHandler.Card.OnAfterTuneEvent = new Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.OnAfterTuneDelegate(CardTuner_OnAfterTuneEvent);
+      _cardHandler.Card.OnAfterTuneEvent = CardTuner_OnAfterTuneEvent;
 
       result = TvResult.Succeeded;
       return true;

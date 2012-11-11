@@ -39,12 +39,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
     /// <summary>
     /// A tune request template, used to speed up the tuning process.
     /// </summary>
-    private IATSCChannelTuneRequest _tuneRequest = null;
+    private IATSCChannelTuneRequest _tuneRequest;
 
     /// <summary>
     /// A pre-configured tuning space, used to speed up the tuning process. 
     /// </summary>
-    private IATSCTuningSpace _tuningSpace = null;
+    private IATSCTuningSpace _tuningSpace;
 
     #endregion
 

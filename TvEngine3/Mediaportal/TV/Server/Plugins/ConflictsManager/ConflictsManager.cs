@@ -42,10 +42,10 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
   {
     #region variables
 
-    private IList<Card> _cards = null;
+    private IList<Card> _cards;
 
     private IList<Program> _conflictingPrograms;
-    private IList<Schedule> _schedules = null;
+    private IList<Schedule> _schedules;
 
     #endregion
 
@@ -100,7 +100,7 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
 
       _conflictingPrograms = new List<Program>();
       ITvServerEvent events = GlobalServiceProvider.Instance.Get<ITvServerEvent>();
-      events.OnTvServerEvent += new TvServerEventHandler(events_OnTvServerEvent);
+      events.OnTvServerEvent += events_OnTvServerEvent;
     }
 
     /// <summary>

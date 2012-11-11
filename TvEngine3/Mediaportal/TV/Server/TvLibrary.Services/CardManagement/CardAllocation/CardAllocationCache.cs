@@ -16,8 +16,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
 
     static CardAllocationCache()
     {
-      ChannelManagement.OnStateChangedTuningDetailEvent += new ChannelManagement.OnStateChangedTuningDetailDelegate(ChannelManagement_OnStateChangedTuningDetailEvent);
-      ChannelManagement.OnStateChangedChannelMapEvent += new ChannelManagement.OnStateChangedChannelMapDelegate(ChannelManagement_OnStateChangedChannelMapEvent);      
+      ChannelManagement.OnStateChangedTuningDetailEvent += ChannelManagement_OnStateChangedTuningDetailEvent;
+      ChannelManagement.OnStateChangedChannelMapEvent += ChannelManagement_OnStateChangedChannelMapEvent;      
     }
 
     private static void ChannelManagement_OnStateChangedChannelMapEvent(ChannelMap map, ObjectState state)

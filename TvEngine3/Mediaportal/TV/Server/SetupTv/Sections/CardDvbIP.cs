@@ -45,8 +45,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
 
     private int _cardNumber;
-    private bool _isScanning = false;
-    private bool _stopScanning = false;
+    private bool _isScanning;
+    private bool _stopScanning;
 
     public CardDvbIP()
       : this("DvbIP") {}
@@ -130,7 +130,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
                           "Tuner is locked. Scanning is not possible at the moment. Perhaps you are using another part of a hybrid card?");
           return;
         }
-        Thread scanThread = new Thread(new ThreadStart(DoScan));
+        Thread scanThread = new Thread(DoScan);
         scanThread.Name = "DVB-IP scan thread";
         scanThread.Start();
       }

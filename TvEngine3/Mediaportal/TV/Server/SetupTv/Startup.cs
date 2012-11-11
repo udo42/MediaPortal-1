@@ -149,8 +149,8 @@ namespace Mediaportal.TV.Server.SetupTV
       config.Save(ConfigurationSaveMode.Modified);
       ConfigurationManager.RefreshSection("appSettings");
 
-      _serverMonitor.OnServerConnected += new ServerMonitor.ServerConnectedDelegate(_serverMonitor_OnServerConnected);
-      _serverMonitor.OnServerDisconnected += new ServerMonitor.ServerDisconnectedDelegate(_serverMonitor_OnServerDisconnected);
+      _serverMonitor.OnServerConnected += _serverMonitor_OnServerConnected;
+      _serverMonitor.OnServerDisconnected += _serverMonitor_OnServerDisconnected;
       _serverMonitor.Start();
 
       /*Process[] p = Process.GetProcessesByName(Process.GetCurrentProcess().ProcessName);

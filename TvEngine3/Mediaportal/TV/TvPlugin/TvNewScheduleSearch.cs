@@ -37,7 +37,7 @@ namespace Mediaportal.TV.TvPlugin
   {
     #region enums
 
-    public enum SearchType : int
+    public enum SearchType
     {
       Title = 0,
       KeyWord,
@@ -50,14 +50,14 @@ namespace Mediaportal.TV.TvPlugin
 
     private static SearchType _searchType = SearchType.Title;
 
-    private Action LastAction = null; // Keeps the Last received Action from the OnAction Methode
-    private int LastActionTime = 0; // stores the time of the last action from the OnAction Methode
-    public bool _refreshList = false;
+    private Action LastAction; // Keeps the Last received Action from the OnAction Methode
+    private int LastActionTime; // stores the time of the last action from the OnAction Methode
+    public bool _refreshList;
     public string _searchKeyword = string.Empty;
-    [SkinControl(9)] protected GUIButtonControl btnSearchGenre = null;
-    [SkinControl(8)] protected GUIButtonControl btnSearchKeyword = null;
-    [SkinControl(7)] protected GUIButtonControl btnSearchTitle = null;
-    [SkinControl(50)] protected GUIListControl listResults = null;
+    [SkinControl(9)] protected GUIButtonControl btnSearchGenre;
+    [SkinControl(8)] protected GUIButtonControl btnSearchKeyword;
+    [SkinControl(7)] protected GUIButtonControl btnSearchTitle;
+    [SkinControl(50)] protected GUIListControl listResults;
 
     #endregion
 
@@ -129,7 +129,7 @@ namespace Mediaportal.TV.TvPlugin
         GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, listResults.GetID, 0, 0,
                                         null);
         OnMessage(msg);
-        int iItem = (int)msg.Param1;
+        int iItem = msg.Param1;
         if (actionType == Action.ActionType.ACTION_SELECT_ITEM)
         {
           OnClick(iItem);

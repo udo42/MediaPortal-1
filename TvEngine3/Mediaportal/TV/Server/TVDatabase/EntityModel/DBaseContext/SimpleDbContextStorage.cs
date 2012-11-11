@@ -6,11 +6,6 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.DBaseContext
     {
         private Dictionary<string, System.Data.Entity.DbContext> _storage = new Dictionary<string, System.Data.Entity.DbContext>();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="SimpleDbContextStorage"/> class.
-        /// </summary>
-        public SimpleDbContextStorage() { }
-
       #region IDbContextStorage Members
 
       /// <summary>

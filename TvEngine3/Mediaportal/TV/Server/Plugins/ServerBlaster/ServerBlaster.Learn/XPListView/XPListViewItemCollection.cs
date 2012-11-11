@@ -19,7 +19,6 @@
 #endregion
 
 using System;
-using System.Windows.Forms;
 
 namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 {
@@ -33,7 +32,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     #endregion
 
-    public XPListViewItemCollection(XPListView owner) : base(((ListView)owner)) {}
+    public XPListViewItemCollection(XPListView owner) : base((owner)) {}
 
     public new XPListViewItem this[int displayIndex]
     {

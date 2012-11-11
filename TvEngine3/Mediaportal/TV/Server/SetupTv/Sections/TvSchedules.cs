@@ -80,7 +80,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         ToolStripItem toolStripItem = new ToolStripButton();
         toolStripItem.Tag = template;
         toolStripItem.Text = template.ToString();
-        toolStripItem.Click += new EventHandler(toolStripItem_Click);
+        toolStripItem.Click += toolStripItem_Click;
         addScheduleByTemplateToolStripMenuItem.DropDown.Items.Add(toolStripItem); 
       }      
     }
@@ -265,7 +265,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
             ScheduleConditionList rules = ScheduleConditionHelper.Deserialize<ScheduleConditionList>(template.Rules);
             if (rules != null)
             {
-              item.SubItems.Add(template.Rules.ToString());
+              item.SubItems.Add(template.Rules);
             }
             else
             {

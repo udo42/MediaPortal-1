@@ -66,7 +66,7 @@ namespace Mediaportal.TV.TvPlugin
       new User {Name = "Free channel checker"};
       _timer.Interval = 15000;
       _timer.Enabled = true;
-      _timer.Tick += new EventHandler(_timer_Tick);
+      _timer.Tick += _timer_Tick;
     }
 
     public static bool RecordingNotificationEnabled

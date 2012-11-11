@@ -31,7 +31,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Countries
   {
     #region countries
 
-    private readonly Country[] _countryList = new Country[]
+    private readonly Country[] _countryList = new[]
                                                 {
                                                   new Country(93, "Afghanistan", "AF", AnalogVideoStandard.PAL_B),
                                                   new Country(355, "Albania", "AL", AnalogVideoStandard.PAL_B),

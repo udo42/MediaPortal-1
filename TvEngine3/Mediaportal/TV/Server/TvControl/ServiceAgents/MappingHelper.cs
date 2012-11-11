@@ -59,8 +59,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
         return channelMap;
       }
 
-      var map = new ChannelMap()
-      {
+      var map = new ChannelMap
+                  {
         IdChannel = channel.IdChannel,
         IdCard =  card.IdCard,
         EpgOnly = epg

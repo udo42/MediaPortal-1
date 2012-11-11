@@ -40,9 +40,9 @@ namespace Mediaportal.TV.TvPlugin
     #region Variables
 
     private string _hostName;
-    [SkinControl(25)] protected GUIButtonControl btnBack = null;
-    [SkinControl(24)] protected GUIButtonControl btnChange = null;
-    [SkinControl(30)] protected GUILabelControl lblHostName = null;
+    [SkinControl(25)] protected GUIButtonControl btnBack;
+    [SkinControl(24)] protected GUIButtonControl btnChange;
+    [SkinControl(30)] protected GUILabelControl lblHostName;
 
     #endregion
 

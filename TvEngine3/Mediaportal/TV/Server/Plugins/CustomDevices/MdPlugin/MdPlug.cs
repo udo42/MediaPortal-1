@@ -242,13 +242,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
     #region variables
 
     private String _configurationFolderPrefix = String.Empty;
-    private IFilterGraph2 _graph = null;
-    private IBaseFilter _infTee = null;
-    private bool _isMdPlugin = false;
+    private IFilterGraph2 _graph;
+    private IBaseFilter _infTee;
+    private bool _isMdPlugin;
     private IntPtr _pidBuffer = IntPtr.Zero;
     private IntPtr _programmeBuffer = IntPtr.Zero;
     private HashSet<String> _providers = new HashSet<String>();
-    private List<DecodeSlot> _slots = null;
+    private List<DecodeSlot> _slots;
 
     #endregion
 

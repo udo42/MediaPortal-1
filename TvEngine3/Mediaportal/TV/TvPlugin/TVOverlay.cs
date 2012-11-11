@@ -28,8 +28,8 @@ namespace Mediaportal.TV.TvPlugin
   /// </summary>
   public class TvOverlay : GUIInternalOverlayWindow, IRenderLayer
   {
-    private bool _didRenderLastTime = false;
-    private bool _lastStatus = false;
+    private bool _didRenderLastTime;
+    private bool _lastStatus;
     private DateTime _updateTimer = DateTime.Now;
 
     public TvOverlay()

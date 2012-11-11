@@ -45,27 +45,27 @@ namespace Mediaportal.TV.TvPlugin
     private bool _immediateSeekIsRelative = true;
     private int _immediateSeekValue = 10;
     private DateTime _recIconLastCheck = DateTime.Now;
-    [SkinControl(32)] protected GUIButtonControl btnChannelDown = null;
-    [SkinControl(31)] protected GUIButtonControl btnChannelUp = null;
-    [SkinControl(34)] protected GUIButtonControl btnNextProgram = null;
-    [SkinControl(33)] protected GUIButtonControl btnPreviousProgram = null;
-    [SkinControl(39)] protected GUIImage imgRecIcon = null;
-    [SkinControl(10)] protected GUIImage imgTvChannelLogo = null;
-    private bool isSubMenuVisible = false;
-    [SkinControl(35)] protected GUILabelControl lblCurrentChannel = null;
-    [SkinControl(100)] protected GUILabelControl lblCurrentTime = null;
-    [SkinControl(501)] protected GUIListControl lstAudioStreamList = null;
+    [SkinControl(32)] protected GUIButtonControl btnChannelDown;
+    [SkinControl(31)] protected GUIButtonControl btnChannelUp;
+    [SkinControl(34)] protected GUIButtonControl btnNextProgram;
+    [SkinControl(33)] protected GUIButtonControl btnPreviousProgram;
+    [SkinControl(39)] protected GUIImage imgRecIcon;
+    [SkinControl(10)] protected GUIImage imgTvChannelLogo;
+    private bool isSubMenuVisible;
+    [SkinControl(35)] protected GUILabelControl lblCurrentChannel;
+    [SkinControl(100)] protected GUILabelControl lblCurrentTime;
+    [SkinControl(501)] protected GUIListControl lstAudioStreamList;
 
-    private bool m_bNeedRefresh = false;
+    private bool m_bNeedRefresh;
     private DateTime m_dateTime = DateTime.Now;
-    private int m_delayInterval = 0;
-    private int m_iActiveMenu = 0;
-    private int m_iActiveMenuButtonID = 0;
-    private int m_subtitleDelay = 0;
-    private Program previousProgram = null;
-    [SkinControl(37)] protected GUITextControl tbOnTvNext = null;
-    [SkinControl(36)] protected GUITextControl tbOnTvNow = null;
-    [SkinControl(38)] protected GUITextScrollUpControl tbProgramDescription = null;
+    private int m_delayInterval;
+    private int m_iActiveMenu;
+    private int m_iActiveMenuButtonID;
+    private int m_subtitleDelay;
+    private Program previousProgram;
+    [SkinControl(37)] protected GUITextControl tbOnTvNext;
+    [SkinControl(36)] protected GUITextControl tbOnTvNow;
+    [SkinControl(38)] protected GUITextScrollUpControl tbProgramDescription;
 
     public TvOsd()
     {
@@ -634,7 +634,7 @@ namespace Mediaportal.TV.TvPlugin
               {
                 // set the controls values
                 float fPercent = (float)(100 * (g_Player.CurrentPosition / g_Player.Duration));
-                SetSliderValue(0.0f, 100.0f, (float)fPercent, (int)Controls.OSD_VIDEOPOS);
+                SetSliderValue(0.0f, 100.0f, fPercent, (int)Controls.OSD_VIDEOPOS);
 
 
                 UpdateGammaContrastBrightness();
@@ -681,17 +681,17 @@ namespace Mediaportal.TV.TvPlugin
 
     private void UpdateGammaContrastBrightness()
     {
-      float fBrightNess = (float)GUIGraphicsContext.Brightness;
-      float fContrast = (float)GUIGraphicsContext.Contrast;
-      float fGamma = (float)GUIGraphicsContext.Gamma;
-      float fSaturation = (float)GUIGraphicsContext.Saturation;
-      float fSharpness = (float)GUIGraphicsContext.Sharpness;
+      float fBrightNess = GUIGraphicsContext.Brightness;
+      float fContrast = GUIGraphicsContext.Contrast;
+      float fGamma = GUIGraphicsContext.Gamma;
+      float fSaturation = GUIGraphicsContext.Saturation;
+      float fSharpness = GUIGraphicsContext.Sharpness;
 
-      SetSliderValue(0.0f, 100.0f, (float)fBrightNess, (int)Controls.OSD_BRIGHTNESS);
-      SetSliderValue(0.0f, 100.0f, (float)fContrast, (int)Controls.OSD_CONTRAST);
-      SetSliderValue(0.0f, 100.0f, (float)fGamma, (int)Controls.OSD_GAMMA);
-      SetSliderValue(0.0f, 100.0f, (float)fSaturation, (int)Controls.OSD_SATURATION);
-      SetSliderValue(0.0f, 100.0f, (float)fSharpness, (int)Controls.OSD_SHARPNESS);
+      SetSliderValue(0.0f, 100.0f, fBrightNess, (int)Controls.OSD_BRIGHTNESS);
+      SetSliderValue(0.0f, 100.0f, fContrast, (int)Controls.OSD_CONTRAST);
+      SetSliderValue(0.0f, 100.0f, fGamma, (int)Controls.OSD_GAMMA);
+      SetSliderValue(0.0f, 100.0f, fSaturation, (int)Controls.OSD_SATURATION);
+      SetSliderValue(0.0f, 100.0f, fSharpness, (int)Controls.OSD_SHARPNESS);
     }
 
     private void SetVideoProgress()
@@ -752,7 +752,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private void ToggleButton(int iButtonID, bool bSelected)
     {
-      GUIControl pControl = GetControl(iButtonID) as GUIControl;
+      GUIControl pControl = GetControl(iButtonID);
 
       if (pControl != null)
       {
@@ -1263,7 +1263,7 @@ namespace Mediaportal.TV.TvPlugin
 
       foreach (CPosition pos in _listPositions)
       {
-        pos.control.SetPosition((int)pos.XPos, (int)pos.YPos + iCalibrationY);
+        pos.control.SetPosition(pos.XPos, pos.YPos + iCalibrationY);
       }
       foreach (CPosition pos in _listPositions)
       {
@@ -1290,7 +1290,7 @@ namespace Mediaportal.TV.TvPlugin
           GUIControl pControl = pos.control;
           int dwPosX = pControl.XPosition;
           int dwPosY = pControl.YPosition;
-          if (dwPosY < (int)100)
+          if (dwPosY < 100)
           {
             dwPosY += Math.Abs(iMin);
             pControl.SetPosition(dwPosX, dwPosY);
@@ -1662,7 +1662,7 @@ namespace Mediaportal.TV.TvPlugin
         double iTotalSecs = ts.TotalSeconds;
         ts = DateTime.Now - prog.StartTime;
         double iCurSecs = ts.TotalSeconds;
-        double fPercent = ((double)iCurSecs) / ((double)iTotalSecs);
+        double fPercent = (iCurSecs) / (iTotalSecs);
         fPercent *= 100.0d;
         GUIPropertyManager.SetProperty("#TV.View.Percentage", fPercent.ToString());
         Get_TimeInfo();
@@ -1718,7 +1718,7 @@ namespace Mediaportal.TV.TvPlugin
 
           channelDisplayName = TvRecorded.GetRecordingDisplayName(rec) + " (" + GUILocalizeStrings.Get(604) + ")";
 
-          double fPercent = ((double)currentPosition) / ((double)duration);
+          double fPercent = (currentPosition) / ((double)duration);
           fPercent *= 100.0d;
 
           GUIPropertyManager.SetProperty("#TV.View.Percentage", fPercent.ToString());

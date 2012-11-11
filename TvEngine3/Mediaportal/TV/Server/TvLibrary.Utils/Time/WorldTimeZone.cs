@@ -47,8 +47,8 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
                                                     "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Time Zones"
                                                   };
 
-    private static Dictionary<string, TimeZoneInfo> _TimeZoneList = null;
-    private static Dictionary<string, string> _TimeZoneNames = null;
+    private static Dictionary<string, TimeZoneInfo> _TimeZoneList;
+    private static Dictionary<string, string> _TimeZoneNames;
 
     private TimeZoneInfo _TimeZone;
 
@@ -91,7 +91,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
         throw new ArgumentException("TimeZone Not valid");
       }
 
-      _TimeZone = (TimeZoneInfo)_TimeZoneList[TimeZoneName];
+      _TimeZone = _TimeZoneList[TimeZoneName];
 
       _bHasDlt = true;
       if (_TimeZone.DltDate.Month == 0)

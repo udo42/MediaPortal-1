@@ -28,7 +28,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Check
   /// </summary>
   public class CheckConnections
   {
-    private bool _connected = false;
+    private bool _connected;
     private ConnectionState _currentState;
 
     // check connectivity http://www.developerfusion.co.uk/show/5346/
@@ -122,7 +122,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Check
     #region Nested type: ConnectionState
 
     [Flags]
-    private enum ConnectionState : int
+    private enum ConnectionState
     {
       INTERNET_CONNECTION_MODEM = 0x1,
       INTERNET_CONNECTION_LAN = 0x2,

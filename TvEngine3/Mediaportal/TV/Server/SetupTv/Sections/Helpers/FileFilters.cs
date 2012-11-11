@@ -134,7 +134,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
       {
         cbxCountries.Items.Add(countries[i]);
       }
-      cbxCountries.SelectedIndexChanged += new System.EventHandler(SelectedIndexChanged);
+      cbxCountries.SelectedIndexChanged += SelectedIndexChanged;
       cbxCountries.SelectedIndex = 0;
       cbxRegions.DisplayMember = "DisplayName";
     }

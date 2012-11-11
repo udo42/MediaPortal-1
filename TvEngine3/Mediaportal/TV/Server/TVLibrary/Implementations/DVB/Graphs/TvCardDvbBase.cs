@@ -149,7 +149,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     public TvCardDvbBase(IEpgEvents epgEvents, DsDevice device)
       : base(device)
     {
-      _timeshiftingEPGGrabber = new TimeShiftingEPGGrabber(epgEvents, (ITVCard)this);
+      _timeshiftingEPGGrabber = new TimeShiftingEPGGrabber(epgEvents, this);
       _supportsSubChannels = true;
       Guid networkProviderClsId = new Guid("{D7D42E5C-EB36-4aad-933B-B4C419429C98}");
       _useInternalNetworkProvider = FilterGraphTools.IsThisComObjectInstalled(networkProviderClsId);
@@ -1164,7 +1164,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         _filterTIF = null;
       }
       this.LogDebug("  free pins...");
-      if (_filterTsWriter as IBaseFilter != null)
+      if (_filterTsWriter != null)
       {
         Release.ComObject("TSWriter filter", _filterTsWriter);
         _filterTsWriter = null;

@@ -186,7 +186,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
         _IE = new InternetExplorer();
       }
 
-      IWebBrowser2 webBrowser = (IWebBrowser2)_IE;
+      IWebBrowser2 webBrowser = _IE;
 
       object empty = Missing.Value;
 
@@ -194,8 +194,8 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
       if (page.PostQuery != null)
       {
         ASCIIEncoding encoding = new ASCIIEncoding();
-        object postData = (object)encoding.GetBytes(page.PostQuery);
-        object header = (object)"Content-Type: application/x-www-form-urlencoded\n\r";
+        object postData = encoding.GetBytes(page.PostQuery);
+        object header = "Content-Type: application/x-www-form-urlencoded\n\r";
         webBrowser.Navigate(page.Url, ref empty, ref empty, ref postData, ref header);
       }
       else
@@ -203,7 +203,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
         webBrowser.Navigate(page.Url, ref empty, ref empty, ref empty, ref empty);
       }
 
-      while (webBrowser.Busy == true)
+      while (webBrowser.Busy)
       {
         Thread.Sleep(500);
       }

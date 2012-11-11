@@ -255,8 +255,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
     /// </summary>
     protected IntPtr _generalBuffer = IntPtr.Zero;
 
-    private bool _isProf = false;
-    private IKsPropertySet _propertySet = null;
+    private bool _isProf;
+    private IKsPropertySet _propertySet;
 
     #endregion
 

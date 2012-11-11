@@ -309,7 +309,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
       {
         this.LogDebug("NetUP: starting new MMI handler thread");
         _stopMmiHandlerThread = false;
-        _mmiHandlerThread = new Thread(new ThreadStart(MmiHandler));
+        _mmiHandlerThread = new Thread(MmiHandler);
         _mmiHandlerThread.Name = "NetUP MMI handler";
         _mmiHandlerThread.IsBackground = true;
         _mmiHandlerThread.Priority = ThreadPriority.Lowest;
@@ -1162,7 +1162,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
     {
       #region variables
 
-      private static int _operatingSystemIntSize = 0;
+      private static int _operatingSystemIntSize;
       private UInt32 _controlCode;
       private IntPtr _inBuffer;
       private Int32 _inBufferSize;
@@ -1353,15 +1353,15 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
     // avoid buffer data corruption. Otherwise functions called exclusively
     // by the MMI handler thread use the MMI buffer and other functions
     // use the general buffer.
-    private ICiMenuCallbacks _ciMenuCallbacks = null;
+    private ICiMenuCallbacks _ciMenuCallbacks;
     private IntPtr _generalBuffer = IntPtr.Zero;
-    private bool _isCamPresent = false;
-    private bool _isNetUp = false;
+    private bool _isCamPresent;
+    private bool _isNetUp;
     private IntPtr _mmiBuffer = IntPtr.Zero;
 
-    private Thread _mmiHandlerThread = null;
-    private IKsPropertySet _propertySet = null;
-    private bool _stopMmiHandlerThread = false;
+    private Thread _mmiHandlerThread;
+    private IKsPropertySet _propertySet;
+    private bool _stopMmiHandlerThread;
 
     #endregion
   }

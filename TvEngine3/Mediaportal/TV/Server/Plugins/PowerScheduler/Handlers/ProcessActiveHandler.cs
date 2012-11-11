@@ -51,7 +51,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     {
       if (GlobalServiceProvider.Instance.IsRegistered<IPowerScheduler>())
         GlobalServiceProvider.Instance.Get<IPowerScheduler>().OnPowerSchedulerEvent +=
-          new PowerSchedulerEventHandler(ProcessActiveHandler_OnPowerSchedulerEvent);
+          ProcessActiveHandler_OnPowerSchedulerEvent;
     }
 
     #endregion

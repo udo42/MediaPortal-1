@@ -725,23 +725,23 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
       #region variables
 
       // This variable tracks the number of open API instances which corresponds with used DLL indices.
-      private static int _apiCount = 0;
-      private Thread _apiAccessThread = null;
-      private int _apiIndex = 0;
+      private static int _apiCount;
+      private Thread _apiAccessThread;
+      private int _apiIndex;
       private IntPtr _ciApiInstance = IntPtr.Zero;
-      private CI_Control _ciControl = null;
+      private CI_Control _ciControl;
 
       // Delegate instances for each API DLL function.
-      private CreateDtvCIAPI _createApi = null;
-      private DestroyDtvCIAPI _destroyApi = null;
+      private CreateDtvCIAPI _createApi;
+      private DestroyDtvCIAPI _destroyApi;
       private String _devicePath = String.Empty;
-      private bool _dllLoaded = false;
-      private GetanyseeNumberofDevicesEx _getAnyseeDeviceCount = null;
+      private bool _dllLoaded;
+      private GetanyseeNumberofDevicesEx _getAnyseeDeviceCount;
 
       private IntPtr _libHandle = IntPtr.Zero;
-      private OpenCILib _openApi = null;
+      private OpenCILib _openApi;
 
-      private bool _stopApiAccessThread = false;
+      private bool _stopApiAccessThread;
       private IntPtr _windowHandle = IntPtr.Zero;
 
       #endregion
@@ -912,7 +912,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
         // it is no longer needed.
         this.LogDebug("Anysee: starting API access thread");
         _stopApiAccessThread = false;
-        _apiAccessThread = new Thread(new ThreadStart(AccessThread));
+        _apiAccessThread = new Thread(AccessThread);
         _apiAccessThread.Name = String.Format("Anysee API {0} Access", _apiCount);
         _apiAccessThread.IsBackground = true;
         _apiAccessThread.SetApartmentState(ApartmentState.STA);
@@ -1153,16 +1153,16 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
 
     #region variables
 
-    private bool _isAnysee = false;
-    private bool _isCiSlotPresent = false;
+    private bool _isAnysee;
+    private bool _isCiSlotPresent;
     #pragma warning disable 0414
-    private bool _isCamPresent = false;
+    private bool _isCamPresent;
     #pragma warning restore 0414
-    private bool _isCamReady = false;
+    private bool _isCamReady;
     private AnyseeCiState _ciState = AnyseeCiState.Empty;
 
-    private IKsPropertySet _propertySet = null;
-    private AnyseeCiApi _ciApi = null;
+    private IKsPropertySet _propertySet;
+    private AnyseeCiApi _ciApi;
 
     private IntPtr _generalBuffer = IntPtr.Zero;
     private IntPtr _callbackBuffer = IntPtr.Zero;
@@ -1170,7 +1170,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
 
     private String _tunerDevicePath = String.Empty;
     private ApiCallbacks _apiCallbacks;
-    private ICiMenuCallbacks _ciMenuCallbacks = null;
+    private ICiMenuCallbacks _ciMenuCallbacks;
 
     #endregion
 

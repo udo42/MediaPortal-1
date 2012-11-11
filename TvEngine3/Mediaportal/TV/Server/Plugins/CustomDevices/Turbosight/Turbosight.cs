@@ -425,45 +425,45 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
     #region variables
 
     // This variable tracks the number of open API instances which corresponds with used DLL indices.
-    private static int _apiCount = 0;
+    private static int _apiCount;
 
     // Conditional access API instance variables.
-    private int _apiIndex = 0;
-    private Camavailable _camAvailable = null;
+    private int _apiIndex;
+    private Camavailable _camAvailable;
     private IntPtr _ciHandle = IntPtr.Zero;
-    private ICiMenuCallbacks _ciMenuCallbacks = null;
-    private bool _dllLoaded = false;
+    private ICiMenuCallbacks _ciMenuCallbacks;
+    private bool _dllLoaded;
 
     /// A buffer for general use in synchronised methods.
     private IntPtr _generalBuffer = IntPtr.Zero;
 
-    private bool _isCamPresent = false;
-    private bool _isCiSlotPresent = false;
-    private bool _isTurbosight = false;
-    private bool _isUsb = false;
+    private bool _isCamPresent;
+    private bool _isCiSlotPresent;
+    private bool _isTurbosight;
+    private bool _isUsb;
 
     private IntPtr _libHandle = IntPtr.Zero;
-    private Thread _mmiHandlerThread = null;
+    private Thread _mmiHandlerThread;
 
     // Delegate instances for each API DLL function.
 
     // Buffers for use in conditional access related functions.
     private IntPtr _mmiMessageBuffer = IntPtr.Zero;
-    private List<MmiMessage> _mmiMessageQueue = null;
-    private TBS_ci_MMI_Process _mmiProcess = null;
+    private List<MmiMessage> _mmiMessageQueue;
+    private TBS_ci_MMI_Process _mmiProcess;
     private IntPtr _mmiResponseBuffer = IntPtr.Zero;
-    private On_Exit_CI _onExitCi = null;
-    private On_Start_CI _onStartCi = null;
+    private On_Exit_CI _onExitCi;
+    private On_Start_CI _onStartCi;
     private IntPtr _pmtBuffer = IntPtr.Zero;
 
-    private IKsPropertySet _propertySet = null;
+    private IKsPropertySet _propertySet;
     private Guid _propertySetGuid = Guid.Empty;
-    private TBS_ci_SendPmt _sendPmt = null;
+    private TBS_ci_SendPmt _sendPmt;
 
-    private bool _stopMmiHandlerThread = false;
-    private int _tbsAccessProperty = 0;
-    private IBaseFilter _tunerFilter = null;
-    private String _tunerFilterName = null;
+    private bool _stopMmiHandlerThread;
+    private int _tbsAccessProperty;
+    private IBaseFilter _tunerFilter;
+    private String _tunerFilterName;
 
     #endregion
 
@@ -630,7 +630,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
           Marshal.WriteByte(_mmiResponseBuffer, i, 0);
         }
         _stopMmiHandlerThread = false;
-        _mmiHandlerThread = new Thread(new ThreadStart(MmiHandler));
+        _mmiHandlerThread = new Thread(MmiHandler);
         _mmiHandlerThread.Name = "Turbosight MMI handler";
         _mmiHandlerThread.IsBackground = true;
         _mmiHandlerThread.Priority = ThreadPriority.Lowest;

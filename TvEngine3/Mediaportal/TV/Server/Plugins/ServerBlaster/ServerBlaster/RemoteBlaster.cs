@@ -213,8 +213,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
 
     #region Events
 
-    public static RemoteEventHandler Click = null;
-    public static RemoteEventHandler DoubleClick = null;
+    public static RemoteEventHandler Click;
+    public static RemoteEventHandler DoubleClick;
 
     #endregion Events
 
@@ -480,7 +480,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
 
     private static readonly Blaster _deviceSingleton;
     private static int _currentSpeed;
-    private int _learnStartTick = 0;
+    private int _learnStartTick;
     private ArrayList _packetArray;
 
     #endregion Members

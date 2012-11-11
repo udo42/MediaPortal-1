@@ -38,12 +38,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBC
     /// <summary>
     /// A tune request template, used to speed up the tuning process.
     /// </summary>
-    private IDVBTuneRequest _tuneRequest = null;
+    private IDVBTuneRequest _tuneRequest;
 
     /// <summary>
     /// A pre-configured tuning space, used to speed up the tuning process. 
     /// </summary>
-    private IDVBTuningSpace _tuningSpace = null;
+    private IDVBTuningSpace _tuningSpace;
 
     #endregion
 

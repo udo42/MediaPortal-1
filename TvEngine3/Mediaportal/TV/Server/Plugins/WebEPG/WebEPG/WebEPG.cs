@@ -68,9 +68,9 @@ namespace WebEPG
 
     public class Stats
     {
-      private int _channels = 0;
+      private int _channels;
       private DateTime _endTime = DateTime.Now;
-      private int _programs = 0;
+      private int _programs;
       private DateTime _startTime = DateTime.Now;
       private string _status = "";
 
@@ -126,7 +126,7 @@ namespace WebEPG
     public WebEPG(string configFile, IEpgDataSink epgDataSink, string baseDirectory)
     {
       this.LogInfo("Assembly versions:");
-      this.LogInfo(GetType().Assembly.GetName().Name + " " + GetType().Assembly.GetName().Version.ToString());      
+      this.LogInfo(GetType().Assembly.GetName().Name + " " + GetType().Assembly.GetName().Version);      
       // set config directories and files.
       _configFile = configFile;
       //_xmltvDirectory = xmltvDirectory;
@@ -176,7 +176,7 @@ namespace WebEPG
       else
       {
         httpStats = new HttpStatistics();
-        GlobalServiceProvider.Instance.Add<IHttpStatistics>(httpStats);
+        GlobalServiceProvider.Instance.Add(httpStats);
       }
 
       this.LogInfo("WebEPG: Loading Channel Config");

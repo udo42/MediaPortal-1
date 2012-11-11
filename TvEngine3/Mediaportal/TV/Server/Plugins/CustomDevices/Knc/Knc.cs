@@ -414,7 +414,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
     private const int CallbackSetSize = 28;
     private const int MaxDiseqcCommandLength = 64;
 
-    private static readonly string[] ValidDeviceNames = new string[]
+    private static readonly string[] ValidDeviceNames = new[]
                                                           {
                                                             "KNC BDA DVB-S",
                                                             "KNC BDA DVB-S2",
@@ -437,7 +437,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
                                                             "Satelco EasyWatch PCI (DVB-T)"
                                                           };
 
-    private static readonly string[] ValidDevicePaths = new string[]
+    private static readonly string[] ValidDevicePaths = new[]
                                                           {
                                                             // DVB-S - Old
                                                             "ven_1131&dev_7146&subsys_4f561131",  // KNC
@@ -506,20 +506,20 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
 
     private IntPtr _callbackBuffer = IntPtr.Zero;
     private KncCiCallbacks _callbacks;
-    private IBaseFilter _captureFilter = null;
-    private ICiMenuCallbacks _ciMenuCallbacks = null;
+    private IBaseFilter _captureFilter;
+    private ICiMenuCallbacks _ciMenuCallbacks;
     private KncCiState _ciState = KncCiState.Releasing;
     private int _deviceIndex = -1;
     private IntPtr _diseqcBuffer = IntPtr.Zero;
-    private IGraphBuilder _graphBuilder = null;
-    private bool _isCamPresent = false;
-    private bool _isCamReady = false;
-    private bool _isKnc = false;
-    private bool _isPcie = false;
+    private IGraphBuilder _graphBuilder;
+    private bool _isCamPresent;
+    private bool _isCamReady;
+    private bool _isKnc;
+    private bool _isPcie;
     private String _name = "KNC";
-    private byte _slotIndex = 0;
+    private byte _slotIndex;
 
-    private IBaseFilter _tunerFilter = null;
+    private IBaseFilter _tunerFilter;
 
     #endregion
 

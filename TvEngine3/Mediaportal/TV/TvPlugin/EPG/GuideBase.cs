@@ -49,7 +49,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
     protected const int ROW_ID = 1000;
     protected const int COL_ID = 10;
     protected const int GUIDE_COMPONENTID_START = 50000;
-    protected int _previousChannelCount = 0;
+    protected int _previousChannelCount;
 
     #endregion
 

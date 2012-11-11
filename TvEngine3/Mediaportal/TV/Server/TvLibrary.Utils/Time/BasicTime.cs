@@ -29,8 +29,8 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
   {
     #region Variables
 
-    private int _hour = 0;
-    private int _minute = 0;
+    private int _hour;
+    private int _minute;
 
     #endregion
 

@@ -36,7 +36,7 @@ namespace WebEPG.config
     #region Variables
 
     private const float MIN_SIMILARITY = 0.5f;
-    private Dictionary<string, ChannelGrabberInfo> _ChannelList = null;
+    private Dictionary<string, ChannelGrabberInfo> _ChannelList;
     private string _strChannelsFile;
     private string _strGrabberDir;
     //string _Country;
@@ -162,7 +162,7 @@ namespace WebEPG.config
       float bestSimilarity = MIN_SIMILARITY;
       for (int i = 0; i < channels.Count; i++)
       {
-        ch = (ChannelGrabberInfo)channels[i];
+        ch = channels[i];
         if (ch.GrabberList == null)
           continue;
         if (Name.Equals(ch.FullName, StringComparison.OrdinalIgnoreCase))
@@ -213,7 +213,7 @@ namespace WebEPG.config
         bestSimilarity = MIN_SIMILARITY;
         for (int i = 0; i < channels.Count; i++)
         {
-          ch = (ChannelGrabberInfo)channels[i];
+          ch = channels[i];
           if (NameList[k] == ch.FullName)
           {
             retList[k] = ch;

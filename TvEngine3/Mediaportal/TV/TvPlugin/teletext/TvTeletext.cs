@@ -31,12 +31,12 @@ namespace Mediaportal.TV.TvPlugin.Teletext
   {
     #region gui components
 
-    [SkinControl(507)] protected GUIButtonControl btnFullscreen = null;
-    [SkinControl(505)] protected GUIToggleButtonControl btnHidden = null;
-    [SkinControl(502)] protected GUIButtonControl btnPage100 = null;
-    [SkinControl(503)] protected GUIButtonControl btnPage200 = null;
-    [SkinControl(504)] protected GUIButtonControl btnPage300 = null;
-    [SkinControl(506)] protected GUISelectButtonControl btnSubPage = null;
+    [SkinControl(507)] protected GUIButtonControl btnFullscreen;
+    [SkinControl(505)] protected GUIToggleButtonControl btnHidden;
+    [SkinControl(502)] protected GUIButtonControl btnPage100;
+    [SkinControl(503)] protected GUIButtonControl btnPage200;
+    [SkinControl(504)] protected GUIButtonControl btnPage300;
+    [SkinControl(506)] protected GUISelectButtonControl btnSubPage;
 
     #endregion
 

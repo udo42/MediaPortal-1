@@ -12,7 +12,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (var programCategoryRepository = new GenericRepository<Model>())
       {
-        programCategoryRepository.Add<ProgramCategory>(category);
+        programCategoryRepository.Add(category);
         programCategoryRepository.UnitOfWork.SaveChanges();
       }
     }

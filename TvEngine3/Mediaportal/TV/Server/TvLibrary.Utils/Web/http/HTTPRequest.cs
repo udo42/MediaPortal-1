@@ -27,9 +27,9 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
   {
     private string _agent = string.Empty;
     private string _cookies = string.Empty;
-    private int _delay = 0;
+    private int _delay;
     private string _encoding = string.Empty;
-    private bool _externalBrowser = false;
+    private bool _externalBrowser;
     private string _getQuery = string.Empty;
     private string _host = string.Empty;
     private string _postQuery = string.Empty;

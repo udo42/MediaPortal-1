@@ -98,7 +98,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
 
     private bool _preventDuplicateEpisodes;
     private List<RecordingDetail> _recordingsInProgressList;
-    private Thread _schedulerThread = null;
+    private Thread _schedulerThread;
 
     #endregion
 

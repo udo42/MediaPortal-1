@@ -45,16 +45,16 @@ namespace WebEPG.Parser
     private string _channelId = string.Empty;
     private string _description = string.Empty;
     private WorldDateTime _endTime;
-    private int _episode = 0;
+    private int _episode;
     private string _genre = string.Empty;
     private Dictionary<string, int> _months;
     private DataPreference _preference;
-    private bool _repeat = false;
-    private int _season = 0;
+    private bool _repeat;
+    private int _season;
     private WorldDateTime _startTime;
     private string _subTitle = string.Empty;
     private HTTPRequest _sublink;
-    private bool _subtitles = false;
+    private bool _subtitles;
     private string _title = string.Empty;
 
     #endregion

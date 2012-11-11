@@ -50,7 +50,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
 
     //regional stuff
     private readonly bool _isRegionalDKorNO;
-    private Color Transparent = new Color();
+    private Color Transparent;
 
     private Font _fontTeletext;
 
@@ -129,7 +129,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
 
     #region character and other tables for multi-language support. Referring the bits C12-C14 in the header
 
-    private readonly char[,] m_charTableA = new char[,]
+    private readonly char[,] m_charTableA = new[,]
                                               {
                                                 {'#', '\u016F'}, {'\u00A3', '$'},
                                                 {'#', '\u00F5'}, {'\u00E9', '\u00EF'}, {'#', '$'}, {'\u00A3', '$'},
@@ -139,14 +139,14 @@ namespace Mediaportal.TV.TvPlugin.Teletext
                                                 {'\u00A3', '\u011F'}, {'#', '\u00A4'}
                                               };
 
-    private readonly char[] m_charTableB = new char[]
+    private readonly char[] m_charTableB = new[]
                                              {
                                                '\u010D', '@', '\u0160', '\u00E0', '\u00A7', '\u00E9', '\u0160', '\u0105'
                                                , '\u00A1', '\u0162',
                                                '\u010C', '\u00C9', '\u0130', '\u00C9'
                                              };
 
-    private readonly char[,] m_charTableC = new char[,]
+    private readonly char[,] m_charTableC = new[,]
                                               {
                                                 {'\u0165', '\u017E', '\u00FD', '\u00ED', '\u0159', '\u00E9'},
                                                 {'\u2190', '\u00BD', '\u2192', '\u2191', '#', '\u0336'},
@@ -164,7 +164,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
                                                 {'\u00C6', '\u00D8', '\u00C5', '\u00DC', '_', '\u00E9'}
                                               };
 
-    private readonly char[,] m_charTableD = new char[,]
+    private readonly char[,] m_charTableD = new[,]
                                               {
                                                 {'\u00E1', '\u011B', '\u00FA', '\u0161'},
                                                 {'\u00BC', '\u2016', '\u00BE', '\u00F7'},
@@ -182,7 +182,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
                                                 {'\u00E6', '\u00F8', '\u00E5', '\u00FC'}
                                               };
 
-    private readonly char[] m_charTableE = new char[]
+    private readonly char[] m_charTableE = new[]
                                              {
                                                '\u2190', '\u2192', '\u2191', '\u2193', 'O', 'K', '\u2190', '\u2190',
                                                '\u2190'

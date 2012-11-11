@@ -83,7 +83,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private Container components = null;
+    private Container components;
 
     private MPGroupBox gbSelection;
     private EventHandler handler;
@@ -108,7 +108,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
 
       treeView1.TreeViewNodeSorter = new NodeSorter();
 
-      handler = new EventHandler(DoEvent);
+      handler = DoEvent;
       bSelect.Click += DoSelect; // select_click;
       bClose.Click += handler;
       treeView1.DoubleClick += DoSelect; //select_click;

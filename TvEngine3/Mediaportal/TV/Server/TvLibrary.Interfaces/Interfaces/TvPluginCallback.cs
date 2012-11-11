@@ -110,7 +110,7 @@ namespace TvLibrary.Interfaces
     #region private vars
 
     private int _answerLength;
-    private bool _bPassword = false;
+    private bool _bPassword;
     private string _bottomText;
     private List<CiMenuEntry> _ciMenuEntries = new List<CiMenuEntry>();
     private CiMenuState _menuState;

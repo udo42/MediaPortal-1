@@ -113,7 +113,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
 
     #region variables
 
-    private bool _isGeniatech = false;
+    private bool _isGeniatech;
 
     #endregion
 

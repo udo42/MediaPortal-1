@@ -37,7 +37,7 @@ namespace Mediaportal.TV.Server.TVService
     
 
     //private Thread _tvServiceThread = null;
-    private static Thread _unhandledExceptionInThread = null;
+    private static Thread _unhandledExceptionInThread;
     private TvServiceThread _tvServiceThread;
 
     /// <summary>
@@ -45,7 +45,7 @@ namespace Mediaportal.TV.Server.TVService
     /// </summary>
     public Service1()
     {
-      AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(CurrentDomain_UnhandledException);
+      AppDomain.CurrentDomain.UnhandledException += CurrentDomain_UnhandledException;
       InitializeComponent();
     }
 
@@ -127,7 +127,7 @@ namespace Mediaportal.TV.Server.TVService
       if (opt != null && opt.ToUpperInvariant() == "/DEBUG")
       {
         Service1 s = new Service1();
-        s.DoStart(new string[] { "/DEBUG" });
+        s.DoStart(new[] { "/DEBUG" });
         do
         {
           Thread.Sleep(100);

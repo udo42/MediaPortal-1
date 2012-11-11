@@ -37,9 +37,9 @@ namespace Mediaportal.TV.TvPlugin
     private static Int64 snapshotBuferPosition = -1;
     private static string snapshotBufferFile = "";
     private static decimal preRecordInterval = -1;
-    private static Timer _timer=null;
-    private static int isEnabled = 0;
-    private static int secondsElapsed = 0;
+    private static Timer _timer;
+    private static int isEnabled;
+    private static int secondsElapsed;
     #endregion
 
     #region Event handlers
@@ -80,8 +80,8 @@ namespace Mediaportal.TV.TvPlugin
       {
         _timer = new Timer();
         _timer.Interval = 1000;
-        _timer.Tick += new EventHandler(_timer_Tick);
-        g_Player.PlayBackStopped += new g_Player.StoppedHandler(g_Player_PlayBackStopped);
+        _timer.Tick += _timer_Tick;
+        g_Player.PlayBackStopped += g_Player_PlayBackStopped;
       }
       Log.Debug("TvTimeShiftPositionWatcher: Channel changed.");
       SnapshotTimeShiftBuffer();

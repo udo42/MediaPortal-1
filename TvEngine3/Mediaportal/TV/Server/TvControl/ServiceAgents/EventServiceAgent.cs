@@ -48,14 +48,14 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
         _channelFactory = new DuplexChannelFactory<IEventService>(callbackInstance, binding, endpoint);
         _channel = _channelFactory.CreateChannel();
 
-        callbackInstance.Faulted += new EventHandler(EventServiceAgent_Faulted);
-        callbackInstance.Closed += new EventHandler(EventServiceAgent_Closed);
+        callbackInstance.Faulted += EventServiceAgent_Faulted;
+        callbackInstance.Closed += EventServiceAgent_Closed;
 
-        _channelFactory.Faulted += new EventHandler(EventServiceAgent_Faulted);
-        _channelFactory.Closed += new EventHandler(EventServiceAgent_Closed);
+        _channelFactory.Faulted += EventServiceAgent_Faulted;
+        _channelFactory.Closed += EventServiceAgent_Closed;
 
-        ((IClientChannel)_channel).Faulted += new EventHandler(EventServiceAgent_Faulted);
-        ((IClientChannel)_channel).Closed += new EventHandler(EventServiceAgent_Closed);        
+        ((IClientChannel)_channel).Faulted += EventServiceAgent_Faulted;
+        ((IClientChannel)_channel).Closed += EventServiceAgent_Closed;        
       }      
     }
 

@@ -32,8 +32,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
         }
         _channel = channelFactory.CreateChannel();
 
-        ((IClientChannel)_channel).Faulted += new EventHandler(ServiceAgent_Faulted);
-        ((IClientChannel)_channel).Closed += new EventHandler(ServiceAgent_Closed);
+        ((IClientChannel)_channel).Faulted += ServiceAgent_Faulted;
+        ((IClientChannel)_channel).Closed += ServiceAgent_Closed;
       }
     }
 
@@ -47,8 +47,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
         return;
       }
 
-      clientChannel.Faulted -= new EventHandler(ServiceAgent_Faulted);
-      clientChannel.Closed -= new EventHandler(ServiceAgent_Closed);
+      clientChannel.Faulted -= ServiceAgent_Faulted;
+      clientChannel.Closed -= ServiceAgent_Closed;
 
       try
       {

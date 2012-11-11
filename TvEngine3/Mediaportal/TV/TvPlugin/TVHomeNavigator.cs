@@ -81,17 +81,17 @@ namespace Mediaportal.TV.TvPlugin
 
     private IDictionary<int, Channel> _channels = new Dictionary<int, Channel>();
     private List<ChannelGroup> _groups = new List<ChannelGroup>();
-    private Channel _lastViewedChannel = null; // saves the last viewed Channel  // mPod    
-    private ChannelBLL m_currentChannel = null;
+    private Channel _lastViewedChannel; // saves the last viewed Channel  // mPod    
+    private ChannelBLL m_currentChannel;
     // Contains all channel groups (including an "all _channels" group)
 
-    private int m_currentgroup = 0;
+    private int m_currentgroup;
     private int m_zapChannelNr = -1;
-    private ChannelBLL m_zapchannel = null;
+    private ChannelBLL m_zapchannel;
     private long m_zapdelay;
     private int m_zapgroup = -1;
     private DateTime m_zaptime;
-    private bool reentrant = false;    
+    private bool reentrant;    
 
     #endregion
 
@@ -528,7 +528,7 @@ namespace Mediaportal.TV.TvPlugin
         Channel chan;
         while (iCounter < channels.Count && found == false)
         {
-          chan = ((GroupMap)channels[iCounter]).Channel;
+          chan = (channels[iCounter]).Channel;
 
           this.LogDebug("chan {0}", chan.DisplayName);
           if (chan.VisibleInGuide)
@@ -612,7 +612,7 @@ namespace Mediaportal.TV.TvPlugin
       m_zapchannel.CurrentGroup = null;
       m_zapChannelNr = -1;
       this.LogInfo("Navigator:ZapNext {0}->{1}", currentChan.DisplayName, m_zapchannel.Entity.DisplayName);
-      if (GUIWindowManager.ActiveWindow == (int)(int)GUIWindow.Window.WINDOW_TVFULLSCREEN)
+      if (GUIWindowManager.ActiveWindow == (int)GUIWindow.Window.WINDOW_TVFULLSCREEN)
       {
         if (useZapDelay)
         {
@@ -677,7 +677,7 @@ namespace Mediaportal.TV.TvPlugin
       m_zapChannelNr = -1;
       this.LogInfo("Navigator:ZapPrevious {0}->{1}",
                    currentChan.DisplayName, m_zapchannel.Entity.DisplayName);
-      if (GUIWindowManager.ActiveWindow == (int)(int)GUIWindow.Window.WINDOW_TVFULLSCREEN)
+      if (GUIWindowManager.ActiveWindow == (int)GUIWindow.Window.WINDOW_TVFULLSCREEN)
       {
         if (useZapDelay)
         {
@@ -886,7 +886,7 @@ namespace Mediaportal.TV.TvPlugin
       //if we still havent found the right group, then iterate through the selected group and find the channelname.      
       if (!foundMatchingGroupName && m_currentChannel.Entity != null && _groups != null)
       {
-        foreach (GroupMap groupMap in ((ChannelGroup)_groups[m_currentgroup]).GroupMaps)
+        foreach (GroupMap groupMap in (_groups[m_currentgroup]).GroupMaps)
         {
           if (groupMap.Channel.DisplayName == currentchannelName)
           {

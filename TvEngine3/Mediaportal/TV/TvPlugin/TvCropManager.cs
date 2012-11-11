@@ -37,14 +37,14 @@ namespace Mediaportal.TV.TvPlugin
 
     public TvCropManager()
     {
-      g_Player.PlayBackStarted += new g_Player.StartedHandler(g_Player_PlayBackStarted);
+      g_Player.PlayBackStarted += g_Player_PlayBackStarted;
       this.LogInfo("TvCropManager: Started");
     }
 
     ~TvCropManager()
     {
       this.LogInfo("TvCropManager: Stopped");
-      g_Player.PlayBackStarted -= new g_Player.StartedHandler(g_Player_PlayBackStarted);
+      g_Player.PlayBackStarted -= g_Player_PlayBackStarted;
     }
 
     #endregion

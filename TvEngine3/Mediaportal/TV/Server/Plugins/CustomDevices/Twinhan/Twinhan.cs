@@ -279,17 +279,17 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     private class MmiData
     {
       public String Answer = String.Empty;
-      public Int32 AnswerLength = 0;
-      public Int32 ChoiceIndex = 0;
+      public Int32 AnswerLength;
+      public Int32 ChoiceIndex;
       public List<String> Entries = new List<string>();
-      public Int32 EntryCount = 0;
+      public Int32 EntryCount;
       public String Footer = String.Empty;
-      public bool IsBlindAnswer = false;
-      public bool IsEnquiry = false;
+      public bool IsBlindAnswer;
+      public bool IsEnquiry;
       public String Prompt = String.Empty;
       public String SubTitle = String.Empty;
       public String Title = String.Empty;
-      public Int32 Type = 0;
+      public Int32 Type;
 
       public void WriteToBuffer(IntPtr buffer, bool isTerraTecFormat)
       {
@@ -1104,13 +1104,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
 
     #region variables
 
-    private bool _isTwinhan = false;
-    private bool _isTerraTec = false;
+    private bool _isTwinhan;
+    private bool _isTerraTec;
     #pragma warning disable 0414
-    private bool _isCamPresent = false;
+    private bool _isCamPresent;
     #pragma warning restore 0414
-    private bool _isCamReady = false;
-    private bool _isPidFilterSupported = false;
+    private bool _isCamReady;
+    private bool _isPidFilterSupported;
     private bool _isPidFilterBypassSupported = true;
 
     // Functions that are called from both the main TV service threads
@@ -1121,7 +1121,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     private IntPtr _generalBuffer = IntPtr.Zero;
     private IntPtr _mmiBuffer = IntPtr.Zero;
 
-    private IKsPropertySet _propertySet = null;
+    private IKsPropertySet _propertySet;
     private CardType _tunerType = CardType.Unknown;
     private String _tunerFilterName = String.Empty;
 
@@ -1129,9 +1129,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     private int _maxPidFilterPids = MaxPidFilterPids;
     private int _mmiDataSize = DefaultMmiDataSize;
 
-    private Thread _mmiHandlerThread = null;
-    private bool _stopMmiHandlerThread = false;
-    private ICiMenuCallbacks _ciMenuCallbacks = null;
+    private Thread _mmiHandlerThread;
+    private bool _stopMmiHandlerThread;
+    private ICiMenuCallbacks _ciMenuCallbacks;
 
     #endregion
 
@@ -1320,7 +1320,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       {
         this.LogDebug("Twinhan: starting new MMI handler thread");
         _stopMmiHandlerThread = false;
-        _mmiHandlerThread = new Thread(new ThreadStart(MmiHandler));
+        _mmiHandlerThread = new Thread(MmiHandler);
         _mmiHandlerThread.Name = "Twinhan MMI handler";
         _mmiHandlerThread.IsBackground = true;
         _mmiHandlerThread.Priority = ThreadPriority.Lowest;
@@ -2476,7 +2476,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     {
       this.LogDebug("Twinhan: select menu entry, choice = {0}", (int)choice);
       MmiData mmi = new MmiData();
-      mmi.ChoiceIndex = (int)choice;
+      mmi.ChoiceIndex = choice;
       mmi.Type = 1;
       return SendMmi(mmi);
     }

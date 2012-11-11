@@ -41,18 +41,13 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     #region Variables
 
     private const string CACHE_DIR = "WebCache";
-    private static bool _initialised = false;
+    private static bool _initialised;
     private static Mode _cacheMode = Mode.Disabled;
     private static string _strPageSource;
 
     #endregion
 
     #region Constructors/Destructors
-
-    /// <summary>
-    /// Initializes a new instance of the <see cref="HTMLCache"/> class.
-    /// </summary>
-    public HTMLCache() {}
 
     #endregion
 

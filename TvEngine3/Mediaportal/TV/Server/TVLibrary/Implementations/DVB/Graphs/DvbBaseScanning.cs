@@ -451,7 +451,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
 
             if (isServiceInfoAvailable)
             {
-              uint key = (uint)((uint)originalNetworkId << 16) + (uint)transportStreamId;
+              uint key = ((uint)originalNetworkId << 16) + (uint)transportStreamId;
               if (multiplexesFound.ContainsKey(key))
               {
                 this.LogDebug("Tuning details for ONID 0x{0:x} and TSID 0x{1:x} are ambiguous, disregarding service information", originalNetworkId, transportStreamId);

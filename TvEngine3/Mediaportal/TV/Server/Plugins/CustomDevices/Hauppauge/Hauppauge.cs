@@ -56,7 +56,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Hauppauge
 
     #region variables
 
-    private bool _isHauppauge = false;
+    private bool _isHauppauge;
 
     #endregion
 

@@ -42,8 +42,8 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
 
     //private TvBusinessLayer cmLayer = new TvBusinessLayer();
     private bool _debugMode = true;
-    private bool _isUpdating = false;
-    private bool _stopService = false;
+    private bool _isUpdating;
+    private bool _stopService;
 
     #endregion
 
@@ -75,7 +75,7 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
       {
         try
         {
-          Thread updateThread = new Thread(new ThreadStart(UpdateThread));
+          Thread updateThread = new Thread(UpdateThread);
           updateThread.Name = "PersonalTVGuide";
           updateThread.IsBackground = true;
           updateThread.Priority = ThreadPriority.Lowest;
@@ -245,7 +245,7 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
       this.LogDebug("plugin: PersonalTVGuide started");
       _stopService = false;
       ITvServerEvent events = GlobalServiceProvider.Instance.Get<ITvServerEvent>();
-      events.OnTvServerEvent += new TvServerEventHandler(events_OnTvServerEvent);
+      events.OnTvServerEvent += events_OnTvServerEvent;
       if (_debugMode) UpdatePersonalTVGuide(); // Only for testing !!!!
     }
 

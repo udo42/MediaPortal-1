@@ -61,13 +61,13 @@ namespace Mediaportal.TV.TvPlugin.Radio
 
     #region Base variables
 
-    private static Channel _currentChannel = null;
-    private static bool _autoTurnOnRadio = false;
-    private static bool hideAllChannelsGroup = false;
+    private static Channel _currentChannel;
+    private static bool _autoTurnOnRadio;
+    private static bool hideAllChannelsGroup;
     private static ChannelGroup selectedGroup;
     public static List<ChannelGroup> AllRadioGroups = new List<ChannelGroup>();
     private readonly DirectoryHistory directoryHistory = new DirectoryHistory();
-    private string currentFolder = null;
+    private string currentFolder;
     private SortMethod currentSortMethod = SortMethod.Number;
     private string lastFolder = "..";
     private string rootGroup = "(none)";
@@ -103,8 +103,8 @@ namespace Mediaportal.TV.TvPlugin.Radio
 
     #region SkinControls
 
-    [SkinControl(7)] protected GUIButtonControl btnNext = null;
-    [SkinControl(6)] protected GUIButtonControl btnPrevious = null;
+    [SkinControl(7)] protected GUIButtonControl btnNext;
+    [SkinControl(6)] protected GUIButtonControl btnPrevious;
 
     #endregion
 

@@ -39,7 +39,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ViXS
 
     #region variables
 
-    private bool _isVixs = false;
+    private bool _isVixs;
 
     #endregion
 

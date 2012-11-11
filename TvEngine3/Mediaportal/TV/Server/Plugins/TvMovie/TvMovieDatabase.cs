@@ -109,19 +109,19 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     private static string _xmlFile;
     private readonly IDictionary<string, ProgramCategory> _categories = new ConcurrentDictionary<string, ProgramCategory>();
     private int _actorCount = 5;
-    private bool _canceled = false;
-    private List<Channel> _channelList = null;
-    private OleDbConnection _databaseConnection = null;
+    private bool _canceled;
+    private List<Channel> _channelList;
+    private OleDbConnection _databaseConnection;
     private bool _extendDescription = true;
-    private int _programsCounter = 0;
-    private bool _showAudioFormat = false;
+    private int _programsCounter;
+    private bool _showAudioFormat;
     private bool _showLive = true;
     private bool _showRatings = true;
-    private bool _showRepeat = false;
+    private bool _showRepeat;
     private bool _slowImport = true;
     private List<TVMChannel> _tvmEpgChannels;
     private List<Program> _tvmEpgProgs = new List<Program>(500);
-    private bool _useShortProgramDesc = false;
+    private bool _useShortProgramDesc;
 
     #endregion
 
@@ -1095,11 +1095,11 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       try
       {
         long iSec = 0; //(long)dt.Second;
-        long iMin = (long)dt.Minute;
-        long iHour = (long)dt.Hour;
-        long iDay = (long)dt.Day;
-        long iMonth = (long)dt.Month;
-        long iYear = (long)dt.Year;
+        long iMin = dt.Minute;
+        long iHour = dt.Hour;
+        long iDay = dt.Day;
+        long iMonth = dt.Month;
+        long iYear = dt.Year;
 
         long lRet = (iYear);
         lRet = lRet * 100L + iMonth;

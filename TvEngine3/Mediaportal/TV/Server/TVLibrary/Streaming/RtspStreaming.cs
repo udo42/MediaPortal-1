@@ -403,7 +403,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
       }
       catch (ManagementException e)
       {
-        this.LogError("Failed to retrieve ip addresses with default gateway, WMI error: " + e.ToString());
+        this.LogError("Failed to retrieve ip addresses with default gateway, WMI error: " + e);
       }
       return addresses;
     }

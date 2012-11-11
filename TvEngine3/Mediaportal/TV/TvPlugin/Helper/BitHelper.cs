@@ -28,7 +28,7 @@ namespace Mediaportal.TV.TvPlugin.Helper
   /// <typeparam name="T">enum [FLAG] to handle</typeparam>
   public class BitHelper<T>
   {
-    private Int32 _value = 0;
+    private Int32 _value;
 
     /// <summary>
     /// ctor

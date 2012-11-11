@@ -164,7 +164,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
           Recording recording = schedule.Recordings[i];
           recording.IdSchedule = null;
         }
-        scheduleRepository.ApplyChanges<Schedule>(scheduleRepository.ObjectContext.Schedules, schedule);
+        scheduleRepository.ApplyChanges(scheduleRepository.ObjectContext.Schedules, schedule);
       }
     }
 

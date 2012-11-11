@@ -205,7 +205,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
     #region Variables
 
-    private bool _enabled = false;
+    private bool _enabled;
 
     private ManagementObjectSearcher _searcher = new ManagementObjectSearcher(
       "SELECT ShareName, UserName, ComputerName, NumberOfFiles  FROM Win32_ServerConnection WHERE NumberOfFiles > 0");
@@ -220,7 +220,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     {
       if (GlobalServiceProvider.Instance.IsRegistered<IPowerScheduler>())
         GlobalServiceProvider.Instance.Get<IPowerScheduler>().OnPowerSchedulerEvent +=
-          new PowerSchedulerEventHandler(ProcessActiveHandler_OnPowerSchedulerEvent);
+          ProcessActiveHandler_OnPowerSchedulerEvent;
     }
 
     #endregion

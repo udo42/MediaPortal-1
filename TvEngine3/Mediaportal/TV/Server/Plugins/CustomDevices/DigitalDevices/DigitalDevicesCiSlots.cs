@@ -179,7 +179,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         );
         if (hr == 0)
         {
-          title = Marshal.PtrToStringAnsi(buffer, returnedByteCount).TrimEnd(new char[] { (char)0 });
+          title = Marshal.PtrToStringAnsi(buffer, returnedByteCount).TrimEnd(new[] { (char)0 });
         }
         return hr;
       }

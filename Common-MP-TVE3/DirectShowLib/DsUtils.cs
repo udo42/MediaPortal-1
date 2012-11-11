@@ -821,7 +821,7 @@ namespace DirectShowLib
     public const int E_SampleRejected = unchecked((int) 0x8004022B);
     public const int E_SampleRejectedEOS = unchecked((int) 0x8004022C);
     public const int E_DuplicateName = unchecked((int) 0x8004022D);
-    public const int S_DuplicateName = unchecked((int) 0x0004022D);
+    public const int S_DuplicateName = unchecked(0x0004022D);
     public const int E_Timeout = unchecked((int) 0x8004022E);
     public const int E_InvalidFileFormat = unchecked((int) 0x8004022F);
     public const int E_EnumOutOfRange = unchecked((int) 0x80040230);
@@ -831,50 +831,50 @@ namespace DirectShowLib
     public const int E_AlreadyCancelled = unchecked((int) 0x80040234);
     public const int E_CorruptGraphFile = unchecked((int) 0x80040235);
     public const int E_AdviseAlreadySet = unchecked((int) 0x80040236);
-    public const int S_StateIntermediate = unchecked((int) 0x00040237);
+    public const int S_StateIntermediate = unchecked(0x00040237);
     public const int E_NoModexAvailable = unchecked((int) 0x80040238);
     public const int E_NoAdviseSet = unchecked((int) 0x80040239);
     public const int E_NoFullScreen = unchecked((int) 0x8004023A);
     public const int E_InFullScreenMode = unchecked((int) 0x8004023B);
     public const int E_UnknownFileType = unchecked((int) 0x80040240);
     public const int E_CannotLoadSourceFilter = unchecked((int) 0x80040241);
-    public const int S_PartialRender = unchecked((int) 0x00040242);
+    public const int S_PartialRender = unchecked(0x00040242);
     public const int E_FileTooShort = unchecked((int) 0x80040243);
     public const int E_InvalidFileVersion = unchecked((int) 0x80040244);
-    public const int S_SomeDataIgnored = unchecked((int) 0x00040245);
-    public const int S_ConnectionsDeferred = unchecked((int) 0x00040246);
+    public const int S_SomeDataIgnored = unchecked(0x00040245);
+    public const int S_ConnectionsDeferred = unchecked(0x00040246);
     public const int E_InvalidCLSID = unchecked((int) 0x80040247);
     public const int E_InvalidMediaType2 = unchecked((int) 0x80040248);
     public const int E_BabKey = unchecked((int) 0x800403F2);
-    public const int S_NoMoreItems = unchecked((int) 0x00040103);
+    public const int S_NoMoreItems = unchecked(0x00040103);
     public const int E_SampleTimeNotSet = unchecked((int) 0x80040249);
-    public const int S_ResourceNotNeeded = unchecked((int) 0x00040250);
+    public const int S_ResourceNotNeeded = unchecked(0x00040250);
     public const int E_MediaTimeNotSet = unchecked((int) 0x80040251);
     public const int E_NoTimeFormatSet = unchecked((int) 0x80040252);
     public const int E_MonoAudioHW = unchecked((int) 0x80040253);
-    public const int S_MediaTypeIgnored = unchecked((int) 0x00040254);
+    public const int S_MediaTypeIgnored = unchecked(0x00040254);
     public const int E_NoDecompressor = unchecked((int) 0x80040255);
     public const int E_NoAudioHardware = unchecked((int) 0x80040256);
-    public const int S_VideoNotRendered = unchecked((int) 0x00040257);
-    public const int S_AudioNotRendered = unchecked((int) 0x00040258);
+    public const int S_VideoNotRendered = unchecked(0x00040257);
+    public const int S_AudioNotRendered = unchecked(0x00040258);
     public const int E_RPZA = unchecked((int) 0x80040259);
-    public const int S_RPZA = unchecked((int) 0x0004025A);
+    public const int S_RPZA = unchecked(0x0004025A);
     public const int E_ProcessorNotSuitable = unchecked((int) 0x8004025B);
     public const int E_UnsupportedAudio = unchecked((int) 0x8004025C);
     public const int E_UnsupportedVideo = unchecked((int) 0x8004025D);
     public const int E_MPEGNotConstrained = unchecked((int) 0x8004025E);
     public const int E_NotInGraph = unchecked((int) 0x8004025F);
-    public const int S_Estimated = unchecked((int) 0x00040260);
+    public const int S_Estimated = unchecked(0x00040260);
     public const int E_NoTimeFormat = unchecked((int) 0x80040261);
     public const int E_ReadOnly = unchecked((int) 0x80040262);
-    public const int S_Reserved = unchecked((int) 0x00040263);
+    public const int S_Reserved = unchecked(0x00040263);
     public const int E_BufferUnderflow = unchecked((int) 0x80040264);
     public const int E_UnsupportedStream = unchecked((int) 0x80040265);
     public const int E_NoTransport = unchecked((int) 0x80040266);
-    public const int S_StreamOff = unchecked((int) 0x00040267);
-    public const int S_CantCue = unchecked((int) 0x00040268);
+    public const int S_StreamOff = unchecked(0x00040267);
+    public const int S_CantCue = unchecked(0x00040268);
     public const int E_BadVideoCD = unchecked((int) 0x80040269);
-    public const int S_NoStopTime = unchecked((int) 0x00040270);
+    public const int S_NoStopTime = unchecked(0x00040270);
     public const int E_OutOfVideoMemory = unchecked((int) 0x80040271);
     public const int E_VPNegotiationFailed = unchecked((int) 0x80040272);
     public const int E_DDrawCapsNotSuitable = unchecked((int) 0x80040273);
@@ -888,9 +888,9 @@ namespace DirectShowLib
     public const int E_DVDDecNotEnough = unchecked((int) 0x8004027B);
     public const int E_DDrawVersionNotSuitable = unchecked((int) 0x8004027C);
     public const int E_CopyProtFailed = unchecked((int) 0x8004027D);
-    public const int S_NoPreviewPin = unchecked((int) 0x0004027E);
+    public const int S_NoPreviewPin = unchecked(0x0004027E);
     public const int E_TimeExpired = unchecked((int) 0x8004027F);
-    public const int S_DVDNonOneSequential = unchecked((int) 0x00040280);
+    public const int S_DVDNonOneSequential = unchecked(0x00040280);
     public const int E_DVDWrongSpeed = unchecked((int) 0x80040281);
     public const int E_DVDMenuDoesNotExist = unchecked((int) 0x80040282);
     public const int E_DVDCmdCancelled = unchecked((int) 0x80040283);
@@ -902,8 +902,8 @@ namespace DirectShowLib
     public const int E_DVDNoGoupPGC = unchecked((int) 0x80040289);
     public const int E_DVDLowParentalLevel = unchecked((int) 0x8004028A);
     public const int E_DVDNotInKaraokeMode = unchecked((int) 0x8004028B);
-    public const int S_DVDChannelContentsNotAvailable = unchecked((int) 0x0004028C);
-    public const int S_DVDNotAccurate = unchecked((int) 0x0004028D);
+    public const int S_DVDChannelContentsNotAvailable = unchecked(0x0004028C);
+    public const int S_DVDNotAccurate = unchecked(0x0004028D);
     public const int E_FrameStepUnsupported = unchecked((int) 0x8004028E);
     public const int E_DVDStreamDisabled = unchecked((int) 0x8004028F);
     public const int E_DVDTitleUnknown = unchecked((int) 0x80040290);
@@ -1079,7 +1079,7 @@ namespace DirectShowLib
       AllowAnyClient = 0x2
     }
 
-    private int m_cookie = 0;
+    private int m_cookie;
 
     #region APIs
 
@@ -1980,7 +1980,7 @@ namespace DirectShowLib
       DvdKaraokeAttributes dka = m_obj as DvdKaraokeAttributes;
 
       // Copy in the value, and advance the pointer
-      dka.bVersion = (byte)Marshal.ReadByte(pNativeData);
+      dka.bVersion = Marshal.ReadByte(pNativeData);
       pNativeData = (IntPtr)(pNativeData.ToInt64() + Marshal.SizeOf(typeof(byte)));
 
       // DWORD Align
@@ -1998,7 +1998,7 @@ namespace DirectShowLib
       dka.ChannelAssignment = (DvdKaraokeAssignment)Marshal.ReadInt32(pNativeData);
       pNativeData =
         (IntPtr)
-        (pNativeData.ToInt64() + Marshal.SizeOf(DvdKaraokeAssignment.GetUnderlyingType(typeof(DvdKaraokeAssignment))));
+        (pNativeData.ToInt64() + Marshal.SizeOf(Enum.GetUnderlyingType(typeof(DvdKaraokeAssignment))));
 
       // Allocate a large enough array to hold all the returned structs.
       dka.wChannelContents = new DvdKaraokeContents[8];
@@ -2008,7 +2008,7 @@ namespace DirectShowLib
         dka.wChannelContents[x] = (DvdKaraokeContents)Marshal.ReadInt16(pNativeData);
         pNativeData =
           (IntPtr)
-          (pNativeData.ToInt64() + Marshal.SizeOf(DvdKaraokeContents.GetUnderlyingType(typeof(DvdKaraokeContents))));
+          (pNativeData.ToInt64() + Marshal.SizeOf(Enum.GetUnderlyingType(typeof(DvdKaraokeContents))));
       }
 
       return null;

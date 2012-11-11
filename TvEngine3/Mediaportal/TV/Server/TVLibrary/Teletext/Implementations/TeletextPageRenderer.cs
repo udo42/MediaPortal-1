@@ -225,7 +225,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
 
     #region character and other tables for multi-language support. Referring the bits C12-C14 in the header
 
-    private readonly char[,] m_charTableA = new char[,]
+    private readonly char[,] m_charTableA = new[,]
                                               {
                                                 {'#', '\u016F'}, {'£', '$'},
                                                 {'#', 'õ'}, {'é', 'ï'}, {'#', '$'}, {'£', '$'}, {'#', '$'},
@@ -233,14 +233,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
                                                 {'£', '\u011F'}
                                               };
 
-    private readonly char[] m_charTableB = new char[]
+    private readonly char[] m_charTableB = new[]
                                              {
                                                '\u010D', '@', '\u0160', 'à', '§', 'é', '\u0160', '\u0105', '¡', '\u0162'
                                                ,
                                                '\u010C', 'É', '\u0130'
                                              };
 
-    private readonly char[,] m_charTableC = new char[,]
+    private readonly char[,] m_charTableC = new[,]
                                               {
                                                 {'\u0165', '\u017E', 'ý', 'í', '\u0159', 'é'},
                                                 {'\u2190', '½', '\u2192', '\u2191', '#', '\u0336'},
@@ -258,7 +258,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
                                                 {'Æ', 'Ø', 'Å', 'Ü', '_', 'é'}
                                               };
 
-    private readonly char[,] m_charTableD = new char[,]
+    private readonly char[,] m_charTableD = new[,]
                                               {
                                                 {'á', '\u011B', 'ú', '\u0161'}, {'¼', '\u2016', '¾', '÷'},
                                                 {'ä', 'ö', '\u017E', 'ü'}, {'â', 'ô', 'û', 'ç'}, {'ä', 'ö', 'ü', 'ß'},
@@ -270,7 +270,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
                                                 {'æ', 'ø', 'å', 'ü'}
                                               };
 
-    private readonly char[] m_charTableE = new char[]
+    private readonly char[] m_charTableE = new[]
                                              {
                                                '\u2190', '\u2192', '\u2191', '\u2193', 'O', 'K', '\u2190', '\u2190',
                                                '\u2190'

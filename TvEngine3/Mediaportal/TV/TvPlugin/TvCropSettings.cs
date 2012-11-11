@@ -36,14 +36,14 @@ namespace Mediaportal.TV.TvPlugin
   public class TvCropSettings : GUIInternalWindow, IRenderLayer
   {
     private CropSettings _cropSettings;
-    private GUIWindow _parentWindow = null;
-    private int _parentWindowID = 0;
+    private GUIWindow _parentWindow;
+    private int _parentWindowID;
     private bool _running;
-    [SkinControl(2)] protected GUIButtonControl btnClose = null;
-    [SkinControl(12)] protected GUISpinControl spinBottom = null;
-    [SkinControl(16)] protected GUISpinControl spinLeft = null;
-    [SkinControl(20)] protected GUISpinControl spinRight = null;
-    [SkinControl(8)] protected GUISpinControl spinTop = null;
+    [SkinControl(2)] protected GUIButtonControl btnClose;
+    [SkinControl(12)] protected GUISpinControl spinBottom;
+    [SkinControl(16)] protected GUISpinControl spinLeft;
+    [SkinControl(20)] protected GUISpinControl spinRight;
+    [SkinControl(8)] protected GUISpinControl spinTop;
 
     /// <summary>
     /// Delayed load

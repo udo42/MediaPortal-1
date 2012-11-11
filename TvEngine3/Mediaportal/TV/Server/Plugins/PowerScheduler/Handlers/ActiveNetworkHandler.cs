@@ -128,7 +128,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     {
       if (GlobalServiceProvider.Instance.IsRegistered<IPowerScheduler>())
         GlobalServiceProvider.Instance.Get<IPowerScheduler>().OnPowerSchedulerEvent +=
-          new PowerSchedulerEventHandler(NetworkMonitorHandler_OnPowerSchedulerEvent);
+          NetworkMonitorHandler_OnPowerSchedulerEvent;
     }
 
     #endregion
@@ -157,7 +157,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
             if (enabled) // Start
             {
               this.LogDebug("NetworkMonitorHandler: networkMonitor started");
-              Thread netmonThr = new Thread(new ThreadStart(StartNetworkMonitor));
+              Thread netmonThr = new Thread(StartNetworkMonitor);
               netmonThr.Start();
             }
             else // Stop
@@ -200,7 +200,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
         // Create and enable the timer 
         timer = new System.Timers.Timer(MonitorInteval * 1000);
-        timer.Elapsed += new ElapsedEventHandler(timer_Elapsed);
+        timer.Elapsed += timer_Elapsed;
         timer.Enabled = true;
       }
       catch (Exception netmonEx)

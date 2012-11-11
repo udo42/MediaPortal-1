@@ -43,7 +43,7 @@ namespace WebEPG.config.Grabber
     [XmlAttribute("channel")] public string channel;
     [XmlAttribute("field")] public string field;
     [XmlAttribute("search")] public string search;
-    [XmlText()] public string text;
+    [XmlText] public string text;
 
     #endregion
   }

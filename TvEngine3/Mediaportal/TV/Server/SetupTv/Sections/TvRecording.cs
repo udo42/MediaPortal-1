@@ -992,7 +992,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       string recordingFile = Path.ChangeExtension(aTagFilename, ".ts");
       try
       {
-        string[] validExtensions = new string[] {".ts", ".mpg"};
+        string[] validExtensions = new[] {".ts", ".mpg"};
         foreach (string ext in validExtensions)
         {
           string[] lookupFiles = Directory.GetFiles(Path.GetDirectoryName(aTagFilename),

@@ -34,10 +34,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
   public partial class DigitalDevicesConfig : SectionSettings
   {
     private readonly ISettingService _settingServiceAgent = ServiceAgents.Instance.SettingServiceAgent;
-    private List<DigitalDevicesCiSlot> _ciSlots = null;
-    private NumericUpDown[] _decryptLimits = null;
+    private List<DigitalDevicesCiSlot> _ciSlots;
+    private NumericUpDown[] _decryptLimits;
     private bool _isFirstActivation = true;
-    private MPTextBox[] _providerLists = null;
+    private MPTextBox[] _providerLists;
 
     public DigitalDevicesConfig()
       : this("Digital Devices CI")

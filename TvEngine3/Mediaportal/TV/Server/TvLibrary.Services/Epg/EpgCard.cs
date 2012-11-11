@@ -525,7 +525,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
           }
           catch (Exception)
           {
-            CardReservationHelper.CancelCardReservation((ITvCardHandler) cardHandler, ticket);
+            CardReservationHelper.CancelCardReservation(cardHandler, ticket);
             throw;
           }
         }

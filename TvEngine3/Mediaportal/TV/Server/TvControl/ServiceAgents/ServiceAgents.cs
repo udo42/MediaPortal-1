@@ -212,8 +212,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
         var serviceAgent = service as ServiceAgent<TServiceInterface>;
         if (serviceAgent != null)
         {
-          serviceAgent.ServiceAgentFaulted += new EventHandler(ServiceAgents_Faulted);
-          serviceAgent.ServiceAgentClosed += new EventHandler(ServiceAgents_Closed);
+          serviceAgent.ServiceAgentFaulted += ServiceAgents_Faulted;
+          serviceAgent.ServiceAgentClosed += ServiceAgents_Closed;
 
           if (found)
           {
@@ -285,8 +285,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
         bool found = GlobalServiceProvider.IsRegistered<IDiscoverServiceAgent>();
         IDiscoverServiceAgent discoverServiceAgent = new DiscoverServiceAgent(_hostname);
 
-        ((IClientChannel)discoverServiceAgent.Channel).Faulted += new EventHandler(ServiceAgents_Faulted);
-        ((IClientChannel)discoverServiceAgent.Channel).Closed += new EventHandler(ServiceAgents_Closed);
+        ((IClientChannel)discoverServiceAgent.Channel).Faulted += ServiceAgents_Faulted;
+        ((IClientChannel)discoverServiceAgent.Channel).Closed += ServiceAgents_Closed;
 
         if (found)
         {
@@ -342,8 +342,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
 
         I channel = channelFactory.CreateChannel();
         
-        ((IClientChannel)channel).Faulted += new EventHandler(ServiceAgents_Faulted);
-        ((IClientChannel)channel).Closed += new EventHandler(ServiceAgents_Closed);
+        ((IClientChannel)channel).Faulted += ServiceAgents_Faulted;
+        ((IClientChannel)channel).Closed += ServiceAgents_Closed;
 
         if (found)
         {
@@ -368,8 +368,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       communicationObject.Abort();
       communicationObject.Close();
 
-      communicationObject.Faulted -= new EventHandler(ServiceAgents_Faulted);
-      communicationObject.Closed -= new EventHandler(ServiceAgents_Closed);
+      communicationObject.Faulted -= ServiceAgents_Faulted;
+      communicationObject.Closed -= ServiceAgents_Closed;
 
       Type type = sender.GetType();
       if (type == typeof(IEventService))
@@ -445,8 +445,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
         var serviceAgent = service as ServiceAgent<TServiceInterface>;
         if (serviceAgent != null)
         {
-          serviceAgent.ServiceAgentFaulted -= new EventHandler(ServiceAgents_Faulted);
-          serviceAgent.ServiceAgentClosed -= new EventHandler(ServiceAgents_Closed);
+          serviceAgent.ServiceAgentFaulted -= ServiceAgents_Faulted;
+          serviceAgent.ServiceAgentClosed -= ServiceAgents_Closed;
         }
         ((IDisposable) service).Dispose();
         GlobalServiceProvider.Remove<TServiceInterface>();        
@@ -458,8 +458,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       T service = GlobalServiceProvider.Get<T>();
       if (service != null)
       {
-        ((IClientChannel)service).Faulted -= new EventHandler(ServiceAgents_Faulted);
-        ((IClientChannel)service).Closed -= new EventHandler(ServiceAgents_Closed);
+        ((IClientChannel)service).Faulted -= ServiceAgents_Faulted;
+        ((IClientChannel)service).Closed -= ServiceAgents_Closed;
         ((IClientChannel)service).Close();
         ((IDisposable)service).Dispose();
         GlobalServiceProvider.Remove<T>();

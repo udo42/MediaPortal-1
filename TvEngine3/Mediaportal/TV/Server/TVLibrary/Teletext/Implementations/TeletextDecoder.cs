@@ -167,7 +167,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
             {
               channelName = channelName.Substring(0, pos);
             }
-            channelName = channelName.TrimEnd(new char[] {'\'', '\"', '´', '`'});
+            channelName = channelName.TrimEnd(new[] {'\'', '\"', '´', '`'});
             channelName = channelName.Trim();
             _pageCache.ChannelName = channelName;
             continue;

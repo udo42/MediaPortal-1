@@ -136,7 +136,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
             {
               channelName = channelName.Substring(0, pos);
             }
-            channelName = channelName.TrimEnd(new char[] {'\'', '\"', '´', '`'});
+            channelName = channelName.TrimEnd(new[] {'\'', '\"', '´', '`'});
             channelName = channelName.Trim();
             if (channelName != "")
             {

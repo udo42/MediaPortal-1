@@ -36,12 +36,12 @@ namespace Mediaportal.TV.TvPlugin
   /// </summary>
   public class TvRecordedInfo : GUIInternalWindow
   {
-    private static Recording currentProgram = null;
-    [SkinControl(2)] protected GUIButtonControl btnKeep = null;
-    [SkinControl(15)] protected GUITextScrollUpControl lblProgramDescription = null;
-    [SkinControl(17)] protected GUILabelControl lblProgramGenre = null;
-    [SkinControl(14)] protected GUILabelControl lblProgramTime = null;
-    [SkinControl(13)] protected GUIFadeLabel lblProgramTitle = null;
+    private static Recording currentProgram;
+    [SkinControl(2)] protected GUIButtonControl btnKeep;
+    [SkinControl(15)] protected GUITextScrollUpControl lblProgramDescription;
+    [SkinControl(17)] protected GUILabelControl lblProgramGenre;
+    [SkinControl(14)] protected GUILabelControl lblProgramTime;
+    [SkinControl(13)] protected GUIFadeLabel lblProgramTitle;
 
     public TvRecordedInfo()
     {

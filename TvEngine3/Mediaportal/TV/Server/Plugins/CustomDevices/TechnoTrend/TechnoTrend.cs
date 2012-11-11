@@ -966,7 +966,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
     private const int MaxDiseqcCommandLength = 64;    // This is arbitrary - the hardware/interface limit is not known.
     private const int TuneRequestSize = 100;
 
-    private static readonly string[] ValidBudget2DeviceNames = new string[]
+    private static readonly string[] ValidBudget2DeviceNames = new[]
     {
       "TechnoTrend BDA/DVB-C Tuner",
       "TechnoTrend BDA/DVB-S Tuner",
@@ -976,13 +976,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
       "ttBudget2 BDA DVB-T Tuner"
     };
 
-    private static readonly string[] ValidBudget3DeviceNames = new string[]
+    private static readonly string[] ValidBudget3DeviceNames = new[]
     {
       "TTHybridTV BDA DVBT Tuner",
       "TTHybridTV BDA ATSC Tuner"
     };
 
-    private static readonly string[] ValidUsb2DeviceNames = new string[]
+    private static readonly string[] ValidUsb2DeviceNames = new[]
     {
       "USB 2.0 BDA DVB-C Tuner",
       "USB 2.0 BDA DVB-S Tuner",
@@ -990,12 +990,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
       "USB 2.0 BDA DVB-T Tuner"
     };
 
-    private static readonly string[] ValidPinnacleDeviceNames = new string[]
+    private static readonly string[] ValidPinnacleDeviceNames = new[]
     {
       "Pinnacle PCTV 4XXe Tuner"
     };
 
-    private static readonly string[] ValidDssDeviceNames = new string[]
+    private static readonly string[] ValidDssDeviceNames = new[]
     {
       "USB 2.0 BDA DSS Tuner"
     };
@@ -1004,13 +1004,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
 
     #region variables
 
-    private bool _isTechnoTrend = false;
-    private bool _isCiSlotPresent = false;
+    private bool _isTechnoTrend;
+    private bool _isCiSlotPresent;
     #pragma warning disable 0414
-    private bool _isCamPresent = false;
+    private bool _isCamPresent;
     #pragma warning restore 0414
-    private bool _isCamReady = false;
-    private byte _slotIndex = 0;
+    private bool _isCamReady;
+    private byte _slotIndex;
     private TtCiState _ciState = TtCiState.Unknown;
 
     private CardType _tunerType = CardType.Unknown;
@@ -1022,13 +1022,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
     private IntPtr _generalBuffer = IntPtr.Zero;
 
     private TtFullCiCallbacks _callbacks;
-    private ICiMenuCallbacks _ciMenuCallbacks = null;
+    private ICiMenuCallbacks _ciMenuCallbacks;
 
     // When the CAM asks for input (via callback), the input request context (description) is provided
     // by a separate callback. We use this variable to cache it.
     private String _camInputRequestContext = String.Empty;
 
-    private HashSet<UInt16> _descrambledServices = null;
+    private HashSet<UInt16> _descrambledServices;
 
     #endregion
 

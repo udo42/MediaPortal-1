@@ -70,8 +70,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Omicom
     #region variables
 
     private IntPtr _diseqcBuffer = IntPtr.Zero;
-    private bool _isOmicom = false;
-    private IKsPropertySet _propertySet = null;
+    private bool _isOmicom;
+    private IKsPropertySet _propertySet;
 
     #endregion
 

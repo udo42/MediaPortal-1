@@ -42,12 +42,12 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
     #endregion
 
-    private static bool _isImporting = false;
+    private static bool _isImporting;
 
     private readonly IDictionary<string, ProgramCategory> _categories = new ConcurrentDictionary<string, ProgramCategory>();
 
     private readonly ProgramManagement _programManagement = new ProgramManagement();
-    private int _backgroundDelay = 0;
+    private int _backgroundDelay;
 
     private string _errorMessage = "";
     private Stats _status = new Stats();
@@ -143,7 +143,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     {
       //System.Diagnostics.Debugger.Launch();
       _errorMessage = "";
-      if (_isImporting == true)
+      if (_isImporting)
       {
         _errorMessage = "already importing...";
         return false;
@@ -1091,11 +1091,11 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       try
       {
         long iSec = 0; //(long)dt.Second;
-        long iMin = (long)dt.Minute;
-        long iHour = (long)dt.Hour;
-        long iDay = (long)dt.Day;
-        long iMonth = (long)dt.Month;
-        long iYear = (long)dt.Year;
+        long iMin = dt.Minute;
+        long iHour = dt.Hour;
+        long iDay = dt.Day;
+        long iMonth = dt.Month;
+        long iYear = dt.Year;
 
         long lRet = (iYear);
         lRet = lRet * 100L + iMonth;
@@ -1173,9 +1173,9 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
     public class Stats
     {
-      private int _channels = 0;
+      private int _channels;
       private DateTime _endTime = DateTime.Now;
-      private int _programs = 0;
+      private int _programs;
       private DateTime _startTime = DateTime.Now;
       private string _status = "";
 

@@ -35,7 +35,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     private bool allowRowReorder;
     private bool isChannelListView;
     private DateTime lastClick = DateTime.MinValue;
-    private ListViewItem lastItem = null;
+    private ListViewItem lastItem;
 
     public MPListView()
     {
@@ -256,7 +256,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
                                    hoverItem.Bounds.Y + hoverItem.Bounds.Height));
 
               g.FillPolygon(new SolidBrush(lineColor),
-                            new Point[]
+                            new[]
                               {
                                 new Point(hoverItem.Bounds.X,
                                           hoverItem.Bounds.Y + hoverItem.Bounds.Height - 7),
@@ -267,7 +267,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
                               });
 
               g.FillPolygon(new SolidBrush(lineColor),
-                            new Point[]
+                            new[]
                               {
                                 new Point(totalColWidth,
                                           hoverItem.Bounds.Y + hoverItem.Bounds.Height - 7),

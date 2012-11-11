@@ -36,8 +36,8 @@ namespace WebEPG.MPCode
     //static string						_strFileName="";
     //static bool							_bChanged=false;
 
-    private bool _bChanged = false;
-    private XmlDocument _doc = null;
+    private bool _bChanged;
+    private XmlDocument _doc;
     private Encoding _encoding = Encoding.UTF8;
     private string _rootName = "profile";
     private string _strFileName = "";

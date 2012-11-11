@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using Mediaportal.TV.Server.TVControl.Events;
-using Mediaportal.TV.Server.TVControl.Interfaces.Services;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Mediaportal.TV.Server.TVLibrary.Services;
 
@@ -67,14 +66,14 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
     public override void Start()
     {
       this.LogInfo("TvServerEventDispatcher: start");
-      ServiceManager.Instance.InternalControllerService.OnTvServerEvent -= new TvServerEventHandler(OnTvServerEvent);
-      ServiceManager.Instance.InternalControllerService.OnTvServerEvent += new TvServerEventHandler(OnTvServerEvent);
+      ServiceManager.Instance.InternalControllerService.OnTvServerEvent -= OnTvServerEvent;
+      ServiceManager.Instance.InternalControllerService.OnTvServerEvent += OnTvServerEvent;
     }
 
     public override void Stop()
     {
       this.LogInfo("TvServerEventDispatcher: stop");
-      ServiceManager.Instance.InternalControllerService.OnTvServerEvent -= new TvServerEventHandler(OnTvServerEvent);
+      ServiceManager.Instance.InternalControllerService.OnTvServerEvent -= OnTvServerEvent;
     }
 
     #endregion

@@ -123,7 +123,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Conexant
     /// </summary>
     protected IntPtr _instanceBuffer = IntPtr.Zero;
 
-    private bool _isConexant = false;
+    private bool _isConexant;
 
     /// <summary>
     /// Buffer for property parameters.
@@ -133,7 +133,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Conexant
     /// <summary>
     /// A reference to the property set instance.
     /// </summary>
-    protected IKsPropertySet _propertySet = null;
+    protected IKsPropertySet _propertySet;
 
     private Guid _propertySetGuid = Guid.Empty;
 

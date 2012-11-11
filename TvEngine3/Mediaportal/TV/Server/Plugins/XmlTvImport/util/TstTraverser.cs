@@ -34,11 +34,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
   public class TstTraverser
   {
     /// <summary>
-    /// Default constructor
-    /// </summary>
-    public TstTraverser() {}
-
-    /// <summary>
     /// Tarverses the ternary search tree nodes of <paramref name="dic"/>.
     /// </summary>
     /// <param name="dic">Tree to explore</param>
