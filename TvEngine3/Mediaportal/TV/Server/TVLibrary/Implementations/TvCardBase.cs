@@ -206,7 +206,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// <summary>
     /// Dictionary of the corresponding sub channels
     /// </summary>
-    protected Dictionary<int, BaseSubChannel> _mapSubChannels;
+    protected Dictionary<int, ITvSubChannel> _mapSubChannels;
 
     /// <summary>
     /// The method that should be used to communicate the set of channels that the device's conditional access
@@ -332,7 +332,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     protected TvCardBase(DsDevice device)
     {
       _isDeviceInitialised = false;
-      _mapSubChannels = new Dictionary<int, BaseSubChannel>();
+      _mapSubChannels = new Dictionary<int, ITvSubChannel>();
       _lastSignalUpdate = DateTime.MinValue;
       _parameters = new ScanParameters();
       _epgGrabbing = false;   // EPG grabbing not supported by default.
@@ -408,7 +408,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       set
       {
         _parameters = value;
-        Dictionary<int, BaseSubChannel>.Enumerator en = _mapSubChannels.GetEnumerator();
+        Dictionary<int, ITvSubChannel>.Enumerator en = _mapSubChannels.GetEnumerator();
         while (en.MoveNext())
         {
           en.Current.Value.Parameters = value;
@@ -705,7 +705,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         }
 
         var decryptedServices = new HashSet<long>();
-        Dictionary<int, BaseSubChannel>.Enumerator en = _mapSubChannels.GetEnumerator();
+        Dictionary<int, ITvSubChannel>.Enumerator en = _mapSubChannels.GetEnumerator();
         while (en.MoveNext())
         {
           IChannel service = en.Current.Value.CurrentChannel;
@@ -1044,8 +1044,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
 
       // First build a distinct list of the services that we need to handle.
       this.LogDebug("TvCardBase: assembling service list");
-      var distinctServices = new List<BaseSubChannel>();
-      Dictionary<int, BaseSubChannel>.ValueCollection.Enumerator en = _mapSubChannels.Values.GetEnumerator();
+      var distinctServices = new List<ITvSubChannel>();
+      Dictionary<int, ITvSubChannel>.ValueCollection.Enumerator en = _mapSubChannels.Values.GetEnumerator();
       var updatedDigitalService = _mapSubChannels[subChannelId].CurrentChannel as DVBBaseChannel;
       var updatedAnalogService = _mapSubChannels[subChannelId].CurrentChannel as AnalogChannel;
       while (en.MoveNext())
@@ -1189,7 +1189,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
           // Ready or not, we send commands now.
           this.LogDebug("TvCardBase: sending command(s)");
           bool success = false;
-          TvDvbChannel digitalService;
           // The default action is "more" - this will be changed below if necessary.
           CaPmtListManagementAction action = CaPmtListManagementAction.More;
 
@@ -1239,7 +1238,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
             }
 
             this.LogDebug("  command = {0}, action = {1}, service = {2}", command, action, distinctServices[i].CurrentChannel.Name);
-            digitalService = distinctServices[i] as TvDvbChannel;
+            var digitalService = distinctServices[i] as TvDvbChannel;
             if (digitalService == null)
             {
               success = caProvider.SendCommand(distinctServices[i].CurrentChannel, action, command, null, null);
@@ -1991,7 +1990,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       {
         int count = 0;
         var channels = new ITvSubChannel[_mapSubChannels.Count];
-        Dictionary<int, BaseSubChannel>.Enumerator en = _mapSubChannels.GetEnumerator();
+        Dictionary<int, ITvSubChannel>.Enumerator en = _mapSubChannels.GetEnumerator();
         while (en.MoveNext())
         {
           channels[count++] = en.Current.Value;
@@ -2013,7 +2012,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     protected void FreeAllSubChannels()
     {
       this.LogInfo("tvcard:FreeAllSubChannels");
-      Dictionary<int, BaseSubChannel>.Enumerator en = _mapSubChannels.GetEnumerator();
+      Dictionary<int, ITvSubChannel>.Enumerator en = _mapSubChannels.GetEnumerator();
       while (en.MoveNext())
       {
         en.Current.Value.Decompose();

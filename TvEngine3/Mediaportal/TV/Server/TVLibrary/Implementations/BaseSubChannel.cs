@@ -40,12 +40,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// Delegate for the audio/video oberserver events.
     /// </summary>
     /// <param name="pidType">Type of the pid</param>
-    public delegate void AudioVideoObserverEvent(PidType pidType);
-
-    /// <summary>
-    /// Delegate for the after tune event.
-    /// </summary>
-    public delegate void OnAfterTuneDelegate();
+    public delegate void AudioVideoObserverEvent(PidType pidType);    
 
     #endregion
 
