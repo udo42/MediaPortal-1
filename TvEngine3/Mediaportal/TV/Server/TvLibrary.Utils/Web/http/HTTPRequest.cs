@@ -39,8 +39,8 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
 
     public HTTPRequest(string baseUrl, string getQuery)
     {
-      Uri baseUri = new Uri(baseUrl);
-      Uri request = new Uri(baseUri, getQuery);
+      var baseUri = new Uri(baseUrl);
+      var request = new Uri(baseUri, getQuery);
       BuildRequest(request);
     }
 
@@ -76,7 +76,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
 
     public HTTPRequest(string uri)
     {
-      Uri request = new Uri(uri);
+      var request = new Uri(uri);
       BuildRequest(request);
     }
 
@@ -163,8 +163,8 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     {
       if (relativeUri.StartsWith("?"))
         relativeUri = Uri.LocalPath + relativeUri;
-      Uri newUri = new Uri(Uri, relativeUri);
-      HTTPRequest newHTTPRequest = new HTTPRequest(newUri);
+      var newUri = new Uri(Uri, relativeUri);
+      var newHTTPRequest = new HTTPRequest(newUri);
       newHTTPRequest._encoding = _encoding;
       // Copy this also otherwise data is lost
       // Caused sublink delay in WebEPG always to be 0
@@ -216,7 +216,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
 
     public override bool Equals(object obj)
     {
-      HTTPRequest req = obj as HTTPRequest;
+      var req = obj as HTTPRequest;
       if (req == null)
         return false;
       if (_scheme == req._scheme &&

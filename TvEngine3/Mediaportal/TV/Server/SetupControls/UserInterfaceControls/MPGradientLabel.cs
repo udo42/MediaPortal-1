@@ -158,7 +158,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       //
       // Draw bevelbox
       //
-      Pen grayPen = new Pen(Color.FromArgb(200, 200, 200));
+      var grayPen = new Pen(Color.FromArgb(200, 200, 200));
       graphics.DrawLine(grayPen, 0, 0, Width - 1, 0);
       graphics.DrawLine(Pens.WhiteSmoke, 0, Height - 1, Width - 1, Height - 1);
       grayPen.Dispose();

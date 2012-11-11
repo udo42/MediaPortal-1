@@ -71,7 +71,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     /// <returns>Graph instance</returns>
     public static Graph CreateInstance(XmlNode xmlNode)
     {
-      Graph graph = new Graph();
+      var graph = new Graph();
       XmlNode tunerNode = null;
       XmlNode tvAudioNode = null;
       XmlNode crossbarNode = null;

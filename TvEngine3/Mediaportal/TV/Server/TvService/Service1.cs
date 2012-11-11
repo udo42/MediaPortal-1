@@ -98,27 +98,27 @@ namespace Mediaportal.TV.Server.TVService
 
       if (opt != null && opt.ToUpperInvariant() == "/INSTALL")
       {
-        TransactedInstaller ti = new TransactedInstaller();
-        ProjectInstaller mi = new ProjectInstaller();
+        var ti = new TransactedInstaller();
+        var mi = new ProjectInstaller();
         ti.Installers.Add(mi);
         String path = String.Format("/assemblypath={0}",
                                     Assembly.GetExecutingAssembly().Location);
         String[] cmdline = { path };
-        InstallContext ctx = new InstallContext("", cmdline);
+        var ctx = new InstallContext("", cmdline);
         ti.Context = ctx;
         ti.Install(new Hashtable());
         return;
       }
       if (opt != null && opt.ToUpperInvariant() == "/UNINSTALL")
       {
-        using (TransactedInstaller ti = new TransactedInstaller())
+        using (var ti = new TransactedInstaller())
         {
-          ProjectInstaller mi = new ProjectInstaller();
+          var mi = new ProjectInstaller();
           ti.Installers.Add(mi);
           String path = String.Format("/assemblypath={0}",
                                       Assembly.GetExecutingAssembly().Location);
           String[] cmdline = { path };
-          InstallContext ctx = new InstallContext("", cmdline);
+          var ctx = new InstallContext("", cmdline);
           ti.Context = ctx;
           ti.Uninstall(null);
         }
@@ -128,7 +128,7 @@ namespace Mediaportal.TV.Server.TVService
       // Make sure the real TvService is disabled before debugging with /DEBUG
       if (opt != null && opt.ToUpperInvariant() == "/DEBUG")
       {
-        Service1 s = new Service1();
+        var s = new Service1();
         s.DoStart(new[] { "/DEBUG" });
         do
         {
@@ -142,7 +142,7 @@ namespace Mediaportal.TV.Server.TVService
       //
       //   ServicesToRun = new ServiceBase[] {new Service1(), new MySecondUserService()};
       //
-      ServiceBase[] ServicesToRun = new ServiceBase[] { new Service1() };
+      var ServicesToRun = new ServiceBase[] { new Service1() };
       Run(ServicesToRun);
     }
 

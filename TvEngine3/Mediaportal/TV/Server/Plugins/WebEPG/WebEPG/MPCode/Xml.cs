@@ -86,14 +86,14 @@ namespace WebEPG.MPCode
       {
         if (File.Exists(_strFileName + ".bak"))
         {
-          XmlDocument docBak = new XmlDocument();
+          var docBak = new XmlDocument();
           docBak.Load(_strFileName + ".bak");
           return docBak;
         }
         return null;
       }
 
-      XmlDocument doc = new XmlDocument();
+      var doc = new XmlDocument();
       doc.Load(_strFileName);
       if (doc != null && doc.DocumentElement != null && doc.DocumentElement.ChildNodes != null)
       {
@@ -180,7 +180,7 @@ namespace WebEPG.MPCode
             }
             catch (Exception) {}
 
-            using (StreamWriter stream = new StreamWriter(_strFileName, false))
+            using (var stream = new StreamWriter(_strFileName, false))
             {
               _doc.Save(stream);
               _doc = null;
@@ -279,7 +279,7 @@ namespace WebEPG.MPCode
 
     public string GetValueAsString(string section, string entry, string strDefault)
     {
-      string strValue = (string)GetValue(section, entry);
+      var strValue = (string)GetValue(section, entry);
       if (strValue == null)
       {
         return strDefault;
@@ -293,7 +293,7 @@ namespace WebEPG.MPCode
 
     public bool GetValueAsBool(string section, string entry, bool bDefault)
     {
-      string strValue = (string)GetValue(section, entry);
+      var strValue = (string)GetValue(section, entry);
       if (strValue == null)
       {
         return bDefault;
@@ -311,7 +311,7 @@ namespace WebEPG.MPCode
 
     public int GetValueAsInt(string section, string entry, int iDefault)
     {
-      string strValue = (string)GetValue(section, entry);
+      var strValue = (string)GetValue(section, entry);
       if (strValue == null)
       {
         return iDefault;
@@ -331,7 +331,7 @@ namespace WebEPG.MPCode
 
     public float GetValueAsFloat(string section, string entry, float fDefault)
     {
-      string strValue = (string)GetValue(section, entry);
+      var strValue = (string)GetValue(section, entry);
       if (strValue == null)
       {
         return fDefault;
@@ -342,7 +342,7 @@ namespace WebEPG.MPCode
       }
       try
       {
-        float fRet = (float)Double.Parse(strValue);
+        var fRet = (float)Double.Parse(strValue);
         return fRet;
       }
       catch (Exception) {}

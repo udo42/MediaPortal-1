@@ -470,7 +470,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       bool isScheduleReadyForRecording = true;
       DateTime now = DateTime.Now;
       IVirtualCard card;
-      ScheduleBLL scheduleBll = new ScheduleBLL(schedule);
+      var scheduleBll = new ScheduleBLL(schedule);
       if (schedule.Canceled != Schedule.MinSchedule ||
           IsRecordingSchedule(schedule.IdSchedule, out card) ||
           scheduleBll.IsSerieIsCanceled(new DateTime(now.Year, now.Month, now.Day, now.Hour, now.Minute, 0)))
@@ -563,10 +563,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       // and simply took care of creating a unique filename.                    
       // Check if new program overlaps with existing recording
       // if so assume previous failure and recording needs to be resumed
-      var startExisting = rec.StartTime;
-      var endExisting = rec.EndTime;
-      var startNew = newRec.Program.Entity.StartTime.AddMinutes(-newRec.Schedule.Entity.PreRecordInterval);
-      var endNew = newRec.Program.Entity.EndTime.AddMinutes(newRec.Schedule.Entity.PostRecordInterval);
+      DateTime startExisting = rec.StartTime;
+      DateTime endExisting = rec.EndTime;
+      DateTime startNew = newRec.Program.Entity.StartTime.AddMinutes(-newRec.Schedule.Entity.PreRecordInterval);
+      DateTime endNew = newRec.Program.Entity.EndTime.AddMinutes(newRec.Schedule.Entity.PostRecordInterval);
 
       TimeSpan tsNewRec = endNew - startNew;
       TimeSpan tsExistingRec = endExisting - startExisting;
@@ -744,7 +744,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     {
       bool isTimeToRecord = false;
       newRecording = null;
-      ScheduleRecordingType type = (ScheduleRecordingType)schedule.ScheduleType;
+      var type = (ScheduleRecordingType)schedule.ScheduleType;
 
       switch (type)
       {
@@ -851,7 +851,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
         if (currentTime >= current.StartTime.AddMinutes(-schedule.PreRecordInterval) &&
             currentTime <= current.EndTime.AddMinutes(schedule.PostRecordInterval))
         {
-          ScheduleBLL scheduleBll = new ScheduleBLL(schedule);
+          var scheduleBll = new ScheduleBLL(schedule);
           if (!scheduleBll.IsSerieIsCanceled(current.StartTime))
           {
             bool createSpawnedOnceSchedule = CreateSpawnedOnceSchedule(schedule, current);
@@ -960,16 +960,16 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     private RecordingDetail CreateNewRecordingDetail(Schedule schedule, DateTime currentTime)
     {
       RecordingDetail newRecording = null;
-      DateTime start = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, schedule.StartTime.Hour,
+      var start = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, schedule.StartTime.Hour,
                                     schedule.StartTime.Minute, schedule.StartTime.Second);
-      DateTime end = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, schedule.EndTime.Hour,
+      var end = new DateTime(currentTime.Year, currentTime.Month, currentTime.Day, schedule.EndTime.Hour,
                                   schedule.EndTime.Minute, schedule.EndTime.Second);
       if (start > end)
         end = end.AddDays(1);
       if (currentTime >= start.AddMinutes(-schedule.PreRecordInterval) &&
           currentTime <= end.AddMinutes(schedule.PostRecordInterval))
       {
-        ScheduleBLL scheduleBll = new ScheduleBLL(schedule);
+        var scheduleBll = new ScheduleBLL(schedule);
         if (!scheduleBll.IsSerieIsCanceled(start))
         {
           IVirtualCard vCard;
@@ -1435,7 +1435,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
         for (int i = 0; i < ticket.TimeshiftingUsers.Count; i++)
         {
           IUser timeshiftingUser = ticket.TimeshiftingUsers[i];
-          foreach (var subchannel in timeshiftingUser.SubChannels.Values)
+          foreach (ISubChannel subchannel in timeshiftingUser.SubChannels.Values)
           {
             this.LogDebug(
               "Scheduler : card is tuned to the same transponder but not free. record on card:{0} priority:{1}, kicking user:{2}",
@@ -1550,7 +1550,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       if (_createTagInfoXML)
       {
         string fileName = recDetail.FileName;
-        var category = "";
+        string category = "";
         if (recDetail.Program.Entity.ProgramCategory != null)
         {
           category = recDetail.Program.Entity.ProgramCategory.Category;

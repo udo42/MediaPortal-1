@@ -117,7 +117,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
         }
 
         StreamReader reader = null;
-        HttpStatusCode responseCode = new HttpStatusCode();
+        var responseCode = new HttpStatusCode();
 
         // get the response
         try
@@ -143,7 +143,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
           return;
         }
 
-        List<String> responseStrings = new List<string>();
+        var responseStrings = new List<string>();
         String tmp = string.Empty;
         while ((tmp = reader.ReadLine()) != null)
         {

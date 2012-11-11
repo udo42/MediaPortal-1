@@ -90,7 +90,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
           return null;
         }
 
-        string[] a = new string[SubItems.Count - 1];
+        var a = new string[SubItems.Count - 1];
 
         for (int i = 0; i <= SubItems.Count - 1; i++)
         {

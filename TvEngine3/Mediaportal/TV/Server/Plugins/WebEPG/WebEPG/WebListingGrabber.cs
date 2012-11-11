@@ -93,7 +93,7 @@ namespace WebEPG
       {
         //_grabber = new GrabberConfig(_strBaseDir + File);
 
-        XmlSerializer s = new XmlSerializer(typeof (GrabberConfigFile));
+        var s = new XmlSerializer(typeof (GrabberConfigFile));
 
         using (TextReader r = new StreamReader(_strBaseDir + File)) 
         {
@@ -238,7 +238,7 @@ namespace WebEPG
       {
         _grabber.Listing.Request.Delay = 500;
       }
-      WorldDateTime reqStartTime = new WorldDateTime(_siteTimeZone.FromLocalTime(startDateTime), _siteTimeZone);
+      var reqStartTime = new WorldDateTime(_siteTimeZone.FromLocalTime(startDateTime), _siteTimeZone);
       _reqBuilder = new RequestBuilder(_grabber.Listing.Request, reqStartTime, _reqData);
       _grabStart = startDateTime;
 
@@ -370,7 +370,7 @@ namespace WebEPG
     /// <returns>the tv program data</returns>
     private ProgramData GetProgram(int index)
     {
-      ProgramData guideData = (ProgramData)_parser.GetData(index);
+      var guideData = (ProgramData)_parser.GetData(index);
 
       if (guideData == null ||
           guideData.StartTime == null || guideData.Title == string.Empty)
@@ -452,7 +452,7 @@ namespace WebEPG
           this.LogInfo("WebEPG: SubLink Request {0} - Delay: {1}ms", guideData.SublinkRequest.ToString(),
                        guideData.SublinkRequest.Delay);
 
-          WebParser webParser = (WebParser)_parser;
+          var webParser = (WebParser)_parser;
 
           if (!webParser.GetLinkedData(ref guideData))
           {

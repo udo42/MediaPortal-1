@@ -2076,19 +2076,19 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 
             //The next line is not used because if the Control is scrolled horizontally while the rubberband is painted it is not cleared properly.
             //Rectangle rctInvalidate1 = new Rectangle(ptMouseDown.X, ptMouseDown.Y, ptMouseMoveClient.X - ptMouseDown.X, ptMouseMoveClient.Y - ptMouseDown.Y);
-            Rectangle rctInvalidate1 = new Rectangle(ClientRectangle.Left, ptMouseDown.Y, ClientRectangle.Width,
+            var rctInvalidate1 = new Rectangle(ClientRectangle.Left, ptMouseDown.Y, ClientRectangle.Width,
                                                      ptMouseMoveClient.Y - ptMouseDown.Y);
 
             ptMouseDownScreen = PointToScreen(ptMouseDown);
             ptMouseMoveScreen = PointToScreen(new Point(e.X, e.Y));
 
-            Rectangle rctSelection = new Rectangle(ptMouseDownScreen.X, ptMouseDownScreen.Y,
+            var rctSelection = new Rectangle(ptMouseDownScreen.X, ptMouseDownScreen.Y,
                                                    ptMouseMoveScreen.X - ptMouseDownScreen.X,
                                                    ptMouseMoveScreen.Y - ptMouseDownScreen.Y);
 
             //The next line is not used because if the Control is scrolled horizontally while the rubberband is painted it is not cleared properly.
             //Rectangle rctInvalidate2 = new Rectangle(ptMouseDown.X, ptMouseDown.Y, e.X - ptMouseDown.X, e.Y - ptMouseDown.Y);
-            Rectangle rctInvalidate2 = new Rectangle(ClientRectangle.Left, ptMouseDown.Y, ClientRectangle.Width,
+            var rctInvalidate2 = new Rectangle(ClientRectangle.Left, ptMouseDown.Y, ClientRectangle.Width,
                                                      e.Y - ptMouseDown.Y);
 
             //Two Rectangles need to be Invalidated because the new Rectangle could be bigger than the old one or smaller.
@@ -2255,7 +2255,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       {
         if (tvmsMultiSelect != value)
         {
-          MWCancelEventArgs e = new MWCancelEventArgs(tvmsMultiSelect, value);
+          var e = new MWCancelEventArgs(tvmsMultiSelect, value);
           OnBeforeMultiSelectChanged(e);
 
           if (!e.Cancel)
@@ -2295,7 +2295,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
               TreeNode tnGrandParent = GetTreeNodeGrandParent(SelNode);
               int iLevel = GetTreeNodeLevel(SelNode);
 
-              Hashtable ht = new Hashtable();
+              var ht = new Hashtable();
 
               foreach (MWTreeNodeWrapper mwtnw in SelNodes.Values)
               {
@@ -2313,7 +2313,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 
               TreeNode tnGrandParent = GetTreeNodeGrandParent(SelNode);
 
-              Hashtable ht = new Hashtable();
+              var ht = new Hashtable();
 
               foreach (MWTreeNodeWrapper mwtnw in SelNodes.Values)
               {
@@ -2331,7 +2331,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 
               int iLevel = GetTreeNodeLevel(SelNode);
 
-              Hashtable ht = new Hashtable();
+              var ht = new Hashtable();
 
               foreach (MWTreeNodeWrapper mwtnw in SelNodes.Values)
               {
@@ -2348,8 +2348,8 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
             {
               tvmsMultiSelect = value;
 
-              ArrayList alTreeNodeGrandParent = new ArrayList();
-              ArrayList alTreeNodeLevel = new ArrayList();
+              var alTreeNodeGrandParent = new ArrayList();
+              var alTreeNodeLevel = new ArrayList();
 
               foreach (MWTreeNodeWrapper mwtnw in SelNodes.Values)
               {
@@ -2368,7 +2368,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
                 }
               }
 
-              Hashtable ht = new Hashtable();
+              var ht = new Hashtable();
 
               for (int i = 0; i < alTreeNodeGrandParent.Count; i++)
               {
@@ -2390,7 +2390,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 
               SelNodes = ht;
 
-              ArrayList al = new ArrayList();
+              var al = new ArrayList();
 
               foreach (MWTreeNodeWrapper mwtnw in SelNodes.Values)
               {
@@ -2410,7 +2410,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 
               int iSelNodeLevel = GetTreeNodeLevel(SelNode);
 
-              Hashtable ht = new Hashtable();
+              var ht = new Hashtable();
 
               foreach (MWTreeNodeWrapper mwtnw in SelNodes.Values)
               {
@@ -2422,7 +2422,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 
               SelNodes = ht;
 
-              ArrayList al = new ArrayList();
+              var al = new ArrayList();
 
               foreach (MWTreeNodeWrapper mwtnw in SelNodes.Values)
               {
@@ -2531,7 +2531,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       {
         if (bAllowMultiCheck != value)
         {
-          MWCancelEventArgs e = new MWCancelEventArgs(bAllowMultiCheck, value);
+          var e = new MWCancelEventArgs(bAllowMultiCheck, value);
           OnBeforeAllowMultiCheckChanged(e);
 
           if (!e.Cancel)
@@ -2636,7 +2636,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       {
         if (bAllowNoSelNode != value)
         {
-          MWCancelEventArgs e = new MWCancelEventArgs(bAllowNoSelNode, value);
+          var e = new MWCancelEventArgs(bAllowNoSelNode, value);
           OnBeforeAllowNoSelNodeChanged(e);
 
           if (!e.Cancel)
@@ -2722,7 +2722,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       {
         if (bAllowBlankNodeText != value)
         {
-          MWCancelEventArgs e = new MWCancelEventArgs(bAllowBlankNodeText, value);
+          var e = new MWCancelEventArgs(bAllowBlankNodeText, value);
           OnBeforeAllowBlankNodeTextChanged(e);
 
           if (!e.Cancel)
@@ -2802,7 +2802,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       {
         if (htSelNodes != value)
         {
-          MWCancelEventArgs e = new MWCancelEventArgs(htSelNodes, value);
+          var e = new MWCancelEventArgs(htSelNodes, value);
           OnBeforeSelNodesChanged(e);
 
           if (!e.Cancel)
@@ -2967,7 +2967,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       {
         if (tnSelNode != value)
         {
-          MWCancelEventArgs e = new MWCancelEventArgs(tnSelNode, value);
+          var e = new MWCancelEventArgs(tnSelNode, value);
           OnBeforeSelNodeChanged(e);
 
           if (!e.Cancel)
@@ -3078,7 +3078,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       {
         if (htCheckedNodes != value)
         {
-          MWCancelEventArgs e = new MWCancelEventArgs(htCheckedNodes, value);
+          var e = new MWCancelEventArgs(htCheckedNodes, value);
           OnBeforeCheckedNodesChanged(e);
 
           if (!e.Cancel)
@@ -3198,7 +3198,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       {
         if (bScrollToSelNode != value)
         {
-          MWCancelEventArgs e = new MWCancelEventArgs(bScrollToSelNode, value);
+          var e = new MWCancelEventArgs(bScrollToSelNode, value);
           OnBeforeScrollToSelNodeChanged(e);
 
           if (!e.Cancel)
@@ -3293,7 +3293,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       {
         if (bAllowRubberbandSelect != value)
         {
-          MWCancelEventArgs e = new MWCancelEventArgs(bAllowRubberbandSelect, value);
+          var e = new MWCancelEventArgs(bAllowRubberbandSelect, value);
           OnBeforeAllowRubberbandSelectChanged(e);
 
           if (!e.Cancel)
@@ -3370,7 +3370,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       {
         if (strLabelEditRegEx != value)
         {
-          MWCancelEventArgs e = new MWCancelEventArgs(strLabelEditRegEx, value);
+          var e = new MWCancelEventArgs(strLabelEditRegEx, value);
           OnBeforeLabelEditRegExChanged(e);
 
           if (!e.Cancel)
@@ -3448,7 +3448,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       {
         if (strDisallowLabelEditRegEx != value)
         {
-          MWCancelEventArgs e = new MWCancelEventArgs(strDisallowLabelEditRegEx, value);
+          var e = new MWCancelEventArgs(strDisallowLabelEditRegEx, value);
           OnBeforeDisallowLabelEditRegExChanged(e);
 
           if (!e.Cancel)
@@ -3528,7 +3528,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       {
         if (strSelectNodeRegEx != value)
         {
-          MWCancelEventArgs e = new MWCancelEventArgs(strSelectNodeRegEx, value);
+          var e = new MWCancelEventArgs(strSelectNodeRegEx, value);
           OnBeforeSelectNodeRegExChanged(e);
 
           if (!e.Cancel)
@@ -3608,7 +3608,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       {
         if (strCheckNodeRegEx != value)
         {
-          MWCancelEventArgs e = new MWCancelEventArgs(strCheckNodeRegEx, value);
+          var e = new MWCancelEventArgs(strCheckNodeRegEx, value);
           OnBeforeCheckNodeRegExChanged(e);
 
           if (!e.Cancel)
@@ -4109,7 +4109,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
                     {
                       if (GetTreeNodeGrandParent(tn) == tnRoot)
                       {
-                        ArrayList al = new ArrayList();
+                        var al = new ArrayList();
 
                         foreach (MWTreeNodeWrapper mwtnw in SelNodes.Values)
                         {
@@ -4776,7 +4776,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
           }
         }
 
-        Hashtable ht = new Hashtable();
+        var ht = new Hashtable();
 
         TreeNode tn = tnFrom;
 
@@ -4821,7 +4821,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     {
       if (SelNodes != null)
       {
-        ArrayList al = new ArrayList();
+        var al = new ArrayList();
 
         foreach (MWTreeNodeWrapper mwtnw in SelNodes.Values)
         {
@@ -5331,7 +5331,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     /// </summary>
     private void EnsureAllSelectedNodesAreAllowed()
     {
-      ArrayList al = new ArrayList();
+      var al = new ArrayList();
 
       if (SelNodes != null)
       {
@@ -5364,7 +5364,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     /// </summary>
     private void EnsureAllCheckedNodesAreAllowed()
     {
-      ArrayList al = new ArrayList();
+      var al = new ArrayList();
 
       if (CheckedNodes != null)
       {

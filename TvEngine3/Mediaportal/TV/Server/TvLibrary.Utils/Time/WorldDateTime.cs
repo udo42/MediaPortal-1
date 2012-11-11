@@ -100,7 +100,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
       SetFromLong(ldatetime);
 
       // Test that DateTime is vaild
-      DateTime dt = new DateTime(_year, _month, _day, _hour, _minute, _second, 0);
+      var dt = new DateTime(_year, _month, _day, _hour, _minute, _second, 0);
     }
 
     /// <summary>
@@ -463,7 +463,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
 
     private TimeSpan GetTimeOffset(string strTimeZone)
     {
-      TimeSpan ts = new TimeSpan(0, 0, 0);
+      var ts = new TimeSpan(0, 0, 0);
 
       // timezone can be in format:
       // GMT +0100 or GMT -0500
@@ -491,7 +491,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
           int mintue = (iOff % 100);
           iOff /= 100;
           int hour = (iOff % 100);
-          TimeSpan tsOff = new TimeSpan(hour, mintue, 0);
+          var tsOff = new TimeSpan(hour, mintue, 0);
           if (strTimeZone[0] == '-')
           {
             ts = ts.Subtract(tsOff);
@@ -558,7 +558,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
     /// <exception cref="T:System.ArgumentException">obj is not the same type as this instance. </exception>
     public int CompareTo(object obj)
     {
-      WorldDateTime compareObj = (WorldDateTime)obj;
+      var compareObj = (WorldDateTime)obj;
       return (DateTime.CompareTo(compareObj.DateTime));
     }
 

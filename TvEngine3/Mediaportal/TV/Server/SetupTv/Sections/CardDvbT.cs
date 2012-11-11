@@ -203,7 +203,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       try
       {
         TextWriter parFileXML = File.CreateText(fileName);
-        XmlSerializer xmlSerializer = new XmlSerializer(typeof (List<DVBTTuning>));
+        var xmlSerializer = new XmlSerializer(typeof (List<DVBTTuning>));
         xmlSerializer.Serialize(parFileXML, _dvbtChannels);
         parFileXML.Close();
       }
@@ -223,7 +223,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       try
       {
         XmlReader parFileXML = XmlReader.Create(fileName);
-        XmlSerializer xmlSerializer = new XmlSerializer(typeof (List<DVBTTuning>));
+        var xmlSerializer = new XmlSerializer(typeof (List<DVBTTuning>));
         _dvbtChannels = (List<DVBTTuning>)xmlSerializer.Deserialize(parFileXML);
         parFileXML.Close();
       }
@@ -280,7 +280,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     /// <returns></returns>
     private DVBTChannel GetManualTuning()
     {
-      DVBTChannel tuneChannel = new DVBTChannel();
+      var tuneChannel = new DVBTChannel();
       tuneChannel.Frequency = Int32.Parse(textBoxFreq.Text);
       tuneChannel.Bandwidth = Int32.Parse(textBoxBandwidth.Text);
       return tuneChannel;
@@ -334,7 +334,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           {
               // use tuning details from file
             case ScanTypes.Predefined:
-              CustomFileName tuningFile = (CustomFileName)mpComboBoxRegion.SelectedItem;
+              var tuningFile = (CustomFileName)mpComboBoxRegion.SelectedItem;
               _dvbtChannels = (List<DVBTTuning>)fileFilters.LoadList(tuningFile.FileName, typeof (List<DVBTTuning>));
               if (_dvbtChannels == null)
               {
@@ -358,7 +358,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
               {
                 for (int i = 0; i < channels.Length; ++i)
                 {
-                  DVBTChannel ch = (DVBTChannel)channels[i];
+                  var ch = (DVBTChannel)channels[i];
                   _dvbtChannels.Add(ch.TuningInfo);
                   item = listViewStatus.Items.Add(new ListViewItem(ch.TuningInfo.ToString()));
                   item.EnsureVisible();
@@ -403,7 +403,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private void StartScanThread()
     {
-      Thread scanThread = new Thread(DoScan);
+      var scanThread = new Thread(DoScan);
       scanThread.Name = "DVB-T scan thread";
       scanThread.Start();
     }
@@ -424,8 +424,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     /// </summary>
     private void DoScan()
     {
-      suminfo tv = new suminfo();
-      suminfo radio = new suminfo();
+      var tv = new suminfo();
+      var radio = new suminfo();
       IUser user = new User();
       user.CardId = _cardNumber;
       try
@@ -454,7 +454,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           Application.DoEvents();
 
           DVBTTuning curTuning = _dvbtChannels[index];
-          DVBTChannel tuneChannel = new DVBTChannel(curTuning);
+          var tuneChannel = new DVBTChannel(curTuning);
           string line = String.Format("{0}tp- {1}", 1 + index, tuneChannel.TuningInfo.ToString());
           ListViewItem item = listViewStatus.Items.Add(new ListViewItem(line));
           item.EnsureVisible();
@@ -505,7 +505,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           for (int i = 0; i < channels.Length; ++i)
           {
             Channel dbChannel;
-            DVBTChannel channel = (DVBTChannel)channels[i];
+            var channel = (DVBTChannel)channels[i];
             bool exists;
             TuningDetail currentDetail;
             //Check if we already have this tuningdetail. The user has the option to enable channel move detection...

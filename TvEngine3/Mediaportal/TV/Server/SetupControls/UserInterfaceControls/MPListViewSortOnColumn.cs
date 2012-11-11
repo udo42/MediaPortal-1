@@ -117,8 +117,8 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     {
       int compareResult;
       // Cast the objects to be compared to ListViewItem objects
-      ListViewItem listviewX = (ListViewItem)x;
-      ListViewItem listviewY = (ListViewItem)y;
+      var listviewX = (ListViewItem)x;
+      var listviewY = (ListViewItem)y;
       if (ColumnToSort == 0 || ColumnToSort >= listviewX.SubItems.Count || ColumnToSort >= listviewY.SubItems.Count)
       {
         compareResult = FirstObjectCompare.Compare(x, y);

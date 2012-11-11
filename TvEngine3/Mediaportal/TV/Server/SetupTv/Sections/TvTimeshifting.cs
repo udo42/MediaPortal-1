@@ -111,7 +111,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private void comboBoxCards_SelectedIndexChanged(object sender, EventArgs e)
     {
-      CardInfo info = (CardInfo)comboBoxCards.SelectedItem;
+      var info = (CardInfo)comboBoxCards.SelectedItem;
       textBoxTimeShiftFolder.Text = info.card.TimeshiftingFolder;
 
       if (String.IsNullOrEmpty(textBoxTimeShiftFolder.Text))
@@ -161,7 +161,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     // Browse TimeShift folder
     private void buttonTimeShiftBrowse_Click(object sender, EventArgs e)
     {
-      FolderBrowserDialog dlg = new FolderBrowserDialog();
+      var dlg = new FolderBrowserDialog();
       dlg.SelectedPath = textBoxTimeShiftFolder.Text;
       dlg.Description = "Specify timeshift folder";
       dlg.ShowNewFolderButton = true;
@@ -174,7 +174,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     // When TimeShift folder has been changed
     private void textBoxTimeShiftFolder_TextChanged(object sender, EventArgs e)
     {
-      CardInfo info = (CardInfo)comboBoxCards.SelectedItem;
+      var info = (CardInfo)comboBoxCards.SelectedItem;
       if (info.card.TimeshiftingFolder != textBoxTimeShiftFolder.Text)
       {
         info.card.TimeshiftingFolder = textBoxTimeShiftFolder.Text;
@@ -189,7 +189,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       // Change timeshiftFolder for all cards
       for (int iIndex = 0; iIndex < comboBoxCards.Items.Count; iIndex++)
       {
-        CardInfo info = (CardInfo)comboBoxCards.Items[iIndex];
+        var info = (CardInfo)comboBoxCards.Items[iIndex];
         if (info.card.TimeshiftingFolder != textBoxTimeShiftFolder.Text)
         {
           info.card.TimeshiftingFolder = textBoxTimeShiftFolder.Text;

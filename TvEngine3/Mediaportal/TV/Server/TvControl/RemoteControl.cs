@@ -99,7 +99,7 @@ namespace Mediaportal.TV.Server.TVControl
 
     private static void ConnectCallback(IAsyncResult ar)
     {
-      TcpClient tcpClient = (TcpClient)ar.AsyncState;
+      var tcpClient = (TcpClient)ar.AsyncState;
       try
       {
         tcpClient.EndConnect(ar);
@@ -119,7 +119,7 @@ namespace Mediaportal.TV.Server.TVControl
     {
       Stopwatch benchClock = Stopwatch.StartNew();
 
-      TcpClient tcpClient = new TcpClient();
+      var tcpClient = new TcpClient();
 
       try
       {

@@ -50,7 +50,7 @@ namespace Mediaportal.TV.Server.TVLibrary.ChannelLinkage
     public override int OnLinkageReceived()
     {
       this.LogInfo("OnLinkageReceived()");
-      Thread workerThread = new Thread(UpdateDatabaseThread);
+      var workerThread = new Thread(UpdateDatabaseThread);
       workerThread.IsBackground = true;
       workerThread.Name = "Channel linkage update thread";
       workerThread.Start();

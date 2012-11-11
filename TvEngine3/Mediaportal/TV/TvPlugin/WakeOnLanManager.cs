@@ -99,7 +99,7 @@ namespace Mediaportal.TV.TvPlugin
         }
 
         int entries = Marshal.ReadInt32(buffer);
-        IntPtr currentBuffer = new IntPtr(buffer.ToInt64() + sizeof (int));
+        var currentBuffer = new IntPtr(buffer.ToInt64() + sizeof (int));
         table = new MIB_IPNETROW[entries];
 
         for (int i = 0; i < entries; i++)
@@ -119,7 +119,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private byte[] SendArpRequest(IPAddress address)
     {
-      byte[] hwAddr = new byte[6];
+      var hwAddr = new byte[6];
       int len = hwAddr.Length;
       byte[] ipAddr = address.GetAddressBytes();
       int result = SendARP(BitConverter.ToInt32(ipAddr, 0), 0, hwAddr, ref len);
@@ -133,7 +133,7 @@ namespace Mediaportal.TV.TvPlugin
       {
         throw new ArgumentOutOfRangeException("hwAddress", hwAddress, "hwAddress must contain 6 bytes!");
       }
-      byte[] packet = new byte[102];
+      var packet = new byte[102];
       // pad packet data with 6 0xFF bytes
       for (int i = 0; i < 6; i++)
       {
@@ -153,7 +153,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private void SendMagicPacket(IPAddress address, byte[] data)
     {
-      UdpClient client = new UdpClient();
+      var client = new UdpClient();
       client.Connect(address, 1234);
       client.Send(data, data.Length);
       client.Close();
@@ -183,7 +183,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private bool Ping(string hostName, int timeout)
     {
-      Ping p = new Ping();
+      var p = new Ping();
       try
       {
         PingReply r = p.Send(hostName, timeout);
@@ -221,7 +221,7 @@ namespace Mediaportal.TV.TvPlugin
           byte[] addr = address.GetAddressBytes();
           if (BitConverter.ToInt32(addr, 0) == addrTable[i].dwAddr)
           {
-            byte[] physAddr = new byte[addrTable[i].dwPhysAddrLen];
+            var physAddr = new byte[addrTable[i].dwPhysAddrLen];
             Array.Copy(addrTable[i].bPhysAddr, physAddr, addrTable[i].dwPhysAddrLen);
             return physAddr;
           }
@@ -313,7 +313,7 @@ namespace Mediaportal.TV.TvPlugin
     /// <returns>byte[] containing the byte representation of this hardware ethernet address</returns>
     public byte[] GetHwAddrBytes(string address)
     {
-      byte[] addrn = new byte[6];
+      var addrn = new byte[6];
       string[] addr = address.Split(':');
       if (addr.Length != 6)
       {

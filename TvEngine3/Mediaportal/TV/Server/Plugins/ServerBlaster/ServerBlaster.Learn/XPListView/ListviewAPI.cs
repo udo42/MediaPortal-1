@@ -572,7 +572,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
       try
       {
-        LVBKIMAGE apiItem = new LVBKIMAGE();
+        var apiItem = new LVBKIMAGE();
         apiItem.pszImage = ImagePath + Convert.ToChar(0);
         apiItem.cchImageMax = ImagePath.Length;
         apiItem.ulFlags = LVBKIF_SOURCE_URL | LVBKIF_STYLE_NORMAL;
@@ -595,7 +595,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
     {
       try
       {
-        LVBKIMAGE apiItem = new LVBKIMAGE();
+        var apiItem = new LVBKIMAGE();
         apiItem.pszImage = ImagePath + Convert.ToChar(0);
         apiItem.cchImageMax = ImagePath.Length;
         apiItem.ulFlags = LVBKIF_SOURCE_URL | LVBKIF_STYLE_TILE;

@@ -89,7 +89,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
     /// <param name="channel">The service details.</param>
     protected override void SetMissingServiceName(IChannel channel)
     {
-      ATSCChannel atscChannel = channel as ATSCChannel;
+      var atscChannel = channel as ATSCChannel;
       if (atscChannel == null)
       {
         return;

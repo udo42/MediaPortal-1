@@ -34,7 +34,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     {
       try
       {
-        Uri uri = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase);
+        var uri = new Uri(Assembly.GetExecutingAssembly().GetName().CodeBase);
 
         _logFilename = uri.LocalPath.Replace(".exe", ".log");
       }

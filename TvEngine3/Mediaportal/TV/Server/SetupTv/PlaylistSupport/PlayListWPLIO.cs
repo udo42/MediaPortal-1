@@ -53,7 +53,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
               {
                 if (srcNode.InnerText.Length > 0)
                 {
-                  var playlistUrl = srcNode.InnerText;
+                  string playlistUrl = srcNode.InnerText;
                   var newItem = new PlayListItem(playlistUrl, playlistUrl, 0)
                                   {
                                     Type = PlayListItem.PlayListItemType.Audio

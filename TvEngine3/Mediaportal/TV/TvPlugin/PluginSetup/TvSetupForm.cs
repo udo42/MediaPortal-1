@@ -80,7 +80,7 @@ namespace Mediaportal.TV.TvPlugin.PluginSetup
 
     private void TvSetupForm_Load(object sender, EventArgs e)
     {
-      Languages languages = new Languages();
+      var languages = new Languages();
       languagesAvail = languages.GetLanguages();
       languageCodes = languages.GetLanguageCodes();
       LoadSettings();
@@ -127,7 +127,7 @@ namespace Mediaportal.TV.TvPlugin.PluginSetup
 
     private void mpButtonSelectLanguages_Click(object sender, EventArgs e)
     {
-      TvSetupAudioLanguageForm frm = new TvSetupAudioLanguageForm();
+      var frm = new TvSetupAudioLanguageForm();
       frm.InitForm(languageCodes, languagesAvail, _preferredLanguages);
       if (frm.ShowDialog() == DialogResult.OK)
       {

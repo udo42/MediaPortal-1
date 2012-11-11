@@ -146,7 +146,7 @@ namespace MediaPortal.Common.Utils
       {
         if (_services.TryGetValue(t, out o))
         {
-          ServiceCreatorCallback<T> s = o as ServiceCreatorCallback<T>;
+          var s = o as ServiceCreatorCallback<T>;
           if (s != null)
           {
             return s(this);

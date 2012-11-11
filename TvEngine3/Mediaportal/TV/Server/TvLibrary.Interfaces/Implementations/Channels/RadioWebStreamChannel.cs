@@ -123,7 +123,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     /// </returns>
     public override bool Equals(object obj)
     {
-      RadioWebStreamChannel ch = obj as RadioWebStreamChannel;
+      var ch = obj as RadioWebStreamChannel;
       if (ch == null)
       {
         return false;

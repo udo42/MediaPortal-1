@@ -56,7 +56,7 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
     /// <param name="eventArgs">The <see cref="System.EventArgs"/> the event data.</param>
     private void events_OnTvServerEvent(object sender, EventArgs eventArgs)
     {
-      TvServerEventArgs tvEvent = (TvServerEventArgs)eventArgs;
+      var tvEvent = (TvServerEventArgs)eventArgs;
       if (tvEvent.EventType == TvServerEventType.ProgramUpdated)
       {
         UpdatePersonalTVGuide();
@@ -75,7 +75,7 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
       {
         try
         {
-          Thread updateThread = new Thread(UpdateThread);
+          var updateThread = new Thread(UpdateThread);
           updateThread.Name = "PersonalTVGuide";
           updateThread.IsBackground = true;
           updateThread.Priority = ThreadPriority.Lowest;
@@ -159,7 +159,7 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
       if ((list == null) || (list.Count < 1)) return;
       foreach (Program prog in list)
       {
-        PersonalTVGuideMap map = new PersonalTVGuideMap(IdKeyword, prog.IdProgram);
+        var map = new PersonalTVGuideMap(IdKeyword, prog.IdProgram);
         map.Persist();
       }
     }
@@ -169,7 +169,7 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
     /// </summary>
     private IList<Program> ContainsInTitle(string Token)
     {
-      var stringComparisonEnum = StringComparisonEnum.StartsWith;
+      StringComparisonEnum stringComparisonEnum = StringComparisonEnum.StartsWith;
       stringComparisonEnum |= StringComparisonEnum.EndsWith;
       return ProgramManagement.GetProgramsByTitle(Token, MediaTypeEnum.TV, stringComparisonEnum);
     }
@@ -179,7 +179,7 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
     /// </summary>
     private IList<Program> ContainsInDescription(string token)
     {
-      var stringComparisonEnum = StringComparisonEnum.StartsWith;
+      StringComparisonEnum stringComparisonEnum = StringComparisonEnum.StartsWith;
       stringComparisonEnum |= StringComparisonEnum.EndsWith;
       return ProgramManagement.GetProgramsByDescription(token, MediaTypeEnum.TV, stringComparisonEnum);      
     }
@@ -244,7 +244,7 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
       LoadSettings();
       this.LogDebug("plugin: PersonalTVGuide started");
       _stopService = false;
-      ITvServerEvent events = GlobalServiceProvider.Instance.Get<ITvServerEvent>();
+      var events = GlobalServiceProvider.Instance.Get<ITvServerEvent>();
       events.OnTvServerEvent += events_OnTvServerEvent;
       if (_debugMode) UpdatePersonalTVGuide(); // Only for testing !!!!
     }

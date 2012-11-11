@@ -130,7 +130,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
                           "Tuner is locked. Scanning is not possible at the moment. Perhaps you are using another part of a hybrid card?");
           return;
         }
-        Thread scanThread = new Thread(DoScan);
+        var scanThread = new Thread(DoScan);
         scanThread.Name = "DVB-IP scan thread";
         scanThread.Start();
       }
@@ -159,7 +159,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         ServiceAgents.Instance.ControllerServiceAgent.EpgGrabberEnabled = false;
         listViewStatus.Items.Clear();
 
-        PlayList playlist = new PlayList();
+        var playlist = new PlayList();
         if (mpComboBoxService.SelectedIndex == 0)
         {
           //TODO read SAP announcements
@@ -196,7 +196,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           string url = enumerator.Current.FileName.Substring(enumerator.Current.FileName.LastIndexOf('\\') + 1);
           string name = enumerator.Current.Description;
 
-          DVBIPChannel tuneChannel = new DVBIPChannel();
+          var tuneChannel = new DVBIPChannel();
           tuneChannel.Url = url;
           tuneChannel.Name = name;
           string line = String.Format("{0}- {1} - {2}", 1 + index, tuneChannel.Name, tuneChannel.Url);
@@ -229,7 +229,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           for (int i = 0; i < channels.Length; ++i)
           {
             Channel dbChannel;
-            DVBIPChannel channel = (DVBIPChannel)channels[i];
+            var channel = (DVBIPChannel)channels[i];
             if (channels.Length > 1)
             {
               if (channel.Name.IndexOf("Unknown") == 0)

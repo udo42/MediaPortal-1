@@ -192,7 +192,7 @@ namespace WebEPG.Parser
 
             if (fieldText != null)
             {
-              Regex replace = new Regex(actions[i].search);
+              var replace = new Regex(actions[i].search);
               string newValue = replace.Replace(fieldText, actions[i].text ?? "");
               PutElement(actions[i].field, newValue);
             }
@@ -472,11 +472,11 @@ namespace WebEPG.Parser
 
     private List<string> GetActors(string strActors)
     {
-      List<string> actorList = new List<string>();
+      var actorList = new List<string>();
 
       int index = 0;
       int start;
-      char[] delimitors = new char[2] {',', '\n'};
+      var delimitors = new char[2] {',', '\n'};
       while ((start = strActors.IndexOfAny(delimitors, index)) != -1)
       {
         string actor = strActors.Substring(index, start - index);
@@ -575,7 +575,7 @@ namespace WebEPG.Parser
     /// <returns>The normalized string</returns>
     private string NormalizeWhitespace(string value)
     {
-      Regex whitespace = new Regex(@"\s{2,}|[\s-[ ]]+", RegexOptions.Compiled);
+      var whitespace = new Regex(@"\s{2,}|[\s-[ ]]+", RegexOptions.Compiled);
 
       return whitespace.Replace(value, " ");
     }

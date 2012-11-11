@@ -65,7 +65,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       switch (args.EventType)
       {
         case PowerSchedulerEventType.SettingsChanged:
-          PowerSettings settings = args.GetData<PowerSettings>();
+          var settings = args.GetData<PowerSettings>();
           if (settings != null)
             _timeout = settings.IdleTimeout;
           break;

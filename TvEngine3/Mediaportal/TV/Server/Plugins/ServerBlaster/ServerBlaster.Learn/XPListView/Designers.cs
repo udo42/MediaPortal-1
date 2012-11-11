@@ -59,7 +59,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       if (destinationType == typeof (InstanceDescriptor))
       {
         Type[] signature = {typeof (ListViewItem.ListViewSubItem[]), typeof (int), typeof (int)};
-        XPListViewItem itm = ((XPListViewItem)value);
+        var itm = ((XPListViewItem)value);
         object[] args = {itm.SubItemsArray, itm.ImageIndex, itm.GroupIndex};
         return new InstanceDescriptor(typeof (XPListViewItem).GetConstructor(signature), args, false);
       }
@@ -84,7 +84,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       if (destinationType == typeof (InstanceDescriptor))
       {
         Type[] signature = {typeof (string), typeof (int)};
-        XPListViewGroup itm = ((XPListViewGroup)value);
+        var itm = ((XPListViewGroup)value);
         object[] args = {itm.GroupText, itm.GroupIndex};
         return new InstanceDescriptor(typeof (XPListViewGroup).GetConstructor(signature), args, false);
       }

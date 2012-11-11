@@ -99,7 +99,7 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
       _cards = CardManagement.ListAllCards(CardIncludeRelationEnum.None); //SEB
 
       _conflictingPrograms = new List<Program>();
-      ITvServerEvent events = GlobalServiceProvider.Instance.Get<ITvServerEvent>();
+      var events = GlobalServiceProvider.Instance.Get<ITvServerEvent>();
       events.OnTvServerEvent += events_OnTvServerEvent;
     }
 
@@ -134,7 +134,7 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
     /// <param name="eventArgs">The <see cref="System.EventArgs"/> the event data.</param>
     private void events_OnTvServerEvent(object sender, EventArgs eventArgs)
     {
-      TvServerEventArgs tvEvent = (TvServerEventArgs)eventArgs;
+      var tvEvent = (TvServerEventArgs)eventArgs;
       if (tvEvent.EventType == TvServerEventType.ScheduledAdded ||
           tvEvent.EventType == TvServerEventType.ScheduleDeleted)
       {
@@ -274,13 +274,13 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
       // creates an array of Schedule Lists
       // element [0] will be filled with conflicting schedules
       // element [x] will be filled with the schedules assigned to card with idcard=x
-      List<Schedule>[] cardSchedules = new List<Schedule>[cardsList.Count + 1];
+      var cardSchedules = new List<Schedule>[cardsList.Count + 1];
       for (int i = 0; i < cardsList.Count + 1; i++) cardSchedules[i] = new List<Schedule>();
 
       #region assigns schedules from table
 
       //
-      Dictionary<int, int> cardno = new Dictionary<int, int>();
+      var cardno = new Dictionary<int, int>();
       int n = 1;
       foreach (Card _card in _cards)
       {
@@ -303,7 +303,7 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
             bool free = true;
             foreach (Schedule assignedShedule in cardSchedules[cardno[card.IdCard]])
             {
-              ScheduleBLL bll = new ScheduleBLL(schedule);
+              var bll = new ScheduleBLL(schedule);
               if (bll.IsOverlapping(assignedShedule))
               {                                                
                 if (!(bll.IsSameTransponder(assignedShedule)))
@@ -373,7 +373,7 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
     /// <returns>a list array of schedules. Element [0] contains schedules that cannot be viewed by any card</returns>
     private List<Schedule>[] sortSchedules(IList<Schedule> Schedules)
     {
-      List<Schedule>[] _sortedSchedules = new List<Schedule>[_cards.Count];
+      var _sortedSchedules = new List<Schedule>[_cards.Count];
       for (int i = 0; i < _cards.Count + 1; i++) _sortedSchedules[i] = new List<Schedule>();
 
       foreach (Schedule _Schedule in _schedules)
@@ -409,7 +409,7 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
     {
       foreach (Schedule schedule in schedulesList)
       {                
-        ScheduleRecordingType scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
+        var scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
         if (schedule.Canceled != Schedule.MinSchedule) continue;
         if (scheduleType != ScheduleRecordingType.Once) continue;
         refFillList.Add(schedule);
@@ -427,7 +427,7 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
     {
       foreach (Schedule schedule in schedulesList)
       {
-        ScheduleRecordingType scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
+        var scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
         if (schedule.Canceled != Schedule.MinSchedule) continue;
         if (scheduleType != ScheduleRecordingType.Daily) continue;
         // create a temporay base schedule with today's date
@@ -481,7 +481,7 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
     {
       foreach (Schedule schedule in schedulesList)
       {
-        ScheduleRecordingType scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
+        var scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
         if (schedule.Canceled != Schedule.MinSchedule) continue;
         if (scheduleType != ScheduleRecordingType.Weekly) continue;
         DateTime tempDate;
@@ -533,7 +533,7 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
     {
       foreach (Schedule schedule in schedulesList)
       {
-        ScheduleRecordingType scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
+        var scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
         if (schedule.Canceled != Schedule.MinSchedule) continue;
         if (scheduleType != ScheduleRecordingType.Weekends) continue;
         DateTime tempDate;
@@ -585,7 +585,7 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
     {
       foreach (Schedule schedule in schedulesList)
       {
-        ScheduleRecordingType scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
+        var scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
         if (schedule.Canceled != Schedule.MinSchedule) continue;
         if (scheduleType != ScheduleRecordingType.WorkingDays) continue;
         DateTime tempDate;
@@ -638,7 +638,7 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
       //IList programsList = Program.ListAll();
       foreach (Schedule schedule in schedulesList)
       {
-        ScheduleRecordingType scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
+        var scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
         if (schedule.Canceled != Schedule.MinSchedule) continue;
         if (scheduleType != ScheduleRecordingType.EveryTimeOnEveryChannel) continue;
         IList<Program> programsList = ProgramManagement.RetrieveByTitleAndTimesInterval(schedule.ProgramName, schedule.StartTime,
@@ -672,7 +672,7 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
       
       foreach (Schedule schedule in schedulesList)
       {
-        ScheduleRecordingType scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
+        var scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
         if (schedule.Canceled != Schedule.MinSchedule) continue;
         if (scheduleType != ScheduleRecordingType.EveryTimeOnThisChannel) continue;
         Channel channel = ChannelManagement.GetChannel(schedule.IdChannel);
@@ -709,7 +709,7 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
       
       foreach (Schedule schedule in schedulesList)
       {
-        ScheduleRecordingType scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
+        var scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
         if (schedule.Canceled != Schedule.MinSchedule) continue;
         if (scheduleType != ScheduleRecordingType.WeeklyEveryTimeOnThisChannel) continue;
         Channel channel = ChannelManagement.GetChannel(schedule.IdChannel);

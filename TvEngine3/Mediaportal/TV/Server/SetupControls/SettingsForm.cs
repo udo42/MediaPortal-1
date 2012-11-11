@@ -59,7 +59,7 @@ namespace Mediaportal.TV.Server.SetupControls
       //
       // Add section to tree
       //
-      SectionTreeNode treeNode = new SectionTreeNode(section);
+      var treeNode = new SectionTreeNode(section);
 
       if (parentSection == null)
       {
@@ -73,7 +73,7 @@ namespace Mediaportal.TV.Server.SetupControls
         //
         // Add to the parent node
         //
-        SectionTreeNode parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
+        var parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
         parentTreeNode.Nodes.Add(treeNode);
       }
 
@@ -84,7 +84,7 @@ namespace Mediaportal.TV.Server.SetupControls
 
     public virtual void sectionTree_BeforeSelect(object sender, TreeViewCancelEventArgs e)
     {
-      SectionTreeNode treeNode = e.Node as SectionTreeNode;
+      var treeNode = e.Node as SectionTreeNode;
 
       if (treeNode != null)
       {
@@ -94,7 +94,7 @@ namespace Mediaportal.TV.Server.SetupControls
 
     public virtual void sectionTree_AfterSelect(object sender, TreeViewEventArgs e)
     {
-      SectionTreeNode treeNode = e.Node as SectionTreeNode;
+      var treeNode = e.Node as SectionTreeNode;
 
       if (treeNode != null)
       {

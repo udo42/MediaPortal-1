@@ -31,7 +31,7 @@ namespace MediaPortal.Common.Utils.ExtensionMethods
     {
       if (o != null)
       {
-        IDisposable disp = o as IDisposable;
+        var disp = o as IDisposable;
         if (disp != null)
         {
           disp.Dispose();

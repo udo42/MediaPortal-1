@@ -47,7 +47,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 
     private void btnSearchSHOUTcast_Click(object sender, EventArgs e)
     {
-      SearchSHOUTcast dlg = new SearchSHOUTcast();
+      var dlg = new SearchSHOUTcast();
       dlg.ShowDialog(this);
       if (dlg.Station == null) return;
       edStreamURL.Text = dlg.Station.url;

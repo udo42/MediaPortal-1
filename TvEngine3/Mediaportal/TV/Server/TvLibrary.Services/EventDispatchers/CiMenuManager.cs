@@ -58,7 +58,7 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
           IDictionary<string, DateTime> usersCopy = GetUsersCopy();                    
           if (usersCopy.Count > 0)
           {
-            foreach (var user in usersCopy.Keys)
+            foreach (string user in usersCopy.Keys)
             {
               EventService.CallbackCiMenuEvent(user, _curMenu);
             }

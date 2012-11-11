@@ -247,7 +247,7 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
       bool hasDirAnyFilesOver1MBTotal = false;
       foreach (string file in files)
       {
-        FileInfo info = new FileInfo(file);
+        var info = new FileInfo(file);
         fileSizesTotal += info.Length;
 
         hasDirAnyFilesOver1MBTotal = (fileSizesTotal >= 1048576);

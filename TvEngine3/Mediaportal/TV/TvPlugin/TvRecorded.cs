@@ -424,7 +424,7 @@ namespace Mediaportal.TV.TvPlugin
 
     protected override void OnShowSort()
     {
-      GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
       if (dlg == null)
       {
         return;
@@ -477,9 +477,9 @@ namespace Mediaportal.TV.TvPlugin
       {
         return;
       }
-      Recording rec = (Recording)pItem.TVTag;
+      var rec = (Recording)pItem.TVTag;
 
-      GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
       if (dlg == null)
       {
         return;
@@ -748,7 +748,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private void LoadDirectory()
     {
-      List<GUIListItem> itemlist = new List<GUIListItem>();
+      var itemlist = new List<GUIListItem>();
       try
       {
         GUIControl.ClearControl(GetID, facadeLayout.GetID);
@@ -777,7 +777,7 @@ namespace Mediaportal.TV.TvPlugin
 
           itemlist = recItems.Select(recs =>
                                        {
-                                         var item =
+                                         GUIListItem item =
                                            BuildItemFromRecording(
                                              recs.Aggregate(
                                                (ra, r) =>
@@ -796,7 +796,7 @@ namespace Mediaportal.TV.TvPlugin
         else
         {
           // Showing a merged folders content
-          GUIListItem item = new GUIListItem("..");
+          var item = new GUIListItem("..");
           item.IsFolder = true;
           Utils.SetDefaultIcons(item);
           itemlist.Add(item);
@@ -851,7 +851,7 @@ namespace Mediaportal.TV.TvPlugin
           // we need to do this here...
           if (item.IsFolder && _currentDbView == DBView.Recordings)
           {
-            Recording listRec = item.TVTag as Recording;
+            var listRec = item.TVTag as Recording;
             if (listRec != null)
             {
               item.Label = listRec.Title;
@@ -998,7 +998,7 @@ namespace Mediaportal.TV.TvPlugin
           {
             continue;
           }
-          Recording rec = (Recording)item1.TVTag;
+          var rec = (Recording)item1.TVTag;
           TimeSpan ts = rec.EndTime - rec.StartTime;
 
           string strTime = String.Format("{0} ({1})",
@@ -1076,7 +1076,7 @@ namespace Mediaportal.TV.TvPlugin
         return false;
       }
 
-      Recording rec = (Recording)pItem.TVTag;
+      var rec = (Recording)pItem.TVTag;
       IEnumerable<Recording> itemlist = ServiceAgents.Instance.RecordingServiceAgent.ListAllRecordingsByMediaType(MediaTypeEnum.TV);
 
       _activeRecording = rec;
@@ -1134,9 +1134,9 @@ namespace Mediaportal.TV.TvPlugin
       {
         return;
       }
-      Recording rec = (Recording)pItem.TVTag;
+      var rec = (Recording)pItem.TVTag;
 
-      GUIDialogYesNo dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_YES_NO);
+      var dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_YES_NO);
       if (null == dlgYesNo)
       {
         return;
@@ -1145,7 +1145,7 @@ namespace Mediaportal.TV.TvPlugin
       bool isRecPlaying = false;
       if (g_Player.currentFileName.Length > 0 && g_Player.IsTVRecording && g_Player.Playing)
       {
-        FileInfo fInfo = new FileInfo(g_Player.currentFileName);
+        var fInfo = new FileInfo(g_Player.currentFileName);
         isRecPlaying = (rec.FileName.IndexOf(fInfo.Name) > -1);
       }
 
@@ -1230,7 +1230,7 @@ namespace Mediaportal.TV.TvPlugin
 
       if (!deleteRecording)
       {
-        GUIDialogOK dlgOk = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
+        var dlgOk = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
 
         if (dlgOk != null)
         {
@@ -1245,7 +1245,7 @@ namespace Mediaportal.TV.TvPlugin
     private void OnCleanup()
     {
       _iSelectedItem = GetSelectedItemNo();
-      GUIDialogYesNo dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_YES_NO);
+      var dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_YES_NO);
       if (null == dlgYesNo)
       {
         return;
@@ -1260,7 +1260,7 @@ namespace Mediaportal.TV.TvPlugin
         return;
       }
 
-      GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
       dlg.Reset();
       dlg.SetHeading(GUILocalizeStrings.Get(200043)); //Cleanup recordings?
 
@@ -1325,7 +1325,7 @@ namespace Mediaportal.TV.TvPlugin
           SetProperties(null);
           return;
         }
-        Recording rec = pItem.TVTag as Recording;
+        var rec = pItem.TVTag as Recording;
         if (rec == null)
         {
           SetProperties(null);
@@ -1461,8 +1461,8 @@ namespace Mediaportal.TV.TvPlugin
 
         int iComp = 0;
         TimeSpan ts;
-        Recording rec1 = (Recording)item1.TVTag;
-        Recording rec2 = (Recording)item2.TVTag;
+        var rec1 = (Recording)item1.TVTag;
+        var rec2 = (Recording)item2.TVTag;
 
         string rec1DisplayName = "";
         string rec2DisplayName = "";
@@ -1600,8 +1600,8 @@ namespace Mediaportal.TV.TvPlugin
               return -1;
             }
           case SortMethod.Genre:
-            var categoryRec1 = TVUtil.GetCategory(rec1.ProgramCategory);
-            var categoryRec2 = TVUtil.GetCategory(rec2.ProgramCategory);
+            string categoryRec1 = TVUtil.GetCategory(rec1.ProgramCategory);
+            string categoryRec2 = TVUtil.GetCategory(rec2.ProgramCategory);
             item1.Label2 = categoryRec1;            
             item2.Label2 = categoryRec2;
             if (categoryRec1 != categoryRec2)

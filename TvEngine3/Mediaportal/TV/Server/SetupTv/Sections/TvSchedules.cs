@@ -75,7 +75,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private void SetupScheduleTemplatesMenuItems()
     {
       IList<ScheduleRulesTemplate> templates = ServiceAgents.Instance.ScheduleServiceAgent.ListAllScheduleRules();
-      foreach (var template in templates)
+      foreach (ScheduleRulesTemplate template in templates)
       {
         ToolStripItem toolStripItem = new ToolStripButton();
         toolStripItem.Tag = template;
@@ -129,7 +129,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         IList<Schedule> schedules = ServiceAgents.Instance.ScheduleServiceAgent.ListAllSchedules();
         foreach (Schedule schedule in schedules)
         {
-          ListViewItem item = new ListViewItem(schedule.Priority.ToString());
+          var item = new ListViewItem(schedule.Priority.ToString());
           item.SubItems.Add(schedule.Channel.DisplayName);
           item.Tag = schedule;
           switch ((ScheduleRecordingType)schedule.ScheduleType)
@@ -229,7 +229,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       foreach (ListViewItem item in listView1.SelectedItems)
       {
-        Schedule schedule = (Schedule)item.Tag;
+        var schedule = (Schedule)item.Tag;
         ServiceAgents.Instance.ControllerServiceAgent.StopRecordingSchedule(schedule.IdSchedule);
         ServiceAgents.Instance.ScheduleServiceAgent.DeleteSchedule(schedule.IdSchedule);
 
@@ -262,7 +262,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
             item.SubItems.Add(Convert.ToString(template.Name));
             item.SubItems.Add(Convert.ToString(template.Usages));
             item.SubItems.Add(Convert.ToString(template.Editable));
-            ScheduleConditionList rules = ScheduleConditionHelper.Deserialize<ScheduleConditionList>(template.Rules);
+            var rules = ScheduleConditionHelper.Deserialize<ScheduleConditionList>(template.Rules);
             if (rules != null)
             {
               item.SubItems.Add(template.Rules);
@@ -327,7 +327,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         if (prgs != null)
         {
           listView2.Items.Clear();
-          foreach (var prg in prgs)
+          foreach (Program prg in prgs)
           {
             var item = new ListViewItem(prg.Title);
             item.SubItems.Add(prg.StartTime.ToString("HH:mm:ss", mmddFormat));
@@ -376,7 +376,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private void comboBoxGroups_SelectedIndexChanged(object sender, EventArgs e)
     {
-      ComboBoxExItem idItem = (ComboBoxExItem)comboBoxGroups.Items[comboBoxGroups.SelectedIndex];
+      var idItem = (ComboBoxExItem)comboBoxGroups.Items[comboBoxGroups.SelectedIndex];
       comboBoxChannels.Items.Clear();
       if (idItem.Id == -1)
       {
@@ -412,7 +412,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           {
             imageIndex = 3;
           }
-          ComboBoxExItem item = new ComboBoxExItem(ch.DisplayName, imageIndex, ch.IdChannel);
+          var item = new ComboBoxExItem(ch.DisplayName, imageIndex, ch.IdChannel);
 
           comboBoxChannels.Items.Add(item);
         }
@@ -454,7 +454,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           {
             imageIndex = 3;
           }
-          ComboBoxExItem item = new ComboBoxExItem(ch.DisplayName, imageIndex, ch.IdChannel);
+          var item = new ComboBoxExItem(ch.DisplayName, imageIndex, ch.IdChannel);
           comboBoxChannels.Items.Add(item);
         }
       }

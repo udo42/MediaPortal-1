@@ -91,12 +91,12 @@ namespace Mediaportal.TV.Server.TVService
     {
       if (drive == null) return String.Empty;
       //receives volume name of drive
-      StringBuilder volname = new StringBuilder(256);
+      var volname = new StringBuilder(256);
       //receives serial number of drive,not in case of network drive(win95/98)
       uint sn;
       uint maxcomplen; //receives maximum component length
       uint sysflags; //receives file system flags
-      StringBuilder sysname = new StringBuilder(256); //receives the file system name
+      var sysname = new StringBuilder(256); //receives the file system name
 
       bool retval = GetVolumeInformation(drive.Substring(0, 2), volname, 256, out sn, out maxcomplen, out sysflags, sysname,
                                          256);
@@ -112,12 +112,12 @@ namespace Mediaportal.TV.Server.TVService
     {
       if (drive == null) return String.Empty;
       //receives volume name of drive
-      StringBuilder volname = new StringBuilder(256);
+      var volname = new StringBuilder(256);
       //receives serial number of drive,not in case of network drive(win95/98)
       uint sn;
       uint maxcomplen; //receives maximum component length
       uint sysflags; //receives file system flags
-      StringBuilder sysname = new StringBuilder(256); //receives the file system name
+      var sysname = new StringBuilder(256); //receives the file system name
 
       bool retval = GetVolumeInformation(drive, volname, 256, out sn, out maxcomplen, out sysflags, sysname, 256);
 
@@ -145,7 +145,7 @@ namespace Mediaportal.TV.Server.TVService
       try
       {
         string cmd = String.Format("win32_logicaldisk.deviceid=\"{0}:\"", drive[0]);
-        using (ManagementObject disk = new ManagementObject(cmd))
+        using (var disk = new ManagementObject(cmd))
         {
           disk.Get();
           diskSize = Int64.Parse(disk["Size"].ToString());
@@ -425,16 +425,16 @@ namespace Mediaportal.TV.Server.TVService
       {
         if (ldate < 0) return DateTime.MinValue;
         ldate /= 100L;
-        int minute = (int)(ldate % 100L);
+        var minute = (int)(ldate % 100L);
         ldate /= 100L;
-        int hour = (int)(ldate % 100L);
+        var hour = (int)(ldate % 100L);
         ldate /= 100L;
-        int day = (int)(ldate % 100L);
+        var day = (int)(ldate % 100L);
         ldate /= 100L;
-        int month = (int)(ldate % 100L);
+        var month = (int)(ldate % 100L);
         ldate /= 100L;
-        int year = (int)ldate;
-        DateTime dt = new DateTime(year, month, day, hour, minute, 0, 0);
+        var year = (int)ldate;
+        var dt = new DateTime(year, month, day, hour, minute, 0, 0);
         return dt;
       }
       catch (Exception) {}
@@ -525,7 +525,7 @@ namespace Mediaportal.TV.Server.TVService
           File.Delete(strFile);
         }
         String FolderName = Path.GetDirectoryName(strFile);
-        DirectoryInfo ContainingFolder = new DirectoryInfo(FolderName);
+        var ContainingFolder = new DirectoryInfo(FolderName);
         if (ContainingFolder != null)
         {
           DirectoryInfo[] subfolders = ContainingFolder.GetDirectories();

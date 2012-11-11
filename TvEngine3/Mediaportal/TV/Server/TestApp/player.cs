@@ -162,7 +162,7 @@ namespace Mediaportal.TV.Server.TestApp
       #region add mpeg-2 demux filter
 
       this.LogDebug("add mpeg-2 demux");
-      MPEG2Demultiplexer demux = new MPEG2Demultiplexer();
+      var demux = new MPEG2Demultiplexer();
       _mpegDemux = (IBaseFilter)demux;
       int hr = _graphBuilder.AddFilter(_mpegDemux, "MPEG-2 Demultiplexer");
 
@@ -172,7 +172,7 @@ namespace Mediaportal.TV.Server.TestApp
 
       this.LogDebug("create mpeg-2 demux pins");
       //create mpeg-2 demux output pins
-      IMpeg2Demultiplexer demuxer = _mpegDemux as IMpeg2Demultiplexer;
+      var demuxer = _mpegDemux as IMpeg2Demultiplexer;
 
 
       if (demuxer != null)
@@ -195,14 +195,14 @@ namespace Mediaportal.TV.Server.TestApp
       #region load file in tsfilesource
 
       this.LogDebug("load file in tsfilesource");
-      IFileSourceFilter interfaceFile = (IFileSourceFilter)_tsFileSource;
+      var interfaceFile = (IFileSourceFilter)_tsFileSource;
       if (interfaceFile == null)
       {
         this.LogDebug("TSStreamBufferPlayer9:Failed to get IFileSourceFilter");
         return false;
       }
 
-      AMMediaType mpeg2ProgramStream = new AMMediaType();
+      var mpeg2ProgramStream = new AMMediaType();
       mpeg2ProgramStream.majorType = MediaType.Stream;
       mpeg2ProgramStream.subType = MediaSubType.Mpeg2Program;
 
@@ -252,7 +252,7 @@ namespace Mediaportal.TV.Server.TestApp
       #region map demux pids
 
       this.LogDebug("map mpeg2 pids");
-      IMPEG2StreamIdMap pStreamId = (IMPEG2StreamIdMap)_pinVideo;
+      var pStreamId = (IMPEG2StreamIdMap)_pinVideo;
       hr = pStreamId.MapStreamId(0xe0, MPEG2Program.ElementaryStream, 0, 0);
       if (hr != 0)
       {
@@ -347,7 +347,7 @@ namespace Mediaportal.TV.Server.TestApp
 
     private static AMMediaType GetAudioMpg2Media()
     {
-      AMMediaType mediaAudio = new AMMediaType();
+      var mediaAudio = new AMMediaType();
       mediaAudio.majorType = MediaType.Audio;
       mediaAudio.subType = MediaSubType.Mpeg2Audio;
       mediaAudio.formatType = FormatType.WaveEx;
@@ -365,7 +365,7 @@ namespace Mediaportal.TV.Server.TestApp
 
     private static AMMediaType GetVideoMpg2Media()
     {
-      AMMediaType mediaVideo = new AMMediaType();
+      var mediaVideo = new AMMediaType();
       mediaVideo.majorType = MediaType.Video;
       mediaVideo.subType = MediaSubType.Mpeg2Video;
       mediaVideo.formatType = FormatType.Mpeg2Video;

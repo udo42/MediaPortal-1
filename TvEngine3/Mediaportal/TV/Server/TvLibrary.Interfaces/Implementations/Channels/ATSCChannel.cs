@@ -136,7 +136,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       {
         return false;
       }
-      ATSCChannel ch = obj as ATSCChannel;
+      var ch = obj as ATSCChannel;
       if (ch.MajorChannel != MajorChannel)
       {
         return false;
@@ -175,7 +175,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     /// <returns>true, if the channels are on the same transponder</returns>
     public override bool IsDifferentTransponder(IChannel channel)
     {
-      ATSCChannel atscChannel = channel as ATSCChannel;
+      var atscChannel = channel as ATSCChannel;
       if (atscChannel == null)
       {
         return true;

@@ -54,11 +54,11 @@ namespace WebEPG.Parser
 
       for (int i = 0; i < _templateData.Count && i < sourceData.Count; i++)
       {
-        string template = (string)_templateData[i];
+        var template = (string)_templateData[i];
 
         if (template.IndexOf("#") != -1)
         {
-          string rowSource = (string)sourceData[i];
+          var rowSource = (string)sourceData[i];
           data.SetElement(template, rowSource);
         }
       }
@@ -71,11 +71,11 @@ namespace WebEPG.Parser
 
     private ArrayList GetElements(string source)
     {
-      ArrayList elements = new ArrayList();
+      var elements = new ArrayList();
 
       //source = HtmlString.ToAscii(source);
 
-      Regex elementTag = new Regex(_fieldDelimiter);
+      var elementTag = new Regex(_fieldDelimiter);
       MatchCollection elementTags = elementTag.Matches(source);
       for (int i = 0; i < elementTags.Count; i++)
       {

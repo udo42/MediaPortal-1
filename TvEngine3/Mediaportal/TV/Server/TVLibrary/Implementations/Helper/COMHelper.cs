@@ -76,7 +76,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         return null;
 
       //Convert the function pointer to a .net delegate
-      DllGetClassObject dllGetClassObject = (DllGetClassObject) Marshal.GetDelegateForFunctionPointer(dllGetClassObjectPtr, typeof(DllGetClassObject));
+      var dllGetClassObject = (DllGetClassObject) Marshal.GetDelegateForFunctionPointer(dllGetClassObjectPtr, typeof(DllGetClassObject));
 
       //Call the DllGetClassObject to retreive a class factory for out Filter class
       Guid baseFilterGuid = filterPersistClass;

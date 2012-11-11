@@ -71,7 +71,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       string strName = string.Empty;
       string strDirectory = string.Empty;
-      Example[] example = new Example[2];
+      var example = new Example[2];
       example[0] = new Example("ProSieben", "Philadelphia", "unknown", "unknown", "unknown", "unknown", "Drama",
                                new DateTime(2005, 12, 23, 20, 15, 0), new DateTime(2005, 12, 23, 22, 45, 0));
       example[1] = new Example("ABC", "Friends", "Joey's Birthday", "4", "32", "part 1 of 1", "Comedy",
@@ -332,11 +332,11 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private void comboBoxCards_SelectedIndexChanged(object sender, EventArgs e)
     {
-      CardInfo info = (CardInfo)comboBoxCards.SelectedItem;
+      var info = (CardInfo)comboBoxCards.SelectedItem;
       textBoxFolder.Text = info.card.RecordingFolder;
       if (String.IsNullOrEmpty(textBoxFolder.Text))
       {
-        var recPath = TVDatabase.TVBusinessLayer.Common.GetDefaultRecordingFolder();
+        string recPath = TVDatabase.TVBusinessLayer.Common.GetDefaultRecordingFolder();
         if (!Directory.Exists(recPath))
         {
           Directory.CreateDirectory(recPath);
@@ -362,14 +362,14 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     // Browse Recording folder
     private void buttonBrowse_Click(object sender, EventArgs e)
     {
-      FolderBrowserDialog dlg = new FolderBrowserDialog();
+      var dlg = new FolderBrowserDialog();
       dlg.SelectedPath = textBoxFolder.Text;
       dlg.Description = "Specify recording folder";
       dlg.ShowNewFolderButton = true;
       if (dlg.ShowDialog(this) == DialogResult.OK)
       {
         textBoxFolder.Text = dlg.SelectedPath;
-        CardInfo info = (CardInfo)comboBoxCards.SelectedItem;
+        var info = (CardInfo)comboBoxCards.SelectedItem;
         if (info.card.RecordingFolder != textBoxFolder.Text)
         {
           _needRestart = true;
@@ -423,7 +423,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private void textBoxFolder_TextChanged(object sender, EventArgs e)
     {
-      CardInfo info = (CardInfo)comboBoxCards.SelectedItem;
+      var info = (CardInfo)comboBoxCards.SelectedItem;
       if (info.card.RecordingFolder != textBoxFolder.Text)
       {
         info.card.RecordingFolder = textBoxFolder.Text;
@@ -439,7 +439,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       // Change RecordingFolder for all cards
       for (int iIndex = 0; iIndex < comboBoxCards.Items.Count; iIndex++)
       {
-        CardInfo info = (CardInfo)comboBoxCards.Items[iIndex];
+        var info = (CardInfo)comboBoxCards.Items[iIndex];
         if (info.card.RecordingFolder != textBoxFolder.Text)
         {
           info.card.RecordingFolder = textBoxFolder.Text;
@@ -501,7 +501,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       if (comboBoxDrive.SelectedItem == null)
         return;
-      string drive = (string)comboBoxDrive.SelectedItem;
+      var drive = (string)comboBoxDrive.SelectedItem;
       ulong freeSpace = Utils.GetFreeDiskSpace(drive);
       long totalSpace = Utils.GetDiskSize(drive);
 
@@ -736,7 +736,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       try
       {
         btnImport.Enabled = false;
-        Thread lookupThread = new Thread(MatroskaTagHandler.GetAllMatroskaTags);
+        var lookupThread = new Thread(MatroskaTagHandler.GetAllMatroskaTags);
         lookupThread.Name = "MatroskaTagHandler";
         lookupThread.Start(CurrentImportPath);
         lookupThread.IsBackground = true;
@@ -777,7 +777,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
               bool RecFileFound = false;
               foreach (TreeNode dbRec in tvDbRecs)
               {
-                Recording currentDbRec = dbRec.Tag as Recording;
+                var currentDbRec = dbRec.Tag as Recording;
                 if (currentDbRec != null)
                 {
                   if (Path.GetFileNameWithoutExtension(currentDbRec.FileName) ==
@@ -874,7 +874,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         else
           NodeTitle = string.Format("Title: {0} / Channel: {1} / Time: {2}", aRec.Title, channelName, startTime);
 
-        TreeNode recItem = new TreeNode(NodeTitle);
+        var recItem = new TreeNode(NodeTitle);
         recItem.Tag = aRec;
         recItem.Checked = true;
         return recItem;
@@ -960,7 +960,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       DateTime startTime = SqlDateTime.MinValue.Value;
       if (File.Exists(aFileName))
       {
-        FileInfo fi = new FileInfo(aFileName);
+        var fi = new FileInfo(aFileName);
         startTime = fi.CreationTime;
       }
       return startTime;
@@ -971,7 +971,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       DateTime endTime = SqlDateTime.MinValue.Value;
       if (File.Exists(aFileName))
       {
-        FileInfo fi = new FileInfo(aFileName);
+        var fi = new FileInfo(aFileName);
         endTime = fi.LastWriteTime;
       }
       return endTime;
@@ -987,7 +987,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       string recordingFile = Path.ChangeExtension(aTagFilename, ".ts");
       try
       {
-        string[] validExtensions = new[] {".ts", ".mpg"};
+        var validExtensions = new[] {".ts", ".mpg"};
         foreach (string ext in validExtensions)
         {
           string[] lookupFiles = Directory.GetFiles(Path.GetDirectoryName(aTagFilename),
@@ -1041,13 +1041,13 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
             // first time = ask for channel
             if (newId == -2)
             {
-              FormSelectListChannel idSelection = new FormSelectListChannel();
+              var idSelection = new FormSelectListChannel();
               newId = idSelection.ShowFormModal();
             }
             // If the user chose a proper channel
             if (newId > -1)
             {
-              Recording currentTagRec = node.Tag as Recording;
+              var currentTagRec = node.Tag as Recording;
               if (currentTagRec != null)
               {
                 try
@@ -1085,7 +1085,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       {
         if (tagRec.Checked) // only import the recordings which the user has selected
         {
-          Recording currentTagRec = tagRec.Tag as Recording;
+          var currentTagRec = tagRec.Tag as Recording;
           if (currentTagRec != null && currentTagRec.IdChannel != -1)
           {
             //if (MessageBox.Show(this, string.Format("Import {0} now? \n{1}", currentTagRec.title, currentTagRec.FileName), "Recording not found in DB", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2) == DialogResult.Yes)
@@ -1116,7 +1116,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       foreach (TreeNode dbRec in tvDbRecs)
       {
-        Recording currentDbRec = dbRec.Tag as Recording;
+        var currentDbRec = dbRec.Tag as Recording;
         if (currentDbRec != null)
         {
           if (!File.Exists(currentDbRec.FileName))

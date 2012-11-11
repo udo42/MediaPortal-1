@@ -161,7 +161,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
     {
       int id = _subChannelId++;
       this.LogInfo("TvCardAnalog: new subchannel, ID = {0}, subchannel count = {1}", id, _mapSubChannels.Count);
-      AnalogSubChannel subChannel = new AnalogSubChannel(id, this, _tvAudio, _capture.SupportsTeletext, _tsFileSink);
+      var subChannel = new AnalogSubChannel(id, this, _tvAudio, _capture.SupportsTeletext, _tsFileSink);
       subChannel.Parameters = Parameters;
       subChannel.CurrentChannel = channel;
       _mapSubChannels[id] = subChannel;
@@ -272,7 +272,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
       this.LogDebug("analog:Dispose()");
 
       FreeAllSubChannels();
-      IMediaControl mediaCtl = (_graphBuilder as IMediaControl);
+      var mediaCtl = (_graphBuilder as IMediaControl);
       if (mediaCtl == null)
       {
         throw new TvException("Can not convert graphBuilder to IMediaControl");
@@ -418,7 +418,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
           {
             if (_capture.VideoCaptureName.Contains("Hauppauge"))
             {
-              Hauppauge _hauppauge = new Hauppauge(_capture.VideoFilter, string.Empty);
+              var _hauppauge = new Hauppauge(_capture.VideoFilter, string.Empty);
               _hauppauge.SetStream(103);
               _hauppauge.SetAudioBitRate(384);
               _hauppauge.SetVideoBitRate(6000, 8000, true);
@@ -505,7 +505,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
     /// <param name="channel">The channel to tune to.</param>
     protected override void PerformTuning(IChannel channel)
     {
-      AnalogChannel analogChannel = channel as AnalogChannel;
+      var analogChannel = channel as AnalogChannel;
       _tuner.PerformTune(analogChannel);
       _minChannel = _tuner.MinChannel;
       _maxChannel = _tuner.MaxChannel;

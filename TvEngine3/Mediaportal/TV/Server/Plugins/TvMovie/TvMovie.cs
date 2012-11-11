@@ -31,6 +31,7 @@ using Mediaportal.TV.Server.Plugins.Base.Interfaces;
 using Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces.Interfaces;
 using Mediaportal.TV.Server.SetupControls;
 using Mediaportal.TV.Server.TVControl.Interfaces.Services;
+using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Microsoft.Win32;
@@ -64,7 +65,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     {
       get
       {
-        var setting = SettingsManagement.GetSetting("TvMovieInstallPath", string.Empty);
+        Setting setting = SettingsManagement.GetSetting("TvMovieInstallPath", string.Empty);
         string path = setting.Value;
 
         if (!File.Exists(path))
@@ -194,7 +195,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       // the EPG wakeup schedule is due.
       if (GlobalServiceProvider.Instance.IsRegistered<IEpgHandler>())
       {
-        IEpgHandler handler = GlobalServiceProvider.Instance.Get<IEpgHandler>();
+        var handler = GlobalServiceProvider.Instance.Get<IEpgHandler>();
         if (handler != null)
         {
           handler.EPGScheduleDue += EPGScheduleDue;
@@ -289,7 +290,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       {
         try
         {
-          Thread importThread = new Thread(ImportThread);
+          var importThread = new Thread(ImportThread);
           importThread.Name = "TV Movie importer";
           importThread.IsBackground = true;
           importThread.Priority = ThreadPriority.Lowest;

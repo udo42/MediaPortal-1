@@ -680,7 +680,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         // Return the first interface that implements ICiMenuActions.
         foreach (ICustomDevice d in _customDeviceInterfaces)
         {
-          ICiMenuActions caMenuInterface = d as ICiMenuActions;
+          var caMenuInterface = d as ICiMenuActions;
           if (caMenuInterface != null)
           {
             return caMenuInterface;
@@ -704,12 +704,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
           return 0;
         }
 
-        HashSet<long> decryptedServices = new HashSet<long>();
+        var decryptedServices = new HashSet<long>();
         Dictionary<int, BaseSubChannel>.Enumerator en = _mapSubChannels.GetEnumerator();
         while (en.MoveNext())
         {
           IChannel service = en.Current.Value.CurrentChannel;
-          DVBBaseChannel digitalService = service as DVBBaseChannel;
+          var digitalService = service as DVBBaseChannel;
           if (digitalService != null)
           {
             if (!decryptedServices.Contains(digitalService.ServiceId))
@@ -719,7 +719,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
           }
           else
           {
-            AnalogChannel analogService = service as AnalogChannel;
+            var analogService = service as AnalogChannel;
             if (analogService != null)
             {
               if (!decryptedServices.Contains(analogService.Frequency))
@@ -787,7 +787,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       }
 
       // Load all available and compatible plugins.
-      List<ICustomDevice> plugins = new List<ICustomDevice>();
+      var plugins = new List<ICustomDevice>();
       String[] dllNames = Directory.GetFiles(customDevicesFolder, "*.dll");
       foreach (String dllName in dllNames)
       {
@@ -802,7 +802,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
             {
               if (CompatibilityManager.IsPluginCompatible(type))
               {
-                ICustomDevice plugin = (ICustomDevice)Activator.CreateInstance(type);
+                var plugin = (ICustomDevice)Activator.CreateInstance(type);
                 plugins.Add(plugin);
               }
               else
@@ -841,7 +841,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       foreach (ICustomDevice d in plugins)
       {
         Type[] interfaces = d.GetType().GetInterfaces();
-        String[] interfaceNames = new String[interfaces.Length];
+        var interfaceNames = new String[interfaces.Length];
         for (int i = 0; i < interfaces.Length; i++)
         {
           interfaceNames[i] = interfaces[i].Name;
@@ -864,7 +864,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         bool isAddOn = false;
         if (lastFilter != null)
         {
-          IAddOnDevice addOn = d as IAddOnDevice;
+          var addOn = d as IAddOnDevice;
           if (addOn != null)
           {
             this.LogDebug("TvCardBase: add-on plugin found");
@@ -912,7 +912,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       {
         foreach (ICustomDevice plugin in _customDeviceInterfaces)
         {
-          IConditionalAccessProvider caProvider = plugin as IConditionalAccessProvider;
+          var caProvider = plugin as IConditionalAccessProvider;
           if (caProvider != null)
           {
             caProvider.OpenInterface();
@@ -944,7 +944,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       bool checkedModulation = false;
       foreach (ICustomDevice d in _customDeviceInterfaces)
       {
-        IPidFilterController filter = d as IPidFilterController;
+        var filter = d as IPidFilterController;
         if (filter != null)
         {
           this.LogDebug("TvCardBase: found PID filter controller interface");
@@ -962,28 +962,28 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
             int count = 1;
             foreach (ITvSubChannel subchannel in _mapSubChannels.Values)
             {
-              TvDvbChannel dvbChannel = subchannel as TvDvbChannel;
+              var dvbChannel = subchannel as TvDvbChannel;
               if (dvbChannel != null && dvbChannel.Pids != null)
               {
                 // Figure out the multiplex modulation scheme.
                 if (!checkedModulation)
                 {
                   checkedModulation = true;
-                  ATSCChannel atscChannel = dvbChannel.CurrentChannel as ATSCChannel;
+                  var atscChannel = dvbChannel.CurrentChannel as ATSCChannel;
                   if (atscChannel != null)
                   {
                     modulation = atscChannel.ModulationType;
                   }
                   else
                   {
-                    DVBSChannel dvbsChannel = dvbChannel.CurrentChannel as DVBSChannel;
+                    var dvbsChannel = dvbChannel.CurrentChannel as DVBSChannel;
                     if (dvbsChannel != null)
                     {
                       modulation = dvbsChannel.ModulationType;
                     }
                     else
                     {
-                      DVBCChannel dvbcChannel = dvbChannel.CurrentChannel as DVBCChannel;
+                      var dvbcChannel = dvbChannel.CurrentChannel as DVBCChannel;
                       if (dvbcChannel != null)
                       {
                         modulation = dvbcChannel.ModulationType;
@@ -1044,10 +1044,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
 
       // First build a distinct list of the services that we need to handle.
       this.LogDebug("TvCardBase: assembling service list");
-      List<BaseSubChannel> distinctServices = new List<BaseSubChannel>();
+      var distinctServices = new List<BaseSubChannel>();
       Dictionary<int, BaseSubChannel>.ValueCollection.Enumerator en = _mapSubChannels.Values.GetEnumerator();
-      DVBBaseChannel updatedDigitalService = _mapSubChannels[subChannelId].CurrentChannel as DVBBaseChannel;
-      AnalogChannel updatedAnalogService = _mapSubChannels[subChannelId].CurrentChannel as AnalogChannel;
+      var updatedDigitalService = _mapSubChannels[subChannelId].CurrentChannel as DVBBaseChannel;
+      var updatedAnalogService = _mapSubChannels[subChannelId].CurrentChannel as AnalogChannel;
       while (en.MoveNext())
       {
         IChannel service = en.Current.CurrentChannel;
@@ -1065,7 +1065,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         {
           if (updatedDigitalService != null)
           {
-            DVBBaseChannel digitalService = service as DVBBaseChannel;
+            var digitalService = service as DVBBaseChannel;
             if (digitalService != null && digitalService.ServiceId == updatedDigitalService.ServiceId)
             {
               this.LogDebug("TvCardBase: the service for this subchannel is a duplicate, no action required");
@@ -1074,7 +1074,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
           }
           else if (updatedAnalogService != null)
           {
-            AnalogChannel analogService = service as AnalogChannel;
+            var analogService = service as AnalogChannel;
             if (analogService != null && analogService.Frequency == updatedAnalogService.Frequency && analogService.ChannelNumber == updatedAnalogService.ChannelNumber)
             {
               this.LogDebug("TvCardBase: the service for this subchannel is a duplicate, no action required");
@@ -1094,7 +1094,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
           bool exists = false;
           foreach (BaseSubChannel serviceToDecrypt in distinctServices)
           {
-            DVBBaseChannel digitalService = service as DVBBaseChannel;
+            var digitalService = service as DVBBaseChannel;
             if (digitalService != null)
             {
               if (digitalService.ServiceId == ((DVBBaseChannel)serviceToDecrypt.CurrentChannel).ServiceId)
@@ -1105,7 +1105,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
             }
             else
             {
-              AnalogChannel analogService = service as AnalogChannel;
+              var analogService = service as AnalogChannel;
               if (analogService != null)
               {
                 if (analogService.Frequency == ((AnalogChannel)serviceToDecrypt.CurrentChannel).Frequency &&
@@ -1159,7 +1159,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
 
         foreach (ICustomDevice deviceInterface in _customDeviceInterfaces)
         {
-          IConditionalAccessProvider caProvider = deviceInterface as IConditionalAccessProvider;
+          var caProvider = deviceInterface as IConditionalAccessProvider;
           if (caProvider == null)
           {
             continue;
@@ -1172,7 +1172,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
           {
             this.LogDebug("TvCardBase: provider is not ready, waiting for up to 15 seconds", caProvider.Name);
             DateTime startWait = DateTime.Now;
-            TimeSpan waitTime = new TimeSpan(0);
+            var waitTime = new TimeSpan(0);
             while (waitTime.TotalMilliseconds < 15000)
             {
               ThrowExceptionIfTuneCancelled();
@@ -1387,7 +1387,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         // Turn off the device power.
         foreach (ICustomDevice deviceInterface in _customDeviceInterfaces)
         {
-          IPowerDevice powerDevice = deviceInterface as IPowerDevice;
+          var powerDevice = deviceInterface as IPowerDevice;
           if (powerDevice != null)
           {
             powerDevice.SetPowerState(false);
@@ -1643,7 +1643,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
             }
 
             // Turn on device power. This usually needs to happen before tuning.
-            IPowerDevice powerDevice = deviceInterface as IPowerDevice;
+            var powerDevice = deviceInterface as IPowerDevice;
             if (powerDevice != null)
             {
               powerDevice.SetPowerState(true);
@@ -1990,7 +1990,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       get
       {
         int count = 0;
-        ITvSubChannel[] channels = new ITvSubChannel[_mapSubChannels.Count];
+        var channels = new ITvSubChannel[_mapSubChannels.Count];
         Dictionary<int, BaseSubChannel>.Enumerator en = _mapSubChannels.GetEnumerator();
         while (en.MoveNext())
         {

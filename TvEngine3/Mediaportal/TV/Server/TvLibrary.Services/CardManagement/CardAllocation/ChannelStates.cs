@@ -129,7 +129,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
 
     private void DoSetChannelStatesForAllUsers(ICollection<Channel> channels, ICollection<IUser> allUsers)
     {
-      IInternalControllerService tvControllerService = GlobalServiceProvider.Get<IInternalControllerService>();
+      var tvControllerService = GlobalServiceProvider.Get<IInternalControllerService>();
       IDictionary<int, ITvCardHandler> cards = tvControllerService.CardCollection;
       lock (_lock)
       {
@@ -238,7 +238,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
           {
             if (allUsers != null)
             {
-              foreach (var user in allUsers)
+              foreach (IUser user in allUsers)
               {
                 this.LogDebug("DoSetChannelStatesForAllUsers OnChannelStatesSet user={0}", user.Name);
                 OnChannelStatesSet(user);
@@ -265,7 +265,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
     {
       Parallel.ForEach(allUsers, user =>
                                    {
-                                     var keysToDelete = user.ChannelStates.Where(x => x.Value == ChannelState.tunable).Select(kvp => kvp.Key).ToList();
+                                     List<int> keysToDelete = user.ChannelStates.Where(x => x.Value == ChannelState.tunable).Select(kvp => kvp.Key).ToList();
                                      foreach (int key in keysToDelete)
                                      {
                                        user.ChannelStates.Remove(key);

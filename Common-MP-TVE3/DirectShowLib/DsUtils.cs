@@ -128,11 +128,11 @@ namespace DirectShowLib
     /// <returns>A managed representation of pElems (cElems items)</returns>
     public Guid[] ToGuidArray()
     {
-      Guid[] retval = new Guid[cElems];
+      var retval = new Guid[cElems];
 
       for (int i = 0; i < cElems; i++)
       {
-        IntPtr ptr = new IntPtr(pElems.ToInt64() + (Marshal.SizeOf(typeof(Guid))*i));
+        var ptr = new IntPtr(pElems.ToInt64() + (Marshal.SizeOf(typeof(Guid))*i));
         retval[i] = (Guid)Marshal.PtrToStructure(ptr, typeof(Guid));
       }
 
@@ -616,14 +616,14 @@ namespace DirectShowLib
     {
       if (obj is DsRect)
       {
-        DsRect cmp = (DsRect)obj;
+        var cmp = (DsRect)obj;
 
         return right == cmp.right && bottom == cmp.bottom && left == cmp.left && top == cmp.top;
       }
 
       if (obj is Rectangle)
       {
-        Rectangle cmp = (Rectangle)obj;
+        var cmp = (Rectangle)obj;
 
         return right == cmp.Right && bottom == cmp.Bottom && left == cmp.Left && top == cmp.Top;
       }
@@ -753,7 +753,7 @@ namespace DirectShowLib
         return false;
       }
 
-      NormalizedRect other = (NormalizedRect) obj;
+      var other = (NormalizedRect) obj;
       return (this == other);
     }
 
@@ -965,7 +965,7 @@ namespace DirectShowLib
       const int MAX_ERROR_TEXT_LEN = 160;
 
       // Make a buffer to hold the string
-      StringBuilder buf = new StringBuilder(MAX_ERROR_TEXT_LEN, MAX_ERROR_TEXT_LEN);
+      var buf = new StringBuilder(MAX_ERROR_TEXT_LEN, MAX_ERROR_TEXT_LEN);
 
       // If a string is returned, build a com error from it
       if (AMGetErrorText(hr, buf, MAX_ERROR_TEXT_LEN) > 0)
@@ -1000,7 +1000,7 @@ namespace DirectShowLib
         Guid g = PropSetID.Pin;
 
         // Get an IKsPropertySet from the pin
-        IKsPropertySet pKs = pPin as IKsPropertySet;
+        var pKs = pPin as IKsPropertySet;
 
         if (pKs != null)
         {
@@ -1062,7 +1062,7 @@ namespace DirectShowLib
         return Marshal.ReleaseComObject(obj);
       }
 
-      StackTrace st = new StackTrace(true);
+      var st = new StackTrace(true);
       //this.LogError("Exception while releasing COM object (NULL) - stacktrace: {0}", st);
 
       return 0;
@@ -1277,14 +1277,14 @@ namespace DirectShowLib
     {
       // Use arrayList to build the retun list since it is easily resizable
       DsDevice[] devret;
-      ArrayList devs = new ArrayList();
+      var devs = new ArrayList();
 #if USING_NET11
             UCOMIEnumMoniker enumMon;
 #else
       IEnumMoniker enumMon;
 #endif
 
-      ICreateDevEnum enumDev = (ICreateDevEnum) new CreateDevEnum();
+      var enumDev = (ICreateDevEnum) new CreateDevEnum();
       int hr = enumDev.CreateClassEnumerator(FilterCategory, out enumMon, 0);
       DsError.ThrowExceptionForHR(hr);
 
@@ -1298,7 +1298,7 @@ namespace DirectShowLib
 #if USING_NET11
                         UCOMIMoniker[] mon = new UCOMIMoniker[1];
 #else
-            IMoniker[] mon = new IMoniker[1];
+            var mon = new IMoniker[1];
 #endif
 
 #if USING_NET11
@@ -1416,7 +1416,7 @@ namespace DirectShowLib
       IEnumPins ppEnum;
       PinDirection ppindir;
       IPin pRet = null;
-      IPin[] pPins = new IPin[1];
+      var pPins = new IPin[1];
 
       if (vSource == null)
       {
@@ -1470,7 +1470,7 @@ namespace DirectShowLib
       IEnumPins ppEnum;
       PinInfo ppinfo;
       IPin pRet = null;
-      IPin[] pPins = new IPin[1];
+      var pPins = new IPin[1];
 
       if (vSource == null)
       {
@@ -1521,7 +1521,7 @@ namespace DirectShowLib
       int lFetched;
       IEnumPins ppEnum;
       IPin pRet = null;
-      IPin[] pPins = new IPin[1];
+      var pPins = new IPin[1];
 
       if (vSource == null)
       {
@@ -1572,7 +1572,7 @@ namespace DirectShowLib
       IEnumPins ppEnum;
       IPin pRet = null;
       IPin pOutPin;
-      IPin[] pPins = new IPin[1];
+      var pPins = new IPin[1];
 
       if (vSource == null)
       {
@@ -1813,7 +1813,7 @@ namespace DirectShowLib
     // from MarshalManagedToNative.  The return value is unused.
     public override object MarshalNativeToManaged(IntPtr pNativeData)
     {
-      AMMediaType[] emt = m_obj as AMMediaType[];
+      var emt = m_obj as AMMediaType[];
 
       for (int x = 0; x < emt.Length; x++)
       {
@@ -1876,7 +1876,7 @@ namespace DirectShowLib
     // from MarshalManagedToNative.  The return value is unused.
     public override object MarshalNativeToManaged(IntPtr pNativeData)
     {
-      DvdTitleAttributes dta = m_obj as DvdTitleAttributes;
+      var dta = m_obj as DvdTitleAttributes;
 
       // Copy in the value, and advance the pointer
       dta.AppMode = (DvdTitleAppMode)Marshal.ReadInt32(pNativeData);
@@ -1977,7 +1977,7 @@ namespace DirectShowLib
     // from MarshalManagedToNative.  The return value is unused.
     public override object MarshalNativeToManaged(IntPtr pNativeData)
     {
-      DvdKaraokeAttributes dka = m_obj as DvdKaraokeAttributes;
+      var dka = m_obj as DvdKaraokeAttributes;
 
       // Copy in the value, and advance the pointer
       dka.bVersion = Marshal.ReadByte(pNativeData);

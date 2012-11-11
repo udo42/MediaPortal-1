@@ -140,7 +140,7 @@ namespace TvEngine.PowerScheduler.Interfaces
       }
       else
       {
-        PowerSetting setting = new PowerSetting(name);
+        var setting = new PowerSetting(name);
         AddSetting(setting);
         return setting;
       }

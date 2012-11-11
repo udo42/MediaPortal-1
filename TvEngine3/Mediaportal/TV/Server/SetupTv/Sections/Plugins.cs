@@ -95,7 +95,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       if (_ignoreEvents)
         return;
-      Setting setting = e.Item.Tag as Setting;
+      var setting = e.Item.Tag as Setting;
       if (setting == null)
       {
         e.Item.Checked = false;

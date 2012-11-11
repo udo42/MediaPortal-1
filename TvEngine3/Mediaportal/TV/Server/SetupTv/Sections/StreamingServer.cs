@@ -97,7 +97,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private void ApplyStreamingSettings()
     {
       string newHostName = ((IpAddressOption)IpAddressComboBox.SelectedItem).HostName;
-      int newRtspPort = (int)PortNoNumericUpDown.Value;
+      var newRtspPort = (int)PortNoNumericUpDown.Value;
       bool needRestart = false;
       //int.TryParse(PortNoNumericUpDown.Text, out newRtspPort);
       if (_hostname != newHostName ||
@@ -124,7 +124,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         MessageBox.Show(this, "Changes made require TvService to restart. Restart it now?", "TvService",
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
       {
-        NotifyForm dlgNotify = new NotifyForm("Restart TvService...", "This can take some time\n\nPlease be patient...");
+        var dlgNotify = new NotifyForm("Restart TvService...", "This can take some time\n\nPlease be patient...");
         dlgNotify.Show();
         dlgNotify.WaitForDisplay();
 
@@ -142,7 +142,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         RtspClient client = clients[i];
         if (i >= listView1.Items.Count)
         {
-          ListViewItem item = new ListViewItem(client.StreamName);
+          var item = new ListViewItem(client.StreamName);
           item.Tag = client;
           item.SubItems.Add(client.IpAdress);
           if (client.IsActive)
@@ -175,7 +175,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       foreach (ListViewItem item in listView1.SelectedItems)
       {
-        RtspClient client = (RtspClient)item.Tag;
+        var client = (RtspClient)item.Tag;
 
         IUser user = new User();
         user.Name = Dns.GetHostEntry(client.IpAdress).HostName;
@@ -194,7 +194,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           {
             if (u.Value.Name == user.Name || u.Value.Name == "setuptv")
             {
-              foreach(var subchannel in u.Value.SubChannels.Values)
+              foreach(ISubChannel subchannel in u.Value.SubChannels.Values)
               {
                 Channel ch = ServiceAgents.Instance.ChannelServiceAgent.GetChannel(subchannel.IdChannel);
                 if (ch.DisplayName == client.Description)

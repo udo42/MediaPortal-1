@@ -345,7 +345,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       }
 
       // We only need to tweak the parameters for DVB-S/S2 channels.
-      DVBSChannel ch = channel as DVBSChannel;
+      var ch = channel as DVBSChannel;
       if (ch == null)
       {
         return;
@@ -393,7 +393,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
         return false;
       }
 
-      BdaExtensionParams command = new BdaExtensionParams();
+      var command = new BdaExtensionParams();
       if (powerOn)
       {
         command.LnbPower = ProfLnbPower.On;
@@ -458,7 +458,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
         return false;
       }
 
-      DVBSChannel dvbsChannel = channel as DVBSChannel;
+      var dvbsChannel = channel as DVBSChannel;
 
       ProfPolarisation profPolarisation = ProfPolarisation.Horizontal;
       if (dvbsChannel.Polarisation == Polarisation.LinearV || dvbsChannel.Polarisation == Polarisation.CircularR)
@@ -482,7 +482,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
         toneBurst = ProfToneBurst.DataBurst;
       }
 
-      BdaExtensionParams tuningParams = new BdaExtensionParams();
+      var tuningParams = new BdaExtensionParams();
       tuningParams.Frequency = (uint)dvbsChannel.Frequency / 1000;
       // See the notes for the struct to understand why we do this. Note that OnBeforeTune() ensures that the low LOF
       // is set appropriately.
@@ -546,7 +546,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
         return false;
       }
 
-      BdaExtensionParams command = new BdaExtensionParams();
+      var command = new BdaExtensionParams();
       command.ToneBurst = ProfToneBurst.Off;
       if (toneBurstState == ToneBurst.ToneBurst)
       {
@@ -604,7 +604,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
         return false;
       }
 
-      BdaExtensionParams propertyParams = new BdaExtensionParams();
+      var propertyParams = new BdaExtensionParams();
       propertyParams.DiseqcRawCommand = new byte[MaxDiseqcMessageLength];
       Buffer.BlockCopy(command, 0, propertyParams.DiseqcRawCommand, 0, command.Length);
 

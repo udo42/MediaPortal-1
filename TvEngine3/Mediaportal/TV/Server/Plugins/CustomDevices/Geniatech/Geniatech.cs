@@ -194,7 +194,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
       }
 
       // We only have work to do if the channel is a DVB-S/2 channel.
-      DVBSChannel ch = channel as DVBSChannel;
+      var ch = channel as DVBSChannel;
       if (ch == null)
       {
         return;
@@ -210,7 +210,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
       }
       this.LogDebug("  modulation = {0}", ch.ModulationType);
 
-      NbcParams nbcParams = new NbcParams();
+      var nbcParams = new NbcParams();
       if (ch.Pilot == Pilot.On)
       {
         nbcParams.Pilot = GtPilot.On;

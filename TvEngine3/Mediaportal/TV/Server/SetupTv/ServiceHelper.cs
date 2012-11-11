@@ -60,7 +60,7 @@ namespace Mediaportal.TV.Server.SetupTV
       {
         try
         {
-          using (ServiceController sc = new ServiceController("TvService", Singleton<ServiceAgents>.Instance.Hostname))
+          using (var sc = new ServiceController("TvService", Singleton<ServiceAgents>.Instance.Hostname))
           {
             return sc.Status == ServiceControllerStatus.Running;
           }
@@ -91,7 +91,7 @@ namespace Mediaportal.TV.Server.SetupTV
       {
         try
         {
-          using (ServiceController sc = new ServiceController("TvService", Singleton<ServiceAgents>.Instance.Hostname))
+          using (var sc = new ServiceController("TvService", Singleton<ServiceAgents>.Instance.Hostname))
           {
             return sc.Status == ServiceControllerStatus.Stopped; // should we consider Stopping as stopped?
           }
@@ -187,7 +187,7 @@ namespace Mediaportal.TV.Server.SetupTV
     {
       try
       {
-        using (ServiceController sc = new ServiceController("TvService", Singleton<ServiceAgents>.Instance.Hostname))
+        using (var sc = new ServiceController("TvService", Singleton<ServiceAgents>.Instance.Hostname))
         {
           sc.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(0, 0, 0, 0, millisecondsTimeout));
           return (sc.Status == ServiceControllerStatus.Running);
@@ -245,7 +245,7 @@ namespace Mediaportal.TV.Server.SetupTV
     {
       try
       {
-        using (ServiceController sc = new ServiceController("TvService", Singleton<ServiceAgents>.Instance.Hostname))
+        using (var sc = new ServiceController("TvService", Singleton<ServiceAgents>.Instance.Hostname))
         {
           switch (sc.Status)
           {
@@ -284,7 +284,7 @@ namespace Mediaportal.TV.Server.SetupTV
     {
       try
       {
-        using (ServiceController sc = new ServiceController(aServiceName, Singleton<ServiceAgents>.Instance.Hostname))
+        using (var sc = new ServiceController(aServiceName, Singleton<ServiceAgents>.Instance.Hostname))
         {
           switch (sc.Status)
           {
@@ -359,7 +359,7 @@ namespace Mediaportal.TV.Server.SetupTV
         {
           if (rKey != null)
           {
-            int startMode = (int)rKey.GetValue("Start", 3);
+            var startMode = (int)rKey.GetValue("Start", 3);
             if (startMode == 2) // autostart
               return true;
             if (aSetEnabled)

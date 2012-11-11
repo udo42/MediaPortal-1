@@ -102,22 +102,22 @@ namespace Mediaportal.TV.Server.SetupTV
       const int count = 100;
       int total; // Used to keep track of file numbering
       const int counter = 1;
-      int[] found = new int[count];
+      var found = new int[count];
 
-      string[] SCstaindex = new string[count]; //Index info
-      string[] SCstanum = new string[count]; // Second part holds file number on Shoutcast
-      string[] SCstaname = new string[count]; // Extracted station name
-      string[] SCstabr = new string[count]; //Bitrate info
-      WebClient myWebClient = new WebClient(); // Create a new WebClient instance.	
+      var SCstaindex = new string[count]; //Index info
+      var SCstanum = new string[count]; // Second part holds file number on Shoutcast
+      var SCstaname = new string[count]; // Extracted station name
+      var SCstabr = new string[count]; //Bitrate info
+      var myWebClient = new WebClient(); // Create a new WebClient instance.	
       myWebClient.Proxy.Credentials = CredentialCache.DefaultCredentials;
       // Create Regex objects and define the search criteria.
-      Regex nterm = new Regex("Unfortunately, there weren't any SHOUTcast streams found containing the term");
-      Regex ngenre = new Regex("Unfortunately, there weren't any SHOUTcast streams found under the genre");
-      Regex snum = new Regex("rn=[0-9]*");
-      Regex sname = new Regex("target=\"_scurl\" href=.*</a>");
-      Regex namerepstr = new Regex("target.*\">");
-      Regex sbr = new Regex("<font face=\"Arial, Helvetica\" size=\"2\" color=\"#FFFFFF\">[0-9]*</font>");
-      Regex brrepstr = new Regex("<font face=\"Arial, Helvetica\" size=\"2\" color=\"#FFFFFF\">");
+      var nterm = new Regex("Unfortunately, there weren't any SHOUTcast streams found containing the term");
+      var ngenre = new Regex("Unfortunately, there weren't any SHOUTcast streams found under the genre");
+      var snum = new Regex("rn=[0-9]*");
+      var sname = new Regex("target=\"_scurl\" href=.*</a>");
+      var namerepstr = new Regex("target.*\">");
+      var sbr = new Regex("<font face=\"Arial, Helvetica\" size=\"2\" color=\"#FFFFFF\">[0-9]*</font>");
+      var brrepstr = new Regex("<font face=\"Arial, Helvetica\" size=\"2\" color=\"#FFFFFF\">");
 
       //Connect to remote server and download HTML
       string address = "http://www.shoutcast.com/directory/?s=" + search + "&numresult=100&orderby=bitrate";
@@ -208,10 +208,10 @@ namespace Mediaportal.TV.Server.SetupTV
       }
 
       //Write stuff to array list
-      ArrayList stations = new ArrayList();
+      var stations = new ArrayList();
       for (int i = 0; i < total; i++)
       {
-        SHOUTcastStation station = new SHOUTcastStation();
+        var station = new SHOUTcastStation();
         station.url = SCstanum[i];
         station.name = SCstaname[i];
         station.bitrate = Convert.ToInt32(SCstabr[i]);
@@ -239,11 +239,11 @@ namespace Mediaportal.TV.Server.SetupTV
       if (ResultsBox.Items != null) ResultsBox.Items.Clear();
       foreach (SHOUTcastStation station in Station_List)
       {
-        SHOUTcastStation radiostation = new SHOUTcastStation();
+        var radiostation = new SHOUTcastStation();
         radiostation.name = station.name;
         radiostation.url = station.url;
         radiostation.bitrate = station.bitrate;
-        ListViewItem listItem = new ListViewItem(new[]
+        var listItem = new ListViewItem(new[]
                                                    {
                                                      radiostation.bitrate.ToString(),
                                                      radiostation.name,
@@ -262,11 +262,11 @@ namespace Mediaportal.TV.Server.SetupTV
         WaitLabel.Focus();
         WaitLabel.Visible = true;
         WaitLabel.Enabled = true;
-        WebClient myWebClient = new WebClient(); // Create a new WebClient instance.	
+        var myWebClient = new WebClient(); // Create a new WebClient instance.	
         myWebClient.Proxy.Credentials = CredentialCache.DefaultCredentials;
         string file_loc = "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn=";
         //Get station file number to get the file
-        SHOUTcastStation radiostation = listItem.Tag as SHOUTcastStation;
+        var radiostation = listItem.Tag as SHOUTcastStation;
         if (radiostation != null) file_loc = file_loc + radiostation.url + "&file=filename.pls";
         //Download the file to extract url information
         myWebClient.DownloadFile(file_loc, "SCtemp.tmp");
@@ -284,7 +284,7 @@ namespace Mediaportal.TV.Server.SetupTV
           return;
         }
         //Get our station info
-        Regex url_loc = new Regex("http://[^\r\n>]*");
+        var url_loc = new Regex("http://[^\r\n>]*");
         MatchCollection mc = url_loc.Matches(parse_me);
         if (mc.Count < 1)
         {

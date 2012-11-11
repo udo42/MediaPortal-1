@@ -123,7 +123,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
     /// </returns>
     public bool IsInRange(long time)
     {
-      BasicTime checkTime = new BasicTime(time);
+      var checkTime = new BasicTime(time);
 
       if (_overMidnight)
       {

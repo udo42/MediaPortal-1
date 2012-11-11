@@ -13,7 +13,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public IList<Schedule> ListAllSchedules()
     {
-      var listAllSchedules = ScheduleManagement.ListAllSchedules().ToList();
+      List<Schedule> listAllSchedules = ScheduleManagement.ListAllSchedules().ToList();
       return listAllSchedules;
     }
 
@@ -24,13 +24,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public Schedule GetSchedule(int idSchedule)
     {
-      var schedule = ScheduleManagement.GetSchedule(idSchedule);
+      Schedule schedule = ScheduleManagement.GetSchedule(idSchedule);
       return schedule;
     }
 
     public bool IsScheduleRecording(int idSchedule)
     {
-      var isScheduleRecording = ScheduleManagement.IsScheduleRecording(idSchedule);
+      bool isScheduleRecording = ScheduleManagement.IsScheduleRecording(idSchedule);
       return isScheduleRecording;
     }
 
@@ -44,7 +44,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     /// <returns>schedule instance or null</returns>
     public Schedule RetrieveSeriesByStartEndTimes(int idChannel, string programName, DateTime startTime, DateTime endTime)
     {
-      var retrieveSeries = ScheduleManagement.RetrieveSeries(idChannel, programName, startTime, endTime);
+      Schedule retrieveSeries = ScheduleManagement.RetrieveSeries(idChannel, programName, startTime, endTime);
       return retrieveSeries;
     }
 
@@ -56,7 +56,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     /// <returns>schedule instance or null</returns>
     public Schedule RetrieveSeriesByProgramName(int idChannel, string programName)
     {
-      var retrieveSeries = ScheduleManagement.RetrieveSeries(idChannel, programName);
+      Schedule retrieveSeries = ScheduleManagement.RetrieveSeries(idChannel, programName);
       return retrieveSeries;
     }
 
@@ -69,7 +69,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     /// <returns>schedule instance or null</returns>
     public Schedule RetrieveSeries(int idChannel, DateTime startTime, DateTime endTime)
     {
-      var retrieveSeries = ScheduleManagement.RetrieveSeries(idChannel, startTime, endTime);
+      Schedule retrieveSeries = ScheduleManagement.RetrieveSeries(idChannel, startTime, endTime);
       return retrieveSeries;
     }
 
@@ -80,19 +80,19 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public Schedule RetrieveSpawnedSchedule(int parentScheduleId, DateTime startTime)
     {
-      var retrieveSpawnedSchedule = ScheduleManagement.RetrieveSpawnedSchedule(parentScheduleId, startTime);
+      Schedule retrieveSpawnedSchedule = ScheduleManagement.RetrieveSpawnedSchedule(parentScheduleId, startTime);
       return retrieveSpawnedSchedule;
     }
 
     public bool IsScheduleRecordingProgram(int idSchedule, int idProgram)
     {
-      var isScheduleRecordingProgram = ScheduleManagement.IsScheduleRecording(idSchedule, idProgram);
+      bool isScheduleRecordingProgram = ScheduleManagement.IsScheduleRecording(idSchedule, idProgram);
       return isScheduleRecordingProgram;
     }
 
     public Schedule GetScheduleWithNoEPG(int idChannel)
     {
-      var scheduleWithNoEpg = ScheduleManagement.GetScheduleWithNoEPG(idChannel);
+      Schedule scheduleWithNoEpg = ScheduleManagement.GetScheduleWithNoEPG(idChannel);
       return scheduleWithNoEpg;
     }
 
@@ -103,13 +103,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public IList<Schedule> GetConflictingSchedules(Schedule schedule)
     {
-      var conflictingSchedules = ScheduleManagement.GetConflictingSchedules(schedule);
+      IList<Schedule> conflictingSchedules = ScheduleManagement.GetConflictingSchedules(schedule);
       return conflictingSchedules;
     }
 
     public IList<Schedule> GetRecordingTimes(Schedule schedule, int days)
     {
-      var recordingTimes = ScheduleManagement.GetRecordingTimes(schedule, days);
+      List<Schedule> recordingTimes = ScheduleManagement.GetRecordingTimes(schedule, days);
       return recordingTimes;
     }
 

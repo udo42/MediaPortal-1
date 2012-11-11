@@ -1099,7 +1099,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
     {
       int deviceId = -1;
 
-      IKsPin pin = DsFindPin.ByDirection(tunerFilter, PinDirection.Output, 0) as IKsPin;
+      var pin = DsFindPin.ByDirection(tunerFilter, PinDirection.Output, 0) as IKsPin;
       if (pin == null)
       {
         return deviceId;
@@ -1130,9 +1130,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
         }
 
         // Calculate the address of the first medium.
-        IntPtr addr = new IntPtr(raw.ToInt64() + 8);
+        var addr = new IntPtr(raw.ToInt64() + 8);
         // Marshal the data into an RPM structure.
-        RegPinMedium rpm = (RegPinMedium)Marshal.PtrToStructure(addr, typeof(RegPinMedium));
+        var rpm = (RegPinMedium)Marshal.PtrToStructure(addr, typeof(RegPinMedium));
         return rpm.dw1;
       }
       finally
@@ -1160,7 +1160,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
       TtApiResult result = bdaapiGetDevNameAndFEType(_deviceHandle, info);
       if (result == TtApiResult.Success)
       {
-        FilterNames names = (FilterNames)Marshal.PtrToStructure(info, typeof(FilterNames));
+        var names = (FilterNames)Marshal.PtrToStructure(info, typeof(FilterNames));
         this.LogDebug("  product name        = {0}", names.ProductName);
         this.LogDebug("  tuner type          = {0}", names.FrontEndType);
         this.LogDebug("  tuner filter name   = {0}", names.TunerFilterName);
@@ -1299,7 +1299,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
 
       try
       {
-        CiSlotInfo info = (CiSlotInfo)Marshal.PtrToStructure(slotInfo, typeof(CiSlotInfo));
+        var info = (CiSlotInfo)Marshal.PtrToStructure(slotInfo, typeof(CiSlotInfo));
         this.LogDebug("TechnoTrend: slot info");
         this.LogDebug("  status     = {0} ", info.Status);
         if (info.CamMenuTitle.Equals(String.Empty))
@@ -1391,7 +1391,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
         }
 
         // Construct menu/list strings for callback.
-        StringBuilder[] strings = new StringBuilder[numEntries];
+        var strings = new StringBuilder[numEntries];
         int idx = 0;
         byte charChode;
         for (int i = 0; i < totalMenuLength - 1; i++)   // There is an extra NULL character to indicate the end of the menu.
@@ -1675,7 +1675,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
       }
 
       // We only need to tweak the modulation for DVB-S/S2 channels.
-      DVBSChannel ch = channel as DVBSChannel;
+      var ch = channel as DVBSChannel;
       if (ch == null)
       {
         return;
@@ -1759,10 +1759,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
         return false;
       }
 
-      DVBCChannel dvbcChannel = channel as DVBCChannel;
+      var dvbcChannel = channel as DVBCChannel;
       if (dvbcChannel != null && _tunerType == CardType.DvbC)
       {
-        TtDvbcTuneRequest tuneRequest = new TtDvbcTuneRequest();
+        var tuneRequest = new TtDvbcTuneRequest();
         tuneRequest.DeviceType = TtDeviceType.DvbC;
         tuneRequest.Frequency = (uint)dvbcChannel.Frequency;
         tuneRequest.Modulation = dvbcChannel.ModulationType;
@@ -1773,10 +1773,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
       }
       else
       {
-        DVBSChannel dvbsChannel = channel as DVBSChannel;
+        var dvbsChannel = channel as DVBSChannel;
         if (dvbsChannel != null && _tunerType == CardType.DvbS)
         {
-          TtDvbsTuneRequest tuneRequest = new TtDvbsTuneRequest();
+          var tuneRequest = new TtDvbsTuneRequest();
           tuneRequest.DeviceType = TtDeviceType.DvbS;
           // Frequency is already specified in kHz (the base unit) so the
           // multiplier is set to 1.
@@ -1796,10 +1796,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
         }
         else
         {
-          DVBTChannel dvbtChannel = channel as DVBTChannel;
+          var dvbtChannel = channel as DVBTChannel;
           if (dvbtChannel != null && _tunerType == CardType.DvbT)
           {
-            TtDvbtTuneRequest tuneRequest = new TtDvbtTuneRequest();
+            var tuneRequest = new TtDvbtTuneRequest();
             tuneRequest.DeviceType = TtDeviceType.DvbT;
             tuneRequest.Frequency = (uint)dvbtChannel.Frequency;
             // Frequency is already specified in kHz (the base unit) so the

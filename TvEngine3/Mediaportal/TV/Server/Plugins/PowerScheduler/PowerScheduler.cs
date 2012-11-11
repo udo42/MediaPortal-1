@@ -365,13 +365,13 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
 
       this.LogInfo("PowerScheduler: Entering shutdown {0} ; forced: {1} -- kick off shutdown thread", (RestartOptions)how,
                    force);
-      SuspendSystemThreadEnv data = new SuspendSystemThreadEnv();
+      var data = new SuspendSystemThreadEnv();
       data.that = this;
       data.how = (RestartOptions)how;
       data.force = force;
       data.source = source;
 
-      Thread suspendThread = new Thread(SuspendSystemThread);
+      var suspendThread = new Thread(SuspendSystemThread);
       suspendThread.Name = "Powerscheduler Suspender";
       suspendThread.Start(data);
     }
@@ -501,7 +501,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
 
     protected static void SuspendSystemThread(object _data)
     {
-      SuspendSystemThreadEnv data = (SuspendSystemThreadEnv)_data;
+      var data = (SuspendSystemThreadEnv)_data;
       data.that.SuspendSystemThread(data.source, data.how, data.force);
     }
 
@@ -735,7 +735,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     public void UnregisterRemote(int tag)
     {
       {
-        RemoteStandbyHandler hdl = (RemoteStandbyHandler)_remoteStandbyHandlers[tag];
+        var hdl = (RemoteStandbyHandler)_remoteStandbyHandlers[tag];
         if (hdl != null)
         {
           _remoteStandbyHandlers.Remove(tag);
@@ -746,7 +746,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
         }
       }
       {
-        RemoteWakeupHandler hdl = (RemoteWakeupHandler)_remoteWakeupHandlers[tag];
+        var hdl = (RemoteWakeupHandler)_remoteWakeupHandlers[tag];
         if (hdl != null)
         {
           _remoteWakeupHandlers.Remove(tag);
@@ -971,7 +971,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
       // Send message in case any setting has changed
       if (changed)
       {
-        PowerSchedulerEventArgs args = new PowerSchedulerEventArgs(PowerSchedulerEventType.SettingsChanged);
+        var args = new PowerSchedulerEventArgs(PowerSchedulerEventType.SettingsChanged);
         args.SetData<PowerSettings>(_settings.Clone());
         SendPowerSchedulerEvent(args);
       }
@@ -1001,7 +1001,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     {
       long systemUptime = Environment.TickCount;
 
-      LASTINPUTINFO lastInputInfo = new LASTINPUTINFO();
+      var lastInputInfo = new LASTINPUTINFO();
       lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo);
       lastInputInfo.dwTime = 0;
 
@@ -1224,9 +1224,9 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
       PowerSetting setting = _settings.GetSetting("ExternalCommand");
       if (setting.Get<string>().Equals(String.Empty))
         return;
-      using (Process p = new Process())
+      using (var p = new Process())
       {
-        ProcessStartInfo psi = new ProcessStartInfo();
+        var psi = new ProcessStartInfo();
         psi.FileName = setting.Get<string>();
         psi.UseShellExecute = true;
         psi.WindowStyle = ProcessWindowStyle.Minimized;
@@ -1325,7 +1325,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
 
     private void SendPowerSchedulerEvent(PowerSchedulerEventType eventType, bool sendAsync)
     {
-      PowerSchedulerEventArgs args = new PowerSchedulerEventArgs(eventType);
+      var args = new PowerSchedulerEventArgs(eventType);
       SendPowerSchedulerEvent(args, sendAsync);
     }
 
@@ -1359,7 +1359,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
         {
           foreach (Delegate del in OnPowerSchedulerEvent.GetInvocationList())
           {
-            PowerSchedulerEventHandler handler = del as PowerSchedulerEventHandler;
+            var handler = del as PowerSchedulerEventHandler;
             handler(args);
           }
         }

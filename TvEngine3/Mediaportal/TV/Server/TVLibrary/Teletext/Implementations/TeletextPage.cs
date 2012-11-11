@@ -123,7 +123,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       }
       if (_pageCache[subPageNumber] == IntPtr.Zero)
         return null;
-      byte[] pageChars = new byte[MAX_ROWS * 42];
+      var pageChars = new byte[MAX_ROWS * 42];
       Marshal.Copy(_pageCache[subPageNumber], pageChars, 0, MAX_ROWS * 42);
       return pageChars;
     }
@@ -280,7 +280,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
         return false;
       unsafe
       {
-        byte* ptr = (byte*)pagePtr.ToPointer();
+        var ptr = (byte*)pagePtr.ToPointer();
         bool isSet = Hamming.IsEraseBitSet(0, ref pageData);
         for (int row = 0; row < 31; row++)
         {
@@ -361,7 +361,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       IntPtr pagePtr = _pageCache[subPageNumber];
       unsafe
       {
-        byte* ptr = (byte*)pagePtr.ToPointer();
+        var ptr = (byte*)pagePtr.ToPointer();
         bool isSet = Hamming.IsEraseBitSet(0, ref pageData);
         for (int row = 0; row < 31; row++)
         {

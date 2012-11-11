@@ -41,8 +41,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     public override void OnSectionActivated()
     {
-      var hostname = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("hostname", Dns.GetHostName()).Value;
-      var rtspPort = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("rtspport", "554").Value;
+      string hostname = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("hostname", Dns.GetHostName()).Value;
+      string rtspPort = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("rtspport", "554").Value;
       mpListView1.Items.Clear();
       var server = new Server {Hostname = hostname, RtspPort = Convert.ToInt32(rtspPort)};
 
@@ -86,7 +86,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         MessageBox.Show(this, "Changes made require TvService to restart. Restart it now?", "TvService",
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
       {
-        NotifyForm dlgNotify = new NotifyForm("Restart TvService...", "This can take some time\n\nPlease be patient...");
+        var dlgNotify = new NotifyForm("Restart TvService...", "This can take some time\n\nPlease be patient...");
         dlgNotify.Show();
         dlgNotify.WaitForDisplay();
 

@@ -247,7 +247,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         return null;
       }
 
-      IKsPropertySet ps = pin as IKsPropertySet;
+      var ps = pin as IKsPropertySet;
       if (ps == null)
       {
         this.LogDebug("Digital Devices: input pin is not a property set");
@@ -405,7 +405,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         Marshal.WriteByte(_mmiBuffer, i, 0);
       }
 
-      KsMethod method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.GetMenu, (int)KsMethodFlag.Send);
+      var method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.GetMenu, (int)KsMethodFlag.Send);
       int returnedByteCount = 0;
       int hr = ((IKsControl)_ciContexts[slot].Filter).KsMethod(ref method, KsMethodSize, _mmiBuffer, MenuDataSize, ref returnedByteCount);
       if (hr != 0)
@@ -439,7 +439,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       int offset = 16;
       for (int i = 0; i < menu.EntryCount + 3; i++)
       {
-        IntPtr stringPtr = new IntPtr(_mmiBuffer.ToInt64() + offset);
+        var stringPtr = new IntPtr(_mmiBuffer.ToInt64() + offset);
         String entry = Marshal.PtrToStringAnsi(stringPtr);
         switch (i)
         {
@@ -621,7 +621,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       // We need a demux filter to test whether we can add any further CI filters
       // to the graph.
       IPin demuxInputPin = null;
-      IBaseFilter tmpDemux = (IBaseFilter)new MPEG2Demultiplexer();
+      var tmpDemux = (IBaseFilter)new MPEG2Demultiplexer();
       try
       {
         hr = _graph.AddFilter(tmpDemux, "Temp MPEG2 Demultiplexer");
@@ -972,7 +972,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       for (int i = 0; i < _ciContexts.Count; i++)
       {
         this.LogDebug("Digital Devices: reset slot {0} \"{1}\"", i + 1, _ciContexts[i].FilterName);
-        KsMethod method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.Reset, (int)KsMethodFlag.Send);
+        var method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.Reset, (int)KsMethodFlag.Send);
         int hr = ((IKsControl)_ciContexts[i].Filter).KsMethod(ref method, KsMethodSize, IntPtr.Zero, 0, ref returnedByteCount);
         if (hr == 0)
         {
@@ -1060,7 +1060,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       }
 
       String provider = String.Empty;
-      DVBBaseChannel dvbChannel = channel as DVBBaseChannel;
+      var dvbChannel = channel as DVBBaseChannel;
       UInt32 serviceId = pmt.ProgramNumber;
       if (dvbChannel != null)
       {
@@ -1245,7 +1245,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         return true;
       }
 
-      KsMethod method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.CloseMenu, (int)KsMethodFlag.Send);
+      var method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.CloseMenu, (int)KsMethodFlag.Send);
       int returnedByteCount = 0;
       int hr = ((IKsControl)_ciContexts[_menuContext].Filter).KsMethod(ref method, KsMethodSize, IntPtr.Zero, 0, ref returnedByteCount);
       if (hr == 0)
@@ -1314,7 +1314,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       reply.Choice = choice;
       Marshal.StructureToPtr(reply, _mmiBuffer, true);
 
-      KsMethod method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.MenuReply, (int)KsMethodFlag.Send);
+      var method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.MenuReply, (int)KsMethodFlag.Send);
       int returnedByteCount = 0;
       int hr = ((IKsControl)_ciContexts[_menuContext].Filter).KsMethod(ref method, KsMethodSize, _mmiBuffer, MenuChoiceSize, ref returnedByteCount);
       if (hr == 0)
@@ -1366,7 +1366,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       int bufferSize = 8 + Math.Max(4, answer.Length + 1);
       DVB_MMI.DumpBinary(_mmiBuffer, 0, bufferSize);
 
-      KsMethod method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.CamAnswer, (int)KsMethodFlag.Send);
+      var method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.CamAnswer, (int)KsMethodFlag.Send);
       int returnedByteCount = 0;
       int hr = ((IKsControl)_ciContexts[_menuContext].Filter).KsMethod(ref method, KsMethodSize, _mmiBuffer, bufferSize, ref returnedByteCount);
       if (hr == 0)
@@ -1400,7 +1400,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         return true;
       }
 
-      KsMethod method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.EnterMenu, (int)KsMethodFlag.Send);
+      var method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.EnterMenu, (int)KsMethodFlag.Send);
       int returnedByteCount = 0;
       int hr = ((IKsControl)_ciContexts[slot].Filter).KsMethod(ref method, KsMethodSize, IntPtr.Zero, 0, ref returnedByteCount);
       if (hr == 0)
@@ -1488,7 +1488,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         success = false;
       }
 
-      BdaDiseqcMessage message = new BdaDiseqcMessage();
+      var message = new BdaDiseqcMessage();
       message.RequestId = _requestId++;
       message.PacketLength = (uint)command.Length;
       message.PacketData = new byte[MaxDiseqcMessageLength];
@@ -1546,7 +1546,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       if (hr == 0 && returnedByteCount == BdaDiseqcMessageSize)
       {
         // Copy the response into the return array.
-        BdaDiseqcMessage message = (BdaDiseqcMessage)Marshal.PtrToStructure(_paramBuffer, typeof(BdaDiseqcMessage));
+        var message = (BdaDiseqcMessage)Marshal.PtrToStructure(_paramBuffer, typeof(BdaDiseqcMessage));
         if (message.PacketLength > MaxDiseqcMessageLength)
         {
           this.LogDebug("Digital Devices: response length is out of bounds, response length = {0}", message.PacketLength);

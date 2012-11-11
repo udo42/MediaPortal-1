@@ -61,7 +61,7 @@ namespace Mediaportal.TV.Server.TVControl
     {
       if (function == null) throw new ArgumentNullException("function");
       var sync = new object();
-      var isCompleted = false;
+      bool isCompleted = false;
       WaitCallback watcher = obj =>
                                {
                                  var watchedThread = obj as Thread;

@@ -51,7 +51,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
     public static void CheckFileAccessRights(string fileName, FileMode fm, FileAccess fa, FileShare fs)
     {
       Encoding fileEncoding = Encoding.Default;
-      using (var fileStream = File.Open(fileName, fm, fa, fs))
+      using (FileStream fileStream = File.Open(fileName, fm, fa, fs))
       {
         using (var streamReader = new StreamReader(fileStream, fileEncoding, true)) { }
       }

@@ -32,7 +32,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
 
     public IList<Channel> SaveChannels(IEnumerable<Channel> channels)
     {
-      foreach (var channel in channels)
+      foreach (Channel channel in channels)
       {
         channel.UnloadAllUnchangedRelationsForEntity();
       }

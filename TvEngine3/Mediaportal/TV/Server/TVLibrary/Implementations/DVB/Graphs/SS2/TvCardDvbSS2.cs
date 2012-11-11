@@ -1591,7 +1591,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
 
     private bool PerformTuneDvbS(IChannel channel)
     {
-      DVBSChannel dvbsChannel = channel as DVBSChannel;
+      var dvbsChannel = channel as DVBSChannel;
       if (dvbsChannel == null)
       {
         this.LogDebug("TvCardDvbSs2: channel is not a DVB-S channel!!! {0}", channel.GetType().ToString());
@@ -1671,7 +1671,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
 
     private bool PerformTuneDvbT(IChannel channel)
     {
-      DVBTChannel dvbtChannel = channel as DVBTChannel;
+      var dvbtChannel = channel as DVBTChannel;
       if (dvbtChannel == null)
       {
         this.LogDebug("TvCardDvbSs2: channel is not a DVB-T channel!!! {0}", channel.GetType().ToString());
@@ -1706,7 +1706,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
 
     private bool PerformTuneDvbC(IChannel channel)
     {
-      DVBCChannel dvbcChannel = channel as DVBCChannel;
+      var dvbcChannel = channel as DVBCChannel;
       if (dvbcChannel == null)
       {
         this.LogDebug("TvCardDvbSs2: channel is not a DVB-C channel!!! {0}", channel.GetType().ToString());
@@ -1755,7 +1755,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
 
     private bool PerformTuneAtsc(IChannel channel)
     {
-      ATSCChannel atscChannel = channel as ATSCChannel;
+      var atscChannel = channel as ATSCChannel;
       if (atscChannel == null)
       {
         this.LogDebug("TvCardDvbSs2: channel is not an ATSC channel!!! {0}", channel.GetType().ToString());
@@ -2076,7 +2076,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       {
         Log.Error(ex, "TvCardDvbSs2: failed to instanciate source filter");
       }
-      IB2C2MPEG2DataCtrl6 dataInterface = b2c2Source as IB2C2MPEG2DataCtrl6;
+      var dataInterface = b2c2Source as IB2C2MPEG2DataCtrl6;
       if (dataInterface == null)
       {
         Log.Debug("TvCardDvbSs2: failed to get B2C2 data interface handle");
@@ -2106,7 +2106,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
         for (int i = 0; i < deviceCount; i++)
         {
           Log.Debug("TvCardDvbSs2: device {0}", i + 1);
-          DeviceInfo d = (DeviceInfo)Marshal.PtrToStructure(new IntPtr(structurePtr), typeof(DeviceInfo));
+          var d = (DeviceInfo)Marshal.PtrToStructure(new IntPtr(structurePtr), typeof(DeviceInfo));
           Log.Debug("  device ID           = {0}", d.DeviceId);
           Log.Debug("  MAC address         = {0}", BitConverter.ToString(d.MacAddress.Address).ToLowerInvariant());
           Log.Debug("  tuner type          = {0}", d.TunerType);
@@ -2158,7 +2158,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       else
       {
         //DVB_MMI.DumpBinary(_generalBuffer, 0, returnedByteCount);
-        TunerCapabilities capabilities = (TunerCapabilities)Marshal.PtrToStructure(_generalBuffer, typeof(TunerCapabilities));
+        var capabilities = (TunerCapabilities)Marshal.PtrToStructure(_generalBuffer, typeof(TunerCapabilities));
         this.LogDebug("  tuner type                = {0}", capabilities.TunerType);
         this.LogDebug("  set constellation?        = {0}", capabilities.ConstellationSupported);
         this.LogDebug("  set FEC rate?             = {0}", capabilities.FecSupported);
@@ -2342,7 +2342,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       int openPidCount;
       int runningPidCount;
       int totalPidCount = _maxPidCount;
-      int[] currentPids = new int[_maxPidCount];
+      var currentPids = new int[_maxPidCount];
       int availablePidCount = 0;
       int changingPidCount = 1;
       hr = _dataInterface.GetTsState(out openPidCount, out runningPidCount, ref totalPidCount, currentPids);
@@ -2391,7 +2391,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
         // Add the new PIDs.
         if (pids != null)
         {
-          HashSet<Int32> currentPidsAsHash = new HashSet<Int32>(currentPids);
+          var currentPidsAsHash = new HashSet<Int32>(currentPids);
           HashSet<ushort>.Enumerator en = pids.GetEnumerator();
           while (en.MoveNext() && availablePidCount > 0)
           {

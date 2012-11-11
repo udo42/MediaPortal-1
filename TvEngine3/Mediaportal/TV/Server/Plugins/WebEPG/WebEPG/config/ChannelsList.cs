@@ -61,7 +61,7 @@ namespace WebEPG.config
 
       if (Directory.Exists(_strGrabberDir))
       {
-        DirectoryInfo dir = new DirectoryInfo(_strGrabberDir);
+        var dir = new DirectoryInfo(_strGrabberDir);
         DirectoryInfo[] dirList = dir.GetDirectories("??");
         if (dirList.Length > 0)
         {
@@ -155,7 +155,7 @@ namespace WebEPG.config
 
       ChannelGrabberInfo ch;
 
-      Levenstein comparer = new Levenstein();
+      var comparer = new Levenstein();
       float similarity;
       int mostSimilarChan = -1;
 
@@ -195,7 +195,7 @@ namespace WebEPG.config
     {
       List<ChannelGrabberInfo> channels = GetChannelArrayList(country);
 
-      ChannelGrabberInfo[] retList = new ChannelGrabberInfo[NameList.Length];
+      var retList = new ChannelGrabberInfo[NameList.Length];
 
       if (channels == null)
       {
@@ -204,7 +204,7 @@ namespace WebEPG.config
 
       ChannelGrabberInfo ch;
 
-      Levenstein comparer = new Levenstein();
+      var comparer = new Levenstein();
       float bestSimilarity;
       float similarity;
 
@@ -244,7 +244,7 @@ namespace WebEPG.config
 
       if (Directory.Exists(_strGrabberDir + country))
       {
-        DirectoryInfo dir = new DirectoryInfo(_strGrabberDir + country);
+        var dir = new DirectoryInfo(_strGrabberDir + country);
         FileInfo[] files = dir.GetFiles("*.xml");
         grabbers = new string[files.Length];
         for (int i = 0; i < files.Length; i++)
@@ -312,7 +312,7 @@ namespace WebEPG.config
 
             for (int ich = 0; ich < channelCount; ich++)
             {
-              ChannelGrabberInfo channel = new ChannelGrabberInfo();
+              var channel = new ChannelGrabberInfo();
               channel.ChannelID = xmlreader.GetValueAsString(ich.ToString(), "ChannelID", "");
               channel.FullName = xmlreader.GetValueAsString(ich.ToString(), "FullName", "");
               if (channel.FullName == "")
@@ -364,7 +364,7 @@ namespace WebEPG.config
         }
         else
         {
-          ChannelGrabberInfo info = new ChannelGrabberInfo();
+          var info = new ChannelGrabberInfo();
           info.ChannelID = channel.id;
           info.FullName = channel.id;
           info.GrabberList = new List<GrabberInfo>();
@@ -378,7 +378,7 @@ namespace WebEPG.config
     {
       if (Directory.Exists(_strGrabberDir + country) && _ChannelList != null)
       {
-        DirectoryInfo dir = new DirectoryInfo(_strGrabberDir + country);
+        var dir = new DirectoryInfo(_strGrabberDir + country);
         //this.LogDebug(LogType.Log, false, "WebEPG Config: Directory: {0}", Location);
         foreach (FileInfo file in dir.GetFiles("*.xml"))
         {

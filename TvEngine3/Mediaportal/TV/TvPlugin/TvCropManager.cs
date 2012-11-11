@@ -55,7 +55,7 @@ namespace Mediaportal.TV.TvPlugin
       {
         using (Settings xmlreader = new MPSettings())
         {
-          CropSettings cropSettings = new CropSettings(
+          var cropSettings = new CropSettings(
             xmlreader.GetValueAsInt("tv", "croptop", 0),
             xmlreader.GetValueAsInt("tv", "cropbottom", 0),
             xmlreader.GetValueAsInt("tv", "cropleft", 0),

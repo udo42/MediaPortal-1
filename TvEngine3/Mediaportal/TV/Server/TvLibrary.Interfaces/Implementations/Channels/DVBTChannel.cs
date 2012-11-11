@@ -184,7 +184,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       {
         return false;
       }
-      DVBTChannel ch = obj as DVBTChannel;
+      var ch = obj as DVBTChannel;
       if (ch.Bandwidth != Bandwidth)
       {
         return false;
@@ -211,7 +211,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     /// <returns>true, if the channels are on the same transponder</returns>
     public override bool IsDifferentTransponder(IChannel channel)
     {
-      DVBTChannel dvbtChannel = channel as DVBTChannel;
+      var dvbtChannel = channel as DVBTChannel;
       if (dvbtChannel == null)
       {
         return true;

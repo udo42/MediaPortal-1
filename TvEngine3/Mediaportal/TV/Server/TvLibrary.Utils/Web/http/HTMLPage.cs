@@ -194,7 +194,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
       // check if request is POST or GET
       if (page.PostQuery != null)
       {
-        ASCIIEncoding encoding = new ASCIIEncoding();
+        var encoding = new ASCIIEncoding();
         object postData = encoding.GetBytes(page.PostQuery);
         object header = "Content-Type: application/x-www-form-urlencoded\n\r";
         webBrowser.Navigate(page.Url, ref empty, ref empty, ref postData, ref header);
@@ -208,7 +208,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
       {
         Thread.Sleep(500);
       }
-      HTMLDocumentClass doc = (HTMLDocumentClass)webBrowser.Document;
+      var doc = (HTMLDocumentClass)webBrowser.Document;
 
       _strPageSource = doc.body.innerHTML;
 
@@ -223,7 +223,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     private bool GetInternal(HTTPRequest page)
     {
       // Use internal code to get HTML page
-      HTTPTransaction Page = new HTTPTransaction();
+      var Page = new HTTPTransaction();
       Encoding encode;
       string strEncode = _defaultEncode;
 

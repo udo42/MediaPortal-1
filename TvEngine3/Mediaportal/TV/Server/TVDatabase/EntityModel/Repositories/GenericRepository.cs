@@ -81,7 +81,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 
     public IQueryable<TEntity> GetQuery<TEntity>() where TEntity : class
     {
-      var entityName = GetEntityName<TEntity>();
+      string entityName = GetEntityName<TEntity>();
       if (_trackingEnabled)
       {
         return ObjectContext.CreateQuery<TEntity>(entityName);
@@ -158,7 +158,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 
     public void AddList<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
     {
-      foreach (var entity in entities)
+      foreach (TEntity entity in entities)
       {
         Add(entity);
       }     
@@ -185,7 +185,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 
     public void ApplyChanges<TEntity>(ObjectSet<TEntity> objectSet, IEnumerable<TEntity> entities) where TEntity : class, IObjectWithChangeTracker
     {
-      foreach (var entity in entities)
+      foreach (TEntity entity in entities)
       {
         ApplyChanges(objectSet, entity);
       }      
@@ -255,7 +255,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 
     public void Update<TEntity>(TEntity entity) where TEntity : class
     {
-      var fqen = GetEntityName<TEntity>();
+      string fqen = GetEntityName<TEntity>();
 
       object originalItem;
       EntityKey key = ObjectContext.CreateEntityKey(fqen, entity);
@@ -267,7 +267,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 
     public void UpdateList<TEntity>(IEnumerable<TEntity> entities) where TEntity : class
     {
-      foreach (var entity in entities)
+      foreach (TEntity entity in entities)
       {
         Update(entity);
       } 
@@ -344,8 +344,8 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
       {
         return e => false;
       }
-      var equals = values.Select(value => (Expression)Expression.Equal(valueSelector.Body, Expression.Constant(value, typeof(TValue))));
-      var body = @equals.Aggregate((accumulate, equal) => Expression.Or(accumulate, equal));
+      IEnumerable<Expression> equals = values.Select(value => (Expression)Expression.Equal(valueSelector.Body, Expression.Constant(value, typeof(TValue))));
+      Expression body = @equals.Aggregate((accumulate, equal) => Expression.Or(accumulate, equal));
       return Expression.Lambda<Func<TElement, bool>>(body, p);
 
     }
@@ -370,7 +370,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 
     public void AttachEntityIfChangeTrackingDisabled<TEntity>(ObjectSet<TEntity> objectSet, IEnumerable<TEntity> entities) where TEntity : class, IObjectWithChangeTracker
     {
-      foreach (var entity in entities)
+      foreach (TEntity entity in entities)
       {
         AttachEntityIfChangeTrackingDisabled(objectSet, entity);
       }
@@ -410,7 +410,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
        else*/
       {
         string entityTypeName = entity.GetType().Name;
-        var container = ObjectContext.MetadataWorkspace.GetEntityContainer(ObjectContext.DefaultContainerName, DataSpace.CSpace);
+        EntityContainer container = ObjectContext.MetadataWorkspace.GetEntityContainer(ObjectContext.DefaultContainerName, DataSpace.CSpace);
         string entitySetName = (from meta in container.BaseEntitySets
                                 where meta.ElementType.Name == entityTypeName
                                 select meta.Name).First();
@@ -436,9 +436,9 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 
     private EntityKey GetEntityKey<TEntity>(object keyValue) where TEntity : class
     {
-      var entitySetName = GetEntityName<TEntity>();
-      var objectSet = ObjectContext.CreateObjectSet<TEntity>();
-      var keyPropertyName = objectSet.EntitySet.ElementType.KeyMembers[0].ToString();
+      string entitySetName = GetEntityName<TEntity>();
+      ObjectSet<TEntity> objectSet = ObjectContext.CreateObjectSet<TEntity>();
+      string keyPropertyName = objectSet.EntitySet.ElementType.KeyMembers[0].ToString();
       var entityKey = new EntityKey(entitySetName, new[] { new EntityKeyMember(keyPropertyName, keyValue) });
       return entityKey;
     }
@@ -450,11 +450,11 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 
     private bool Exists<TEntity>(TEntity entity) where TEntity : class
     {     
-      var objSet = ObjectContext.CreateObjectSet<TEntity>();
-      var entityKey = ObjectContext.CreateEntityKey(objSet.EntitySet.Name, entity);
+      ObjectSet<TEntity> objSet = ObjectContext.CreateObjectSet<TEntity>();
+      EntityKey entityKey = ObjectContext.CreateEntityKey(objSet.EntitySet.Name, entity);
 
       Object foundEntity;
-      var exists = ObjectContext.TryGetObjectByKey(entityKey, out foundEntity);
+      bool exists = ObjectContext.TryGetObjectByKey(entityKey, out foundEntity);
       // TryGetObjectByKey attaches a found entity      
 
       return (exists);

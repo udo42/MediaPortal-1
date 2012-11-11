@@ -154,7 +154,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
     {
       get
       {
-        List<SimpleFileName> list = new List<SimpleFileName>();
+        var list = new List<SimpleFileName>();
         foreach (String file in files)
         {
           list.Add(new SimpleFileName(file));
@@ -172,7 +172,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
       try
       {
         XmlReader parFileXML = XmlReader.Create(fileName);
-        XmlSerializer xmlSerializer = new XmlSerializer(ListType);
+        var xmlSerializer = new XmlSerializer(ListType);
         object result = xmlSerializer.Deserialize(parFileXML);
         parFileXML.Close();
         return result;
@@ -196,7 +196,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
     /// <returns>List of CustomFileNames</returns>
     private List<CustomFileName> FilteredList(String[] FullList, String CountryFilter)
     {
-      List<CustomFileName> filtered = new List<CustomFileName>();
+      var filtered = new List<CustomFileName>();
       foreach (String SingleFile in FullList)
       {
         if (Path.GetFileName(SingleFile).StartsWith(CountryFilter))
@@ -217,7 +217,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
     /// <returns>List of countries</returns>
     private List<String> CountryList(String[] FullList)
     {
-      List<String> filtered = new List<String>();
+      var filtered = new List<String>();
       foreach (String SingleFile in FullList)
       {
         String country = Path.GetFileName(SingleFile).Split('.')[0];

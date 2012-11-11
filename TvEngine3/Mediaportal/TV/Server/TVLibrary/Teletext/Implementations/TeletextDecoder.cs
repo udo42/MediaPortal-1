@@ -62,7 +62,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       for (int i = 0; i < MAX_MAGAZINE + 2; ++i)
       {
         _vbiLine[i] = "";
-        byte[] page = new byte[2100];
+        var page = new byte[2100];
         _workingPage.Add(page);
       }
       Clear();
@@ -112,7 +112,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
             _line += "HE1 ";
             continue;
           }
-          byte magazine = (byte)(byte1 & 0x7);
+          var magazine = (byte)(byte1 & 0x7);
 
           //get packet number
           int packetNumber = Hamming.GetPacketNumber(off, ref rowData);
@@ -153,7 +153,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
             string channelName = "";
             for (int i = 0; i < 20; i++)
             {
-              char char1 = (char)(rowData[off + 22 + i] & 127);
+              var char1 = (char)(rowData[off + 22 + i] & 127);
               //this.LogDebug("{0}-{1:x}", char1, (byte)(rowData[off + 22 + i] & 127));
               channelName += char1;
             }

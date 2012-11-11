@@ -64,7 +64,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
           continue;
         }
         this.LogDebug("Digital Devices config: device {0} ({1})...", device.Name, device.DevicePath);
-        DigitalDevicesCiSlot slot = new DigitalDevicesCiSlot(device.DevicePath);
+        var slot = new DigitalDevicesCiSlot(device.DevicePath);
         if (dbSlots.ContainsKey(device.DevicePath))
         {
           this.LogDebug("  found existing configuration");
@@ -76,7 +76,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         }
         slot.DeviceName = device.Name;
         this.LogDebug("  decrypt limit  = {0}", slot.DecryptLimit);
-        String[] providerList = new String[slot.Providers.Count];
+        var providerList = new String[slot.Providers.Count];
         slot.Providers.CopyTo(providerList);
         this.LogDebug("  provider list  = {0}", String.Join(", ", providerList));
 
@@ -89,7 +89,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         catch (Exception)
         {
         }
-        IBaseFilter ciFilter = obj as IBaseFilter;
+        var ciFilter = obj as IBaseFilter;
         if (ciFilter != null)
         {
           String menuTitle;
@@ -190,7 +190,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         this.LogDebug("Digital Devices config: slot {0}...", slot.CamRootMenuTitle);
         _decryptLimits[i].Value = slot.DecryptLimit;
         this.LogDebug("  decrypt limit = {0}", slot.DecryptLimit);
-        String[] providers = new String[slot.Providers.Count];
+        var providers = new String[slot.Providers.Count];
         slot.Providers.CopyTo(providers);
         _providerLists[i].Text = String.Join(", ", providers);
         this.LogDebug("  provider list = {0}", String.Join("|", providers));

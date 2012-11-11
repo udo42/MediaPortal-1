@@ -71,12 +71,12 @@ namespace WebEPG.Parser
 
       if (_page != page)
       {
-        HTMLPage webPage = new HTMLPage(page);
+        var webPage = new HTMLPage(page);
         _source = webPage.GetPage();
         _page = new HTTPRequest(page);
       }
 
-      XmlDocument _xmlDoc = new XmlDocument();
+      var _xmlDoc = new XmlDocument();
       try
       {
         _xmlDoc.LoadXml(_source);
@@ -106,7 +106,7 @@ namespace WebEPG.Parser
 
     public IParserData GetData(int index)
     {
-      IParserData xmlData = (IParserData)Activator.CreateInstance(_dataType);
+      var xmlData = (IParserData)Activator.CreateInstance(_dataType);
 
       XmlNode progNode = _nodeList.Item(index);
       if (progNode != null)

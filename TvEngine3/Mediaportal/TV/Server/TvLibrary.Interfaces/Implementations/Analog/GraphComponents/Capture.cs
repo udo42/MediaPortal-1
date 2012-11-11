@@ -247,8 +247,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     /// <returns>TvAudio instance</returns>
     public static Capture CreateInstance(XmlNode xmlNode)
     {
-      Capture capture = new Capture();
-      Dictionary<VideoProcAmpProperty, VideoQuality> videoProcAmpValues =
+      var capture = new Capture();
+      var videoProcAmpValues =
         new Dictionary<VideoProcAmpProperty, VideoQuality>();
       capture.VideoProcAmpValues = videoProcAmpValues;
       if (xmlNode != null)
@@ -297,10 +297,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
               int maxValue = Int32.Parse(pin.Attributes["maxValue"].Value);
               int defaultValue = Int32.Parse(pin.Attributes["defaultValue"].Value);
               int delta = Int32.Parse(pin.Attributes["delta"].Value);
-              VideoProcAmpFlags flags = (VideoProcAmpFlags)Int32.Parse(pin.Attributes["flags"].Value);
+              var flags = (VideoProcAmpFlags)Int32.Parse(pin.Attributes["flags"].Value);
               int value = Int32.Parse(pin.Attributes["value"].Value);
-              VideoProcAmpProperty property = (VideoProcAmpProperty)Int32.Parse(pin.InnerText);
-              VideoQuality quality = new VideoQuality(minValue, maxValue, delta, defaultValue,
+              var property = (VideoProcAmpProperty)Int32.Parse(pin.InnerText);
+              var quality = new VideoQuality(minValue, maxValue, delta, defaultValue,
                                                       flags == VideoProcAmpFlags.Manual, value);
               videoProcAmpValues.Add(property, quality);
             }

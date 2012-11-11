@@ -153,7 +153,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
     {
       int id = _subChannelId++;
       this.LogInfo("TvCardHdPvr: new subchannel, ID = {0}, subchannel count = {1}", id, _mapSubChannels.Count);
-      HDPVRChannel subChannel = new HDPVRChannel(id, this, _filterTsWriter);
+      var subChannel = new HDPVRChannel(id, this, _filterTsWriter);
       subChannel.Parameters = Parameters;
       subChannel.CurrentChannel = channel;
       _mapSubChannels[id] = subChannel;
@@ -240,7 +240,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
 
       FreeAllSubChannels();
       // Decompose the graph
-      IMediaControl mediaCtl = (_graphBuilder as IMediaControl);
+      var mediaCtl = (_graphBuilder as IMediaControl);
       if (mediaCtl == null)
       {
         throw new TvException("Can not convert graphBuilder to IMediaControl");
@@ -606,19 +606,19 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
     protected override void PerformTuning(IChannel channel)
     {
       this.LogDebug("HDPVR: Tune");
-      AnalogChannel analogChannel = channel as AnalogChannel;
+      var analogChannel = channel as AnalogChannel;
       if (analogChannel == null)
       {
         throw new NullReferenceException();
       }
-      AnalogChannel previousChannel = _previousChannel as AnalogChannel;
+      var previousChannel = _previousChannel as AnalogChannel;
       if (_previousChannel != null && previousChannel == null)
       {
         throw new NullReferenceException();
       }
 
       // Set up the crossbar.
-      IAMCrossbar crossBarFilter = _filterCrossBar as IAMCrossbar;
+      var crossBarFilter = _filterCrossBar as IAMCrossbar;
 
       if (_previousChannel == null || previousChannel.VideoSource != analogChannel.VideoSource)
       {
@@ -658,7 +658,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
     /// </summary>
     private void CheckCapabilities()
     {
-      IAMCrossbar crossBarFilter = _filterCrossBar as IAMCrossbar;
+      var crossBarFilter = _filterCrossBar as IAMCrossbar;
       if (crossBarFilter != null)
       {
         int outputs, inputs;

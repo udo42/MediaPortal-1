@@ -87,7 +87,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         {
           return false;
         }
-        IConditionalAccessProvider caProvider = menuInterface as IConditionalAccessProvider;
+        var caProvider = menuInterface as IConditionalAccessProvider;
         if (caProvider.IsInterfaceReady())
         {
           _ciMenu = menuInterface;

@@ -96,7 +96,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
         return null;
       }
 
-      IKsPropertySet ps = pin as IKsPropertySet;
+      var ps = pin as IKsPropertySet;
       if (ps == null)
       {
         this.LogDebug("Microsoft: input pin is not a property set");
@@ -131,7 +131,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
     {
       this.LogDebug("Microsoft: check for IBDA_FrequencyFilter.put_Range() DiSEqC 1.0 support");
 
-      IBDA_Topology topology = filter as IBDA_Topology;
+      var topology = filter as IBDA_Topology;
       if (topology == null)
       {
         this.LogDebug("Microsoft: filter is not a topology");
@@ -140,7 +140,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
 
       object controlNode;
       int hr = topology.GetControlNode(0, 1, 0, out controlNode);
-      IBDA_FrequencyFilter frequencyFilterInterface = controlNode as IBDA_FrequencyFilter;
+      var frequencyFilterInterface = controlNode as IBDA_FrequencyFilter;
       if (hr == 0 && frequencyFilterInterface != null)
       {
         return frequencyFilterInterface;
@@ -175,7 +175,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
         return null;
       }
 
-      IKsPropertySet ps = pin as IKsPropertySet;
+      var ps = pin as IKsPropertySet;
       if (ps == null)
       {
         this.LogDebug("Microsoft: output pin is not a property set");
@@ -209,7 +209,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
     {
       this.LogDebug("Microsoft: check for IMPEG2PIDMap PID filtering support");
 
-      IMPEG2PIDMap pidFilterInterface = filter as IMPEG2PIDMap;
+      var pidFilterInterface = filter as IMPEG2PIDMap;
       if (pidFilterInterface != null)
       {
         return pidFilterInterface;
@@ -353,7 +353,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
       }
 
       // When tuning a DVB-S channel, we need to translate the modulation value.
-      DVBSChannel dvbsChannel = channel as DVBSChannel;
+      var dvbsChannel = channel as DVBSChannel;
       if (dvbsChannel != null)
       {
         if (dvbsChannel.ModulationType == ModulationType.ModQpsk)
@@ -372,7 +372,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
       }
 
       // When tuning a clear QAM channel, we need to set the modulation directly for compatibility with Windows XP.
-      ATSCChannel atscChannel = channel as ATSCChannel;
+      var atscChannel = channel as ATSCChannel;
       if (atscChannel != null && _qamPropertySet != null)
       {
         if (atscChannel.ModulationType == ModulationType.Mod64Qam || atscChannel.ModulationType == ModulationType.Mod256Qam)
@@ -432,7 +432,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
       this.LogDebug("Microsoft: current PID details (before update)");
       this.LogDebug("  count = {0}", _currentPids.Count);
       IEnumerator<UInt16> en = _currentPids.GetEnumerator();
-      HashSet<UInt16> toRemove = new HashSet<UInt16>();
+      var toRemove = new HashSet<UInt16>();
       byte i = 1;
       while (en.MoveNext())
       {
@@ -658,7 +658,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
         }
         else
         {
-          BdaDiseqcMessage message = new BdaDiseqcMessage();
+          var message = new BdaDiseqcMessage();
           message.RequestId = _requestId++;
           message.PacketLength = (uint)command.Length;
           message.PacketData = new byte[MaxDiseqcMessageLength];
@@ -740,7 +740,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
       if (hr == 0 && returnedByteCount == BdaDiseqcMessageSize)
       {
         // Copy the response into the return array.
-        BdaDiseqcMessage message = (BdaDiseqcMessage)Marshal.PtrToStructure(_paramBuffer, typeof(BdaDiseqcMessage));
+        var message = (BdaDiseqcMessage)Marshal.PtrToStructure(_paramBuffer, typeof(BdaDiseqcMessage));
         if (message.PacketLength > MaxDiseqcMessageLength)
         {
           this.LogDebug("Microsoft: response length is out of bounds, response length = {0}", message.PacketLength);

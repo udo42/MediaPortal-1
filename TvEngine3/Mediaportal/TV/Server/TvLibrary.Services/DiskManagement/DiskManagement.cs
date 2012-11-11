@@ -131,7 +131,7 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
     private static List<RecordingFileInfo> GetRecordingsOnDrive(string drive)
     {
       var recordings = new List<RecordingFileInfo>();
-      var recordedTvShows = TVDatabase.TVBusinessLayer.RecordingManagement.ListAllRecordingsByMediaType(MediaTypeEnum.TV);
+      IList<Recording> recordedTvShows = TVDatabase.TVBusinessLayer.RecordingManagement.ListAllRecordingsByMediaType(MediaTypeEnum.TV);
 
       foreach (Recording recorded in recordedTvShows)
       {
@@ -152,8 +152,8 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
         {
           try
           {
-            FileInfo info = new FileInfo(recorded.FileName);
-            RecordingFileInfo fi = new RecordingFileInfo();
+            var info = new FileInfo(recorded.FileName);
+            var fi = new RecordingFileInfo();
             fi.info = info;
             fi.filename = recorded.FileName;
             fi.record = recorded;

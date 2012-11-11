@@ -120,7 +120,7 @@ namespace Mediaportal.TV.Server.TVLibrary
         this.LogInfo("TimeshiftingEpgGrabber: No epg received.");
       else
       {
-        Thread workerThread = new Thread(UpdateDatabaseThread);
+        var workerThread = new Thread(UpdateDatabaseThread);
         workerThread.IsBackground = true;
         workerThread.Name = "EPG Update thread";
         workerThread.Start();

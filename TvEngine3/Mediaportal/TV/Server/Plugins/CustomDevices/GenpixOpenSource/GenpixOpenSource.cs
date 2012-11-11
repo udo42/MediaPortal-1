@@ -179,7 +179,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.GenpixOpenSource
 
       // The driver interprets sending a DiSEqC message with length one as
       // a tone burst command.
-      DiseqcMessage message = new DiseqcMessage();
+      var message = new DiseqcMessage();
       message.MessageLength = 1;
       message.Message = new byte[MaxDiseqcMessageLength];
       if (toneBurstState == ToneBurst.ToneBurst)
@@ -231,7 +231,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.GenpixOpenSource
         return false;
       }
 
-      DiseqcMessage message = new DiseqcMessage();
+      var message = new DiseqcMessage();
       message.MessageLength = (byte)command.Length;
       message.Message = new byte[MaxDiseqcMessageLength];
       Buffer.BlockCopy(command, 0, message.Message, 0, command.Length);

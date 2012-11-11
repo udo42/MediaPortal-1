@@ -51,7 +51,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       bool isScheduleRecording = false;
       using (IScheduleRepository scheduleRepository = new ScheduleRepository())
       {
-        Schedule schedule = scheduleRepository.First<Schedule>(s => s.IdSchedule == idSchedule);
+        var schedule = scheduleRepository.First<Schedule>(s => s.IdSchedule == idSchedule);
 
         if (schedule != null)
         {
@@ -70,7 +70,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (IScheduleRepository scheduleRepository = new ScheduleRepository())
       {
-        Schedule schedule =
+        var schedule =
           scheduleRepository.First<Schedule>(s => s.IdParentSchedule == parentScheduleId && s.StartTime == startTime);
         if (schedule == null)
         {
@@ -152,7 +152,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     private static void SetRelatedRecordingsToNull(int idSchedule, IScheduleRepository scheduleRepository)
     {
       // todo : since "on delete: set null" is not currently supported in EF, we have to do this manually - remove this ugly workaround once EF gets mature enough.
-      var schedules = scheduleRepository.GetQuery<Schedule>(s => s.IdSchedule == idSchedule);
+      IQueryable<Schedule> schedules = scheduleRepository.GetQuery<Schedule>(s => s.IdSchedule == idSchedule);
       schedules = scheduleRepository.IncludeAllRelations(schedules);
       Schedule schedule = schedules.FirstOrDefault();
 
@@ -180,7 +180,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         {
           using (IScheduleRepository scheduleRepository = new ScheduleRepository())
           {
-            Schedule schedule = scheduleRepository.FindOne<Schedule>(s => s.IdSchedule == idSchedule);
+            var schedule = scheduleRepository.FindOne<Schedule>(s => s.IdSchedule == idSchedule);
             if (schedule != null)
             {
               Schedule spawnedSchedule = RetrieveSpawnedSchedule(idSchedule, prg.StartTime);
@@ -243,7 +243,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       }
       Log.Info("GetConflictingSchedules: Cards.Count = {0}", cards.Count);
 
-      List<Schedule>[] cardSchedules = new List<Schedule>[cards.Count];
+      var cardSchedules = new List<Schedule>[cards.Count];
       for (int i = 0; i < cards.Count; i++)
       {
         cardSchedules[i] = new List<Schedule>();
@@ -302,7 +302,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       int count = 0;
       foreach (Card card in cards)
       {        
-        ScheduleBLL scheduleBll = new ScheduleBLL(schedule);
+        var scheduleBll = new ScheduleBLL(schedule);
         if (card.Enabled && CardManagement.CanViewTvChannel(card, schedule.IdChannel))
         {
           // checks if any schedule assigned to this cards overlaps current parsed schedule
@@ -363,7 +363,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       {
         for (int i = 0; i < days; ++i)
         {
-          var recNew = ScheduleFactory.Clone(recBLL.Entity);
+          Schedule recNew = ScheduleFactory.Clone(recBLL.Entity);
           recNew.ScheduleType = (int)ScheduleRecordingType.Once;
           recNew.StartTime = new DateTime(dtDay.Year, dtDay.Month, dtDay.Day, recBLL.Entity.StartTime.Hour, recBLL.Entity.StartTime.Minute,
                                           0);
@@ -565,7 +565,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         {
           Log.Debug("DeleteOrphanedOnceSchedules: Orphaned once schedule(s) found  - removing");
 
-          foreach (var schedule in schedules)
+          foreach (Schedule schedule in schedules)
           {
             SetRelatedRecordingsToNull(schedule.IdSchedule, scheduleRepository); 
           }          
@@ -580,7 +580,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (IScheduleRepository scheduleRepository = new ScheduleRepository())
       {
-        Schedule onceSchedule =
+        var onceSchedule =
           scheduleRepository.FindOne<Schedule>(s=>s.ScheduleType == (int)ScheduleRecordingType.Once 
             && s.IdChannel == idChannel && s.ProgramName == title && s.EndTime == endTime);
         return onceSchedule;

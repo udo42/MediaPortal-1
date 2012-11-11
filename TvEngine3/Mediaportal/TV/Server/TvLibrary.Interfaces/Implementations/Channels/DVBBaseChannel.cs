@@ -228,7 +228,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     /// </returns>
     public override bool Equals(object obj)
     {
-      DVBBaseChannel ch = obj as DVBBaseChannel;
+      var ch = obj as DVBBaseChannel;
       if (ch == null)
       {
         return false;

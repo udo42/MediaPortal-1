@@ -249,7 +249,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
         {
           if (IsConnectionReady(subscriber.ServerEventCallback as ICommunicationObject))
           {
-            var callback = subscriber.ServerEventCallback;            
+            IServerEventCallback callback = subscriber.ServerEventCallback;            
             ThreadPool.QueueUserWorkItem(
               delegate
                 {
@@ -306,7 +306,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
         {
           if (IsConnectionReady(subscriber.ServerEventCallback as ICommunicationObject))
           {
-            var callback = subscriber.ServerEventCallback;
+            IServerEventCallback callback = subscriber.ServerEventCallback;
             ThreadPool.QueueUserWorkItem(
               delegate
                 {

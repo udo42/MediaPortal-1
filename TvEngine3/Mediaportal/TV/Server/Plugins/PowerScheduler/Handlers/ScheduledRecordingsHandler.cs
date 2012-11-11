@@ -51,7 +51,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     {
       if (GlobalServiceProvider.Instance.IsRegistered<IPowerScheduler>())
       {
-        IPowerScheduler ips = GlobalServiceProvider.Instance.Get<IPowerScheduler>();
+        var ips = GlobalServiceProvider.Instance.Get<IPowerScheduler>();
         if (ips != null)
         {
           ips.OnPowerSchedulerEvent += ScheduledRecordingsHandler_OnPowerSchedulerEvent;
@@ -123,7 +123,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       switch (args.EventType)
       {
         case PowerSchedulerEventType.SettingsChanged:
-          PowerSettings settings = args.GetData<PowerSettings>();
+          var settings = args.GetData<PowerSettings>();
           if (settings != null)
           {
             _idleTimeout = settings.IdleTimeout;
@@ -145,11 +145,11 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     /// <returns>DateTime indicating the wakeup time for this Schedule</returns>
     private static DateTime GetWakeupTime(Schedule schedule)
     {
-      ScheduleRecordingType type = (ScheduleRecordingType)schedule.ScheduleType;
+      var type = (ScheduleRecordingType)schedule.ScheduleType;
       DateTime now = DateTime.Now;
-      DateTime start = new DateTime(now.Year, now.Month, now.Day, schedule.StartTime.Hour, schedule.StartTime.Minute,
+      var start = new DateTime(now.Year, now.Month, now.Day, schedule.StartTime.Hour, schedule.StartTime.Minute,
                                     schedule.StartTime.Second);
-      DateTime stop = new DateTime(now.Year, now.Month, now.Day, schedule.EndTime.Hour, schedule.EndTime.Minute,
+      var stop = new DateTime(now.Year, now.Month, now.Day, schedule.EndTime.Hour, schedule.EndTime.Minute,
                                    schedule.EndTime.Second);
       switch (type)
       {

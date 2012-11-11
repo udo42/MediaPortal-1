@@ -35,7 +35,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 
     private void FormAnalogTuningDetail_Load(object sender, EventArgs e)
     {
-      CountryCollection countries = new CountryCollection();
+      var countries = new CountryCollection();
 
       comboBoxCountry.Items.AddRange(countries.Countries);
 

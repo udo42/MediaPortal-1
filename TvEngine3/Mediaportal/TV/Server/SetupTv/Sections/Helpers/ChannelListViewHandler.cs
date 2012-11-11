@@ -114,7 +114,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
                                                _listView.BeginUpdate();
                                              }));
 
-        List<ListViewItem> items = new List<ListViewItem>();
+        var items = new List<ListViewItem>();
         for (int i = 0; i < _allChannels.Count; i++)
         {
           if (InvokeHasTextChanged(filterText))
@@ -250,18 +250,18 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
           }
         }
       }
-      ListViewItem item = new ListViewItem(ch.DisplayName);
+      var item = new ListViewItem(ch.DisplayName);
       item.Checked = ch.VisibleInGuide;
       item.Tag = ch;
 
       IList<string> groups = new List<string>();
-      foreach (var gm in ch.GroupMaps)
+      foreach (GroupMap gm in ch.GroupMaps)
       {
         groups.Add((gm.ChannelGroup.GroupName));
       }
 
       
-      List<string> groupNames = new List<string>();
+      var groupNames = new List<string>();
       foreach (string groupName in groups)
       {
         if (groupName != TvConstants.TvGroupNames.AllChannels &&
@@ -274,7 +274,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
       string group = String.Join(", ", groupNames.ToArray());
       item.SubItems.Add(group);
 
-      List<string> providers = new List<string>();
+      var providers = new List<string>();
       IList<TuningDetail> tuningDetails = ch.TuningDetails;
       bool hasFta = false;
       bool hasScrambled = false;
@@ -330,7 +330,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
       }
       item.ImageIndex = imageIndex;
 
-      StringBuilder builder = new StringBuilder();
+      var builder = new StringBuilder();
 
       if (notmapped)
       {

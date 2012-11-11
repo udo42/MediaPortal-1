@@ -56,7 +56,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
         IEnumerator en = comboBoxLnbType.Items.GetEnumerator();
         while (en.MoveNext())
         {
-          LnbType lnbType = (LnbType)en.Current;
+          var lnbType = (LnbType)en.Current;
           if (lnbType != null && lnbType.IdLnbType == TuningDetail.IdLnbType)
           {
             comboBoxLnbType.SelectedItem = en.Current;

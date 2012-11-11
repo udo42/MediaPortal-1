@@ -97,12 +97,12 @@ namespace Mediaportal.TV.Server.SetupTV
       if (drive == null)
         return String.Empty;
       //receives volume name of drive
-      StringBuilder volname = new StringBuilder(256);
+      var volname = new StringBuilder(256);
       //receives serial number of drive,not in case of network drive(win95/98)
       uint sn;
       uint maxcomplen; //receives maximum component length
       uint sysflags; //receives file system flags
-      StringBuilder sysname = new StringBuilder(256); //receives the file system name
+      var sysname = new StringBuilder(256); //receives the file system name
 
       bool retval = GetVolumeInformation(drive.Substring(0, 2), volname, 256, out sn, out maxcomplen, out sysflags,
                                          sysname, 256);
@@ -119,12 +119,12 @@ namespace Mediaportal.TV.Server.SetupTV
       if (drive == null)
         return String.Empty;
       //receives volume name of drive
-      StringBuilder volname = new StringBuilder(256);
+      var volname = new StringBuilder(256);
       //receives serial number of drive,not in case of network drive(win95/98)
       uint sn;
       uint maxcomplen; //receives maximum component length
       uint sysflags; //receives file system flags
-      StringBuilder sysname = new StringBuilder(256); //receives the file system name
+      var sysname = new StringBuilder(256); //receives the file system name
 
       bool retval = GetVolumeInformation(drive, volname, 256, out sn, out maxcomplen, out sysflags, sysname, 256);
 
@@ -158,7 +158,7 @@ namespace Mediaportal.TV.Server.SetupTV
       try
       {
         string cmd = String.Format("win32_logicaldisk.deviceid=\"{0}:\"", drive[0]);
-        using (ManagementObject disk = new ManagementObject(cmd))
+        using (var disk = new ManagementObject(cmd))
         {
           disk.Get();
           diskSize = Int64.Parse(disk["Size"].ToString());
@@ -468,16 +468,16 @@ namespace Mediaportal.TV.Server.SetupTV
         if (ldate < 0)
           return DateTime.MinValue;
         ldate /= 100L;
-        int minute = (int)(ldate % 100L);
+        var minute = (int)(ldate % 100L);
         ldate /= 100L;
-        int hour = (int)(ldate % 100L);
+        var hour = (int)(ldate % 100L);
         ldate /= 100L;
-        int day = (int)(ldate % 100L);
+        var day = (int)(ldate % 100L);
         ldate /= 100L;
-        int month = (int)(ldate % 100L);
+        var month = (int)(ldate % 100L);
         ldate /= 100L;
-        int year = (int)ldate;
-        DateTime dt = new DateTime(year, month, day, hour, minute, 0, 0);
+        var year = (int)ldate;
+        var dt = new DateTime(year, month, day, hour, minute, 0, 0);
         return dt;
       }
       catch (Exception) {}
@@ -729,7 +729,7 @@ namespace Mediaportal.TV.Server.SetupTV
       if (tag.Length == 0)
         return line;
 
-      Regex r = new Regex(String.Format(@"\[[^%]*{0}[^\]]*[\]]", tag));
+      var r = new Regex(String.Format(@"\[[^%]*{0}[^\]]*[\]]", tag));
       if (value == empty)
       {
         Match match = r.Match(line);
@@ -790,7 +790,7 @@ namespace Mediaportal.TV.Server.SetupTV
     public static void CheckForDvbHotfix()
     {
       List<string> dllPaths = GetRegisteredAssemblyPaths("PsisDecd");
-      Version aParamVersion = new Version(0, 0, 0, 0);
+      var aParamVersion = new Version(0, 0, 0, 0);
       Version mostRecentVer = aParamVersion;
       bool validDllFound = false;
       foreach (string dllPath in dllPaths)
@@ -847,7 +847,7 @@ namespace Mediaportal.TV.Server.SetupTV
       aCurrentVersion = new Version(0, 0, 0, 0);
       try
       {
-        Version desiredVersion = new Version(aMinimumVersion);
+        var desiredVersion = new Version(aMinimumVersion);
         FileVersionInfo fileVersion = FileVersionInfo.GetVersionInfo(aFilePath);
         if (!String.IsNullOrEmpty(fileVersion.ProductVersion))
         {
@@ -869,7 +869,7 @@ namespace Mediaportal.TV.Server.SetupTV
     /// <returns>The full path the dll or an empty string</returns>
     public static List<string> GetRegisteredAssemblyPaths(string aFilename)
     {
-      List<string> resultPaths = new List<string>(1);
+      var resultPaths = new List<string>(1);
       try
       {
         using (RegistryKey AssemblyKey = Registry.ClassesRoot.OpenSubKey("CLSID"))
@@ -889,7 +889,7 @@ namespace Mediaportal.TV.Server.SetupTV
                     {
                       if (defaultkey != null)
                       {
-                        string friendlyName = (string)defaultkey.GetValue(null);
+                        var friendlyName = (string)defaultkey.GetValue(null);
                         // Gets the (Default) value from this key            
                         if (!String.IsNullOrEmpty(friendlyName) &&
                             friendlyName.ToLowerInvariant().IndexOf(aFilename.ToLowerInvariant()) >= 0)

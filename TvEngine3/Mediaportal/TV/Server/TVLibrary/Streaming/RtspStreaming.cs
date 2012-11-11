@@ -163,7 +163,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
     {
       get
       {
-        List<RtspClient> clients = new List<RtspClient>();
+        var clients = new List<RtspClient>();
         short count = 0;
         StreamGetClientCount(ref count);
         for (short i = 0; i < count; ++i)
@@ -175,7 +175,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
           string streamName = "";
           long ticks;
           StreamGetClientDetail(i, out ptrIpAdress, out ptrStream, ref isActive, out ticks);
-          DateTime started = new DateTime(1970, 1, 1, 0, 0, 0);
+          var started = new DateTime(1970, 1, 1, 0, 0, 0);
           started = started.AddSeconds(ticks);
 
           if (ptrIpAdress != IntPtr.Zero)
@@ -201,7 +201,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
 
           if (description.Length > 0)
           {
-            RtspClient client = new RtspClient(isActive != 0, ipadress, streamName, description, started);
+            var client = new RtspClient(isActive != 0, ipadress, streamName, description, started);
             clients.Add(client);
           }
         }
@@ -233,7 +233,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
         return;
       this.LogDebug("RTSP: start streamer");
       _running = true;
-      Thread thread = new Thread(workerThread);
+      var thread = new Thread(workerThread);
       thread.SetApartmentState(ApartmentState.STA);
       thread.IsBackground = true;
       thread.Name = "RTSP Streaming thread";
@@ -257,7 +257,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
     {
       this.LogDebug("RTSP: stop all streams ({0})", _streams.Count);
 
-      List<string> removals = new List<string>();
+      var removals = new List<string>();
       foreach (string key in _streams.Keys)
       {
         removals.Add(key);
@@ -373,10 +373,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
 
     private IList<IPAddress> GetDefGatewayNetAddresses()
     {
-      List<IPAddress> addresses = new List<IPAddress>();
+      var addresses = new List<IPAddress>();
       try
       {
-        using (ManagementObjectSearcher searcher =
+        using (var searcher =
           new ManagementObjectSearcher("root\\CIMV2",
                                        "SELECT DefaultIPGateway, IPAddress FROM Win32_NetworkAdapterConfiguration"))
         {
@@ -385,8 +385,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
           {
             if (queryObj["DefaultIPGateway"] != null && queryObj["IPAddress"] != null)
             {
-              String[] arrDefaultIPGateway = (String[])(queryObj["DefaultIPGateway"]);
-              String[] arrIPAddress = (String[])(queryObj["IPAddress"]);
+              var arrDefaultIPGateway = (String[])(queryObj["DefaultIPGateway"]);
+              var arrIPAddress = (String[])(queryObj["IPAddress"]);
               if (arrDefaultIPGateway.Length > 0 && arrIPAddress.Length > 0)
               {
                 foreach (string address in arrIPAddress)

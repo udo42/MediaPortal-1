@@ -321,7 +321,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     private static void SetFrequencyOverride(AnalogChannel channel)
     {
       int countryCode = channel.Country.Id;
-      string[] registryLocations = new[]
+      var registryLocations = new[]
                                      {
                                        String.Format(@"Software\Microsoft\TV System Services\TVAutoTune\TS{0}-1",
                                                      countryCode),

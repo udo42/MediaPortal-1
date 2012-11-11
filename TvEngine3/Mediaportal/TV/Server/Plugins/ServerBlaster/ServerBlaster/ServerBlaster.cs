@@ -93,7 +93,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
     public void Start(IInternalControllerService controllerService)
     {
       this.LogDebug("ServerBlaster.Start Version {0}: Starting", _version);
-      ITvServerEvent events = GlobalServiceProvider.Instance.Get<ITvServerEvent>();
+      var events = GlobalServiceProvider.Instance.Get<ITvServerEvent>();
       events.OnTvServerEvent += events_OnTvServerEvent;
 
       Device.DeviceArrival += OnDeviceArrival;
@@ -101,7 +101,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
       LoadRemoteCodes();
 
       this.LogDebug("plugin: ServerBlaster start sender");
-      Thread thread = new Thread(Sender);
+      var thread = new Thread(Sender);
       thread.SetApartmentState(ApartmentState.STA);
       thread.IsBackground = true;
       thread.Name = "Remote blaster";
@@ -135,8 +135,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
 
     private void events_OnTvServerEvent(object sender, EventArgs eventArgs)
     {
-      TvServerEventArgs tvEvent = (TvServerEventArgs)eventArgs;
-      AnalogChannel analogChannel = tvEvent.channel as AnalogChannel;
+      var tvEvent = (TvServerEventArgs)eventArgs;
+      var analogChannel = tvEvent.channel as AnalogChannel;
       if (analogChannel == null) return;
       if (tvEvent.EventType == TvServerEventType.StartZapChannel)
       {
@@ -166,10 +166,10 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
       try
       {
         using (
-          FileStream fs = new FileStream(String.Format(@"{0}\ServerBlaster.dat", PathManager.GetDataPath), FileMode.Open,
+          var fs = new FileStream(String.Format(@"{0}\ServerBlaster.dat", PathManager.GetDataPath), FileMode.Open,
                                          FileAccess.Read))
         {
-          BinaryFormatter bf = new BinaryFormatter();
+          var bf = new BinaryFormatter();
           _packetCollection = bf.Deserialize(fs) as Hashtable;
 
           if (_packetCollection != null)
@@ -289,7 +289,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
           if (char.IsDigit(ch) == false) continue;
           if (_advandeLogging) this.LogDebug("ServerBlaster.Sending {0} on blaster {1}", ch, _sendPort);
 
-          byte[] packet = _packetCollection[ch.ToString()] as byte[];
+          var packet = _packetCollection[ch.ToString()] as byte[];
 
           if (packet == null) this.LogDebug("ServerBlaster.Send: Missing packet for '{0}'", ch);
           if (packet != null) Blaster.Send(_sendPort, packet, _deviceType, _deviceSpeed, _advandeLogging);
@@ -301,7 +301,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
         {
           //byte[] packet = _packetCollection["Select"] as byte[];
           if (_advandeLogging) this.LogDebug("ServerBlaster.Send: Sending Select");
-          byte[] packet = _packetCollection["Select"] as byte[];
+          var packet = _packetCollection["Select"] as byte[];
           if (packet != null) Blaster.Send(_sendPort, packet, _deviceType, _deviceSpeed, _advandeLogging);
         }
       }

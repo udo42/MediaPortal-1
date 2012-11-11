@@ -139,7 +139,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     /// <returns>bool - Success/fail</returns>
     private bool Transaction(HTTPRequest pageRequest)
     {
-      ArrayList Blocks = new ArrayList();
+      var Blocks = new ArrayList();
       byte[] Block;
       byte[] readBlock;
       int size;
@@ -158,7 +158,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
       {
         // Make the Webrequest
         // Create the request header
-        HttpWebRequest request = (HttpWebRequest)WebRequest.Create(pageUri);
+        var request = (HttpWebRequest)WebRequest.Create(pageUri);
         try
         {
           // Use the current user in case an NTLM Proxy or similar is used.
@@ -211,7 +211,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
           try
           {
             Stream OutputStream = request.GetRequestStream();
-            StreamWriter WriteStream = new StreamWriter(OutputStream);
+            var WriteStream = new StreamWriter(OutputStream);
             WriteStream.Write(pageRequest.PostQuery);
             WriteStream.Flush();
           }
@@ -230,8 +230,8 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
             (_response.StatusCode == HttpStatusCode.Moved) ||
             (_response.StatusCode == HttpStatusCode.MovedPermanently))
         {
-          Uri uri = new Uri(pageUri, _response.Headers["Location"]);
-          HttpWebRequest redirect = (HttpWebRequest)WebRequest.Create(uri);
+          var uri = new Uri(pageUri, _response.Headers["Location"]);
+          var redirect = (HttpWebRequest)WebRequest.Create(uri);
           try
           {
             // Use the current user in case an NTLM Proxy or similar is used.
@@ -247,11 +247,11 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
           if (_response.Headers["Set-Cookie"] != null)
           {
             string cookieStr = _response.Headers["Set-Cookie"];
-            Regex cookieParser = new Regex("(?<name>[^=]+)=(?<value>[^;]+)(;)");
+            var cookieParser = new Regex("(?<name>[^=]+)=(?<value>[^;]+)(;)");
             Match result = cookieParser.Match(cookieStr);
             if (result.Success)
             {
-              Cookie reply = new Cookie(result.Groups["name"].ToString(), result.Groups["value"].ToString());
+              var reply = new Cookie(result.Groups["name"].ToString(), result.Groups["value"].ToString());
               reply.Domain = uri.Host;
               redirect.CookieContainer.Add(reply);
             }

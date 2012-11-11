@@ -373,9 +373,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       Stream stream = assm.GetManifestResourceStream("TVCapture.teletext.LogoPage");
       if (stream != null)
       {
-        using (BinaryReader reader = new BinaryReader(stream))
+        using (var reader = new BinaryReader(stream))
         {
-          byte[] logoPage = new byte[stream.Length];
+          var logoPage = new byte[stream.Length];
           reader.Read(logoPage, 0, (int)stream.Length);
           _fastTextDecoder.Decode(logoPage);
           _topTextDecoder.Clear();
@@ -417,7 +417,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
     {
       if (dataPtr == IntPtr.Zero)
         return;
-      int dataAdd = (int)dataPtr;
+      var dataAdd = (int)dataPtr;
       try
       {
         for (int line = 0; line < 4; line++)
@@ -428,8 +428,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
           {
             for (int b = 4; b < 46; b++)
             {
-              byte upper = (byte)((tmpBuffer[b] >> 4) & 0xf);
-              byte lower = (byte)(tmpBuffer[b] & 0xf);
+              var upper = (byte)((tmpBuffer[b] >> 4) & 0xf);
+              var lower = (byte)(tmpBuffer[b] & 0xf);
               tmpBuffer[b - 4] = (byte)((m_lutTable[upper]) | (m_lutTable[lower + 16]));
             } //for(b=4;
             _decoder.Decode(tmpBuffer, 0, 1);

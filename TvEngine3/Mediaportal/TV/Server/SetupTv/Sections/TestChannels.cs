@@ -271,13 +271,13 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         UpdateCounters();
 
         IEnumerable<Channel> channels = new List<Channel>();
-        ComboBoxExItem idItem = (ComboBoxExItem)comboBoxGroups.Items[comboBoxGroups.SelectedIndex];
+        var idItem = (ComboBoxExItem)comboBoxGroups.Items[comboBoxGroups.SelectedIndex];
 
         ChannelGroup group = ServiceAgents.Instance.ChannelGroupServiceAgent.GetChannelGroup(idItem.Id);
         IList<GroupMap> maps = group.GroupMaps;
 
         List<Channel> channelsO = null;
-        Thread channelTestThread = new Thread(new ParameterizedThreadStart(delegate { ChannelTestThread(channelsO); }));
+        var channelTestThread = new Thread(new ParameterizedThreadStart(delegate { ChannelTestThread(channelsO); }));
         channelTestThread.Name = "Channel Test Thread";
         channelTestThread.IsBackground = true;
         channelTestThread.Priority = ThreadPriority.Lowest;
@@ -878,9 +878,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       if (!(o2 is ListViewItem))
         return (0);
 
-      ListViewItem lvi1 = (ListViewItem)o2;
+      var lvi1 = (ListViewItem)o2;
       string str1 = lvi1.SubItems[ByColumn].Text;
-      ListViewItem lvi2 = (ListViewItem)o1;
+      var lvi2 = (ListViewItem)o1;
       string str2 = lvi2.SubItems[ByColumn].Text;
 
       int result;

@@ -327,7 +327,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       this.LogDebug("MD Plugin: registering ECM and EMM details");
 
       // Build a dictionary of CA system -> { ECM PID } -> { provider ID } from the PMT.
-      Dictionary<UInt16, Dictionary<UInt16, HashSet<UInt32>>> seenEcmPids = new Dictionary<UInt16, Dictionary<UInt16, HashSet<UInt32>>>();
+      var seenEcmPids = new Dictionary<UInt16, Dictionary<UInt16, HashSet<UInt32>>>();
 
       // First get ECMs from the PMT program CA descriptors.
       this.LogDebug("MD Plugin: reading PMT program CA descriptors...");
@@ -400,7 +400,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       }
 
       // Build a dictionary of CA system -> { EMM PID } -> { provider ID } from the CAT.
-      Dictionary<UInt16, Dictionary<UInt16, HashSet<UInt32>>> seenEmmPids = new Dictionary<UInt16, Dictionary<UInt16, HashSet<UInt32>>>();
+      var seenEmmPids = new Dictionary<UInt16, Dictionary<UInt16, HashSet<UInt32>>>();
       this.LogDebug("MD Plugin: reading CAT CA descriptors...");
       descEn = cat.CaDescriptors.GetEnumerator();
       while (descEn.MoveNext())
@@ -457,7 +457,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
             {
               // Prepare to attempt to link. Take a "backup" of the ECM PID provider IDs - we might need to
               // restore them if the match with this EMM PID doesn't work out.
-              UInt32[] ecmProviderIds = new UInt32[seenEcmPids[caSystemId][ecmPid].Count];
+              var ecmProviderIds = new UInt32[seenEcmPids[caSystemId][ecmPid].Count];
               seenEcmPids[caSystemId][ecmPid].CopyTo(ecmProviderIds);
               seenEcmPids[caSystemId][ecmPid].IntersectWith(seenEmmPids[caSystemId][emm]);
 
@@ -594,7 +594,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
 
         // Load configuration (if we have any).
         String configFile = PathManager.BuildAssemblyRelativePath("MDPLUGINS\\MDAPIProvID.xml");
-        XmlDocument doc = new XmlDocument();
+        var doc = new XmlDocument();
         bool configFound = false;
         if (File.Exists(configFile))
         {
@@ -702,7 +702,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
           this.LogDebug("MD Plugin: no configuration found");
 
           // Now the question: do we add configuration?
-          XmlElement mainNode = (XmlElement)doc.SelectSingleNode("/mdapi");
+          var mainNode = (XmlElement)doc.SelectSingleNode("/mdapi");
           bool fillOutConfig = false;
           if (mainNode == null || !mainNode.HasAttribute("fillout"))
           {
@@ -778,7 +778,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
             // None of the provider IDs referenced in the CA system
             // array have configuration yet, however that set is not
             // guaranteed to be distinct.
-            HashSet<uint> newProviders = new HashSet<uint>();
+            var newProviders = new HashSet<uint>();
             for (byte i = 0; i < programToDecode.CaSystemCount; i++)
             {
               if (!newProviders.Contains(programToDecode.CaSystems[i].ProviderId))
@@ -802,7 +802,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
             // None of the CA types referenced in the CA system
             // array have configuration yet, however that set is not
             // guaranteed to be distinct.
-            HashSet<uint> newCaTypes = new HashSet<uint>();
+            var newCaTypes = new HashSet<uint>();
             for (byte i = 0; i < programToDecode.CaSystemCount; i++)
             {
               if (!newProviders.Contains(programToDecode.CaSystems[i].CaType))
@@ -908,7 +908,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
         String configFile= PathManager.BuildAssemblyRelativePath("MDPLUGINS\\MDAPICards.xml");
         int slotCount = 1;
         String providerList = "all";
-        XmlDocument doc = new XmlDocument();
+        var doc = new XmlDocument();
         XmlNode rootNode = null;
         XmlNode tunerNode = null;
         if (File.Exists(configFile))
@@ -1106,7 +1106,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       this.LogDebug("MD Plugin: adding {0} decoding filter(s)", _slots.Capacity);
       for (int i = 0; i < _slots.Capacity; i++)
       {
-        DecodeSlot slot = new DecodeSlot();
+        var slot = new DecodeSlot();
         slot.Filter = (IBaseFilter)new MDAPIFilter();
         slot.CurrentChannel = null;
 
@@ -1135,7 +1135,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
         _slots.Add(slot);
 
         // Check whether the plugin supports extended capabilities.
-        IChangeChannel temp = slot.Filter as IChangeChannel;
+        var temp = slot.Filter as IChangeChannel;
         try
         {
           temp.SetPluginsDirectory(_configurationFolderPrefix + i);
@@ -1146,7 +1146,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
           this.LogError(ex, "MD Plugin: failed to set plugin directory");
           return false;
         }
-        IChangeChannel_Ex temp2 = slot.Filter as IChangeChannel_Ex;
+        var temp2 = slot.Filter as IChangeChannel_Ex;
         if (temp2 != null)
         {
           this.LogDebug("  filter {0}, extended capabilities supported", i + 1);
@@ -1155,7 +1155,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
         {
           this.LogDebug("  filter {0}, extended capabilities not supported", i + 1);
         }
-        IChangeChannel_Clear temp3 = slot.Filter as IChangeChannel_Clear;
+        var temp3 = slot.Filter as IChangeChannel_Clear;
         if (temp3 != null)
         {
           this.LogDebug("  filter {0}, channel clearing capabilities supported", i + 1);
@@ -1303,7 +1303,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
         this.LogDebug("MD Plugin: CAT not supplied");
         return true;
       }
-      DVBBaseChannel dvbChannel = channel as DVBBaseChannel;
+      var dvbChannel = channel as DVBBaseChannel;
       if (dvbChannel == null)
       {
         this.LogDebug("MD Plugin: channel is not a DVB channel");
@@ -1325,7 +1325,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
         foreach (DecodeSlot slot in _slots)
         {
           slot.CurrentChannel = null;
-          IChangeChannel_Clear clear = slot.Filter as IChangeChannel_Clear;
+          var clear = slot.Filter as IChangeChannel_Clear;
           if (clear != null)
           {
             clear.ClearChannel();
@@ -1337,7 +1337,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       {
         foreach (DecodeSlot slot in _slots)
         {
-          DVBBaseChannel currentService = slot.CurrentChannel as DVBBaseChannel;
+          var currentService = slot.CurrentChannel as DVBBaseChannel;
           if (currentService != null && currentService.ServiceId == dvbChannel.ServiceId)
           {
             // "Not selected" means stop decrypting the service.
@@ -1345,7 +1345,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
             {
               this.LogDebug("MD Plugin: found existing slot decrypting channel \"{0}\", freeing", currentService.Name);
               slot.CurrentChannel = null;
-              IChangeChannel_Clear clear = slot.Filter as IChangeChannel_Clear;
+              var clear = slot.Filter as IChangeChannel_Clear;
               if (clear != null)
               {
                 clear.ClearChannel();
@@ -1442,14 +1442,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       //DVB_MMI.DumpBinary(_pidBuffer, 0, PidsToDecodeSize);
       try
       {
-        IChangeChannel_Ex changeEx = freeSlot.Filter as IChangeChannel_Ex;
+        var changeEx = freeSlot.Filter as IChangeChannel_Ex;
         if (changeEx != null)
         {
           changeEx.ChangeChannelTP82_Ex(_programmeBuffer, _pidBuffer);
         }
         else
         {
-          IChangeChannel change = freeSlot.Filter as IChangeChannel;
+          var change = freeSlot.Filter as IChangeChannel;
           if (change != null)
           {
             change.ChangeChannelTP82(_programmeBuffer);

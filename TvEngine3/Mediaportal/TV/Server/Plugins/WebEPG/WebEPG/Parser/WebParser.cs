@@ -115,7 +115,7 @@ namespace WebEPG.Parser
         if (count > 0)
         {
           // get first match -> only the first match is supported for sublink templates
-          ProgramData subdata = (ProgramData)_sublinkParser.GetData(0);
+          var subdata = (ProgramData)_sublinkParser.GetData(0);
           if (subdata != null)
           {
             subdata.Preference = _sublinkPreference;
@@ -174,7 +174,7 @@ namespace WebEPG.Parser
       }
 
       // Get the parsed data at index
-      ProgramData data = ((ProgramData)_listingParser.GetData(index));
+      var data = ((ProgramData)_listingParser.GetData(index));
       if (data != null)
       {
         // Set the data preference -> important for merging data (eg data from sublink page)
@@ -191,7 +191,7 @@ namespace WebEPG.Parser
         // the URL for the sublink will be built and stored for future use see GetLinkedData()
         if (_sublinkParser != null)
         {
-          HTTPRequest sublinkRequest = new HTTPRequest(_sublinkRequest);
+          var sublinkRequest = new HTTPRequest(_sublinkRequest);
 // Minimum delay disabled because of a bug it wasn't being used anyway (always 0) and
 // possibly not needed to start using now.
 // Enabling has serious impact on grabspeed.

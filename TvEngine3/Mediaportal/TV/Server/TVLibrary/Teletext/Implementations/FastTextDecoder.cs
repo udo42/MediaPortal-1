@@ -78,7 +78,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       for (long index = 0; index < 6; index++)
       {
         // Retrieve page address
-        byte[] linkData = new byte[6];
+        var linkData = new byte[6];
 
         for (int i = 0; i < 6; i++)
         {
@@ -89,17 +89,17 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
         byte pageUnits = linkData[0];
         byte pageTens = linkData[1];
 
-        byte m1 = (byte)(linkData[3] >> 3);
-        byte m2 = (byte)((linkData[5] & 0x4) >> 2);
-        byte m3 = (byte)(linkData[5] >> 3);
-        byte m = (byte)((m3 << 2) + (m2 << 1) + m1);
+        var m1 = (byte)(linkData[3] >> 3);
+        var m2 = (byte)((linkData[5] & 0x4) >> 2);
+        var m3 = (byte)(linkData[5] >> 3);
+        var m = (byte)((m3 << 2) + (m2 << 1) + m1);
 
         // Magazine is complemented
         int Magazine = pageNumber / 0x100;
         if (Magazine == 8)
           Magazine = 0;
 
-        byte linkMagazine = (byte)(m ^ (Magazine % 8));
+        var linkMagazine = (byte)(m ^ (Magazine % 8));
 
         // Magazine encoded as 0 is magazine 8
         if (linkMagazine == 0)

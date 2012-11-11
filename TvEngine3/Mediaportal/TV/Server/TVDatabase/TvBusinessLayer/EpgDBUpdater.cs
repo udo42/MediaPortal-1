@@ -136,7 +136,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
       ProgramManagement.DeleteOldPrograms(dbChannel.IdChannel);
 
-      EpgHoleCollection holes = new EpgHoleCollection();
+      var holes = new EpgHoleCollection();
       if ((dbChannel.EpgHasGaps || _alwaysFillHoles) && !_alwaysReplace)
       {
         this.LogDebug("{0}: {1} is marked to have epg gaps. Calculating them...", _grabberName, dbChannel.DisplayName);
@@ -244,7 +244,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
     private Channel IsInsertAllowed(EpgChannel epgChannel)
     {
-      DVBBaseChannel dvbChannel = (DVBBaseChannel)epgChannel.Channel;
+      var dvbChannel = (DVBBaseChannel)epgChannel.Channel;
       //are there any epg infos for this channel?
       if (epgChannel.Programs.Count == 0)
       {
@@ -276,7 +276,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         return null;
       }
       //should we store epg for this channel?
-      var isRadio = dbChannel.MediaType == (decimal) MediaTypeEnum.Radio;
+      bool isRadio = dbChannel.MediaType == (decimal) MediaTypeEnum.Radio;
       if ((isRadio && _storeOnlySelectedChannelsRadio) || (!isRadio && _storeOnlySelectedChannels))
       {
         if (!dbChannel.GrabEpg)
@@ -419,7 +419,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       int parentRating;
       GetEPGLanguage(ep.Text, out title, out description, out genre, out starRating, out classification,
                      out parentRating);
-      NameValueCollection values = new NameValueCollection();
+      var values = new NameValueCollection();
       values.Add("%TITLE%", title);
       values.Add("%DESCRIPTION%", description);
       values.Add("%GENRE%", genre);
@@ -441,7 +441,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       }
       else
       {
-        ProgramBLL prgBLL = new ProgramBLL(dbProg);
+        var prgBLL = new ProgramBLL(dbProg);
         // this prevents a more detailed description getting overriden by a short description from another transponder
         if (prgBLL.Entity.Title == title)
         {

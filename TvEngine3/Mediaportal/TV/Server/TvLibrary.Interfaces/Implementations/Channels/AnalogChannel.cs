@@ -211,7 +211,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       _channelName = String.Empty;
       _channelFrequency = -1;
       _channelNumber = 4;
-      CountryCollection collection = new CountryCollection();
+      var collection = new CountryCollection();
       _country = collection.GetTunerCountryFromID(31);  // The Netherlands.
       _tunerSource = TunerInputType.Cable;
       _videoInputType = VideoInputType.Tuner;
@@ -362,7 +362,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     /// </returns>
     public override bool Equals(object obj)
     {
-      AnalogChannel ch = obj as AnalogChannel;
+      var ch = obj as AnalogChannel;
       if (ch == null)
       {
         return false;
@@ -452,7 +452,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     /// <returns><c>false</c> if the channels are on the same transponder, otherwise <c>true</c></returns>
     public bool IsDifferentTransponder(IChannel channel)
     {
-      AnalogChannel analogChannel = channel as AnalogChannel;
+      var analogChannel = channel as AnalogChannel;
       if (analogChannel == null)
       {
         return true;

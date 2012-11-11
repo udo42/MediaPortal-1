@@ -347,13 +347,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
         return;
       }
 
-      DVBSChannel ch = channel as DVBSChannel;
+      var ch = channel as DVBSChannel;
       if (ch == null)
       {
         return;
       }
 
-      NbcTuningParams command = new NbcTuningParams();
+      var command = new NbcTuningParams();
       // Default: tuning with "auto" is slower, so avoid it if possible.
       command.DvbsStandard = ProfDvbsStandard.Auto;
 
@@ -453,7 +453,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
         return false;
       }
 
-      BdaExtensionParams command = new BdaExtensionParams();
+      var command = new BdaExtensionParams();
       command.Command = BdaExtensionCommand.LnbPower;
       command.LnbPower = ProfLnbPower.Off;
       if (powerOn)
@@ -500,7 +500,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
         return false;
       }
 
-      BdaExtensionParams command = new BdaExtensionParams();
+      var command = new BdaExtensionParams();
       command.Command = BdaExtensionCommand.Tone;
       command.ToneBurst = ProfToneBurst.Off;
       command.ToneModulation = ProfToneModulation.Unmodulated;   // Can't use undefined, so use simple A instead.
@@ -564,7 +564,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
         return false;
       }
 
-      BdaExtensionParams propertyParams = new BdaExtensionParams();
+      var propertyParams = new BdaExtensionParams();
       propertyParams.DiseqcTransmitMessage = new byte[MaxDiseqcTxMessageLength];
       Buffer.BlockCopy(command, 0, propertyParams.DiseqcTransmitMessage, 0, command.Length);
       propertyParams.DiseqcTransmitMessageLength = (byte)command.Length;

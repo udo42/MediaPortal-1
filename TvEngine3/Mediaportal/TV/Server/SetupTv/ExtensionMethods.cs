@@ -28,7 +28,7 @@ namespace Mediaportal.TV.Server.SetupTV
   {
     public static IEnumerable<T> Randomize<T>(this IEnumerable<T> source)
     {
-      Random rnd = new Random();
+      var rnd = new Random();
       return source.OrderBy((item) => rnd.Next());
     }
   }

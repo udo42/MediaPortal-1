@@ -93,7 +93,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
       for (int i = 0; i < _channelPrograms.Count; ++i)
       {
         Program prog = _channelPrograms[i];
-        DateTime windowEnd = new DateTime(prog.StartTime.Year, prog.StartTime.Month, prog.StartTime.Day,
+        var windowEnd = new DateTime(prog.StartTime.Year, prog.StartTime.Month, prog.StartTime.Day,
                                           _timeWindow.End.Hour, _timeWindow.End.Minute, 0);
         if (windowEnd < prog.StartTime)
         {
@@ -108,12 +108,12 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
 
     private List<DateTimeRange> GetGrabbedDateTimeRanges()
     {
-      List<DateTimeRange> ranges = new List<DateTimeRange>();
+      var ranges = new List<DateTimeRange>();
       if (_channelPrograms.Count != 0)
       {
         _channelPrograms.SortIfNeeded();
         // First implementation: scan programs
-        DateTimeRange range = new DateTimeRange(_channelPrograms[0].StartTime, _channelPrograms[0].EndTime);
+        var range = new DateTimeRange(_channelPrograms[0].StartTime, _channelPrograms[0].EndTime);
         for (int i = 1; i < _channelPrograms.Count; i++)
         {
           Program currProg = _channelPrograms[i];

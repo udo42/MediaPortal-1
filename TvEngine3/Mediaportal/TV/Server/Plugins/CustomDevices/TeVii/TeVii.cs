@@ -478,7 +478,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
         return false;
       }
 
-      DVBSChannel ch = channel as DVBSChannel;
+      var ch = channel as DVBSChannel;
       bool toneOn = false;
       int lnbLof = ch.LnbType.LowBandFrequency;
       if (ch.Frequency > ch.LnbType.SwitchFrequency)

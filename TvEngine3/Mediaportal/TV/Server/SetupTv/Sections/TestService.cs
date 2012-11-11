@@ -246,7 +246,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private bool IsSameUser(IVirtualCard card)
     {
-      var isSameUser = txtUsername.Text.Length == 0 || card.User.Name == txtUsername.Text;
+      bool isSameUser = txtUsername.Text.Length == 0 || card.User.Name == txtUsername.Text;
       return isSameUser;
     }
 
@@ -505,7 +505,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
         foreach (IUser user1 in usersForCard.Values)
         {          
-          foreach (var subchannel in user1.SubChannels.Values)
+          foreach (ISubChannel subchannel in user1.SubChannels.Values)
           {
             if (subchannel.IdChannel == channelId)
             {
@@ -538,7 +538,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
         foreach (IUser user in usersForCard.Values)
         {
-          foreach (var subchannel in user.SubChannels.Values)
+          foreach (ISubChannel subchannel in user.SubChannels.Values)
           {
             if (subchannel.IdChannel == channelId)
             {
@@ -557,7 +557,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private void comboBoxGroups_SelectedIndexChanged(object sender, EventArgs e)
     {
-      ComboBoxExItem idItem = (ComboBoxExItem)comboBoxGroups.Items[comboBoxGroups.SelectedIndex];
+      var idItem = (ComboBoxExItem)comboBoxGroups.Items[comboBoxGroups.SelectedIndex];
       mpComboBoxChannels.Items.Clear();
       if (idItem.Id == -1)
       {        
@@ -593,7 +593,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           {
             imageIndex = 3;
           }
-          ComboBoxExItem item = new ComboBoxExItem(ch.DisplayName, imageIndex, ch.IdChannel);
+          var item = new ComboBoxExItem(ch.DisplayName, imageIndex, ch.IdChannel);
 
           mpComboBoxChannels.Items.Add(item);
         }
@@ -635,7 +635,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           {
             imageIndex = 3;
           }
-          ComboBoxExItem item = new ComboBoxExItem(ch.DisplayName, imageIndex, ch.IdChannel);
+          var item = new ComboBoxExItem(ch.DisplayName, imageIndex, ch.IdChannel);
           mpComboBoxChannels.Items.Add(item);
         }
       }

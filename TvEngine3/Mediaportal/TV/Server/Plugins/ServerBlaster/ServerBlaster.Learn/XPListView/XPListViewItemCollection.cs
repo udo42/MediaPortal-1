@@ -47,7 +47,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     public XPListViewItem Add(XPListViewItem item)
     {
-      XPListViewItem itm = ((XPListViewItem)base.Add(item));
+      var itm = ((XPListViewItem)base.Add(item));
       ListViewAPI.AddItemToGroup(((XPListView)itm.ListView), itm.Index, itm.GroupIndex);
       if (ItemAdded != null)
       {
@@ -58,13 +58,13 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     public new XPListViewItem Add(string text)
     {
-      XPListViewItem itm = new XPListViewItem(text);
+      var itm = new XPListViewItem(text);
       return Add(itm);
     }
 
     public XPListViewItem Add(string text, int imageIndex, int groupindex)
     {
-      XPListViewItem itm = new XPListViewItem(text, imageIndex, groupindex);
+      var itm = new XPListViewItem(text, imageIndex, groupindex);
       return Add(itm);
     }
 

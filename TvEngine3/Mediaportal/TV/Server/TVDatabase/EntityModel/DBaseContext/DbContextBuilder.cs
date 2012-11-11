@@ -43,12 +43,12 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.DBaseContext
         /// <returns></returns>
         public T BuildDbContext()
         {
-            var cn = _factory.CreateConnection();
+            DbConnection cn = _factory.CreateConnection();
             cn.ConnectionString = _cnStringSettings.ConnectionString;
 
-            var dbModel = Build(cn);
+            DbModel dbModel = Build(cn);
 
-            ObjectContext ctx = dbModel.Compile().CreateObjectContext<ObjectContext>(cn);
+            var ctx = dbModel.Compile().CreateObjectContext<ObjectContext>(cn);
             ctx.ContextOptions.LazyLoadingEnabled = _lazyLoadingEnabled;
 
             if (!ctx.DatabaseExists())

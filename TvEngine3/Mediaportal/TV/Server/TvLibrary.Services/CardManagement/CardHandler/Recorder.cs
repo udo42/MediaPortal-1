@@ -231,7 +231,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       bool isRecording = false;
       try
       {
-        var subchannel = GetSubChannel(userName, _cardHandler.UserManagement.GetRecentChannelId(userName));
+        ITvSubChannel subchannel = GetSubChannel(userName, _cardHandler.UserManagement.GetRecentChannelId(userName));
         if (subchannel != null)
         {
           isRecording = subchannel.IsRecording;
@@ -339,7 +339,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     private bool StopRecording(ref IUser user)
     {
       bool stop = false;
-      var recentSubChannelId = _cardHandler.UserManagement.GetRecentSubChannelId(user.Name);
+      int recentSubChannelId = _cardHandler.UserManagement.GetRecentSubChannelId(user.Name);
       user = _cardHandler.UserManagement.GetUserCopy(recentSubChannelId);
       ITvSubChannel subchannel = GetSubChannel(recentSubChannelId);
       if (subchannel != null)

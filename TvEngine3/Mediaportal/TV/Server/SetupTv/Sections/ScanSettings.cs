@@ -227,7 +227,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       foreach (SoftwareEncoder encoder in encoders)
       {
         found = false;
-        DisplaySoftwareEncoder displayEncoder = new DisplaySoftwareEncoder(encoder);
+        var displayEncoder = new DisplaySoftwareEncoder(encoder);
         if (devices1.Any(t => t.Name == encoder.Name))
         {
           found = true;
@@ -253,7 +253,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       foreach (SoftwareEncoder encoder in encoders)
       {
         found = false;
-        DisplaySoftwareEncoder displayEncoder = new DisplaySoftwareEncoder(encoder);
+        var displayEncoder = new DisplaySoftwareEncoder(encoder);
         for (int i = 0; i < devices2.Length; i++)
         {
           if (devices2[i].Name == encoder.Name)
@@ -282,7 +282,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private void MoveEncodersUp(DataGridView grid, BindingList<DisplaySoftwareEncoder> list)
     {
       DataGridViewSelectedRowCollection srows = grid.SelectedRows;
-      List<int> indices = new List<int>();
+      var indices = new List<int>();
       if (srows.Count == 0)
       {
         return;
@@ -322,7 +322,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private void MoveEncodersDown(DataGridView grid, BindingList<DisplaySoftwareEncoder> list)
     {
       DataGridViewSelectedRowCollection srows = grid.SelectedRows;
-      List<int> indices = new List<int>();
+      var indices = new List<int>();
       if (srows.Count == 0)
       {
         return;

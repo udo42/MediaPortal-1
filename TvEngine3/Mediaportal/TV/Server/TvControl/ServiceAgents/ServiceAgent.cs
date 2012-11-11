@@ -17,7 +17,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {
       if (!String.IsNullOrEmpty(hostname))
       {
-        var binding = ServiceHelper.GetHttpBinding();
+        BasicHttpBinding binding = ServiceHelper.GetHttpBinding();
         var endpoint = new EndpointAddress(ServiceHelper.GetEndpointURL(typeof (T), hostname));
 
         var channelFactory = new ChannelFactory<T>(binding, endpoint);

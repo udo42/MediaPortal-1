@@ -59,7 +59,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
       {
         if (ServiceManager.Instance.InternalControllerService != null)
         {
-          var card = ServiceManager.Instance.InternalControllerService.CardCollection[cardDetail.Card.IdCard];
+          ITvCardHandler card = ServiceManager.Instance.InternalControllerService.CardCollection[cardDetail.Card.IdCard];
           this.LogInfo("Controller:    card:{0} type:{1} users: {2}", cardDetail.Card.IdCard, card.Type, cardDetail.NumberOfOtherUsers);              
         }
       }

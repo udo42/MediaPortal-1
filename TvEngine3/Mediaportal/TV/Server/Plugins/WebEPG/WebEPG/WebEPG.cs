@@ -172,7 +172,7 @@ namespace WebEPG
       this.LogInfo("WebEPG: Loading Channel Config");
       _grabList = new Dictionary<string, List<grabInfo>>();
       // for each channel write info xmltv file.
-      List<ChannelMap> allChannels = new List<ChannelMap>(_config.Channels);
+      var allChannels = new List<ChannelMap>(_config.Channels);
       allChannels.AddRange(_config.RadioChannels);
       foreach (ChannelMap channel in allChannels)
       {
@@ -190,7 +190,7 @@ namespace WebEPG
             //xmltv.WriteChannel(channel.id, channel.displayName);
             _epgDataSink.WriteChannel(channel.id, channel.displayName);
 
-            grabInfo grab = new grabInfo();
+            var grab = new grabInfo();
             grab.name = channel.displayName;
             grab.id = channel.id;
             grab.grabber = channel.grabber;
@@ -200,7 +200,7 @@ namespace WebEPG
 
             if (!_grabList.ContainsKey(channel.id))
             {
-              List<grabInfo> grabs = new List<grabInfo>();
+              var grabs = new List<grabInfo>();
               grabs.Add(grab);
               _grabList.Add(channel.id, grabs);
             }
@@ -224,7 +224,7 @@ namespace WebEPG
           {
             if (merged.grabber != null)
             {
-              grabInfo grab = new grabInfo();
+              var grab = new grabInfo();
               grab.name = channel.displayName;
               grab.id = merged.id;
               grab.grabber = merged.grabber;
@@ -236,7 +236,7 @@ namespace WebEPG
 
               if (!_grabList.ContainsKey(merged.id))
               {
-                List<grabInfo> grabs = new List<grabInfo>();
+                var grabs = new List<grabInfo>();
                 grabs.Add(grab);
                 _grabList.Add(merged.id, grabs);
               }
@@ -381,7 +381,7 @@ namespace WebEPG
       this.LogInfo("Loading Config File: {0}", _configFile);
       try
       {
-        XmlSerializer s = new XmlSerializer(typeof (WebepgConfigFile));
+        var s = new XmlSerializer(typeof (WebepgConfigFile));
         using (var r = new StreamReader(_configFile)) 
         {
           _config = (WebepgConfigFile)s.Deserialize(r);

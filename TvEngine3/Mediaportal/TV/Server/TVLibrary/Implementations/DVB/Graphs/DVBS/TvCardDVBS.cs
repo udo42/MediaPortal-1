@@ -112,7 +112,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
       // Check if one of the supported interfaces is capable of sending DiSEqC commands.
       foreach (ICustomDevice deviceInterface in _customDeviceInterfaces)
       {
-        IDiseqcDevice diseqcDevice = deviceInterface as IDiseqcDevice;
+        var diseqcDevice = deviceInterface as IDiseqcDevice;
         if (diseqcDevice != null)
         {
           this.LogDebug("TvCardDvbS: found DiSEqC command interface");
@@ -130,15 +130,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
       this.LogDebug("TvCardDvbS: create tuning space");
 
       // Check if the system already has an appropriate tuning space.
-      SystemTuningSpaces systemTuningSpaces = new SystemTuningSpaces();
-      ITuningSpaceContainer container = systemTuningSpaces as ITuningSpaceContainer;
+      var systemTuningSpaces = new SystemTuningSpaces();
+      var container = systemTuningSpaces as ITuningSpaceContainer;
       if (container == null)
       {
         this.LogError("TvCardDvbS: failed to get the tuning space container");
         return;
       }
 
-      ITuner tuner = (ITuner)_filterNetworkProvider;
+      var tuner = (ITuner)_filterNetworkProvider;
 
       // Defaults: Ku linear "universal" LNB settings.
       int lowOsc = 9750000;
@@ -149,7 +149,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
       container.get_EnumTuningSpaces(out enumTuning);
       try
       {
-        ITuningSpace[] spaces = new ITuningSpace[2];
+        var spaces = new ITuningSpace[2];
         while (true)
         {
           int fetched;
@@ -191,7 +191,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
       _tuningSpace.put_HighOscillator(hiOsc);
       _tuningSpace.put_LNBSwitch(switchFrequency);
 
-      IDVBSLocator locator = (IDVBSLocator)new DVBSLocator();
+      var locator = (IDVBSLocator)new DVBSLocator();
       locator.put_CarrierFrequency(-1);
       locator.put_SymbolRate(-1);
       locator.put_Modulation(ModulationType.ModNotSet);
@@ -240,7 +240,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
     /// <returns>the assembled tune request</returns>
     protected override ITuneRequest AssembleTuneRequest(IChannel channel)
     {
-      DVBSChannel dvbsChannel = channel as DVBSChannel;
+      var dvbsChannel = channel as DVBSChannel;
       if (dvbsChannel == null)
       {
         this.LogDebug("TvCardDvbS: channel is not a DVB-S channel!!! {0}", channel.GetType().ToString());
@@ -253,7 +253,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
 
       ILocator locator;
       _tuningSpace.get_DefaultLocator(out locator);
-      IDVBSLocator dvbsLocator = (IDVBSLocator)locator;
+      var dvbsLocator = (IDVBSLocator)locator;
       dvbsLocator.put_CarrierFrequency((int)dvbsChannel.Frequency);
       dvbsLocator.put_SymbolRate(dvbsChannel.SymbolRate);
       dvbsLocator.put_SignalPolarisation(dvbsChannel.Polarisation);
@@ -262,7 +262,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
 
       ITuneRequest request;
       _tuningSpace.CreateTuneRequest(out request);
-      IDVBTuneRequest tuneRequest = (IDVBTuneRequest)request;
+      var tuneRequest = (IDVBTuneRequest)request;
       tuneRequest.put_ONID(dvbsChannel.NetworkId);
       tuneRequest.put_TSID(dvbsChannel.TransportId);
       tuneRequest.put_SID(dvbsChannel.ServiceId);

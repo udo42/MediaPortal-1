@@ -226,7 +226,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
         return;
       }
 
-      DVBSChannel ch = channel as DVBSChannel;
+      var ch = channel as DVBSChannel;
       if (ch == null)
       {
         return;
@@ -359,8 +359,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
         return false;
       }
 
-      DVBSChannel dvbsChannel = channel as DVBSChannel;
-      BdaExtensionParams command = new BdaExtensionParams();
+      var dvbsChannel = channel as DVBSChannel;
+      var command = new BdaExtensionParams();
       command.Frequency = (UInt32)dvbsChannel.Frequency / 1000;
       command.LnbLowBandLof = (UInt32)dvbsChannel.LnbType.LowBandFrequency / 1000;
       command.LnbHighBandLof = (UInt32)dvbsChannel.LnbType.HighBandFrequency / 1000;
@@ -421,7 +421,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
 
       // The driver interprets sending a DiSEqC message with length zero as
       // a tone burst command.
-      BdaExtensionParams command = new BdaExtensionParams();
+      var command = new BdaExtensionParams();
       command.DiseqcMessageLength = 0;
       command.DiseqcRepeats = 0;
       command.DiseqcForceHighVoltage = false;
@@ -475,7 +475,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
         return false;
       }
 
-      BdaExtensionParams message = new BdaExtensionParams();
+      var message = new BdaExtensionParams();
       message.DiseqcMessageLength = (uint)command.Length;
       message.DiseqcRepeats = 0;
       message.DiseqcForceHighVoltage = true;

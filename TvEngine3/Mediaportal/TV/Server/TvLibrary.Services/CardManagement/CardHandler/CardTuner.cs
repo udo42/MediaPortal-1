@@ -48,7 +48,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     private readonly IDictionary<int,ManualResetEvent> _tuneEvents = new Dictionary<int, ManualResetEvent>();
     private readonly object _tuneEvtLock = new object();
 
-    private ICardTuneReservationTicket _activeCardTuneReservationTicket;
     private CardStopState _cardStopState = CardStopState.Idle;
     private CardTuneState _cardTuneState = CardTuneState.Idle;
 
@@ -81,11 +80,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       set { _cardTuneState = value; }
     }
 
-    public ICardTuneReservationTicket ActiveCardTuneReservationTicket
-    {
-      get { return _activeCardTuneReservationTicket; }
-      set { _activeCardTuneReservationTicket = value; }
-    }
+    public ICardTuneReservationTicket ActiveCardTuneReservationTicket { get; set; }
 
     public List<ICardTuneReservationTicket> ReservationsForTune
     {
@@ -346,7 +341,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           return result;
         }
         bool cardActive = true;
-        HybridCard hybridCard = _cardHandler.Card as HybridCard;
+        var hybridCard = _cardHandler.Card as HybridCard;
         if (hybridCard != null)
         {
           if (!hybridCard.IsCardIdActive(user.CardId))

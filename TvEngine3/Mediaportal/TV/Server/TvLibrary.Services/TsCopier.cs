@@ -77,7 +77,7 @@ namespace Mediaportal.TV.Server.TVLibrary
             using (var writer = new FileStream(targetTs, FileMode.CreateNew, FileAccess.Write))
             {
               reader.Seek(_posStart, SeekOrigin.Begin);
-              byte[] buf = new byte[1024];
+              var buf = new byte[1024];
               int bytesRead = reader.Read(buf, 0, 1024);
               while (bytesRead > 0)
               {

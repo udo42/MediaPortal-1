@@ -110,19 +110,19 @@ namespace Mediaportal.TV.TvPlugin
 
     private void HideControl(int dwSenderId, int dwControlID)
     {
-      GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_HIDDEN, GetID, dwSenderId, dwControlID, 0, 0, null);
+      var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_HIDDEN, GetID, dwSenderId, dwControlID, 0, 0, null);
       OnMessage(msg);
     }
 
     private void ShowControl(int dwSenderId, int dwControlID)
     {
-      GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_VISIBLE, GetID, dwSenderId, dwControlID, 0, 0, null);
+      var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_VISIBLE, GetID, dwSenderId, dwControlID, 0, 0, null);
       OnMessage(msg);
     }
 
     private void FocusControl(int dwSenderId, int dwControlID, int dwParam)
     {
-      GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_SETFOCUS, GetID, dwSenderId, dwControlID, dwParam,
+      var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_SETFOCUS, GetID, dwSenderId, dwControlID, dwParam,
                                       0, null);
       OnMessage(msg);
     }
@@ -169,7 +169,7 @@ namespace Mediaportal.TV.TvPlugin
             }
             if (action.wID == Action.ActionType.ACTION_CONTEXT_MENU)
             {
-              TvFullScreen tvWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)Window.WINDOW_TVFULLSCREEN);
+              var tvWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)Window.WINDOW_TVFULLSCREEN);
               tvWindow.OnAction(new Action(Action.ActionType.ACTION_SHOW_OSD, 0, 0));
               tvWindow.OnAction(action);
             }
@@ -179,7 +179,7 @@ namespace Mediaportal.TV.TvPlugin
         case Action.ActionType.ACTION_PAUSE:
           {
             // push a message through to this window to handle the remote control button
-            GUIMessage msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int)Controls.OSD_PAUSE,
+            var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int)Controls.OSD_PAUSE,
                                                (int)Controls.OSD_PAUSE, 0, 0, null);
             OnMessage(msgSet);
 
@@ -213,7 +213,7 @@ namespace Mediaportal.TV.TvPlugin
             if (g_Player.IsTimeShifting)
             {
               this.LogDebug("TvOSD: user request to stop");
-              GUIDialogPlayStop dlgPlayStop =
+              var dlgPlayStop =
                 (GUIDialogPlayStop)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PLAY_STOP);
               if (dlgPlayStop != null)
               {
@@ -242,7 +242,7 @@ namespace Mediaportal.TV.TvPlugin
         case Action.ActionType.ACTION_FORWARD:
           {
             // push a message through to this window to handle the remote control button
-            GUIMessage msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int)Controls.OSD_FFWD,
+            var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int)Controls.OSD_FFWD,
                                                (int)Controls.OSD_FFWD, 0, 0, null);
             OnMessage(msgSet);
 
@@ -254,7 +254,7 @@ namespace Mediaportal.TV.TvPlugin
         case Action.ActionType.ACTION_REWIND:
           {
             // push a message through to this window to handle the remote control button
-            GUIMessage msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int)Controls.OSD_REWIND,
+            var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int)Controls.OSD_REWIND,
                                                (int)Controls.OSD_REWIND, 0, 0, null);
             OnMessage(msgSet);
 
@@ -266,7 +266,7 @@ namespace Mediaportal.TV.TvPlugin
         case Action.ActionType.ACTION_OSD_SHOW_VALUE_PLUS:
           {
             // push a message through to this window to handle the remote control button
-            GUIMessage msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int)Controls.OSD_SKIPFWD,
+            var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int)Controls.OSD_SKIPFWD,
                                                (int)Controls.OSD_SKIPFWD, 0, 0, null);
             OnMessage(msgSet);
             return;
@@ -275,7 +275,7 @@ namespace Mediaportal.TV.TvPlugin
         case Action.ActionType.ACTION_OSD_SHOW_VALUE_MIN:
           {
             // push a message through to this window to handle the remote control button
-            GUIMessage msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int)Controls.OSD_SKIPBWD,
+            var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int)Controls.OSD_SKIPBWD,
                                                (int)Controls.OSD_SKIPBWD, 0, 0, null);
             OnMessage(msgSet);
             return;
@@ -299,7 +299,7 @@ namespace Mediaportal.TV.TvPlugin
            (action.wID == Action.ActionType.ACTION_KEY_PRESSED && action.m_key != null &&
             (char)action.m_key.KeyChar >= '0' && (char)action.m_key.KeyChar <= '9'))
       {
-        TvFullScreen TVWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)Window.WINDOW_TVFULLSCREEN);
+        var TVWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)Window.WINDOW_TVFULLSCREEN);
         if (TVWindow != null)
         {
           TVWindow.OnKeyCode((char)action.m_key.KeyChar);
@@ -339,7 +339,7 @@ namespace Mediaportal.TV.TvPlugin
             FocusControl(GetID, (int)Controls.OSD_PLAY, 0); // set focus to play button by default when window is shown
             ShowPrograms();
             QueueAnimation(AnimationType.WindowOpen);
-            for (int i = (int)Controls.Panel1; i < (int)Controls.Panel2; ++i)
+            for (var i = (int)Controls.Panel1; i < (int)Controls.Panel2; ++i)
             {
               ShowControl(GetID, i);
             }
@@ -594,7 +594,7 @@ namespace Mediaportal.TV.TvPlugin
               if (isSubMenuVisible)
               {
                 // set the controls values
-                GUISliderControl pControl = (GUISliderControl)GetControl((int)Controls.OSD_SUBTITLE_DELAY);
+                var pControl = (GUISliderControl)GetControl((int)Controls.OSD_SUBTITLE_DELAY);
                 pControl.SpinType = GUISpinControl.SpinType.SPIN_CONTROL_TYPE_FLOAT;
                 pControl.FloatInterval = 1;
                 pControl.SetRange(-10, 10);
@@ -634,7 +634,7 @@ namespace Mediaportal.TV.TvPlugin
               if (isSubMenuVisible) // is sub menu on?
               {
                 // set the controls values
-                float fPercent = (float)(100 * (g_Player.CurrentPosition / g_Player.Duration));
+                var fPercent = (float)(100 * (g_Player.CurrentPosition / g_Player.Duration));
                 SetSliderValue(0.0f, 100.0f, fPercent, (int)Controls.OSD_VIDEOPOS);
 
 
@@ -704,7 +704,7 @@ namespace Mediaportal.TV.TvPlugin
         //    if (null!=pControl) pControl.Percentage=(int)(100*fPercentage);			// Update our progress bar accordingly ...
 
         int iValue = g_Player.Volume;
-        GUISliderControl pSlider = GetControl((int)Controls.OSD_VOLUMESLIDER) as GUISliderControl;
+        var pSlider = GetControl((int)Controls.OSD_VOLUMESLIDER) as GUISliderControl;
         if (null != pSlider)
         {
           pSlider.Percentage = iValue; // Update our progress bar accordingly ...
@@ -729,23 +729,23 @@ namespace Mediaportal.TV.TvPlugin
       }
       else
       {
-        long currentPosition = (long)(g_Player.CurrentPosition);
+        var currentPosition = (long)(g_Player.CurrentPosition);
         int hh = (int)(currentPosition / 3600) % 100;
-        int mm = (int)((currentPosition / 60) % 60);
-        int ss = (int)((currentPosition / 1) % 60);
-        DateTime startTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hh, mm, ss);
+        var mm = (int)((currentPosition / 60) % 60);
+        var ss = (int)((currentPosition / 1) % 60);
+        var startTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hh, mm, ss);
 
-        long duration = (long)(g_Player.Duration);
+        var duration = (long)(g_Player.Duration);
         hh = (int)(duration / 3600) % 100;
         mm = (int)((duration / 60) % 60);
         ss = (int)((duration / 1) % 60);
-        DateTime endTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hh, mm, ss);
+        var endTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hh, mm, ss);
 
         strTime = String.Format("{0}-{1}",
                                 startTime.ToString("t", CultureInfo.CurrentCulture.DateTimeFormat),
                                 endTime.ToString("t", CultureInfo.CurrentCulture.DateTimeFormat));
       }
-      GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Controls.OSD_TIMEINFO, 0,
+      var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Controls.OSD_TIMEINFO, 0,
                                       0, null);
       msg.Label = strTime;
       OnMessage(msg); // ask our label to update it's caption
@@ -759,12 +759,12 @@ namespace Mediaportal.TV.TvPlugin
       {
         if (bSelected) // do we want the button to appear down?
         {
-          GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_SELECTED, GetID, 0, iButtonID, 0, 0, null);
+          var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_SELECTED, GetID, 0, iButtonID, 0, 0, null);
           OnMessage(msg);
         }
         else // or appear up?
         {
-          GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_DESELECTED, GetID, 0, iButtonID, 0, 0, null);
+          var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_DESELECTED, GetID, 0, iButtonID, 0, 0, null);
           OnMessage(msg);
         }
       }
@@ -774,9 +774,9 @@ namespace Mediaportal.TV.TvPlugin
     {
       int iX, iY;
 
-      GUIImage pImgNib = GetControl((int)Controls.OSD_SUBMENU_NIB) as GUIImage; // pointer to the nib graphic
-      GUIImage pImgBG = GetControl(iBackID) as GUIImage; // pointer to the background graphic
-      GUIToggleButtonControl pButton = GetControl(iButtonID) as GUIToggleButtonControl;
+      var pImgNib = GetControl((int)Controls.OSD_SUBMENU_NIB) as GUIImage; // pointer to the nib graphic
+      var pImgBG = GetControl(iBackID) as GUIImage; // pointer to the background graphic
+      var pButton = GetControl(iButtonID) as GUIToggleButtonControl;
       // pointer to the OSD menu button
 
       // check to see if we are currently showing a sub-menu and it's position is different
@@ -880,7 +880,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private void SetSliderValue(float fMin, float fMax, float fValue, int iControlID)
     {
-      GUISliderControl pControl = GetControl(iControlID) as GUISliderControl;
+      var pControl = GetControl(iControlID) as GUISliderControl;
       if (pControl == null)
       {
         return;
@@ -911,12 +911,12 @@ namespace Mediaportal.TV.TvPlugin
     {
       if (bValue)
       {
-        GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_SELECTED, GetID, 0, iControlID, 0, 0, null);
+        var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_SELECTED, GetID, 0, iControlID, 0, 0, null);
         OnMessage(msg);
       }
       else
       {
-        GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_DESELECTED, GetID, 0, iControlID, 0, 0, null);
+        var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_DESELECTED, GetID, 0, iControlID, 0, 0, null);
         OnMessage(msg);
       }
     }
@@ -929,7 +929,7 @@ namespace Mediaportal.TV.TvPlugin
       {
         case (int)Controls.OSD_VOLUMESLIDER:
           {
-            GUISliderControl pControl = GetControl(iControlID) as GUISliderControl;
+            var pControl = GetControl(iControlID) as GUISliderControl;
             if (null != pControl)
             {
               // no volume control yet so no code here at the moment
@@ -944,7 +944,7 @@ namespace Mediaportal.TV.TvPlugin
 
         case (int)Controls.OSD_VIDEOPOS:
           {
-            GUISliderControl pControl = GetControl(iControlID) as GUISliderControl;
+            var pControl = GetControl(iControlID) as GUISliderControl;
             if (null != pControl)
             {
               // Set mplayer's seek position to the percentage requested by the user
@@ -954,7 +954,7 @@ namespace Mediaportal.TV.TvPlugin
           break;
         case (int)Controls.OSD_SATURATION:
           {
-            GUISliderControl pControl = GetControl(iControlID) as GUISliderControl;
+            var pControl = GetControl(iControlID) as GUISliderControl;
             if (null != pControl)
             {
               // Set mplayer's seek position to the percentage requested by the user
@@ -965,7 +965,7 @@ namespace Mediaportal.TV.TvPlugin
           break;
         case (int)Controls.OSD_SHARPNESS:
           {
-            GUISliderControl pControl = GetControl(iControlID) as GUISliderControl;
+            var pControl = GetControl(iControlID) as GUISliderControl;
             if (null != pControl)
             {
               // Set mplayer's seek position to the percentage requested by the user
@@ -977,7 +977,7 @@ namespace Mediaportal.TV.TvPlugin
 
         case (int)Controls.OSD_BRIGHTNESS:
           {
-            GUISliderControl pControl = GetControl(iControlID) as GUISliderControl;
+            var pControl = GetControl(iControlID) as GUISliderControl;
             if (null != pControl)
             {
               // Set mplayer's seek position to the percentage requested by the user
@@ -988,7 +988,7 @@ namespace Mediaportal.TV.TvPlugin
           break;
         case (int)Controls.OSD_CONTRAST:
           {
-            GUISliderControl pControl = GetControl(iControlID) as GUISliderControl;
+            var pControl = GetControl(iControlID) as GUISliderControl;
             if (null != pControl)
             {
               // Set mplayer's seek position to the percentage requested by the user
@@ -999,7 +999,7 @@ namespace Mediaportal.TV.TvPlugin
           break;
         case (int)Controls.OSD_GAMMA:
           {
-            GUISliderControl pControl = GetControl(iControlID) as GUISliderControl;
+            var pControl = GetControl(iControlID) as GUISliderControl;
             if (null != pControl)
             {
               // Set mplayer's seek position to the percentage requested by the user
@@ -1066,7 +1066,7 @@ namespace Mediaportal.TV.TvPlugin
           {
             if (wID != 0) // check to see if list control has an action ID, remote can cause 0 based events
             {
-              GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0,
+              var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0,
                                               (int)Controls.OSD_SUBTITLE_LIST, 0, 0, null);
               OnMessage(msg); // retrieve the selected list item
               if (g_Player.SupportsCC) // Subtitle CC
@@ -1098,7 +1098,7 @@ namespace Mediaportal.TV.TvPlugin
 
         case (int)Controls.OSD_SUBTITLE_DELAY:
           {
-            GUISliderControl pControl = (GUISliderControl)GetControl(iControlID);
+            var pControl = (GUISliderControl)GetControl(iControlID);
             if (null != pControl && g_Player.EnableSubtitle)
             {
               if (pControl.FloatValue < m_subtitleDelay)
@@ -1173,14 +1173,14 @@ namespace Mediaportal.TV.TvPlugin
       int subStreamsCount = g_Player.SubtitleStreams;
 
       // tell the list control not to show the page x/y spin control
-      GUIListControl pControl = GetControl((int)Controls.OSD_SUBTITLE_LIST) as GUIListControl;
+      var pControl = GetControl((int)Controls.OSD_SUBTITLE_LIST) as GUIListControl;
       if (null != pControl)
       {
         pControl.SetPageControlVisible(false);
       }
 
       // empty the list ready for population
-      GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_RESET, GetID, 0,
+      var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_RESET, GetID, 0,
                                       (int)Controls.OSD_SUBTITLE_LIST, 0, 0, null);
       OnMessage(msg);
 
@@ -1195,14 +1195,14 @@ namespace Mediaportal.TV.TvPlugin
         string CC1 = "CC1";
 
         // create a list item object to add to the list
-        GUIListItem pItem = new GUIListItem();
+        var pItem = new GUIListItem();
         pItem.Label = CC1;
 
         if (currentSubtitleStream == -1)
           if (strActive != null) pItem.Label = "CC1" + " " + strActiveLabel;
 
         // add it ...
-        GUIMessage msg2 = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_ADD, GetID, 0,
+        var msg2 = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_ADD, GetID, 0,
                                          (int)Controls.OSD_SUBTITLE_LIST, 0, 0, pItem);
         OnMessage(msg2);
       }
@@ -1220,12 +1220,12 @@ namespace Mediaportal.TV.TvPlugin
         string strItem = String.Format(strLang);
 
         // create a list item object to add to the list
-        GUIListItem pItem = new GUIListItem(strItem);
+        var pItem = new GUIListItem(strItem);
 
         if (strActive != null) pItem.Label = strItem + " " + strActiveLabel;
 
         // add it ...
-        GUIMessage msg2 = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_ADD, GetID, 0,
+        var msg2 = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_ADD, GetID, 0,
                                          (int)Controls.OSD_SUBTITLE_LIST, 0, 0, pItem);
         OnMessage(msg2);
       }
@@ -1235,20 +1235,20 @@ namespace Mediaportal.TV.TvPlugin
       {
         if (currentSubtitleStream == -1)
         {
-          GUIMessage msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECT, GetID, 0,
+          var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECT, GetID, 0,
             (int)Controls.OSD_SUBTITLE_LIST, 0, 0, null);
           OnMessage(msgSet);
         }
         else
         {
-          GUIMessage msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECT, GetID, 0,
+          var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECT, GetID, 0,
             (int)Controls.OSD_SUBTITLE_LIST, currentSubtitleStream + 1, 0, null);
           OnMessage(msgSet);
         }
       }
       else
       {
-        GUIMessage msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECT, GetID, 0,
+        var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECT, GetID, 0,
           (int)Controls.OSD_SUBTITLE_LIST, g_Player.CurrentSubtitleStream, 0, null);
         OnMessage(msgSet);
       }
@@ -1557,10 +1557,10 @@ namespace Mediaportal.TV.TvPlugin
             GUIPropertyManager.SetProperty("#TV.View.thumb", strLogo);
           }
 
-          long currentPosition = (long)(g_Player.CurrentPosition);
+          var currentPosition = (long)(g_Player.CurrentPosition);
           startTime = Utils.SecondsToHMSString((int)currentPosition);
 
-          long duration = (long)(g_Player.Duration);
+          var duration = (long)(g_Player.Duration);
           endTime = Utils.SecondsToHMSString((int)duration);
 
           //remaining = "0";                    
@@ -1710,10 +1710,10 @@ namespace Mediaportal.TV.TvPlugin
         rec = TvRecorded.ActiveRecording();
         if (rec != null)
         {
-          long currentPosition = (long)(g_Player.CurrentPosition);
+          var currentPosition = (long)(g_Player.CurrentPosition);
           startTime = Utils.SecondsToHMSString((int)currentPosition);
 
-          long duration = (long)(g_Player.Duration);
+          var duration = (long)(g_Player.Duration);
           endTime = Utils.SecondsToHMSString((int)duration);
 
 

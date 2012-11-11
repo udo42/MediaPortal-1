@@ -187,14 +187,14 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     /// <returns>filename</returns>
     private static string GetCacheFileName(HTTPRequest Page)
     {
-      uint gethash = (uint)Page.Uri.GetHashCode();
+      var gethash = (uint)Page.Uri.GetHashCode();
 
       if (string.IsNullOrEmpty(Page.PostQuery))
       {
         return CACHE_DIR + "/" + Page.Host + "_" + gethash.ToString() + ".html";
       }
 
-      uint posthash = (uint)Page.PostQuery.GetHashCode();
+      var posthash = (uint)Page.PostQuery.GetHashCode();
 
       return CACHE_DIR + "/" + Page.Host + "_" + gethash.ToString() + "_" + posthash.ToString() + ".html";
     }

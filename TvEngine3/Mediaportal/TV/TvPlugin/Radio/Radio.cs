@@ -158,8 +158,8 @@ namespace Mediaportal.TV.TvPlugin.Radio
 
       SortMethod method = currentSortMethod;
       bool bAscending = m_bSortAscending;
-      Channel channel1 = item1.MusicTag as Channel;
-      Channel channel2 = item2.MusicTag as Channel;
+      var channel1 = item1.MusicTag as Channel;
+      var channel2 = item2.MusicTag as Channel;
       switch (method)
       {
         case SortMethod.Name:
@@ -206,8 +206,8 @@ namespace Mediaportal.TV.TvPlugin.Radio
         case SortMethod.Number:
           if (channel1 != null && channel2 != null)
           {
-            GroupMap channel1GroupMap = (GroupMap)item1.AlbumInfoTag;
-            GroupMap channel2GroupMap = (GroupMap)item2.AlbumInfoTag;
+            var channel1GroupMap = (GroupMap)item1.AlbumInfoTag;
+            var channel2GroupMap = (GroupMap)item2.AlbumInfoTag;
             int channel1GroupSort = channel1GroupMap.SortOrder;
             int channel2GroupSort = channel2GroupMap.SortOrder;
             if (bAscending)
@@ -308,7 +308,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
 
     public void ShowPlugin()
     {
-      RadioSetupForm setup = new RadioSetupForm();
+      var setup = new RadioSetupForm();
       setup.ShowDialog();
     }
 
@@ -373,7 +373,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
     {
       this.LogInfo("RadioHome:OnPageLoad");
       base.OnPageLoad();
-      GUIMessage msgStopRecorder = new GUIMessage(GUIMessage.MessageType.GUI_MSG_RECORDER_STOP, 0, 0, 0, 0, 0, null);
+      var msgStopRecorder = new GUIMessage(GUIMessage.MessageType.GUI_MSG_RECORDER_STOP, 0, 0, 0, 0, 0, null);
       GUIWindowManager.SendMessage(msgStopRecorder);      
       switch (currentSortMethod)
       {
@@ -536,7 +536,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
           {
             continue;
           }
-          GUIListItem item = new GUIListItem();
+          var item = new GUIListItem();
           item.Label = group.GroupName;
           item.IsFolder = true;
           item.MusicTag = group;
@@ -561,7 +561,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
             foreach (GroupMap map in maps)
             {
               Channel channel = map.Channel;
-              GUIListItem item = new GUIListItem();
+              var item = new GUIListItem();
 
               if (_currentChannel != null)
               {
@@ -607,7 +607,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
         }
         selectedGroup = group;
         lastFolder = currentFolder;
-        GUIListItem item = new GUIListItem();
+        var item = new GUIListItem();
         item.Label = "..";
         item.IsFolder = true;
         item.MusicTag = null;
@@ -663,7 +663,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
         GUIListItem item = facadeLayout[i];
         if (item != null)
         {
-          Channel channel = item.MusicTag as Channel;   
+          var channel = item.MusicTag as Channel;   
 
           if ((channel != null) && (_currentChannel != null))
           {
@@ -700,7 +700,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
 
     protected override void OnShowSort()
     {
-      GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
       if (dlg == null)
       {
         return;

@@ -26,7 +26,7 @@ namespace MediaPortal.Common.Utils.ExtensionMethods
   {
     public static void DisposeItem(object o)
     {
-      IDisposable disposable = o as IDisposable;
+      var disposable = o as IDisposable;
 
       if (disposable != null)
       {

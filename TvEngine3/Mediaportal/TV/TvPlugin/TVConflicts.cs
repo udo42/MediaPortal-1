@@ -92,7 +92,7 @@ namespace Mediaportal.TV.TvPlugin
       base.OnClicked(controlId, control, actionType);
       if (control == listConflicts)
       {
-        GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, control.GetID, 0, 0,
+        var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, control.GetID, 0, 0,
                                         null);
         OnMessage(msg);
         int iItem = msg.Param1;
@@ -128,7 +128,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private int GetSelectedItemNo()
     {
-      GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, listConflicts.GetID, 0, 0,
+      var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, listConflicts.GetID, 0, 0,
                                       null);
       OnMessage(msg);
       int iItem = msg.Param1;
@@ -146,7 +146,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private GUIListItem Schedule2ListItem(Schedule schedule)
     {
-      GUIListItem item = new GUIListItem();
+      var item = new GUIListItem();
       if (schedule == null)
       {
         return item;
@@ -190,10 +190,10 @@ namespace Mediaportal.TV.TvPlugin
       }
       else
       {
-        Schedule schedule = selectedItem.TVTag as Schedule;
-        Schedule conflictingSchedule = selectedItem.MusicTag as Schedule;
+        var schedule = selectedItem.TVTag as Schedule;
+        var conflictingSchedule = selectedItem.MusicTag as Schedule;
 
-        GUIListItem item = new GUIListItem();
+        var item = new GUIListItem();
         item.Label = "..";
         item.IsFolder = true;
         listConflicts.Add(item);
@@ -228,7 +228,7 @@ namespace Mediaportal.TV.TvPlugin
         {
           continue;
         }
-        Schedule rec = (Schedule)item.TVTag;
+        var rec = (Schedule)item.TVTag;
         if (rec == null)
         {
           continue;
@@ -361,7 +361,7 @@ namespace Mediaportal.TV.TvPlugin
         return;
       }
 
-      Schedule schedule = item.TVTag as Schedule;
+      var schedule = item.TVTag as Schedule;
       if (schedule == null)
       {
         return;
@@ -369,7 +369,7 @@ namespace Mediaportal.TV.TvPlugin
 
       if (schedule.ScheduleType == (int)ScheduleRecordingType.Once)
       {
-        GUIDialogYesNo dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_YES_NO);
+        var dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_YES_NO);
         if (null != dlgYesNo)
         {
           dlgYesNo.SetHeading(GUILocalizeStrings.Get(653)); //Delete this recording?
@@ -390,7 +390,7 @@ namespace Mediaportal.TV.TvPlugin
       }
       else // advanced recording
       {
-        GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+        var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
         if (dlg != null)
         {
           dlg.Reset();

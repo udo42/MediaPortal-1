@@ -61,7 +61,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     {
       IEnumerable<ProgramCategory> categories = ProgramCategoryManagement.ListAllProgramCategories();
 
-      foreach (var programCategory in categories)
+      foreach (ProgramCategory programCategory in categories)
       {
         _categories.Add(programCategory.Category, programCategory);
       }
@@ -84,8 +84,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     public int Compare(object x, object y)
     {
       if (x == y) return 0;
-      Program item1 = (Program)x;
-      Program item2 = (Program)y;
+      var item1 = (Program)x;
+      var item2 = (Program)y;
       if (item1 == null) return -1;
       if (item2 == null) return -1;
 
@@ -266,7 +266,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                         continue;
                       }
 
-                      ChannelPrograms newProgChan = new ChannelPrograms();
+                      var newProgChan = new ChannelPrograms();
                       newProgChan.Name = chan.DisplayName;
                       newProgChan.externalId = chan.ExternalId;
                       Programs.Add(newProgChan);
@@ -316,11 +316,11 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
            * 3. Create a program for each mapped channel
            */
           ///////////////////////////////////////////////////////////////////////////
-          Dictionary<string, List<Channel>> allChannelMappingsByexternalId = new Dictionary<string, List<Channel>>();
+          var allChannelMappingsByexternalId = new Dictionary<string, List<Channel>>();
 
           string previousexternalId = null;
           // one-to-many so we need a collection of channels for each externalId
-          List<Channel> eidMappedChannels = new List<Channel>();
+          var eidMappedChannels = new List<Channel>();
 
           for (int i = 0; i < allChannels.Count; i++)
           {
@@ -371,7 +371,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
               do
               {
-                ChannelPrograms channelPrograms = new ChannelPrograms();
+                var channelPrograms = new ChannelPrograms();
 
                 String nodeStart = xmlReader.GetAttribute("start");
                 String nodeStop = xmlReader.GetAttribute("stop");
@@ -703,7 +703,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                         prg.PreviouslyShown = repeat;
                         if (credits != null && credits.Count > 0)
                         {
-                          foreach (var credit in credits)
+                          foreach (ProgramCredit credit in credits)
                           {
                             prg.ProgramCredits.Add(credit);                            
                           }                          
@@ -739,7 +739,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
               _status.Programs = 0;
               _status.Status = "Sorting TV programs";
               if (showProgress && ShowProgress != null) ShowProgress(_status);
-              DateTime dtStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0, 0);
+              var dtStartDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 0, 0, 0, 0);
               //dtStartDate=dtStartDate.AddDays(-4);
 
               foreach (ChannelPrograms progChan in Programs)
@@ -764,7 +764,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
                 for (int i = 0; i < progChan.programs.Count; ++i)
                 {
-                  var prog = progChan.programs[i];
+                  Program prog = progChan.programs[i];
                   // don't import programs which have already ended...
                   if (prog.EndTime <= dtStartDate)
                   {
@@ -965,7 +965,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       long month = datetime % 100;
       datetime /= 100;
       long year = datetime;
-      DateTime dt = new DateTime((int)year, (int)month, (int)day, 0, 0, 0);
+      var dt = new DateTime((int)year, (int)month, (int)day, 0, 0, 0);
       dt = dt.AddHours(hour);
       dt = dt.AddMinutes(min);
       dt = dt.AddSeconds(sec);
@@ -991,10 +991,10 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       {
         if (Programs.Count == 0) return;
         Programs.Sort(this);
-        Program prevProg = (Program)Programs[0];
+        var prevProg = (Program)Programs[0];
         for (int i = 1; i < Programs.Count; i++)
         {
-          Program newProg = (Program)Programs[i];
+          var newProg = (Program)Programs[i];
           if (newProg.StartTime < prevProg.EndTime) // we have an overlap here
           {
             // let us find out which one is the correct one
@@ -1005,15 +1005,15 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
               continue;
             }
 
-            List<Program> prevList = new List<Program>();
-            List<Program> newList = new List<Program>();
+            var prevList = new List<Program>();
+            var newList = new List<Program>();
             prevList.Add(prevProg);
             newList.Add(newProg);
             Program syncPrev = prevProg;
             Program syncProg = newProg;
             for (int j = i + 1; j < Programs.Count; j++)
             {
-              Program syncNew = (Program)Programs[j];
+              var syncNew = (Program)Programs[j];
               if (syncPrev.EndTime == syncNew.StartTime)
               {
                 prevList.Add(syncNew);
@@ -1066,10 +1066,10 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     {
       Programs.Sort(this);
       dbEPG.Sort(this);
-      Program prevProg = (Program)Programs[0];
+      var prevProg = (Program)Programs[0];
       for (int i = 1; i < Programs.Count; i++)
       {
-        Program newProg = (Program)Programs[i];
+        var newProg = (Program)Programs[i];
         if (newProg.StartTime > prevProg.EndTime) // we have a gab here
         {
           // try to find data in the database
@@ -1117,16 +1117,16 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       {
         if (ldate < 0) return DateTime.MinValue;
         ldate /= 100L;
-        int minute = (int)(ldate % 100L);
+        var minute = (int)(ldate % 100L);
         ldate /= 100L;
-        int hour = (int)(ldate % 100L);
+        var hour = (int)(ldate % 100L);
         ldate /= 100L;
-        int day = (int)(ldate % 100L);
+        var day = (int)(ldate % 100L);
         ldate /= 100L;
-        int month = (int)(ldate % 100L);
+        var month = (int)(ldate % 100L);
         ldate /= 100L;
-        int year = (int)ldate;
-        DateTime dt = new DateTime(year, month, day, hour, minute, 0, 0);
+        var year = (int)ldate;
+        var dt = new DateTime(year, month, day, hour, minute, 0, 0);
         return dt;
       }
       catch (Exception) {}

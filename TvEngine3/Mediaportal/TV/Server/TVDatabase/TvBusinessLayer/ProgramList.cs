@@ -129,8 +129,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
             continue;
           }
 
-          List<Program> prevList = new List<Program>();
-          List<Program> newList = new List<Program>();
+          var prevList = new List<Program>();
+          var newList = new List<Program>();
           prevList.Add(prevProg);
           newList.Add(newProg);
           Program syncPrev = prevProg;
@@ -340,11 +340,11 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     /// <returns>A list of partition data</returns>
     public List<ProgramListPartition> GetPartitions()
     {
-      List<ProgramListPartition> partitions = new List<ProgramListPartition>();
+      var partitions = new List<ProgramListPartition>();
       if (Count != 0)
       {
         SortIfNeeded();
-        ProgramListPartition partition = new ProgramListPartition(this[0].IdChannel, this[0].StartTime, this[0].EndTime);
+        var partition = new ProgramListPartition(this[0].IdChannel, this[0].StartTime, this[0].EndTime);
         for (int i = 1; i < Count; i++)
         {
           Program currProg = this[i];
@@ -369,7 +369,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     /// <returns>A list of channel IDs</returns>
     public List<int> GetChannelIds()
     {
-      List<int> channelIds = new List<int>();
+      var channelIds = new List<int>();
       if (Count != 0)
       {
         SortIfNeeded();

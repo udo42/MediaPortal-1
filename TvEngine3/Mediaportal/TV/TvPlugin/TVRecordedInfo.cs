@@ -99,7 +99,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private void OnKeep()
     {
-      GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
       if (dlg == null)
       {
         return;
@@ -159,7 +159,7 @@ namespace Mediaportal.TV.TvPlugin
           {
             ts = (currentProgram.KeepUntilDate.GetValueOrDefault(DateTime.MinValue) - DateTime.Now);
           }
-          int days = (int)ts.TotalDays;
+          var days = (int)ts.TotalDays;
           if (days >= 100)
           {
             days = 30;

@@ -69,7 +69,7 @@ namespace WebEPG.config
 
       for (int i = 0; i < configList.Count; i++)
       {
-        EPGConfigData channel = (EPGConfigData)configList[i];
+        var channel = (EPGConfigData)configList[i];
         if (channel.ChannelID != null && channel.DisplayName != null && channel.PrimaryGrabberID != null)
         {
           _ConfigList.Add(channel);
@@ -122,7 +122,7 @@ namespace WebEPG.config
     {
       for (int i = 0; i < _ConfigList.Count; i++)
       {
-        EPGConfigData channel = (EPGConfigData)_ConfigList[i];
+        var channel = (EPGConfigData)_ConfigList[i];
         if (channel.DisplayName == name)
         {
           return i;
@@ -148,7 +148,7 @@ namespace WebEPG.config
         int channelCount = xmlreader.GetValueAsInt("ChannelMap", "Count", 0);
         for (int i = 1; i <= channelCount; i++)
         {
-          EPGConfigData channel = new EPGConfigData();
+          var channel = new EPGConfigData();
           channel.ChannelID = xmlreader.GetValueAsString(i.ToString(), "ChannelID", "");
           channel.DisplayName = xmlreader.GetValueAsString(i.ToString(), "DisplayName", "");
 
@@ -189,7 +189,7 @@ namespace WebEPG.config
 
           for (int i = 0; i < _ConfigList.Count; i++)
           {
-            EPGConfigData channel = (EPGConfigData)_ConfigList[i];
+            var channel = (EPGConfigData)_ConfigList[i];
             xmlwriter.SetValue((i + 1).ToString(), "ChannelID", channel.ChannelID);
             xmlwriter.SetValue((i + 1).ToString(), "DisplayName", channel.DisplayName);
             xmlwriter.SetValue((i + 1).ToString(), "Grabber1", channel.PrimaryGrabberID);

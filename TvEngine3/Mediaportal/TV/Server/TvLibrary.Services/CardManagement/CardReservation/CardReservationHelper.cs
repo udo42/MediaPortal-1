@@ -237,7 +237,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation
     public static bool IsUserOnSameCurrentChannel(int currentChannelId, IUser user)
     {
       bool isUserOnSameCurrentChannel = false;
-      foreach (var subchannel in user.SubChannels.Values)
+      foreach (ISubChannel subchannel in user.SubChannels.Values)
       {
         isUserOnSameCurrentChannel = (subchannel.IdChannel == currentChannelId);
         if (isUserOnSameCurrentChannel)

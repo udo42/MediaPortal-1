@@ -795,7 +795,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
 
           this.LogDebug("Turbosight: response length = {0}", length);
           //DVB_MMI.DumpBinary(_mmiResponseBuffer, 0, length + 7);
-          byte[] responseBytes = new byte[length];
+          var responseBytes = new byte[length];
           int j = 7;
           for (int i = 0; i < length; i++)
           {
@@ -866,7 +866,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
         DVB_MMI.DumpBinary(content, 0, length);
         return;
       }
-      MmiApplicationType type = (MmiApplicationType)content[0];
+      var type = (MmiApplicationType)content[0];
       String title = Encoding.ASCII.GetString(content, 5, length - 5);
       this.LogDebug("  type         = {0}", type);
       this.LogDebug("  manufacturer = 0x{0:x}{1:x}", content[1], content[2]);
@@ -910,7 +910,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
       int numEntries = content[0];
 
       // Read all the entries into a list. Entries are NULL terminated.
-      List<String> entries = new List<String>();
+      var entries = new List<String>();
       String entry = String.Empty;
       int entryCount = 0;
       for (int i = 1; i < length; i++)
@@ -1172,13 +1172,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
       }
 
       // Parameters only need to be tweaked and set for DVB-S/2 tuning.
-      DVBSChannel ch = channel as DVBSChannel;
+      var ch = channel as DVBSChannel;
       if (ch == null)
       {
         return;
       }
 
-      NbcTuningParams command = new NbcTuningParams();
+      var command = new NbcTuningParams();
       // Default: tuning with "auto" is slower, so avoid it if possible.
       command.DvbsStandard = TbsDvbsStandard.Auto;
 
@@ -1293,7 +1293,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
         return false;
       }
 
-      TbsAccessParams accessParams = new TbsAccessParams();
+      var accessParams = new TbsAccessParams();
       accessParams.AccessMode = TbsAccessMode.LnbPower;
       if (powerOn)
       {
@@ -1347,7 +1347,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
 
       // Check whether a CI slot is present.
       _isCiSlotPresent = false;
-      int ciAccessProperty = (int)BdaExtensionProperty.CiAccess;
+      var ciAccessProperty = (int)BdaExtensionProperty.CiAccess;
       if (_isUsb)
       {
         ciAccessProperty = (int)UsbBdaExtensionProperty.CiAccess;
@@ -1647,7 +1647,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
 
       lock (this)
       {
-        MmiMessage selectMessage = new MmiMessage(TbsMmiMessageType.MenuAnswer, 3);
+        var selectMessage = new MmiMessage(TbsMmiMessageType.MenuAnswer, 3);
         selectMessage.Message[0] = 0;
         selectMessage.Message[1] = 0;
         selectMessage.Message[2] = choice;
@@ -1694,14 +1694,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
         return false;
       }
 
-      byte responseType = (byte)MmiResponseType.Answer;
+      var responseType = (byte)MmiResponseType.Answer;
       if (cancel)
       {
         responseType = (byte)MmiResponseType.Cancel;
       }
       lock (this)
       {
-        MmiMessage answerMessage = new MmiMessage(TbsMmiMessageType.Answer, answer.Length + 3);
+        var answerMessage = new MmiMessage(TbsMmiMessageType.Answer, answer.Length + 3);
         answerMessage.Message[0] = (byte)(answer.Length + 1);
         answerMessage.Message[1] = 0;
         answerMessage.Message[2] = responseType;
@@ -1737,7 +1737,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
         return false;
       }
 
-      TbsAccessParams accessParams = new TbsAccessParams();
+      var accessParams = new TbsAccessParams();
       accessParams.AccessMode = TbsAccessMode.Tone;
       bool success = true;
       int hr;
@@ -1821,7 +1821,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
         return false;
       }
 
-      TbsAccessParams accessParams = new TbsAccessParams();
+      var accessParams = new TbsAccessParams();
       accessParams.AccessMode = TbsAccessMode.Diseqc;
       accessParams.DiseqcTransmitMessageLength = (uint)command.Length;
       accessParams.DiseqcTransmitMessage = new byte[MaxDiseqcMessageLength];
@@ -1866,7 +1866,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
         Marshal.WriteByte(_generalBuffer, i, 0);
       }
 
-      TbsAccessParams accessParams = new TbsAccessParams();
+      var accessParams = new TbsAccessParams();
       accessParams.AccessMode = TbsAccessMode.Diseqc;
       int returnedByteCount;
       int hr = _propertySet.Get(_propertySetGuid, _tbsAccessProperty,

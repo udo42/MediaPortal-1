@@ -171,7 +171,7 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
         }
         finally
         {
-          foreach (var updateUser in updateUsers)
+          foreach (string updateUser in updateUsers)
           {
             _users[updateUser] = DateTime.Now;
           }

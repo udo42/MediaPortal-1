@@ -303,7 +303,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
         return;
       }
       // Generate mosaic
-      int[] mosaicY = new int[4];
+      var mosaicY = new int[4];
       mosaicY[0] = 0;
       mosaicY[1] = (h + 1) / 3;
       mosaicY[2] = (h * 2 + 1) / 3;
@@ -320,8 +320,8 @@ namespace Mediaportal.TV.TvPlugin.Teletext
       }
       Brush backBrush = new SolidBrush(bgColor);
       Brush foreBrush = new SolidBrush(GetColor(fColor));
-      Pen backPen = new Pen(backBrush, 1);
-      Pen forePen = new Pen(foreBrush, 1);
+      var backPen = new Pen(backBrush, 1);
+      var forePen = new Pen(foreBrush, 1);
       // Draw the graphic
       try
       {
@@ -532,12 +532,12 @@ namespace Mediaportal.TV.TvPlugin.Teletext
           string text = "" + chr2;
           graph.FillRectangle(backBrush, x, y, w, h);
           SizeF width = graph.MeasureString(text, _fontTeletext);
-          PointF xyPos = new PointF((float)x + ((w - ((int)width.Width)) / 2), y);
+          var xyPos = new PointF((float)x + ((w - ((int)width.Width)) / 2), y);
           graph.DrawString(text, _fontTeletext, foreBrush, xyPos);
           if (factor == 2)
           {
             graph.FillRectangle(backBrush, x, y + h, w, h);
-            Color[,] pixelColor = new Color[w + 1,h + 1];
+            var pixelColor = new Color[w + 1,h + 1];
             // save char
             for (int ypos = 0; ypos < h; ypos++)
             {
@@ -653,8 +653,8 @@ namespace Mediaportal.TV.TvPlugin.Teletext
       byte held_mosaic;
       bool flag = false;
       bool isBoxed = false;
-      byte[] pageChars = new byte[31 * 40];
-      int[] pageAttribs = new int[31 * 40];
+      var pageChars = new byte[31 * 40];
+      var pageAttribs = new int[31 * 40];
       bool row24 = false;
 
       if (pageBitmap == null)

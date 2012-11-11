@@ -74,7 +74,7 @@ namespace Mediaportal.TV.Server.SetupControls
     public static SectionSettings GetSection(string name)
     {
       SectionSettings sectionSettings = null;
-      SectionTreeNode sectionTreeNode = SettingsForm.SettingSections[name] as SectionTreeNode;
+      var sectionTreeNode = SettingsForm.SettingSections[name] as SectionTreeNode;
 
       if (sectionTreeNode != null)
       {
@@ -91,7 +91,7 @@ namespace Mediaportal.TV.Server.SetupControls
 
         while (enumerator.MoveNext())
         {
-          SectionTreeNode treeNode = enumerator.Value as SectionTreeNode;
+          var treeNode = enumerator.Value as SectionTreeNode;
 
           if (treeNode != null)
           {

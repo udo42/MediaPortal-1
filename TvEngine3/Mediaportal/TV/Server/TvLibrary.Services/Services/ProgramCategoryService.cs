@@ -11,7 +11,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public IList<ProgramCategory> ListAllProgramCategories()
     {
-      var listAllProgramCategories = ProgramCategoryManagement.ListAllProgramCategories();
+      IList<ProgramCategory> listAllProgramCategories = ProgramCategoryManagement.ListAllProgramCategories();
       return listAllProgramCategories;
     }
 

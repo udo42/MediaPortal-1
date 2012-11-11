@@ -99,7 +99,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     public TvMovieDatabase()
     {
       IEnumerable<ProgramCategory> categories = ProgramCategoryManagement.ListAllProgramCategories();
-      foreach (var programCategory in categories)
+      foreach (ProgramCategory programCategory in categories)
       {
         _categories.Add(programCategory.Category, programCategory);
       }
@@ -242,7 +242,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       {
         try
         {
-          TimeSpan restTime = new TimeSpan(Convert.ToInt32(SettingsManagement.GetSetting("TvMovieRestPeriod", "24").Value), 0, 0);
+          var restTime = new TimeSpan(Convert.ToInt32(SettingsManagement.GetSetting("TvMovieRestPeriod", "24").Value), 0, 0);
           DateTime lastUpdated = Convert.ToDateTime(SettingsManagement.GetSetting("TvMovieLastUpdate", "0").Value);          
           if (lastUpdated >= (DateTime.Now - restTime))
           {
@@ -264,7 +264,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
     public List<Channel> GetChannels()
     {
-      List<Channel> tvChannels = new List<Channel>();
+      var tvChannels = new List<Channel>();
       try
       {
         IList<Channel> allChannels = ChannelManagement.ListAllChannelsByMediaType(MediaTypeEnum.TV);
@@ -312,9 +312,9 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
         try
         {
           _databaseConnection.Open();
-          using (OleDbCommand databaseCommand = new OleDbCommand(sqlSelect, _databaseConnection))
+          using (var databaseCommand = new OleDbCommand(sqlSelect, _databaseConnection))
           {
-            using (OleDbDataAdapter databaseAdapter = new OleDbDataAdapter(databaseCommand))
+            using (var databaseAdapter = new OleDbDataAdapter(databaseCommand))
             {
               try
               {
@@ -375,7 +375,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
             }
             catch (Exception) {}
 
-            TVMChannel current = new TVMChannel(senderId,
+            var current = new TVMChannel(senderId,
                                                 senderKennung,
                                                 senderBez,
                                                 senderUrl,
@@ -443,7 +443,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
         this.LogInfo("TVMovie: Searching time share mappings for station: {0}", station.TvmEpgDescription);
         // get all tv movie channels
-        List<Mapping> channelNames = new List<Mapping>();
+        var channelNames = new List<Mapping>();
 
         foreach (Mapping mapping in mappingList)
           if (mapping.TvmEpgChannel == station.TvmEpgChannel)
@@ -474,7 +474,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
               Thread.Sleep(32);
 
             // make a copy of this list because Insert it done in syncronized threads - therefore the object reference would cause multiple/missing entries
-            List<Program> InsertCopy = new List<Program>(_tvmEpgProgs);            
+            var InsertCopy = new List<Program>(_tvmEpgProgs);            
             int debugCount = TvBLayer.InsertPrograms(InsertCopy, DeleteBeforeImportOption.OverlappingPrograms,
                                                      importPrio);
             this.LogInfo("TVMovie: Inserted {0} programs", debugCount);
@@ -534,7 +534,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     {
       int counter = 0;
       string sqlSelect = String.Empty;
-      StringBuilder sqlb = new StringBuilder();
+      var sqlb = new StringBuilder();
 
       // UNUSED: F16zu9 , live , untertitel , Dauer , Wiederholung
       //sqlb.Append("SELECT * "); // need for saver schema filling
@@ -552,7 +552,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       sqlSelect = string.Format(sqlb.ToString(), stationName, importTime.ToString("yyyy-MM-dd HH:mm:ss"));
       //("dd-MM-yyyy HH:mm:ss", System.Globalization.CultureInfo.CurrentCulture));
       OleDbTransaction databaseTransaction = null;
-      using (OleDbCommand databaseCommand = new OleDbCommand(sqlSelect, _databaseConnection))
+      using (var databaseCommand = new OleDbCommand(sqlSelect, _databaseConnection))
       {
         try
         {
@@ -758,7 +758,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
           if (_extendDescription)
           {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             // Avoid duplicate episode title
             if ((episode != String.Empty) && (episode != Sendung))
             {
@@ -850,7 +850,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     /// <returns></returns>
     private List<Mapping> GetMappingList()
     {
-      List<Mapping> mappingList = new List<Mapping>();
+      var mappingList = new List<Mapping>();
       try
       {
         IList<TvMovieMapping> mappingDb = TvMovieMapping.ListAll();
@@ -922,7 +922,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     private string BuildAudioDescription(bool audioDesc, bool dolbyDigital, bool dolbySurround, bool dolby, bool stereo,
                                          bool dualAudio)
     {
-      StringBuilder sb = new StringBuilder();
+      var sb = new StringBuilder();
       if (dolbyDigital)
         sb.AppendLine("Dolby Digital");
       if (dolbySurround)
@@ -991,7 +991,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       // "Spaß=1;Action=3;Erotik=1;Spannung=3;Anspruch=0"
       int posidx = 0;
       string detailedRating = String.Empty;
-      StringBuilder strb = new StringBuilder();
+      var strb = new StringBuilder();
 
       if (dbDetailedRating != String.Empty)
       {
@@ -1062,7 +1062,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     /// <returns></returns>
     private string BuildActorsDescription(string dbActors)
     {
-      StringBuilder strb = new StringBuilder();
+      var strb = new StringBuilder();
       // Mit: Bernd Schramm (Buster der Hund);Sandra Schwarzhaupt (Gwendolyn die Katze);Joachim Kemmer (Tortellini der Hahn);Mario Adorf (Fred der Esel);Katharina Thalbach (die Erbin);Peer Augustinski (Dr. Gier);Klausjürgen Wussow (Der Erzähler);Hartmut Engler (Hund Buster);Bert Henry (Drehbuch);Georg Reichel (Drehbuch);Dagmar Kekule (Drehbuch);Peter Wolf (Musik);Dagmar Kekulé (Drehbuch)
       strb.Append("Mit: ");
       if (_actorCount < 1)
@@ -1124,7 +1124,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       string UpdaterPath = Path.Combine(TvMovie.TVMovieProgramPath, @"tvuptodate.exe");
       if (File.Exists(UpdaterPath))
       {
-        Stopwatch BenchClock = new Stopwatch();
+        var BenchClock = new Stopwatch();
 
         try
         {
@@ -1142,7 +1142,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
             return UpdateDuration;
           }
 
-          ProcessStartInfo startInfo = new ProcessStartInfo("tvuptodate.exe");
+          var startInfo = new ProcessStartInfo("tvuptodate.exe");
           if (aHideUpdater)
             startInfo.Arguments = "/hidden";
           startInfo.FileName = UpdaterPath;

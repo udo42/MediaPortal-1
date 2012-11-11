@@ -25,7 +25,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
     /// </summary>    
     public void SaveSetting(string tagName, string value)
     {            
-      Setting setting = First<Setting>(s => s.Tag == tagName);
+      var setting = First<Setting>(s => s.Tag == tagName);
       if (setting == null)
       {
         setting = new Setting { Value = value, Tag = tagName };
@@ -55,7 +55,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
         return null;
       }
 
-      Setting setting = First<Setting>(s => s.Tag == tagName);
+      var setting = First<Setting>(s => s.Tag == tagName);
       if (setting == null)
       {
         setting = new Setting {Value = defaultValue, Tag = tagName};
@@ -72,7 +72,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
     /// <returns>A Setting object with the stored value, if it doesnt exist a empty string will be the value</returns>
     public Setting GetSetting(string tagName)
     {
-      var setting = GetOrSaveSetting(tagName, "");
+      Setting setting = GetOrSaveSetting(tagName, "");
       return setting;
     }
 

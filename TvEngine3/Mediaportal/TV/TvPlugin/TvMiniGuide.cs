@@ -636,7 +636,7 @@ namespace Mediaportal.TV.TvPlugin
 
       if (lstChannels.GetID == 37)
       {
-        GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_SETFOCUS, GetID, 0, 37, 0, 0, null);
+        var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_SETFOCUS, GetID, 0, 37, 0, 0, null);
         OnMessage(msg);
       }
 

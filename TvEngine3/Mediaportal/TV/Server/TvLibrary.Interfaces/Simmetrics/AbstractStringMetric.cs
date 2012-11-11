@@ -83,7 +83,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Simmetrics
     /// <returns>Results</returns>
     public float[] batchCompareSet(String[] set_Renamed, String comparator)
     {
-      float[] results = new float[set_Renamed.Length];
+      var results = new float[set_Renamed.Length];
       for (int strNum = 0; strNum < set_Renamed.Length; strNum++)
       {
         results[strNum] = getSimilarity(set_Renamed[strNum], comparator);

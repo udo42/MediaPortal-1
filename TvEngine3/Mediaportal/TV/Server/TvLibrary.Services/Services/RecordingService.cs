@@ -30,25 +30,25 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public Recording GetRecordingByFileName(string fileName)
     {
-      var recordingByFileName = RecordingManagement.GetRecordingByFileName(fileName);
+      Recording recordingByFileName = RecordingManagement.GetRecordingByFileName(fileName);
       return recordingByFileName;
     }
 
     public Recording GetActiveRecording(int scheduleId)
     {
-      var activeRecording = RecordingManagement.GetActiveRecording(scheduleId);
+      Recording activeRecording = RecordingManagement.GetActiveRecording(scheduleId);
       return activeRecording;
     }
 
     public Recording GetActiveRecordingByTitleAndChannel(string title, int idChannel)
     {
-      var activeRecordingByTitleAndChannel = RecordingManagement.GetActiveRecordingByTitleAndChannel(title, idChannel);
+      Recording activeRecordingByTitleAndChannel = RecordingManagement.GetActiveRecordingByTitleAndChannel(title, idChannel);
       return activeRecordingByTitleAndChannel;
     }
 
     public IList<Recording> ListAllActiveRecordingsByMediaType(MediaTypeEnum mediaType)
     {
-      var listAllActiveRecordingsByMediaType = RecordingManagement.ListAllActiveRecordingsByMediaType(mediaType);
+      IList<Recording> listAllActiveRecordingsByMediaType = RecordingManagement.ListAllActiveRecordingsByMediaType(mediaType);
       return listAllActiveRecordingsByMediaType;
     }
 

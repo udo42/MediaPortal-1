@@ -189,7 +189,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
     private void LoadSchedules()
     {
       listRecordings = new List<ScheduleBLL>();
-      foreach (var schedule in ServiceAgents.Instance.ScheduleServiceAgent.ListAllSchedules())
+      foreach (Schedule schedule in ServiceAgents.Instance.ScheduleServiceAgent.ListAllSchedules())
       {
         var scheduleBll = new ScheduleBLL(schedule);
         listRecordings.Add(scheduleBll);
@@ -225,7 +225,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
       {
         if (btnShow != null) btnShow.Clear();
         if (btnEpisode != null) btnEpisode.Clear();
-        VirtualKeyboard keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
+        var keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
         if (null == keyboard)
         {
           return;
@@ -256,7 +256,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
       }
       else if (control == btnSMSInput)
       {
-        VirtualKeyboard keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
+        var keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
         if (null == keyboard)
         {
           return;
@@ -292,7 +292,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
       }
       else if (control == btnSortBy)
       {
-        GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+        var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
         if (dlg == null)
         {
           return;
@@ -320,7 +320,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
       }
       else if (control == listView || control == titleView)
       {
-        GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, control.GetID, 0, 0,
+        var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, control.GetID, 0, 0,
                                         null);
         OnMessage(msg);
         int iItem = msg.Param1;
@@ -332,7 +332,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
       else if (control == btnLetter)
       {
         currentSearchMode = SearchMode.Title;
-        GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, controlId, 0, 0, null);
+        var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, controlId, 0, 0, null);
         OnMessage(msg);
         filterLetter = msg.Label;
         filterShow = String.Empty;
@@ -341,7 +341,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
       }
       else if (control == btnShow)
       {
-        GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, controlId, 0, 0, null);
+        var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, controlId, 0, 0, null);
         OnMessage(msg);
         filterShow = msg.Label;
         filterEpisode = String.Empty;
@@ -349,14 +349,14 @@ namespace Mediaportal.TV.TvPlugin.Radio
       }
       else if (control == btnEpisode)
       {
-        GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, controlId, 0, 0, null);
+        var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, controlId, 0, 0, null);
         OnMessage(msg);
         filterEpisode = msg.Label;
         Update();
       }
       else if (control == btnSearchDescription)
       {
-        VirtualKeyboard keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
+        var keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
         if (null == keyboard)
         {
           return;
@@ -457,7 +457,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
             }
             if (titleView.SubItemCount == 2)
             {
-              string subItem = (string)titleView.GetSubItem(1);
+              var subItem = (string)titleView.GetSubItem(1);
               int h = Int32.Parse(subItem.Substring(1));
               GUIGraphicsContext.ScaleVertical(ref h);
               titleView.Height = h;
@@ -477,7 +477,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
             }
             if (titleView.SubItemCount == 2)
             {
-              string subItem = (string)titleView.GetSubItem(0);
+              var subItem = (string)titleView.GetSubItem(0);
               int h = Int32.Parse(subItem.Substring(1));
               GUIGraphicsContext.ScaleVertical(ref h);
               titleView.Height = h;
@@ -528,8 +528,8 @@ namespace Mediaportal.TV.TvPlugin.Radio
         lblNumberOfItems.YPosition = listView.SpinY;
       }
 
-      List<Program> programs = new List<Program>();
-      List<Program> episodes = new List<Program>();
+      var programs = new List<Program>();
+      var episodes = new List<Program>();
       int itemCount = 0;
       switch (currentSearchMode)
       {
@@ -539,7 +539,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
             IEnumerable<ProgramCategory> genres = ServiceAgents.Instance.ProgramCategoryServiceAgent.ListAllProgramCategories();
             foreach (ProgramCategory genre in genres)
             {
-              GUIListItem item = new GUIListItem
+              var item = new GUIListItem
                                    {
                                      IsFolder = true,
                                      Label = genre.Category,
@@ -556,7 +556,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
           {
             listView.Clear();
             titleView.Clear();
-            GUIListItem item = new GUIListItem();
+            var item = new GUIListItem();
             item.IsFolder = true;
             item.Label = "..";
             item.Label2 = String.Empty;
@@ -666,7 +666,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
           {
             if (filterShow != String.Empty)
             {
-              GUIListItem item = new GUIListItem();
+              var item = new GUIListItem();
               item.IsFolder = true;
               item.Label = "..";
               item.Label2 = String.Empty;
@@ -772,7 +772,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
                                              program.StartTime.ToString("t", CultureInfo.CurrentCulture.DateTimeFormat),
                                              program.EndTime.ToString("t", CultureInfo.CurrentCulture.DateTimeFormat));
 
-              GUIListItem item = new GUIListItem();
+              var item = new GUIListItem();
               
 
               //check if we are filtering for specific show or just letter
@@ -881,7 +881,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
                                       program.StartTime.ToString("t", CultureInfo.CurrentCulture.DateTimeFormat),
                                       program.EndTime.ToString("t", CultureInfo.CurrentCulture.DateTimeFormat));
 
-              GUIListItem item = new GUIListItem();
+              var item = new GUIListItem();
               item.IsFolder = false;
               item.Label = TVUtil.GetDisplayTitle(program);
               item.Label2 = strTime;
@@ -1040,7 +1040,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
 
     private void OnSort()
     {
-      Comparer c = new Comparer(currentSortMethod, sortAscending);
+      var c = new Comparer(currentSortMethod, sortAscending);
       listView.Sort(c);
       titleView.Sort(c);
     }
@@ -1083,7 +1083,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
           }
           else
           {
-            Program program = item.TVTag as Program;
+            var program = item.TVTag as Program;
             if (filterShow == String.Empty)
             {
               if (item.Label == "..")
@@ -1121,7 +1121,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
               Update();
               return;
             }
-            Program program = item.TVTag as Program;
+            var program = item.TVTag as Program;
             if (filterShow == String.Empty)
             {
               filterShow = program.Title;
@@ -1133,7 +1133,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
           break;
         case SearchMode.Description:
           {
-            Program program = item.TVTag as Program;
+            var program = item.TVTag as Program;
             /*if (filterShow == String.Empty)
             {
               filterShow = program.title;
@@ -1177,7 +1177,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
       {
         return;
       }
-      GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
       if (dlg != null)
       {
         dlg.Reset();
@@ -1455,8 +1455,8 @@ namespace Mediaportal.TV.TvPlugin.Radio
           return 1;
         }
 
-        Program prog1 = item1.TVTag as Program;
-        Program prog2 = item2.TVTag as Program;
+        var prog1 = item1.TVTag as Program;
+        var prog2 = item2.TVTag as Program;
 
         int iComp = 0;
         switch (currentSortMethod)

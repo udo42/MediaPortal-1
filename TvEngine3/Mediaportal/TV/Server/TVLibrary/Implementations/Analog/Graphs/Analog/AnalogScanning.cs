@@ -163,7 +163,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
             }
           }
         }
-        List<IChannel> list = new List<IChannel>();
+        var list = new List<IChannel>();
         list.Add(channel);
         _card.IsScanning = false;
         return list;

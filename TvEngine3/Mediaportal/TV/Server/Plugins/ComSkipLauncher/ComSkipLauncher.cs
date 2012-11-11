@@ -144,9 +144,9 @@ namespace Mediaportal.TV.Server.Plugins.ComSkipLauncher
     {
       try
       {
-        TvServerEventArgs tvEvent = (TvServerEventArgs)eventArgs;
+        var tvEvent = (TvServerEventArgs)eventArgs;
         
-        var recording = RecordingManagement.GetRecording(tvEvent.Recording);
+        Recording recording = RecordingManagement.GetRecording(tvEvent.Recording);
         if (tvEvent.EventType == TvServerEventType.RecordingStarted && _runAtStart)
         {
           if (recording.IdChannel.HasValue)

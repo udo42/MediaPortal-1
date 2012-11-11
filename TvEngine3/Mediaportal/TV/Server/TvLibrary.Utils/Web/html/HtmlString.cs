@@ -45,7 +45,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.html
     /// <returns></returns>
     public static MatchTagCollection TagList(string source)
     {
-      MatchTagCollection list = new MatchTagCollection();
+      var list = new MatchTagCollection();
 
       for (int i = 0; i < source.Length; i++)
       {
@@ -61,7 +61,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.html
                (source[i + 1] >= 'A' && source[i + 1] <= 'Z') ||
                (source[i + 1] >= 'a' && source[i + 1] <= 'z')))
           {
-            MatchTag tag = new MatchTag(source, i, length);
+            var tag = new MatchTag(source, i, length);
             list.Add(tag);
             i = i + length - 1;
           }

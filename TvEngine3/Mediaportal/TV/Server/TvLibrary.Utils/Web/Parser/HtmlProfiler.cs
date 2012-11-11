@@ -77,7 +77,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
 
       try
       {
-        Regex templateMap = new Regex(_template.tagMap);
+        var templateMap = new Regex(_template.tagMap);
         _matches = templateMap.Matches(_page.tagMap);
       }
       catch (ArgumentException) // ex)
@@ -138,7 +138,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
     /// <returns>the profile</returns>
     private Profile BuildProfile(string source)
     {
-      Profile build = new Profile();
+      var build = new Profile();
       if (string.IsNullOrEmpty(source))
       {
         return build;

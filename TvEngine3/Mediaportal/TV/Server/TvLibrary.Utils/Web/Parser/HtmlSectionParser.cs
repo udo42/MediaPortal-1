@@ -133,7 +133,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
       int s = 0;
       for (int t = 0; t < _templateData.dataFields.Count; t++)
       {
-        DataField templateField = (DataField)_templateData.dataFields[t];
+        var templateField = (DataField)_templateData.dataFields[t];
 
         if (templateField.optional)
         {
@@ -145,7 +145,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
 
         if (s < sourceData.dataFields.Count)
         {
-          DataField sourceField = (DataField)sourceData.dataFields[s];
+          var sourceField = (DataField)sourceData.dataFields[s];
 
           if (!templateField.hasData &&
               templateField.htmlTag != null &&
@@ -164,7 +164,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
               int index = 0;
               for (int i = 0; i < templateField.dataElements.Count; i++)
               {
-                ElementData element = (ElementData)templateField.dataElements[i];
+                var element = (ElementData)templateField.dataElements[i];
 
                 int startPos;
                 if (index < sourceField.source.Length)
@@ -287,7 +287,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
     private Sections GetSections(string source)
     {
       source = StripTags(source);
-      Sections data = new Sections();
+      var data = new Sections();
       data.dataFields = new ArrayList();
       data.minFields = 0;
       data.optionalData = false;
@@ -419,17 +419,17 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
     /// <returns>array of elements</returns>
     private ArrayList GetElements(string source)
     {
-      ArrayList elements = new ArrayList();
+      var elements = new ArrayList();
 
       //source = HtmlString.ToAscii(source);
 
-      Regex elementTag = new Regex(@"<[#*][A-Z][^>]+>");
+      var elementTag = new Regex(@"<[#*][A-Z][^>]+>");
       MatchCollection elementTags = elementTag.Matches(source);
       for (int i = 0; i < elementTags.Count; i++)
       {
         Match tag = elementTags[i];
 
-        ElementData element = new ElementData();
+        var element = new ElementData();
         element.name = source.Substring(tag.Index, tag.Length);
         element.start = string.Empty;
         element.end = string.Empty;

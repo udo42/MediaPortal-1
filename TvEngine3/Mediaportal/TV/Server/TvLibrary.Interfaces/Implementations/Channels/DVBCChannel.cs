@@ -170,7 +170,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       {
         return false;
       }
-      DVBCChannel ch = obj as DVBCChannel;
+      var ch = obj as DVBCChannel;
       if (ch.ModulationType != ModulationType)
       {
         return false;
@@ -201,7 +201,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     /// <returns>true, if the channels are on the same transponder</returns>
     public override bool IsDifferentTransponder(IChannel channel)
     {
-      DVBCChannel dvbcChannel = channel as DVBCChannel;
+      var dvbcChannel = channel as DVBCChannel;
       if (dvbcChannel == null)
       {
         return true;

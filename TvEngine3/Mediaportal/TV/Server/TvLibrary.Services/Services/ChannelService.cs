@@ -15,31 +15,31 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public IList<Channel> GetAllChannelsByGroupIdAndMediaType(int groupId, MediaTypeEnum mediatype)
     {
-      var allChannelsByGroupIdAndMediaType = ChannelManagement.GetAllChannelsByGroupIdAndMediaType(groupId, mediatype);
+      IList<Channel> allChannelsByGroupIdAndMediaType = ChannelManagement.GetAllChannelsByGroupIdAndMediaType(groupId, mediatype);
       return allChannelsByGroupIdAndMediaType;
     }
 
     public IList<Channel> GetAllChannelsByGroupId(int groupId)
     {
-      var allChannelsByGroupId = ChannelManagement.GetAllChannelsByGroupId(groupId);
+      IList<Channel> allChannelsByGroupId = ChannelManagement.GetAllChannelsByGroupId(groupId);
       return allChannelsByGroupId;
     }
 
     public IList<Channel> ListAllChannels()
     {
-      var listAllChannels = ChannelManagement.ListAllChannels();
+      IList<Channel> listAllChannels = ChannelManagement.ListAllChannels();
       return listAllChannels;
     }
 
     public IList<Channel> ListAllChannels(ChannelIncludeRelationEnum includeRelations)
     {
-      var listAllChannels = ChannelManagement.ListAllChannels(includeRelations);
+      IList<Channel> listAllChannels = ChannelManagement.ListAllChannels(includeRelations);
       return listAllChannels;
     }
 
     public IList<Channel> ListAllVisibleChannelsByMediaType(MediaTypeEnum mediaType)
     {
-      var listAllVisisbleChannelsByMediaType = ChannelManagement.ListAllVisibleChannelsByMediaType(mediaType);
+      IList<Channel> listAllVisisbleChannelsByMediaType = ChannelManagement.ListAllVisibleChannelsByMediaType(mediaType);
       return listAllVisisbleChannelsByMediaType;
     }    
 
@@ -55,25 +55,25 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public IList<Channel> ListAllChannelsByMediaType(MediaTypeEnum mediaType)
     {
-      var listAllChannelsByMediaType = ChannelManagement.ListAllChannelsByMediaType(mediaType);
+      IList<Channel> listAllChannelsByMediaType = ChannelManagement.ListAllChannelsByMediaType(mediaType);
       return listAllChannelsByMediaType;
     }    
 
     public IList<Channel> ListAllChannelsByMediaType(MediaTypeEnum mediaType, ChannelIncludeRelationEnum includeRelations)
     {
-      var listAllChannelsByMediaType = ChannelManagement.ListAllChannelsByMediaType(mediaType, includeRelations);
+      IList<Channel> listAllChannelsByMediaType = ChannelManagement.ListAllChannelsByMediaType(mediaType, includeRelations);
       return listAllChannelsByMediaType;
     }
 
     public IList<Channel> GetAllChannelsByGroupIdAndMediaType(int idGroup, MediaTypeEnum mediaType, ChannelIncludeRelationEnum include)
     {
-      var allChannelsByGroupIdAndMediaType = ChannelManagement.GetAllChannelsByGroupIdAndMediaType(idGroup, mediaType, include);
+      IList<Channel> allChannelsByGroupIdAndMediaType = ChannelManagement.GetAllChannelsByGroupIdAndMediaType(idGroup, mediaType, include);
       return allChannelsByGroupIdAndMediaType;
     }    
 
     public IList<Channel> GetChannelsByName(string channelName)
     {
-      var channelsByName = ChannelManagement.GetChannelsByName(channelName).ToList();
+      List<Channel> channelsByName = ChannelManagement.GetChannelsByName(channelName).ToList();
       return channelsByName;
     }
 
@@ -84,7 +84,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public Channel GetChannel(int idChannel)
     {
-      var channel = ChannelManagement.GetChannel(idChannel);
+      Channel channel = ChannelManagement.GetChannel(idChannel);
       return channel;
     }
 
@@ -100,13 +100,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public TuningDetail GetTuningDetail(DVBBaseChannel dvbChannel)
     {
-      var tuningDetail = ChannelManagement.GetTuningDetail(dvbChannel);
+      TuningDetail tuningDetail = ChannelManagement.GetTuningDetail(dvbChannel);
       return tuningDetail;
     }
 
     public TuningDetail GetTuningDetailCustom(DVBBaseChannel dvbChannel, TuningDetailSearchEnum tuningDetailSearchEnum)
     {
-      var tuningDetail = ChannelManagement.GetTuningDetail(dvbChannel, tuningDetailSearchEnum);
+      TuningDetail tuningDetail = ChannelManagement.GetTuningDetail(dvbChannel, tuningDetailSearchEnum);
       return tuningDetail;
     }
 

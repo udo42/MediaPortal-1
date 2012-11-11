@@ -154,7 +154,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
 
     public virtual void Shuffle()
     {
-      Random r = new Random(DateTime.Now.Millisecond);
+      var r = new Random(DateTime.Now.Millisecond);
 
       // iterate through each catalogue item performing arbitrary swaps
       for (int item = 0; item < Count; item++)

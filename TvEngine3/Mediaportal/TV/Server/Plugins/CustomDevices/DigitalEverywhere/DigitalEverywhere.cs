@@ -725,7 +725,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
 
       // Most of this info is not very useful.
       //DVB_MMI.DumpBinary(_generalBuffer, 0, FrontEndStatusInfoSize);
-      FrontEndStatusInfo status = (FrontEndStatusInfo)Marshal.PtrToStructure(_generalBuffer, typeof(FrontEndStatusInfo));
+      var status = (FrontEndStatusInfo)Marshal.PtrToStructure(_generalBuffer, typeof(FrontEndStatusInfo));
       this.LogDebug("  frequency        = {0} kHz", status.Frequency);
       this.LogDebug("  bit error rate   = {0}", status.BitErrorRate);
       this.LogDebug("  signal strength  = {0}", status.SignalStrength);
@@ -745,7 +745,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
     private void ReadApplicationInformation()
     {
       this.LogDebug("Digital Everywhere: request application information");
-      CaData data = new CaData(DeCiMessageTag.ApplicationInfo);
+      var data = new CaData(DeCiMessageTag.ApplicationInfo);
       Marshal.StructureToPtr(data, _generalBuffer, true);
       int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.MmiCamToHost,
         _generalBuffer, CaDataSize,
@@ -876,7 +876,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
           if ((ciState & DeCiState.MmiRequest) != 0)
           {
             this.LogDebug("Digital Everywhere: MMI data available, sending request");
-            CaData data = new CaData(DeCiMessageTag.Mmi);
+            var data = new CaData(DeCiMessageTag.Mmi);
             Marshal.StructureToPtr(data, _mmiBuffer, true);
             hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.MmiCamToHost,
               _mmiBuffer, CaDataSize,
@@ -907,7 +907,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
 
             this.LogDebug("Digital Everywhere: handling data");
             data = (CaData)Marshal.PtrToStructure(_mmiBuffer, typeof(CaData));
-            byte[] objectData = new byte[data.DataLength];
+            var objectData = new byte[data.DataLength];
             Array.Copy(data.Data, objectData, data.DataLength);
             DvbMmiHandler.HandleMmiData(objectData, ref _ciMenuCallbacks);
           }
@@ -1011,7 +1011,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
       }
 
       // We need to tweak the modulation and inner FEC rate, but only for DVB-S/2 channels.
-      DVBSChannel ch = channel as DVBSChannel;
+      var ch = channel as DVBSChannel;
       if (ch == null)
       {
         return;
@@ -1036,7 +1036,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
       {
         // Digital Everywhere uses the inner FEC rate parameter to encode the
         // pilot and roll-off as well as the FEC rate.
-        int rate = (int)ch.InnerFecRate;
+        var rate = (int)ch.InnerFecRate;
         if (ch.Pilot == Pilot.Off)
         {
           rate += 64;
@@ -1165,7 +1165,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
       //   Symbol Rate: 27500, Modulation: 8 PSK, FEC rate: 5/6, Pilot: On, Roll-Off: 0.35
       //   Symbol Rate: 30000, Modulation: 8 PSK, FEC rate: 3/4, Pilot: On, Roll-Off: 0.35
       bool fullTransponder = true;
-      ushort[] filterPids = new ushort[MaxPidFilterPids];
+      var filterPids = new ushort[MaxPidFilterPids];
       byte validPidCount = 0;
       if (pids == null || pids.Count == 0 || (modulation != ModulationType.Mod8Psk && !forceEnable))
       {
@@ -1204,7 +1204,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
       int bufferSize = DvbsPidFilterParamsSize;
       if (_tunerType == CardType.DvbS)
       {
-        DvbsPidFilterParams filter = new DvbsPidFilterParams();
+        var filter = new DvbsPidFilterParams();
         filter.CurrentTransponder = true;
         filter.FullTransponder = fullTransponder;
         filter.NumberOfValidPids = validPidCount;
@@ -1215,7 +1215,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
       {
         property = BdaExtensionProperty.SelectPidsDvbT;
         bufferSize = DvbtPidFilterParamsSize;
-        DvbtPidFilterParams filter = new DvbtPidFilterParams();
+        var filter = new DvbtPidFilterParams();
         filter.CurrentTransponder = true;
         filter.FullTransponder = fullTransponder;
         filter.NumberOfValidPids = validPidCount;
@@ -1276,11 +1276,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
 
       int hr;
 
-      DVBSChannel dvbsChannel = channel as DVBSChannel;
+      var dvbsChannel = channel as DVBSChannel;
       if (dvbsChannel != null && _tunerType == CardType.DvbS)
       {
         // LNB settings must be applied.
-        LnbParamInfo lnbParams = new LnbParamInfo();
+        var lnbParams = new LnbParamInfo();
         lnbParams.NumberOfAntennas = 1;
         lnbParams.LnbParams = new LnbParams[MaxLnbParamCount];
         lnbParams.LnbParams[0].AntennaNumber = 0;
@@ -1302,7 +1302,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
           this.LogDebug("Digital Everywhere: failed to apply LNB settings, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         }
 
-        DvbsMultiplexParams tuneRequest = new DvbsMultiplexParams();
+        var tuneRequest = new DvbsMultiplexParams();
         tuneRequest.Frequency = (UInt32)dvbsChannel.Frequency;
         tuneRequest.SymbolRate = (UInt32)dvbsChannel.SymbolRate;
         tuneRequest.Lnb = 0;    // To match the AntennaNumber value above.
@@ -1310,7 +1310,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
         // OnBeforeTune() mixed pilot and roll-off settings into the top four bits of the least significant
         // inner FEC rate byte. It seemms that this custom tuning method doesn't support setting pilot and
         // roll-off in this way, so we throw the bits away.
-        BinaryConvolutionCodeRate rate = (BinaryConvolutionCodeRate)((int)dvbsChannel.InnerFecRate & 0xf);
+        var rate = (BinaryConvolutionCodeRate)((int)dvbsChannel.InnerFecRate & 0xf);
         if (rate == BinaryConvolutionCodeRate.Rate1_2)
         {
           tuneRequest.InnerFecRate = DeFecRate.Rate1_2;
@@ -1352,10 +1352,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
       }
       else
       {
-        DVBTChannel dvbtChannel = channel as DVBTChannel;
+        var dvbtChannel = channel as DVBTChannel;
         if (dvbtChannel is DVBTChannel && _tunerType == CardType.DvbT)
         {
-          DvbtMultiplexParams tuneRequest = new DvbtMultiplexParams();
+          var tuneRequest = new DvbtMultiplexParams();
           tuneRequest.Frequency = (UInt32)dvbtChannel.Frequency;
           tuneRequest.Bandwidth = DeOfdmBandwidth.Bandwidth8;
           if (dvbtChannel.Bandwidth == 7000)
@@ -1487,7 +1487,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
 
       bool success = CloseInterface();
 
-      CaData data = new CaData(DeCiMessageTag.Reset);
+      var data = new CaData(DeCiMessageTag.Reset);
       data.DataLength = 1;
       data.Data[0] = (byte)DeResetType.ForcedHardwareReset;
 
@@ -1579,7 +1579,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
         return false;
       }
 
-      CaData data = new CaData(DeCiMessageTag.Pmt);
+      var data = new CaData(DeCiMessageTag.Pmt);
       data.DataLength = (ushort)(rawPmt.Count + 2);
       data.Data[0] = (byte)listAction;
       data.Data[1] = (byte)command;
@@ -1636,7 +1636,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
     public bool EnterCIMenu()
     {
       this.LogDebug("Digital Everywhere: enter menu");
-      CaData data = new CaData(DeCiMessageTag.EnterMenu);
+      var data = new CaData(DeCiMessageTag.EnterMenu);
       return SendMmi(data);
     }
 
@@ -1647,7 +1647,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
     public bool CloseCIMenu()
     {
       this.LogDebug("Digital Everywhere: close menu");
-      CaData data = new CaData(DeCiMessageTag.Mmi);
+      var data = new CaData(DeCiMessageTag.Mmi);
       byte[] apdu = DvbMmiHandler.CreateMmiClose(0);
       data.DataLength = (UInt16)apdu.Length;
       Buffer.BlockCopy(apdu, 0, data.Data, 0, apdu.Length);
@@ -1662,7 +1662,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
     public bool SelectMenu(byte choice)
     {
       this.LogDebug("Digital Everywhere: select menu entry, choice = {0}", choice);
-      CaData data = new CaData(DeCiMessageTag.Mmi);
+      var data = new CaData(DeCiMessageTag.Mmi);
       byte[] apdu = DvbMmiHandler.CreateMmiMenuAnswer(choice);
       data.DataLength = (UInt16)apdu.Length;
       Buffer.BlockCopy(apdu, 0, data.Data, 0, apdu.Length);
@@ -1683,7 +1683,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
       }
       this.LogDebug("Digital Everywhere: send menu answer, answer = {0}, cancel = {1}", answer, cancel);
 
-      CaData data = new CaData(DeCiMessageTag.Mmi);
+      var data = new CaData(DeCiMessageTag.Mmi);
       MmiResponseType responseType = MmiResponseType.Answer;
       if (cancel)
       {
@@ -1717,7 +1717,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
         return false;
       }
 
-      LnbCommand lnbCommand = new LnbCommand();
+      var lnbCommand = new LnbCommand();
       lnbCommand.Voltage = 0xff;
       lnbCommand.Tone22k = De22k.Off;
       if (tone22kState == Tone22k.On)
@@ -1777,7 +1777,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
         return false;
       }
 
-      LnbCommand lnbCommand = new LnbCommand();
+      var lnbCommand = new LnbCommand();
       lnbCommand.Voltage = 0xff;
       lnbCommand.Tone22k = De22k.Undefined;
       lnbCommand.ToneBurst = DeToneBurst.Undefined;

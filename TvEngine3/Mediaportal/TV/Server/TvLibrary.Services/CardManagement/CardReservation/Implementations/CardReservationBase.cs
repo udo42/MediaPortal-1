@@ -115,7 +115,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Impleme
           {
             if (OnStartCardTune != null)
             {
-              var subChannelByChannelId = tvcard.UserManagement.GetSubChannelIdByChannelId(user.Name, dbChannel.IdChannel);
+              int subChannelByChannelId = tvcard.UserManagement.GetSubChannelIdByChannelId(user.Name, dbChannel.IdChannel);
               if (!ServiceManager.Instance.InternalControllerService.IsTimeShifting(user.Name))
               {
                 CleanTimeShiftFiles(tvcard.DataBaseCard.TimeshiftingFolder,

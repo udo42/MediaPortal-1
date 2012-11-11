@@ -50,7 +50,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Hybrid
     public HybridCard Add(int idCard, ITVCard card)
     {
       _idCards.Add(idCard);
-      TvCardAnalog analogCard = card as TvCardAnalog;
+      var analogCard = card as TvCardAnalog;
       if (analogCard != null)
       {
         analogCard.CardId = idCard;

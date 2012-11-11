@@ -87,8 +87,8 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       // Calculates download and upload speed.
       double monitorInterval = thisSampleTime.Subtract(lastSampleTime).TotalSeconds;
       lastSampleTime = thisSampleTime;
-      long dlSpeed = (long)((dlValue - dlValueOld) / monitorInterval);
-      long ulSpeed = (long)((ulValue - ulValueOld) / monitorInterval);
+      var dlSpeed = (long)((dlValue - dlValueOld) / monitorInterval);
+      var ulSpeed = (long)((ulValue - ulValueOld) / monitorInterval);
 
       dlValueOld = dlValue;
       ulValueOld = ulValue;
@@ -143,7 +143,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
         case PowerSchedulerEventType.Started:
         case PowerSchedulerEventType.Elapsed:
 
-          IPowerScheduler ps = GlobalServiceProvider.Instance.Get<IPowerScheduler>();
+          var ps = GlobalServiceProvider.Instance.Get<IPowerScheduler>();
           if (ps == null)
             return;
 
@@ -158,7 +158,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
             if (enabled) // Start
             {
               this.LogDebug("NetworkMonitorHandler: networkMonitor started");
-              Thread netmonThr = new Thread(StartNetworkMonitor);
+              var netmonThr = new Thread(StartNetworkMonitor);
               netmonThr.Start();
             }
             else // Stop
@@ -184,7 +184,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       {
         monitoredAdapters.Clear();
 
-        PerformanceCounterCategory category =
+        var category =
           new PerformanceCounterCategory("Network Interface");
 
         // Enumerates network adapters installed on the computer.
@@ -194,7 +194,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
           if (name == "MS TCP Loopback interface") continue;
 
           // Create an instance of NetworkAdapter class.        
-          NetworkAdapter adapter = new NetworkAdapter(name);
+          var adapter = new NetworkAdapter(name);
 
           monitoredAdapters.Add(adapter); // Add it to monitored adapters
         }
@@ -249,7 +249,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
             DateTime now = DateTime.Now; // Get current date and time
 
             //Network activity is considered as user activity
-            IPowerScheduler ps = GlobalServiceProvider.Instance.Get<IPowerScheduler>();
+            var ps = GlobalServiceProvider.Instance.Get<IPowerScheduler>();
             ps.UserActivityDetected(now);
           }
 

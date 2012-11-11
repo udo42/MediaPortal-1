@@ -209,7 +209,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Hauppauge
       action = DeviceAction.Start;
 
       // We only have work to do if the channel is a DVB-S2 channel.
-      DVBSChannel ch = channel as DVBSChannel;
+      var ch = channel as DVBSChannel;
       if (ch == null || (ch.ModulationType != ModulationType.ModQpsk && ch.ModulationType != ModulationType.Mod8Psk))
       {
         return;

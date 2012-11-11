@@ -12,13 +12,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public IList<Card> ListAllCards()
     {
-      var listAllCards = TVDatabase.TVBusinessLayer.CardManagement.ListAllCards();
+      IList<Card> listAllCards = TVDatabase.TVBusinessLayer.CardManagement.ListAllCards();
       return listAllCards;
     }
 
     public IList<Card> ListAllCards(CardIncludeRelationEnum includeRelations)
     {
-      var listAllCards = TVDatabase.TVBusinessLayer.CardManagement.ListAllCards(includeRelations);
+      IList<Card> listAllCards = TVDatabase.TVBusinessLayer.CardManagement.ListAllCards(includeRelations);
       return listAllCards;
     }
 
@@ -29,13 +29,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public Card GetCardByDevicePath(string cardDevice)
     {
-      var cardByDevicePath = TVDatabase.TVBusinessLayer.CardManagement.GetCardByDevicePath(cardDevice);
+      Card cardByDevicePath = TVDatabase.TVBusinessLayer.CardManagement.GetCardByDevicePath(cardDevice);
       return cardByDevicePath;
     }
 
     public Card GetCardByDevicePath(string cardDevice, CardIncludeRelationEnum includeRelations)
     {
-      var cardByDevicePath = TVDatabase.TVBusinessLayer.CardManagement.GetCardByDevicePath(cardDevice, includeRelations);
+      Card cardByDevicePath = TVDatabase.TVBusinessLayer.CardManagement.GetCardByDevicePath(cardDevice, includeRelations);
       return cardByDevicePath;
     }
 

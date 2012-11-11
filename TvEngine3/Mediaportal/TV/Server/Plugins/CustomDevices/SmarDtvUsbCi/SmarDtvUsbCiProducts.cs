@@ -185,7 +185,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
 
         // Hauppauge WinTV-CI
         // http://www.hauppauge.de/site/products/data_ci.html
-        SmarDtvUsbCiProduct p = new SmarDtvUsbCiProduct(
+        var p = new SmarDtvUsbCiProduct(
           "Hauppauge WinTV-CI",
           "WinTVCIUSB",
           "WinTVCIUSBBDA Source",

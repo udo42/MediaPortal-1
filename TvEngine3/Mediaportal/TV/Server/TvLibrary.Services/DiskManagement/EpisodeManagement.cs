@@ -33,7 +33,7 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
 
     public List<Recording> GetEpisodes(string title, IList<Recording> recordings)
     {
-      List<Recording> episodes = new List<Recording>();
+      var episodes = new List<Recording>();
       foreach (Recording recording in recordings)
       {
         if (String.Compare(title, recording.Title, true) == 0)

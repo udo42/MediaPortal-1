@@ -354,7 +354,7 @@ namespace Mediaportal.TV.TvPlugin
     {
       if (username.Equals(Card.User.Name))
       {
-        Action keyAction = new Action(Action.ActionType.ACTION_STOP, 0, 0);
+        var keyAction = new Action(Action.ActionType.ACTION_STOP, 0, 0);
         GUIGraphicsContext.OnAction(keyAction);
         _playbackStopped = true;
 
@@ -529,7 +529,7 @@ namespace Mediaportal.TV.TvPlugin
 
       // stop the old recorder.
       // DatabaseManager.Instance.DefaultQueryStrategy = QueryStrategy.DataSourceOnly;
-      GUIMessage msgStopRecorder = new GUIMessage(GUIMessage.MessageType.GUI_MSG_RECORDER_STOP, 0, 0, 0, 0, 0, null);
+      var msgStopRecorder = new GUIMessage(GUIMessage.MessageType.GUI_MSG_RECORDER_STOP, 0, 0, 0, 0, 0, null);
       GUIWindowManager.SendMessage(msgStopRecorder);
 
       if (!_onPageLoadDone && m_navigator != null)
@@ -636,7 +636,7 @@ namespace Mediaportal.TV.TvPlugin
                 if (!showlastActModFS)
                 {
                   //if we are resuming from standby with tvhome, we want this in fullscreen, but we need a delay for it to work.
-                  Thread tvDelayThread = new Thread(TvDelayThread);
+                  var tvDelayThread = new Thread(TvDelayThread);
                   tvDelayThread.Start();
                 }
                 else
@@ -990,7 +990,7 @@ namespace Mediaportal.TV.TvPlugin
       }
 
       _ServerNotConnectedHandled = true;
-      GUIDialogOK pDlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
+      var pDlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
 
       pDlgOK.Reset();
       pDlgOK.SetHeading(257); //error
@@ -1074,7 +1074,7 @@ namespace Mediaportal.TV.TvPlugin
             GUIWindowManager.SendThreadMessage(initMsgTV);
             return true;
           }
-          Thread showDlgThread = new Thread(ShowDlgThread);
+          var showDlgThread = new Thread(ShowDlgThread);
           showDlgThread.IsBackground = true;
           // show the dialog asynch.
           // this fixes a hang situation that would happen when resuming TV with showlastactivemodule
@@ -1161,7 +1161,7 @@ namespace Mediaportal.TV.TvPlugin
         _preferredLanguages = new List<string>();
         Log.Debug("TVHome.LoadSettings(): Preferred Audio Languages: " + preferredLanguages);
 
-        StringTokenizer st = new StringTokenizer(preferredLanguages, ";");
+        var st = new StringTokenizer(preferredLanguages, ";");
         while (st.HasMore)
         {
           string lang = st.NextToken();
@@ -1254,7 +1254,7 @@ namespace Mediaportal.TV.TvPlugin
       {
         if (!Network.IsSingleSeat())
         {
-          WakeOnLanManager wakeOnLanManager = new WakeOnLanManager();
+          var wakeOnLanManager = new WakeOnLanManager();
 
           if (isAutoMacAddressEnabled)
           {
@@ -1463,7 +1463,7 @@ namespace Mediaportal.TV.TvPlugin
         return;
       }
 
-      GUIDialogOK pDlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
+      var pDlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
 
       if (pDlgOK != null)
       {
@@ -1621,7 +1621,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public static void OnSelectGroup()
     {
-      GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
       if (dlg == null)
       {
         return;
@@ -1654,7 +1654,7 @@ namespace Mediaportal.TV.TvPlugin
     {
       Stopwatch benchClock = null;
       benchClock = Stopwatch.StartNew();
-      TvMiniGuide miniGuide = (TvMiniGuide)GUIWindowManager.GetWindow((int)Window.WINDOW_MINI_GUIDE);
+      var miniGuide = (TvMiniGuide)GUIWindowManager.GetWindow((int)Window.WINDOW_MINI_GUIDE);
       miniGuide.AutoZap = false;
       miniGuide.SelectedChannel = Navigator.Channel.Entity;
       miniGuide.DoModal(GetID);
@@ -1834,7 +1834,7 @@ namespace Mediaportal.TV.TvPlugin
       {
         case GUIMessage.MessageType.GUI_MSG_STOP_SERVER_TIMESHIFTING:
           {
-            User user = new User();
+            var user = new User();
             if (user.Name == Card.User.Name)
             {
               Card.StopTimeShifting();
@@ -1845,10 +1845,10 @@ namespace Mediaportal.TV.TvPlugin
         case GUIMessage.MessageType.GUI_MSG_NOTIFY_REC:
           string heading = message.Label;
           string text = message.Label2;
-          Channel ch = message.Object as Channel;
+          var ch = message.Object as Channel;
           //this.LogDebug("Received rec notify message: {0}, {1}, {2}", heading, text, (ch != null).ToString()); //remove later
           string logo = TVUtil.GetChannelLogo(ch);
-          GUIDialogNotify pDlgNotify = (GUIDialogNotify)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_NOTIFY);
+          var pDlgNotify = (GUIDialogNotify)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_NOTIFY);
           if (pDlgNotify != null)
           {
             pDlgNotify.Reset();
@@ -1866,9 +1866,9 @@ namespace Mediaportal.TV.TvPlugin
           break;
         case GUIMessage.MessageType.GUI_MSG_NOTIFY_TV_PROGRAM:
           {
-            TVNotifyYesNoDialog tvNotifyDlg = (TVNotifyYesNoDialog)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_TVNOTIFYYESNO);
+            var tvNotifyDlg = (TVNotifyYesNoDialog)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_TVNOTIFYYESNO);
 
-            TVProgramDescription notify = message.Object as TVProgramDescription;
+            var notify = message.Object as TVProgramDescription;
             if (tvNotifyDlg == null || notify == null)
             {
               return;
@@ -2028,7 +2028,7 @@ namespace Mediaportal.TV.TvPlugin
       if (GUIWindowManager.ActiveWindowEx == (int)Window.WINDOW_TVFULLSCREEN)
       {
         Log.Info("send message to fullscreen tv");
-        GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_RECORD, GUIWindowManager.ActiveWindow, 0, 0, 0, 0,
+        var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_RECORD, GUIWindowManager.ActiveWindow, 0, 0, 0, 0,
                                         null);
         msg.SendToTargetWindow = true;
         msg.TargetWindowId = (int)Window.WINDOW_TVFULLSCREEN;
@@ -2040,7 +2040,7 @@ namespace Mediaportal.TV.TvPlugin
 
 
       IVirtualCard card = null;
-      ProgramBLL prog = new ProgramBLL(channel.CurrentProgram);
+      var prog = new ProgramBLL(channel.CurrentProgram);
       bool isRecording;
       bool hasProgram = (channel.CurrentProgram != null);
       if (hasProgram)
@@ -2058,7 +2058,7 @@ namespace Mediaportal.TV.TvPlugin
       {
         if (hasProgram)
         {
-          GUIDialogMenuBottomRight pDlgOK =
+          var pDlgOK =
             (GUIDialogMenuBottomRight)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU_BOTTOM_RIGHT);
           if (pDlgOK != null)
           {
@@ -2196,7 +2196,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private void OnActiveRecordings(IList<Recording> ignoreActiveRecordings)
     {
-      GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
       if (dlg == null)
       {
         return;
@@ -2214,7 +2214,7 @@ namespace Mediaportal.TV.TvPlugin
         {
           if (!ignoreActiveRecordings.Contains(activeRecording))
           {
-            GUIListItem item = new GUIListItem();
+            var item = new GUIListItem();
             string channelName = activeRecording.Channel.DisplayName;
             string programTitle = activeRecording.Title.Trim(); // default is current EPG info
 
@@ -2262,7 +2262,7 @@ namespace Mediaportal.TV.TvPlugin
       }
       else
       {
-        GUIDialogOK pDlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
+        var pDlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
         if (pDlgOK != null)
         {
           pDlgOK.SetHeading(200052); //my tv
@@ -2276,7 +2276,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private void OnActiveStreams()
     {
-      GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
       if (dlg != null)
       {
         dlg.Reset();
@@ -2287,7 +2287,7 @@ namespace Mediaportal.TV.TvPlugin
         int count = 0;
         foreach (StreamPresentation streaming in streamingChannels)
         {
-          GUIListItem item = new GUIListItem();
+          var item = new GUIListItem();
 
           Channel ch = streaming.Channel;
           IUser user = streaming.User;
@@ -2326,7 +2326,7 @@ namespace Mediaportal.TV.TvPlugin
 
         if (streamingChannels.Count == 0)
         {
-          GUIDialogOK pDlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
+          var pDlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
           if (pDlgOK != null)
           {
             pDlgOK.SetHeading(692); //my tv
@@ -2938,7 +2938,7 @@ namespace Mediaportal.TV.TvPlugin
       if (GUIGraphicsContext.IsFullScreenVideo)
       {
         // where in fullscreen so delayzap channel instead of immediatly tune..
-        TvFullScreen TVWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)Window.WINDOW_TVFULLSCREEN);
+        var TVWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)Window.WINDOW_TVFULLSCREEN);
         if (TVWindow != null)
         {
           TVWindow.ZapPreviousChannel();
@@ -3033,11 +3033,11 @@ namespace Mediaportal.TV.TvPlugin
         _lastError.Messages.Add(GUILocalizeStrings.Get(TextID));
       }
 
-      GUIDialogNotify pDlgNotify = (GUIDialogNotify)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_NOTIFY);
+      var pDlgNotify = (GUIDialogNotify)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_NOTIFY);
       string caption = GUILocalizeStrings.Get(605) + " - " + _lastError.FailingChannel.DisplayName;
       pDlgNotify.SetHeading(caption); //my tv
       pDlgNotify.SetImage(TVUtil.GetChannelLogo(_lastError.FailingChannel));
-      StringBuilder sbMessage = new StringBuilder();
+      var sbMessage = new StringBuilder();
       // ignore the "unable to start timeshift" line to avoid scrolling, because NotifyDLG has very few space available.
       for (int idx = 1; idx < _lastError.Messages.Count; idx++)
       {
@@ -3050,7 +3050,7 @@ namespace Mediaportal.TV.TvPlugin
       {
         // If failed and wasPlaying TV, left screen as it is and show osd with error message 
         Log.Info("send message to fullscreen tv");
-        GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_TV_ERROR_NOTIFY, GUIWindowManager.ActiveWindow, 0,
+        var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_TV_ERROR_NOTIFY, GUIWindowManager.ActiveWindow, 0,
                                         0, 0, 0,
                                         null);
         msg.SendToTargetWindow = true;
@@ -3429,7 +3429,7 @@ namespace Mediaportal.TV.TvPlugin
             }
 
             Channel channel = ServiceAgents.Instance.ChannelServiceAgent.GetChannel(subchannel.IdChannel);
-            var displayName = channel.DisplayName;
+            string displayName = channel.DisplayName;
             string subItemString = activeUser.Name + " - " + displayName;
 
             if (subchannel.TvUsage == TvUsage.Parked)
@@ -3480,7 +3480,7 @@ namespace Mediaportal.TV.TvPlugin
       if (GUIGraphicsContext.IsFullScreenVideo)
       {
         // where in fullscreen so delayzap channel instead of immediatly tune..
-        TvFullScreen TVWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)Window.WINDOW_TVFULLSCREEN);
+        var TVWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)Window.WINDOW_TVFULLSCREEN);
         if (TVWindow != null)
         {
           TVWindow.ZapNextChannel();
@@ -3664,7 +3664,7 @@ namespace Mediaportal.TV.TvPlugin
     /// <returns></returns>
     protected static bool GetKeyboard(string title, int maxLength, bool bPassword, ref string strLine)
     {
-      StandardKeyboard keyboard = (StandardKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
+      var keyboard = (StandardKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
       if (null == keyboard)
       {
         return false;
@@ -3783,12 +3783,12 @@ namespace Mediaportal.TV.TvPlugin
         case CiMenuState.Close:
           if (_dialogNotify != null)
           {
-            GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_WINDOW_DEINIT, _dialogNotify.GetID, 0, 0, 0, 0, null);
+            var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_WINDOW_DEINIT, _dialogNotify.GetID, 0, 0, 0, 0, null);
             _dialogNotify.OnMessage(msg);	// Send a de-init msg to hide the current notify dialog
           }
           if (dlgCiMenu != null)
           {
-            GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_WINDOW_DEINIT, dlgCiMenu.GetID, 0, 0, 0, 0, null);
+            var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_WINDOW_DEINIT, dlgCiMenu.GetID, 0, 0, 0, 0, null);
             dlgCiMenu.OnMessage(msg);	// Send a de-init msg to hide the current CI menu dialog
           }
           break;

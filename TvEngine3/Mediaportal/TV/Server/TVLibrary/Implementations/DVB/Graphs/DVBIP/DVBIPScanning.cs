@@ -40,7 +40,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
     /// <param name="channel">The service details.</param>
     protected override void SetMissingServiceName(IChannel channel)
     {
-      DVBIPChannel dvbipChannel = channel as DVBIPChannel;
+      var dvbipChannel = channel as DVBIPChannel;
       if (dvbipChannel == null)
       {
         return;

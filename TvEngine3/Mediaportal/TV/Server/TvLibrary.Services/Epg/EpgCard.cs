@@ -215,7 +215,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
         this.LogInfo("Epg: card:{0} received epg for {1} channels", _user.CardId, epg.Count);
         _state = EpgState.Updating;
         _epg = epg;
-        Thread workerThread = new Thread(UpdateDatabaseThread);
+        var workerThread = new Thread(UpdateDatabaseThread);
         workerThread.IsBackground = true;
         workerThread.Name = "EPG Update thread";
         workerThread.Start();
@@ -396,7 +396,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
 
       TvResult result = TvResult.UnknownError;
       //handle ATSC
-      ATSCChannel atscChannel = tuning as ATSCChannel;
+      var atscChannel = tuning as ATSCChannel;
       if (atscChannel != null)
       {
         if (ServiceManager.Instance.InternalControllerService.Type(card.IdCard) == CardType.Atsc)
@@ -413,7 +413,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
       }
 
       //handle DVBC
-      DVBCChannel dvbcChannel = tuning as DVBCChannel;
+      var dvbcChannel = tuning as DVBCChannel;
       if (dvbcChannel != null)
       {
         if (ServiceManager.Instance.InternalControllerService.Type(card.IdCard) == CardType.DvbC)
@@ -430,7 +430,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
       }
 
       //handle DVBS
-      DVBSChannel dvbsChannel = tuning as DVBSChannel;
+      var dvbsChannel = tuning as DVBSChannel;
       if (dvbsChannel != null)
       {
         if (ServiceManager.Instance.InternalControllerService.Type(card.IdCard) == CardType.DvbS)
@@ -447,7 +447,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
       }
 
       //handle DVBT
-      DVBTChannel dvbtChannel = tuning as DVBTChannel;
+      var dvbtChannel = tuning as DVBTChannel;
       if (dvbtChannel != null)
       {
         if (ServiceManager.Instance.InternalControllerService.Type(card.IdCard) == CardType.DvbT)
@@ -465,7 +465,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
       }
 
       //handle DVBIP
-      DVBIPChannel dvbipChannel = tuning as DVBIPChannel;
+      var dvbipChannel = tuning as DVBIPChannel;
       if (dvbipChannel != null)
       {
         if (ServiceManager.Instance.InternalControllerService.Type(card.IdCard) == CardType.DvbIP)
@@ -715,7 +715,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
     {
       if (_state == EpgState.Idle)
         return;
-      TvServerEventArgs tvArgs = eventArgs as TvServerEventArgs;
+      var tvArgs = eventArgs as TvServerEventArgs;
       if (eventArgs == null)
         return;
       if (tvArgs != null)

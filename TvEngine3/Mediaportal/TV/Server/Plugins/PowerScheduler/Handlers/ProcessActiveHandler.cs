@@ -64,13 +64,13 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       {
         case PowerSchedulerEventType.Started:
         case PowerSchedulerEventType.Elapsed:
-          IPowerScheduler ps = GlobalServiceProvider.Instance.Get<IPowerScheduler>();
+          var ps = GlobalServiceProvider.Instance.Get<IPowerScheduler>();
           if (ps == null)
             return;
           PowerSetting setting = ps.Settings.GetSetting("Processes");
           
           string processString = SettingsManagement.GetSetting("PowerSchedulerProcesses").Value;
-          List<string> processes = new List<string>();
+          var processes = new List<string>();
           foreach (string process in processString.Split(','))
             processes.Add(process.Trim());
           if (!IsEqual(processes, setting.Get<List<string>>()))

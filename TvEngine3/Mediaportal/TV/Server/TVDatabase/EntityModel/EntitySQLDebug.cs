@@ -46,7 +46,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel
       object updTranslator = Activator.CreateInstance(updTranslate, flags, null, parameter, null);
       MethodInfo prodCommands = updTranslate.GetMethod("ProduceCommands", flags);
       object updateCommands = prodCommands.Invoke(updTranslator, null);
-      List<DbCommand> dbCommands = new List<DbCommand>();
+      var dbCommands = new List<DbCommand>();
 
       foreach (object obj in (IEnumerable)updateCommands)
       {
@@ -60,7 +60,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel
         {
           MethodInfo createCommand = dynUpdate.
           GetMethod("CreateCommand", flags);
-          object[] mParams = new[] { updTranslator, new Dictionary<int, object>() };
+          var mParams = new[] { updTranslator, new Dictionary<int, object>() };
           dbCommands.Add((DbCommand)createCommand.Invoke(obj, mParams));
         }
         else

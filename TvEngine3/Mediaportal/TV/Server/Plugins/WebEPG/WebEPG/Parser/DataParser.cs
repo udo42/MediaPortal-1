@@ -111,7 +111,7 @@ namespace WebEPG.Parser
 
     public int ParseUrl(HTTPRequest site)
     {
-      HTMLPage webPage = new HTMLPage(site);
+      var webPage = new HTMLPage(site);
       return _rows.RowCount(webPage.GetPage());
     }
 
@@ -119,7 +119,7 @@ namespace WebEPG.Parser
     {
       string rowSource = _rows.GetSource(index);
 
-      IParserData rowData = (IParserData)Activator.CreateInstance(_dataType);
+      var rowData = (IParserData)Activator.CreateInstance(_dataType);
 
       _parser.ParseRow(rowSource, ref rowData);
 

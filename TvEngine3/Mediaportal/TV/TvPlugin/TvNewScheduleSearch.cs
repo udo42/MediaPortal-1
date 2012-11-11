@@ -126,7 +126,7 @@ namespace Mediaportal.TV.TvPlugin
     {
       if (control == listResults)
       {
-        GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, listResults.GetID, 0, 0,
+        var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, listResults.GetID, 0, 0,
                                         null);
         OnMessage(msg);
         int iItem = msg.Param1;
@@ -173,7 +173,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private bool GetKeyboard(ref string strLine)
     {
-      VirtualKeyboard keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
+      var keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
       if (null == keyboard)
       {
         return false;
@@ -259,7 +259,7 @@ namespace Mediaportal.TV.TvPlugin
       this.LogInfo("newsearch found:{0} progs", listPrograms.Count);
       foreach (Program program in listPrograms)
       {
-        GUIListItem item = new GUIListItem();
+        var item = new GUIListItem();
         item.Label = TVUtil.GetDisplayTitle(program);
         string logo = Utils.GetCoverArt(Thumbs.TVChannel, program.Channel.DisplayName);
         if (string.IsNullOrEmpty(logo))                            

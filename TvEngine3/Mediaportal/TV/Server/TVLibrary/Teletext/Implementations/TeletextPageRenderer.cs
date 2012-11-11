@@ -390,7 +390,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
         return;
       }
       // Generate mosaic
-      int[] mosaicY = new int[4];
+      var mosaicY = new int[4];
       mosaicY[0] = 0;
       mosaicY[1] = (h + 1) / 3;
       mosaicY[2] = (h * 2 + 1) / 3;
@@ -596,12 +596,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
                 string text = "" + chr2;
                 graph.FillRectangle(backBrush, x, y, w, h);
                 SizeF width = graph.MeasureString(text, _fontTeletext);
-                PointF xyPos = new PointF((float)x + ((w - ((int)width.Width)) / 2), y);
+                var xyPos = new PointF((float)x + ((w - ((int)width.Width)) / 2), y);
                 graph.DrawString(text, _fontTeletext, foreBrush, xyPos);
                 if (factor == 2)
                 {
                   graph.FillRectangle(backBrush, x, y + h, w, h);
-                  Color[,] pixelColor = new Color[w + 1,h + 1];
+                  var pixelColor = new Color[w + 1,h + 1];
                   // save char
                   for (int ypos = 0; ypos < h; ypos++)
                   {
@@ -706,8 +706,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
 
       int col;
       bool flag = false;
-      byte[] pageChars = new byte[31 * 40];
-      int[] pageAttribs = new int[31 * 40];
+      var pageChars = new byte[31 * 40];
+      var pageAttribs = new int[31 * 40];
       bool row24 = false;
       // Decode the page data (Hamming 8/4 or odd parity)
       for (int rowNr = 0; rowNr < MAX_ROWS; rowNr++)
@@ -805,7 +805,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
           // Otherwise, analyse the information. First set the forground to white and the background to:
           // - Transparent, if transparent mode or boxed and fullscreen and not display the header and toptext line
           // - Black otherwise
-          int foreground = (int)TextColors.White;
+          var foreground = (int)TextColors.White;
           int background;
           if ((isBoxed || _transparentMode) && _fullscreenMode && !displayHeaderAndTopText)
             background = (int)TextColors.Trans1;

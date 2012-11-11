@@ -117,7 +117,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
 
           // Determine the broadcast standard that the stream conforms to.
           BroadcastStandard standard = BroadcastStandard.Dvb; // default
-          ATSCChannel atscChannel = channel as ATSCChannel;
+          var atscChannel = channel as ATSCChannel;
           if (atscChannel != null)
           {
             if (atscChannel.ModulationType == ModulationType.Mod8Vsb || atscChannel.ModulationType == ModulationType.Mod16Vsb)
@@ -138,7 +138,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
           int serviceCount;
           _analyzer.GetServiceCount(out serviceCount);
           this.LogDebug("Found {0} service(s)...", serviceCount);
-          List<IChannel> channelsFound = new List<IChannel>();
+          var channelsFound = new List<IChannel>();
 
           for (int i = 0; i < serviceCount; i++)
           {
@@ -194,9 +194,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
             this.LogDebug("    type = {0}, video stream count = {1}, audio stream count = {2}, is high definition = {3}, is encrypted = {4}, is running = {5}",
                           serviceType, videoStreamCount, audioStreamCount, isHighDefinition, isEncrypted, isRunning);
 
-            List<String> details = new List<String>();
+            var details = new List<String>();
             IntPtr name;
-            List<int> networkIds = (List<int>)BufferToList(networkIdBuffer, typeof(Int32), networkIdCount);
+            var networkIds = (List<int>)BufferToList(networkIdBuffer, typeof(Int32), networkIdCount);
             foreach (int nid in networkIds)
             {
               _analyzer.GetNetworkName(nid, out name);
@@ -205,7 +205,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
             this.LogDebug("    network ID count = {0}, network IDs = {1}", networkIdCount, string.Join(", ", details.ToArray()));
 
             details.Clear();
-            List<int> bouquetIds = (List<int>)BufferToList(bouquetIdBuffer, typeof(Int32), bouquetIdCount);
+            var bouquetIds = (List<int>)BufferToList(bouquetIdBuffer, typeof(Int32), bouquetIdCount);
             foreach (int bid in bouquetIds)
             {
               _analyzer.GetBouquetName(bid, out name);
@@ -213,16 +213,16 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
             }
             this.LogDebug("    bouquet ID count = {0}, bouquet IDs = {1}", bouquetIdCount, string.Join(", ", details.ToArray()));
 
-            List<String> languages = (List<String>)LangCodeBufferToList(languageBuffer, languageCount);
+            var languages = (List<String>)LangCodeBufferToList(languageBuffer, languageCount);
             this.LogDebug("    language count = {0}, languages = {1}", languageCount, string.Join(", ", languages.ToArray()));
 
-            List<int> availableInCells = (List<int>)BufferToList(availableInCellBuffer, typeof(Int32), availableInCellCount);
+            var availableInCells = (List<int>)BufferToList(availableInCellBuffer, typeof(Int32), availableInCellCount);
             this.LogDebug("    available in cells count = {0}, cells = {1}", availableInCellCount, string.Join(", ", Array.ConvertAll(availableInCells.ToArray(), x => string.Format("0x{0:x4}", x))));
-            List<int> unavailableInCells = (List<int>)BufferToList(unavailableInCellBuffer, typeof(Int32), unavailableInCellCount);
+            var unavailableInCells = (List<int>)BufferToList(unavailableInCellBuffer, typeof(Int32), unavailableInCellCount);
             this.LogDebug("    unavailable in cells count = {0}, cells = {1}", unavailableInCellCount, string.Join(", ", Array.ConvertAll(unavailableInCells.ToArray(), x => string.Format("0x{0:x4}", x))));
 
             details.Clear();
-            List<Int64> targetRegionIds = (List<Int64>)BufferToList(targetRegionBuffer, typeof(Int64), targetRegionCount);
+            var targetRegionIds = (List<Int64>)BufferToList(targetRegionBuffer, typeof(Int64), targetRegionCount);
             foreach (int regionId in targetRegionIds)
             {
               _analyzer.GetTargetRegionName(regionId, out name);
@@ -230,9 +230,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
             }
             this.LogDebug("    target region count = {0}, regions = {1}", targetRegionCount, string.Join(", ", details.ToArray()));
 
-            List<String> availableInCountries = (List<String>)LangCodeBufferToList(availableInCountryBuffer, availableInCountryCount);
+            var availableInCountries = (List<String>)LangCodeBufferToList(availableInCountryBuffer, availableInCountryCount);
             this.LogDebug("    available in country count = {0}, countries = {1}", availableInCountryCount, string.Join(", ", availableInCountries.ToArray()));
-            List<String> unavailableInCountries = (List<String>)LangCodeBufferToList(unavailableInCountryBuffer, unavailableInCountryCount);
+            var unavailableInCountries = (List<String>)LangCodeBufferToList(unavailableInCountryBuffer, unavailableInCountryCount);
             this.LogDebug("    unavailable in country count = {0}, countries = {1}", unavailableInCountryCount, string.Join(", ", unavailableInCountries.ToArray()));
 
             // The SDT/VCT service type is unfortunately not sufficient for service type identification. Many DVB-IP
@@ -246,7 +246,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
             }
             found++;
 
-            DVBBaseChannel newChannel = (DVBBaseChannel)channel.Clone();
+            var newChannel = (DVBBaseChannel)channel.Clone();
 
             // Set non-tuning parameters (ie. parameters determined by scanning).
             newChannel.Name = serviceName;
@@ -348,9 +348,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
           this.LogDebug("Found {0} multiplex(es), service information available = {1}...", multiplexCount, isServiceInfoAvailable);
 
           // Channels found will contain a distinct list of multiplex tuning details.
-          List<IChannel> channelsFound = new List<IChannel>();
+          var channelsFound = new List<IChannel>();
           // Multiplexes found will contain a dictionary of ONID + TSID => multiplex tuning details.
-          Dictionary<uint, IChannel> multiplexesFound = new Dictionary<uint, IChannel>();
+          var multiplexesFound = new Dictionary<uint, IChannel>();
 
           for (int i = 0; i < multiplexCount; ++i)
           {
@@ -376,14 +376,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
             DVBBaseChannel ch;
             if (type == 2)
             {
-              DVBCChannel dvbcChannel = new DVBCChannel();
+              var dvbcChannel = new DVBCChannel();
               dvbcChannel.ModulationType = (ModulationType)modulation;
               dvbcChannel.SymbolRate = symbolRate;
               ch = dvbcChannel;
             }
             else if (type == 3)
             {
-              DVBSChannel dvbsChannel = new DVBSChannel();
+              var dvbsChannel = new DVBSChannel();
               dvbsChannel.RollOff = (RollOff)rollOff;
               dvbsChannel.ModulationType = ModulationType.ModNotSet;
               switch (modulation)
@@ -407,7 +407,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
               dvbsChannel.Polarisation = (Polarisation)polarisation;
 
               // We're missing an all important detail for the channel - the LNB type.
-              DVBSChannel currentChannel = channel as DVBSChannel;
+              var currentChannel = channel as DVBSChannel;
               if (currentChannel != null)
               {
                 dvbsChannel.LnbType = currentChannel.LnbType.Clone();
@@ -425,7 +425,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
             }
             else if (type == 4)
             {
-              DVBTChannel dvbtChannel = new DVBTChannel();
+              var dvbtChannel = new DVBTChannel();
               dvbtChannel.Bandwidth = bandwidth;
               ch = dvbtChannel;
             }
@@ -479,7 +479,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
           int serviceCount;
           _analyzer.GetServiceCount(out serviceCount);
           this.LogDebug("Found {0} service(s)...", serviceCount);
-          List<IChannel> servicesFound = new List<IChannel>();
+          var servicesFound = new List<IChannel>();
           for (int i = 0; i < serviceCount; i++)
           {
             int originalNetworkId;
@@ -534,9 +534,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
             this.LogDebug("    type = {0}, video stream count = {1}, audio stream count = {2}, is high definition = {3}, is encrypted = {4}, is running = {5}",
                           serviceType, videoStreamCount, audioStreamCount, isHighDefinition, isEncrypted, isRunning);
 
-            List<String> details = new List<String>();
+            var details = new List<String>();
             IntPtr name;
-            List<int> networkIds = (List<int>)BufferToList(networkIdBuffer, typeof(Int32), networkIdCount);
+            var networkIds = (List<int>)BufferToList(networkIdBuffer, typeof(Int32), networkIdCount);
             foreach (int nid in networkIds)
             {
               _analyzer.GetNetworkName(nid, out name);
@@ -545,7 +545,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
             this.LogDebug("    network ID count = {0}, network IDs = {1}", networkIdCount, string.Join(", ", details.ToArray()));
 
             details.Clear();
-            List<int> bouquetIds = (List<int>)BufferToList(bouquetIdBuffer, typeof(Int32), bouquetIdCount);
+            var bouquetIds = (List<int>)BufferToList(bouquetIdBuffer, typeof(Int32), bouquetIdCount);
             foreach (int bid in bouquetIds)
             {
               _analyzer.GetBouquetName(bid, out name);
@@ -553,16 +553,16 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
             }
             this.LogDebug("    bouquet ID count = {0}, bouquet IDs = {1}", bouquetIdCount, string.Join(", ", details.ToArray()));
 
-            List<String> languages = (List<String>)LangCodeBufferToList(languageBuffer, languageCount);
+            var languages = (List<String>)LangCodeBufferToList(languageBuffer, languageCount);
             this.LogDebug("    language count = {0}, languages = {1}", languageCount, string.Join(", ", languages.ToArray()));
 
-            List<int> availableInCells = (List<int>)BufferToList(availableInCellBuffer, typeof(Int32), availableInCellCount);
+            var availableInCells = (List<int>)BufferToList(availableInCellBuffer, typeof(Int32), availableInCellCount);
             this.LogDebug("    available in cells count = {0}, cells = {1}", availableInCellCount, string.Join(", ", Array.ConvertAll(availableInCells.ToArray(), x => string.Format("0x{0:x4}", x))));
-            List<int> unavailableInCells = (List<int>)BufferToList(unavailableInCellBuffer, typeof(Int32), unavailableInCellCount);
+            var unavailableInCells = (List<int>)BufferToList(unavailableInCellBuffer, typeof(Int32), unavailableInCellCount);
             this.LogDebug("    unavailable in cells count = {0}, cells = {1}", unavailableInCellCount, string.Join(", ", Array.ConvertAll(unavailableInCells.ToArray(), x => string.Format("0x{0:x4}", x))));
 
             details.Clear();
-            List<Int64> targetRegionIds = (List<Int64>)BufferToList(targetRegionBuffer, typeof(Int64), targetRegionCount);
+            var targetRegionIds = (List<Int64>)BufferToList(targetRegionBuffer, typeof(Int64), targetRegionCount);
             foreach (int regionId in targetRegionIds)
             {
               _analyzer.GetTargetRegionName(regionId, out name);
@@ -570,9 +570,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
             }
             this.LogDebug("    target region count = {0}, regions = {1}", targetRegionCount, string.Join(", ", details.ToArray()));
 
-            List<String> availableInCountries = (List<String>)LangCodeBufferToList(availableInCountryBuffer, availableInCountryCount);
+            var availableInCountries = (List<String>)LangCodeBufferToList(availableInCountryBuffer, availableInCountryCount);
             this.LogDebug("    available in country count = {0}, countries = {1}", availableInCountryCount, string.Join(", ", availableInCountries.ToArray()));
-            List<String> unavailableInCountries = (List<String>)LangCodeBufferToList(unavailableInCountryBuffer, unavailableInCountryCount);
+            var unavailableInCountries = (List<String>)LangCodeBufferToList(unavailableInCountryBuffer, unavailableInCountryCount);
             this.LogDebug("    unavailable in country count = {0}, countries = {1}", unavailableInCountryCount, string.Join(", ", unavailableInCountries.ToArray()));
 
             // The SDT/VCT service type is unfortunately not sufficient for service type identification. Many DVB-IP
@@ -603,7 +603,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
               pmtPid = -1;
             }
 
-            DVBBaseChannel newChannel = (DVBBaseChannel)multiplexesFound[key].Clone();
+            var newChannel = (DVBBaseChannel)multiplexesFound[key].Clone();
 
             // Set non-tuning parameters (ie. parameters determined by scanning).
             newChannel.Name = serviceName;
@@ -739,7 +739,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     /// <param name="channel">The service details.</param>
     protected virtual void SetMissingServiceName(IChannel channel)
     {
-      DVBBaseChannel dvbChannel = channel as DVBBaseChannel;
+      var dvbChannel = channel as DVBBaseChannel;
       if (dvbChannel == null)
       {
         return;
@@ -759,7 +759,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     private IList BufferToList(IntPtr buffer, Type elementType, int elementCount)
     {
       Type customListType = typeof(List<>).MakeGenericType(elementType);
-      IList toReturn = (IList)Activator.CreateInstance(customListType);
+      var toReturn = (IList)Activator.CreateInstance(customListType);
       int size = Marshal.SizeOf(elementType);
       int offset = 0;
       for (int i = 0; i < elementCount; i++)

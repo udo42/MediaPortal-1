@@ -90,7 +90,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
       checkBox7.Checked = Convert.ToBoolean(setting.Value);
 
 
-      EPGWakeupConfig config = new EPGWakeupConfig(ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("EPGWakeupConfig", String.Empty).Value);
+      var config = new EPGWakeupConfig(ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("EPGWakeupConfig", String.Empty).Value);
       foreach (EPGGrabDays day in config.Days)
       {
         switch (day)

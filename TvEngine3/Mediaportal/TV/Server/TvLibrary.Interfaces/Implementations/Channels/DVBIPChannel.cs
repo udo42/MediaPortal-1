@@ -63,7 +63,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     {
       if ((obj as DVBIPChannel) == null) return false;
       if (!base.Equals(obj)) return false;
-      DVBIPChannel ch = obj as DVBIPChannel;
+      var ch = obj as DVBIPChannel;
       if (ch.Url != Url) return false;
 
       return true;

@@ -341,7 +341,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       {
         foreach (IUser user in Users.Values)
         {
-          IUser userCopy = (IUser) user.Clone();
+          var userCopy = (IUser) user.Clone();
           bool isREC = _cardHandler.Recorder.IsRecording(userCopy.Name);
           if (isREC)
           {
@@ -415,7 +415,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       {
         foreach (IUser user in Users.Values)
         {
-          foreach (var subchannel in user.SubChannels.Values)
+          foreach (ISubChannel subchannel in user.SubChannels.Values)
           {
             string tmpChannel = _cardHandler.CurrentChannelName(user.Name, subchannel.IdChannel);
             if (string.IsNullOrEmpty(tmpChannel))
@@ -467,7 +467,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
             {
               continue;
             }
-            IUser userCopy = (IUser)user.Clone();
+            var userCopy = (IUser)user.Clone();
             if (_cardHandler.CurrentDbChannel(userCopy.Name) == idChannel)
             {
               if (_cardHandler.Recorder.IsRecording(userCopy.Name))
@@ -538,7 +538,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       {
         foreach (IUser user in Users.Values)
         {
-          foreach (var subchannel in user.SubChannels.Values)
+          foreach (ISubChannel subchannel in user.SubChannels.Values)
           {
             IChannel currentChannel = _cardHandler.CurrentChannel(user.Name, subchannel.IdChannel);
             if (currentChannel != null && currentChannel.Equals(tuningDetail))
@@ -864,7 +864,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     /// <param name = "userExists">IUser exists</param>
     public void RefreshUser(ref IUser user, out bool userExists)
     {
-      User userCopy = (User)user.Clone();
+      var userCopy = (User)user.Clone();
       IUser existingUser = GetUser(userCopy.Name);
 
       if (existingUser != null)
@@ -1103,7 +1103,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         Channel channel = ChannelManagement.GetChannel(idChannel, ChannelIncludeRelationEnum.None);
         if (channel != null)
         {
-          History history = existingUser.History as History;
+          var history = existingUser.History as History;
           if (history != null)
           {
             ChannelManagement.SaveChannelHistory(history);

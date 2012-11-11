@@ -71,7 +71,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private void Init()
     {
-      CountryCollection countries = new CountryCollection();
+      var countries = new CountryCollection();
       for (int i = 0; i < countries.Countries.Length; ++i)
       {
         mpComboBoxCountry.Items.Add(countries.Countries[i]);
@@ -820,7 +820,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
                           "Tuner is locked. Scanning is not possible at the moment. Perhaps you are using another part of a hybrid card?");
           return;
         }
-        Thread scanThread = new Thread(DoTvScan);
+        var scanThread = new Thread(DoTvScan);
         scanThread.Name = "Analog TV scan thread";
         scanThread.Start();
       }
@@ -853,10 +853,10 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         mpButtonScanRadio.Enabled = false;
         mpButtonAddSvideoChannels.Enabled = false;
         mpListView1.Items.Clear();
-        CountryCollection countries = new CountryCollection();
+        var countries = new CountryCollection();
         IUser user = new User();
         user.CardId = _cardNumber;
-        AnalogChannel temp = new AnalogChannel();
+        var temp = new AnalogChannel();
         temp.TunerSource = mpComboBoxSource.SelectedIndex == 0 ? TunerInputType.Antenna : TunerInputType.Cable;
         temp.VideoSource = AnalogChannel.VideoInputType.Tuner;
         temp.AudioSource = AnalogChannel.AudioInputType.Tuner;
@@ -904,7 +904,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           if (percent < 0)
             percent = 0f;
           progressBar1.Value = (int)percent;
-          AnalogChannel channel = new AnalogChannel();
+          var channel = new AnalogChannel();
           channel.TunerSource = mpComboBoxSource.SelectedIndex == 0 ? TunerInputType.Antenna : TunerInputType.Cable;
           channel.Country = countries.Countries[mpComboBoxCountry.SelectedIndex];
           channel.ChannelNumber = channelNr;
@@ -1074,7 +1074,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
                           "Card is locked. Scanning not possible at the moment ! Perhaps you are scanning an other part of a hybrid card.");
           return;
         }
-        AnalogChannel radioChannel = new AnalogChannel();
+        var radioChannel = new AnalogChannel();
         radioChannel.Frequency = 96000000;
         radioChannel.MediaType = MediaTypeEnum.Radio;
         radioChannel.VideoSource = AnalogChannel.VideoInputType.Tuner;
@@ -1089,7 +1089,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           _configuration = Configuration.readConfiguration(_cardNumber, _cardName, _devicePath);
           ReCheckSettings();
         }
-        Thread scanThread = new Thread(DoRadioScan);
+        var scanThread = new Thread(DoRadioScan);
         scanThread.Name = "Analog Radio scan thread";
         scanThread.Start();
       }
@@ -1150,7 +1150,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         mpButtonAddSvideoChannels.Enabled = false;
         UpdateStatus();
         mpListView1.Items.Clear();
-        CountryCollection countries = new CountryCollection();
+        var countries = new CountryCollection();
         for (int freq = 87500000; freq < 108000000; freq += 100000)
         {
           if (_stopScanning)
@@ -1160,7 +1160,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           if (percent > 100f)
             percent = 100f;
           progressBar1.Value = (int)percent;
-          AnalogChannel channel = new AnalogChannel();
+          var channel = new AnalogChannel();
           channel.MediaType = MediaTypeEnum.Radio;
           channel.TunerSource = mpComboBoxSource.SelectedIndex == 0 ? TunerInputType.Antenna : TunerInputType.Cable;
           channel.VideoSource = AnalogChannel.VideoInputType.Tuner;
@@ -1274,7 +1274,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       {
         IUser user = new User();
         user.CardId = _cardNumber;
-        AnalogChannel temp = new AnalogChannel();
+        var temp = new AnalogChannel();
         temp.TunerSource = TunerInputType.Antenna;
         temp.VideoSource = AnalogChannel.VideoInputType.Tuner;
         temp.AudioSource = AnalogChannel.AudioInputType.Tuner;
@@ -1698,7 +1698,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         }
         user = new User();
         user.CardId = _cardNumber;
-        AnalogChannel temp = new AnalogChannel();
+        var temp = new AnalogChannel();
         temp.VideoSource = AnalogChannel.VideoInputType.Tuner;
         temp.AudioSource = AnalogChannel.AudioInputType.Tuner;
         

@@ -12,7 +12,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (var conflictRepository = new GenericRepository<Model>())
       {
-        var listAllConflicts = conflictRepository.GetAll<Conflict>();
+        IQueryable<Conflict> listAllConflicts = conflictRepository.GetAll<Conflict>();
         return listAllConflicts.ToList();
       }
     }

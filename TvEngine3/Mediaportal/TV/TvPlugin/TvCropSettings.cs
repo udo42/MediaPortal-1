@@ -73,7 +73,7 @@ namespace Mediaportal.TV.TvPlugin
       GUIWindowManager.IsSwitchingToNewWindow = true;
       lock (this)
       {
-        GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_WINDOW_DEINIT, GetID, 0, 0, 0, 0, null);
+        var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_WINDOW_DEINIT, GetID, 0, 0, 0, 0, null);
         OnMessage(msg);
 
         GUIWindowManager.UnRoute();
@@ -96,14 +96,14 @@ namespace Mediaportal.TV.TvPlugin
           {
             // fetch settings for the current capture card
             _cropSettings = TvCropManager.CropSettings;
-            GUILabelControl cardLabel = GetControl((int)Controls.CONTROL_CARD_LABEL) as GUILabelControl;
+            var cardLabel = GetControl((int)Controls.CONTROL_CARD_LABEL) as GUILabelControl;
             cardLabel.Visible = false;
 
             foreach (int iCtl in Enum.GetValues(typeof (Controls)))
             {
               if (GetControl(iCtl) is GUISpinControl)
               {
-                GUISpinControl cntl = (GUISpinControl)GetControl(iCtl);
+                var cntl = (GUISpinControl)GetControl(iCtl);
                 cntl.ShowRange = false;
               }
             }
@@ -225,7 +225,7 @@ namespace Mediaportal.TV.TvPlugin
       GUIWindowManager.RouteToWindow(GetID);
 
       // activate this window...
-      GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_WINDOW_INIT, GetID, 0, 0, -1, 0, null);
+      var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_WINDOW_INIT, GetID, 0, 0, -1, 0, null);
       OnMessage(msg);
 
       GUIWindowManager.IsSwitchingToNewWindow = false;

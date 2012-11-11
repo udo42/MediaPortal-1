@@ -73,7 +73,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
       this.LogDebug("SmarDTV USB CI config: saving settings");
       for (int i = 0; i < _products.Count; i++)
       {
-        Card selectedTuner = (Card)_tunerSelections[i].SelectedItem;
+        var selectedTuner = (Card)_tunerSelections[i].SelectedItem;
         if (_tunerSelections[i].Enabled && selectedTuner != null)
         {
           this.LogDebug("  {0} linked to tuner {1} ({2})", _products[i].ProductName, selectedTuner.IdCard, selectedTuner.Name);

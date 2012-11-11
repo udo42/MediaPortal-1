@@ -52,7 +52,7 @@ namespace MediaPortal.Common.Utils.ExtensionMethods
 
         foreach (object o in values)
         {
-          IDisposable disposable = o as IDisposable;
+          var disposable = o as IDisposable;
           DisposeHelper.DisposeItem(o);
         }
         dictionaryInterface.Clear();

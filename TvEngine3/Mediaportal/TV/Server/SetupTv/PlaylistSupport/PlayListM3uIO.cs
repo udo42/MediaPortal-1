@@ -104,7 +104,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
     {
       try
       {
-        using (StreamWriter writer = new StreamWriter(fileName, false, Encoding.UTF8))
+        using (var writer = new StreamWriter(fileName, false, Encoding.UTF8))
         {
           writer.WriteLine(M3U_START_MARKER);
 
@@ -143,7 +143,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
       if (string.IsNullOrEmpty(fileName))
         return false;
 
-      PlayListItem newItem = new PlayListItem(songName, fileName, duration);
+      var newItem = new PlayListItem(songName, fileName, duration);
       if (fileName.ToLowerInvariant().StartsWith("http:") || fileName.ToLowerInvariant().StartsWith("https:") ||
           fileName.ToLowerInvariant().StartsWith("mms:") || fileName.ToLowerInvariant().StartsWith("rtp:"))
       {

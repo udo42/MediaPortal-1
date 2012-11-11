@@ -85,7 +85,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private void btnTest_Click(object sender, EventArgs e)
     {
-      NameValueCollection defaults = new NameValueCollection();
+      var defaults = new NameValueCollection();
       defaults.Add("%TITLE%", "Over the hedge");
       defaults.Add("%DESCRIPTION%",
                    "A scheming raccoon fools a mismatched family of forest creatures into helping him repay a debt of food, by invading the new suburban sprawl that popped up while they were hibernating...and learns a lesson about family himself.");

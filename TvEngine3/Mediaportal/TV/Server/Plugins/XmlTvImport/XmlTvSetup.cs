@@ -106,7 +106,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       txtRemoteURL.Text = _settingServiceAgent.GetSettingWithDefaultValue("xmlTvRemoteURL", "http://www.mysite.com/TVguide.xml").Value;
 
       DateTime dt = DateTime.Now;
-      DateTimeFormatInfo DTFI = new DateTimeFormatInfo();
+      var DTFI = new DateTimeFormatInfo();
       DTFI.ShortDatePattern = _shortTimePattern24Hrs;
 
       try
@@ -155,7 +155,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
     private void buttonBrowse_Click(object sender, EventArgs e)
     {
-      FolderBrowserDialog dlg = new FolderBrowserDialog();
+      var dlg = new FolderBrowserDialog();
       dlg.SelectedPath = textBoxFolder.Text;
       dlg.Description = "Specify xmltv folder";
       dlg.ShowNewFolderButton = true;
@@ -177,9 +177,9 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
         this.LogDebug("Loading all channels from the tvguide[s]");
         // used for partial matches
-        TstDictionary guideChannels = new TstDictionary();
+        var guideChannels = new TstDictionary();
 
-        Dictionary<string, Channel> guideChannelsExternald = new Dictionary<string, Channel>();
+        var guideChannelsExternald = new Dictionary<string, Channel>();
 
         List<Channel> lstTvGuideChannels = readChannelsFromTVGuide();
 
@@ -206,7 +206,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
         this.LogDebug("Loading all channels from the database");
 
-        CBChannelGroup chGroup = (CBChannelGroup)comboBoxGroup.SelectedItem;
+        var chGroup = (CBChannelGroup)comboBoxGroup.SelectedItem;
 
         IList<Channel> channels;
 
@@ -247,16 +247,16 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
           Boolean alreadyMapped = false;
           DataGridViewRow gridRow = rows[row++];
 
-          DataGridViewTextBoxCell idCell = (DataGridViewTextBoxCell)gridRow.Cells["Id"];
-          DataGridViewTextBoxCell channelCell = (DataGridViewTextBoxCell)gridRow.Cells["tuningChannel"];
-          DataGridViewTextBoxCell providerCell = (DataGridViewTextBoxCell)gridRow.Cells["tuningChannel"];
-          DataGridViewCheckBoxCell showInGuideCell = (DataGridViewCheckBoxCell)gridRow.Cells["ShowInGuide"];
+          var idCell = (DataGridViewTextBoxCell)gridRow.Cells["Id"];
+          var channelCell = (DataGridViewTextBoxCell)gridRow.Cells["tuningChannel"];
+          var providerCell = (DataGridViewTextBoxCell)gridRow.Cells["tuningChannel"];
+          var showInGuideCell = (DataGridViewCheckBoxCell)gridRow.Cells["ShowInGuide"];
 
           channelCell.Value = ch.DisplayName;
           idCell.Value = ch.IdChannel;
           showInGuideCell.Value = ch.VisibleInGuide;
 
-          DataGridViewComboBoxCell guideChannelComboBox = (DataGridViewComboBoxCell)gridRow.Cells["guideChannel"];
+          var guideChannelComboBox = (DataGridViewComboBoxCell)gridRow.Cells["guideChannel"];
 
           // always add a empty item as the first option
           // these channels will not be updated when saving
@@ -343,7 +343,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
           foreach (DictionaryEntry de in guideChannels)
           {
-            Channel guideChannel = (Channel)de.Value;
+            var guideChannel = (Channel)de.Value;
 
             String itemText = guideChannel.DisplayName + " (" + guideChannel.ExternalId + ")";
 
@@ -549,8 +549,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     /// <returns></returns>
     private List<Channel> readTVGuideChannelsFromFile(String tvguideFilename)
     {
-      List<Channel> channels = new List<Channel>();
-      XmlTextReader xmlReader = new XmlTextReader(tvguideFilename);
+      var channels = new List<Channel>();
+      var xmlReader = new XmlTextReader(tvguideFilename);
 
       int iChannel = 0;
 
@@ -575,7 +575,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                 XmlReader xmlChannel = xmlReader.ReadSubtree();
                 xmlChannel.ReadStartElement(); // read channel
                 // now, xmlChannel is positioned on the first sub-element of <channel>
-                List<string> displayNames = new List<string>();
+                var displayNames = new List<string>();
 
                 while (!xmlChannel.EOF)
                 {
@@ -602,7 +602,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                 {
                   if (displayName != null)
                   {
-                    Channel channel = new Channel {ExternalId = id, DisplayName = displayName};
+                    var channel = new Channel {ExternalId = id, DisplayName = displayName};
                     channels.Add(channel);
                   }
                 }
@@ -641,8 +641,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
         foreach (DataGridViewRow row in dataGridChannelMappings.Rows)
         {
-          int id = (int)row.Cells["Id"].Value;
-          string guideChannelAndexternalId = (string)row.Cells["guideChannel"].Value;
+          var id = (int)row.Cells["Id"].Value;
+          var guideChannelAndexternalId = (string)row.Cells["guideChannel"].Value;
 
           string externalId = null;
 
@@ -675,7 +675,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       _settingServiceAgent.SaveSetting("xmlTvImportXML", cbImportXML.Checked ? "true" : "false");
       _settingServiceAgent.SaveSetting("xmlTvImportLST", cbImportLST.Checked ? "true" : "false");
 
-      IXMLTVImportService pluginServiceAgent = ServiceAgents.Instance.PluginService<IXMLTVImportService>();
+      var pluginServiceAgent = ServiceAgents.Instance.PluginService<IXMLTVImportService>();
       pluginServiceAgent.ImportNow();
       
       labelLastImport.Text = _settingServiceAgent.GetSettingWithDefaultValue("xmlTvResultLastImport", "").Value;
@@ -712,11 +712,11 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
         Stream stream = saveFileExport.OpenFile();
 
         Encoding fileEncoding = Encoding.Default;
-        StreamWriter fileOut = new StreamWriter(stream, fileEncoding);
+        var fileOut = new StreamWriter(stream, fileEncoding);
 
         foreach (DataGridViewRow row in dataGridChannelMappings.Rows)
         {
-          string guideChannelAndexternalId = (string)row.Cells["guideChannel"].Value;
+          var guideChannelAndexternalId = (string)row.Cells["guideChannel"].Value;
           string externalId = null;
 
           if (guideChannelAndexternalId != null)
@@ -757,7 +757,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
     private void retrieveRemoteFile()
     {
-      XmlTvImporter importer = new XmlTvImporter();
+      var importer = new XmlTvImporter();
       importer.RetrieveRemoteFile(textBoxFolder.Text, txtRemoteURL.Text);
       lblLastTransferAt.Text = _settingServiceAgent.GetSettingWithDefaultValue("xmlTvRemoteScheduleLastTransfer", "").Value;
       lblTransferStatus.Text = _settingServiceAgent.GetSettingWithDefaultValue("xmlTvRemoteScheduleTransferStatus", "").Value;

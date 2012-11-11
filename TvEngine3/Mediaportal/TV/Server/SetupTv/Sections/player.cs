@@ -46,7 +46,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       _graphBuilder = (IFilterGraph2)new FilterGraph();
       _rotEntry = new DsROTEntry(_graphBuilder);
 
-      TsReader reader = new TsReader();
+      var reader = new TsReader();
       _tsReader = (IBaseFilter)reader;
       this.LogInfo("TSReaderPlayer:add TsReader to graph");
       _graphBuilder.AddFilter(_tsReader, "TsReader");
@@ -54,7 +54,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       #region load file in TsReader
 
       this.LogDebug("load file in Ts");
-      IFileSourceFilter interfaceFile = (IFileSourceFilter)_tsReader;
+      var interfaceFile = (IFileSourceFilter)_tsReader;
       if (interfaceFile == null)
       {
         this.LogDebug("TSReaderPlayer:Failed to get IFileSourceFilter");
@@ -75,7 +75,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       this.LogInfo("TSReaderPlayer:render TsReader outputs");
       IEnumPins enumPins;
       _tsReader.EnumPins(out enumPins);
-      IPin[] pins = new IPin[2];
+      var pins = new IPin[2];
       int fetched;
       while (enumPins.Next(1, pins, out fetched) == 0)
       {

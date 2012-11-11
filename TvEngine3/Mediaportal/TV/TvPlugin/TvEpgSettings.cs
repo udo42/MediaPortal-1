@@ -72,7 +72,7 @@ namespace Mediaportal.TV.TvPlugin
         }
         if (isDigital)
         {
-          GUIListItem item = new GUIListItem();
+          var item = new GUIListItem();
           item.Label = chan.DisplayName;
           item.IsFolder = false;
           item.ThumbnailImage = Utils.GetCoverArt(Thumbs.TVChannel, chan.DisplayName);
@@ -89,7 +89,7 @@ namespace Mediaportal.TV.TvPlugin
     {
       if (control == listChannels)
       {
-        Channel chan = listChannels.SelectedListItem.TVTag as Channel;
+        var chan = listChannels.SelectedListItem.TVTag as Channel;
         chan.GrabEpg = !chan.GrabEpg;
         ServiceAgents.Instance.ChannelServiceAgent.SaveChannel(chan);
         listChannels.SelectedListItem.Selected = chan.GrabEpg;

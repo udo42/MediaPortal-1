@@ -80,8 +80,8 @@ namespace WebEPG
 
     public HTTPRequest GetRequest()
     {
-      HTTPRequest request = new HTTPRequest(_baseRequest);
-      CultureInfo culture = new CultureInfo(_data.SearchLang);
+      var request = new HTTPRequest(_baseRequest);
+      var culture = new CultureInfo(_data.SearchLang);
 
       if (_data.DayNames != null)
       {

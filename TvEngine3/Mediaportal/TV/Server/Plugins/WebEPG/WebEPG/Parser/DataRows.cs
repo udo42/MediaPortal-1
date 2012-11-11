@@ -48,7 +48,7 @@ namespace WebEPG.Parser
 
     public int RowCount(string source)
     {
-      Regex rowRegex = new Regex(_rowDelimiter);
+      var rowRegex = new Regex(_rowDelimiter);
       _source = source;
       _rows = rowRegex.Matches(_source);
       return _rows.Count;

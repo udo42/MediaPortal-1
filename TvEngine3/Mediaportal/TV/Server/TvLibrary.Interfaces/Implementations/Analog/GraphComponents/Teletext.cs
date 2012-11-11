@@ -57,7 +57,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     /// <returns>Teletext instance</returns>
     public static Teletext CreateInstance(XmlNode xmlNode)
     {
-      Teletext teletext = new Teletext();
+      var teletext = new Teletext();
       if (xmlNode != null)
       {
         XmlNode nameNode = xmlNode.SelectSingleNode("name");

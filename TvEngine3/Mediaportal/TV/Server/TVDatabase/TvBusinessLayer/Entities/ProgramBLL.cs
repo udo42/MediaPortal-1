@@ -26,7 +26,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
       get { return ((_entity.State & (int)ProgramState.Notify) == (int)ProgramState.Notify); }
       set
       {
-        ProgramState newState = (ProgramState)_entity.State;
+        var newState = (ProgramState)_entity.State;
         if (!value && (_entity.State & (int)ProgramState.Notify) == (int)ProgramState.Notify)
         // remove the notify bit flag if present
         {
@@ -57,7 +57,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
       get { return ((_entity.State & (int)ProgramState.RecordOnce) == (int)ProgramState.RecordOnce); }
       set
       {
-        ProgramState newState = (ProgramState)_entity.State;
+        var newState = (ProgramState)_entity.State;
         if (!value && (_entity.State & (int)ProgramState.RecordOnce) == (int)ProgramState.RecordOnce)
         // remove the Record bit flag if present                        
         {
@@ -81,7 +81,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
       get { return ((_entity.State & (int)ProgramState.RecordSeriesPending) == (int)ProgramState.RecordSeriesPending); }
       set
       {
-        ProgramState newState = (ProgramState)_entity.State;
+        var newState = (ProgramState)_entity.State;
         if (!value && (_entity.State & (int)ProgramState.RecordSeriesPending) == (int)ProgramState.RecordSeriesPending)
         // remove the Record bit flag if present                
         {
@@ -104,7 +104,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
       get { return (_entity != null && (_entity.State & (int)ProgramState.PartialRecordSeriesPending) == (int)ProgramState.PartialRecordSeriesPending); }
       set
       {
-        ProgramState newState = (ProgramState)_entity.State;
+        var newState = (ProgramState)_entity.State;
         if (value) //add the Record bit flag
         {
           newState |= ProgramState.PartialRecordSeriesPending;
@@ -125,7 +125,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
       get { return ((_entity.State & (int)ProgramState.RecordOncePending) == (int)ProgramState.RecordOncePending); }
       set
       {
-        ProgramState newState = (ProgramState)_entity.State;
+        var newState = (ProgramState)_entity.State;
         if (!value && (_entity.State & (int)ProgramState.RecordOncePending) == (int)ProgramState.RecordOncePending)
         // remove the Record bit flag if present        
         {
@@ -148,7 +148,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
       get { return ((_entity.State & (int)ProgramState.RecordManual) == (int)ProgramState.RecordManual); }
       set
       {
-        ProgramState newState = (ProgramState)_entity.State;
+        var newState = (ProgramState)_entity.State;
         if (!value && (_entity.State & (int)ProgramState.RecordManual) == (int)ProgramState.RecordManual)
         // remove the Record bit flag if present
         {
@@ -172,7 +172,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
       get { return ((_entity.State & (int)ProgramState.RecordSeries) == (int)ProgramState.RecordSeries); }
       set
       {
-        ProgramState newState = (ProgramState)_entity.State;
+        var newState = (ProgramState)_entity.State;
         if (!value && (_entity.State & (int)ProgramState.RecordSeries) == (int)ProgramState.RecordSeries)
         // remove the RecordSeries bit flag if present
         {
@@ -195,7 +195,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
       get { return ((_entity.State & (int)ProgramState.Conflict) == (int)ProgramState.Conflict); }
       set
       {
-        ProgramState newState = (ProgramState)_entity.State;
+        var newState = (ProgramState)_entity.State;
         if (!value && (_entity.State & (int)ProgramState.Conflict) == (int)ProgramState.Conflict)
         // remove the Conflict bit flag if present
         {

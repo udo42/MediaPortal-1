@@ -431,7 +431,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       {
         if (_filterTvAudioTuner != null && (value & _hardwareSupportedModes) != 0)
         {
-          IAMTVAudio tvAudioTunerInterface = _filterTvAudioTuner as IAMTVAudio;
+          var tvAudioTunerInterface = _filterTvAudioTuner as IAMTVAudio;
           if (tvAudioTunerInterface != null)
           {
             tvAudioTunerInterface.put_TVAudioMode(value);
@@ -446,7 +446,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     /// <returns>List of available audio modes.</returns>
     public List<TVAudioMode> GetAvailableAudioModes()
     {
-      List<TVAudioMode> availableStreams = new List<TVAudioMode>();
+      var availableStreams = new List<TVAudioMode>();
       if (_filterTvAudioTuner != null)
       {
         TVAudioMode availableAudioModes;

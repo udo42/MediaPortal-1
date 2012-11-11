@@ -73,22 +73,22 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
       this.LogDebug("TvCardAtsc: create tuning space");
 
       // Check if the system already has an appropriate tuning space.
-      SystemTuningSpaces systemTuningSpaces = new SystemTuningSpaces();
-      ITuningSpaceContainer container = systemTuningSpaces as ITuningSpaceContainer;
+      var systemTuningSpaces = new SystemTuningSpaces();
+      var container = systemTuningSpaces as ITuningSpaceContainer;
       if (container == null)
       {
         this.LogError("TvCardAtsc: failed to get the tuning space container");
         return;
       }
 
-      ITuner tuner = (ITuner)_filterNetworkProvider;
+      var tuner = (ITuner)_filterNetworkProvider;
       ITuneRequest request;
 
       IEnumTuningSpaces enumTuning;
       container.get_EnumTuningSpaces(out enumTuning);
       try
       {
-        ITuningSpace[] spaces = new ITuningSpace[2];
+        var spaces = new ITuningSpace[2];
         while (true)
         {
           int fetched;
@@ -132,7 +132,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
       _tuningSpace.put_MinPhysicalChannel(1);    // 1 for ATSC, 2 for cable (QAM)
       _tuningSpace.put_MinChannel(1);
 
-      IATSCLocator locator = (IATSCLocator)new ATSCLocator();
+      var locator = (IATSCLocator)new ATSCLocator();
       locator.put_CarrierFrequency(-1);
       locator.put_PhysicalChannel(-1);
       locator.put_SymbolRate(-1);
@@ -192,7 +192,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
     /// <returns>the assembled tune request</returns>
     protected override ITuneRequest AssembleTuneRequest(IChannel channel)
     {
-      ATSCChannel atscChannel = channel as ATSCChannel;
+      var atscChannel = channel as ATSCChannel;
       if (atscChannel == null)
       {
         this.LogDebug("TvCardAtsc: channel is not an ATSC/QAM channel!!! {0}", channel.GetType().ToString());
@@ -201,7 +201,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
 
       ILocator locator;
       _tuningSpace.get_DefaultLocator(out locator);
-      IATSCLocator atscLocator = (IATSCLocator)locator;
+      var atscLocator = (IATSCLocator)locator;
       atscLocator.put_CarrierFrequency((int)atscChannel.Frequency);
       atscLocator.put_PhysicalChannel(atscChannel.PhysicalChannel);
       atscLocator.put_Modulation(atscChannel.ModulationType);

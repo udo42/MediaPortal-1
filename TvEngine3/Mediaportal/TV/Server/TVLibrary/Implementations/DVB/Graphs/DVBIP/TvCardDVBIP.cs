@@ -202,7 +202,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
       this.LogDebug("TvCardDvbIp: add source filter");
       _filterStreamSource = FilterGraphTools.AddFilterFromClsid(_graphBuilder, _sourceFilterGuid,
                                                                 "DVB-IP Source Filter");
-      AMMediaType mpeg2ProgramStream = new AMMediaType();
+      var mpeg2ProgramStream = new AMMediaType();
       mpeg2ProgramStream.majorType = MediaType.Stream;
       mpeg2ProgramStream.subType = MediaSubType.Mpeg2Transport;
       mpeg2ProgramStream.unkPtr = IntPtr.Zero;
@@ -283,7 +283,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
     /// <param name="channel">The channel to tune to.</param>
     protected override void PerformTuning(IChannel channel)
     {
-      DVBIPChannel dvbipChannel = channel as DVBIPChannel;
+      var dvbipChannel = channel as DVBIPChannel;
       if (dvbipChannel == null)
       {
         throw new TvException("TvCardDvbIp: channel is not a DVB-IP channel!!! " + channel.GetType());
@@ -293,7 +293,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
       {
         foreach (ICustomDevice deviceInterface in _customDeviceInterfaces)
         {
-          ICustomTuner customTuner = deviceInterface as ICustomTuner;
+          var customTuner = deviceInterface as ICustomTuner;
           if (customTuner != null && customTuner.CanTuneChannel(channel))
           {
             this.LogDebug("TvCardDvbIp: using custom tuning");

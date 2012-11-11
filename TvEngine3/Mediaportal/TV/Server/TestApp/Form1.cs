@@ -147,7 +147,7 @@ namespace Mediaportal.TV.Server.TestApp
       {
         if ((_currentCard as TvCardAnalog) != null)
         {
-          FormAnalogChannel dlg = new FormAnalogChannel();
+          var dlg = new FormAnalogChannel();
           if ((_currentCard.SubChannels.Length > 0) && (_currentCard.SubChannels[0].CurrentChannel != null))
             dlg.Channel = _currentCard.SubChannels[0].CurrentChannel;
 
@@ -159,7 +159,7 @@ namespace Mediaportal.TV.Server.TestApp
 
         if ((_currentCard as TvCardDVBT) != null)
         {
-          FormDVBTChannel dlg = new FormDVBTChannel();
+          var dlg = new FormDVBTChannel();
           if (_currentCard.SubChannels[0].CurrentChannel != null)
             dlg.Channel = _currentCard.SubChannels[0].CurrentChannel;
 
@@ -171,7 +171,7 @@ namespace Mediaportal.TV.Server.TestApp
 
         if ((_currentCard as TvCardDVBC) != null)
         {
-          FormDVBCChannel dlg = new FormDVBCChannel();
+          var dlg = new FormDVBCChannel();
           if (_currentCard.SubChannels[0].CurrentChannel != null)
             dlg.Channel = _currentCard.SubChannels[0].CurrentChannel;
 
@@ -182,7 +182,7 @@ namespace Mediaportal.TV.Server.TestApp
         }
         if ((_currentCard as TvCardDVBS) != null)
         {
-          FormDVBSChannel dlg = new FormDVBSChannel();
+          var dlg = new FormDVBSChannel();
           if (_currentCard.SubChannels[0].CurrentChannel != null)
             dlg.Channel = _currentCard.SubChannels[0].CurrentChannel;
 
@@ -193,7 +193,7 @@ namespace Mediaportal.TV.Server.TestApp
         }
         if ((_currentCard as TvCardDvbSS2) != null)
         {
-          FormDVBSChannel dlg = new FormDVBSChannel();
+          var dlg = new FormDVBSChannel();
           if (_currentCard.SubChannels[0].CurrentChannel != null)
             dlg.Channel = _currentCard.SubChannels[0].CurrentChannel;
 
@@ -204,7 +204,7 @@ namespace Mediaportal.TV.Server.TestApp
         }
         if ((_currentCard as TvCardATSC) != null)
         {
-          FormATSCChannel dlg = new FormATSCChannel();
+          var dlg = new FormATSCChannel();
           if (_currentCard.SubChannels[0].CurrentChannel != null)
             dlg.Channel = _currentCard.SubChannels[0].CurrentChannel;
 
@@ -245,7 +245,7 @@ namespace Mediaportal.TV.Server.TestApp
       listViewChannels.Items.Clear();
       foreach (IChannel channel in channels)
       {
-        ListViewItem item = new ListViewItem(channel.ToString());
+        var item = new ListViewItem(channel.ToString());
         item.Tag = channel;
         listViewChannels.Items.Add(item);
       }
@@ -311,7 +311,7 @@ namespace Mediaportal.TV.Server.TestApp
     {
       if (listViewChannels.SelectedItems.Count <= 0) return;
       ListViewItem item = listViewChannels.SelectedItems[0];
-      IChannel channel = (IChannel)item.Tag;
+      var channel = (IChannel)item.Tag;
       _currentCard.Tune(0, channel);
       //_currentCard.TuneScan(channel);
     }
@@ -404,7 +404,7 @@ namespace Mediaportal.TV.Server.TestApp
       {
         _stopStreaming = false;
         _streamingRunning = true;
-        Thread thread = new Thread(workerThread);
+        var thread = new Thread(workerThread);
         thread.SetApartmentState(ApartmentState.STA);
         thread.IsBackground = true;
         thread.Name = "Streaming thread";

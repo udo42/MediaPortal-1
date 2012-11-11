@@ -92,7 +92,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     /// <returns>Tuner instance</returns>
     public static Tuner CreateInstance(XmlNode xmlNode)
     {
-      Tuner tuner = new Tuner();
+      var tuner = new Tuner();
       if (xmlNode != null)
       {
         XmlNode nameNode = xmlNode.SelectSingleNode("name");

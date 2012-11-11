@@ -140,7 +140,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       }
       else
       {
-        MPListView lv = e.Data.GetData(typeof (MPListView)) as MPListView;
+        var lv = e.Data.GetData(typeof (MPListView)) as MPListView;
         if (lv != null)
         {
           if (lv == this)
@@ -330,7 +330,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
         return;
       }
 
-      MPListView sourceListView = e.Data.GetData(typeof (MPListView)) as MPListView;
+      var sourceListView = e.Data.GetData(typeof (MPListView)) as MPListView;
       bool isGroupMapping = (sourceListView != this);
 
       if (SelectedItems.Count == 0 && !isChannelListView && !isGroupMapping)
@@ -372,7 +372,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
           targetListView = sourceListView;
         }
 
-        ArrayList insertItems = new ArrayList(targetListView.SelectedItems.Count);
+        var insertItems = new ArrayList(targetListView.SelectedItems.Count);
 
         foreach (ListViewItem item in targetListView.SelectedItems)
         {
@@ -381,7 +381,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 
         for (int i = insertItems.Count - 1; i >= 0; i--)
         {
-          ListViewItem insertItem = (ListViewItem)insertItems[i];
+          var insertItem = (ListViewItem)insertItems[i];
 
           //delete old items first
           for (int j = Items.Count - 1; j >= 0; j--)

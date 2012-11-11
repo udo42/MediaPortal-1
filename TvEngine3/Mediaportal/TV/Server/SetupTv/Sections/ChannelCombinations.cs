@@ -99,14 +99,14 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         mpListViewMapped.Items.Clear();
 
        
-        CardInfo cardInfo = (CardInfo)mpComboBoxCard.SelectedItem;
+        var cardInfo = (CardInfo)mpComboBoxCard.SelectedItem;
 
         Card card = cardInfo.Card;
         CardType cardType = cards[card.IdCard];
         IList<ChannelMap> maps = card.ChannelMaps;
 
 
-        List<ListViewItem> items = new List<ListViewItem>();
+        var items = new List<ListViewItem>();
         foreach (ChannelMap map in maps)
         {
           Channel channel = null;
@@ -122,7 +122,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           bool enableDVBS2 = (ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("dvbs" + card.IdCard + "enabledvbs2", "false").Value == "true");
           List<TuningDetail> tuningDetails = GetTuningDetailsByCardType(channel, cardType, enableDVBS2);
           int imageIndex = GetImageIndex(tuningDetails);
-          ListViewItem item = new ListViewItem(channel.DisplayName, imageIndex);
+          var item = new ListViewItem(channel.DisplayName, imageIndex);
           item.Tag = channel;
           items.Add(item);
         }
@@ -147,10 +147,10 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           return;
         Card card = ((CardInfo)mpComboBoxCard.SelectedItem).Card;
         ListViewItem selectedItem = mpListViewChannels.Items[mpListViewChannels.SelectedIndices[0]];
-        Channel selectedChannel = (Channel)selectedItem.Tag;
+        var selectedChannel = (Channel)selectedItem.Tag;
         IList<Channel> allChannels = ServiceAgents.Instance.ChannelServiceAgent.ListAllChannels();
-        List<ListViewItem> items = new List<ListViewItem>();
-        NotifyForm dlg = new NotifyForm("Searching for Similar Channels...",
+        var items = new List<ListViewItem>();
+        var dlg = new NotifyForm("Searching for Similar Channels...",
                                         "This can take some time\n\nPlease be patient...");
         dlg.Show(this);
         dlg.WaitForDisplay();
@@ -164,12 +164,12 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           if (isMapped)
             continue;
 
-          Levenstein comparer = new Levenstein();
+          var comparer = new Levenstein();
           float result = comparer.getSimilarity(selectedChannel.DisplayName, channel.DisplayName);
 
           IList<TuningDetail> details = channel.TuningDetails;
           int imageIndex = GetImageIndex(details);
-          ListViewItem item = new ListViewItem((result * 100f).ToString("f2") + "%", imageIndex);
+          var item = new ListViewItem((result * 100f).ToString("f2") + "%", imageIndex);
           item.Tag = channel;
           item.SubItems.Add(channel.DisplayName);
           items.Add(item);
@@ -194,14 +194,14 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
 
       ListViewItem selectedItem = mpListViewChannels.Items[mpListViewChannels.SelectedIndices[0]];
-      Channel selectedChannel = (Channel)selectedItem.Tag;
+      var selectedChannel = (Channel)selectedItem.Tag;
 
       ListView.SelectedListViewItemCollection selectedItemsToCombine = mpListViewMapped.SelectedItems;
 
       foreach (ListViewItem listViewItem in selectedItemsToCombine)
       {
-        Channel selectedChannel2 = (Channel)listViewItem.Tag;
-        NotifyForm dlg = new NotifyForm("Combining Channels...", "Updating TuningDetail Table\n\nPlease be patient...");
+        var selectedChannel2 = (Channel)listViewItem.Tag;
+        var dlg = new NotifyForm("Combining Channels...", "Updating TuningDetail Table\n\nPlease be patient...");
         dlg.Show(this);
         dlg.WaitForDisplay();
         foreach (TuningDetail detail in selectedChannel2.TuningDetails)
@@ -316,7 +316,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private static List<TuningDetail> GetTuningDetailsByCardType(Channel channel, CardType cardType, bool enableDVBS2)
     {
-      List<TuningDetail> result = new List<TuningDetail>();
+      var result = new List<TuningDetail>();
       foreach (TuningDetail tDetail in channel.TuningDetails)
       {
         switch (cardType)

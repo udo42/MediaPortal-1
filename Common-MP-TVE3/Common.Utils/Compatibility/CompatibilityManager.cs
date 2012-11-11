@@ -92,7 +92,7 @@ namespace MediaPortal.Common.Utils
     /// <param name="asm">The assembly to scan</param>
     private static void ScanAssembly(Assembly asm)
     {
-      var mpAttributes =
+      IEnumerable<SubsystemVersionAttribute> mpAttributes =
         asm.GetCustomAttributes(typeof(SubsystemVersionAttribute), false).Cast<SubsystemVersionAttribute>();
 
       foreach (SubsystemVersionAttribute attr in mpAttributes)
@@ -342,7 +342,7 @@ namespace MediaPortal.Common.Utils
         return false;
       }
 
-      List<string> subsystemsUsed = new List<string>();
+      var subsystemsUsed = new List<string>();
       XmlNode subsystemNode = rootNode.SelectSingleNode("SubSystemsUsed/Items");
       if (subsystemNode == null)
       {

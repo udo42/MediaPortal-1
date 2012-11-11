@@ -963,7 +963,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
           Marshal.FreeCoTaskMem(infoBuffer);
           return;
         }
-        CiDeviceInfo deviceInfo = (CiDeviceInfo)Marshal.PtrToStructure(infoBuffer, typeof(CiDeviceInfo));
+        var deviceInfo = (CiDeviceInfo)Marshal.PtrToStructure(infoBuffer, typeof(CiDeviceInfo));
         Marshal.FreeCoTaskMem(infoBuffer);
 
         String captureDevicePath;
@@ -1200,7 +1200,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
       }
 
       // Most of the info here is not very relevant.
-      NimConfig info = (NimConfig)Marshal.PtrToStructure(_generalBuffer, typeof(NimConfig));
+      var info = (NimConfig)Marshal.PtrToStructure(_generalBuffer, typeof(NimConfig));
       this.LogDebug("  symbol rate      = {0} s/s", info.SymbolRate);
       this.LogDebug("  sweep rate       = {0} Hz/s", info.SweepRate);
       this.LogDebug("  frequency        = {0} kHz", info.Frequency);
@@ -1237,7 +1237,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
         return;
       }
 
-      DriverVersion version = (DriverVersion)Marshal.PtrToStructure(_generalBuffer, typeof(DriverVersion));
+      var version = (DriverVersion)Marshal.PtrToStructure(_generalBuffer, typeof(DriverVersion));
       this.LogDebug("  version          = {0:x}.{1:x}.{2:x}.{3:x}", version.Version[3], version.Version[2], version.Version[1], version.Version[0]);
     }
 
@@ -1265,7 +1265,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
         return;
       }
 
-      PlatformInfo info = (PlatformInfo)Marshal.PtrToStructure(_generalBuffer, typeof(PlatformInfo));
+      var info = (PlatformInfo)Marshal.PtrToStructure(_generalBuffer, typeof(PlatformInfo));
       this.LogDebug("  platform         = {0}", info.Platform);
       this.LogDebug("  firmware version = {0}.{1}", info.FirmwareVersion[1], info.FirmwareVersion[0]);
 
@@ -1305,7 +1305,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
       }
 
       DVB_MMI.DumpBinary(_generalBuffer, 0, BoardInfoSize);
-      BoardInfo info = (BoardInfo)Marshal.PtrToStructure(_generalBuffer, typeof(BoardInfo));
+      var info = (BoardInfo)Marshal.PtrToStructure(_generalBuffer, typeof(BoardInfo));
       this.LogDebug("  bus type         = {0}", info.BusType);
       this.LogDebug("  board type       = {0}", info.BoardType);
       this.LogDebug("  board properties = {0}", info.BoardProperties.ToString());
@@ -1336,7 +1336,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
         return;
       }
 
-      Capabilities capabilities = (Capabilities)Marshal.PtrToStructure(_generalBuffer, typeof(Capabilities));
+      var capabilities = (Capabilities)Marshal.PtrToStructure(_generalBuffer, typeof(Capabilities));
       this.LogDebug("  min frequency    = {0} kHz", capabilities.MinFrequency);
       this.LogDebug("  max frequency    = {0} kHz", capabilities.MaxFrequency);
       this.LogDebug("  min symbol rate  = {0} s/s", capabilities.MinSymbolRate);
@@ -1447,12 +1447,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
     {
       this.LogDebug("Anysee: MMI message callback, slot = {0}", slotIndex);
 
-      MmiMessage msg = (MmiMessage)Marshal.PtrToStructure(message, typeof(MmiMessage));
+      var msg = (MmiMessage)Marshal.PtrToStructure(message, typeof(MmiMessage));
       this.LogDebug("  device index  = {0}", msg.DeviceIndex);
       this.LogDebug("  slot index    = {0}", msg.SlotIndex);
       this.LogDebug("  menu title    = {0}", msg.RootMenuTitle.Text);
       this.LogDebug("  message type  = {0}", msg.Type);
-      MmiMenu menu = (MmiMenu)Marshal.PtrToStructure(msg.Menu, typeof(MmiMenu));
+      var menu = (MmiMenu)Marshal.PtrToStructure(msg.Menu, typeof(MmiMenu));
       this.LogDebug("  string count  = {0}", menu.StringCount);
       this.LogDebug("  menu index    = {0}", menu.MenuIndex);
 
@@ -1812,7 +1812,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
 
       // Anysee tuners only support decrypting one channel at a time. We'll just send this PMT to the CAM
       // regardless of the list management action.
-      PmtData pmtData = new PmtData();
+      var pmtData = new PmtData();
       pmtData.PmtByte6 = (byte)((pmt.Version << 1) | pmt.CurrentNextIndicator);
       pmtData.PcrPid = pmt.PcrPid;
       pmtData.ServiceId = pmt.ProgramNumber;
@@ -1871,7 +1871,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
 
         // Yes!!!
         this.LogDebug("  including PID {0} (0x{0:x}), stream type = {1}, category = {2}", es.Pid, es.StreamType, esType);
-        EsPmtData esToKeep = new EsPmtData();
+        var esToKeep = new EsPmtData();
         esToKeep.Pid = es.Pid;
         esToKeep.EsType = esType;
         esToKeep.StreamType = (byte)es.StreamType;
@@ -2039,7 +2039,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
         return false;
       }
 
-      DiseqcMessage message = new DiseqcMessage();
+      var message = new DiseqcMessage();
       message.MessageLength = 0;
       message.ToneBurst = AnyseeToneBurst.Off;
       if (toneBurstState == ToneBurst.ToneBurst)
@@ -2093,7 +2093,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
         return false;
       }
 
-      DiseqcMessage message = new DiseqcMessage();
+      var message = new DiseqcMessage();
       message.Message = new byte[MaxDiseqcMessageLength];
       Buffer.BlockCopy(command, 0, message.Message, 0, command.Length);
       message.MessageLength = command.Length;

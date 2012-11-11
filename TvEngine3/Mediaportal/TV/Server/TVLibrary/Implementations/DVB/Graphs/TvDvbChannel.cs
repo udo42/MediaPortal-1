@@ -203,7 +203,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       }
 
       // If we can, also pass the PMT PID. We don't know what the PMT PID is when scanning.
-      DVBBaseChannel ch = (DVBBaseChannel)_currentChannel;
+      var ch = (DVBBaseChannel)_currentChannel;
       if (ch != null && ch.PmtPid > 0)
       {
         _pids.Add((UInt16)ch.PmtPid);
@@ -336,7 +336,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         _teletextDecoder.ClearBuffer();
       }
 
-      DVBBaseChannel dvbService = _currentChannel as DVBBaseChannel;
+      var dvbService = _currentChannel as DVBBaseChannel;
       if (dvbService == null)
       {
         throw new TvException("TvDvbChannel: current service is not set");
@@ -699,7 +699,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       try
       {
         ReadOnlyCollection<byte> readOnlyPmt = _pmt.GetRawPmt();
-        byte[] rawPmt = new byte[readOnlyPmt.Count];
+        var rawPmt = new byte[readOnlyPmt.Count];
         readOnlyPmt.CopyTo(rawPmt, 0);
         _tsFilterInterface.TimeShiftSetPmtPid(_subChannelIndex, _pmtPid, _pmt.ProgramNumber, rawPmt, rawPmt.Length);
       }
@@ -717,7 +717,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       try
       {
         ReadOnlyCollection<byte> readOnlyPmt = _pmt.GetRawPmt();
-        byte[] rawPmt = new byte[readOnlyPmt.Count];
+        var rawPmt = new byte[readOnlyPmt.Count];
         readOnlyPmt.CopyTo(rawPmt, 0);
         _tsFilterInterface.RecordSetPmtPid(_subChannelIndex, _pmtPid, _pmt.ProgramNumber, rawPmt, rawPmt.Length);
       }
@@ -746,7 +746,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         try
         {
           int pmtLength = _tsFilterInterface.PmtGetPmtData(_subChannelIndex, pmtBuffer);
-          byte[] pmtData = new byte[pmtLength];
+          var pmtData = new byte[pmtLength];
           Marshal.Copy(pmtBuffer, pmtData, 0, pmtLength);
           Pmt pmt = Pmt.Decode(pmtData, _tuner.CamType);
           if (pmt == null)
@@ -816,7 +816,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         }
         this.LogDebug("TvDvbChannel: CAT found after {0} seconds", ts.TotalSeconds);
         int catLength = _tsFilterInterface.CaGetCaData(_subChannelIndex, catBuffer);
-        byte[] catData = new byte[catLength];
+        var catData = new byte[catLength];
         Marshal.Copy(catBuffer, catData, 0, catLength);
         _cat = Cat.Decode(catData);
       }
@@ -942,7 +942,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       // - the PID has changed AND
       // - the PID has not been set to zero (setting to zero indicates that the user wants the PID to be
       //    looked up in the PAT each time this service is tuned)
-      DVBBaseChannel dvbService = _currentChannel as DVBBaseChannel;
+      var dvbService = _currentChannel as DVBBaseChannel;
       if (dvbService != null && pmtPid != dvbService.PmtPid && dvbService.PmtPid > 0)
       {
         dvbService.PmtPid = pmtPid;   // Set the value here so we don't hammer this function, regardless of update success/fail.

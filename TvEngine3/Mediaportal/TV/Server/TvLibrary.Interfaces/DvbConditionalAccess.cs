@@ -1699,7 +1699,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
         return null;
       }
 
-      Cat cat = new Cat();
+      var cat = new Cat();
       cat._tableId = data[0];
       cat._sectionSyntaxIndicator = (byte)(data[1] & 0x80);
       cat._sectionLength = (UInt16)(((data[1] & 0x0f) << 8) + data[2]);
@@ -2027,7 +2027,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
         return null;
       }
 
-      Pmt pmt = new Pmt();
+      var pmt = new Pmt();
       pmt._tableId = data[0];
       pmt._sectionSyntaxIndicator = (byte)(data[1] & 0x80);
       pmt._sectionLength = (UInt16)(((data[1] & 0x0f) << 8) + data[2]);
@@ -2084,7 +2084,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       int endEsData = data.Length - 4;
       while (offset + 4 < endEsData)
       {
-        PmtElementaryStream es = new PmtElementaryStream();
+        var es = new PmtElementaryStream();
         es.StreamType = (StreamType)data[offset++];
         if (Enum.IsDefined(typeof(LogicalStreamType), (int)es.StreamType))
         {
@@ -2228,7 +2228,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
     public byte[] GetCaPmt(CaPmtListManagementAction listAction, CaPmtCommand command)
     {
       this.LogDebug("PMT: get CA PMT, list action = {0}, command = {1}", listAction, command);
-      byte[] tempCaPmt = new byte[4096];  // Max PMT length is 1024, and since CA PMT is a cut-down version of PMT this should be very safe.
+      var tempCaPmt = new byte[4096];  // Max PMT length is 1024, and since CA PMT is a cut-down version of PMT this should be very safe.
       tempCaPmt[0] = (byte)listAction;
       tempCaPmt[1] = _rawPmt[3];
       tempCaPmt[2] = _rawPmt[4];
@@ -2295,7 +2295,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
 
       // There is no length output parameter, so we need to resize tempCaPmt to match the number of
       // meaningful CA PMT bytes.
-      byte[] caPmt = new byte[offset];
+      var caPmt = new byte[offset];
       Buffer.BlockCopy(tempCaPmt, 0, caPmt, 0, offset);
 
       //DVB_MMI.DumpBinary(caPmt, 0, caPmt.Length);
@@ -2649,7 +2649,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       {
         return null;
       }
-      DescriptorTag tag = (DescriptorTag)data[offset];
+      var tag = (DescriptorTag)data[offset];
       byte length = data[offset + 1];
       if (offset + 2 + length >= data.Length)
       {
@@ -2657,9 +2657,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       }
 
       // If we get to here, the descriptor data seems to be valid. Instantiate a descriptor.
-      byte[] descData = new byte[length];
+      var descData = new byte[length];
       Buffer.BlockCopy(data, offset + 2, descData, 0, length);
-      Descriptor d = new Descriptor(tag, length, descData);
+      var d = new Descriptor(tag, length, descData);
 
       // Make a copy of the entire descriptor so that changes made by the caller on the original array have
       // no effect on our reference/copy.
@@ -2760,7 +2760,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       {
         return null;
       }
-      ConditionalAccessDescriptor d = new ConditionalAccessDescriptor(descriptor);
+      var d = new ConditionalAccessDescriptor(descriptor);
 
       // Standard fields.
       d._caSystemId = (UInt16)((descriptor.Data[0] << 8) + descriptor.Data[1]);
@@ -2831,7 +2831,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       this.LogDebug("  CA PID       = {0} (0x{0:x})", _caPid);
       foreach (UInt16 pid in _pids.Keys)
       {
-        List<String> providerIds = new List<String>(_pids[pid].Count);
+        var providerIds = new List<String>(_pids[pid].Count);
         foreach (UInt32 providerId in _pids[pid])
         {
           providerIds.Add(String.Format("{0} (0x{0:x})", providerId));
@@ -2962,7 +2962,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       int offset = 1;
       while (offset + 1 < d._privateData.Length)
       {
-        UInt32 providerId = (UInt32)((d._privateData[offset] << 8) + d._privateData[offset + 1]);
+        var providerId = (UInt32)((d._privateData[offset] << 8) + d._privateData[offset + 1]);
         if (!d._pids[d._caPid].Contains(providerId))
         {
           d._pids[d._caPid].Add(providerId);
@@ -3044,7 +3044,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
         return;
       }
 
-      MmiCloseType command = (MmiCloseType)apdu[offset++];
+      var command = (MmiCloseType)apdu[offset++];
       int delay = 0;
       if (command == MmiCloseType.Delayed)
       {
@@ -3117,7 +3117,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       Log.Debug("DvbMmiHandler: handle menu");
 
       byte entryCount = apdu[offset++];
-      List<String> entries = new List<String>();
+      var entries = new List<String>();
 
       // Read the menu entries into the entries list.
       while (entryCount > 0 && offset < apdu.Length)
@@ -3400,7 +3400,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
     /// <returns>the APDU</returns>
     public static byte[] CreateMmiMenuAnswer(byte choice)
     {
-      byte[] apdu = new byte[5];
+      var apdu = new byte[5];
       WriteMmiTag(MmiTag.MenuAnswer, ref apdu, 0);
       apdu[3] = 1;    // length
       apdu[4] = choice;
@@ -3422,12 +3422,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       char[] answerChars = answer.ToCharArray();
 
       // Encode the length into a temporary array so we know how many bytes are required for the APDU.
-      byte[] length = new byte[5];  // max possible bytes for length field
+      var length = new byte[5];  // max possible bytes for length field
       int lengthByteCount;
       WriteLength(answerChars.Length + 1, ref length, 0, out lengthByteCount);  // + 1 for response type
 
       // Encode the APDU.
-      byte[] apdu = new byte[answerChars.Length + lengthByteCount + 4]; // + 4 = 3 for MMI tag, 1 for response type
+      var apdu = new byte[answerChars.Length + lengthByteCount + 4]; // + 4 = 3 for MMI tag, 1 for response type
       WriteMmiTag(MmiTag.Answer, ref apdu, 0);
       Buffer.BlockCopy(length, 0, apdu, 3, lengthByteCount);
       apdu[3 + lengthByteCount] = (byte)responseType;
@@ -3451,12 +3451,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       }
 
       // Encode the length into a temporary array so we know how many bytes are required for the APDU.
-      byte[] length = new byte[5];  // max possible bytes for length field
+      var length = new byte[5];  // max possible bytes for length field
       int lengthByteCount;
       WriteLength(caPmt.Length, ref length, 0, out lengthByteCount);
 
       // Encode the APDU.
-      byte[] apdu = new byte[caPmt.Length + lengthByteCount + 3]; // + 3 for MMI tag
+      var apdu = new byte[caPmt.Length + lengthByteCount + 3]; // + 3 for MMI tag
       WriteMmiTag(MmiTag.ConditionalAccessPmt, ref apdu, 0);
       Buffer.BlockCopy(length, 0, apdu, 3, lengthByteCount);
       Buffer.BlockCopy(caPmt, 0, apdu, 3 + lengthByteCount, caPmt.Length);
@@ -3494,8 +3494,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
     /// <param name="length">total length</param>
     public static void DumpBinary(ReadOnlyCollection<byte> sourceData, int offset, int length)
     {
-      StringBuilder row = new StringBuilder();
-      StringBuilder rowText = new StringBuilder();
+      var row = new StringBuilder();
+      var rowText = new StringBuilder();
 
       for (int position = offset; position < offset + length; position++)
       {
@@ -3539,7 +3539,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
     /// <param name="length">total length</param>
     public static void DumpBinary(IntPtr sourceData, int offset, int length)
     {
-      byte[] tmpBuffer = new byte[length];
+      var tmpBuffer = new byte[length];
       Marshal.Copy(sourceData, tmpBuffer, offset, length);
       DumpBinary(tmpBuffer, offset, length);
     }

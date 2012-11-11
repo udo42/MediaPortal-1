@@ -182,18 +182,18 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     /// <returns></returns>
     protected static void ExitWindowsDefault(RestartOptions how, bool force, AfterExitWindowsHandler after)
     {
-      ExitWindowsDefaultEnv env = new ExitWindowsDefaultEnv();
+      var env = new ExitWindowsDefaultEnv();
       env.how = how;
       env.force = force;
       env.after = after;
-      Thread exitWinThread = new Thread(ExitWindowsDefaultThread);
+      var exitWinThread = new Thread(ExitWindowsDefaultThread);
       exitWinThread.Name = "WinController exit thread";
       exitWinThread.Start(env);
     }
 
     protected static void ExitWindowsDefaultThread(object _data)
     {
-      ExitWindowsDefaultEnv env = (ExitWindowsDefaultEnv)_data;
+      var env = (ExitWindowsDefaultEnv)_data;
       RestartOptions how = env.how;
       bool force = env.force;
       Log.Debug("WindowsController: Performing ExitWindows {0}, force: {1}", how, force);
@@ -338,8 +338,8 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
         return;
       }
       IntPtr tokenHandle = IntPtr.Zero;
-      LUID privilegeLUID = new LUID();
-      TOKEN_PRIVILEGES newPrivileges = new TOKEN_PRIVILEGES();
+      var privilegeLUID = new LUID();
+      var newPrivileges = new TOKEN_PRIVILEGES();
       TOKEN_PRIVILEGES tokenPrivileges;
       if (
         OpenProcessToken(Process.GetCurrentProcess().Handle, TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, ref tokenHandle) ==
@@ -387,7 +387,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     {
       try
       {
-        StringBuilder buffer = new StringBuilder(255);
+        var buffer = new StringBuilder(255);
         FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM, IntPtr.Zero, number, 0, buffer, buffer.Capacity, 0);
         return buffer.ToString();
       }

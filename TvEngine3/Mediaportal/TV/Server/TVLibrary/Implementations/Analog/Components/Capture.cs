@@ -816,7 +816,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     /// <param name="capBuilder">The capture graph builder</param>
     private void CheckCapabilitiesStreamConfig(Graph graph, ICaptureGraphBuilder2 capBuilder)
     {
-      DsGuid cat = new DsGuid(PinCategory.Capture);
+      var cat = new DsGuid(PinCategory.Capture);
       Guid iid = typeof (IAMStreamConfig).GUID;
       object o;
       int hr = capBuilder.FindInterface(cat, null, _filterVideoCapture, iid, out o);
@@ -928,28 +928,28 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
           object formatStruct;
           if (mediaType.formatType == FormatType.VideoInfo)
           {
-            VideoInfoHeader temp = new VideoInfoHeader();
+            var temp = new VideoInfoHeader();
             Marshal.PtrToStructure(mediaType.formatPtr, temp);
             temp.AvgTimePerFrame = frameRate;
             formatStruct = temp;
           }
           else if (mediaType.formatType == FormatType.VideoInfo2)
           {
-            VideoInfoHeader2 temp = new VideoInfoHeader2();
+            var temp = new VideoInfoHeader2();
             Marshal.PtrToStructure(mediaType.formatPtr, temp);
             temp.AvgTimePerFrame = frameRate;
             formatStruct = temp;
           }
           else if (mediaType.formatType == FormatType.Mpeg2Video)
           {
-            MPEG2VideoInfo temp = new MPEG2VideoInfo();
+            var temp = new MPEG2VideoInfo();
             Marshal.PtrToStructure(mediaType.formatPtr, temp);
             temp.hdr.AvgTimePerFrame = frameRate;
             formatStruct = temp;
           }
           else if (mediaType.formatType == FormatType.MpegVideo)
           {
-            MPEG1VideoInfo temp = new MPEG1VideoInfo();
+            var temp = new MPEG1VideoInfo();
             Marshal.PtrToStructure(mediaType.formatPtr, temp);
             temp.hdr.AvgTimePerFrame = frameRate;
             formatStruct = temp;
@@ -1012,28 +1012,28 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
           object formatStruct;
           if (mediaType.formatType == FormatType.VideoInfo)
           {
-            VideoInfoHeader temp = new VideoInfoHeader();
+            var temp = new VideoInfoHeader();
             Marshal.PtrToStructure(mediaType.formatPtr, temp);
             temp.BmiHeader = bmiHeader;
             formatStruct = temp;
           }
           else if (mediaType.formatType == FormatType.VideoInfo2)
           {
-            VideoInfoHeader2 temp = new VideoInfoHeader2();
+            var temp = new VideoInfoHeader2();
             Marshal.PtrToStructure(mediaType.formatPtr, temp);
             temp.BmiHeader = bmiHeader;
             formatStruct = temp;
           }
           else if (mediaType.formatType == FormatType.Mpeg2Video)
           {
-            MPEG2VideoInfo temp = new MPEG2VideoInfo();
+            var temp = new MPEG2VideoInfo();
             Marshal.PtrToStructure(mediaType.formatPtr, temp);
             temp.hdr.BmiHeader = bmiHeader;
             formatStruct = temp;
           }
           else if (mediaType.formatType == FormatType.MpegVideo)
           {
-            MPEG1VideoInfo temp = new MPEG1VideoInfo();
+            var temp = new MPEG1VideoInfo();
             Marshal.PtrToStructure(mediaType.formatPtr, temp);
             temp.hdr.BmiHeader = bmiHeader;
             formatStruct = temp;
@@ -1081,7 +1081,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       try
       {
         IntPtr pmt = IntPtr.Zero;
-        AMMediaType mediaType = new AMMediaType();
+        var mediaType = new AMMediaType();
         try
         {
           // Get the current format info
@@ -1097,25 +1097,25 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
           // dependingon the formatType
           if (mediaType.formatType == FormatType.VideoInfo)
           {
-            VideoInfoHeader temp = new VideoInfoHeader();
+            var temp = new VideoInfoHeader();
             Marshal.PtrToStructure(mediaType.formatPtr, temp);
             bmiHeader = temp.BmiHeader;
           }
           else if (mediaType.formatType == FormatType.VideoInfo2)
           {
-            VideoInfoHeader2 temp = new VideoInfoHeader2();
+            var temp = new VideoInfoHeader2();
             Marshal.PtrToStructure(mediaType.formatPtr, temp);
             bmiHeader = temp.BmiHeader;
           }
           else if (mediaType.formatType == FormatType.Mpeg2Video)
           {
-            MPEG2VideoInfo temp = new MPEG2VideoInfo();
+            var temp = new MPEG2VideoInfo();
             Marshal.PtrToStructure(mediaType.formatPtr, temp);
             bmiHeader = temp.hdr.BmiHeader;
           }
           else if (mediaType.formatType == FormatType.MpegVideo)
           {
-            MPEG1VideoInfo temp = new MPEG1VideoInfo();
+            var temp = new MPEG1VideoInfo();
             Marshal.PtrToStructure(mediaType.formatPtr, temp);
             bmiHeader = temp.hdr.BmiHeader;
           }

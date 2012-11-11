@@ -111,7 +111,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       {
         get
         {
-          DVBSChannel tuneChannel = new DVBSChannel();
+          var tuneChannel = new DVBSChannel();
           tuneChannel.Frequency = CarrierFrequency;
           tuneChannel.Polarisation = Polarisation;
           tuneChannel.SymbolRate = SymbolRate;
@@ -251,10 +251,10 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       item.EnsureVisible();
       Application.DoEvents();
 
-      List<Transponder> transponders = new List<Transponder>();
+      var transponders = new List<Transponder>();
       try
       {
-        string[,] contextDownload = new string[2,2];
+        var contextDownload = new string[2,2];
         contextDownload[0, 0] = context.FileName;
         //        contextDownload[1, 0] = context.FileName.Replace(".ini", "-S2.ini");
         contextDownload[0, 1] = context.Url;
@@ -265,13 +265,13 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           string satUrl = contextDownload[row, 1];
           item.Text = itemLine + " connecting...";
           Application.DoEvents();
-          HttpWebRequest request = (HttpWebRequest)WebRequest.Create(satUrl);
+          var request = (HttpWebRequest)WebRequest.Create(satUrl);
           request.ReadWriteTimeout = 30 * 1000; //thirty secs timeout
           request.Proxy.Credentials = CredentialCache.DefaultCredentials;
 
           item.Text = itemLine + " downloading...";
           Application.DoEvents();
-          using (HttpWebResponse response = (HttpWebResponse)request.GetResponse())
+          using (var response = (HttpWebResponse)request.GetResponse())
           {
             item.Text = itemLine + " saving...";
             Application.DoEvents();
@@ -303,7 +303,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
                           {
                             tpdata[0] = tpdata[0].Substring(tpdata[0].IndexOf("=") + 1);
                           }
-                          Transponder transponder = new Transponder();
+                          var transponder = new Transponder();
                           transponder.CarrierFrequency = Int32.Parse(tpdata[0]) * 1000;
                           switch (tpdata[1].ToLowerInvariant())
                           {
@@ -444,7 +444,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         if (transponders.Count > 0)
         {
           TextWriter parFileXML = File.CreateText(newPath);
-          XmlSerializer xmlSerializer = new XmlSerializer(typeof (List<Transponder>));
+          var xmlSerializer = new XmlSerializer(typeof (List<Transponder>));
           xmlSerializer.Serialize(parFileXML, transponders);
           parFileXML.Close();
         }
@@ -470,7 +470,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       try
       {
         XmlReader parFileXML = XmlReader.Create(fileName);
-        XmlSerializer xmlSerializer = new XmlSerializer(typeof (List<Transponder>));
+        var xmlSerializer = new XmlSerializer(typeof (List<Transponder>));
         _transponders = (List<Transponder>)xmlSerializer.Deserialize(parFileXML);
         parFileXML.Close();
         _transponders.Sort();
@@ -488,15 +488,15 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     /// <returns></returns>
     private static List<SatelliteContext> LoadSatellites()
     {
-      List<SatelliteContext> satellites = new List<SatelliteContext>();
-      XmlDocument doc = new XmlDocument();
+      var satellites = new List<SatelliteContext>();
+      var doc = new XmlDocument();
       doc.Load(String.Format(@"{0}\TuningParameters\dvbs\satellites.xml", PathManager.GetDataPath));
       XmlNodeList nodes = doc.SelectNodes("/satellites/satellite");
       if (nodes != null)
       {
         foreach (XmlNode node in nodes)
         {
-          SatelliteContext ts = new SatelliteContext();
+          var ts = new SatelliteContext();
           ts.SatelliteName = node.Attributes.GetNamedItem("name").Value;
           ts.Url = node.Attributes.GetNamedItem("url").Value;
           string name = Utils.FilterFileName(ts.SatelliteName);
@@ -510,7 +510,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       {
         if (Path.GetFileName(file).StartsWith("Manual_Scans"))
         {
-          SatelliteContext ts = new SatelliteContext();
+          var ts = new SatelliteContext();
           ts.SatelliteName = Path.GetFileNameWithoutExtension(file);
           ts.Url = "";
           ts.FileName = file;
@@ -661,13 +661,13 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       //List<SimpleFileName> satellites = fileFilters.AllFiles;
       List<SatelliteContext> satellites = LoadSatellites();
       IList<LnbType> tempLnbTypes = ServiceAgents.Instance.CardServiceAgent.ListAllLnbTypes();
-      LnbType[] lnbTypes = new LnbType[tempLnbTypes.Count];
+      var lnbTypes = new LnbType[tempLnbTypes.Count];
       tempLnbTypes.CopyTo(lnbTypes, 0);
 
-      MPComboBox[] mpTrans = new[] {mpTransponder1, mpTransponder2, mpTransponder3, mpTransponder4};
-      MPComboBox[] mpComboDiseqc = new[] {mpComboDiseqc1, mpComboDiseqc2, mpComboDiseqc3, mpComboDiseqc4};
-      MPComboBox[] mpComboLnbType = new[] {mpComboLnbType1, mpComboLnbType2, mpComboLnbType3, mpComboLnbType4};
-      MPCheckBox[] mpLNBs = new[] {mpLNB1, mpLNB2, mpLNB3, mpLNB4};
+      var mpTrans = new[] {mpTransponder1, mpTransponder2, mpTransponder3, mpTransponder4};
+      var mpComboDiseqc = new[] {mpComboDiseqc1, mpComboDiseqc2, mpComboDiseqc3, mpComboDiseqc4};
+      var mpComboLnbType = new[] {mpComboLnbType1, mpComboLnbType2, mpComboLnbType3, mpComboLnbType4};
+      var mpLNBs = new[] {mpLNB1, mpLNB2, mpLNB3, mpLNB4};
       MPComboBox curBox;
       MPCheckBox curCheck;
       for (int ctlIndex = 0; ctlIndex < 4; ctlIndex++)
@@ -889,7 +889,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private void Scan(int lnb, LnbType lnbType, DiseqcPort diseqc, SatelliteContext context)
     {
       // all transponders to scan
-      List<DVBSChannel> _channels = new List<DVBSChannel>();
+      var _channels = new List<DVBSChannel>();
 
       // get default sat position from DB
 
@@ -940,7 +940,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           {
             for (int i = 0; i < channels.Length; ++i)
             {
-              DVBSChannel curChannel = (DVBSChannel)channels[i];
+              var curChannel = (DVBSChannel)channels[i];
               _channels.Add(curChannel);
               item = listViewStatus.Items.Add(new ListViewItem(curChannel.ToString()));
               item.EnsureVisible();
@@ -1032,7 +1032,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         for (int i = 0; i < channels.Length; ++i)
         {
           Channel dbChannel;
-          DVBSChannel channel = (DVBSChannel)channels[i];
+          var channel = (DVBSChannel)channels[i];
           bool exists;
           TuningDetail currentDetail;
           //Check if we already have this tuningdetail. The user has the option to enable channel move detection...
@@ -1311,7 +1311,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       if (checkBox1.Checked == false)
         return;
-      SatelliteContext sat = (SatelliteContext)comboBoxSat.Items[comboBoxSat.SelectedIndex];
+      var sat = (SatelliteContext)comboBoxSat.Items[comboBoxSat.SelectedIndex];
 
       Card card = ServiceAgents.Instance.CardServiceAgent.GetCard(_cardNumber);
       IList<DisEqcMotor> motorSettings = card.DisEqcMotors;
@@ -1338,7 +1338,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       //store motor position..
       int index = -1;
-      SatelliteContext sat = (SatelliteContext)comboBoxSat.SelectedItem;
+      var sat = (SatelliteContext)comboBoxSat.SelectedItem;
       Card card = ServiceAgents.Instance.CardServiceAgent.GetCard(_cardNumber);
       IList<DisEqcMotor> motorSettings = card.DisEqcMotors;
       foreach (DisEqcMotor motor in motorSettings)
@@ -1352,7 +1352,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       if (index < 0)
       {
         index = motorSettings.Count + 1;
-        DisEqcMotor motor = new DisEqcMotor();
+        var motor = new DisEqcMotor();
         motor.IdCard = card.IdCard;
         motor.IdSatellite = sat.Satellite.IdSatellite;
         motor.Position = index;
@@ -1437,7 +1437,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       if (setting.Value == "no")
         checkBoxEnabled.Checked = false;
       comboBox1.Items.Clear();
-      SatelliteContext sat = (SatelliteContext)comboBoxSat.SelectedItem;
+      var sat = (SatelliteContext)comboBoxSat.SelectedItem;
       LoadTransponders(sat);
       _transponders.Sort();
       foreach (Transponder transponder in _transponders)
@@ -1458,8 +1458,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       if (checkBox1.Checked == false)
         return;
-      Transponder transponder = (Transponder)comboBox1.SelectedItem;
-      DVBSChannel tuneChannel = new DVBSChannel();
+      var transponder = (Transponder)comboBox1.SelectedItem;
+      var tuneChannel = new DVBSChannel();
       tuneChannel.Frequency = transponder.CarrierFrequency;
       tuneChannel.Polarisation = transponder.Polarisation;
       tuneChannel.SymbolRate = transponder.SymbolRate;
@@ -1663,15 +1663,15 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private void StartScanThread()
     {
-      Thread scanThread = new Thread(DoScan);
+      var scanThread = new Thread(DoScan);
       scanThread.Name = "DVB-S scan thread";
       scanThread.Start();
     }
 
     private static Transponder ToTransonder(IChannel channel)
     {
-      DVBSChannel ch = (DVBSChannel)channel;
-      Transponder t = new Transponder();
+      var ch = (DVBSChannel)channel;
+      var t = new Transponder();
       t.CarrierFrequency = Convert.ToInt32(ch.Frequency);
       t.InnerFecRate = ch.InnerFecRate;
       t.Modulation = ch.ModulationType;
@@ -1684,7 +1684,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private DVBSChannel GetManualTuning()
     {
-      DVBSChannel tuneChannel = new DVBSChannel();
+      var tuneChannel = new DVBSChannel();
       tuneChannel.Frequency = Int32.Parse(textBoxFreq.Text);
       tuneChannel.SymbolRate = Int32.Parse(textBoxSymbolRate.Text);
       tuneChannel.Polarisation = (Polarisation)mpComboBoxPolarisation.SelectedIndex - 1;
@@ -1714,7 +1714,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       String filePath = String.Format(@"{0}\TuningParameters\dvbs\Manual_Scans.{1}.xml", PathManager.GetDataPath,
                                       DateTime.Now.ToString("yyyy-MM-dd"));
       TextWriter parFileXML = File.CreateText(filePath);
-      XmlSerializer xmlSerializer = new XmlSerializer(typeof (List<Transponder>));
+      var xmlSerializer = new XmlSerializer(typeof (List<Transponder>));
       xmlSerializer.Serialize(parFileXML, _transponders);
       parFileXML.Close();
       Init();
@@ -1779,7 +1779,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
 
       bool enableScanControls = scanState == ScanState.Initialized;
-      Control[] scanControls = new Control[]
+      var scanControls = new Control[]
                                  {
                                    mpLNB1, mpLNB2, mpLNB3, mpLNB4,
                                    mpComboDiseqc1, mpComboDiseqc2, mpComboDiseqc3, mpComboDiseqc4,
@@ -1795,7 +1795,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
 
       bool enableNonPredef = scanState == ScanState.Initialized && ActiveScanType != ScanTypes.Predefined;
-      Control[] nonPredefControls = new Control[]
+      var nonPredefControls = new Control[]
                                       {
                                         textBoxFreq, textBoxSymbolRate,
                                         mpComboBoxPolarisation, mpComboBoxMod,

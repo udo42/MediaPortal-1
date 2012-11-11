@@ -57,12 +57,12 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
 
     public EPGWakeupConfig(string serializedConfig)
     {
-      EPGWakeupConfig cfg = new EPGWakeupConfig();
+      var cfg = new EPGWakeupConfig();
       try
       {
-        BinaryFormatter formatter = new BinaryFormatter();
+        var formatter = new BinaryFormatter();
         byte[] buffer = Convert.FromBase64String(serializedConfig);
-        using (MemoryStream stream = new MemoryStream(buffer, 0, buffer.Length))
+        using (var stream = new MemoryStream(buffer, 0, buffer.Length))
         {
           cfg = (EPGWakeupConfig)formatter.Deserialize(stream);
         }
@@ -76,14 +76,14 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
 
     public string SerializeAsString()
     {
-      BinaryFormatter formatter = new BinaryFormatter();
+      var formatter = new BinaryFormatter();
       string result;
-      using (MemoryStream stream = new MemoryStream())
+      using (var stream = new MemoryStream())
       {
         formatter.Serialize(stream, this);
         stream.Flush();
         stream.Seek(0, SeekOrigin.Begin);
-        byte[] buffer = new byte[stream.Length];
+        var buffer = new byte[stream.Length];
         int bytesRead = stream.Read(buffer, 0, buffer.Length);
         result = Convert.ToBase64String(buffer, 0, bytesRead);
       }
@@ -94,7 +94,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
     {
       if (obj is EPGWakeupConfig)
       {
-        EPGWakeupConfig cfg = (EPGWakeupConfig)obj;
+        var cfg = (EPGWakeupConfig)obj;
         if (cfg.Hour == Hour && cfg.Minutes == Minutes)
         {
           foreach (EPGGrabDays day in cfg.Days)

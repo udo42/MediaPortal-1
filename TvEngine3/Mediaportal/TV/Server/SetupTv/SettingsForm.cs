@@ -93,7 +93,7 @@ namespace Mediaportal.TV.Server.SetupTV
         this.LogError(ex);
       }
 
-      Project project = new Project();
+      var project = new Project();
       AddSection(project);
       
       servers = new Servers();
@@ -154,17 +154,17 @@ namespace Mediaportal.TV.Server.SetupTV
         
         AddServerTvCards(RemoteControl.HostName, false);
 
-        Channels channels = new Channels("TV Channels", MediaTypeEnum.TV);            
+        var channels = new Channels("TV Channels", MediaTypeEnum.TV);            
         AddSection(channels);
         AddChildSection(channels, new ChannelCombinations("TV Combinations", MediaTypeEnum.TV));
         AddChildSection(channels, new ChannelMapping("TV Mapping", MediaTypeEnum.TV));
 
-        Channels radioChannels = new Channels("Radio Channels", MediaTypeEnum.Radio);        
+        var radioChannels = new Channels("Radio Channels", MediaTypeEnum.Radio);        
         AddSection(radioChannels);
         AddChildSection(radioChannels, new ChannelCombinations("Radio Combinations", MediaTypeEnum.Radio));
         AddChildSection(radioChannels, new ChannelMapping("Radio Mapping", MediaTypeEnum.Radio));
 
-        Epg EpgSection = new Epg();
+        var EpgSection = new Epg();
         AddSection(EpgSection);
         AddChildSection(EpgSection, new EpgGrabber("TV Epg grabber", MediaTypeEnum.TV));
         AddChildSection(EpgSection, new EpgGrabber("Radio Epg grabber", MediaTypeEnum.Radio)); ;
@@ -259,7 +259,7 @@ namespace Mediaportal.TV.Server.SetupTV
                 break;
               case CardType.RadioWebStream:
                 cardName = String.Format("{0} {1}", cardId, cardName);
-                InfoPage RadioWebStreamInfo = new InfoPage(cardName);
+                var RadioWebStreamInfo = new InfoPage(cardName);
                 RadioWebStreamInfo.InfoText =
                   "The RadioWebStream card does not have any options.\n\n\nYou can add your favourite radio webstreams under:\n\n --> 'Radio Channels', 'Add', 'Web-Stream' or by importing a playlist.";
                 AddChildSection(cardPage, RadioWebStreamInfo, 1);
@@ -277,7 +277,7 @@ namespace Mediaportal.TV.Server.SetupTV
         }
         if (reloaded)
         {
-          SectionTreeNode activeNode = (SectionTreeNode)settingSections[hostName];
+          var activeNode = (SectionTreeNode)settingSections[hostName];
           if (activeNode != null)
           {
             activeNode.Expand();
@@ -301,7 +301,7 @@ namespace Mediaportal.TV.Server.SetupTV
 
       if (!isAnyUserTS && !isRec && !isRecOrTS && !isUserTS)
       {
-        NotifyForm dlgNotify = new NotifyForm("Restart TvService...", "This can take some time\n\nPlease be patient...");
+        var dlgNotify = new NotifyForm("Restart TvService...", "This can take some time\n\nPlease be patient...");
         try
         {
           dlgNotify.Show();
@@ -350,7 +350,7 @@ namespace Mediaportal.TV.Server.SetupTV
       // Remove section from tree
       if (parentSection != null)
       {
-        SectionTreeNode parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
+        var parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
         foreach (SectionTreeNode childNode in parentTreeNode.Nodes)
         {
           // recursive delete all children
@@ -368,7 +368,7 @@ namespace Mediaportal.TV.Server.SetupTV
       // Remove section from tree
       if (parentSection != null)
       {
-        SectionTreeNode parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
+        var parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
 
         for (int i = 0; i < parentTreeNode.GetNodeCount(true); i++)
         {
@@ -397,7 +397,7 @@ namespace Mediaportal.TV.Server.SetupTV
       //
       // Add section to tree
       //
-      SectionTreeNode treeNode = new SectionTreeNode(section);
+      var treeNode = new SectionTreeNode(section);
 
       if (parentSection == null)
       {
@@ -413,7 +413,7 @@ namespace Mediaportal.TV.Server.SetupTV
         //
         // Add to the parent node
         //
-        SectionTreeNode parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
+        var parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
 
         treeNode.ImageIndex = imageIndex;
         treeNode.SelectedImageIndex = imageIndex;
@@ -473,7 +473,7 @@ namespace Mediaportal.TV.Server.SetupTV
       //
       // Add section to tree
       //
-      SectionTreeNode treeNode = new SectionTreeNode(section);
+      var treeNode = new SectionTreeNode(section);
 
       if (parentSection == null)
       {
@@ -487,7 +487,7 @@ namespace Mediaportal.TV.Server.SetupTV
         //
         // Add to the parent node
         //
-        SectionTreeNode parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
+        var parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
         treeNode.Name = section.Text;
         parentTreeNode.Nodes.Add(treeNode);
       }
@@ -578,8 +578,8 @@ namespace Mediaportal.TV.Server.SetupTV
 
     public SectionTreeNode GetChildNode(SectionSettings parentSection, SectionSettings section)
     {
-      SectionTreeNode treeNode = new SectionTreeNode(section);
-      SectionTreeNode parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
+      var treeNode = new SectionTreeNode(section);
+      var parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
 
       for (int i = 0; i < parentTreeNode.GetNodeCount(true); i++)
       {
@@ -608,7 +608,7 @@ namespace Mediaportal.TV.Server.SetupTV
         //
         // Load settings for current node
         //
-        SectionTreeNode treeNode = currentNode as SectionTreeNode;
+        var treeNode = currentNode as SectionTreeNode;
 
         if (treeNode != null)
         {
@@ -633,7 +633,7 @@ namespace Mediaportal.TV.Server.SetupTV
         //
         // Save settings for current node
         //
-        SectionTreeNode treeNode = currentNode as SectionTreeNode;
+        var treeNode = currentNode as SectionTreeNode;
 
         if (treeNode != null)
         {
@@ -707,7 +707,7 @@ namespace Mediaportal.TV.Server.SetupTV
 
     public override void configToolStripSplitButton_ButtonClick(object sender, EventArgs e)
     {
-      Process process = new Process();
+      var process = new Process();
       process.StartInfo.FileName = "explorer.exe";
       process.StartInfo.Arguments = String.Format(@"{0}\log\", PathManager.GetDataPath);
       process.StartInfo.UseShellExecute = true;

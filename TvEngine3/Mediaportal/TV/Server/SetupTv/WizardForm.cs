@@ -101,7 +101,7 @@ namespace Mediaportal.TV.Server.SetupTV
     /// <param name="xmlFile"></param>
     private void LoadSections(string xmlFile)
     {
-      XmlDocument document = new XmlDocument();
+      var document = new XmlDocument();
 
       try
       {
@@ -195,7 +195,7 @@ namespace Mediaportal.TV.Server.SetupTV
         // Create the instance of the section settings class, pass the section name as argument
         // to the constructor. We do this to be able to use the same name on <name> as in the <dependency> tag.
         //
-        SectionSettings section = (SectionSettings)Activator.CreateInstance(sectionType, new object[] {sectionName});
+        var section = (SectionSettings)Activator.CreateInstance(sectionType, new object[] {sectionName});
         return section;
       }
 
@@ -243,7 +243,7 @@ namespace Mediaportal.TV.Server.SetupTV
           //
           // Activate section
           //
-          SectionHolder holder = wizardPages[visiblePageIndex] as SectionHolder;
+          var holder = wizardPages[visiblePageIndex] as SectionHolder;
 
           if (holder != null)
           {
@@ -342,7 +342,7 @@ namespace Mediaportal.TV.Server.SetupTV
           //
           // Activate section
           //
-          SectionHolder holder = wizardPages[visiblePageIndex] as SectionHolder;
+          var holder = wizardPages[visiblePageIndex] as SectionHolder;
 
           if (holder != null)
           {
@@ -394,7 +394,7 @@ namespace Mediaportal.TV.Server.SetupTV
 
     private void nextButton_Click(object sender, EventArgs e)
     {
-      SectionHolder holder = wizardPages[visiblePageIndex] as SectionHolder;
+      var holder = wizardPages[visiblePageIndex] as SectionHolder;
       if (holder != null) holder.Section.SaveSettings();
       if (visiblePageIndex == wizardPages.Count - 1)
       {

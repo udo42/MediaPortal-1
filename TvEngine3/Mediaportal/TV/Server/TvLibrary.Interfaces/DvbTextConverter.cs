@@ -172,7 +172,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       {
         Log.Error(ex, "Error while converting dvb text");        
       }
-      byte[] text = new byte[len - pos];
+      var text = new byte[len - pos];
       for (int i = 0; i < len - pos; i++)
       {
         text[i] = Marshal.ReadByte(ptr, i + pos);

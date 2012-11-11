@@ -152,7 +152,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     {
       _timeshiftingEPGGrabber = new TimeShiftingEPGGrabber(epgEvents, this);
       _supportsSubChannels = true;
-      Guid networkProviderClsId = new Guid("{D7D42E5C-EB36-4aad-933B-B4C419429C98}");
+      var networkProviderClsId = new Guid("{D7D42E5C-EB36-4aad-933B-B4C419429C98}");
       _useInternalNetworkProvider = FilterGraphTools.IsThisComObjectInstalled(networkProviderClsId);
     }
 
@@ -190,7 +190,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       {
         foreach (ICustomDevice deviceInterface in _customDeviceInterfaces)
         {
-          ICustomTuner customTuner = deviceInterface as ICustomTuner;
+          var customTuner = deviceInterface as ICustomTuner;
           if (customTuner != null && customTuner.CanTuneChannel(channel))
           {
             this.LogDebug("TvCardDvbBase: using custom tuning");
@@ -242,8 +242,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       int undefinedValue = -1;
       if (channel is DVBTChannel)
       {
-        DVBTChannel dvbtChannel = channel as DVBTChannel;
-        FrequencySettings fSettings = new FrequencySettings
+        var dvbtChannel = channel as DVBTChannel;
+        var fSettings = new FrequencySettings
                                         {
                                           Multiplier = 1000,
                                           Frequency = (uint)(dvbtChannel.Frequency),
@@ -255,12 +255,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       }
       if (channel is DVBSChannel)
       {
-        DVBSChannel dvbsChannel = channel as DVBSChannel;
+        var dvbsChannel = channel as DVBSChannel;
         if (dvbsChannel.ModulationType == ModulationType.ModNotSet)
         {
           dvbsChannel.ModulationType = ModulationType.ModQpsk;
         }
-        FrequencySettings fSettings = new FrequencySettings
+        var fSettings = new FrequencySettings
                                         {
                                           Multiplier = 1000,
                                           Frequency = (uint)dvbsChannel.Frequency,
@@ -268,7 +268,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
                                           Polarity = dvbsChannel.Polarisation,
                                           Range = (uint)undefinedValue
                                         };
-        DigitalDemodulator2Settings dSettings = new DigitalDemodulator2Settings
+        var dSettings = new DigitalDemodulator2Settings
                                                   {
                                                     InnerFECRate = dvbsChannel.InnerFecRate,
                                                     InnerFECMethod = FECMethod.MethodNotSet,
@@ -281,13 +281,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
                                                     SymbolRate = (uint)dvbsChannel.SymbolRate,
                                                     TransmissionMode = TransmissionMode.ModeNotSet
                                                   };
-        LnbInfoSettings lSettings = new LnbInfoSettings
+        var lSettings = new LnbInfoSettings
                                       {
                                         LnbSwitchFrequency = (uint)dvbsChannel.LnbType.SwitchFrequency,
                                         LowOscillator = (uint)dvbsChannel.LnbType.LowBandFrequency,
                                         HighOscillator = (uint)dvbsChannel.LnbType.HighBandFrequency
                                       };
-        DiseqcSatelliteSettings sSettings = new DiseqcSatelliteSettings
+        var sSettings = new DiseqcSatelliteSettings
                                               {
                                                 ToneBurstEnabled = 0,
                                                 Diseq10Selection = LNB_Source.NOT_SET,
@@ -298,8 +298,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       }
       if (channel is DVBCChannel)
       {
-        DVBCChannel dvbcChannel = channel as DVBCChannel;
-        FrequencySettings fSettings = new FrequencySettings
+        var dvbcChannel = channel as DVBCChannel;
+        var fSettings = new FrequencySettings
                                         {
                                           Multiplier = 1000,
                                           Frequency = (uint)dvbcChannel.Frequency,
@@ -307,7 +307,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
                                           Polarity = Polarisation.NotSet,
                                           Range = (uint)undefinedValue
                                         };
-        DigitalDemodulatorSettings dSettings = new DigitalDemodulatorSettings
+        var dSettings = new DigitalDemodulatorSettings
                                                  {
                                                    InnerFECRate = BinaryConvolutionCodeRate.RateNotSet,
                                                    InnerFECMethod = FECMethod.MethodNotSet,
@@ -322,10 +322,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       }
       if (channel is ATSCChannel)
       {
-        ATSCChannel atscChannel = channel as ATSCChannel;
+        var atscChannel = channel as ATSCChannel;
         if (atscChannel.ModulationType == ModulationType.Mod256Qam)
         {
-          FrequencySettings fSettings = new FrequencySettings
+          var fSettings = new FrequencySettings
                                           {
                                             Multiplier = 1000,
                                             Frequency = (uint)atscChannel.Frequency,
@@ -333,7 +333,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
                                             Polarity = Polarisation.NotSet,
                                             Range = (uint)undefinedValue
                                           };
-          DigitalDemodulatorSettings dSettings = new DigitalDemodulatorSettings
+          var dSettings = new DigitalDemodulatorSettings
                                                    {
                                                      InnerFECRate = BinaryConvolutionCodeRate.RateNotSet,
                                                      InnerFECMethod = FECMethod.MethodNotSet,
@@ -348,7 +348,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         }
         else
         {
-          FrequencySettings fSettings = new FrequencySettings
+          var fSettings = new FrequencySettings
                                           {
                                             Multiplier = (uint)undefinedValue,
                                             Frequency = (uint)undefinedValue,
@@ -356,7 +356,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
                                             Polarity = Polarisation.NotSet,
                                             Range = (uint)undefinedValue
                                           };
-          DigitalDemodulatorSettings dSettings = new DigitalDemodulatorSettings
+          var dSettings = new DigitalDemodulatorSettings
                                                    {
                                                      InnerFECRate = BinaryConvolutionCodeRate.RateNotSet,
                                                      InnerFECMethod = FECMethod.MethodNotSet,
@@ -406,7 +406,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     {
       int id = _subChannelId++;
       this.LogInfo("TvCardDvbBase: new subchannel, ID = {0}, subchannel count = {1}", id, _mapSubChannels.Count);
-      TvDvbChannel subChannel = new TvDvbChannel(id, this, _filterTsWriter, _filterTIF);
+      var subChannel = new TvDvbChannel(id, this, _filterTsWriter, _filterTIF);
       subChannel.Parameters = Parameters;
       subChannel.CurrentChannel = channel;
       _mapSubChannels[id] = subChannel;
@@ -516,7 +516,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       if (_useInternalNetworkProvider)
       {
         networkProviderName = "MediaPortal Network Provider";
-        Guid internalNetworkProviderClsId = new Guid("{D7D42E5C-EB36-4aad-933B-B4C419429C98}");
+        var internalNetworkProviderClsId = new Guid("{D7D42E5C-EB36-4aad-933B-B4C419429C98}");
         this.LogDebug("TvCardDvbBase:   add {0}", networkProviderName);
         _filterNetworkProvider = FilterGraphTools.AddFilterFromClsid(_graphBuilder, internalNetworkProviderClsId,
                                                                      networkProviderName);
@@ -719,7 +719,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         if (enumMedia != null)
         {
           int fetched;
-          AMMediaType[] mediaTypes = new AMMediaType[21];
+          var mediaTypes = new AMMediaType[21];
           enumMedia.Next(20, mediaTypes, out fetched);
           if (fetched > 0)
           {
@@ -746,7 +746,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       // Second: check whether the tuner filter implements the
       // capture/receiver filter interface (KSCATEGORY_BDA_RECEIVER_COMPONENT).
       // NOTE: not all filters expose this information.
-      IKsTopologyInfo topologyInfo = _filterTuner as IKsTopologyInfo;
+      var topologyInfo = _filterTuner as IKsTopologyInfo;
       if (topologyInfo != null)
       {
         int categoryCount;
@@ -1016,8 +1016,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         {
           pinNr++;
           PinDirection pinDir;
-          AMMediaType[] mediaTypes = new AMMediaType[2];
-          IPin[] pins = new IPin[2];
+          var mediaTypes = new AMMediaType[2];
+          var pins = new IPin[2];
           int fetched;
           enumPins.Next(1, pins, out fetched);
           if (fetched != 1 || pins[0] == null)
@@ -1237,7 +1237,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       }
       //get the IBDA_Topology from the tuner device
       //Log.this.LogDebug("dvb: get IBDA_Topology");
-      IBDA_Topology topology = _filterTuner as IBDA_Topology;
+      var topology = _filterTuner as IBDA_Topology;
       if (topology == null)
       {
         this.LogError("dvb: could not get IBDA_Topology from tuner");
@@ -1246,8 +1246,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       //get the NodeTypes from the topology
       //Log.this.LogDebug("dvb: GetNodeTypes");
       int nodeTypeCount;
-      int[] nodeTypes = new int[33];
-      Guid[] guidInterfaces = new Guid[33];
+      var nodeTypes = new int[33];
+      var guidInterfaces = new Guid[33];
       int hr = topology.GetNodeTypes(out nodeTypeCount, 32, nodeTypes);
       if (hr != 0)
       {
@@ -1258,7 +1258,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       {
         this.LogError("dvb: FAILED could not get any node types");
       }
-      Guid GuidIBDA_SignalStatistic = new Guid("1347D106-CF3A-428a-A5CB-AC0D9A2A4338");
+      var GuidIBDA_SignalStatistic = new Guid("1347D106-CF3A-428a-A5CB-AC0D9A2A4338");
       //for each node type
       //Log.this.LogDebug("dvb: got {0} node types", nodeTypeCount);
       for (int i = 0; i < nodeTypeCount; ++i)
@@ -1439,7 +1439,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         try
         {
           uint channelCount;
-          List<PortalChannel> portalChannels = new List<PortalChannel>();
+          var portalChannels = new List<PortalChannel>();
           _interfaceChannelLinkageScanner.GetChannelCount(out channelCount);
           if (channelCount == 0)
             return portalChannels;
@@ -1449,7 +1449,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
             ushort transport_id = 0;
             ushort service_id = 0;
             _interfaceChannelLinkageScanner.GetChannel(i, ref network_id, ref transport_id, ref service_id);
-            PortalChannel pChannel = new PortalChannel();
+            var pChannel = new PortalChannel();
             pChannel.NetworkId = network_id;
             pChannel.TransportId = transport_id;
             pChannel.ServiceId = service_id;
@@ -1464,7 +1464,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
                 ushort sid = 0;
                 IntPtr ptrName;
                 _interfaceChannelLinkageScanner.GetLinkedChannel(i, j, ref nid, ref tid, ref sid, out ptrName);
-                LinkedChannel lChannel = new LinkedChannel();
+                var lChannel = new LinkedChannel();
                 lChannel.NetworkId = nid;
                 lChannel.TransportId = tid;
                 lChannel.ServiceId = sid;
@@ -1568,7 +1568,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
           mhwReady = titleCount > 10;
           _interfaceEpgGrabber.GetEPGChannelCount(out channelCount);
           dvbReady = channelCount > 0;
-          List<EpgChannel> epgChannels = new List<EpgChannel>();
+          var epgChannels = new List<EpgChannel>();
           this.LogInfo("dvb:mhw ready MHW {0} titles found", titleCount);
           this.LogInfo("dvb:dvb ready.EPG {0} channels", channelCount);
           if (mhwReady)
@@ -1610,7 +1610,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
               EpgChannel epgChannel = null;
               foreach (EpgChannel chan in epgChannels)
               {
-                DVBBaseChannel dvbChan = (DVBBaseChannel)chan.Channel;
+                var dvbChan = (DVBBaseChannel)chan.Channel;
                 if (dvbChan.NetworkId == networkid && dvbChan.TransportId == transportid &&
                     dvbChan.ServiceId == channelid)
                 {
@@ -1639,14 +1639,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
               DateTime dayStart = DateTime.Now;
               dayStart =
                 dayStart.Subtract(new TimeSpan(1, dayStart.Hour, dayStart.Minute, dayStart.Second, dayStart.Millisecond));
-              int day = (int)dayStart.DayOfWeek;
+              var day = (int)dayStart.DayOfWeek;
               DateTime programStartTime = dayStart;
-              int minVal = (int)((d1 - day) * 86400 + h1 * 3600 + m * 60);
+              var minVal = (int)((d1 - day) * 86400 + h1 * 3600 + m * 60);
               if (minVal < 21600)
                 minVal += 604800;
               programStartTime = programStartTime.AddSeconds(minVal);
-              EpgProgram program = new EpgProgram(programStartTime, programStartTime.AddMinutes(duration));
-              EpgLanguageText epgLang = new EpgLanguageText("ALL", title, summary, theme, 0, "", -1);
+              var program = new EpgProgram(programStartTime, programStartTime.AddMinutes(duration));
+              var epgLang = new EpgLanguageText("ALL", title, summary, theme, 0, "", -1);
               program.Text.Add(epgLang);
               epgChannel.Programs.Add(program);
             }
@@ -1672,7 +1672,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
               channel.NetworkId = networkid;
               channel.TransportId = transportid;
               channel.ServiceId = serviceid;
-              EpgChannel epgChannel = new EpgChannel { Channel = channel };
+              var epgChannel = new EpgChannel { Channel = channel };
               uint eventCount;
               _interfaceEpgGrabber.GetEPGEventCount(x, out eventCount);
               for (uint i = 0; i < eventCount; ++i)
@@ -1713,9 +1713,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
                   duration_ss = 59;
 
                 // convert the julian date
-                int year = (int)((start_time_MJD - 15078.2) / 365.25);
-                int month = (int)((start_time_MJD - 14956.1 - (int)(year * 365.25)) / 30.6001);
-                int day = (int)(start_time_MJD - 14956 - (int)(year * 365.25) - (int)(month * 30.6001));
+                var year = (int)((start_time_MJD - 15078.2) / 365.25);
+                var month = (int)((start_time_MJD - 14956.1 - (int)(year * 365.25)) / 30.6001);
+                var day = (int)(start_time_MJD - 14956 - (int)(year * 365.25) - (int)(month * 30.6001));
                 int k = (month == 14 || month == 15) ? 1 : 0;
                 year += 1900 + k; // start from year 1900, so add that here
                 month = month - 1 - k * 12;
@@ -1727,7 +1727,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
 
                 try
                 {
-                  DateTime dtUTC = new DateTime(starttime_y, starttime_m, starttime_d, starttime_hh, starttime_mm,
+                  var dtUTC = new DateTime(starttime_y, starttime_m, starttime_d, starttime_hh, starttime_mm,
                                                 starttime_ss, 0);
                   DateTime dtStart = dtUTC.ToLocalTime();
                   if (dtStart < DateTime.Now.AddDays(-1) || dtStart > DateTime.Now.AddMonths(2))
@@ -1735,7 +1735,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
                   DateTime dtEnd = dtStart.AddHours(duration_hh);
                   dtEnd = dtEnd.AddMinutes(duration_mm);
                   dtEnd = dtEnd.AddSeconds(duration_ss);
-                  EpgProgram epgProgram = new EpgProgram(dtStart, dtEnd);
+                  var epgProgram = new EpgProgram(dtStart, dtEnd);
                   //EPGEvent newEvent = new EPGEvent(genre, dtStart, dtEnd);
                   for (int z = 0; z < languageCount; ++z)
                   {
@@ -1776,7 +1776,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
                     description = description.Trim();
                     language = language.Trim();
                     genre = genre.Trim();
-                    EpgLanguageText epgLangague = new EpgLanguageText(language, title, description, genre, starRating,
+                    var epgLangague = new EpgLanguageText(language, title, description, genre, starRating,
                                                                       classification, parentalRating);
                     epgProgram.Text.Add(epgLangague);
                   }

@@ -46,8 +46,8 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     {
       int compareResult = 0;
       // Cast the objects to be compared to ListViewItem objects
-      ListViewItem listviewX = (ListViewItem)x;
-      ListViewItem listviewY = (ListViewItem)y;
+      var listviewX = (ListViewItem)x;
+      var listviewY = (ListViewItem)y;
       switch (OrderType)
       {
         case OrderTypes.AsString:

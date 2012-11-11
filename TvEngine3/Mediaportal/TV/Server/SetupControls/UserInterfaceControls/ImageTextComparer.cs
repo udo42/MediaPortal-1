@@ -42,9 +42,9 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     {
       //int compareResult;
       // Cast the objects to be compared to ListViewItem objects
-      ListViewItem listviewX = (ListViewItem)x;
+      var listviewX = (ListViewItem)x;
       int image1 = listviewX.ImageIndex;
-      ListViewItem listviewY = (ListViewItem)y;
+      var listviewY = (ListViewItem)y;
       int image2 = listviewY.ImageIndex;
       if (image1 < image2)
       {
@@ -78,7 +78,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     private static bool IsWholeNumber(string strNumber)
     {
       // use a regular expression to find out if string is actually a number
-      Regex objNotWholePattern = new Regex("[^0-9]");
+      var objNotWholePattern = new Regex("[^0-9]");
       return !objNotWholePattern.IsMatch(strNumber);
     }
   }

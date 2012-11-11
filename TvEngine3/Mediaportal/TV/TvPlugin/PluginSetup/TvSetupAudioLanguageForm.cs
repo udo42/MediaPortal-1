@@ -37,7 +37,7 @@ namespace Mediaportal.TV.TvPlugin.PluginSetup
       mpListViewLanguages.Items.Clear();
       for (int i = 0; i < languages.Count; i++)
       {
-        ListViewItem item = new ListViewItem();
+        var item = new ListViewItem();
         item.Text = languages[i];
         item.Tag = languageCodes[i];
         item.Checked = preferredLanguages.Contains(languageCodes[i]);

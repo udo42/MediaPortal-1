@@ -50,7 +50,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
           int duration = ReadLength(node);
 
           Utils.GetQualifiedFilename(basePath, ref file);
-          PlayListItem newItem = new PlayListItem(infoLine, file, duration);
+          var newItem = new PlayListItem(infoLine, file, duration);
           playlist.Add(newItem);
         }
         return true;
@@ -63,7 +63,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
 
     public void Save(PlayList playListParam, string fileName)
     {
-      XmlWriterSettings settings = new XmlWriterSettings();
+      var settings = new XmlWriterSettings();
       settings.Indent = true;
       settings.OmitXmlDeclaration = true;
       using (XmlWriter writer = XmlWriter.Create(fileName, settings))
@@ -96,7 +96,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
     {
       nodeEntries = null;
 
-      XmlDocument doc = new XmlDocument();
+      var doc = new XmlDocument();
       doc.Load(fileName);
       if (doc.DocumentElement == null)
         return false;

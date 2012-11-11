@@ -114,7 +114,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Simmetrics
       {
         return n;
       }
-      float[][] d = new float[n + 1][];
+      var d = new float[n + 1][];
       for (int i = 0; i < n + 1; i++)
       {
         d[i] = new float[m + 1];

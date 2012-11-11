@@ -94,7 +94,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     /// <returns>TvAudio instance</returns>
     public static TvAudio CreateInstance(XmlNode xmlNode)
     {
-      TvAudio tvAudio = new TvAudio();
+      var tvAudio = new TvAudio();
       if (xmlNode != null)
       {
         XmlNode modeNode = xmlNode.SelectSingleNode("mode");

@@ -108,7 +108,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
           m_Waiting.Priority = ThreadPriority.AboveNormal;
           m_Waiting.Name = "PowerScheduler Waiter";
 
-          using (ManualResetEvent handshake = new ManualResetEvent(false))
+          using (var handshake = new ManualResetEvent(false))
           {
             // Run it
             m_Waiting.Start(handshake);
@@ -200,7 +200,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
     /// </remarks>
     private void WaitThread(object arg)
     {
-      ManualResetEvent handshake = (ManualResetEvent)arg;
+      var handshake = (ManualResetEvent)arg;
       // Ignore aborts
       try
       {

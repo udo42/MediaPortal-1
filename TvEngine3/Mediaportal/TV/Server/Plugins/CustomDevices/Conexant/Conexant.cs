@@ -271,7 +271,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Conexant
         return true;
       }
 
-      DiseqcMessageParams message = new DiseqcMessageParams();
+      var message = new DiseqcMessageParams();
       message.DiseqcTransmitMessageLength = 0;
       message.DiseqcReceiveMessageLength = 0;
       message.AmplitudeAttenuation = 3;
@@ -332,7 +332,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Conexant
         return false;
       }
 
-      DiseqcMessageParams message = new DiseqcMessageParams();
+      var message = new DiseqcMessageParams();
       message.DiseqcTransmitMessage = new byte[MaxDiseqcTxMessageLength];
       Buffer.BlockCopy(command, 0, message.DiseqcTransmitMessage, 0, command.Length);
       message.DiseqcTransmitMessageLength = (UInt32)length;

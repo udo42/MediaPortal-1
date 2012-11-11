@@ -179,7 +179,7 @@ namespace Mediaportal.TV.TvPlugin
         this.LogInfo("TvNotify:LoadNotifies");
         IEnumerable<Program> prgs = ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByState(ProgramState.Notify);
         _notifiesList.Clear();
-        foreach (var program in prgs)
+        foreach (Program program in prgs)
         {
           _notifiesList.Add(new ProgramBLL(program));
         }
@@ -234,7 +234,7 @@ namespace Mediaportal.TV.TvPlugin
 
             _notifiesList.Remove(program);
             this.LogInfo("send notify");
-            GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_NOTIFY_TV_PROGRAM, 0, 0, 0, 0, 0, null);
+            var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_NOTIFY_TV_PROGRAM, 0, 0, 0, 0, 0, null);
             msg.Object = tvProg;
             GUIGraphicsContext.SendMessage(msg);
             msg = null;

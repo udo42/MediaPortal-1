@@ -161,7 +161,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
           for (int cardNum = 0; cardNum < iptvCardCount; cardNum++)
           {
             this.LogDebug("Detected MediaPortal IP TV Card " + cardNum);
-            TvCardDVBIP card = new TvCardDVBIP(_epgEvents, devices[i], cardNum);
+            var card = new TvCardDVBIP(_epgEvents, devices[i], cardNum);
             _cards.Add(card);
           }
         }
@@ -177,13 +177,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         if (devices[i].Name.Equals("Hauppauge HD PVR Crossbar"))
         {
           this.LogDebug("Detected Hauppauge HD PVR");
-          TvCardHDPVR card = new TvCardHDPVR(devices[i]);
+          var card = new TvCardHDPVR(devices[i]);
           _cards.Add(card);
         }
         else if (devices[i].Name.Contains("Hauppauge Colossus Crossbar"))
         {
           this.LogDebug("Detected Hauppauge Colossus");
-          TvCardHDPVR card = new TvCardHDPVR(devices[i]);
+          var card = new TvCardHDPVR(devices[i]);
           _cards.Add(card);
         }
       }
@@ -191,10 +191,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       devices = DsDevice.GetDevicesOfCat(FilterCategory.BDASourceFiltersCategory);
       if (devices.Length > 0)
       {
-        IFilterGraph2 graphBuilder = (IFilterGraph2)new FilterGraph();
-        DsROTEntry rotEntry = new DsROTEntry(graphBuilder);
+        var graphBuilder = (IFilterGraph2)new FilterGraph();
+        var rotEntry = new DsROTEntry(graphBuilder);
 
-        Guid networkProviderClsId = new Guid("{D7D42E5C-EB36-4aad-933B-B4C419429C98}");
+        var networkProviderClsId = new Guid("{D7D42E5C-EB36-4aad-933B-B4C419429C98}");
         if (FilterGraphTools.IsThisComObjectInstalled(networkProviderClsId))
         {
           handleInternalNetworkProviderFilter(devices, graphBuilder, networkProviderClsId, rotEntry);
@@ -342,7 +342,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
                 _providerType = networkDVB as ITunerCap;
                 int ulcNetworkTypesMax = 5;
                 int pulcNetworkTypes;
-                Guid[] pguidNetworkTypes = new Guid[ulcNetworkTypesMax];
+                var pguidNetworkTypes = new Guid[ulcNetworkTypesMax];
                 int hr = _providerType.get_SupportedNetworkTypes(ulcNetworkTypesMax, out pulcNetworkTypes,
                                                                  pguidNetworkTypes);
                 for (int n = 0; n < pulcNetworkTypes; n++)
@@ -352,28 +352,28 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
                   if (pguidNetworkTypes[n] == (typeof(DVBTNetworkProvider).GUID) && !isCablePreferred)
                   {
                     this.LogDebug("Detected DVB-T* card:{0}", name);
-                    TvCardDVBT dvbtCard = new TvCardDVBT(_epgEvents, devices[i]);
+                    var dvbtCard = new TvCardDVBT(_epgEvents, devices[i]);
                     _cards.Add(dvbtCard);
                     connected = true;
                   }
                   else if (pguidNetworkTypes[n] == (typeof(DVBSNetworkProvider).GUID) && !isCablePreferred)
                   {
                     this.LogDebug("Detected DVB-S* card:{0}", name);
-                    TvCardDVBS dvbsCard = new TvCardDVBS(_epgEvents, devices[i]);
+                    var dvbsCard = new TvCardDVBS(_epgEvents, devices[i]);
                     _cards.Add(dvbsCard);
                     connected = true;
                   }
                   else if (pguidNetworkTypes[n] == (typeof(DVBCNetworkProvider).GUID))
                   {
                     this.LogDebug("Detected DVB-C* card:{0}", name);
-                    TvCardDVBC dvbcCard = new TvCardDVBC(_epgEvents, devices[i]);
+                    var dvbcCard = new TvCardDVBC(_epgEvents, devices[i]);
                     _cards.Add(dvbcCard);
                     connected = true;
                   }
                   else if (pguidNetworkTypes[n] == (typeof(ATSCNetworkProvider).GUID))
                   {
                     this.LogDebug("Detected ATSC* card:{0}", name);
-                    TvCardATSC dvbsCard = new TvCardATSC(_epgEvents, devices[i]);
+                    var dvbsCard = new TvCardATSC(_epgEvents, devices[i]);
                     _cards.Add(dvbsCard);
                     connected = true;
                   }
@@ -402,25 +402,25 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
               if (ConnectFilter(graphBuilder, networkDVBT, tmp))
               {
                 this.LogDebug("Detected DVB-T card:{0}", name);
-                TvCardDVBT dvbtCard = new TvCardDVBT(_epgEvents, devices[i]);
+                var dvbtCard = new TvCardDVBT(_epgEvents, devices[i]);
                 _cards.Add(dvbtCard);
               }
               else if (ConnectFilter(graphBuilder, networkDVBC, tmp))
               {
                 this.LogDebug("Detected DVB-C card:{0}", name);
-                TvCardDVBC dvbcCard = new TvCardDVBC(_epgEvents, devices[i]);
+                var dvbcCard = new TvCardDVBC(_epgEvents, devices[i]);
                 _cards.Add(dvbcCard);
               }
               else if (ConnectFilter(graphBuilder, networkDVBS, tmp))
               {
                 this.LogDebug("Detected DVB-S card:{0}", name);
-                TvCardDVBS dvbsCard = new TvCardDVBS(_epgEvents, devices[i]);
+                var dvbsCard = new TvCardDVBS(_epgEvents, devices[i]);
                 _cards.Add(dvbsCard);
               }
               else if (ConnectFilter(graphBuilder, networkATSC, tmp))
               {
                 this.LogDebug("Detected ATSC card:{0}", name);
-                TvCardATSC dvbsCard = new TvCardATSC(_epgEvents, devices[i]);
+                var dvbsCard = new TvCardATSC(_epgEvents, devices[i]);
                 _cards.Add(dvbsCard);
               }
               graphBuilder.RemoveFilter(tmp);
@@ -443,7 +443,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         string name = devices[i].Name ?? "unknown";
         name = name.ToLowerInvariant();
         this.LogDebug("Detected analog card:{0}", name);
-        TvCardAnalog analogCard = new TvCardAnalog(devices[i]);
+        var analogCard = new TvCardAnalog(devices[i]);
         _cards.Add(analogCard);
       }
       _cards.Add(new RadioWebStreamCard());
@@ -483,25 +483,25 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
           if ((tuningTypes & TuningType.DvbT) != 0 && !isCablePreferred)
           {
             this.LogDebug("Detected DVB-T* card:{0}", name);
-            TvCardDVBT dvbtCard = new TvCardDVBT(_epgEvents, devices[i]);
+            var dvbtCard = new TvCardDVBT(_epgEvents, devices[i]);
             _cards.Add(dvbtCard);
           }
           if ((tuningTypes & TuningType.DvbS) != 0 && !isCablePreferred)
           {
             this.LogDebug("Detected DVB-S* card:{0}", name);
-            TvCardDVBS dvbsCard = new TvCardDVBS(_epgEvents, devices[i]);
+            var dvbsCard = new TvCardDVBS(_epgEvents, devices[i]);
             _cards.Add(dvbsCard);
           }
           if ((tuningTypes & TuningType.DvbC) != 0)
           {
             this.LogDebug("Detected DVB-C* card:{0}", name);
-            TvCardDVBC dvbcCard = new TvCardDVBC(_epgEvents, devices[i]);
+            var dvbcCard = new TvCardDVBC(_epgEvents, devices[i]);
             _cards.Add(dvbcCard);
           }
           if ((tuningTypes & TuningType.Atsc) != 0 && !isCablePreferred)
           {
             this.LogDebug("Detected ATSC* card:{0}", name);
-            TvCardATSC dvbsCard = new TvCardATSC(_epgEvents, devices[i]);
+            var dvbsCard = new TvCardATSC(_epgEvents, devices[i]);
             _cards.Add(dvbsCard);
           }
         }

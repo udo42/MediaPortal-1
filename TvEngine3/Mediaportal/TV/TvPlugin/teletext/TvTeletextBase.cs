@@ -173,7 +173,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
       Stream stream = assm.GetManifestResourceStream("TvPlugin.teletext.LogoPage");
       if (stream != null)
       {
-        using (BinaryReader reader = new BinaryReader(stream))
+        using (var reader = new BinaryReader(stream))
         {
           receivedPage = new byte[stream.Length];
           reader.Read(receivedPage, 0, (int)stream.Length);
@@ -190,7 +190,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
     public override void OnAction(Action action)
     {
       // if we have a keypress or a remote button press then check if it is a number and add it to the inputLine
-      char key = (char)0;
+      var key = (char)0;
       if (action.wID == Action.ActionType.ACTION_KEY_PRESSED)
       {
         if (action.m_key != null)

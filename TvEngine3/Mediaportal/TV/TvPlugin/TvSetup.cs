@@ -91,7 +91,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private bool CheckTcpPort(int port)
     {
-      TcpClient client = new TcpClient();
+      var client = new TcpClient();
       try
       {
         client.Connect(_hostName, port);
@@ -106,7 +106,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private bool CheckUdpPort(int port)
     {
-      UdpClient client = new UdpClient();
+      var client = new UdpClient();
       try
       {
         client.Connect(_hostName, port);
@@ -301,13 +301,13 @@ namespace Mediaportal.TV.TvPlugin
 
           CheckTvServiceStatus();
 
-          List<string> portErrors = new List<string>();
+          var portErrors = new List<string>();
           bool tvServerOk = CheckTvServerConnection(portErrors);
           bool databaseOk = CheckDatabaseConnection(portErrors);
           bool streamingOk = CheckStreamingConnection(tvServerOk, databaseOk, portErrors);
 
           //Show the check results dialog to the user
-          GUIDialogOK pDlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
+          var pDlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
           if (tvServerOk && databaseOk && streamingOk)
           {
             //TVHome.OnPageLoadDone = false;
@@ -409,7 +409,7 @@ namespace Mediaportal.TV.TvPlugin
 
     protected bool GetKeyboard(ref string strLine)
     {
-      VirtualKeyboard keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
+      var keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
       if (keyboard == null)
       {
         return false;

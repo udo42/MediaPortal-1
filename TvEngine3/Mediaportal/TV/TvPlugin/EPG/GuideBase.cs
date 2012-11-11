@@ -453,7 +453,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
           {
             IList<ProgramBLL> programBlls = new List<ProgramBLL>();
             int idchannel = 0;
-            foreach (var p in pList)
+            foreach (Program p in pList)
             {
               idchannel = p.IdChannel;
               var programBll = new ProgramBLL(p);
@@ -610,7 +610,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
       // get the right db instance of current prog before we store it
       // currentProgram is not a ref to the real entity    
-      ProgramBLL modifiedProg =
+      var modifiedProg =
         new ProgramBLL (ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByTitleTimesAndChannel(_currentProgram.Entity.Title,
                                                                                                      _currentProgram.Entity.StartTime,
                                                                                                      _currentProgram.Entity.EndTime,
@@ -1569,7 +1569,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
       {
         DateTime dt = Utils.longtodate(iEnd);
         long iProgEnd = Utils.datetolong(dt);
-        var prog = ProgramFactory.CreateProgram(channel.IdChannel, Utils.longtodate(iStart), Utils.longtodate(iProgEnd),
+        Program prog = ProgramFactory.CreateProgram(channel.IdChannel, Utils.longtodate(iStart), Utils.longtodate(iProgEnd),
                                                 GUILocalizeStrings.Get(736), "", null, ProgramState.None, DateTime.MinValue,
                                                 string.Empty,
                                                 string.Empty, string.Empty, string.Empty, -1, string.Empty, -1);

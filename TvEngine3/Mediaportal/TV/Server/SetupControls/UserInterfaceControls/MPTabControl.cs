@@ -78,7 +78,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     {
       base.OnDragOver(e);
 
-      Point pt = new Point(e.X, e.Y);
+      var pt = new Point(e.X, e.Y);
       //We need client coordinates.
       pt = PointToClient(pt);
 
@@ -174,7 +174,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
         return;
       }
 
-      Point pt = new Point(e.X, e.Y);
+      var pt = new Point(e.X, e.Y);
       TabPage tp = GetTabPageByTab(pt);
 
       if (tp == null || tp != SelectedTab || TabPages[0] == tp)

@@ -119,7 +119,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog
     /// <returns>Configuration object</returns>
     public static Configuration readConfiguration(int cardId, string name, string devicePath)
     {
-      Configuration _configuration = new Configuration();
+      var _configuration = new Configuration();
       String fileName = GetFileName(name, cardId);
       _configuration.Name = name;
       _configuration.DevicePath = devicePath;
@@ -128,7 +128,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog
       {
         try
         {
-          XmlDocument doc = new XmlDocument();
+          var doc = new XmlDocument();
           doc.Load(fileName);
           if (doc.DocumentElement != null)
           {

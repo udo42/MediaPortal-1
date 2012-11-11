@@ -93,7 +93,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       Region reg = string.Empty != str ? GetGraphicalStringRegion(g, str, fnt) : new Region(new Rectangle(0, 0, 0, 0));
 
       RectangleF rectF = reg.GetBounds(g);
-      Rectangle rect = new Rectangle((int)Math.Floor(rectF.Left), (int)Math.Floor(rectF.Top),
+      var rect = new Rectangle((int)Math.Floor(rectF.Left), (int)Math.Floor(rectF.Top),
                                      (int)Math.Ceiling(rectF.Width), (int)Math.Ceiling(rectF.Height));
 
       return rect;
@@ -122,8 +122,8 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     /// <returns>Smallest Region encompassing the supplied string.</returns>
     public static Region GetGraphicalStringRegion(Graphics g, string str, Font fnt)
     {
-      StringFormat format = new StringFormat();
-      RectangleF rect = new RectangleF(0, 0, 1000, 1000);
+      var format = new StringFormat();
+      var rect = new RectangleF(0, 0, 1000, 1000);
       CharacterRange[] ranges = {new CharacterRange(0, str.Length)};
 
       format.SetMeasurableCharacterRanges(ranges);
@@ -199,7 +199,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
                      : new Region(new Rectangle(0, 0, 0, 0));
 
       RectangleF rctF = reg.GetBounds(g);
-      Rectangle rctRet = new Rectangle((int)Math.Floor(rctF.Left), (int)Math.Floor(rctF.Top),
+      var rctRet = new Rectangle((int)Math.Floor(rctF.Left), (int)Math.Floor(rctF.Top),
                                        (int)Math.Ceiling(rctF.Width), (int)Math.Ceiling(rctF.Height));
 
       return rctRet;
@@ -232,7 +232,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     public static Region GetStringFormattedStringRegion(Graphics g, string str, Font fnt, Rectangle rct,
                                                         StringFormat strfmt)
     {
-      RectangleF rctF = new RectangleF(rct.X, rct.Y, rct.Width, rct.Height);
+      var rctF = new RectangleF(rct.X, rct.Y, rct.Width, rct.Height);
       CharacterRange[] ranges = {new CharacterRange(0, str.Length)};
 
       strfmt.SetMeasurableCharacterRanges(ranges);

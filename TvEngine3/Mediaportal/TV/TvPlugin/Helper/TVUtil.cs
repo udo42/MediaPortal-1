@@ -147,7 +147,7 @@ namespace Mediaportal.TV.TvPlugin.Helper
 
     public static string GetDisplayTitle(Recording rec)
     {
-      StringBuilder strBuilder = new StringBuilder();
+      var strBuilder = new StringBuilder();
       TitleDisplay(strBuilder, rec.Title, rec.EpisodeName, rec.SeriesNum, rec.EpisodeNum, rec.EpisodePart);
 
       return strBuilder.ToString();
@@ -155,7 +155,7 @@ namespace Mediaportal.TV.TvPlugin.Helper
 
     public static string GetDisplayTitle(Program prog)
     {
-      StringBuilder strBuilder = new StringBuilder();
+      var strBuilder = new StringBuilder();
       TitleDisplay(strBuilder, prog.Title, prog.EpisodeName, prog.SeriesNum, prog.EpisodeNum, prog.EpisodePart);
       return strBuilder.ToString();
     }
@@ -730,7 +730,7 @@ namespace Mediaportal.TV.TvPlugin.Helper
 
       if (isRec)
       {
-        GUIDialogYesNo dlgYesNo = (GUIDialogYesNo) GUIWindowManager.GetWindow((int) GUIWindow.Window.WINDOW_DIALOG_YES_NO);
+        var dlgYesNo = (GUIDialogYesNo) GUIWindowManager.GetWindow((int) GUIWindow.Window.WINDOW_DIALOG_YES_NO);
         if (null == dlgYesNo)
         {
           Log.Error("TVProgramInfo.DeleteRecordingPrompt: ERROR no GUIDialogYesNo found !!!!!!!!!!");
@@ -793,7 +793,7 @@ namespace Mediaportal.TV.TvPlugin.Helper
     private static bool SetupConfirmDelRecDialogue()
     {
       bool confirmed = false;
-      GUIDialogYesNo dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)GUIWindow.Window.WINDOW_DIALOG_YES_NO);
+      var dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)GUIWindow.Window.WINDOW_DIALOG_YES_NO);
       if (null == dlgYesNo)
       {
         Log.Error("TVProgramInfo.DeleteRecordingPrompt: ERROR no GUIDialogYesNo found !!!!!!!!!!");

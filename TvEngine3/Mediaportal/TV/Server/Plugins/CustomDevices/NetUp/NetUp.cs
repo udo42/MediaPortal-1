@@ -206,13 +206,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
       {
         Marshal.WriteByte(_mmiBuffer, i, 0);
       }
-      NetUpCommand command = new NetUpCommand(NetUpIoControl.ApplicationInfo, IntPtr.Zero, 0, _mmiBuffer, ApplicationInfoSize);
+      var command = new NetUpCommand(NetUpIoControl.ApplicationInfo, IntPtr.Zero, 0, _mmiBuffer, ApplicationInfoSize);
       int returnedByteCount;
       int hr = command.Execute(BdaExtensionPropertySet, _propertySet, out returnedByteCount);
 
       if (hr == 0 && returnedByteCount == ApplicationInfoSize)
       {
-        ApplicationInfo info = (ApplicationInfo)Marshal.PtrToStructure(_mmiBuffer, typeof(ApplicationInfo));
+        var info = (ApplicationInfo)Marshal.PtrToStructure(_mmiBuffer, typeof(ApplicationInfo));
         this.LogDebug("  type         = {0}", info.ApplicationType);
         this.LogDebug("  manufacturer = 0x{0:x}", info.Manufacturer);
         this.LogDebug("  code         = 0x{0:x}", info.ManufacturerCode);
@@ -238,12 +238,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
       {
         Marshal.WriteByte(_mmiBuffer, i, 0);
       }
-      NetUpCommand command = new NetUpCommand(NetUpIoControl.ConditionalAccessInfo, IntPtr.Zero, 0, _mmiBuffer, CaInfoSize);
+      var command = new NetUpCommand(NetUpIoControl.ConditionalAccessInfo, IntPtr.Zero, 0, _mmiBuffer, CaInfoSize);
       int returnedByteCount;
       int hr = command.Execute(BdaExtensionPropertySet, _propertySet, out returnedByteCount);
       if (hr == 0 && returnedByteCount == CaInfoSize)
       {
-        CaInfo info = (CaInfo)Marshal.PtrToStructure(_mmiBuffer, typeof(CaInfo));
+        var info = (CaInfo)Marshal.PtrToStructure(_mmiBuffer, typeof(CaInfo));
         this.LogDebug("  # CAS IDs = {0}", info.NumberOfCaSystemIds);
         for (int i = 0; i < info.NumberOfCaSystemIds; i++)
         {
@@ -274,7 +274,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
       {
         Marshal.WriteByte(buffer, i, 0);
       }
-      NetUpCommand command = new NetUpCommand(NetUpIoControl.CiStatus, IntPtr.Zero, 0, buffer, CiStateInfoSize);
+      var command = new NetUpCommand(NetUpIoControl.CiStatus, IntPtr.Zero, 0, buffer, CiStateInfoSize);
       int returnedByteCount;
       int hr = command.Execute(BdaExtensionPropertySet, _propertySet, out returnedByteCount);
       if (hr == 0 && returnedByteCount == CiStateInfoSize)
@@ -394,7 +394,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
           Marshal.WriteByte(_mmiBuffer, i, 0);
         }
 
-        NetUpCommand command = new NetUpCommand(NetUpIoControl.MmiGetMenu, IntPtr.Zero, 0, _mmiBuffer, MmiMenuSize);
+        var command = new NetUpCommand(NetUpIoControl.MmiGetMenu, IntPtr.Zero, 0, _mmiBuffer, MmiMenuSize);
         int returnedByteCount;
         int hr = command.Execute(BdaExtensionPropertySet, _propertySet, out returnedByteCount);
         if (hr != 0 || returnedByteCount != MmiMenuSize)
@@ -463,7 +463,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
           Marshal.WriteByte(_mmiBuffer, i, 0);
         }
 
-        NetUpCommand command = new NetUpCommand(NetUpIoControl.MmiGetEnquiry, IntPtr.Zero, 0, _mmiBuffer, MmiEnquirySize);
+        var command = new NetUpCommand(NetUpIoControl.MmiGetEnquiry, IntPtr.Zero, 0, _mmiBuffer, MmiEnquirySize);
         int returnedByteCount;
         int hr = command.Execute(BdaExtensionPropertySet, _propertySet, out returnedByteCount);
         if (hr != 0 || returnedByteCount != MmiEnquirySize)
@@ -583,7 +583,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
           this.LogDebug("NetUP: failed to get filter info, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
           return false;
         }
-        IFilterGraph2 graph = filterInfo.pGraph as IFilterGraph2;
+        var graph = filterInfo.pGraph as IFilterGraph2;
         if (graph == null)
         {
           this.LogDebug("NetUP: filter info graph is null");
@@ -591,7 +591,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
         }
 
         // Add an infinite tee.
-        IBaseFilter infTee = (IBaseFilter)new InfTee();
+        var infTee = (IBaseFilter)new InfTee();
         IPin infTeeInputPin = null;
         try
         {
@@ -751,7 +751,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
 
       bool success = CloseInterface();
 
-      NetUpCommand command = new NetUpCommand(NetUpIoControl.CiReset, IntPtr.Zero, 0, IntPtr.Zero, 0);
+      var command = new NetUpCommand(NetUpIoControl.CiReset, IntPtr.Zero, 0, IntPtr.Zero, 0);
       int returnedByteCount;
       int hr = command.Execute(BdaExtensionPropertySet, _propertySet, out returnedByteCount);
       if (hr == 0)
@@ -838,14 +838,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
 
       // The NetUP driver accepts standard PMT and converts it to CA PMT internally.
       ReadOnlyCollection<byte> rawPmt = pmt.GetRawPmt();
-      NetUpIoControl code = (NetUpIoControl)((uint)NetUpIoControl.PmtListChange | ((byte)listAction << 8) | (uint)command);
+      var code = (NetUpIoControl)((uint)NetUpIoControl.PmtListChange | ((byte)listAction << 8) | (uint)command);
       IntPtr buffer = Marshal.AllocCoTaskMem(rawPmt.Count);
       for (int i = 0; i < rawPmt.Count; i++)
       {
         Marshal.WriteByte(buffer, i, rawPmt[i]);
       }
       //DVB_MMI.DumpBinary(buffer, 0, rawPmt.Count);
-      NetUpCommand ncommand = new NetUpCommand(code, buffer, rawPmt.Count, IntPtr.Zero, 0);
+      var ncommand = new NetUpCommand(code, buffer, rawPmt.Count, IntPtr.Zero, 0);
       int returnedByteCount;
       int hr = ncommand.Execute(BdaExtensionPropertySet, _propertySet, out returnedByteCount);
       Marshal.FreeCoTaskMem(buffer);
@@ -904,7 +904,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
         ReadApplicationInformation();
         ReadConditionalAccessInformation();
 
-        NetUpCommand command = new NetUpCommand(NetUpIoControl.MmiEnterMenu, IntPtr.Zero, 0, IntPtr.Zero, 0);
+        var command = new NetUpCommand(NetUpIoControl.MmiEnterMenu, IntPtr.Zero, 0, IntPtr.Zero, 0);
         int returnedByteCount;
         hr = command.Execute(BdaExtensionPropertySet, _propertySet, out returnedByteCount);
       }
@@ -940,7 +940,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
       int hr;
       lock (this)
       {
-        NetUpCommand command = new NetUpCommand(NetUpIoControl.MmiClose, IntPtr.Zero, 0, IntPtr.Zero, 0);
+        var command = new NetUpCommand(NetUpIoControl.MmiClose, IntPtr.Zero, 0, IntPtr.Zero, 0);
         int returnedByteCount;
         hr = command.Execute(BdaExtensionPropertySet, _propertySet, out returnedByteCount);
       }
@@ -977,8 +977,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
       int hr;
       lock (this)
       {
-        NetUpIoControl code = (NetUpIoControl)((uint)NetUpIoControl.MmiAnswerMenu | choice << 8);
-        NetUpCommand command = new NetUpCommand(code, IntPtr.Zero, 0, IntPtr.Zero, 0);
+        var code = (NetUpIoControl)((uint)NetUpIoControl.MmiAnswerMenu | choice << 8);
+        var command = new NetUpCommand(code, IntPtr.Zero, 0, IntPtr.Zero, 0);
         int returnedByteCount;
         hr = command.Execute(BdaExtensionPropertySet, _propertySet, out returnedByteCount);
       }
@@ -1024,7 +1024,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
         return false;
       }
 
-      MmiAnswer mmi = new MmiAnswer();
+      var mmi = new MmiAnswer();
       mmi.AnswerLength = (byte)answer.Length;
       mmi.Answer = answer;
       MmiResponseType responseType = MmiResponseType.Answer;
@@ -1038,8 +1038,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
       {
         Marshal.StructureToPtr(mmi, _mmiBuffer, true);
         //DVB_MMI.DumpBinary(_mmiBuffer, 0, MmiAnswerSize);
-        NetUpIoControl code = (NetUpIoControl)((uint)NetUpIoControl.MmiPutAnswer | ((byte)responseType << 8));
-        NetUpCommand command = new NetUpCommand(code, _mmiBuffer, MmiAnswerSize, IntPtr.Zero, 0);
+        var code = (NetUpIoControl)((uint)NetUpIoControl.MmiPutAnswer | ((byte)responseType << 8));
+        var command = new NetUpCommand(code, _mmiBuffer, MmiAnswerSize, IntPtr.Zero, 0);
         int returnedByteCount;
         hr = command.Execute(BdaExtensionPropertySet, _propertySet, out returnedByteCount);
       }
@@ -1102,7 +1102,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
       Marshal.Copy(command, 0, _generalBuffer, command.Length);
       //DVB_MMI.DumpBinary(_generalBuffer, 0, command.Length);
 
-      NetUpCommand ncommand = new NetUpCommand(NetUpIoControl.Diseqc, _generalBuffer, command.Length, IntPtr.Zero, 0);
+      var ncommand = new NetUpCommand(NetUpIoControl.Diseqc, _generalBuffer, command.Length, IntPtr.Zero, 0);
       int returnedByteCount;
       int hr = ncommand.Execute(BdaExtensionPropertySet, _propertySet, out returnedByteCount);
       if (hr == 0)

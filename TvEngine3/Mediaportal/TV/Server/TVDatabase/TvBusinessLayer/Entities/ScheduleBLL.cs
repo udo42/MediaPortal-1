@@ -29,7 +29,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
       get { return (QualityType)(_entity.Quality / 10); }
       set
       {
-        int type = ((int)value);
+        var type = ((int)value);
         _entity.Quality = (type * 10) + (_entity.Quality % 10);
       }
     }
@@ -39,7 +39,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
       get { return (VIDEOENCODER_BITRATE_MODE)(_entity.Quality % 10); }
       set
       {
-        int mode = ((int)value);
+        var mode = ((int)value);
         _entity.Quality = mode + ((_entity.Quality / 10) * 10);
       }
     }
@@ -95,7 +95,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
       {
         return false;
       }
-      ScheduleRecordingType scheduleRecordingType = (ScheduleRecordingType)_entity.ScheduleType;
+      var scheduleRecordingType = (ScheduleRecordingType)_entity.ScheduleType;
       switch (scheduleRecordingType)
       {
         case ScheduleRecordingType.Once:

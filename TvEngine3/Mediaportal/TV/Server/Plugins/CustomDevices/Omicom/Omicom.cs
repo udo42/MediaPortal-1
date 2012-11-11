@@ -142,7 +142,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Omicom
       }
 
       // We only need to tweak the modulation for DVB-S2 channels.
-      DVBSChannel ch = channel as DVBSChannel;
+      var ch = channel as DVBSChannel;
       if (ch == null)
       {
         return;
@@ -218,7 +218,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Omicom
         return false;
       }
 
-      DiseqcMessage message = new DiseqcMessage();
+      var message = new DiseqcMessage();
       message.Message = new byte[MaxDiseqcMessageLength];
       Buffer.BlockCopy(command, 0, message.Message, 0, command.Length);
       message.MessageLength = (byte)command.Length;
@@ -275,7 +275,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Omicom
       }
 
       //DVB_MMI.DumpBinary(_diseqcBuffer, 0, DiseqcMessageSize);
-      DiseqcMessage message = (DiseqcMessage)Marshal.PtrToStructure(_diseqcBuffer, typeof(DiseqcMessage));
+      var message = (DiseqcMessage)Marshal.PtrToStructure(_diseqcBuffer, typeof(DiseqcMessage));
       if (message.MessageLength > MaxDiseqcMessageLength)
       {
         this.LogDebug("Omicom: reply too long, length = {0}", message.MessageLength);

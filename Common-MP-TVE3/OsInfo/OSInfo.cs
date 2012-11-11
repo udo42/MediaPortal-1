@@ -102,7 +102,7 @@ namespace OSInfo
     /// <returns>A string containing the the operating system product type.</returns>
     public static string GetOSProductType()
     {
-      OSVERSIONINFOEX osVersionInfo = new OSVERSIONINFOEX();
+      var osVersionInfo = new OSVERSIONINFOEX();
       osVersionInfo.dwOSVersionInfoSize = Marshal.SizeOf(typeof (OSVERSIONINFOEX));
       if (!GetVersionEx(ref osVersionInfo)) return string.Empty;
 
@@ -273,7 +273,7 @@ namespace OSInfo
     /// <returns>A string containing the the operating system service pack information.</returns>
     public static string GetOSServicePack()
     {
-      OSVERSIONINFOEX osVersionInfo = new OSVERSIONINFOEX();
+      var osVersionInfo = new OSVERSIONINFOEX();
       osVersionInfo.dwOSVersionInfoSize = Marshal.SizeOf(typeof (OSVERSIONINFOEX));
       return !GetVersionEx(ref osVersionInfo) ? string.Empty : osVersionInfo.szCSDVersion;
     }
@@ -544,7 +544,7 @@ namespace OSInfo
     {
       get
       {
-        OSVERSIONINFOEX osVersionInfo = new OSVERSIONINFOEX();
+        var osVersionInfo = new OSVERSIONINFOEX();
         osVersionInfo.dwOSVersionInfoSize = Marshal.SizeOf(typeof (OSVERSIONINFOEX));
         if (!GetVersionEx(ref osVersionInfo)) return -1;
         return osVersionInfo.wServicePackMajor;
@@ -558,7 +558,7 @@ namespace OSInfo
     {
       get
       {
-        OSVERSIONINFOEX osVersionInfo = new OSVERSIONINFOEX();
+        var osVersionInfo = new OSVERSIONINFOEX();
         osVersionInfo.dwOSVersionInfoSize = Marshal.SizeOf(typeof (OSVERSIONINFOEX));
         return !GetVersionEx(ref osVersionInfo) ? -1 : osVersionInfo.wServicePackMinor;
       }
@@ -571,7 +571,7 @@ namespace OSInfo
     {
       get
       {
-        OSVERSIONINFOEX osVersionInfo = new OSVERSIONINFOEX();
+        var osVersionInfo = new OSVERSIONINFOEX();
         osVersionInfo.dwOSVersionInfoSize = Marshal.SizeOf(typeof (OSVERSIONINFOEX));
         return !GetVersionEx(ref osVersionInfo) ? String.Empty : osVersionInfo.szCSDVersion;
       }
@@ -584,7 +584,7 @@ namespace OSInfo
     {
       get
       {
-        OSVERSIONINFOEX osVersionInfo = new OSVERSIONINFOEX();
+        var osVersionInfo = new OSVERSIONINFOEX();
         osVersionInfo.dwOSVersionInfoSize = Marshal.SizeOf(typeof (OSVERSIONINFOEX));
         if (!GetVersionEx(ref osVersionInfo)) return 0x0;
         return osVersionInfo.wProductType;

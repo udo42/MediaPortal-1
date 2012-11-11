@@ -80,8 +80,8 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
       standbyHandler = new ActiveSharesHandler();
       _standbyHandlers.Add(standbyHandler);
 
-      ScheduledRecordingsHandler recHandler = new ScheduledRecordingsHandler();
-      XmlTvImportWakeupHandler xmltvHandler = new XmlTvImportWakeupHandler();
+      var recHandler = new ScheduledRecordingsHandler();
+      var xmltvHandler = new XmlTvImportWakeupHandler();
 
       // Add handlers for resuming from standby
       _wakeupHandlers.Add(recHandler);
@@ -100,7 +100,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     /// </summary>
     public void CreateDefaultSet()
     {
-      IPowerScheduler powerScheduler = GlobalServiceProvider.Instance.Get<IPowerScheduler>();
+      var powerScheduler = GlobalServiceProvider.Instance.Get<IPowerScheduler>();
       foreach (IStandbyHandler handler in _standbyHandlers)
         powerScheduler.Register(handler);
       foreach (IWakeupHandler handler in _wakeupHandlers)
@@ -112,7 +112,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     /// </summary>
     public void RemoveDefaultSet()
     {
-      IPowerScheduler powerScheduler = GlobalServiceProvider.Instance.Get<IPowerScheduler>();
+      var powerScheduler = GlobalServiceProvider.Instance.Get<IPowerScheduler>();
       foreach (IStandbyHandler handler in _standbyHandlers)
         powerScheduler.Unregister(handler);
       foreach (IWakeupHandler handler in _wakeupHandlers)

@@ -281,7 +281,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
     private List<ServerConnection> GetConnections(ManagementObjectCollection col)
     {
-      List<ServerConnection> connections = new List<ServerConnection>();
+      var connections = new List<ServerConnection>();
       foreach (ManagementObject obj in col)
       {
         connections.Add(

@@ -165,7 +165,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
         }
       }
 
-      GrabberSelectionInfo ntag = (GrabberSelectionInfo)tNode.Tag;
+      var ntag = (GrabberSelectionInfo)tNode.Tag;
       if (ntag != null && ntag.ChannelId == tag.ChannelId && ntag.GrabberId == tag.GrabberId)
       {
         return tNode;
@@ -270,8 +270,8 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
 
     public int Compare(object x, object y)
     {
-      TreeNode tx = x as TreeNode;
-      TreeNode ty = y as TreeNode;
+      var tx = x as TreeNode;
+      var ty = y as TreeNode;
       return string.Compare(tx.Text, ty.Text);
     }
 

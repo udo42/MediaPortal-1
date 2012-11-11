@@ -54,10 +54,10 @@ namespace Mediaportal.TV.Server.TVLibrary
       {
         this.LogDebug("Setting up EventWaitHandle with name: {0}", RemoteControl.InitializedEventName);
 
-        EventWaitHandleAccessRule rule =
+        var rule =
           new EventWaitHandleAccessRule(new SecurityIdentifier(WellKnownSidType.WorldSid, null),
                                         EventWaitHandleRights.FullControl, AccessControlType.Allow);
-        EventWaitHandleSecurity sec = new EventWaitHandleSecurity();
+        var sec = new EventWaitHandleSecurity();
         sec.AddAccessRule(rule);
         bool eventCreated;
         _initializedEvent = new EventWaitHandle(false, EventResetMode.ManualReset, RemoteControl.InitializedEventName,
@@ -207,7 +207,7 @@ namespace Mediaportal.TV.Server.TVLibrary
         {
           try
           {
-            MSG msgApi = new MSG();
+            var msgApi = new MSG();
 
             if (!GetMessageA(ref msgApi, IntPtr.Zero, 0, 0)) // returns false on WM_QUIT
               return;
@@ -304,12 +304,12 @@ namespace Mediaportal.TV.Server.TVLibrary
       this.LogDebug("OnPowerEvent: PowerStatus: {0}", powerStatus);
 
       bool accept = true;
-      List<PowerEventHandler> powerEventPreventers = new List<PowerEventHandler>();
-      List<PowerEventHandler> powerEventAllowers = new List<PowerEventHandler>();
+      var powerEventPreventers = new List<PowerEventHandler>();
+      var powerEventAllowers = new List<PowerEventHandler>();
 
       // Make a copy of _powerEventHandlers, because the handler might call AddPowerEventHandler
       // or RemovePowerEventHandler when executing thus generating an exception when we iterate.
-      List<PowerEventHandler> listCopy = new List<PowerEventHandler>();
+      var listCopy = new List<PowerEventHandler>();
       foreach (PowerEventHandler handler in _powerEventHandlers)
       {
         listCopy.Add((PowerEventHandler)handler.Clone());

@@ -404,7 +404,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
       int hr = graphBuilder.EnumFilters(out enumFilters);
       if (hr == 0)
       {
-        IBaseFilter[] filters = new IBaseFilter[1];
+        var filters = new IBaseFilter[1];
         int fetched;
 
         while (enumFilters.Next(filters.Length, filters, out fetched) == 0)
@@ -441,7 +441,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
       int hr = graphBuilder.EnumFilters(out enumFilters);
       if (hr == 0)
       {
-        IBaseFilter[] filters = new IBaseFilter[1];
+        var filters = new IBaseFilter[1];
         int fetched;
 
         while (enumFilters.Next(filters.Length, filters, out fetched) == 0)
@@ -525,7 +525,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
       index = -1;
       while (true)
       {
-        IPin[] pins = new IPin[2];
+        var pins = new IPin[2];
         int fetched;
         enumPins.Next(1, pins, out fetched);
         if (fetched != 1)
@@ -538,7 +538,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         index++;
         //next check if the pin supports the media type requested
         IEnumMediaTypes enumMedia;
-        AMMediaType[] media = new AMMediaType[2];
+        var media = new AMMediaType[2];
         pins[0].EnumMediaTypes(out enumMedia);
         while (true)
         {
@@ -575,7 +575,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
       IEnumPins ppEnum;
       PinInfo ppinfo;
       IPin pRet = null;
-      IPin[] pPins = new IPin[1];
+      var pPins = new IPin[1];
       pinIndex = -1;
       if (vSource == null)
       {
@@ -637,7 +637,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
       IList<IBaseFilter> nextFilters = new List<IBaseFilter>();
       IEnumPins ppEnum;
       PinInfo ppinfo;
-      IPin[] pPins = new IPin[1];
+      var pPins = new IPin[1];
       if (vSource == null)
         return null;
 
@@ -705,7 +705,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     {
       IEnumPins ppEnum;
       IPin pRet = null;
-      IPin[] pPins = new IPin[1];
+      var pPins = new IPin[1];
       pinIndex = -1;
       if (vSource == null)
       {
@@ -767,7 +767,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         throw new ArgumentNullException("filter");
 
       IEnumPins enumPins;
-      IPin[] pins = new IPin[1];
+      var pins = new IPin[1];
       int hr = filter.EnumPins(out enumPins);
       DsError.ThrowExceptionForHR(hr);
 
@@ -813,7 +813,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 
       try
       {
-        IBaseFilter[] filters = new IBaseFilter[1];
+        var filters = new IBaseFilter[1];
         int fetched;
 
         while (enumFilters.Next(filters.Length, filters, out fetched) == 0)
@@ -848,14 +848,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         throw new ArgumentNullException("graphBuilder");
 
       IEnumFilters enumFilters = null;
-      ArrayList filtersArray = new ArrayList();
+      var filtersArray = new ArrayList();
 
       try
       {
         int hr = graphBuilder.EnumFilters(out enumFilters);
         DsError.ThrowExceptionForHR(hr);
 
-        IBaseFilter[] filters = new IBaseFilter[1];
+        var filters = new IBaseFilter[1];
         int fetched;
 
         while (enumFilters.Next(filters.Length, filters, out fetched) == 0)
@@ -1616,7 +1616,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     /// <returns></returns>
     public static AMMediaType GetAudioMpg2Media()
     {
-      AMMediaType mediaAudio = new AMMediaType();
+      var mediaAudio = new AMMediaType();
       mediaAudio.majorType = MediaType.Audio;
       mediaAudio.subType = MediaSubType.Mpeg2Audio;
       mediaAudio.formatType = FormatType.WaveEx;
@@ -1638,7 +1638,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     /// <returns></returns>
     public static AMMediaType GetAudioMpg1Media()
     {
-      AMMediaType mediaAudio = new AMMediaType();
+      var mediaAudio = new AMMediaType();
       mediaAudio.majorType = MediaType.Audio;
       mediaAudio.subType = MediaSubType.MPEG1Payload;
       mediaAudio.formatType = FormatType.WaveEx;
@@ -1660,7 +1660,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     /// <returns></returns>
     public static AMMediaType GetVideoMpg2Media()
     {
-      AMMediaType mediaVideo = new AMMediaType();
+      var mediaVideo = new AMMediaType();
       mediaVideo.majorType = MediaType.Video;
       mediaVideo.subType = MediaSubType.Mpeg2Video;
       mediaVideo.formatType = FormatType.Mpeg2Video;
@@ -1680,7 +1680,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     /// <returns></returns>
     public static AMMediaType GetAudioAc3()
     {
-      AMMediaType mediaAc3 = new AMMediaType();
+      var mediaAc3 = new AMMediaType();
       mediaAc3.majorType = MediaType.Audio;
       mediaAc3.subType = MediaSubType.DolbyAC3;
       mediaAc3.formatType = FormatType.WaveEx;
@@ -1700,7 +1700,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     /// <returns></returns>
     public static AMMediaType GetAudioAAC()
     {
-      AMMediaType mediaAac = new AMMediaType();
+      var mediaAac = new AMMediaType();
       mediaAac.majorType = MediaType.Audio;
       mediaAac.subType = MpMediaSubType.AAC;
       mediaAac.formatType = FormatType.WaveEx;
@@ -1720,7 +1720,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     /// <returns></returns>
     public static AMMediaType GetAudioLATMAAC()
     {
-      AMMediaType mediaLATMAAC = new AMMediaType();
+      var mediaLATMAAC = new AMMediaType();
       mediaLATMAAC.majorType = MediaType.Audio;
       mediaLATMAAC.subType = MpMediaSubType.LATMAAC;
       mediaLATMAAC.formatType = FormatType.WaveEx;
@@ -1740,7 +1740,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     /// <returns></returns>
     public static AMMediaType GetAudioLPCMMedia()
     {
-      AMMediaType mediaLPCM = new AMMediaType();
+      var mediaLPCM = new AMMediaType();
       mediaLPCM.majorType = MediaType.Audio;
       mediaLPCM.subType = MpMediaSubType.DVD_LPCM_AUDIO;
       mediaLPCM.formatType = FormatType.WaveEx;
@@ -1760,7 +1760,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     /// <returns></returns>
     public static AMMediaType GetTransportStreamMedia()
     {
-      AMMediaType mediaTS = new AMMediaType();
+      var mediaTS = new AMMediaType();
       mediaTS.majorType = MediaType.Stream;
       mediaTS.subType = MediaSubType.Mpeg2Transport;
       mediaTS.formatType = FormatType.Null;

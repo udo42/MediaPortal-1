@@ -401,7 +401,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       {
         for (int i = 0; i < packetCount; ++i)
         {
-          IntPtr packetPtr = new IntPtr(data.ToInt64() + i * 188);
+          var packetPtr = new IntPtr(data.ToInt64() + i * 188);
           ProcessPacket(packetPtr);
         }
       }

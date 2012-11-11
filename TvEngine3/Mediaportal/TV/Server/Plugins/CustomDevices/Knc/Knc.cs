@@ -537,7 +537,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
     {
       // Build a list of the device paths of all KNC-compatible tuners installed in this system.
       DsDevice[] devices = DsDevice.GetDevicesOfCat(FilterCategory.BDASourceFiltersCategory);
-      List<String> devicePaths = new List<String>();
+      var devicePaths = new List<String>();
       foreach (DsDevice device in devices)
       {
         foreach (String validTunerName in ValidDeviceNames)
@@ -963,7 +963,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
       }
 
       // We only need to tweak parameters for DVB-S/S2 channels.
-      DVBSChannel ch = channel as DVBSChannel;
+      var ch = channel as DVBSChannel;
       if (ch == null)
       {
         return;
@@ -1076,7 +1076,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
         _isCamReady = KNCBDA_CI_IsReady(_deviceIndex);
         if (_isCamReady)
         {
-          StringBuilder nameBuffer = new StringBuilder(100);
+          var nameBuffer = new StringBuilder(100);
           if (KNCBDA_CI_GetName(_deviceIndex, nameBuffer, (uint)nameBuffer.MaxCapacity))
           {
             this.LogDebug("KNC: CAM name/type is {0}", nameBuffer);

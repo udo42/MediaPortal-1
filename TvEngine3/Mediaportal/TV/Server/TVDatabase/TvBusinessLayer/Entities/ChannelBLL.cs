@@ -9,7 +9,6 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
 {
   public class ChannelBLL
   {
-    private ChannelGroup _currentGroup;
     private Program _currentProgram;
     private Channel _entity;
     private Program _nextProgram;
@@ -24,11 +23,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
     /// <summary>
     /// Property describing the current group that was used to view the channel from
     /// </summary>
-    public ChannelGroup CurrentGroup
-    {
-      get { return _currentGroup; }
-      set { _currentGroup = value; }
-    }
+    public ChannelGroup CurrentGroup { get; set; }
 
     public Program CurrentProgram
     {

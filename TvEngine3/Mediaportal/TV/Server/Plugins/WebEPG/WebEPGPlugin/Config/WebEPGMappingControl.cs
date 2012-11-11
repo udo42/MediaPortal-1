@@ -210,7 +210,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
 
     private void getTvServerChannels()
     {
-      CBChannelGroup chGroup = (CBChannelGroup)GroupComboBox.SelectedItem;
+      var chGroup = (CBChannelGroup)GroupComboBox.SelectedItem;
 
       IList<Channel> channels = new List<Channel>();
       MediaTypeEnum mediaType = MediaTypeEnum.Radio;
@@ -250,11 +250,11 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
       //add all channels
       foreach (ChannelMap channel in _channelMapping.Values)
       {
-        ListViewItem channelItem = new ListViewItem(channel.displayName);
+        var channelItem = new ListViewItem(channel.displayName);
         string name = string.Empty;
         if (channel.id != null)
         {
-          ChannelConfigInfo info = (ChannelConfigInfo)_hChannelConfigInfo[channel.id];
+          var info = (ChannelConfigInfo)_hChannelConfigInfo[channel.id];
           if (info != null)
           {
             name = info.FullName;
@@ -301,7 +301,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
           string name = string.Empty;
           if (channelDetails.id != null)
           {
-            ChannelConfigInfo info = (ChannelConfigInfo)_hChannelConfigInfo[channelDetails.id];
+            var info = (ChannelConfigInfo)_hChannelConfigInfo[channelDetails.id];
             if (info != null)
             {
               name = info.FullName;
@@ -380,13 +380,13 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
       if (channelId != null && grabberId != null)
       {
         tbChannelName.Tag = channelId;
-        ChannelConfigInfo info = (ChannelConfigInfo)_hChannelConfigInfo[channelId];
+        var info = (ChannelConfigInfo)_hChannelConfigInfo[channelId];
         if (info != null)
         {
           tbChannelName.Text = info.FullName;
           this.LogInfo("WebEPG Config: Selection: {0}", info.FullName);
 
-          GrabberConfigInfo gInfo = (GrabberConfigInfo)info.GrabberList[grabberId];
+          var gInfo = (GrabberConfigInfo)info.GrabberList[grabberId];
           if (gInfo != null)
           {
             tbGrabSite.Text = gInfo.GrabberName;
@@ -576,7 +576,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
               channelMap.merged = new List<MergedChannel>();
               if (channelMap.id != null)
               {
-                MergedChannel channel = new MergedChannel();
+                var channel = new MergedChannel();
                 channel.id = channelMap.id;
                 channelMap.id = null;
                 channel.grabber = channelMap.grabber;

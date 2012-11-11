@@ -87,7 +87,7 @@ namespace Mediaportal.TV.TvPlugin
       item.IconImage = logo;
       item.OnItemSelected += OnListItemSelected;
 
-      GUIListControl list = (GUIListControl)GetControl((int)Controls.LIST);
+      var list = (GUIListControl)GetControl((int)Controls.LIST);
       if (list != null)
       {
         list.Add(item);
@@ -120,7 +120,7 @@ namespace Mediaportal.TV.TvPlugin
     {
       base.Reset();
       ConflictingEpisodes = false;
-      GUIListControl list = (GUIListControl)GetControl((int)Controls.LIST);
+      var list = (GUIListControl)GetControl((int)Controls.LIST);
       if (list != null)
       {
         list.Clear();

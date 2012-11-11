@@ -82,11 +82,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     /// <returns>TvAudio instance</returns>
     public static Crossbar CreateInstance(XmlNode xmlNode)
     {
-      Crossbar crossbar = new Crossbar();
-      Dictionary<AnalogChannel.VideoInputType, int> videoPinMap = new Dictionary<AnalogChannel.VideoInputType, int>();
-      Dictionary<AnalogChannel.VideoInputType, int> videoPinRelatedAudioMap =
+      var crossbar = new Crossbar();
+      var videoPinMap = new Dictionary<AnalogChannel.VideoInputType, int>();
+      var videoPinRelatedAudioMap =
         new Dictionary<AnalogChannel.VideoInputType, int>();
-      Dictionary<AnalogChannel.AudioInputType, int> audioPinMap = new Dictionary<AnalogChannel.AudioInputType, int>();
+      var audioPinMap = new Dictionary<AnalogChannel.AudioInputType, int>();
       crossbar.AudioPinMap = audioPinMap;
       crossbar.VideoPinMap = videoPinMap;
       crossbar.VideoPinRelatedAudioMap = videoPinRelatedAudioMap;
@@ -106,7 +106,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
           {
             foreach (XmlNode pin in videoPinList)
             {
-              AnalogChannel.VideoInputType type =
+              var type =
                 (AnalogChannel.VideoInputType)Int32.Parse(pin.Attributes["type"].Value);
               int index = Int32.Parse(pin.Attributes["index"].Value);
               int related = Int32.Parse(pin.Attributes["related"].Value);
@@ -118,7 +118,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
           {
             foreach (XmlNode pin in audioPinList)
             {
-              AnalogChannel.AudioInputType type =
+              var type =
                 (AnalogChannel.AudioInputType)Int32.Parse(pin.Attributes["type"].Value);
               int index = Int32.Parse(pin.Attributes["index"].Value);
               audioPinMap.Add(type, index);

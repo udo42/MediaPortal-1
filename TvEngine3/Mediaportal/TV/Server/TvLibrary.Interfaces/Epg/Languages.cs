@@ -76,7 +76,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Epg
     /// <returns>list of all languages</returns>
     public List<String> GetLanguages()
     {
-      List<String> langs = new List<String>();
+      var langs = new List<String>();
 
       CultureInfo[] cinfos = CultureInfo.GetCultures(CultureTypes.AllCultures);
       foreach (CultureInfo ci in cinfos)
@@ -94,7 +94,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Epg
     /// <returns>list of all language codes</returns>
     public List<String> GetLanguageCodes()
     {
-      List<String> langs = new List<String>();
+      var langs = new List<String>();
 
       CultureInfo[] cinfos = CultureInfo.GetCultures(CultureTypes.AllCultures);
       foreach (CultureInfo ci in cinfos)

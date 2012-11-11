@@ -72,22 +72,22 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBT
       this.LogDebug("TvCardDvbT: create tuning space");
 
       // Check if the system already has an appropriate tuning space.
-      SystemTuningSpaces systemTuningSpaces = new SystemTuningSpaces();
-      ITuningSpaceContainer container = systemTuningSpaces as ITuningSpaceContainer;
+      var systemTuningSpaces = new SystemTuningSpaces();
+      var container = systemTuningSpaces as ITuningSpaceContainer;
       if (container == null)
       {
         this.LogError("TvCardDvbT: failed to get the tuning space container");
         return;
       }
 
-      ITuner tuner = (ITuner)_filterNetworkProvider;
+      var tuner = (ITuner)_filterNetworkProvider;
       ITuneRequest request;
 
       IEnumTuningSpaces enumTuning;
       container.get_EnumTuningSpaces(out enumTuning);
       try
       {
-        ITuningSpace[] spaces = new ITuningSpace[2];
+        var spaces = new ITuningSpace[2];
         while (true)
         {
           int fetched;
@@ -124,7 +124,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBT
       _tuningSpace.put__NetworkType(typeof(DVBTNetworkProvider).GUID);
       _tuningSpace.put_SystemType(DVBSystemType.Terrestrial);
 
-      IDVBTLocator locator = (IDVBTLocator)new DVBTLocator();
+      var locator = (IDVBTLocator)new DVBTLocator();
       locator.put_CarrierFrequency(-1);
       locator.put_SymbolRate(-1);
       locator.put_Modulation(ModulationType.ModNotSet);
@@ -160,7 +160,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBT
     /// <returns>the assembled tune request</returns>
     protected override ITuneRequest AssembleTuneRequest(IChannel channel)
     {
-      DVBTChannel dvbtChannel = channel as DVBTChannel;
+      var dvbtChannel = channel as DVBTChannel;
       if (dvbtChannel == null)
       {
         this.LogDebug("TvCardDvbT: channel is not a DVB-T channel!!! {0}", channel.GetType().ToString());
@@ -169,7 +169,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBT
 
       ILocator locator;
       _tuningSpace.get_DefaultLocator(out locator);
-      IDVBTLocator dvbtLocator = (IDVBTLocator)locator;
+      var dvbtLocator = (IDVBTLocator)locator;
       dvbtLocator.put_CarrierFrequency((int)dvbtChannel.Frequency);
       dvbtLocator.put_Bandwidth(dvbtChannel.Bandwidth / 1000);
 

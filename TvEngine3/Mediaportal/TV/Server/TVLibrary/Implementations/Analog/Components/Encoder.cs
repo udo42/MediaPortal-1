@@ -450,7 +450,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       // loop through all pins
       while (true)
       {
-        IPin[] pins = new IPin[2];
+        var pins = new IPin[2];
         int fetched;
         enumPins.Next(1, pins, out fetched);
         if (fetched != 1)
@@ -462,7 +462,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
           continue;
         //next check if the pin supports the media type requested
         IEnumMediaTypes enumMedia;
-        AMMediaType[] media = new AMMediaType[2];
+        var media = new AMMediaType[2];
         pins[0].EnumMediaTypes(out enumMedia);
         while (true)
         {
@@ -517,11 +517,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
         this.LogDebug("analog: ConnectFilters returns:0x{0:X}", hr);
         throw new TvException("Unable to connect capture-> MPEG2 demultiplexer");
       }
-      IMpeg2Demultiplexer demuxer = (IMpeg2Demultiplexer)_filterMpeg2Demux;
+      var demuxer = (IMpeg2Demultiplexer)_filterMpeg2Demux;
       demuxer.CreateOutputPin(FilterGraphTools.GetVideoMpg2Media(), "Video", out _pinVideo);
       demuxer.CreateOutputPin(FilterGraphTools.GetAudioMpg2Media(), "Audio", out _pinAudio);
       demuxer.CreateOutputPin(FilterGraphTools.GetAudioLPCMMedia(), "LPCM", out _pinLPCM);
-      IMPEG2StreamIdMap map = (IMPEG2StreamIdMap)_pinVideo;
+      var map = (IMPEG2StreamIdMap)_pinVideo;
       map.MapStreamId(224, MPEG2Program.ElementaryStream, 0, 0);
       map = (IMPEG2StreamIdMap)_pinAudio;
       map.MapStreamId(0xC0, MPEG2Program.ElementaryStream, 0, 0);
@@ -645,7 +645,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       string pinName2 = FilterGraphTools.GetPinName(pinInput2);
       int pinsConnected = 0;
       int pinsAvailable = 0;
-      IPin[] pins = new IPin[20];
+      var pins = new IPin[20];
       IEnumPins enumPins = null;
       try
       {
@@ -767,7 +767,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
           //option 1, connect the multiplexer to the capture filter
           int pinsConnected = 0;
           int pinsAvailable = 0;
-          IPin[] pins = new IPin[20];
+          var pins = new IPin[20];
           IEnumPins enumPins = null;
           try
           {
@@ -860,7 +860,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
           this.LogDebug("analog: ConnectMultiplexer to video encoder filter");
           int pinsConnected = 0;
           int pinsAvailable = 0;
-          IPin[] pins = new IPin[20];
+          var pins = new IPin[20];
           IEnumPins enumPins = null;
           try
           {
@@ -951,7 +951,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
           //option 3, connect the multiplexer to the audio/video encoder filters
           int pinsConnected = 0;
           int pinsAvailable = 0;
-          IPin[] pins = new IPin[20];
+          var pins = new IPin[20];
           IEnumPins enumPins = null;
           try
           {
@@ -1363,7 +1363,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
           if (enumMediaTypes != null)
           {
             int fetched;
-            AMMediaType[] mediaTypes = new AMMediaType[20];
+            var mediaTypes = new AMMediaType[20];
             enumMediaTypes.Next(20, mediaTypes, out fetched);
             if (fetched > 0)
             {
@@ -1432,7 +1432,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
           //encoder filter only has 1 input pin.
           //First we get the media type of this pin to determine if its audio of video
           IEnumMediaTypes enumMedia;
-          AMMediaType[] media = new AMMediaType[20];
+          var media = new AMMediaType[20];
           int fetched;
           pin1.EnumMediaTypes(out enumMedia);
           enumMedia.Next(1, media, out fetched);
@@ -1540,7 +1540,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       int pinNr = -1;
       while (true)
       {
-        IPin[] pins = new IPin[2];
+        var pins = new IPin[2];
         int fetched;
         enumPins.Next(1, pins, out fetched);
         if (fetched != 1)
@@ -1553,7 +1553,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
         pinNr++;
         //next check if the pin supports the media type requested
         IEnumMediaTypes enumMedia;
-        AMMediaType[] media = new AMMediaType[2];
+        var media = new AMMediaType[2];
         pins[0].EnumMediaTypes(out enumMedia);
         while (true)
         {
@@ -1636,7 +1636,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       DsDevice[] devices1 = DsDevice.GetDevicesOfCat(FilterCategory.AudioCompressorCategory);
       DsDevice[] devices2 = DsDevice.GetDevicesOfCat(FilterCategory.LegacyAmFilterCategory);
       IList<SoftwareEncoder> audioEncoders = AnalogManagement.GetSofwareEncodersAudio();
-      DsDevice[] audioDevices = new DsDevice[audioEncoders.Count];
+      var audioDevices = new DsDevice[audioEncoders.Count];
       for (int x = 0; x < audioEncoders.Count; ++x)
       {
         audioDevices[x] = null;
@@ -1745,7 +1745,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       DsDevice[] devices1 = DsDevice.GetDevicesOfCat(FilterCategory.VideoCompressorCategory);
       DsDevice[] devices2 = DsDevice.GetDevicesOfCat(FilterCategory.LegacyAmFilterCategory);
       IList<SoftwareEncoder> videoEncoders = AnalogManagement.GetSofwareEncodersVideo();
-      DsDevice[] videoDevices = new DsDevice[videoEncoders.Count];
+      var videoDevices = new DsDevice[videoEncoders.Count];
       for (int x = 0; x < videoEncoders.Count; ++x)
       {
         videoDevices[x] = null;

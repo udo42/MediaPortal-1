@@ -150,7 +150,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
         LoadRegistryTimeZones();
       }
 
-      List<TimeZoneInfo> timezonelist = new List<TimeZoneInfo>();
+      var timezonelist = new List<TimeZoneInfo>();
 
       foreach (TimeZoneInfo timezone in _TimeZoneList.Values)
       {
@@ -180,8 +180,8 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
         int LastDay = DateTime.DaysInMonth(year, TimeChange.Month);
         ChangeDay = new DateTime(year, TimeChange.Month, LastDay);
 
-        int MonthEnd = (int)ChangeDay.DayOfWeek;
-        int WeekDay = (int)TimeChange.DayOfWeek;
+        var MonthEnd = (int)ChangeDay.DayOfWeek;
+        var WeekDay = (int)TimeChange.DayOfWeek;
 
         if (MonthEnd != WeekDay)
         {
@@ -199,8 +199,8 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
       {
         ChangeDay = new DateTime(year, TimeChange.Month, 1);
 
-        int MonthStart = (int)ChangeDay.DayOfWeek;
-        int WeekDay = (int)TimeChange.DayOfWeek;
+        var MonthStart = (int)ChangeDay.DayOfWeek;
+        var WeekDay = (int)TimeChange.DayOfWeek;
 
         if (MonthStart != WeekDay)
         {
@@ -255,13 +255,13 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
             {
               if (TZKey != null && TZKey.ValueCount > 0)
               {
-                TimeZoneInfo TZInfo = new TimeZoneInfo();
+                var TZInfo = new TimeZoneInfo();
 
                 //TZInfo.Index = (int)TZKey.GetValue(VALUE_INDEX);
                 TZInfo.Display = (string)TZKey.GetValue(VALUE_DISPLAY_NAME);
                 TZInfo.StdName = (string)TZKey.GetValue(VALUE_STANDARD_NAME);
                 TZInfo.DltName = (string)TZKey.GetValue(VALUE_DAYLIGHT_NAME);
-                byte[] timeZoneData = (byte[])TZKey.GetValue(VALUE_ZONE_INFO);
+                var timeZoneData = (byte[])TZKey.GetValue(VALUE_ZONE_INFO);
 
                 if (timeZoneData != null)
                 {
@@ -300,7 +300,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
     /// <returns>TimeZoneDate</returns>
     private static TimeZoneDate GetDate(byte[] bytes, Int32 index)
     {
-      TimeZoneDate TimeChange = new TimeZoneDate();
+      var TimeChange = new TimeZoneDate();
 
       //int Year = BitConverter.ToInt16(bytes, index);
       index += LENGTH_WORD;

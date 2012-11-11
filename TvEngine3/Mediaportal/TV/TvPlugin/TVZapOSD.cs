@@ -119,7 +119,7 @@ namespace Mediaportal.TV.TvPlugin
           {
             if (action.wID == Action.ActionType.ACTION_CONTEXT_MENU)
             {
-              TvFullScreen tvWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)Window.WINDOW_TVFULLSCREEN);
+              var tvWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)Window.WINDOW_TVFULLSCREEN);
               tvWindow.OnAction(new Action(Action.ActionType.ACTION_SHOW_OSD, 0, 0));
               tvWindow.OnAction(action);
             }

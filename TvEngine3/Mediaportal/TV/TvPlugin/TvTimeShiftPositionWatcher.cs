@@ -133,7 +133,7 @@ namespace Mediaportal.TV.TvPlugin
         return;
       if (!TVHome.Connected)
         return;
-      ChannelBLL chan = new ChannelBLL(ServiceAgents.Instance.ChannelServiceAgent.GetChannel(idChannelToWatch));
+      var chan = new ChannelBLL(ServiceAgents.Instance.ChannelServiceAgent.GetChannel(idChannelToWatch));
       if (chan.Entity == null)
         return;
       try

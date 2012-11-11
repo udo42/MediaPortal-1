@@ -94,10 +94,10 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
     private static Dictionary<string, MatroskaTagInfo> GetTagInfoForDirectory(string aDirectory)
     {
-      Dictionary<string, MatroskaTagInfo> foundTagInfo = new Dictionary<string, MatroskaTagInfo>();
+      var foundTagInfo = new Dictionary<string, MatroskaTagInfo>();
       try
       {
-        string[] importDirs = new string[] {};
+        var importDirs = new string[] {};
         // get all subdirectories
         try
         {
@@ -107,7 +107,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         {
           Log.Info("Error while reading subdirectories of {0}: {1}", aDirectory, ex);
         }
-        List<string> searchDirs = new List<string>(importDirs);
+        var searchDirs = new List<string>(importDirs);
         foreach (string subDir in searchDirs)
         {
           Dictionary<string, MatroskaTagInfo> foundTagsInSubDir = GetTagInfoForDirectory(subDir);
@@ -156,8 +156,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       {
         return null;
       }
-      MatroskaTagInfo info = new MatroskaTagInfo();
-      XmlDocument doc = new XmlDocument();
+      var info = new MatroskaTagInfo();
+      var doc = new XmlDocument();
       doc.Load(filename);
       XmlNodeList simpleTags = doc.SelectNodes("/tags/tag/SimpleTag");
       if (simpleTags != null)
@@ -231,7 +231,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       {
         Directory.CreateDirectory(Path.GetDirectoryName(filename));
       }
-      XmlDocument doc = new XmlDocument();
+      var doc = new XmlDocument();
       XmlDeclaration xmldecl = doc.CreateXmlDeclaration("1.0", "UTF-8", null);
       XmlNode tagsNode = doc.CreateElement("tags");
       XmlNode tagNode = doc.CreateElement("tag");

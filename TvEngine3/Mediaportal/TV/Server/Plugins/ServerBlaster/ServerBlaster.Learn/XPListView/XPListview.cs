@@ -169,7 +169,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       int param = 0;
       _apiRetVal = ListViewAPI.SendMessage(Handle, ListViewAPI.LVM_SETVIEW, ListViewAPI.LV_VIEW_TILE, ref param);
 
-      ListViewAPI.LVTILEVIEWINFO apiTileView = new ListViewAPI.LVTILEVIEWINFO();
+      var apiTileView = new ListViewAPI.LVTILEVIEWINFO();
       apiTileView.cbSize = Marshal.SizeOf(typeof (ListViewAPI.LVTILEVIEWINFO));
       apiTileView.dwMask = ListViewAPI.LVTVIM_COLUMNS | ListViewAPI.LVTVIM_TILESIZE;
       apiTileView.dwFlags = ListViewAPI.LVTVIF_AUTOSIZE;
@@ -206,11 +206,11 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
         return;
       }
 
-      ListViewAPI.INTEROP_SIZE apiSize = new ListViewAPI.INTEROP_SIZE();
+      var apiSize = new ListViewAPI.INTEROP_SIZE();
       apiSize.cx = size.Width;
       apiSize.cy = size.Height;
 
-      ListViewAPI.LVTILEVIEWINFO apiTileView = new ListViewAPI.LVTILEVIEWINFO();
+      var apiTileView = new ListViewAPI.LVTILEVIEWINFO();
       apiTileView.cbSize = Marshal.SizeOf(typeof (ListViewAPI.LVTILEVIEWINFO));
       apiTileView.dwMask = ListViewAPI.LVTVIM_TILESIZE | ListViewAPI.LVTVIM_LABELMARGIN;
       _apiRetVal = ListViewAPI.SendMessage(Handle, ListViewAPI.LVM_GETTILEVIEWINFO, 0, ref apiTileView);
@@ -233,7 +233,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
         return;
       }
 
-      ListViewAPI.LVTILEVIEWINFO apiTileView = new ListViewAPI.LVTILEVIEWINFO();
+      var apiTileView = new ListViewAPI.LVTILEVIEWINFO();
       apiTileView.cbSize = Marshal.SizeOf(typeof (ListViewAPI.LVTILEVIEWINFO));
       apiTileView.dwMask = ListViewAPI.LVTVIM_TILESIZE | ListViewAPI.LVTVIM_LABELMARGIN;
       _apiRetVal = ListViewAPI.SendMessage(Handle, ListViewAPI.LVM_GETTILEVIEWINFO, 0, ref apiTileView);
@@ -257,7 +257,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       }
 
 
-      ListViewAPI.LVTILEVIEWINFO apiTileView = new ListViewAPI.LVTILEVIEWINFO();
+      var apiTileView = new ListViewAPI.LVTILEVIEWINFO();
 
       apiTileView.cbSize = Marshal.SizeOf(typeof (ListViewAPI.LVTILEVIEWINFO));
       apiTileView.dwMask = ListViewAPI.LVTVIM_TILESIZE | ListViewAPI.LVTVIM_LABELMARGIN;
@@ -479,7 +479,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       switch (m.Msg)
       {
         case ListViewAPI.OCM_NOTIFY:
-          ListViewAPI.NMHDR lmsg = (ListViewAPI.NMHDR)m.GetLParam(typeof (ListViewAPI.NMHDR));
+          var lmsg = (ListViewAPI.NMHDR)m.GetLParam(typeof (ListViewAPI.NMHDR));
 
           switch (lmsg.code)
           {
@@ -503,7 +503,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
     private bool NotifyListCustomDraw(ref Message m)
     {
       m.Result = (IntPtr)ListViewAPI.CDRF_DODEFAULT;
-      ListViewAPI.NMCUSTOMDRAW nmcd = (ListViewAPI.NMCUSTOMDRAW)m.GetLParam(typeof (ListViewAPI.NMCUSTOMDRAW));
+      var nmcd = (ListViewAPI.NMCUSTOMDRAW)m.GetLParam(typeof (ListViewAPI.NMCUSTOMDRAW));
       IntPtr thisHandle = Handle;
 
       if (nmcd.hdr.hwndFrom != Handle)

@@ -321,8 +321,8 @@ namespace Mediaportal.TV.TvPlugin
           _osdTimeoutTimer = DateTime.Now;
           if (action.wID == Action.ActionType.ACTION_MOUSE_MOVE || action.wID == Action.ActionType.ACTION_MOUSE_CLICK)
           {
-            int x = (int)action.fAmount1;
-            int y = (int)action.fAmount2;
+            var x = (int)action.fAmount1;
+            var y = (int)action.fAmount2;
             if (!GUIGraphicsContext.MouseSupport)
             {
               _osdWindow.OnAction(action); // route keys to OSD window
@@ -346,7 +346,7 @@ namespace Mediaportal.TV.TvPlugin
               }
             }
           }
-          Action newAction = new Action();
+          var newAction = new Action();
           if (action.wID != Action.ActionType.ACTION_KEY_PRESSED && action.wID != Action.ActionType.ACTION_PAUSE &&
               ActionTranslator.GetAction((int)Window.WINDOW_OSD, action.m_key, ref newAction))
           {
@@ -385,7 +385,7 @@ namespace Mediaportal.TV.TvPlugin
 
       else if (action.wID == Action.ActionType.ACTION_MOUSE_MOVE && GUIGraphicsContext.MouseSupport)
       {
-        int y = (int)action.fAmount2;
+        var y = (int)action.fAmount2;
         if (y > GUIGraphicsContext.Height - 100)
         {
           ShowMainOSD();
@@ -478,7 +478,7 @@ namespace Mediaportal.TV.TvPlugin
             _statusVisible = true;
             _statusTimeOutTimer = DateTime.Now;
 
-            GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Control.LABEL_ROW1,
+            var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Control.LABEL_ROW1,
                                             0, 0, null);
             IAutoCrop cropper = GUIGraphicsContext.autoCropper;
             if (cropper != null)
@@ -505,7 +505,7 @@ namespace Mediaportal.TV.TvPlugin
             _statusTimeOutTimer = DateTime.Now;
             IAutoCrop cropper = GUIGraphicsContext.autoCropper;
 
-            GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Control.LABEL_ROW1,
+            var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Control.LABEL_ROW1,
                                             0, 0, null);
             msg.Label = "N/A";
 
@@ -542,7 +542,7 @@ namespace Mediaportal.TV.TvPlugin
 
             GUIGraphicsContext.ARType = arMode;
             status = Utils.GetAspectRatioLocalizedString(arMode);
-            GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Control.LABEL_ROW1,
+            var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Control.LABEL_ROW1,
                                             0, 0, null);
             msg.Label = status;
             OnMessage(msg);
@@ -555,7 +555,7 @@ namespace Mediaportal.TV.TvPlugin
             _statusVisible = true;
             _statusTimeOutTimer = DateTime.Now;
 
-            GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Control.LABEL_ROW1,
+            var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Control.LABEL_ROW1,
                                             0, 0, null);
             g_Player.SwitchToNextSubtitle();
             if (g_Player.EnableSubtitle)
@@ -660,7 +660,7 @@ namespace Mediaportal.TV.TvPlugin
               _statusTimeOutTimer = DateTime.Now;
               g_Player.SeekStep(false);
               string strStatus = g_Player.GetStepDescription();
-              GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0,
+              var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0,
                                               (int)Control.LABEL_ROW1, 0, 0, null);
               msg.Label = strStatus;
               OnMessage(msg);
@@ -685,7 +685,7 @@ namespace Mediaportal.TV.TvPlugin
               _statusTimeOutTimer = DateTime.Now;
               g_Player.SeekStep(true);
               string strStatus = g_Player.GetStepDescription();
-              GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0,
+              var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0,
                                               (int)Control.LABEL_ROW1, 0, 0, null);
               msg.Label = strStatus;
               OnMessage(msg);
@@ -708,7 +708,7 @@ namespace Mediaportal.TV.TvPlugin
               }
               _statusVisible = true;
               _statusTimeOutTimer = DateTime.Now;
-              GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0,
+              var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0,
                                                 (int)Control.LABEL_ROW1, 0, 0, null);
               msg.Label = "";
               OnMessage(msg);
@@ -739,7 +739,7 @@ namespace Mediaportal.TV.TvPlugin
               }
               _statusVisible = true;
               _statusTimeOutTimer = DateTime.Now;
-              GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0,
+              var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0,
                                                 (int)Control.LABEL_ROW1, 0, 0, null);
               msg.Label = "";
               OnMessage(msg);
@@ -817,7 +817,7 @@ namespace Mediaportal.TV.TvPlugin
               // Show OSD Label
               _statusVisible = true;
               _statusTimeOutTimer = DateTime.Now;
-              GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0,
+              var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0,
                                               (int)Control.LABEL_ROW1, 0, 0, null);
               //msg.Label = string.Format("{0}:{1} ({2}/{3})", streams[newIndex].StreamType, streams[newIndex].Language, newIndex + 1, streams.Length);
               msg.Label = string.Format("{0}:{1} ({2}/{3})", g_Player.AudioType(newIndex),
@@ -842,7 +842,7 @@ namespace Mediaportal.TV.TvPlugin
             //bool canUserParkTimeShifting = ServiceAgents.Instance.ControllerServiceAgent.CanUserParkTimeshifting(TVHome.Card.User);
             //if (canUserParkTimeShifting)
             {
-              GUIDialogPlayStopPark dlgPlayStopPark =
+              var dlgPlayStopPark =
                (GUIDialogPlayStopPark)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PLAY_STOP_PARK);
               if (dlgPlayStopPark != null)
               {
@@ -894,7 +894,7 @@ namespace Mediaportal.TV.TvPlugin
     private void ShowMiniEpg() 
     {      
       TVHome.Navigator.CheckChannelChange();
-      TvMiniGuide miniGuide = (TvMiniGuide)GUIWindowManager.GetWindow((int)Window.WINDOW_MINI_GUIDE);
+      var miniGuide = (TvMiniGuide)GUIWindowManager.GetWindow((int)Window.WINDOW_MINI_GUIDE);
       _isDialogVisible = true;
       miniGuide.AutoZap = true;
       miniGuide.DoModal(GetID);
@@ -955,7 +955,7 @@ namespace Mediaportal.TV.TvPlugin
           Schedule s = ServiceAgents.Instance.ScheduleServiceAgent.GetSchedule(card.RecordingScheduleId);
           TVUtil.DeleteRecAndSchedQuietly(s, card.IdChannel);          
 
-          GUIDialogNotify dlgNotify = (GUIDialogNotify)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_NOTIFY);
+          var dlgNotify = (GUIDialogNotify)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_NOTIFY);
           if (dlgNotify == null)
           {
             return true;
@@ -1036,7 +1036,7 @@ namespace Mediaportal.TV.TvPlugin
             _isStartingTSForRecording = false;
           }
 
-          GUIDialogNotify dlgNotify = (GUIDialogNotify)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_NOTIFY);
+          var dlgNotify = (GUIDialogNotify)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_NOTIFY);
           if (dlgNotify == null)
           {
             return true;
@@ -1143,7 +1143,7 @@ namespace Mediaportal.TV.TvPlugin
 
       if (message.Message == GUIMessage.MessageType.GUI_MSG_NOTIFY)
       {
-        GUIDialogNotify dlgNotify = (GUIDialogNotify)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_NOTIFY);
+        var dlgNotify = (GUIDialogNotify)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_NOTIFY);
         if (dlgNotify == null)
         {
           return true;
@@ -1214,7 +1214,7 @@ namespace Mediaportal.TV.TvPlugin
 
         case GUIMessage.MessageType.GUI_MSG_SHOW_MESSAGE:
           {
-            GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0,
+            var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0,
                                             (int)Control.MSG_BOX_LABEL1, 0, 0, null);
             msg.Label = message.Label;
             OnMessage(msg);
@@ -1608,7 +1608,7 @@ namespace Mediaportal.TV.TvPlugin
           break;
 
         case 11000:
-          TvCropSettings cropSettings =
+          var cropSettings =
             (TvCropSettings)GUIWindowManager.GetWindow((int)Window.WINDOW_TV_CROP_SETTINGS);
           _isDialogVisible = true;
           cropSettings.DoModal(GetID);
@@ -1674,15 +1674,15 @@ namespace Mediaportal.TV.TvPlugin
       dlg.Add(String.Format("{0}", GUILocalizeStrings.Get(976)));
 
       //List all chapters
-      double[] chaptersList = new double[0];
+      var chaptersList = new double[0];
       //List all chapters Name
-      string[] chaptersname = new string[0];
+      var chaptersname = new string[0];
 
       chaptersname = g_Player.ChaptersName;
       chaptersList = g_Player.Chapters;
       for (int i = 0; i < chaptersList.Length; i++)
       {
-        GUIListItem item = new GUIListItem();
+        var item = new GUIListItem();
         if (chaptersname == null)
         {
           item.Label = (String.Format("{0} #{1}", GUILocalizeStrings.Get(200091), (i + 1)));
@@ -1717,12 +1717,12 @@ namespace Mediaportal.TV.TvPlugin
       }
       else if (dlg.SelectedLabel == 0)
       {
-        Action actionPrevChapter = new Action(Action.ActionType.ACTION_PREV_CHAPTER, 0, 0);
+        var actionPrevChapter = new Action(Action.ActionType.ACTION_PREV_CHAPTER, 0, 0);
         GUIGraphicsContext.OnAction(actionPrevChapter);
       }
       else if (dlg.SelectedLabel == 1)
       {
-        Action actionNextChapter = new Action(Action.ActionType.ACTION_NEXT_CHAPTER, 0, 0);
+        var actionNextChapter = new Action(Action.ActionType.ACTION_NEXT_CHAPTER, 0, 0);
         GUIGraphicsContext.OnAction(actionNextChapter);
       }
       else
@@ -1737,13 +1737,13 @@ namespace Mediaportal.TV.TvPlugin
 
     private void OnGetIMDBInfo()
     {
-      IMDBMovie movieDetails = new IMDBMovie();
+      var movieDetails = new IMDBMovie();
       movieDetails.SearchString = GUIPropertyManager.GetProperty("#TV.View.title");
       if (IMDBFetcher.GetInfoFromIMDB(this, ref movieDetails, true, false))
       {
-        GUIVideoInfo videoInfo = (GUIVideoInfo)GUIWindowManager.GetWindow((int)Window.WINDOW_VIDEO_INFO);
+        var videoInfo = (GUIVideoInfo)GUIWindowManager.GetWindow((int)Window.WINDOW_VIDEO_INFO);
         videoInfo.Movie = movieDetails;
-        GUIButtonControl btnPlay = (GUIButtonControl)videoInfo.GetControl(2);
+        var btnPlay = (GUIButtonControl)videoInfo.GetControl(2);
         btnPlay.Visible = false;
         GUIWindowManager.ActivateWindow((int)Window.WINDOW_VIDEO_INFO);
       }
@@ -1960,7 +1960,7 @@ namespace Mediaportal.TV.TvPlugin
       strStatus = GUILocalizeStrings.Get(dlg.SelectedId);
 
 
-      GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Control.LABEL_ROW1, 0, 0,
+      var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Control.LABEL_ROW1, 0, 0,
                                       null);
       msg.Label = strStatus;
       OnMessage(msg);
@@ -1997,7 +1997,7 @@ namespace Mediaportal.TV.TvPlugin
 
       for (int i = 0; i < g_Player.AudioStreams; i++)
       {
-        GUIListItem item = new GUIListItem();
+        var item = new GUIListItem();
         item.Label = String.Format("{0}: {1}", g_Player.AudioLanguage(i), g_Player.AudioType(i));
         dlg.Add(item);
       }
@@ -2058,7 +2058,7 @@ namespace Mediaportal.TV.TvPlugin
       int counter = 0;
       foreach (ChannelLinkageMap map in linkages)
       {
-        GUIListItem item = new GUIListItem(map.DisplayName);
+        var item = new GUIListItem(map.DisplayName);
         if (map.IdLinkedChannel == TVHome.Navigator.Channel.Entity.IdChannel)
         {
           selected = counter;
@@ -2238,7 +2238,7 @@ namespace Mediaportal.TV.TvPlugin
         {
           if (!_zapOsdVisible)
           {
-            GUIMessage message = new GUIMessage(GUIMessage.MessageType.GUI_MSG_NOTIFY, GetID, GetID, 0, 5, 0, null);
+            var message = new GUIMessage(GUIMessage.MessageType.GUI_MSG_NOTIFY, GetID, GetID, 0, 5, 0, null);
             switch (VideoRendererStatistics.VideoState)
             {
               case VideoRendererStatistics.State.NoSignal:
@@ -2715,7 +2715,7 @@ namespace Mediaportal.TV.TvPlugin
       if (!_zapOsdVisible)
       {
         // Show zap OSD
-        GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_WINDOW_INIT, _zapWindow.GetID, 0, 0,
+        var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_WINDOW_INIT, _zapWindow.GetID, 0, 0,
                                         GetID, 0, null);
         if (errorInfo != null)
         {
@@ -2775,7 +2775,7 @@ namespace Mediaportal.TV.TvPlugin
         if (!_zapOsdVisible)
         {
           TVHome.Navigator.CheckChannelChange();
-          GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_WINDOW_INIT, _osdWindow.GetID, 0, 0, GetID, 0,
+          var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_WINDOW_INIT, _osdWindow.GetID, 0, 0, GetID, 0,
                                           null);
           _osdWindow.OnMessage(msg); // Send an init msg to the OSD
           GUIWindowManager.VisibleOsd = Window.WINDOW_TVOSD;
@@ -2792,7 +2792,7 @@ namespace Mediaportal.TV.TvPlugin
         if (!_zapOsdVisible)
         {
           GUIWindowManager.IsOsdVisible = false;
-          GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_WINDOW_DEINIT, _osdWindow.GetID, 0, 0, GetID,
+          var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_WINDOW_DEINIT, _osdWindow.GetID, 0, 0, GetID,
                                           0, null);
           _osdWindow.OnMessage(msg); // Send a de-init msg to the OSD
         }
@@ -2890,7 +2890,7 @@ namespace Mediaportal.TV.TvPlugin
       }
       if (chKey == 'o')
       {
-        Action showInfo = new Action(Action.ActionType.ACTION_SHOW_CURRENT_TV_INFO, 0, 0);
+        var showInfo = new Action(Action.ActionType.ACTION_SHOW_CURRENT_TV_INFO, 0, 0);
         OnAction(showInfo);
         return;
       }
@@ -2956,7 +2956,7 @@ namespace Mediaportal.TV.TvPlugin
       TVHome.Navigator.ZapToPreviousGroup(true);
       _groupVisible = true;
       _groupTimeOutTimer = DateTime.Now;
-      GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Control.LABEL_ROW1, 0, 0,
+      var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Control.LABEL_ROW1, 0, 0,
                                       null);
       msg.Label = String.Format("{0}:{1}", GUILocalizeStrings.Get(971), TVHome.Navigator.ZapGroupName);
       OnMessage(msg);
@@ -2973,7 +2973,7 @@ namespace Mediaportal.TV.TvPlugin
       TVHome.Navigator.ZapToNextGroup(true);
       _groupVisible = true;
       _groupTimeOutTimer = DateTime.Now;
-      GUIMessage msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Control.LABEL_ROW1, 0, 0,
+      var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Control.LABEL_ROW1, 0, 0,
                                       null);
       msg.Label = String.Format("{0}:{1}", GUILocalizeStrings.Get(971), TVHome.Navigator.ZapGroupName);
       OnMessage(msg);
@@ -3175,7 +3175,7 @@ namespace Mediaportal.TV.TvPlugin
 
     protected bool GetKeyboard(ref string strLine)
     {
-      VirtualKeyboard keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
+      var keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
       if (null == keyboard)
       {
         return false;
@@ -3249,7 +3249,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public bool OnDisableCancel(IMDBFetcher fetcher)
     {
-      GUIDialogProgress pDlgProgress =
+      var pDlgProgress =
         (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
       if (pDlgProgress.IsInstance(fetcher))
       {
@@ -3264,7 +3264,7 @@ namespace Mediaportal.TV.TvPlugin
       {
         return;
       }
-      GUIDialogProgress pDlgProgress =
+      var pDlgProgress =
         (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
       pDlgProgress.ShowProgressBar(true);
       pDlgProgress.SetLine(1, line1);
@@ -3278,7 +3278,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public bool OnSearchStarting(IMDBFetcher fetcher)
     {
-      GUIDialogProgress pDlgProgress =
+      var pDlgProgress =
         (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
       // show dialog that we're busy querying www.imdb.com
       pDlgProgress.Reset();
@@ -3292,7 +3292,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public bool OnSearchStarted(IMDBFetcher fetcher)
     {
-      GUIDialogProgress pDlgProgress =
+      var pDlgProgress =
         (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
       pDlgProgress.SetObject(fetcher);
       pDlgProgress.DoModal(GUIWindowManager.ActiveWindow);
@@ -3305,7 +3305,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public bool OnSearchEnd(IMDBFetcher fetcher)
     {
-      GUIDialogProgress pDlgProgress =
+      var pDlgProgress =
         (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
       if ((pDlgProgress != null) && (pDlgProgress.IsInstance(fetcher)))
       {
@@ -3318,7 +3318,7 @@ namespace Mediaportal.TV.TvPlugin
     {
       this.LogInfo("IMDB Fetcher: OnMovieNotFound");
       // show dialog...
-      GUIDialogOK pDlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
+      var pDlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
       pDlgOK.SetHeading(195);
       pDlgOK.SetLine(1, fetcher.MovieName);
       pDlgOK.SetLine(2, string.Empty);
@@ -3328,7 +3328,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public bool OnDetailsStarting(IMDBFetcher fetcher)
     {
-      GUIDialogProgress pDlgProgress =
+      var pDlgProgress =
         (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
       // show dialog that we're downloading the movie info
       pDlgProgress.Reset();
@@ -3343,7 +3343,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public bool OnDetailsStarted(IMDBFetcher fetcher)
     {
-      GUIDialogProgress pDlgProgress =
+      var pDlgProgress =
         (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
       pDlgProgress.SetObject(fetcher);
       pDlgProgress.DoModal(GUIWindowManager.ActiveWindow);
@@ -3356,7 +3356,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public bool OnDetailsEnd(IMDBFetcher fetcher)
     {
-      GUIDialogProgress pDlgProgress =
+      var pDlgProgress =
         (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
       if ((pDlgProgress != null) && (pDlgProgress.IsInstance(fetcher)))
       {
@@ -3400,7 +3400,7 @@ namespace Mediaportal.TV.TvPlugin
     {
       this.LogInfo("IMDB Fetcher: OnDetailsNotFound");
       // show dialog...
-      GUIDialogOK pDlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
+      var pDlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
       // show dialog...
       pDlgOK.SetHeading(195);
       pDlgOK.SetLine(1, fetcher.MovieName);

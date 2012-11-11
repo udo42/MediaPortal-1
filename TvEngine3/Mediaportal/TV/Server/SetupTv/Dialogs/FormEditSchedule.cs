@@ -98,13 +98,13 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 
     private void PreFillInProgramDataForChannels()
     {
-      var channel = Program.Channel;
+      Channel channel = Program.Channel;
       listBoxChannels.Items.Add(channel);
     }
 
     private void PreFillInProgramDataForPrograms()
     {
-      var props = GetProgramPropertyInfos();
+      IEnumerable<PropertyInfo> props = GetProgramPropertyInfos();
       foreach (PropertyInfo prop in props)
       {
         if (prop.Name.ToUpperInvariant().Equals("TITLE"))
@@ -130,7 +130,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 
       if (programCredits != null)
       {        
-        foreach (var programCreditDto in programCredits)
+        foreach (ProgramCredit programCreditDto in programCredits)
         {
           AddToCheckedListBox(programCreditDto, programCreditDto.ToString(), listBoxCredits, false);  
         }
@@ -186,7 +186,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
     private void PopulateRolesComboBox()
     {
       IList<string> roles = ServiceAgents.Instance.ProgramServiceAgent.ListAllDistinctCreditRoles();      
-      foreach (var programCredit in roles)
+      foreach (string programCredit in roles)
       {
         mpComboBoxRoles.Items.Add(programCredit);
       }
@@ -204,7 +204,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
     {
       IList<ProgramCategory> categories = ServiceAgents.Instance.ProgramServiceAgent.ListAllCategories();
       IList<ProgramCategory> categoriesDtos = categories;
-      foreach (var programCategory in categoriesDtos)
+      foreach (ProgramCategory programCategory in categoriesDtos)
       {
         mpComboBoxCategories.Items.Add(programCategory);
       }
@@ -455,7 +455,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 
     private void mpComboBoxChannelsGroup_SelectedIndexChanged(object sender, EventArgs e)
     {
-      ComboBoxExItem idItem = (ComboBoxExItem)mpComboBoxChannelsGroup.Items[mpComboBoxChannelsGroup.SelectedIndex];
+      var idItem = (ComboBoxExItem)mpComboBoxChannelsGroup.Items[mpComboBoxChannelsGroup.SelectedIndex];
       mpComboBoxChannels.Items.Clear();
       if (idItem.Id == -1)
       {        
@@ -574,7 +574,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       var prgField = mpComboBoxProgramFields.SelectedItem as ProgramField;
       if (prgField != null)
       {
-        ConditionOperator op = (ConditionOperator)mpComboBoxOperators.SelectedItem;
+        var op = (ConditionOperator)mpComboBoxOperators.SelectedItem;
         object prgCond = null;
         int index = groupBox1.Controls.IndexOfKey("mpTextBoxProgramValue");
         if (index > -1)
@@ -698,7 +698,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 
     private void mpButtonCreditAdd_Click(object sender, EventArgs e)
     {
-      ProgramCredit credit = new ProgramCredit
+      var credit = new ProgramCredit
                                   {Role = mpComboBoxRoles.SelectedItem as string, Person = mpTextBoxPerson.Text};
 
       AddToCheckedListBox(credit, credit.ToString(), listBoxCredits, true);
@@ -886,7 +886,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       }
       else if (type == typeof(DateTime))
       {
-        DateTimePicker dateTimePicker = new DateTimePicker();
+        var dateTimePicker = new DateTimePicker();
         dateTimePicker.Format = DateTimePickerFormat.Custom;
         dateTimePicker.CustomFormat = "dd/MM/yyyy HH:mm";
         c = dateTimePicker;

@@ -63,7 +63,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     public int Add(string text, int index)
     {
-      XPListViewGroup itm = new XPListViewGroup(text, index);
+      var itm = new XPListViewGroup(text, index);
       ListViewAPI.AddListViewGroup(_owner, text, index);
       if (GroupAdded != null)
       {

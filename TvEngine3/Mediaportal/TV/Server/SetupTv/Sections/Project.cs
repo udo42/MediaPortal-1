@@ -51,7 +51,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       if (linkLabelHomepage.Text.Length > 0)
       {
-        ProcessStartInfo sInfo = new ProcessStartInfo(linkLabelHomepage.Text);
+        var sInfo = new ProcessStartInfo(linkLabelHomepage.Text);
         Process.Start(sInfo);
       }
     }
@@ -62,7 +62,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       if (linkLabelForums.Text.Length > 0)
       {
-        ProcessStartInfo sInfo = new ProcessStartInfo(linkLabelForums.Text);
+        var sInfo = new ProcessStartInfo(linkLabelForums.Text);
         Process.Start(sInfo);
       }
     }
@@ -73,7 +73,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       if (linkLabelOnlineDocumentation.Text.Length > 0)
       {
-        ProcessStartInfo sInfo =
+        var sInfo =
           new ProcessStartInfo(linkLabelOnlineDocumentation.Text);
         Process.Start(sInfo);
       }
@@ -85,7 +85,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       if (linkLabelSourceforge.Text.Length > 0)
       {
-        ProcessStartInfo sInfo = new ProcessStartInfo(linkLabelSourceforge.Text);
+        var sInfo = new ProcessStartInfo(linkLabelSourceforge.Text);
         Process.Start(sInfo);
       }
     }

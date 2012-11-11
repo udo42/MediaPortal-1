@@ -75,7 +75,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
       // Note: we don't assume that the power supply is on to begin with. I don't know why
       // the reset is not applied to "any" device, but it might be to prevent loosing all
       // stored positions in a positioner or something like that.
-      byte[] cmd = new byte[3];
+      var cmd = new byte[3];
       this.LogDebug("DiSEqC Controller: clear reset");
       cmd[0] = (byte)DiseqcFrame.CommandFirstTransmissionNoReply;
       cmd[1] = (byte)DiseqcAddress.AnySwitch;
@@ -134,7 +134,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
       if (_previousChannel == null)
       {
         this.LogDebug("DiSEqC Controller: power on");
-        byte[] command = new byte[3];
+        var command = new byte[3];
         command[0] = (byte)DiseqcFrame.CommandFirstTransmissionNoReply;
         command[1] = (byte)DiseqcAddress.Any;
         command[2] = (byte)DiseqcCommand.PowerOn;
@@ -181,7 +181,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
       }
       else
       {
-        byte[] command = new byte[4];
+        var command = new byte[4];
         command[0] = (byte)DiseqcFrame.CommandFirstTransmissionNoReply;
         command[1] = (byte)DiseqcAddress.AnySwitch;
         command[3] = 0xf0;
@@ -303,7 +303,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
     public void Stop()
     {
       this.LogDebug("DiSEqC Controller: stop positioner");
-      byte[] cmd = new byte[3];
+      var cmd = new byte[3];
       cmd[0] = (byte)DiseqcFrame.CommandFirstTransmissionNoReply;
       cmd[1] = (byte)DiseqcAddress.AnyPositioner;
       cmd[2] = (byte)DiseqcCommand.Halt;
@@ -317,7 +317,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
     public void SetEastLimit()
     {
       this.LogDebug("DiSEqC Controller: set east limit");
-      byte[] cmd = new byte[3];
+      var cmd = new byte[3];
       cmd[0] = (byte)DiseqcFrame.CommandFirstTransmissionNoReply;
       cmd[1] = (byte)DiseqcAddress.AzimuthPositioner;
       cmd[2] = (byte)DiseqcCommand.LimitEast;
@@ -331,7 +331,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
     public void SetWestLimit()
     {
       this.LogDebug("DiSEqC Controller: set west limit");
-      byte[] cmd = new byte[3];
+      var cmd = new byte[3];
       cmd[0] = (byte)DiseqcFrame.CommandFirstTransmissionNoReply;
       cmd[1] = (byte)DiseqcAddress.AzimuthPositioner;
       cmd[2] = (byte)DiseqcCommand.LimitWest;
@@ -349,7 +349,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
         if (value)
         {
           this.LogDebug("DiSEqC Controller: enable limits");
-          byte[] cmd = new byte[4];
+          var cmd = new byte[4];
           cmd[0] = (byte)DiseqcFrame.CommandFirstTransmissionNoReply;
           cmd[1] = (byte)DiseqcAddress.AzimuthPositioner;
           cmd[2] = (byte)DiseqcCommand.StorePosition;
@@ -360,7 +360,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
         else
         {
           this.LogDebug("DiSEqC Controller: disable limits");
-          byte[] cmd = new byte[3];
+          var cmd = new byte[3];
           cmd[0] = (byte)DiseqcFrame.CommandFirstTransmissionNoReply;
           cmd[1] = (byte)DiseqcAddress.AzimuthPositioner;
           cmd[2] = (byte)DiseqcCommand.LimitsOff;
@@ -384,7 +384,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
       }
 
       Stop();
-      byte[] cmd = new byte[4];
+      var cmd = new byte[4];
       cmd[0] = (byte)DiseqcFrame.CommandFirstTransmissionNoReply;
       if (direction == DiseqcDirection.West)
       {
@@ -429,7 +429,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
         throw new ArgumentException("DiSEqC Controller: position cannot be less than or equal to zero");
       }
 
-      byte[] cmd = new byte[4];
+      var cmd = new byte[4];
       cmd[0] = (byte)DiseqcFrame.CommandFirstTransmissionNoReply;
       cmd[1] = (byte)DiseqcAddress.AzimuthPositioner;
       cmd[2] = (byte)DiseqcCommand.StorePosition;
@@ -450,7 +450,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
     {
       this.LogDebug("DiSEqC Controller: go to reference position");
 
-      byte[] cmd = new byte[4];
+      var cmd = new byte[4];
       cmd[0] = (byte)DiseqcFrame.CommandFirstTransmissionNoReply;
       cmd[1] = (byte)DiseqcAddress.AzimuthPositioner;
       cmd[2] = (byte)DiseqcCommand.GotoPosition;
@@ -476,7 +476,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
         throw new ArgumentException("DiSEqC Controller: position cannot be less than or equal to zero");
       }
 
-      byte[] cmd = new byte[4];
+      var cmd = new byte[4];
       cmd[0] = (byte)DiseqcFrame.CommandFirstTransmissionNoReply;
       cmd[1] = (byte)DiseqcAddress.AzimuthPositioner;
       cmd[2] = (byte)DiseqcCommand.GotoPosition;

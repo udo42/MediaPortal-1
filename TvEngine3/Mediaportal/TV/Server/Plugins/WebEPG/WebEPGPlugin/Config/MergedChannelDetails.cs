@@ -87,7 +87,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
     {
       get
       {
-        MergedChannel channel = new MergedChannel();
+        var channel = new MergedChannel();
         channel.id = tbChannelName.Text;
         channel.grabber = tbGrabSite.Text;
         channel.start = tbStart.Text;

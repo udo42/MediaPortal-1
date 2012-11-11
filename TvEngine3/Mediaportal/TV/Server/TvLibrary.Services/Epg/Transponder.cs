@@ -146,7 +146,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
     /// </returns>
     public override bool Equals(object obj)
     {
-      Transponder other = (Transponder)obj;
+      var other = (Transponder)obj;
       if (other.TuningDetail.ChannelType != TuningDetail.ChannelType)
         return false;
       if (other.TuningDetail.Frequency != TuningDetail.Frequency)
@@ -262,7 +262,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
             continue;
 
           //create a new transponder
-          Transponder t = new Transponder(detail);
+          var t = new Transponder(detail);
           bool found = false;
 
           //check if transonder already exists

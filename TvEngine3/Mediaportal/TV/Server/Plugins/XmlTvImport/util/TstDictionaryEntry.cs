@@ -194,7 +194,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
     /// <returns>entry shallow copy</returns>
     public Object Clone()
     {
-      TstDictionaryEntry entry = new TstDictionaryEntry(Parent, SplitChar);
+      var entry = new TstDictionaryEntry(Parent, SplitChar);
       if (LowChild != null)
         entry.LowChild = LowChild.Clone() as TstDictionaryEntry;
       if (EqChild != null)

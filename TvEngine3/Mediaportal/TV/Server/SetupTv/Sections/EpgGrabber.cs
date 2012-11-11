@@ -62,7 +62,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       try
       {
         mpListView2.Items.Clear();
-        Languages languages = new Languages();
+        var languages = new Languages();
         List<String> codes = languages.GetLanguageCodes();
         List<String> list = languages.GetLanguages();
 
@@ -71,7 +71,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         string values = "";
         for (int j = 0; j < list.Count; j++)
         {
-          ListViewItem item = new ListViewItem(new[] { list[j], codes[j] });
+          var item = new ListViewItem(new[] { list[j], codes[j] });
           mpListView2.Items.Add(item);
           item.Tag = codes[j];
           if (setting.Value == "")
@@ -118,7 +118,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         LoadLanguages();
         Setting setting = ServiceAgents.Instance.SettingServiceAgent.GetSetting("epgStoreOnlySelected");
         mpCheckBoxStoreOnlySelected.Checked = (setting.Value == "yes");
-        Dictionary<string, CardType> cards = new Dictionary<string, CardType>();
+        var cards = new Dictionary<string, CardType>();
         IList<Card> dbsCards = ServiceAgents.Instance.CardServiceAgent.ListAllCards(CardIncludeRelationEnum.None);
         foreach (Card card in dbsCards)
         {
@@ -263,7 +263,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       {
         if (mpListView2.Items[i].Checked)
         {
-          string code = (string)mpListView2.Items[i].Tag;
+          var code = (string)mpListView2.Items[i].Tag;
           value += code;
           value += ",";
         }
@@ -296,7 +296,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       if (!_ignoreItemCheckedEvent)
       {
-        Channel channel = e.Item.Tag as Channel;
+        var channel = e.Item.Tag as Channel;
         if (channel == null)
           return;
         channel.GrabEpg = e.Item.Checked;
@@ -344,7 +344,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         ICollection<Channel> channels = new List<Channel>();
         for (int i = 0; i < mpListView1.Items.Count; ++i)
         {
-          Channel ch = (Channel)mpListView1.Items[i].Tag;
+          var ch = (Channel)mpListView1.Items[i].Tag;
           mpListView1.Items[i].Checked = (ch.GroupMaps.Count > 1);
           channels.Add(ch);
           // if count > 1 we assume that the channel has one or more custom group(s) associated with it.
@@ -370,7 +370,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         ICollection<Channel> channels = new List<Channel>();
         for (int i = 0; i < mpListView1.Items.Count; ++i)
         {
-          Channel ch = (Channel)mpListView1.Items[i].Tag;
+          var ch = (Channel)mpListView1.Items[i].Tag;
           mpListView1.Items[i].Checked = (ch.GroupMaps.Count > 1 && ch.VisibleInGuide);
           channels.Add(ch);
           // if count > 1 we assume that the channel has one or more custom group(s) associated with it.
@@ -420,7 +420,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         {
           mpListView2.Items[i].Checked = true;
         }
-        Languages languages = new Languages();
+        var languages = new Languages();
         List<String> codes = languages.GetLanguageCodes();
         
         string value = "";

@@ -40,7 +40,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
       string basePath = Path.GetDirectoryName(Path.GetFullPath(fileName));
       Encoding fileEncoding = Encoding.Default;
       FileStream stream = File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.Read);
-      StreamReader file = new StreamReader(stream, fileEncoding, true);
+      var file = new StreamReader(stream, fileEncoding, true);
 
       string line = file.ReadLine();
       if (line == null)
@@ -57,7 +57,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
             strLine.StartsWith("mms") || strLine.StartsWith("MMS") ||
             strLine.StartsWith("rtp") || strLine.StartsWith("RTP"))
         {
-          PlayListItem newItem = new PlayListItem(strLine, strLine, 0);
+          var newItem = new PlayListItem(strLine, strLine, 0);
           newItem.Type = PlayListItem.PlayListItemType.AudioStream;
           playlist.Add(newItem);
           file.Close();
@@ -95,7 +95,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
 
             if (fileName.Length != 0)
             {
-              PlayListItem newItem = new PlayListItem(infoLine, fileName, 0);
+              var newItem = new PlayListItem(infoLine, fileName, 0);
               playlist.Add(newItem);
               infoLine = "";
               durationLine = "";
@@ -126,7 +126,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
             duration *= 1000;
 
             string tmp = fileName.ToLowerInvariant();
-            PlayListItem newItem = new PlayListItem(infoLine, fileName, duration);
+            var newItem = new PlayListItem(infoLine, fileName, duration);
             if (tmp.IndexOf("http:") < 0 && tmp.IndexOf("mms:") < 0 && tmp.IndexOf("rtp:") < 0)
             {
               Utils.GetQualifiedFilename(basePath, ref fileName);
@@ -153,7 +153,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
 
     public void Save(PlayList playListParam, string fileName)
     {
-      using (StreamWriter writer = new StreamWriter(fileName, false, Encoding.UTF8))
+      using (var writer = new StreamWriter(fileName, false, Encoding.UTF8))
       {
         writer.WriteLine(START_PLAYLIST_MARKER);
         for (int i = 0; i < playListParam.Count; i++)

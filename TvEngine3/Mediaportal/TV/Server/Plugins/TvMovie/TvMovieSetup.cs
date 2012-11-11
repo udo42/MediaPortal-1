@@ -145,7 +145,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       checkBoxShowAudioFormat.Checked = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieShowAudioFormat", "false").Value == "true";
       checkBoxSlowImport.Checked = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieSlowImport", "true").Value == "true";
 
-      var tvMovieLimitActors = Convert.ToDecimal(ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieLimitActors", "5").Value);
+      decimal tvMovieLimitActors = Convert.ToDecimal(ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieLimitActors", "5").Value);
       if (tvMovieLimitActors < numericUpDownActorCount.Minimum || tvMovieLimitActors > numericUpDownActorCount.Maximum)
       {
         checkBoxLimitActors.Checked = false;
@@ -171,7 +171,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     /// </summary>
     private void LoadStations(bool localInstall)
     {
-      TvMovieDatabase database = new TvMovieDatabase();
+      var database = new TvMovieDatabase();
       if (database.Connect())
       {
         try
@@ -207,8 +207,8 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
                   imageListTvmStations.Images.Add(new Icon(stationThumb, new Size(32, 22)));
                 }
 
-                TreeNode stationNode = new TreeNode(station.TvmEpgDescription, i, i); //, subItems);
-                ChannelInfo channelInfo = new ChannelInfo();
+                var stationNode = new TreeNode(station.TvmEpgDescription, i, i); //, subItems);
+                var channelInfo = new ChannelInfo();
                 channelInfo.Name = station.TvmEpgChannel;
                 stationNode.Tag = channelInfo;
                 treeViewTvMStations.Nodes.Add(stationNode);
@@ -232,7 +232,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
             foreach (Channel channel in mpChannelList)
             {
               //TreeNode[] subItems = new TreeNode[] { new TreeNode(channel.IdChannel.ToString()), new TreeNode(channel.DisplayName) };
-              TreeNode stationNode = new TreeNode(channel.DisplayName);
+              var stationNode = new TreeNode(channel.DisplayName);
               stationNode.Tag = channel;
               treeViewMpChannels.Nodes.Add(stationNode);
             }
@@ -264,7 +264,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       while (selectedChannel.Parent != null)
         selectedChannel = selectedChannel.Parent;
 
-      TreeNode selectedStation = (TreeNode)treeViewTvMStations.SelectedNode.Clone();
+      var selectedStation = (TreeNode)treeViewTvMStations.SelectedNode.Clone();
 
       foreach (TreeNode stationNode in selectedChannel.Nodes)
         if (stationNode.Text == selectedStation.Text)
@@ -325,7 +325,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
         //this.LogDebug("TvMovieSetup: Processing channel {0}", channel.Text);
         foreach (TreeNode station in channel.Nodes)
         {
-          ChannelInfo channelInfo = (ChannelInfo)station.Tag;
+          var channelInfo = (ChannelInfo)station.Tag;
           //this.LogDebug("TvMovieSetup: Processing channelInfo {0}", channelInfo.Name);
           TvMovieMapping mapping = null;
           try
@@ -380,8 +380,8 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
                   string stationName = mapping.StationName;
                   if (FindStation(stationName) != null)
                   {
-                    TreeNode stationNode = (TreeNode)FindStation(stationName).Clone();
-                    ChannelInfo channelInfo = new ChannelInfo();
+                    var stationNode = (TreeNode)FindStation(stationName).Clone();
+                    var channelInfo = new ChannelInfo();
                     if (stationNode != null)
                     {
                       string start = mapping.TimeSharingStart;
@@ -433,7 +433,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       foreach (TreeNode MpNode in treeViewMpChannels.Nodes)
         if (MpNode.Tag != null)
         {
-          Channel checkChannel = MpNode.Tag as Channel;
+          var checkChannel = MpNode.Tag as Channel;
           if (checkChannel != null)
           {
             if (checkChannel.IdChannel == mpChannelId)
@@ -483,7 +483,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
         return;
       }
       panelTimeSpan.Visible = true;
-      ChannelInfo channelInfo = (ChannelInfo)e.Node.Tag;
+      var channelInfo = (ChannelInfo)e.Node.Tag;
       maskedTextBoxTimeStart.Text = channelInfo.Start;
       maskedTextBoxTimeEnd.Text = channelInfo.End;
     }
@@ -510,7 +510,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
     private void maskedTextBoxTimeStart_Validated(object sender, EventArgs e)
     {
-      ChannelInfo channelInfo = (ChannelInfo)treeViewMpChannels.SelectedNode.Tag;
+      var channelInfo = (ChannelInfo)treeViewMpChannels.SelectedNode.Tag;
       channelInfo.Start = CleanInput(maskedTextBoxTimeStart.Text);
       maskedTextBoxTimeStart.Text = CleanInput(maskedTextBoxTimeStart.Text);
       treeViewMpChannels.SelectedNode.Tag = channelInfo;
@@ -523,7 +523,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
     private void maskedTextBoxTimeEnd_Validated(object sender, EventArgs e)
     {
-      ChannelInfo channelInfo = (ChannelInfo)treeViewMpChannels.SelectedNode.Tag;
+      var channelInfo = (ChannelInfo)treeViewMpChannels.SelectedNode.Tag;
       channelInfo.End = CleanInput(maskedTextBoxTimeEnd.Text);
       maskedTextBoxTimeEnd.Text = CleanInput(maskedTextBoxTimeEnd.Text);
       treeViewMpChannels.SelectedNode.Tag = channelInfo;
@@ -662,7 +662,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       SaveDbSettings();
       try
       {
-        Thread manualThread = new Thread(ManualImportThread);
+        var manualThread = new Thread(ManualImportThread);
         manualThread.Name = "TV Movie manual importer";
         manualThread.Priority = ThreadPriority.Normal;
         manualThread.IsBackground = false;
@@ -677,7 +677,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
     private void ManualImportThread()
     {
-      TvMovieDatabase _database = new TvMovieDatabase();
+      var _database = new TvMovieDatabase();
       try
       {
         _database.LaunchTVMUpdater(false);

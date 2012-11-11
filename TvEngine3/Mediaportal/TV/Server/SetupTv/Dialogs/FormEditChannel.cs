@@ -128,7 +128,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
           int imageIndex = 1;
           if (detail.FreeToAir == false)
             imageIndex = 2;
-          ListViewItem item = new ListViewItem(detail.IdTuning.ToString(), imageIndex);
+          var item = new ListViewItem(detail.IdTuning.ToString(), imageIndex);
           item.SubItems.Add(detail.Name);
           item.SubItems.Add(detail.Provider);
           string channelType = detail.ChannelType.ToString();
@@ -224,7 +224,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 
     private void menuButtonAdd_Click(object sender, EventArgs e)
     {
-      FormChooseTuningDetailType dlg = new FormChooseTuningDetailType();
+      var dlg = new FormChooseTuningDetailType();
       dlg.MediaType = _mediaType;
       if (dlg.ShowDialog(this) == DialogResult.OK)
       {

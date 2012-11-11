@@ -47,7 +47,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (ICardRepository cardRepository = new CardRepository())
       {
-        var query = cardRepository.GetQuery<Card>(c => c.DevicePath == devicePath);
+        IQueryable<Card> query = cardRepository.GetQuery<Card>(c => c.DevicePath == devicePath);
         query = cardRepository.IncludeAllRelations(query);
         Card card = query.ToList().FirstOrDefault(); 
         return card;
@@ -59,7 +59,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (ICardRepository cardRepository = new CardRepository())
       {
-        var query = cardRepository.GetQuery<Card>(c => c.DevicePath == devicePath);
+        IQueryable<Card> query = cardRepository.GetQuery<Card>(c => c.DevicePath == devicePath);
         query = cardRepository.IncludeAllRelations(query, includeRelations);
         Card card = query.ToList().FirstOrDefault();
         return card;
@@ -91,7 +91,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (ICardRepository cardRepository = new CardRepository())
       {
-        var listAllCardGroups = cardRepository.GetAll<CardGroup>().ToList();
+        List<CardGroup> listAllCardGroups = cardRepository.GetAll<CardGroup>().ToList();
         return listAllCardGroups;
       }
     }

@@ -82,7 +82,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
 
       public static void SetupStaticValues(Model ctx)
       {
-        LnbType lnbtype = new LnbType();
+        var lnbtype = new LnbType();
         lnbtype.IdLnbType = 1;
         lnbtype.Name = "Universal";
         lnbtype.LowBandFrequency = 9750000;
@@ -92,7 +92,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         lnbtype.IsToroidal = false;
         ctx.LnbTypes.AddObject(lnbtype);
         ctx.SaveChanges();
-        LnbType lnbtype2 = new LnbType();
+        var lnbtype2 = new LnbType();
         lnbtype2.IdLnbType = 2;
         lnbtype2.Name = "C-Band";
         lnbtype2.LowBandFrequency = 5150000;
@@ -102,7 +102,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         lnbtype2.IsToroidal = false;
         ctx.LnbTypes.AddObject(lnbtype2);
         ctx.SaveChanges();
-        LnbType lnbtype3 = new LnbType();
+        var lnbtype3 = new LnbType();
         lnbtype3.IdLnbType = 3;
         lnbtype3.Name = "10750 MHz";
         lnbtype3.LowBandFrequency = 10750000;
@@ -112,7 +112,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         lnbtype3.IsToroidal = false;
         ctx.LnbTypes.AddObject(lnbtype3);
         ctx.SaveChanges();
-        LnbType lnbtype4 = new LnbType();
+        var lnbtype4 = new LnbType();
         lnbtype4.IdLnbType = 4;
         lnbtype4.Name = "11250 MHz (NA Legacy)";
         lnbtype4.LowBandFrequency = 11250000;
@@ -122,7 +122,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         lnbtype4.IsToroidal = false;
         ctx.LnbTypes.AddObject(lnbtype4);
         ctx.SaveChanges();
-        LnbType lnbtype5 = new LnbType();
+        var lnbtype5 = new LnbType();
         lnbtype5.IdLnbType = 5;
         lnbtype5.Name = "11300 MHz";
         lnbtype5.LowBandFrequency = 11300000;
@@ -132,7 +132,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         lnbtype5.IsToroidal = false;
         ctx.LnbTypes.AddObject(lnbtype5);
         ctx.SaveChanges();
-        LnbType lnbtype6 = new LnbType();
+        var lnbtype6 = new LnbType();
         lnbtype6.IdLnbType = 6;
         lnbtype6.Name = "DishPro Band Stacked FSS";
         lnbtype6.LowBandFrequency = 10750000;
@@ -142,7 +142,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         lnbtype6.IsToroidal = false;
         ctx.LnbTypes.AddObject(lnbtype6);
         ctx.SaveChanges();
-        LnbType lnbtype7 = new LnbType();
+        var lnbtype7 = new LnbType();
         lnbtype7.IdLnbType = 7;
         lnbtype7.Name = "DishPro Band Stacked DBS";
         lnbtype7.LowBandFrequency = 11250000;
@@ -152,7 +152,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         lnbtype7.IsToroidal = false;
         ctx.LnbTypes.AddObject(lnbtype7);
         ctx.SaveChanges();
-        LnbType lnbtype8 = new LnbType();
+        var lnbtype8 = new LnbType();
         lnbtype8.IdLnbType = 8;
         lnbtype8.Name = "NA Band Stacked FSS";
         lnbtype8.LowBandFrequency = 10750000;
@@ -162,7 +162,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         lnbtype8.IsToroidal = false;
         ctx.LnbTypes.AddObject(lnbtype8);
         ctx.SaveChanges();
-        LnbType lnbtype9 = new LnbType();
+        var lnbtype9 = new LnbType();
         lnbtype9.IdLnbType = 9;
         lnbtype9.Name = "NA Band Stacked DBS";
         lnbtype9.LowBandFrequency = 11250000;
@@ -172,7 +172,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         lnbtype9.IsToroidal = false;
         ctx.LnbTypes.AddObject(lnbtype9);
         ctx.SaveChanges();
-        LnbType lnbtype10 = new LnbType();
+        var lnbtype10 = new LnbType();
         lnbtype10.IdLnbType = 10;
         lnbtype10.Name = "Sadoun Band Stacked";
         lnbtype10.LowBandFrequency = 10100000;
@@ -182,7 +182,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         lnbtype10.IsToroidal = false;
         ctx.LnbTypes.AddObject(lnbtype10);
         ctx.SaveChanges();
-        LnbType lnbtype11 = new LnbType();
+        var lnbtype11 = new LnbType();
         lnbtype11.IdLnbType = 11;
         lnbtype11.Name = "C-Band Band Stacked";
         lnbtype11.LowBandFrequency = 5150000;

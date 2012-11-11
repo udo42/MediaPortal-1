@@ -100,7 +100,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private void OnQuickRecord()
     {
-      GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
       if (dlg == null)
       {
         return;
@@ -110,7 +110,7 @@ namespace Mediaportal.TV.TvPlugin
       IList<GroupMap> channels = TVHome.Navigator.CurrentGroup.GroupMaps;
       foreach (GroupMap chan in channels)
       {
-        GUIListItem item = new GUIListItem(chan.Channel.DisplayName);
+        var item = new GUIListItem(chan.Channel.DisplayName);
         string strLogo = Utils.GetCoverArt(Thumbs.TVChannel, chan.Channel.DisplayName);
         if (string.IsNullOrEmpty(strLogo))                      
         {
@@ -226,7 +226,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private void OnAdvancedRecord()
     {
-      GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
       if (dlg == null)
       {
         return;
@@ -237,7 +237,7 @@ namespace Mediaportal.TV.TvPlugin
       IList<GroupMap> channels = TVHome.Navigator.CurrentGroup.GroupMaps;
       foreach (GroupMap chan in channels)
       {
-        GUIListItem item = new GUIListItem(chan.Channel.DisplayName);
+        var item = new GUIListItem(chan.Channel.DisplayName);
         string strLogo = Utils.GetCoverArt(Thumbs.TVChannel, chan.Channel.DisplayName);
         if (string.IsNullOrEmpty(strLogo))                      
         {

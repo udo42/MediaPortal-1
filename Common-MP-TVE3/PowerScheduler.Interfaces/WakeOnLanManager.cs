@@ -97,7 +97,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
         }
 
         int entries = Marshal.ReadInt32(buffer);
-        IntPtr currentBuffer = new IntPtr(buffer.ToInt64() + sizeof (int));
+        var currentBuffer = new IntPtr(buffer.ToInt64() + sizeof (int));
         table = new MIB_IPNETROW[entries];
 
         for (int i = 0; i < entries; i++)
@@ -117,7 +117,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
 
     private byte[] SendArpRequest(IPAddress address)
     {
-      byte[] hwAddr = new byte[6];
+      var hwAddr = new byte[6];
       int len = hwAddr.Length;
       byte[] ipAddr = address.GetAddressBytes();
       int result = SendARP(BitConverter.ToInt32(ipAddr, 0), 0, hwAddr, ref len);
@@ -131,7 +131,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
       {
         throw new ArgumentOutOfRangeException("hwAddress", hwAddress, "hwAddress must contain 6 bytes!");
       }
-      byte[] packet = new byte[102];
+      var packet = new byte[102];
       // pad packet data with 6 0xFF bytes
       for (int i = 0; i < 6; i++)
       {
@@ -151,7 +151,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
 
     private void SendMagicPacket(IPAddress address, byte[] data)
     {
-      UdpClient client = new UdpClient();
+      var client = new UdpClient();
       client.Connect(address, 1234);
       client.Send(data, data.Length);
       client.Close();
@@ -160,7 +160,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
 
     private bool Ping(IPAddress address, int timeout)
     {
-      Ping p = new Ping();
+      var p = new Ping();
       PingReply r = p.Send(address, timeout);
       if (r.Status == IPStatus.Success)
       {
@@ -282,7 +282,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
     /// <returns>bool indicating if the packet was sent successfully</returns>
     public bool SendWakeOnLanPacket(byte[] hwAddress)
     {
-      byte[] ipAddress = new byte[4] {0xFF, 0xFF, 0xFF, 0xFF};
+      var ipAddress = new byte[4] {0xFF, 0xFF, 0xFF, 0xFF};
       return SendWakeOnLanPacket(hwAddress, new IPAddress(ipAddress));
     }
 
@@ -380,7 +380,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
     /// <returns>byte[] containing the byte representation of this IP address</returns>
     public byte[] GetIpBytes(string address)
     {
-      byte[] ipn = new byte[4];
+      var ipn = new byte[4];
       string[] ip = address.Split('.');
       if (ip.Length != 4)
       {
@@ -407,7 +407,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
     /// <returns>byte[] containing the byte representation of this hardware ethernet address</returns>
     public byte[] GetHwAddrBytes(string address)
     {
-      byte[] addrn = new byte[6];
+      var addrn = new byte[6];
       string[] addr = address.Split(':');
       if (addr.Length != 6)
       {
@@ -473,7 +473,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
     private static void GetHwAddr(string ipAddress)
     {
       Console.WriteLine("Getting hardware ethernet address for: ({0})", ipAddress);
-      WakeOnLanManager wolManager = new WakeOnLanManager();
+      var wolManager = new WakeOnLanManager();
       byte[] ip = wolManager.GetIpBytes(ipAddress);
       byte[] a = wolManager.GetHardwareAddress(new IPAddress(ip));
       Console.WriteLine("Hardware address: {0:x}:{1:x}:{2:x}:{3:x}:{4:x}:{5:x}", a[0], a[1], a[2], a[3], a[4], a[5]);
@@ -482,7 +482,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
     private static void Wakeup(string hwAddr, string wakeupIP, string timeout)
     {
       Console.WriteLine("Wakeup system: IP:({0}) hwAddr:{1})", wakeupIP, hwAddr);
-      WakeOnLanManager wolManager = new WakeOnLanManager();
+      var wolManager = new WakeOnLanManager();
       if (wolManager.WakeupSystem(hwAddr, wakeupIP, Int32.Parse(timeout)))
       {
         Console.WriteLine("wakeup successful");
@@ -496,7 +496,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
     private static void Wakeup(string hwAddr, string wakeupIP, string targetIP, string timeout)
     {
       Console.WriteLine("Wakeup system: IP:({0}) hwAddr:{1} to:{2})", wakeupIP, hwAddr, targetIP);
-      WakeOnLanManager wolManager = new WakeOnLanManager();
+      var wolManager = new WakeOnLanManager();
       if (wolManager.WakeupSystem(hwAddr, wakeupIP, targetIP, Int32.Parse(timeout)))
       {
         Console.WriteLine("wakeup successful");

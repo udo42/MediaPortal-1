@@ -133,7 +133,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (IRecordingRepository recordingRepository = new RecordingRepository())
       {
-        PendingDeletion pendingDeletion = recordingRepository.FindOne<PendingDeletion>(p => p.IdPendingDeletion == idPendingDeletion);
+        var pendingDeletion = recordingRepository.FindOne<PendingDeletion>(p => p.IdPendingDeletion == idPendingDeletion);
         return pendingDeletion;
       }
     }
@@ -142,7 +142,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (IRecordingRepository recordingRepository = new RecordingRepository())
       {
-        var listAllPendingRecordingDeletions = recordingRepository.GetAll<PendingDeletion>().ToList();
+        List<PendingDeletion> listAllPendingRecordingDeletions = recordingRepository.GetAll<PendingDeletion>().ToList();
         return listAllPendingRecordingDeletions;
       }
     }

@@ -59,11 +59,11 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
             e.TextFont = DataGridTableStyle.DataGrid.Font;
           g.FillRectangle(backBrush, bounds);
           Region saveRegion = g.Clip;
-          Rectangle rect = new Rectangle(bounds.X, bounds.Y, bounds.Width, bounds.Height);
-          using (Region newRegion = new Region(rect))
+          var rect = new Rectangle(bounds.X, bounds.Y, bounds.Width, bounds.Height);
+          using (var newRegion = new Region(rect))
           {
             g.Clip = newRegion;
-            int charWidth =
+            var charWidth =
               (int)Math.Ceiling(g.MeasureString("c", e.TextFont, 20, StringFormat.GenericTypographic).Width);
 
             string s = GetColumnValueAtRow(source, rowNum).ToString();
@@ -209,7 +209,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
         //fire the event
         if (BoolValueChanged != null)
         {
-          BoolValueChangedEventArgs e = new BoolValueChangedEventArgs(rowNum, colNum, saveValue);
+          var e = new BoolValueChangedEventArgs(rowNum, colNum, saveValue);
           BoolValueChanged(this, e);
         }
       }

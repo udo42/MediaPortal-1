@@ -55,8 +55,8 @@ namespace Mediaportal.TV.Server.SetupControls
       int audioInputType = 0;
       bool isVcrSignal = false;
       int symbolRate = 0;
-      int modulation = (int)ModulationType.ModNotSet;
-      int polarisation = (int)Polarisation.NotSet;
+      var modulation = (int)ModulationType.ModNotSet;
+      var polarisation = (int)Polarisation.NotSet;
       int diseqc = 0;
       int bandwidth = 8;
       int pmtPid = -1;

@@ -13,25 +13,25 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public IDictionary<int, NowAndNext> GetNowAndNextForChannelGroup(int idGroup)
     {
-      var nowAndNexts = ProgramManagement.GetNowAndNextForChannelGroup(idGroup);
+      IDictionary<int, NowAndNext> nowAndNexts = ProgramManagement.GetNowAndNextForChannelGroup(idGroup);
       return nowAndNexts;
     }
 
     public IList<Program> GetProgramsByChannelAndStartEndTimes(int idChannel, DateTime startTime, DateTime endTime)
     {
-      var programsByChannelAndStartEndTimes = ProgramManagement.GetProgramsByChannelAndStartEndTimes(idChannel, startTime, endTime);
+      IList<Program> programsByChannelAndStartEndTimes = ProgramManagement.GetProgramsByChannelAndStartEndTimes(idChannel, startTime, endTime);
       return programsByChannelAndStartEndTimes;
     }
 
     public IList<Program> GetProgramsByChannelAndTitleAndStartEndTimes(int idChannel, string title, DateTime startTime, DateTime endTime)
     {
-      var programsByChannelTitleAndStartEndTimes = ProgramManagement.GetProgramsByChannelAndTitleAndStartEndTimes(idChannel, title, startTime, endTime);
+      IList<Program> programsByChannelTitleAndStartEndTimes = ProgramManagement.GetProgramsByChannelAndTitleAndStartEndTimes(idChannel, title, startTime, endTime);
       return programsByChannelTitleAndStartEndTimes;
     }
 
     public IList<Program> GetProgramsByTitleAndStartEndTimes(string title, DateTime startTime, DateTime endTime)
     {
-      var programsByTitleAndStartEndTimes = ProgramManagement.GetProgramsByTitleAndStartEndTimes(title, startTime, endTime);
+      IList<Program> programsByTitleAndStartEndTimes = ProgramManagement.GetProgramsByTitleAndStartEndTimes(title, startTime, endTime);
       return programsByTitleAndStartEndTimes;
     }
 
@@ -57,13 +57,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public IList<Program> GetProgramsByTitleAndTimesInterval(string title, DateTime startTime, DateTime endTime)
     {
-      var programsByTitleAndTimesInterval = ProgramManagement.GetProgramsByTitleAndTimesInterval(title, startTime, endTime);
+      IList<Program> programsByTitleAndTimesInterval = ProgramManagement.GetProgramsByTitleAndTimesInterval(title, startTime, endTime);
       return programsByTitleAndTimesInterval;
     }
 
     public Program GetProgramsByTitleTimesAndChannel(string programName, DateTime startTime, DateTime endTime, int idChannel)
     {
-      var programsByTitleTimesAndChannel = ProgramManagement.GetProgramsByTitleTimesAndChannel(programName, startTime, endTime, idChannel);
+      Program programsByTitleTimesAndChannel = ProgramManagement.GetProgramsByTitleTimesAndChannel(programName, startTime, endTime, idChannel);
       return programsByTitleTimesAndChannel;
     }
 
@@ -94,61 +94,61 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public Program GetProgramByTitleAndTimes(string programName, DateTime startTime, DateTime endTime)
     {
-      var programByTitleAndTimes = ProgramManagement.GetProgramByTitleAndTimes(programName, startTime, endTime);
+      Program programByTitleAndTimes = ProgramManagement.GetProgramByTitleAndTimes(programName, startTime, endTime);
       return programByTitleAndTimes;
     }
 
     public IList<Program> GetProgramsByDescriptionAndMediaType(string searchCriteria, MediaTypeEnum mediaType, StringComparisonEnum stringComparison)
     {
-      var programsByDescriptionAndMediaType = ProgramManagement.GetProgramsByDescription(searchCriteria, mediaType, stringComparison);
+      IList<Program> programsByDescriptionAndMediaType = ProgramManagement.GetProgramsByDescription(searchCriteria, mediaType, stringComparison);
       return programsByDescriptionAndMediaType;
     }
 
     public IList<Program> GetProgramsByDescription(string searchCriteria, StringComparisonEnum stringComparison)
     {
-      var programsByDescription = ProgramManagement.GetProgramsByDescription(searchCriteria, stringComparison);
+      IList<Program> programsByDescription = ProgramManagement.GetProgramsByDescription(searchCriteria, stringComparison);
       return programsByDescription;
     }
 
     public IList<Program> GetProgramsByTitle(string searchCriteria, StringComparisonEnum stringComparison)
     {
-      var programsByTitle = ProgramManagement.GetProgramsByTitle(searchCriteria, stringComparison);
+      IList<Program> programsByTitle = ProgramManagement.GetProgramsByTitle(searchCriteria, stringComparison);
       return programsByTitle;
     }
 
     public IList<Program> GetProgramsByTitleAndMediaType(string searchCriteria, MediaTypeEnum mediaType, StringComparisonEnum stringComparison)
     {
-      var programsByTitleAndMediaType = ProgramManagement.GetProgramsByTitle(searchCriteria, mediaType, stringComparison);
+      IList<Program> programsByTitleAndMediaType = ProgramManagement.GetProgramsByTitle(searchCriteria, mediaType, stringComparison);
       return programsByTitleAndMediaType;
     }
 
     public Program GetProgram(int idProgram)
     {
-      var program = ProgramManagement.GetProgram(idProgram);
+      Program program = ProgramManagement.GetProgram(idProgram);
       return program;
     }
 
     public IDictionary<int, IList<Program>> GetProgramsForAllChannels(DateTime startTime, DateTime endTime, IEnumerable<Channel> channels)
     {
-      var programsForAllChannels = ProgramManagement.GetProgramsForAllChannels(startTime, endTime, channels);
+      IDictionary<int, IList<Program>> programsForAllChannels = ProgramManagement.GetProgramsForAllChannels(startTime, endTime, channels);
       return programsForAllChannels;
     }
 
     public IList<Program> GetProgramsByTitleAndCategoryAndMediaType(string categoryCriteriea, string titleCriteria, MediaTypeEnum mediaType, StringComparisonEnum stringComparisonCategory, StringComparisonEnum stringComparisonTitle)
     {
-      var programsByTitleAndCategoryAndMediaType = ProgramManagement.GetProgramsByTitleAndCategoryAndMediaType(categoryCriteriea, titleCriteria, mediaType, stringComparisonCategory, stringComparisonTitle);
+      IList<Program> programsByTitleAndCategoryAndMediaType = ProgramManagement.GetProgramsByTitleAndCategoryAndMediaType(categoryCriteriea, titleCriteria, mediaType, stringComparisonCategory, stringComparisonTitle);
       return programsByTitleAndCategoryAndMediaType;
     }
 
     public IList<Program> GetProgramsByTimesInterval(DateTime startTime, DateTime endTime)
     {
-      var programsByTimesInterval = ProgramManagement.GetProgramsByTimesInterval(startTime, endTime);
+      IList<Program> programsByTimesInterval = ProgramManagement.GetProgramsByTimesInterval(startTime, endTime);
       return programsByTimesInterval;
     }
 
     public IList<Program> GetProgramsForSchedule(Schedule schedule)
     {
-      var programsForSchedule = ProgramManagement.GetProgramsForSchedule(schedule);
+      IList<Program> programsForSchedule = ProgramManagement.GetProgramsForSchedule(schedule);
       return programsForSchedule;
     }
 

@@ -48,7 +48,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 
     public IQueryable<Recording> IncludeAllRelations(IQueryable<Recording> query)
     {
-      var includeRelations = query.Include(r => r.Channel)
+      IQueryable<Recording> includeRelations = query.Include(r => r.Channel)
                                   .Include(r => r.RecordingCredits)
                                   .Include(c => c.Schedule)
                                   .Include(r => r.ProgramCategory);

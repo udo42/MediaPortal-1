@@ -129,13 +129,13 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
                           "Tuner is locked. Scanning is not possible at the moment. Perhaps you are using another part of a hybrid card?");
           return;
         }
-        SimpleFileName tuningFile = (SimpleFileName)mpComboBoxFrequencies.SelectedItem;
+        var tuningFile = (SimpleFileName)mpComboBoxFrequencies.SelectedItem;
         _atscChannels = (List<ATSCTuning>)fileFilters.LoadList(tuningFile.FileName, typeof (List<ATSCTuning>));
         if (_atscChannels == null)
         {
           return;
         }
-        Thread scanThread = new Thread(DoScan);
+        var scanThread = new Thread(DoScan);
         scanThread.Name = "ATSC scan thread";
         scanThread.Start();
         listViewStatus.Items.Clear();
@@ -184,7 +184,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           if (percent > 100f)
             percent = 100f;
           progressBar1.Value = (int)percent;
-          ATSCChannel tuneChannel = new ATSCChannel();
+          var tuneChannel = new ATSCChannel();
           tuneChannel.NetworkId = -1;
           tuneChannel.TransportId = -1;
           tuneChannel.ServiceId = -1;
@@ -252,7 +252,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           for (int i = 0; i < channels.Length; ++i)
           {
             Channel dbChannel;
-            ATSCChannel channel = (ATSCChannel)channels[i];
+            var channel = (ATSCChannel)channels[i];
             //No support for channel moving, or merging with existing channels here.
             //We do not know how ATSC works to correctly implement this.
             TuningDetail currentDetail = ServiceAgents.Instance.ChannelServiceAgent.GetTuningDetail(channel);

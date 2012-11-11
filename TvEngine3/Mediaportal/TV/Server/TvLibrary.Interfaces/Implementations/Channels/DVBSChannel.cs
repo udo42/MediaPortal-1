@@ -214,7 +214,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     /// </returns>
     public override bool Equals(object obj)
     {
-      DVBSChannel ch = obj as DVBSChannel;
+      var ch = obj as DVBSChannel;
       if (ch == null)
       {
         return false;
@@ -286,7 +286,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     /// <returns>a shallow clone of the channel instance</returns>
     public override object Clone()
     {
-      DVBSChannel ch = (DVBSChannel)MemberwiseClone();
+      var ch = (DVBSChannel)MemberwiseClone();
       if (LnbType != null)
       {
         ch.LnbType = LnbType.Clone();
@@ -303,7 +303,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     /// <returns><c>false</c> if the channels are on the same transponder, otherwise <c>true</c></returns>
     public override bool IsDifferentTransponder(IChannel channel)
     {
-      DVBSChannel dvbsChannel = channel as DVBSChannel;
+      var dvbsChannel = channel as DVBSChannel;
       if (dvbsChannel == null)
       {
         return true;
@@ -326,8 +326,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     /// <returns>a channel instance with parameters adjusted as necessary</returns>
     public override IChannel GetTuningChannel()
     {
-      IChannel clone = (IChannel)Clone();
-      DVBSChannel dvbsChannel = clone as DVBSChannel;
+      var clone = (IChannel)Clone();
+      var dvbsChannel = clone as DVBSChannel;
       if (dvbsChannel == null)
       {
         return clone;

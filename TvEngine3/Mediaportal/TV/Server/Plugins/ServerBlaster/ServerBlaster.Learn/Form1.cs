@@ -83,7 +83,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     private static void Main(string[] args)
     {
       Thread.CurrentThread.Name = "BlasterTest";
-      Form1 form = new Form1();
+      var form = new Form1();
 
       foreach (string arg in args)
       {
@@ -502,7 +502,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       if (_selectedItem == null || _selectedItem.Tag == null) return;
       if (_selectedItem.Tag.GetType() != typeof (BlasterCommand)) return;
 
-      BlasterCommand command = _selectedItem.Tag as BlasterCommand;
+      var command = _selectedItem.Tag as BlasterCommand;
 
       if (command.RawData == null) return;
 
@@ -566,7 +566,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       buttonStart.Enabled = true;
       buttonTest.Enabled = true;
 
-      BlasterCommand command = _selectedItem.Tag as BlasterCommand;
+      var command = _selectedItem.Tag as BlasterCommand;
 
       command.RawData = packet;
       command.Status = packet == null ? Status.Failed : Status.Success;
@@ -587,7 +587,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     {
       if (_selectedItem == null) return;
 
-      BlasterCommand command = _selectedItem.Tag as BlasterCommand;
+      var command = _selectedItem.Tag as BlasterCommand;
 
       _selectedItem.SubItems[0].Text = command.Name;
 
@@ -602,7 +602,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
     private void Save()
     {
-      Hashtable hash = new Hashtable();
+      var hash = new Hashtable();
 
       foreach (XPListViewItem item in listButtons.Items)
       {
@@ -622,9 +622,9 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       {
         try
         {
-          using (FileStream fs = new FileStream("serverblaster.dat", FileMode.Create, FileAccess.Write))
+          using (var fs = new FileStream("serverblaster.dat", FileMode.Create, FileAccess.Write))
           {
-            BinaryFormatter bf = new BinaryFormatter();
+            var bf = new BinaryFormatter();
             bf.Serialize(fs, hash);
           }
         }
@@ -671,14 +671,14 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     {
       try
       {
-        using (FileStream fs = new FileStream("serverblaster.dat", FileMode.Open, FileAccess.Read))
+        using (var fs = new FileStream("serverblaster.dat", FileMode.Open, FileAccess.Read))
         {
-          BinaryFormatter bf = new BinaryFormatter();
+          var bf = new BinaryFormatter();
           object objectRoot = bf.Deserialize(fs);
 
           if (objectRoot is Hashtable)
           {
-            Hashtable hashTable = objectRoot as Hashtable;
+            var hashTable = objectRoot as Hashtable;
 
             foreach (object objectKey in hashTable.Keys)
             {

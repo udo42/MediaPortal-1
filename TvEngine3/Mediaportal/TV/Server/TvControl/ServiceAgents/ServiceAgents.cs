@@ -326,7 +326,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
 
       if (!String.IsNullOrEmpty(_hostname))
       {
-        var binding = ServiceHelper.GetHttpBinding();
+        BasicHttpBinding binding = ServiceHelper.GetHttpBinding();
         var endpoint = new EndpointAddress(ServiceHelper.GetEndpointURL(typeof(I), _hostname));
 
         var channelFactory = new ChannelFactory<I>(binding, endpoint);
@@ -455,7 +455,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
 
     private void DisposeGenericServiceProxy<T>() where T : class
     {
-      T service = GlobalServiceProvider.Get<T>();
+      var service = GlobalServiceProvider.Get<T>();
       if (service != null)
       {
         ((IClientChannel)service).Faulted -= ServiceAgents_Faulted;

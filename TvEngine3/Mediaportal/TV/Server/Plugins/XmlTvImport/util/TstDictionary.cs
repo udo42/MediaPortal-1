@@ -132,7 +132,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
     {
       get
       {
-        StringCollection keys = new StringCollection();
+        var keys = new StringCollection();
         TstDictionaryEnumerator en = GetEnumerator();
         while (en.MoveNext())
           keys.Add(en.Key);
@@ -151,7 +151,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
     {
       get
       {
-        ArrayList values = new ArrayList();
+        var values = new ArrayList();
         foreach (DictionaryEntry de in this)
           values.Add(de.Value);
 
@@ -615,7 +615,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
       if (key.Length == 0)
         throw new ArgumentException("key is empty");
 
-      ArrayList matches = new ArrayList();
+      var matches = new ArrayList();
       PartialMatchSearch(Root, key, 0, wildChar, matches);
       return matches;
     }
@@ -684,7 +684,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
       if (distance < 0)
         throw new ArgumentException("dist is negative");
 
-      ArrayList matches = new ArrayList();
+      var matches = new ArrayList();
       NearNeighborsSearch(Root, key, 0, distance, matches);
       return matches;
     }
@@ -719,7 +719,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
         return null;
 
       int keysNumReturnValues = numReturnValues;
-      StringCollection keyList = new StringCollection();
+      var keyList = new StringCollection();
 
       if (startNode.IsKey)
       {

@@ -70,7 +70,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
     /// <returns>count</returns>
     public int ParseUrl(HTTPRequest site)
     {
-      HTMLPage webPage = new HTMLPage(site);
+      var webPage = new HTMLPage(site);
       string pageSource = webPage.GetPage();
 
       int startIndex = 0;
@@ -125,7 +125,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
       }
 
       // create a new IParserData object from the type and arguments given to the constructor
-      IParserData sectionData = (IParserData)Activator.CreateInstance(_dataType, _dataArgs);
+      var sectionData = (IParserData)Activator.CreateInstance(_dataType, _dataArgs);
       if (_sectionParser.ParseSection(sectionSource, ref sectionData))
       {
         return sectionData;
@@ -171,12 +171,12 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
       {
         if (caseinsensitive)
         {
-          Regex searchRegex = new Regex(regex.ToLower());
+          var searchRegex = new Regex(regex.ToLower());
           result = searchRegex.Match(sectionSource.ToLower());
         }
         else
         {
-          Regex searchRegex = new Regex(regex);
+          var searchRegex = new Regex(regex);
           result = searchRegex.Match(sectionSource);
         }
       }
