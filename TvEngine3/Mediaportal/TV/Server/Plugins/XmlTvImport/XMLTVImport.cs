@@ -1175,9 +1175,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
     public class Stats
     {
-      private int _channels;
       private DateTime _endTime = DateTime.Now;
-      private int _programs;
       private DateTime _startTime = DateTime.Now;
       private string _status = "";
 
@@ -1187,17 +1185,9 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
         set { _status = value; }
       }
 
-      public int Programs
-      {
-        get { return _programs; }
-        set { _programs = value; }
-      }
+      public int Programs { get; set; }
 
-      public int Channels
-      {
-        get { return _channels; }
-        set { _channels = value; }
-      }
+      public int Channels { get; set; }
 
       public DateTime startTime
       {

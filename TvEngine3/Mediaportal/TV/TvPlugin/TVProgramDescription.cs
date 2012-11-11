@@ -30,11 +30,8 @@ namespace Mediaportal.TV.TvPlugin
   {
     #region Variables
 
-    private Channel _channel;
     private string _description = string.Empty;
-    private DateTime _endTime;
     private string _genre = string.Empty;
-    private DateTime _startTime;
     private string _title = string.Empty;
 
     #endregion
@@ -44,11 +41,7 @@ namespace Mediaportal.TV.TvPlugin
     /// <summary>
     /// Property to get/set the Channel of the tv program
     /// </summary>
-    public Channel Channel
-    {
-      get { return _channel; }
-      set { _channel = value; }
-    }
+    public Channel Channel { get; set; }
 
     /// <summary>
     /// Property to get/set the genre of this tv program
@@ -80,20 +73,12 @@ namespace Mediaportal.TV.TvPlugin
     /// <summary>
     /// Property to get the starttime of this tv program
     /// </summary>
-    public DateTime StartTime
-    {
-      get { return _startTime; }
-      set { _startTime = value; }
-    }
+    public DateTime StartTime { get; set; }
 
     /// <summary>
     /// Property to get the endtime of this tv program
     /// </summary>
-    public DateTime EndTime
-    {
-      get { return _endTime; }
-      set { _endTime = value; }
-    }
+    public DateTime EndTime { get; set; }
 
     #endregion
   }

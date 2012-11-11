@@ -52,7 +52,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Ticket
     private readonly IChannel _tuningDetail;
     private readonly IUser _user;
     private readonly List<KeyValuePair<string, IUser>> _users = new List<KeyValuePair<string, IUser>>();
-    private int _pendingSubchannel;
 
     #endregion
 
@@ -80,7 +79,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Ticket
       bool hasEqualOrHigherPriority,
       long? channelTimeshiftingOnOtherMux)
     {
-      _pendingSubchannel = -1;
+      PendingSubchannel = -1;
       _user = user;
       _isCamAlreadyDecodingChannel = isCamAlreadyDecodingChannel;
       _numberOfUsersOnSameCurrentChannel = numberOfUsersOnSameCurrentChannel;
@@ -193,11 +192,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Ticket
       get { return _user; }
     }
 
-    public int PendingSubchannel
-    {
-      get { return _pendingSubchannel; }
-      set { _pendingSubchannel = value; }
-    }
+    public int PendingSubchannel { get; set; }
 
     public bool IsFreeToAir
     {

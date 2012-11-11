@@ -111,17 +111,11 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
   public class ListViewGroupEventArgs : EventArgs
   {
-    private XPListViewGroup mItem;
-
     public ListViewGroupEventArgs(XPListViewGroup item)
     {
-      mItem = item;
+      Item = item;
     }
 
-    public XPListViewGroup Item
-    {
-      get { return mItem; }
-      set { mItem = value; }
-    }
+    public XPListViewGroup Item { get; set; }
   }
 }

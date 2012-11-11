@@ -28,26 +28,15 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
 {
   public class GrabberSelectionInfo
   {
-    private string channelId;
-    private string grabberId;
-
     public GrabberSelectionInfo(string channelId, string grabberId)
     {
-      this.channelId = channelId;
-      this.grabberId = grabberId;
+      this.ChannelId = channelId;
+      this.GrabberId = grabberId;
     }
 
-    public string ChannelId
-    {
-      get { return channelId; }
-      set { channelId = value; }
-    }
+    public string ChannelId { get; set; }
 
-    public string GrabberId
-    {
-      get { return grabberId; }
-      set { grabberId = value; }
-    }
+    public string GrabberId { get; set; }
   }
 
   public class GrabberSelectedEventArgs : EventArgs

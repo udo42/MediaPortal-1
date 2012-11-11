@@ -25,7 +25,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
   [TypeConverter(typeof (XPListViewGroupConverter))]
   public class XPListViewGroup
   {
-    private int _index;
     private string _text;
 
     public XPListViewGroup() {}
@@ -33,7 +32,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
     public XPListViewGroup(string text, int index)
     {
       _text = text;
-      _index = index;
+      GroupIndex = index;
     }
 
     public XPListViewGroup(string text)
@@ -47,11 +46,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       set { _text = value; }
     }
 
-    public int GroupIndex
-    {
-      get { return _index; }
-      set { _index = value; }
-    }
+    public int GroupIndex { get; set; }
 
     public override string ToString()
     {

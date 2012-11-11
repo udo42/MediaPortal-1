@@ -36,17 +36,12 @@ namespace Mediaportal.TV.Server.SetupTV
   {
 
     public const string SERVICENAME_TVSERVICE = @"TvService";
-    private static bool _isRestrictedMode;
     private static bool _ignoreDisconnections;
 
     /// <summary>
     /// Indicates if the connection to TvService is done using WCF services.
     /// </summary>
-    public static bool IsRestrictedMode
-    {
-      get { return _isRestrictedMode; }
-      set { _isRestrictedMode = value; }
-    }
+    public static bool IsRestrictedMode { get; set; }
 
     /// <summary>
     /// Indicates if the connection with the TvService is available, which can be local service (<see cref="IsRunning"/>) or remote service via WCF (<see cref="IsRestrictedMode"/>).

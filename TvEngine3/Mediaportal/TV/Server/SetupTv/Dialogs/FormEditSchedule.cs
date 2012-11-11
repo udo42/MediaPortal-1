@@ -40,7 +40,6 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
   {
     private Program _program;
     private Schedule _schedule;
-    private ScheduleRulesTemplate _scheduleRulesTemplate;
 
     public FormEditSchedule()
     {
@@ -59,11 +58,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       set { _program = value; }
     }
 
-    public ScheduleRulesTemplate ScheduleRulesTemplate
-    {
-      get { return _scheduleRulesTemplate; }
-      set { _scheduleRulesTemplate = value; }
-    }
+    public ScheduleRulesTemplate ScheduleRulesTemplate { get; set; }
 
     private void FormEditSchedule_Load(object sender, EventArgs e)
     {

@@ -6,21 +6,16 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
   public class HeartbeatUser
   {
     private readonly string _name;
-    private DateTime _lastSeen;
 
     public HeartbeatUser()
     {            
       _name = Dns.GetHostName();
-      _lastSeen = DateTime.MinValue;
+      LastSeen = DateTime.MinValue;
     }
 
-	  public DateTime LastSeen
-	  {
-	    get { return _lastSeen; }
-	    set { _lastSeen = value; }
-	  }	  
+    public DateTime LastSeen { get; set; }
 
-	  public string Name
+    public string Name
 	  {
 	    get { return _name; }
 	  }

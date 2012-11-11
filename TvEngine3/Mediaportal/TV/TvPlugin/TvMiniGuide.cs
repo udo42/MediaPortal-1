@@ -70,7 +70,6 @@ namespace Mediaportal.TV.TvPlugin
     private int _channelNumberMaxLength = 3;
     private readonly IDictionary<int, IDictionary<int, NowAndNext>> _listNowNext = new Dictionary<int, IDictionary<int, NowAndNext>>();
     private readonly Dictionary<int, DateTime> _nextEPGupdate = new Dictionary<int, DateTime>();
-    private Channel _selectedChannel;
     private bool _showChannelNumber;
     private Dictionary<int, List<Channel>> _tvGroupChannelListCache;
     private bool _zap = true;
@@ -142,11 +141,7 @@ namespace Mediaportal.TV.TvPlugin
     /// Gets or sets the selected channel.
     /// </summary>
     /// <value>The selected channel.</value>
-    public Channel SelectedChannel
-    {
-      get { return _selectedChannel; }
-      set { _selectedChannel = value; }
-    }
+    public Channel SelectedChannel { get; set; }
 
     /// <summary>
     /// Gets or sets a value indicating whether [auto zap].

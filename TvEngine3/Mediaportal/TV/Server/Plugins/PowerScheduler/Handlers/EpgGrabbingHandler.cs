@@ -47,7 +47,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     private class GrabberSource // don't use struct! they are value types and mess when used in a dictionary!
     {
       private readonly string _name;
-      private DateTime _nextWakeupTime;
       private bool _standbyAllowed;
       private DateTime _timeout;
 
@@ -56,7 +55,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
         _name = name;
         _standbyAllowed = standbyAllowed;
         _timeout = DateTime.Now.AddSeconds(timeout);
-        _nextWakeupTime = DateTime.MaxValue;
+        NextWakeupTime = DateTime.MaxValue;
       }
 
       public string Name
@@ -74,11 +73,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
         get { return _timeout; }
       }
 
-      public DateTime NextWakeupTime
-      {
-        get { return _nextWakeupTime; }
-        set { _nextWakeupTime = value; }
-      }
+      public DateTime NextWakeupTime { get; set; }
 
       public void SetStandbyAllowed(bool allowed, int timeout)
       {

@@ -123,7 +123,6 @@ namespace Mediaportal.TV.TvPlugin
     ///VMR9OSD _vmr9OSD = null;
     private readonly FullScreenState _screenState = new FullScreenState();
 
-    private bool _settingsLoaded;
     private DateTime _statusTimeOutTimer = DateTime.Now;
     private bool _statusVisible;
     private bool _stepSeekVisible;
@@ -3226,18 +3225,9 @@ namespace Mediaportal.TV.TvPlugin
     }
 
     #region Properties
-    private bool SettingsLoaded
-    {
-      get
-      {
-        return _settingsLoaded;
-      }
-      set
-      {
-        _settingsLoaded = value;
-        //maybe additional logic?
-      }
-    }
+
+    private bool SettingsLoaded { get; set; }
+
     #endregion
 
     #region IRenderLayer

@@ -62,9 +62,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     private readonly IChannel _detail;
     private readonly long _frequency = -1;
     private readonly int _priority;
-    private long? _channelTimeshiftingOnOtherMux;
-    private int _numberOfOtherUsers;
-    private bool _sameTransponder;
 
     /// <summary>
     /// ctor
@@ -78,13 +75,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     /// <param name="isParked"> </param>
     public CardDetail(int id, Card card, IChannel detail, bool sameTransponder, int numberOfOtherUsers, long? channelTimeshiftingOnOtherMux)
     {
-      _sameTransponder = sameTransponder;
+      SameTransponder = sameTransponder;
       _cardId = id;
       _card = card;
       _detail = detail;
       _priority = _card.Priority;
-      _numberOfOtherUsers = numberOfOtherUsers;
-      _channelTimeshiftingOnOtherMux = channelTimeshiftingOnOtherMux;
+      NumberOfOtherUsers = numberOfOtherUsers;
+      ChannelTimeshiftingOnOtherMux = channelTimeshiftingOnOtherMux;
 
       var dvbTuningDetail = detail as DVBBaseChannel;
       if (dvbTuningDetail != null)
@@ -137,26 +134,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     /// <summary>
     /// returns if it is the same transponder
     /// </summary>
-    public bool SameTransponder
-    {
-      get { return _sameTransponder; }
-      set { _sameTransponder = value; }
-    }
+    public bool SameTransponder { get; set; }
 
     /// <summary>
     /// gets the number of other users
     /// </summary>
-    public int NumberOfOtherUsers
-    {
-      get { return _numberOfOtherUsers; }
-      set { _numberOfOtherUsers = value; }
-    }
+    public int NumberOfOtherUsers { get; set; }
 
-    public long? ChannelTimeshiftingOnOtherMux
-    {
-      get { return _channelTimeshiftingOnOtherMux; }
-      set { _channelTimeshiftingOnOtherMux = value; }
-    }
+    public long? ChannelTimeshiftingOnOtherMux { get; set; }
 
     public long Frequency
     {

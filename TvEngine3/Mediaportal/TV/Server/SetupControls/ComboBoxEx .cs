@@ -83,7 +83,6 @@ namespace Mediaportal.TV.Server.SetupControls
   {
     private readonly int _id;
 
-    private int _imageIndex;
     private string _text;
 
     public ComboBoxExItem()
@@ -96,7 +95,7 @@ namespace Mediaportal.TV.Server.SetupControls
     {
       _id = id;
       _text = text;
-      _imageIndex = imageIndex;
+      ImageIndex = imageIndex;
     }
 
     public string Text
@@ -105,11 +104,7 @@ namespace Mediaportal.TV.Server.SetupControls
       set { _text = value; }
     }
 
-    public int ImageIndex
-    {
-      get { return _imageIndex; }
-      set { _imageIndex = value; }
-    }
+    public int ImageIndex { get; set; }
 
     public int Id
     {

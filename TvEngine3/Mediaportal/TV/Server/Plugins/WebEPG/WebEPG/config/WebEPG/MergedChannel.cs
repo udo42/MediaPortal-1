@@ -29,38 +29,17 @@ namespace WebEPG.config.WebEPG
   {
     #region Variables
 
-    private string _end;
-    private string _grabber;
-    private string _id;
-    private string _start;
-
     [XmlAttribute("id")]
-    public string id
-    {
-      get { return _id; }
-      set { _id = value; }
-    }
+    public string id { get; set; }
 
     [XmlAttribute("grabber")]
-    public string grabber
-    {
-      get { return _grabber; }
-      set { _grabber = value; }
-    }
+    public string grabber { get; set; }
 
     [XmlAttribute("start")]
-    public string start
-    {
-      get { return _start; }
-      set { _start = value; }
-    }
+    public string start { get; set; }
 
     [XmlAttribute("end")]
-    public string end
-    {
-      get { return _end; }
-      set { _end = value; }
-    }
+    public string end { get; set; }
 
     #endregion
   }

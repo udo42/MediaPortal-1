@@ -5,23 +5,13 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
   [AttributeUsage(AttributeTargets.All)]
   public class ProgramAttribute : Attribute 
   {
-    private string _displayName;
-
     public ProgramAttribute(string displayName, int languageId)
     {
       DisplayName = displayName;
       LanguageId = languageId;
     }
 
-    public string DisplayName
-    {
-      get
-      {
-        //todo grab displayname by language/resources
-        return _displayName;
-      }
-      private set { _displayName = value; }
-    }
+    public string DisplayName { get; private set; }
 
     public int LanguageId { get; private set; }
   }

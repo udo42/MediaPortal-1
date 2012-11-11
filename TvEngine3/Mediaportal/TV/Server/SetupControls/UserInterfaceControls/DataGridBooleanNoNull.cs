@@ -227,93 +227,48 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   public class DataGridFormatCellEventArgs : EventArgs
   {
     private readonly object currentCellValue;
-    private bool backBrushDispose;
-    private Brush backBrushVal;
-    private int colNum;
-    private bool fontDispose;
-    private Font fontVal;
-    private bool foreBrushDispose;
-    private Brush foreBrushVal;
-    private int rowNum;
-    private bool useBaseClassDrawingVal;
 
     public DataGridFormatCellEventArgs(int row, int col, object cellValue)
     {
-      rowNum = row;
-      colNum = col;
-      fontVal = null;
-      backBrushVal = null;
-      foreBrushVal = null;
-      fontDispose = false;
-      backBrushDispose = false;
-      foreBrushDispose = false;
-      useBaseClassDrawingVal = true;
+      Row = row;
+      Column = col;
+      TextFont = null;
+      BackBrush = null;
+      ForeBrush = null;
+      TextFontDispose = false;
+      BackBrushDispose = false;
+      ForeBrushDispose = false;
+      UseBaseClassDrawing = true;
       currentCellValue = cellValue;
     }
 
 
     //column being painted
-    public int Column
-    {
-      get { return colNum; }
-      set { colNum = value; }
-    }
+    public int Column { get; set; }
 
     //row being painted
-    public int Row
-    {
-      get { return rowNum; }
-      set { rowNum = value; }
-    }
+    public int Row { get; set; }
 
     //font used for drawing the text
-    public Font TextFont
-    {
-      get { return fontVal; }
-      set { fontVal = value; }
-    }
+    public Font TextFont { get; set; }
 
     //background brush
-    public Brush BackBrush
-    {
-      get { return backBrushVal; }
-      set { backBrushVal = value; }
-    }
+    public Brush BackBrush { get; set; }
 
     //foreground brush
-    public Brush ForeBrush
-    {
-      get { return foreBrushVal; }
-      set { foreBrushVal = value; }
-    }
+    public Brush ForeBrush { get; set; }
 
     //set true if you want the Paint method to call Dispose on the font
-    public bool TextFontDispose
-    {
-      get { return fontDispose; }
-      set { fontDispose = value; }
-    }
+    public bool TextFontDispose { get; set; }
 
     //set true if you want the Paint method to call Dispose on the brush
-    public bool BackBrushDispose
-    {
-      get { return backBrushDispose; }
-      set { backBrushDispose = value; }
-    }
+    public bool BackBrushDispose { get; set; }
 
     //set true if you want the Paint method to call Dispose on the brush
-    public bool ForeBrushDispose
-    {
-      get { return foreBrushDispose; }
-      set { foreBrushDispose = value; }
-    }
+    public bool ForeBrushDispose { get; set; }
 
     //set true if you want the Paint method to call base class
-    public bool UseBaseClassDrawing
-    {
-      get { return useBaseClassDrawingVal; }
-      set { useBaseClassDrawingVal = value; }
-    }
+    public bool UseBaseClassDrawing { get; set; }
 
     //contains the current cell value
     public object CurrentCellValue
@@ -331,29 +286,19 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   public class BoolValueChangedEventArgs : EventArgs
   {
     private readonly bool boolVal;
-    private int columnVal;
-    private int rowVal;
 
     public BoolValueChangedEventArgs(int row, int col, bool val)
     {
-      rowVal = row;
-      columnVal = col;
+      Row = row;
+      Column = col;
       boolVal = val;
     }
 
     //column to be painted
-    public int Column
-    {
-      get { return columnVal; }
-      set { columnVal = value; }
-    }
+    public int Column { get; set; }
 
     //row to be painted
-    public int Row
-    {
-      get { return rowVal; }
-      set { rowVal = value; }
-    }
+    public int Row { get; set; }
 
     //current value to be painted
     public bool BoolValue

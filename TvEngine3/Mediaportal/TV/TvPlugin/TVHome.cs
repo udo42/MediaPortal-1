@@ -131,7 +131,6 @@ namespace Mediaportal.TV.TvPlugin
     private static bool _doingChannelChange;
     private static bool _ServerNotConnectedHandled;
     private static bool _recoverTV;
-    private static bool _connected;
     private static bool _isAnyCardRecording;
 
 
@@ -873,11 +872,7 @@ namespace Mediaportal.TV.TvPlugin
       get { return _isAnyCardRecording; }
     }
 
-    public static bool Connected
-    {
-      get { return _connected; }
-      set { _connected = value; }
-    }
+    public static bool Connected { get; set; }
 
     public static IVirtualCard Card
     {

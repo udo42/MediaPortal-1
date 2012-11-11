@@ -27,11 +27,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
   /// </summary>
   public class TstDictionaryEntry : ICloneable
   {
-    private TstDictionaryEntry eqChild;
-    private TstDictionaryEntry highChild;
-    private bool isKey;
     private string key;
-    private TstDictionaryEntry lowChild;
     private readonly TstDictionaryEntry parent;
     private readonly char splitChar;
     private Object value;
@@ -46,14 +42,14 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
       char splitChar
       )
     {
-      isKey = false;
+      IsKey = false;
       key = null;
       value = null;
       this.parent = parent;
       this.splitChar = splitChar;
-      lowChild = null;
-      eqChild = null;
-      highChild = null;
+      LowChild = null;
+      EqChild = null;
+      HighChild = null;
     }
 
     /// <summary>
@@ -84,11 +80,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
     /// <value>
     /// true is the node is a key, false otherwize.
     /// </value>	
-    public bool IsKey
-    {
-      get { return isKey; }
-      set { isKey = value; }
-    }
+    public bool IsKey { get; set; }
 
     /// <summary>
     /// Gets the node key, if it is a key.
@@ -132,11 +124,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
     /// <value>
     /// The low child.
     /// </value>	
-    public TstDictionaryEntry LowChild
-    {
-      get { return lowChild; }
-      set { lowChild = value; }
-    }
+    public TstDictionaryEntry LowChild { get; set; }
 
     /// <summary>
     /// Gets the node ep child.
@@ -144,11 +132,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
     /// <value>
     /// The eq child.
     /// </value>	
-    public TstDictionaryEntry EqChild
-    {
-      get { return eqChild; }
-      set { eqChild = value; }
-    }
+    public TstDictionaryEntry EqChild { get; set; }
 
     /// <summary>
     /// Gets the node high child.
@@ -156,11 +140,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
     /// <value>
     /// The high child.
     /// </value>	
-    public TstDictionaryEntry HighChild
-    {
-      get { return highChild; }
-      set { highChild = value; }
-    }
+    public TstDictionaryEntry HighChild { get; set; }
 
     /// <summary>
     /// Gets a value indicating wheter the node has children.

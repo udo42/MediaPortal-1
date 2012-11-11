@@ -39,19 +39,14 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private class DisplaySoftwareEncoder
     {
       private readonly SoftwareEncoder _encoder;
-      private String _installed;
 
       public DisplaySoftwareEncoder(SoftwareEncoder encoder)
       {
-        _installed = "No";
+        Installed = "No";
         _encoder = encoder;
       }
 
-      public String Installed
-      {
-        get { return _installed; }
-        set { _installed = value; }
-      }
+      public String Installed { get; set; }
 
       public String Priority
       {

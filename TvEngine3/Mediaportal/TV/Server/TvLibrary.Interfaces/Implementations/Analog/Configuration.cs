@@ -35,17 +35,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog
   {
     #region variables
 
-    private int _cardId;
-    private int _customPeakQualityValue;
-    private int _customQualityValue;
-    private string _devicePath;
-    private Graph _graph;
-    private string _name;
-    private VIDEOENCODER_BITRATE_MODE _playbackQualityMode;
-    private QualityType _playbackQualityType;
-    private VIDEOENCODER_BITRATE_MODE _recordQualityMode;
-    private QualityType _recordQualityType;
-
     #endregion
 
     #region ctor
@@ -55,12 +44,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog
     /// </summary>
     private Configuration()
     {
-      _playbackQualityMode = VIDEOENCODER_BITRATE_MODE.ConstantBitRate;
-      _recordQualityMode = VIDEOENCODER_BITRATE_MODE.ConstantBitRate;
-      _playbackQualityType = QualityType.Default;
-      _recordQualityType = QualityType.Default;
-      _customQualityValue = 50;
-      _customPeakQualityValue = 75;
+      PlaybackQualityMode = VIDEOENCODER_BITRATE_MODE.ConstantBitRate;
+      RecordQualityMode = VIDEOENCODER_BITRATE_MODE.ConstantBitRate;
+      PlaybackQualityType = QualityType.Default;
+      RecordQualityType = QualityType.Default;
+      CustomQualityValue = 50;
+      CustomPeakQualityValue = 75;
     }
 
     #endregion
@@ -70,92 +59,52 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog
     ///<summary>
     /// Gets/Sets the custom quality value
     ///</summary>
-    public int CustomQualityValue
-    {
-      get { return _customQualityValue; }
-      set { _customQualityValue = value; }
-    }
+    public int CustomQualityValue { get; set; }
 
     /// <summary>
     /// Gets/Sets the custom peak quality value
     /// </summary>
-    public int CustomPeakQualityValue
-    {
-      get { return _customPeakQualityValue; }
-      set { _customPeakQualityValue = value; }
-    }
+    public int CustomPeakQualityValue { get; set; }
 
     /// <summary>
     /// Gets/Sets the playback quality type
     /// </summary>
-    public QualityType PlaybackQualityType
-    {
-      get { return _playbackQualityType; }
-      set { _playbackQualityType = value; }
-    }
+    public QualityType PlaybackQualityType { get; set; }
 
     /// <summary>
     /// Gets/Sets the record quality type
     /// </summary>
-    public QualityType RecordQualityType
-    {
-      get { return _recordQualityType; }
-      set { _recordQualityType = value; }
-    }
+    public QualityType RecordQualityType { get; set; }
 
     /// <summary>
     /// Gets/Sets the playback quality mode
     /// </summary>
-    public VIDEOENCODER_BITRATE_MODE PlaybackQualityMode
-    {
-      get { return _playbackQualityMode; }
-      set { _playbackQualityMode = value; }
-    }
+    public VIDEOENCODER_BITRATE_MODE PlaybackQualityMode { get; set; }
 
     /// <summary>
     /// Gets/Sets the record quality mode
     /// </summary>
-    public VIDEOENCODER_BITRATE_MODE RecordQualityMode
-    {
-      get { return _recordQualityMode; }
-      set { _recordQualityMode = value; }
-    }
+    public VIDEOENCODER_BITRATE_MODE RecordQualityMode { get; set; }
 
     /// <summary>
     /// Gets/Sets the card name
     /// </summary>
-    public string Name
-    {
-      get { return _name; }
-      set { _name = value; }
-    }
+    public string Name { get; set; }
 
     /// <summary>
     /// Gets/Sets the device path
     /// </summary>
-    public string DevicePath
-    {
-      get { return _devicePath; }
-      set { _devicePath = value; }
-    }
+    public string DevicePath { get; set; }
 
     /// <summary>
     /// Gets/Sets the card id
     /// </summary>
-    public int CardId
-    {
-      get { return _cardId; }
-      set { _cardId = value; }
-    }
+    public int CardId { get; set; }
 
     /// <summary>
     /// Gets/Sets the graph
     /// </summary>
-    public Graph Graph
-    {
-      get { return _graph; }
-      set { _graph = value; }
-    }
+    public Graph Graph { get; set; }
 
     #endregion
 

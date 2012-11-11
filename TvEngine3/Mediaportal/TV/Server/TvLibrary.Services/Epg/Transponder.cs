@@ -36,8 +36,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
 
     private List<Channel> _channels;
     private int _currentChannelIndex;
-    private TuningDetail _detail;
-    private bool _inUse;
 
     #endregion
 
@@ -50,9 +48,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
     public Transponder(TuningDetail detail)
     {
       _channels = new List<Channel>();
-      _detail = detail;
+      TuningDetail = detail;
       _currentChannelIndex = -1;
-      _inUse = false;
+      InUse = false;
     }
 
     #endregion
@@ -63,11 +61,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
     /// Gets or sets a value indicating whether the transponder is in use or not
     /// </summary>
     /// <value><c>true</c> if in use; otherwise, <c>false</c>.</value>
-    public bool InUse
-    {
-      get { return _inUse; }
-      set { _inUse = value; }
-    }
+    public bool InUse { get; set; }
 
     /// <summary>
     /// Gets or sets the current channel index.
@@ -97,11 +91,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
     /// Gets or sets the tuning details for this transponder.
     /// </summary>
     /// <value>The tuning detail.</value>
-    public TuningDetail TuningDetail
-    {
-      get { return _detail; }
-      set { _detail = value; }
-    }
+    public TuningDetail TuningDetail { get; set; }
 
     /// <summary>
     /// Gets the tuning detail for the current channel.

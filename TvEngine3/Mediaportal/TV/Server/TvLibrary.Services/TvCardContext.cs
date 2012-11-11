@@ -44,9 +44,6 @@ namespace Mediaportal.TV.Server.TVLibrary
     private readonly IDictionary<string, IUser> _usersHistory;
     //holding a list of all the timeshifting users that have been stopped - mkaing it possible for the client to query the possible stop reason.
 
-    private OwnerSubChannel _ownerSubChannel;
-    
-
     #endregion
 
     #region ctor
@@ -58,7 +55,7 @@ namespace Mediaportal.TV.Server.TVLibrary
     {      
       _users = new Dictionary<string, IUser>();
       _usersHistory = new Dictionary<string, IUser>();
-      _ownerSubChannel = null;
+      OwnerSubChannel = null;
 
       //_timer.Interval = 60000;
       //_timer.Enabled = true;
@@ -73,11 +70,7 @@ namespace Mediaportal.TV.Server.TVLibrary
     ///   Sets the owner.
     /// </summary>
     /// <value>The owner.</value>
-    public OwnerSubChannel OwnerSubChannel
-    {
-      get { return _ownerSubChannel; }
-      set { _ownerSubChannel = value; }      
-    }
+    public OwnerSubChannel OwnerSubChannel { get; set; }
 
     /// <summary>
     ///   Gets the users.

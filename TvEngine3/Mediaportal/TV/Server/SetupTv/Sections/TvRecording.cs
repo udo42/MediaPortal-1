@@ -627,13 +627,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     #region Fields
 
     private readonly List<TreeNode> tvDbRecs = new List<TreeNode>();
-    private string fCurrentImportPath;
 
-    public string CurrentImportPath
-    {
-      get { return fCurrentImportPath; }
-      set { fCurrentImportPath = value; }
-    }
+    public string CurrentImportPath { get; set; }
 
     #endregion
 

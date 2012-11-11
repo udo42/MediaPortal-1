@@ -60,11 +60,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     private readonly int _steppingDelta;
 
     /// <summary>
-    /// The current value
-    /// </summary>
-    private int _value;
-
-    /// <summary>
     /// Constructor
     /// </summary>
     /// <param name="minValue">Minimum value</param>
@@ -93,15 +88,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
       _manual = manual;
       if (value > maxValue)
       {
-        _value = maxValue;
+        Value = maxValue;
       }
       else if (defaultValue < minValue)
       {
-        _value = minValue;
+        Value = minValue;
       }
       else
       {
-        _value = value;
+        Value = value;
       }
     }
 
@@ -148,11 +143,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     /// <summary>
     /// Gets/Sets the current value
     /// </summary>
-    public int Value
-    {
-      get { return _value; }
-      set { _value = value; }
-    }
+    public int Value { get; set; }
 
     /// <summary>
     /// Prints the values of this video quality

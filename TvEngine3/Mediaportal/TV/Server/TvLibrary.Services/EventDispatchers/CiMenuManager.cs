@@ -16,12 +16,6 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
     /// </summary>
     private int _activeCiMenuCard = -1;
 
-    /// <summary>
-    /// Flag that is that to true when a users opens CI menu interactive.
-    /// It is used to filter out unwanted, unrequested CI callbacks.
-    /// </summary>
-    private bool _isCiMenuInteractive;
-
     #endregion
 
     private CiMenu _curMenu;
@@ -30,11 +24,7 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
     /// Flag that is that to true when a users opens CI menu interactive.
     /// It is used to filter out unwanted, unrequested CI callbacks.
     /// </summary>
-    public bool IsCiMenuInteractive
-    {
-      get { return _isCiMenuInteractive; }
-      set { _isCiMenuInteractive = value; }
-    }
+    public bool IsCiMenuInteractive { get; set; }
 
     /// <summary>
     /// Remember the number of currently attached CI menu supporting card.

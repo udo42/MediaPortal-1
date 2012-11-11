@@ -46,10 +46,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     private readonly ProgramBLL _program;
     private readonly ScheduleBLL _schedule;
     private readonly IUser _user;
-    private CardDetail _cardInfo;
-    private DateTime _dateTimeRecordingStarted;
     private string _fileName;
-    private Recording _recording;
 
     #endregion
 
@@ -103,30 +100,18 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
 
     #region properties
 
-    public Recording Recording
-    {
-      get { return _recording; }
-      set { _recording = value; }
-    }
+    public Recording Recording { get; set; }
 
     /// <summary>
     /// get/sets the CardInfo for this recording
     /// </summary>
-    public CardDetail CardInfo
-    {
-      get { return _cardInfo; }
-      set { _cardInfo = value; }
-    }
+    public CardDetail CardInfo { get; set; }
 
     /// <summary>
     /// Gets or sets the recording start date time.
     /// </summary>
     /// <value>The recording start date time.</value>
-    public DateTime RecordingStartDateTime
-    {
-      get { return _dateTimeRecordingStarted; }
-      set { _dateTimeRecordingStarted = value; }
-    }
+    public DateTime RecordingStartDateTime { get; set; }
 
     /// <summary>
     /// gets the Schedule belonging to this recording
