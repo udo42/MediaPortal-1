@@ -44,37 +44,37 @@ namespace Mediaportal.TV.Server.SetupControls
 
     protected static TuningDetail CreateInitialTuningDetail()
     {
-      string channelName = "";
-      int channelFrequency = 0;
-      int channelNumber = 0;
-      int country = 31;
+      const string channelName = "";
+      const int channelFrequency = 0;
+      const int channelNumber = 0;
+      const int country = 31;
       bool isRadio = false;
       bool isTv = false;
-      int tunerSource = 0;
-      int videoInputType = 0;
-      int audioInputType = 0;
+      const int tunerSource = 0;
+      const int videoInputType = 0;
+      const int audioInputType = 0;
       bool isVcrSignal = false;
-      int symbolRate = 0;
-      var modulation = (int)ModulationType.ModNotSet;
-      var polarisation = (int)Polarisation.NotSet;
-      int diseqc = 0;
-      int bandwidth = 8;
-      int pmtPid = -1;
+      const int symbolRate = 0;
+      const int modulation = (int)ModulationType.ModNotSet;
+      const int polarisation = (int)Polarisation.NotSet;
+      const int diseqc = 0;
+      const int bandwidth = 8;
+      const int pmtPid = -1;
       bool freeToAir = true;
-      int networkId = -1;
-      int serviceId = -1;
-      int transportId = -1;
-      int minorChannel = -1;
-      int majorChannel = -1;
-      string provider = "";
-      int channelType = 0;
-      int idLnbType = 0;
-      int satIndex = -1;
+      const int networkId = -1;
+      const int serviceId = -1;
+      const int transportId = -1;
+      const int minorChannel = -1;
+      const int majorChannel = -1;
+      const string provider = "";
+      const int channelType = 0;
+      const int idLnbType = 0;
+      const int satIndex = -1;
       var innerFecRate = (int)BinaryConvolutionCodeRate.RateNotSet;
       var pilot = (int)Pilot.NotSet;
       var rollOff = (int)RollOff.NotSet;
-      string url = "";
-      int bitrate = 0;
+      const string url = "";
+      const int bitrate = 0;
 
       var initialTuningDetail = new TuningDetail
       {

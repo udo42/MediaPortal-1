@@ -41,7 +41,7 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
     #region variables
 
     //private TvBusinessLayer cmLayer = new TvBusinessLayer();
-    private bool _debugMode = true;
+    private const bool _debugMode = true;
     private bool _isUpdating;
     private bool _stopService;
 

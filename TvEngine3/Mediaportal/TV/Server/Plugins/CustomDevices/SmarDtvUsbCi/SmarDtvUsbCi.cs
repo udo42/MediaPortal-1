@@ -143,7 +143,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     #region constants
 
     //private int ApplicationInfoSize = 360;
-    private int VersionInfoSize = 52;
+    private const int VersionInfoSize = 52;
 
     #endregion
 

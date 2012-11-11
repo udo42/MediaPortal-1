@@ -1192,7 +1192,7 @@ namespace Mediaportal.TV.TvPlugin
       if (g_Player.SupportsCC) // The current subtitle CC is not in the list, add it on top of it
       {
         string strActive = (g_Player.SupportsCC) ? strActiveLabel : null;
-        string CC1 = "CC1";
+        const string CC1 = "CC1";
 
         // create a list item object to add to the list
         var pItem = new GUIListItem();

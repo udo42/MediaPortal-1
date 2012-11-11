@@ -518,7 +518,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
             foreach (Delegate del in _epgScheduleDue.GetInvocationList())
             {
               Type t = handler.Target.GetType();
-              if (del.Target.GetType().Equals(t))
+              if (del.Target.GetType() == t)
                 _epgScheduleDue -= del as EPGScheduleHandler;
             }
           }

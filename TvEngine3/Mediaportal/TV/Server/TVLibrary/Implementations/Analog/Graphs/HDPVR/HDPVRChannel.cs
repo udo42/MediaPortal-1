@@ -32,8 +32,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
   {
     #region constants
 
-    private readonly int PmtPid = 0x100;
-    private readonly int ServiceId = 1;
+    private const int PmtPid = 0x100;
+    private const int ServiceId = 1;
     private readonly TvCardHDPVR _card;
 
     #endregion

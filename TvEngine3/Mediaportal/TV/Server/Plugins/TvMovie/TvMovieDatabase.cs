@@ -1095,7 +1095,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     {
       try
       {
-        long iSec = 0; //(long)dt.Second;
+        const long iSec = 0; //(long)dt.Second;
         long iMin = dt.Minute;
         long iHour = dt.Hour;
         long iDay = dt.Day;

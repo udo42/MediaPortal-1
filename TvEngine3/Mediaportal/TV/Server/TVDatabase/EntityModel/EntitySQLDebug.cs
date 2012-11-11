@@ -42,7 +42,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel
                 conn, context.CommandTimeout
                 };
 
-      BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
+      const BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
       object updTranslator = Activator.CreateInstance(updTranslate, flags, null, parameter, null);
       MethodInfo prodCommands = updTranslate.GetMethod("ProduceCommands", flags);
       object updateCommands = prodCommands.Invoke(updTranslator, null);

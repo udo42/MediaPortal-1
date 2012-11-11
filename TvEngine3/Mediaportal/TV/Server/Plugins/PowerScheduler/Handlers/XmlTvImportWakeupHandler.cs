@@ -38,7 +38,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
   {
     #region Variables    
 
-    private string _handlerName = "XmlTvImportWakeupHandler";
+    private const string _handlerName = "XmlTvImportWakeupHandler";
 
     #endregion
 

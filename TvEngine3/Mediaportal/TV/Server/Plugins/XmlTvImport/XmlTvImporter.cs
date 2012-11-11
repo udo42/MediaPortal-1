@@ -423,7 +423,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
           {
             this.LogInfo("FTP username/password detected.");
 
-            int userStartIdx = 6; //6 is the length of chars in  --> "ftp://"
+            const int userStartIdx = 6; //6 is the length of chars in  --> "ftp://"
             int userEndIdx = URL.IndexOf(":", userStartIdx);
 
             string user = URL.Substring(userStartIdx, (userEndIdx - userStartIdx));

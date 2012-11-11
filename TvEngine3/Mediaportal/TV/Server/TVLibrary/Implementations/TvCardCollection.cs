@@ -340,7 +340,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
                 this.LogDebug("Detected DVB card:{0}", name);
                 // determine the DVB card supported GUIDs here!
                 _providerType = networkDVB as ITunerCap;
-                int ulcNetworkTypesMax = 5;
+                const int ulcNetworkTypesMax = 5;
                 int pulcNetworkTypes;
                 var pguidNetworkTypes = new Guid[ulcNetworkTypesMax];
                 int hr = _providerType.get_SupportedNetworkTypes(ulcNetworkTypesMax, out pulcNetworkTypes,

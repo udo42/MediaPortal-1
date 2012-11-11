@@ -721,7 +721,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
     public bool _gumboTest;
     private ListViewItem _selectedItem;
-    private int _timeoutMax = 10;
+    private const int _timeoutMax = 10;
     private int _timeoutRemaining;
 
     #endregion Members

@@ -172,7 +172,7 @@ namespace Mediaportal.TV.Server.TVLibrary
         szTemp = String.Format("{0:f} KB", ((dwFileSize) / 1024.0f) + fToAdd);
         return szTemp;
       }
-      long iOneMeg = 1024 * 1024;
+      const long iOneMeg = 1024 * 1024;
 
       // file < 1 megabyte?
       if (dwFileSize < iOneMeg)
@@ -445,7 +445,7 @@ namespace Mediaportal.TV.Server.TVLibrary
     {
       try
       {
-        long iSec = 0; //(long)dt.Second;
+        const long iSec = 0; //(long)dt.Second;
         long iMin = dt.Minute;
         long iHour = dt.Hour;
         long iDay = dt.Day;

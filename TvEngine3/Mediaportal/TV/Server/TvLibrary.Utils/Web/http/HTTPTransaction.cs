@@ -50,10 +50,10 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     private CookieCollection _cookies;
     private byte[] _data;
     private string _error = string.Empty;
-    private string _postType = "application/x-www-form-urlencoded";
+    private const string _postType = "application/x-www-form-urlencoded";
     private HttpWebResponse _response;
     private readonly IHttpStatistics _stats;
-    private int blockSize = 8196;
+    private const int blockSize = 8196;
 
     #endregion
 

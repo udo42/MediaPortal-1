@@ -152,7 +152,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 
     private static long GetFrequency(string text, string precision)
     {
-      float tmp = 123.25f;
+      const float tmp = 123.25f;
       if (tmp.ToString("f" + precision).IndexOf(',') > 0)
       {
         text = text.Replace('.', ',');

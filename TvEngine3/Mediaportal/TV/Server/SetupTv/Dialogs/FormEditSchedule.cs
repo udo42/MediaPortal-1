@@ -110,7 +110,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
         if (prop.Name.ToUpperInvariant().Equals("TITLE"))
         {
           var prgField = new ProgramField(prop.Name, prop.PropertyType);
-          ConditionOperator op = ConditionOperator.Equals;          
+          const ConditionOperator op = ConditionOperator.Equals;          
           var prgCond = new SelectedProgramCondition<string>(prgField.Name, Program.Title, op);
           AddToListBox(prgCond, prgField.Name, listBoxPrograms);
           break;
@@ -154,7 +154,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
     private void AddTvGroups()
     {
       mpComboBoxChannelsGroup.Items.Clear();
-      ChannelGroupIncludeRelationEnum include = ChannelGroupIncludeRelationEnum.GroupMaps;      
+      const ChannelGroupIncludeRelationEnum include = ChannelGroupIncludeRelationEnum.GroupMaps;      
       IList<ChannelGroup> groups = ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllChannelGroupsByMediaType(MediaTypeEnum.TV, include);      
       foreach (ChannelGroup group in groups)
         mpComboBoxChannelsGroup.Items.Add(new ComboBoxExItem(group.GroupName, -1, group.IdGroup));

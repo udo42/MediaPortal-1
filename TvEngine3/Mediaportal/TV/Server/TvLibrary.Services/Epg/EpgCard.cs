@@ -394,7 +394,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
         return false;
       }
 
-      TvResult result = TvResult.UnknownError;
+      const TvResult result = TvResult.UnknownError;
       //handle ATSC
       var atscChannel = tuning as ATSCChannel;
       if (atscChannel != null)

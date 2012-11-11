@@ -1129,7 +1129,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         return true;   // Don't bother retrying.
       }
 
-      int paramSize = sizeof(Int32);
+      const int paramSize = sizeof(Int32);
       IntPtr buffer = Marshal.AllocCoTaskMem(paramSize);
       Marshal.WriteInt32(buffer, (int)serviceId);
       DVB_MMI.DumpBinary(buffer, 0, paramSize);

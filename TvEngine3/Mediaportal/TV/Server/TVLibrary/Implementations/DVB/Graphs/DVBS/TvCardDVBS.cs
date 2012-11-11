@@ -141,9 +141,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
       var tuner = (ITuner)_filterNetworkProvider;
 
       // Defaults: Ku linear "universal" LNB settings.
-      int lowOsc = 9750000;
-      int hiOsc = 10600000;
-      int switchFrequency = 11700000;
+      const int lowOsc = 9750000;
+      const int hiOsc = 10600000;
+      const int switchFrequency = 11700000;
 
       IEnumTuningSpaces enumTuning;
       container.get_EnumTuningSpaces(out enumTuning);

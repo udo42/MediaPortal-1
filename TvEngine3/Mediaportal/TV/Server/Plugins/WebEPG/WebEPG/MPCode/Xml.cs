@@ -39,7 +39,7 @@ namespace WebEPG.MPCode
     private bool _bChanged;
     private XmlDocument _doc;
     private readonly Encoding _encoding = Encoding.UTF8;
-    private string _rootName = "profile";
+    private const string _rootName = "profile";
     private readonly string _strFileName = "";
 
     /// <summary>

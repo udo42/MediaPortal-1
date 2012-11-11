@@ -333,10 +333,10 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
           Boolean gotMatch = false;
 
-          string ALREADY_MAPPED = "Already mapped (got external id)";
-          string EXACT_MATCH = "Exact match";
-          string PARTIAL_MATCH = "Partial match";
-          string NO_MATCH = "No match";
+          const string ALREADY_MAPPED = "Already mapped (got external id)";
+          const string EXACT_MATCH = "Exact match";
+          const string PARTIAL_MATCH = "Partial match";
+          const string NO_MATCH = "No match";
 
           DataGridViewCell cell = gridRow.Cells["matchType"];
 

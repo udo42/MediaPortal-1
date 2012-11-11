@@ -153,7 +153,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     {
       title = String.Empty;
 
-      int bufferSize = 2048;
+      const int bufferSize = 2048;
       IntPtr buffer = Marshal.AllocCoTaskMem(bufferSize);
       for (int i = 0; i < bufferSize; i++)
       {

@@ -48,7 +48,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
 
     private static Recording _oActiveRecording;
     private static bool _bIsLiveRecording;
-    private DBView _currentDbView = DBView.Recordings;
+    private const DBView _currentDbView = DBView.Recordings;
     private string _currentLabel = string.Empty;
     private SortMethod _currentSortMethod = SortMethod.Date;
     private bool _deleteWatchedShows;

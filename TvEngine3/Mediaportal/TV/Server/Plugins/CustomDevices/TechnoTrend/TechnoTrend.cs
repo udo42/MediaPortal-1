@@ -1097,7 +1097,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
     /// <returns><c>-1</c> if it is not possible to determine the device identifier, otherwise the device identifier</returns>
     private int GetDeviceId(IBaseFilter tunerFilter)
     {
-      int deviceId = -1;
+      const int deviceId = -1;
 
       var pin = DsFindPin.ByDirection(tunerFilter, PinDirection.Output, 0) as IKsPin;
       if (pin == null)

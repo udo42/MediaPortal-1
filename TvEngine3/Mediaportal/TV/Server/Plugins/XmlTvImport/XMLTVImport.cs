@@ -127,7 +127,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
         decimal tmpRating = -1;
         NumberFormatInfo NFO = NumberFormatInfo.InvariantInfo;
-        NumberStyles NStyle = NumberStyles.Float;
+        const NumberStyles NStyle = NumberStyles.Float;
 
         if (Decimal.TryParse(strRating, NStyle, NFO, out tmpRating))
           Rating = Convert.ToInt16(tmpRating);
@@ -1092,7 +1092,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     {
       try
       {
-        long iSec = 0; //(long)dt.Second;
+        const long iSec = 0; //(long)dt.Second;
         long iMin = dt.Minute;
         long iHour = dt.Hour;
         long iDay = dt.Day;

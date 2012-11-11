@@ -33,7 +33,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 
     public static int ComObject(object o)
     {
-      int hr = 0;
+      const int hr = 0;
       if (o != null)
       {
         DsUtils.ReleaseComObject(o);

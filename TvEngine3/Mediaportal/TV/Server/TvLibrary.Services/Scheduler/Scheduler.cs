@@ -784,7 +784,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
 
     private bool IsTimeToRecordWeeklyEveryTimeOnThisChannel(Schedule schedule, DateTime currentTime)
     {
-      bool isTimeToRecord = false;      
+      const bool isTimeToRecord = false;      
       Program current = ProgramManagement.GetProgramAt(currentTime.AddMinutes(schedule.PreRecordInterval),
                                                        schedule.ProgramName);
 
@@ -815,7 +815,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
 
     private bool IsTimeToRecordEveryTimeOnEveryChannel(Schedule schedule)
     {
-      bool isTimeToRecord = false;
+      const bool isTimeToRecord = false;
       bool createSpawnedOnceSchedule = false;
 
       IList<Program> programs = ProgramManagement.RetrieveCurrentRunningByTitle(schedule.ProgramName,
@@ -841,7 +841,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
 
     private bool IsTimeToRecordEveryTimeOnThisChannel(Schedule schedule, DateTime currentTime)
     {
-      bool isTimeToRecord = false;
+      const bool isTimeToRecord = false;
       Program current =
         ProgramManagement.GetProgramAt(currentTime.AddMinutes(schedule.PreRecordInterval),
                                        schedule.ProgramName);

@@ -108,7 +108,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
             fileName = fileName.Replace("\r\n", " ");
             fileName = Path.ChangeExtension(fileName, ".ts");
 
-            bool useErrorDetection = true;
+            const bool useErrorDetection = true;
             if (useErrorDetection)
             {
               // fix mantis 0002807: A/V detection for recordings is not working correctly 

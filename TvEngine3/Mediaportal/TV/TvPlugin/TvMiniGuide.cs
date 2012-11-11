@@ -428,7 +428,7 @@ namespace Mediaportal.TV.TvPlugin
       //List<int> TSChannels = null;
       int SelectedID = 0;
       int channelID = 0;
-      bool DisplayStatusInfo = true;
+      const bool DisplayStatusInfo = true;
 
 
       Dictionary<int, ChannelState> tvChannelStatesList = null;
