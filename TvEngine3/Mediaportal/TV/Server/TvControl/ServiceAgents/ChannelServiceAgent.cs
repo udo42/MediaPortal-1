@@ -13,6 +13,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {      
     }
 
+    #region IChannelService Members
+
     public IList<Channel> GetAllChannelsByGroupIdAndMediaType(int groupId, MediaTypeEnum mediatype)
     {
       return _channel.GetAllChannelsByGroupIdAndMediaType(groupId, mediatype);
@@ -154,5 +156,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {
       return _channel.GetAllChannelsByGroupIdAndMediaType(idGroup, mediaTypeEnum, include);
     }
+
+    #endregion
   }
 }

@@ -34,9 +34,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
   public class AnalogScanning : ITVScanning, IAnalogChannelScanCallback
   {
     private readonly TvCardAnalog _card;
+    private ManualResetEvent _event;
     private long _previousFrequency;
     private int _radioSensitivity = 1;
-    private ManualResetEvent _event;
     private IAnalogChanelScan _scanner;
 
     /// <summary>
@@ -58,19 +58,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
     }
 
     /// <summary>
-    /// Disposes this instance.
-    /// </summary>
-    public void Dispose() {}
-
-    /// <summary>
-    /// resets the scanner
-    /// </summary>
-    public void Reset()
-    {
-      _previousFrequency = 0;
-    }
-
-    /// <summary>
     /// Property to set Radio tuning sensitivity.
     /// sensitivity range from 1MHz for value 1 to 0.1MHZ for value 10
     /// </summary>
@@ -78,6 +65,30 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
     {
       get { return _radioSensitivity; }
       set { _radioSensitivity = value; }
+    }
+
+    #region IAnalogChannelScanCallback Members
+
+    /// <summary>
+    /// Called when [scanner done].
+    /// </summary>
+    /// <returns></returns>
+    public int OnScannerDone()
+    {
+      _event.Set();
+      return 0;
+    }
+
+    #endregion
+
+    #region ITVScanning Members
+
+    /// <summary>
+    /// resets the scanner
+    /// </summary>
+    public void Reset()
+    {
+      _previousFrequency = 0;
     }
 
     /// <summary>
@@ -174,18 +185,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
       return new List<IChannel>();
     }
 
-    #region IAnalogChannelScanCallback Members
+    #endregion
 
     /// <summary>
-    /// Called when [scanner done].
+    /// Disposes this instance.
     /// </summary>
-    /// <returns></returns>
-    public int OnScannerDone()
-    {
-      _event.Set();
-      return 0;
-    }
-
-    #endregion
+    public void Dispose() {}
   }
 }

@@ -35,12 +35,10 @@ namespace Mediaportal.TV.TvPlugin
 {
   public class TvNewScheduleSearchType : GUIInternalWindow
   {
- 
-
-    [SkinControl(2)] protected GUIButtonControl btnQuickRecord = null;
     [SkinControl(3)] protected GUIButtonControl btnAdvancedRecord = null;
-    [SkinControl(6)] protected GUIButtonControl btnTvGuide = null;
+    [SkinControl(2)] protected GUIButtonControl btnQuickRecord = null;
     [SkinControl(7)] protected GUIButtonControl btnSearch = null;
+    [SkinControl(6)] protected GUIButtonControl btnTvGuide = null;
 
     public TvNewScheduleSearchType()
     {

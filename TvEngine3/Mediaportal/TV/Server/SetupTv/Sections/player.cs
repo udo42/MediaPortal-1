@@ -30,19 +30,14 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   internal class Player
   {
- 
-
-    [ComImport, Guid("b9559486-E1BB-45D3-A2A2-9A7AFE49B23F")]
-    protected class TsReader {}
-
+    protected Form _form;
     protected IFilterGraph2 _graphBuilder;
+    private IMediaControl _mediaCtrl;
+    protected IPin _pinAudio;
+    protected IPin _pinVideo;
     protected DsROTEntry _rotEntry;
     protected IBaseFilter _tsReader;
-    protected IPin _pinVideo;
-    protected IPin _pinAudio;
-    private IMediaControl _mediaCtrl;
     protected IVideoWindow _videoWin;
-    protected Form _form;
 
     public bool Play(string fileName, Form form)
     {
@@ -163,5 +158,12 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       _videoWin.SetWindowPosition(_form.ClientRectangle.X, _form.ClientRectangle.Y, _form.ClientRectangle.Width,
                                   _form.ClientRectangle.Height);
     }
+
+    #region Nested type: TsReader
+
+    [ComImport, Guid("b9559486-E1BB-45D3-A2A2-9A7AFE49B23F")]
+    protected class TsReader {}
+
+    #endregion
   }
 }

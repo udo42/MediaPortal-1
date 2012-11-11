@@ -28,27 +28,13 @@ namespace Mediaportal.TV.TvPlugin
   /// </summary>
   public class TvOverlay : GUIInternalOverlayWindow, IRenderLayer
   {
-    private DateTime _updateTimer = DateTime.Now;
-    private bool _lastStatus = false;
     private bool _didRenderLastTime = false;
+    private bool _lastStatus = false;
+    private DateTime _updateTimer = DateTime.Now;
 
     public TvOverlay()
     {
       GetID = (int)Window.WINDOW_TV_OVERLAY;
-    }
-
-    public override bool Init()
-    {
-      bool bResult = Load(GUIGraphicsContext.Skin + @"\tvOverlay.xml");
-      GetID = (int)Window.WINDOW_TV_OVERLAY;
-      GUILayerManager.RegisterLayer(this, GUILayerManager.LayerType.TvOverlay);
-      return bResult;
-    }
-
-    public override void PreInit()
-    {
-      base.PreInit();
-      AllocResources();
     }
 
     public override bool SupportsDelayedLoad
@@ -57,22 +43,6 @@ namespace Mediaportal.TV.TvPlugin
     }
 
     #region IRenderLayer
-
-    private void OnUpdateState(bool render)
-    {
-      if (_didRenderLastTime != render)
-      {
-        _didRenderLastTime = render;
-        if (render)
-        {
-          QueueAnimation(AnimationType.WindowOpen);
-        }
-        else
-        {
-          QueueAnimation(AnimationType.WindowClose);
-        }
-      }
-    }
 
     public bool ShouldRenderLayer()
     {
@@ -114,6 +84,36 @@ namespace Mediaportal.TV.TvPlugin
       Render(timePassed);
     }
 
+    private void OnUpdateState(bool render)
+    {
+      if (_didRenderLastTime != render)
+      {
+        _didRenderLastTime = render;
+        if (render)
+        {
+          QueueAnimation(AnimationType.WindowOpen);
+        }
+        else
+        {
+          QueueAnimation(AnimationType.WindowClose);
+        }
+      }
+    }
+
     #endregion
+
+    public override bool Init()
+    {
+      bool bResult = Load(GUIGraphicsContext.Skin + @"\tvOverlay.xml");
+      GetID = (int)Window.WINDOW_TV_OVERLAY;
+      GUILayerManager.RegisterLayer(this, GUILayerManager.LayerType.TvOverlay);
+      return bResult;
+    }
+
+    public override void PreInit()
+    {
+      base.PreInit();
+      AllocResources();
+    }
   }
 }

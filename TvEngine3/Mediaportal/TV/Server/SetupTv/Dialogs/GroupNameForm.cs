@@ -49,17 +49,29 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       InitNew();
     }
 
+    public GroupNameForm(string groupName)
+    {
+      InitializeComponent();
+      InitChange(groupName);
+    }
+
+    public string GroupName
+    {
+      get { return _groupName; }
+      set { _groupName = value; }
+    }
+
+    public MediaTypeEnum MediaType
+    {
+      get { return _mediaType; }
+      set { _mediaType = value; }
+    }
+
     private void InitNew()
     {
       Text = "Enter name for new group";
       mpLabel1.Text = "Please enter the name for the new group";
       GetGroupNames();
-    }
-
-    public GroupNameForm(string groupName)
-    {
-      InitializeComponent();
-      InitChange(groupName);
     }
 
     private void InitChange(string groupName)
@@ -103,18 +115,6 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
     {
       DialogResult = DialogResult.Cancel;
       Close();
-    }
-
-    public string GroupName
-    {
-      get { return _groupName; }
-      set { _groupName = value; }
-    }
-
-    public MediaTypeEnum MediaType
-    {
-      get { return _mediaType; }
-      set { _mediaType = value; }
     }
 
     private void mpTextBox1_KeyUp(object sender, KeyEventArgs e)

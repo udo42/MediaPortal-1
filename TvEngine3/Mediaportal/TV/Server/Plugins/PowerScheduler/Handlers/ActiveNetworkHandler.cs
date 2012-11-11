@@ -38,15 +38,17 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
   /// </summary>
   internal class NetworkAdapter
   {
- 
-    private PerformanceCounter dlCounter, ulCounter; // Performance counters to monitor download and upload speed.
+    private PerformanceCounter dlCounter; // Performance counters to monitor download and upload speed.
+    internal long dlSpeedPeak; // Download Upload peak values in KB/s
     //private long dlSpeed, ulSpeed;			  	          // Download Upload speed in bytes per second.
     //private long dlValue, ulValue;				            // Download Upload counter value in bytes.
-    private long dlValueOld, ulValueOld; // Download Upload counter value one second earlier, in bytes.
+    private long dlValueOld; // Download Upload counter value one second earlier, in bytes.
     private DateTime lastSampleTime;
 
-    internal long dlSpeedPeak, ulSpeedPeak; // Download Upload peak values in KB/s
     internal string name; // The name of the adapter.
+    private PerformanceCounter ulCounter; // Performance counters to monitor download and upload speed.
+    internal long ulSpeedPeak; // Download Upload peak values in KB/s
+    private long ulValueOld; // Download Upload counter value one second earlier, in bytes.
 
     /// <summary>
     /// Instances of this class are supposed to be created only in an NetworkMonitorHandler.
@@ -104,8 +106,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
   public class NetworkMonitorHandler : IStandbyHandler
   {
-
-
     #region Constants
 
     private const int MonitorInteval = 10; // seconds
@@ -114,11 +114,11 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
     #region Variables
 
-    private System.Timers.Timer timer; // The timer event executes every second to refresh the values in adapters.
+    private List<string> _preventers = new List<string>(); // The list of standby preventers.
     private Int32 idleLimit; // Minimum transferrate considered as network activity in KB/s.
 
     private ArrayList monitoredAdapters = new ArrayList(); // The list of monitored adapters on the computer.
-    private List<string> _preventers = new List<string>(); // The list of standby preventers.
+    private System.Timers.Timer timer; // The timer event executes every second to refresh the values in adapters.
 
     #endregion
 

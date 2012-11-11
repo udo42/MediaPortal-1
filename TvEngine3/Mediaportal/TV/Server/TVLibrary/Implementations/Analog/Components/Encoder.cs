@@ -32,8 +32,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
 {
   internal class Encoder
   {
-
-
     #region constants
 
     private static readonly Guid MediaSubtype_Plextor = new Guid(0x30355844, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa,
@@ -44,14 +42,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     #region variables
 
     /// <summary>
-    /// The capture pin = MPEG2 PS pin
+    /// The sw audio encoder device
     /// </summary>
-    private IPin _pinCapture;
-
-    /// <summary>
-    /// The hw video encoder device
-    /// </summary>
-    private DsDevice _videoEncoderDevice;
+    private DsDevice _audioCompressorDevice;
 
     /// <summary>
     /// The hw audio encoder device
@@ -59,44 +52,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     private DsDevice _audioEncoderDevice;
 
     /// <summary>
-    /// The multiplexer device
-    /// </summary>
-    private DsDevice _multiplexerDevice;
-
-    /// <summary>
-    /// The hw video encoder filter
-    /// </summary>
-    private IBaseFilter _filterVideoEncoder;
-
-    /// <summary>
-    /// The hw audio encoder filter
-    /// </summary>
-    private IBaseFilter _filterAudioEncoder;
-
-    /// <summary>
-    /// The hw/Sw multipler filter
-    /// </summary>
-    private IBaseFilter _filterMultiplexer;
-
-    /// <summary>
-    /// The MPEG2-Demux filter
-    /// </summary>
-    private IBaseFilter _filterMpeg2Demux;
-
-    /// <summary>
     /// The analog mpeg muxer filter
     /// </summary>
     private IBaseFilter _filterAnalogMpegMuxer;
-
-    /// <summary>
-    /// The sw video encoder device
-    /// </summary>
-    private DsDevice _videoCompressorDevice;
-
-    /// <summary>
-    /// The sw audio encoder device
-    /// </summary>
-    private DsDevice _audioCompressorDevice;
 
     /// <summary>
     /// The sw audio encoder filter
@@ -104,24 +62,44 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     private IBaseFilter _filterAudioCompressor;
 
     /// <summary>
+    /// The hw audio encoder filter
+    /// </summary>
+    private IBaseFilter _filterAudioEncoder;
+
+    /// <summary>
+    /// The MPEG2-Demux filter
+    /// </summary>
+    private IBaseFilter _filterMpeg2Demux;
+
+    /// <summary>
+    /// The mpeg muxer
+    /// </summary>
+    private IBaseFilter _filterMpegMuxer;
+
+    /// <summary>
+    /// The hw/Sw multipler filter
+    /// </summary>
+    private IBaseFilter _filterMultiplexer;
+
+    /// <summary>
     /// The sw video encoder filter
     /// </summary>
     private IBaseFilter _filterVideoCompressor;
 
     /// <summary>
-    /// The video pin on the demux
+    /// The hw video encoder filter
     /// </summary>
-    private IPin _pinVideo;
+    private IBaseFilter _filterVideoEncoder;
 
     /// <summary>
-    /// The audio pin on the demux
+    /// Indicates, if it is a Plextore ConvertX card
     /// </summary>
-    private IPin _pinAudio;
+    private bool _isPlextorConvertX;
 
     /// <summary>
-    /// The lpcm pin on the demux
+    /// The multiplexer device
     /// </summary>
-    private IPin _pinLPCM;
+    private DsDevice _multiplexerDevice;
 
     /// <summary>
     /// The analog audio pin
@@ -134,20 +112,39 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     private IPin _pinAnalogVideo;
 
     /// <summary>
-    /// Indicates, if it is a Plextore ConvertX card
+    /// The audio pin on the demux
     /// </summary>
-    private bool _isPlextorConvertX;
+    private IPin _pinAudio;
 
     /// <summary>
-    /// The mpeg muxer
+    /// The capture pin = MPEG2 PS pin
     /// </summary>
-    private IBaseFilter _filterMpegMuxer;
+    private IPin _pinCapture;
+
+    /// <summary>
+    /// The lpcm pin on the demux
+    /// </summary>
+    private IPin _pinLPCM;
+
+    /// <summary>
+    /// The video pin on the demux
+    /// </summary>
+    private IPin _pinVideo;
 
     /// <summary>
     /// Indicates if the video pin is connected to the laster mpeg muxer
     /// </summary>
     private bool _pinVideoConnected;
 
+    /// <summary>
+    /// The sw video encoder device
+    /// </summary>
+    private DsDevice _videoCompressorDevice;
+
+    /// <summary>
+    /// The hw video encoder device
+    /// </summary>
+    private DsDevice _videoEncoderDevice;
 
     #endregion
 
@@ -494,6 +491,129 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       }
     }
 
+    /// <summary>
+    /// Adds a mpeg2 demultiplexer to the graph
+    /// </summary>
+    /// <param name="_graphBuilder">The graph builder</param>
+    private void AddMpeg2Demultiplexer(IFilterGraph2 _graphBuilder)
+    {
+      this.LogDebug("analog: AddMpeg2Demultiplexer");
+      if (_filterMpeg2Demux != null)
+        return;
+      if (_pinCapture == null)
+        return;
+      _filterMpeg2Demux = (IBaseFilter)new MPEG2Demultiplexer();
+      int hr = _graphBuilder.AddFilter(_filterMpeg2Demux, "MPEG2 Demultiplexer");
+      if (hr != 0)
+      {
+        this.LogDebug("analog: AddMPEG2DemuxFilter returns:0x{0:X}", hr);
+        throw new TvException("Unable to add MPEG2 demultiplexer");
+      }
+      this.LogDebug("analog: connect capture->mpeg2 demux");
+      IPin pin = DsFindPin.ByDirection(_filterMpeg2Demux, PinDirection.Input, 0);
+      hr = _graphBuilder.Connect(_pinCapture, pin);
+      if (hr != 0)
+      {
+        this.LogDebug("analog: ConnectFilters returns:0x{0:X}", hr);
+        throw new TvException("Unable to connect capture-> MPEG2 demultiplexer");
+      }
+      IMpeg2Demultiplexer demuxer = (IMpeg2Demultiplexer)_filterMpeg2Demux;
+      demuxer.CreateOutputPin(FilterGraphTools.GetVideoMpg2Media(), "Video", out _pinVideo);
+      demuxer.CreateOutputPin(FilterGraphTools.GetAudioMpg2Media(), "Audio", out _pinAudio);
+      demuxer.CreateOutputPin(FilterGraphTools.GetAudioLPCMMedia(), "LPCM", out _pinLPCM);
+      IMPEG2StreamIdMap map = (IMPEG2StreamIdMap)_pinVideo;
+      map.MapStreamId(224, MPEG2Program.ElementaryStream, 0, 0);
+      map = (IMPEG2StreamIdMap)_pinAudio;
+      map.MapStreamId(0xC0, MPEG2Program.ElementaryStream, 0, 0);
+      map = (IMPEG2StreamIdMap)_pinLPCM;
+      map.MapStreamId(0xBD, MPEG2Program.ElementaryStream, 0xA0, 7);
+    }
+
+    /// <summary>
+    /// Adds the MPEG muxer filter
+    /// </summary>
+    /// <param name="_graphBuilder">GraphBuilder</param>
+    /// <param name="_capture">Capture</param>
+    /// <returns></returns>
+    private bool AddMpegMuxer(IFilterGraph2 _graphBuilder, Capture _capture)
+    {
+      this.LogDebug("analog:AddMpegMuxer()");
+      try
+      {
+        const string monikerPowerDirectorMuxer =
+          @"@device:sw:{083863F1-70DE-11D0-BD40-00A0C911CE86}\{7F2BBEAF-E11C-4D39-90E8-938FB5A86045}";
+        const string monikerPowerDvdMuxer =
+          @"@device:sw:{083863F1-70DE-11D0-BD40-00A0C911CE86}\{6770E328-9B73-40C5-91E6-E2F321AEDE57}";
+        const string monikerPowerDvdMuxer2 =
+          @"@device:sw:{083863F1-70DE-11D0-BD40-00A0C911CE86}\{370E9701-9DC5-42C8-BE29-4E75F0629EED}";
+        _filterMpegMuxer = Marshal.BindToMoniker(monikerPowerDirectorMuxer) as IBaseFilter;
+        int hr = _graphBuilder.AddFilter(_filterMpegMuxer, "CyberLink MPEG Muxer");
+        if (hr != 0)
+        {
+          _filterMpegMuxer = Marshal.BindToMoniker(monikerPowerDvdMuxer) as IBaseFilter;
+          hr = _graphBuilder.AddFilter(_filterMpegMuxer, "CyberLink MPEG Muxer");
+          if (hr != 0)
+          {
+            _filterMpegMuxer = Marshal.BindToMoniker(monikerPowerDvdMuxer2) as IBaseFilter;
+            hr = _graphBuilder.AddFilter(_filterMpegMuxer, "CyberLink MPEG Muxer");
+            if (hr != 0)
+            {
+              this.LogDebug("analog:AddMpegMuxer returns:0x{0:X}", hr);
+              //throw new TvException("Unable to add Cyberlink MPEG Muxer");
+            }
+          }
+        }
+        this.LogDebug("analog:connect pinvideo {0} ->mpeg muxer", FilterGraphTools.LogPinInfo(_pinVideo));
+        if (!FilterGraphTools.ConnectPin(_graphBuilder, _pinVideo, _filterMpegMuxer, 0))
+        {
+          this.LogDebug("analog: unable to connect pinvideo->mpeg muxer");
+          throw new TvException("Unable to connect pins");
+        }
+        _pinVideoConnected = true;
+        this.LogDebug("analog: connected pinvideo->mpeg muxer");
+        // Some Adaptec devices use the LPCM pin for audio so we check this can connect if applicable.
+        // Note that this does *not* apply to the Adaptec AVC-3610.
+        bool isAdaptec = false;
+        if (!_capture.VideoCaptureDevicePath.ToLower().StartsWith(@"@device:pnp:\\?\usb#vid_03f3&pid_0091#") && // Adaptec AVC-3610 tuner 1
+            !_capture.VideoCaptureDevicePath.ToLower().StartsWith(@"@device:pnp:\\?\usb#vid_03f3&pid_0093#") && // Adaptec AVC-3610 tuner 2
+            (
+              _capture.VideoCaptureName.Contains("Adaptec USB Capture Device") ||
+              _capture.VideoCaptureName.Contains("Adaptec PCI Capture Device") ||
+              _capture.AudioCaptureName.Contains("Adaptec USB Capture Device") ||
+              _capture.AudioCaptureName.Contains("Adaptec PCI Capture Device")
+            )
+          )
+        {
+          this.LogDebug("analog: AddMpegMuxer, Adaptec device found using LPCM");
+          isAdaptec = true;
+        }
+        if (isAdaptec)
+        {
+          if (!FilterGraphTools.ConnectPin(_graphBuilder, _pinLPCM, _filterMpegMuxer, 1))
+          {
+            this.LogDebug("analog: AddMpegMuxer, unable to connect pinLPCM->mpeg muxer");
+            throw new TvException("Unable to connect pins");
+          }
+          this.LogDebug("analog: AddMpegMuxer, connected pinLPCM->mpeg muxer");
+        }
+        else
+        {
+          this.LogDebug("analog:connect pinaudio {0} ->mpeg muxer", FilterGraphTools.LogPinInfo(_pinAudio));
+          if (!FilterGraphTools.ConnectPin(_graphBuilder, _pinAudio, _filterMpegMuxer, 1))
+          {
+            this.LogDebug("analog:AddMpegMuxer, unable to connect pinaudio->mpeg muxer");
+            throw new TvException("Unable to connect pins");
+          }
+          this.LogDebug("analog:AddMpegMuxer, connected pinaudio->mpeg muxer");
+        }
+        return true;
+      }
+      catch (Exception ex)
+      {
+        throw new TvException("Cyberlink MPEG Muxer filter (mpgmux.ax) not installed " + ex.Message);
+      }
+    }
+
     #region encoder and multiplexer graph building
 
     /// <summary>
@@ -678,7 +798,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
                 {
                   //succeeded
                   this.LogDebug("analog:  connected pin:{0} {1} to pin1:{2}", i,
-                                    FilterGraphTools.LogPinInfo(pins[i]), FilterGraphTools.LogPinInfo(pinInput1));
+                                FilterGraphTools.LogPinInfo(pins[i]), FilterGraphTools.LogPinInfo(pinInput1));
                   pinsConnected++;
                 }
               }
@@ -697,7 +817,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
                   {
                     //succeeded
                     this.LogDebug("analog:  connected pin:{0} {1} to pin2:{2}", i,
-                                      FilterGraphTools.LogPinInfo(pins[i]), FilterGraphTools.LogPinInfo(pinInput2));
+                                  FilterGraphTools.LogPinInfo(pins[i]), FilterGraphTools.LogPinInfo(pinInput2));
                     pinsConnected++;
                   }
                 }
@@ -717,7 +837,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
               else
               {
                 this.LogDebug("analog: ConnectMultiplexer no succes yet at step 1 only connected:" + pinsConnected +
-                                  " pins");
+                              " pins");
               }
             }
             pinsConnectedOnMultiplexer += pinsConnected;
@@ -771,7 +891,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
                 {
                   //succeeded
                   this.LogDebug("analog:  connected pin:{0} {1} to {2}", i, FilterGraphTools.LogPinInfo(pins[i]),
-                                    FilterGraphTools.LogPinInfo(pinInput1));
+                                FilterGraphTools.LogPinInfo(pinInput1));
                   pinsConnected++;
                 }
               }
@@ -790,7 +910,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
                   {
                     //succeeded
                     this.LogDebug("analog:  connected pin:{0} {1} to {2}", i, FilterGraphTools.LogPinInfo(pins[i]),
-                                      FilterGraphTools.LogPinInfo(pinInput2));
+                                  FilterGraphTools.LogPinInfo(pinInput2));
                     pinsConnected++;
                   }
                 }
@@ -809,7 +929,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
               else
               {
                 this.LogDebug("analog: ConnectMultiplexer no succes yet at step 2 only connected:" + pinsConnected +
-                                  " pins");
+                              " pins");
               }
             }
           }
@@ -851,7 +971,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
                 continue;
               //log the pin info
               this.LogDebug("analog:   videoencoder pin:{0} {1} {2}", i, pinDir,
-                                FilterGraphTools.LogPinInfo(pins[i]));
+                            FilterGraphTools.LogPinInfo(pins[i]));
               string pinName = FilterGraphTools.GetPinName(pins[i]);
               // try to connect this output pin of the video encoder filter to the 1st input pin
               // of the multiplexer
@@ -865,14 +985,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
                 {
                   //succeeded
                   this.LogDebug("analog:  connected pin:{0} {1} to {2}", i, FilterGraphTools.LogPinInfo(pins[i]),
-                                    FilterGraphTools.LogPinInfo(pinInput1));
+                                FilterGraphTools.LogPinInfo(pinInput1));
                   pinsConnected++;
                 }
                 else
                 {
                   this.LogDebug("Cant connect 0x{0:x}", hr);
                   this.LogDebug("pin:{0} {1} to {2}", i, FilterGraphTools.LogPinInfo(pins[i]),
-                                    FilterGraphTools.LogPinInfo(pinInput1));
+                                FilterGraphTools.LogPinInfo(pinInput1));
                 }
               }
               //if multiplexer has 2 inputs..
@@ -890,14 +1010,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
                   {
                     //succeeded
                     this.LogDebug("analog:  connected pin:{0} {1} to {2}", i, FilterGraphTools.LogPinInfo(pins[i]),
-                                      FilterGraphTools.LogPinInfo(pinInput2));
+                                  FilterGraphTools.LogPinInfo(pinInput2));
                     pinsConnected++;
                   }
                   else
                   {
                     this.LogDebug("Cant connect 0x{0:x}", hr);
                     this.LogDebug("pin:{0} {1} to {2}", i, FilterGraphTools.LogPinInfo(pins[i]),
-                                      FilterGraphTools.LogPinInfo(pinInput2));
+                                  FilterGraphTools.LogPinInfo(pinInput2));
                   }
                 }
               }
@@ -931,7 +1051,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
                 if (pinDir == PinDirection.Input)
                   continue;
                 this.LogDebug("analog: audioencoder  pin:{0} {1} {2}", i, pinDir,
-                                  FilterGraphTools.LogPinInfo(pins[i]));
+                              FilterGraphTools.LogPinInfo(pins[i]));
                 string pinName = FilterGraphTools.GetPinName(pins[i]);
                 // try to connect this output pin of the audio encoder filter to the 1st input pin
                 // of the multiplexer
@@ -1166,7 +1286,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
                                     Tuner _tuner, TvAudio _tvAudio, Crossbar _crossbar, Capture _capture)
     {
       this.LogDebug("analog: AddTvEncoderFilter - MatchPinNames: {0} - MPEG2ProgramFilter: {1}", matchPinNames,
-                        mpeg2ProgramFilter);
+                    mpeg2ProgramFilter);
       bool finished = false;
       DsDevice[] devices;
       // first get all encoder filters available on this system
@@ -1279,7 +1399,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
         if (isTsFilter)
         {
           this.LogDebug("analog:  filter {0} does not have mpeg-2 ps output or is a mpeg-2 ts filters",
-                            devices[i].Name);
+                        devices[i].Name);
           _graphBuilder.RemoveFilter(tmp);
           Release.ComObject("TvEncoderFilter", tmp);
           continue;
@@ -1320,7 +1440,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
           {
             //media type found
             this.LogDebug("analog: AddTvEncoderFilter encoder output major:{0} sub:{1}", media[0].majorType,
-                              media[0].subType);
+                          media[0].subType);
             //is it audio?
             if (media[0].majorType == MediaType.Audio)
             {
@@ -1865,129 +1985,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     }
 
     #endregion
-
-    /// <summary>
-    /// Adds a mpeg2 demultiplexer to the graph
-    /// </summary>
-    /// <param name="_graphBuilder">The graph builder</param>
-    private void AddMpeg2Demultiplexer(IFilterGraph2 _graphBuilder)
-    {
-      this.LogDebug("analog: AddMpeg2Demultiplexer");
-      if (_filterMpeg2Demux != null)
-        return;
-      if (_pinCapture == null)
-        return;
-      _filterMpeg2Demux = (IBaseFilter)new MPEG2Demultiplexer();
-      int hr = _graphBuilder.AddFilter(_filterMpeg2Demux, "MPEG2 Demultiplexer");
-      if (hr != 0)
-      {
-        this.LogDebug("analog: AddMPEG2DemuxFilter returns:0x{0:X}", hr);
-        throw new TvException("Unable to add MPEG2 demultiplexer");
-      }
-      this.LogDebug("analog: connect capture->mpeg2 demux");
-      IPin pin = DsFindPin.ByDirection(_filterMpeg2Demux, PinDirection.Input, 0);
-      hr = _graphBuilder.Connect(_pinCapture, pin);
-      if (hr != 0)
-      {
-        this.LogDebug("analog: ConnectFilters returns:0x{0:X}", hr);
-        throw new TvException("Unable to connect capture-> MPEG2 demultiplexer");
-      }
-      IMpeg2Demultiplexer demuxer = (IMpeg2Demultiplexer)_filterMpeg2Demux;
-      demuxer.CreateOutputPin(FilterGraphTools.GetVideoMpg2Media(), "Video", out _pinVideo);
-      demuxer.CreateOutputPin(FilterGraphTools.GetAudioMpg2Media(), "Audio", out _pinAudio);
-      demuxer.CreateOutputPin(FilterGraphTools.GetAudioLPCMMedia(), "LPCM", out _pinLPCM);
-      IMPEG2StreamIdMap map = (IMPEG2StreamIdMap)_pinVideo;
-      map.MapStreamId(224, MPEG2Program.ElementaryStream, 0, 0);
-      map = (IMPEG2StreamIdMap)_pinAudio;
-      map.MapStreamId(0xC0, MPEG2Program.ElementaryStream, 0, 0);
-      map = (IMPEG2StreamIdMap)_pinLPCM;
-      map.MapStreamId(0xBD, MPEG2Program.ElementaryStream, 0xA0, 7);
-    }
-
-    /// <summary>
-    /// Adds the MPEG muxer filter
-    /// </summary>
-    /// <param name="_graphBuilder">GraphBuilder</param>
-    /// <param name="_capture">Capture</param>
-    /// <returns></returns>
-    private bool AddMpegMuxer(IFilterGraph2 _graphBuilder, Capture _capture)
-    {
-      this.LogDebug("analog:AddMpegMuxer()");
-      try
-      {
-        const string monikerPowerDirectorMuxer =
-          @"@device:sw:{083863F1-70DE-11D0-BD40-00A0C911CE86}\{7F2BBEAF-E11C-4D39-90E8-938FB5A86045}";
-        const string monikerPowerDvdMuxer =
-          @"@device:sw:{083863F1-70DE-11D0-BD40-00A0C911CE86}\{6770E328-9B73-40C5-91E6-E2F321AEDE57}";
-        const string monikerPowerDvdMuxer2 =
-          @"@device:sw:{083863F1-70DE-11D0-BD40-00A0C911CE86}\{370E9701-9DC5-42C8-BE29-4E75F0629EED}";
-        _filterMpegMuxer = Marshal.BindToMoniker(monikerPowerDirectorMuxer) as IBaseFilter;
-        int hr = _graphBuilder.AddFilter(_filterMpegMuxer, "CyberLink MPEG Muxer");
-        if (hr != 0)
-        {
-          _filterMpegMuxer = Marshal.BindToMoniker(monikerPowerDvdMuxer) as IBaseFilter;
-          hr = _graphBuilder.AddFilter(_filterMpegMuxer, "CyberLink MPEG Muxer");
-          if (hr != 0)
-          {
-            _filterMpegMuxer = Marshal.BindToMoniker(monikerPowerDvdMuxer2) as IBaseFilter;
-            hr = _graphBuilder.AddFilter(_filterMpegMuxer, "CyberLink MPEG Muxer");
-            if (hr != 0)
-            {
-              this.LogDebug("analog:AddMpegMuxer returns:0x{0:X}", hr);
-              //throw new TvException("Unable to add Cyberlink MPEG Muxer");
-            }
-          }
-        }
-        this.LogDebug("analog:connect pinvideo {0} ->mpeg muxer", FilterGraphTools.LogPinInfo(_pinVideo));
-        if (!FilterGraphTools.ConnectPin(_graphBuilder, _pinVideo, _filterMpegMuxer, 0))
-        {
-          this.LogDebug("analog: unable to connect pinvideo->mpeg muxer");
-          throw new TvException("Unable to connect pins");
-        }
-        _pinVideoConnected = true;
-        this.LogDebug("analog: connected pinvideo->mpeg muxer");
-        // Some Adaptec devices use the LPCM pin for audio so we check this can connect if applicable.
-        // Note that this does *not* apply to the Adaptec AVC-3610.
-        bool isAdaptec = false;
-        if (!_capture.VideoCaptureDevicePath.ToLower().StartsWith(@"@device:pnp:\\?\usb#vid_03f3&pid_0091#") && // Adaptec AVC-3610 tuner 1
-            !_capture.VideoCaptureDevicePath.ToLower().StartsWith(@"@device:pnp:\\?\usb#vid_03f3&pid_0093#") && // Adaptec AVC-3610 tuner 2
-            (
-              _capture.VideoCaptureName.Contains("Adaptec USB Capture Device") ||
-              _capture.VideoCaptureName.Contains("Adaptec PCI Capture Device") ||
-              _capture.AudioCaptureName.Contains("Adaptec USB Capture Device") ||
-              _capture.AudioCaptureName.Contains("Adaptec PCI Capture Device")
-            )
-        )
-        {
-          this.LogDebug("analog: AddMpegMuxer, Adaptec device found using LPCM");
-          isAdaptec = true;
-        }
-        if (isAdaptec)
-        {
-          if (!FilterGraphTools.ConnectPin(_graphBuilder, _pinLPCM, _filterMpegMuxer, 1))
-          {
-            this.LogDebug("analog: AddMpegMuxer, unable to connect pinLPCM->mpeg muxer");
-            throw new TvException("Unable to connect pins");
-          }
-          this.LogDebug("analog: AddMpegMuxer, connected pinLPCM->mpeg muxer");
-        }
-        else
-        {
-          this.LogDebug("analog:connect pinaudio {0} ->mpeg muxer", FilterGraphTools.LogPinInfo(_pinAudio));
-          if (!FilterGraphTools.ConnectPin(_graphBuilder, _pinAudio, _filterMpegMuxer, 1))
-          {
-            this.LogDebug("analog:AddMpegMuxer, unable to connect pinaudio->mpeg muxer");
-            throw new TvException("Unable to connect pins");
-          }
-          this.LogDebug("analog:AddMpegMuxer, connected pinaudio->mpeg muxer");
-        }
-        return true;
-      }
-      catch (Exception ex)
-      {
-        throw new TvException("Cyberlink MPEG Muxer filter (mpgmux.ax) not installed " + ex.Message);
-      }
-    }
 
     #endregion
 

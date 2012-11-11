@@ -31,6 +31,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Compro
   {
     #region enums
 
+    #region Nested type: BdaExtensionDiseqcProperty
+
     private enum BdaExtensionDiseqcProperty
     {
       DiseqcBasic = 0,
@@ -38,10 +40,18 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Compro
       TonePower
     }
 
+    #endregion
+
+    #region Nested type: BdaExtensionProperty
+
     private enum BdaExtensionProperty
     {
       MacAddress = 0
     }
+
+    #endregion
+
+    #region Nested type: Compro22k
 
     private enum Compro22k : byte
     {
@@ -49,11 +59,19 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Compro
       On
     }
 
+    #endregion
+
+    #region Nested type: ComproLnbPower
+
     private enum ComproLnbPower : byte
     {
       Off = 0x02,
       On = 0x03
     }
+
+    #endregion
+
+    #region Nested type: ComproSwitchType
 
     private enum ComproSwitchType
     {
@@ -67,23 +85,24 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Compro
 
     #endregion
 
-    #region constants
+    #endregion
 
-    private static readonly Guid BdaExtensionDiseqcPropertySet = new Guid(0x0c12bf87, 0x5bc0, 0x4dda, 0x9d, 0x07, 0x21, 0xe5, 0xc2, 0xf3, 0xb9, 0xae);
-    private static readonly Guid BdaExtensionPropertySet = new Guid(0xa1aa3f96, 0x2ea, 0x4ccb, 0xa7, 0x14, 0x0, 0xbc, 0xd3, 0x98, 0xad, 0xb4);
+    #region constants
 
     private const int KsPropertySize = 24;
     private const int MaxDiseqcMessageLength = 8;
     private const int MacAddressLength = 6;
     private const int GeneralBufferSize = KsPropertySize + 4;
+    private static readonly Guid BdaExtensionDiseqcPropertySet = new Guid(0x0c12bf87, 0x5bc0, 0x4dda, 0x9d, 0x07, 0x21, 0xe5, 0xc2, 0xf3, 0xb9, 0xae);
+    private static readonly Guid BdaExtensionPropertySet = new Guid(0xa1aa3f96, 0x2ea, 0x4ccb, 0xa7, 0x14, 0x0, 0xbc, 0xd3, 0x98, 0xad, 0xb4);
 
     #endregion
 
     #region variables
 
-    private bool _isCompro = false;
-    private IntPtr _generalBuffer = IntPtr.Zero;
     private IntPtr _commandBuffer = IntPtr.Zero;
+    private IntPtr _generalBuffer = IntPtr.Zero;
+    private bool _isCompro = false;
     private IKsPropertySet _propertySet = null;
 
     #endregion
@@ -219,9 +238,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Compro
       }
 
       hr = _propertySet.Set(BdaExtensionDiseqcPropertySet, (int)BdaExtensionDiseqcProperty.TonePower,
-        IntPtr.Zero, 0,
-        _commandBuffer, 1
-      );
+                            IntPtr.Zero, 0,
+                            _commandBuffer, 1
+        );
       if (hr == 0)
       {
         this.LogDebug("Compro: result = success");
@@ -259,7 +278,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Compro
       if (toneBurstState != ToneBurst.None)
       {
         hr = _propertySet.QuerySupported(BdaExtensionDiseqcPropertySet, (int)BdaExtensionDiseqcProperty.DiseqcBasic,
-                                    out support);
+                                         out support);
         if (hr != 0 || (support & KSPropertySupport.Set) == 0)
         {
           this.LogDebug("Compro: DiSEqC basic property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -276,9 +295,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Compro
             Marshal.WriteInt32(_commandBuffer, 0, 1);
           }
           hr = _propertySet.Set(BdaExtensionDiseqcPropertySet, (int)BdaExtensionDiseqcProperty.DiseqcBasic,
-            _generalBuffer, 4,
-            _commandBuffer, 4
-          );
+                                _generalBuffer, 4,
+                                _commandBuffer, 4
+            );
           if (hr != 0)
           {
             this.LogDebug("Compro: failed to set tone state, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -288,7 +307,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Compro
       }
 
       hr = _propertySet.QuerySupported(BdaExtensionDiseqcPropertySet, (int)BdaExtensionDiseqcProperty.TonePower,
-                                  out support);
+                                       out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
         this.LogDebug("Compro: tone/power property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -304,9 +323,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Compro
           Marshal.WriteByte(_commandBuffer, 0, (byte)Compro22k.Off);
         }
         hr = _propertySet.Set(BdaExtensionDiseqcPropertySet, (int)BdaExtensionDiseqcProperty.TonePower,
-          IntPtr.Zero, 0,
-          _commandBuffer, 1
-        );
+                              IntPtr.Zero, 0,
+                              _commandBuffer, 1
+          );
         if (hr != 0)
         {
           this.LogDebug("Compro: failed to set 22 kHz state, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -355,9 +374,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Compro
       Marshal.Copy(command, 0, _commandBuffer, command.Length);
 
       int hr = _propertySet.Set(BdaExtensionDiseqcPropertySet, (int)BdaExtensionDiseqcProperty.DiseqcRaw,
-        _generalBuffer, GeneralBufferSize,
-        _commandBuffer, MaxDiseqcMessageLength
-      );
+                                _generalBuffer, GeneralBufferSize,
+                                _commandBuffer, MaxDiseqcMessageLength
+        );
       if (hr == 0)
       {
         this.LogDebug("Compro: result = success");

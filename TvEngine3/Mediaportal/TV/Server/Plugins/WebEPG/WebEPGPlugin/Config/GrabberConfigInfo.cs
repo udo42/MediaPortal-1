@@ -25,11 +25,11 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
   /// </summary>
   public class GrabberConfigInfo
   {
+    public string Country;
+    public int GrabDays;
     public string GrabberID;
     public string GrabberName;
-    public int GrabDays;
-    public string SiteDesc;
-    public string Country;
     public bool Linked;
+    public string SiteDesc;
   }
 }

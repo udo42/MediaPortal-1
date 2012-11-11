@@ -27,6 +27,8 @@ namespace Mediaportal.TV.Server.TVControl
       _tvUsage = tvUsage;
     }
 
+    #region ISubChannel Members
+
     public int IdChannel
     {
       get { return _idChannel; }
@@ -44,5 +46,7 @@ namespace Mediaportal.TV.Server.TVControl
       get { return _tvUsage; }
       set { _tvUsage = value; }
     }
+
+    #endregion
   }
 }

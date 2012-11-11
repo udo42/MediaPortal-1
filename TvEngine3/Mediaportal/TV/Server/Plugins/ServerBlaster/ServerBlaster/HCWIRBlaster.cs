@@ -31,8 +31,14 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
   /// </summary>
   public class HCWIRBlaster
   {
+    private static int HCWRetVal;
+    private static UIR_CFG HCWIRConfig;
 
-
+    static HCWIRBlaster()
+    {
+      HCWRetVal = 0;
+      HCWIRConfig = new UIR_CFG();
+    }
 
     [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
     private static extern IntPtr LoadLibraryEx(string fileName, IntPtr dummy, int flags);
@@ -48,35 +54,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
 
     [DllImport("hcwIRblast.dll")]
     private static extern ushort UIR_Open(uint bVerbose, ushort wIRPort);
-
-    private static int HCWRetVal;
-    private static UIR_CFG HCWIRConfig;
-
-    [StructLayout(LayoutKind.Sequential, Pack = 8)]
-    public struct UIR_CFG
-    {
-      public int a; // 0x38;
-      public int b;
-      public int c; //Region 
-      public int d; //Device
-      public int e; //Vendor
-      public int f; //Code Set
-      public int g;
-      public int h;
-      public int i; //Minimum Digits
-      public int j; //Digit Delay
-      public int k; //Need Enter
-      public int l; //Enter Delay
-      public int m; //Tune Delay
-      public int n; //One Digit Delay
-    }
-
-
-    static HCWIRBlaster()
-    {
-      HCWRetVal = 0;
-      HCWIRConfig = new UIR_CFG();
-    }
 
 
     public void blast(string channel_data, bool ExLogging)
@@ -128,5 +105,28 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
       if (ExLogging)
         this.LogInfo("HCWBlaster: Finished Changing channels: {0}", channel_data);
     }
+
+    #region Nested type: UIR_CFG
+
+    [StructLayout(LayoutKind.Sequential, Pack = 8)]
+    public struct UIR_CFG
+    {
+      public int a; // 0x38;
+      public int b;
+      public int c; //Region 
+      public int d; //Device
+      public int e; //Vendor
+      public int f; //Code Set
+      public int g;
+      public int h;
+      public int i; //Minimum Digits
+      public int j; //Digit Delay
+      public int k; //Need Enter
+      public int l; //Enter Delay
+      public int m; //Tune Delay
+      public int n; //One Digit Delay
+    }
+
+    #endregion
   }
 }

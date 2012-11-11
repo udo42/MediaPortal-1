@@ -11,6 +11,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 { 
   public class ChannelService : IChannelService
   {
+    #region IChannelService Members
+
     public IList<Channel> GetAllChannelsByGroupIdAndMediaType(int groupId, MediaTypeEnum mediatype)
     {
       var allChannelsByGroupIdAndMediaType = ChannelManagement.GetAllChannelsByGroupIdAndMediaType(groupId, mediatype);
@@ -154,6 +156,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       return ChannelManagement.SaveChannelMap(map);
     }
 
-    
+    #endregion
   }
 }

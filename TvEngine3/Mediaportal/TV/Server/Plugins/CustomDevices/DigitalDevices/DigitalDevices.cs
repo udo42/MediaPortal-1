@@ -41,6 +41,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
   {
     #region enums
 
+    #region Nested type: CamControlMethod
+
     private enum CamControlMethod
     {
       Reset = 0,
@@ -51,6 +53,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       CamAnswer,    // Send an answer to a CAM enquiry.
     }
 
+    #endregion
+
+    #region Nested type: DecryptChainingRestriction
+
     private enum DecryptChainingRestriction : uint
     {
       None = 0,
@@ -60,62 +66,19 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
 
     #endregion
 
+    #endregion
+
     #region structs
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    private struct MenuData   // DD_CAM_MENU_DATA
-    {
-      public Int32 Id;
-      public Int32 Type;
-      public Int32 EntryCount;
-      public Int32 Length;
-      // The following strings are passed back as an inline array of
-      // variable length NULL terminated strings. This makes it
-      // impossible to unmarshal the struct automatically.
-      public String Title;
-      public String SubTitle;
-      public String Footer;
-      public List<String> Entries;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct MenuChoice   // DD_CAM_MENU_REPLY
-    {
-      public Int32 Id;
-      public Int32 Choice;
-    }
-
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    private struct MenuAnswer   // DD_CAM_TEXT_DATA
-    {
-      #pragma warning disable 0649
-      public Int32 Id;
-      public Int32 Length;
-      // The following string is passed back as an inline variable
-      // length NULL terminated string. This makes it impossible to
-      // unmarshal the struct automatically.
-      public String Answer;
-      #pragma warning restore 0649
-    }
-
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    private struct MenuTitle    // DD_CAM_MENU_TITLE
-    {
-      // The following string is passed back as an inline variable
-      // length NULL terminated string. This makes it impossible to
-      // unmarshal the struct automatically.
-      #pragma warning disable 0649
-      public String Title;
-      #pragma warning restore 0649
-    }
+    #region Nested type: CiContext
 
     private class CiContext
     {
-      public IBaseFilter Filter;
-      public DsDevice Device;
-      public String FilterName;
-      public String CamMenuTitle;
       public Int32 CamMenuId;
+      public String CamMenuTitle;
+      public DsDevice Device;
+      public IBaseFilter Filter;
+      public String FilterName;
 
       public CiContext(IBaseFilter filter, DsDevice device)
       {
@@ -145,15 +108,72 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
 
     #endregion
 
-    #region constants
+    #region Nested type: MenuAnswer
 
-    private static readonly string[] ValidDeviceNamePrefixes = new string[]
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    private struct MenuAnswer   // DD_CAM_TEXT_DATA
     {
-      "Digital Devices",
-      "Mystique SaTiX-S2 Dual"
-    };
+#pragma warning disable 0649
+      public Int32 Id;
+      public Int32 Length;
+      // The following string is passed back as an inline variable
+      // length NULL terminated string. This makes it impossible to
+      // unmarshal the struct automatically.
+      public String Answer;
+#pragma warning restore 0649
+    }
 
-    private static readonly Guid CamControlMethodSet = new Guid(0x0aa8a511, 0xa240, 0x11de, 0xb1, 0x30, 0x00, 0x00, 0x00, 0x00, 0x4d, 0x56);
+    #endregion
+
+    #region Nested type: MenuChoice
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct MenuChoice   // DD_CAM_MENU_REPLY
+    {
+      public Int32 Id;
+      public Int32 Choice;
+    }
+
+    #endregion
+
+    #region Nested type: MenuData
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    private struct MenuData   // DD_CAM_MENU_DATA
+    {
+      public Int32 Id;
+      public Int32 Type;
+      public Int32 EntryCount;
+      public Int32 Length;
+      // The following strings are passed back as an inline array of
+      // variable length NULL terminated strings. This makes it
+      // impossible to unmarshal the struct automatically.
+      public String Title;
+      public String SubTitle;
+      public String Footer;
+      public List<String> Entries;
+    }
+
+    #endregion
+
+    #region Nested type: MenuTitle
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    private struct MenuTitle    // DD_CAM_MENU_TITLE
+    {
+      // The following string is passed back as an inline variable
+      // length NULL terminated string. This makes it impossible to
+      // unmarshal the struct automatically.
+#pragma warning disable 0649
+      public String Title;
+#pragma warning restore 0649
+    }
+
+    #endregion
+
+    #endregion
+
+    #region constants
 
     private const int MenuDataSize = 2048;  // This is arbitrary - an estimate of the buffer size needed to hold the largest menu.
     private const int MenuChoiceSize = 8;
@@ -163,6 +183,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     private const int BdaDiseqcMessageSize = 16;
     private const int MaxDiseqcMessageLength = 8;
 
+    private static readonly string[] ValidDeviceNamePrefixes = new string[]
+                                                                 {
+                                                                   "Digital Devices",
+                                                                   "Mystique SaTiX-S2 Dual"
+                                                                 };
+
+    private static readonly Guid CamControlMethodSet = new Guid(0x0aa8a511, 0xa240, 0x11de, 0xb1, 0x30, 0x00, 0x00, 0x00, 0x00, 0x4d, 0x56);
+
     #endregion
 
     #region variables
@@ -170,37 +198,35 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     // We use these global CI settings to apply decrypt limits and commands to each CI slot/CAM.
     // Structure: device path -> settings
     private static Dictionary<String, DigitalDevicesCiSlot> _ciSlotSettings = null;
+    private DateTime _camMessageEnableTs = DateTime.MinValue;
+    private bool _camMessagesDisabled = false;
 
     // Indicates whether one or more CI slots have global configuration (ie. that the user has actually
     // filled in the configuration). If there is no configuration, we can't apply decrypt limits
     // properly.
-    private bool _ciSlotsConfigured = false;
-
-    private bool _isDigitalDevices = false;
-    private String _name = "Digital Devices";
-    private String _tunerDevicePath = String.Empty;
-    private bool _isCiSlotPresent = false;
 
     // For CI/CAM interaction.
     private List<CiContext> _ciContexts = null;
+    private ICiMenuCallbacks _ciMenuCallbacks = null;
+    private bool _ciSlotsConfigured = false;
+    private IBDA_DeviceControl _deviceControl = null;
     private IFilterGraph2 _graph = null;
+    private IntPtr _instanceBuffer = IntPtr.Zero;
+    private bool _isCiSlotPresent = false;
+    private bool _isDigitalDevices = false;
     private int _menuContext = -1;
-
-    private bool _camMessagesDisabled = false;
-    private DateTime _camMessageEnableTs = DateTime.MinValue;
 
     private IntPtr _mmiBuffer = IntPtr.Zero;
 
-    private ICiMenuCallbacks _ciMenuCallbacks = null;
-    private bool _stopMmiHandlerThread = false;
     private Thread _mmiHandlerThread = null;
+    private String _name = "Digital Devices";
+    private IntPtr _paramBuffer = IntPtr.Zero;
 
     // For DiSEqC support only.
     private IKsPropertySet _propertySet = null;
-    private IBDA_DeviceControl _deviceControl = null;
     private uint _requestId = 1;
-    private IntPtr _instanceBuffer = IntPtr.Zero;
-    private IntPtr _paramBuffer = IntPtr.Zero;
+    private bool _stopMmiHandlerThread = false;
+    private String _tunerDevicePath = String.Empty;
 
     #endregion
 
@@ -741,6 +767,21 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     #region ITvServerPlugin members
 
     /// <summary>
+    /// Determine whether this TV Server plugin should only run on the master server, or if it can also
+    /// run on slave servers.
+    /// </summary>
+    /// <remarks>
+    /// This property is obsolete. Master-slave configurations are not supported.
+    /// </remarks>
+    public bool MasterOnly
+    {
+      get
+      {
+        return true;
+      }
+    }
+
+    /// <summary>
     /// The version of this TV Server plugin.
     /// </summary>
     public string Version
@@ -759,21 +800,6 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       get
       {
         return "mm1352000";
-      }
-    }
-
-    /// <summary>
-    /// Determine whether this TV Server plugin should only run on the master server, or if it can also
-    /// run on slave servers.
-    /// </summary>
-    /// <remarks>
-    /// This property is obsolete. Master-slave configurations are not supported.
-    /// </remarks>
-    public bool MasterOnly
-    {
-      get
-      {
-        return true;
       }
     }
 
@@ -1107,9 +1133,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       Marshal.WriteInt32(buffer, (int)serviceId);
       DVB_MMI.DumpBinary(buffer, 0, paramSize);
       int hr = ((IKsPropertySet)_ciContexts[context].Filter).Set(DigitalDevicesCiSlots.CommonInterfacePropertySet, (int)CommonInterfaceProperty.DecryptProgram,
-        buffer, paramSize,
-        buffer, paramSize
-      );
+                                                                 buffer, paramSize,
+                                                                 buffer, paramSize
+        );
       Marshal.FreeCoTaskMem(buffer);
       if (hr == 0)
       {
@@ -1195,44 +1221,6 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       {
         this.LogError(ex, "Digital Devices: enter menu exception");
       }
-      return false;
-    }
-
-    /// <summary>
-    /// Enter the menu for a specific CAM/slot.
-    /// </summary>
-    /// <param name="slot">The index of the CI context structure for the slot containing the CAM.</param>
-    /// <returns><c>true</c> if the request is successfully passed to and processed by the CAM, otherwise <c>false</c></returns>
-    private bool EnterMenu(int slot)
-    {
-      this.LogDebug("Digital Devices: slot {0} enter menu", slot + 1);
-
-      if (!_isDigitalDevices)
-      {
-        this.LogDebug("Digital Devices: interface not supported");
-        return false;
-      }
-      if (!_isCiSlotPresent || _ciContexts == null || _menuContext >= _ciContexts.Count)
-      {
-        this.LogDebug("Digital Devices: CI slot not present");
-        // If there are no CI slots then there is no point retrying.
-        return true;
-      }
-
-      KsMethod method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.EnterMenu, (int)KsMethodFlag.Send);
-      int returnedByteCount = 0;
-      int hr = ((IKsControl)_ciContexts[slot].Filter).KsMethod(ref method, KsMethodSize, IntPtr.Zero, 0, ref returnedByteCount);
-      if (hr == 0)
-      {
-        this.LogDebug("Digital Devices: result = success");
-        // Future menu interactions will be passed to this CI slot/CAM.
-        _menuContext = slot;
-        // Reset the menu depth tracker.
-        _ciContexts[slot].CamMenuId = 0;
-        return true;
-      }
-
-      this.LogDebug("Digital Devices: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
       return false;
     }
 
@@ -1383,6 +1371,44 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       if (hr == 0)
       {
         this.LogDebug("Digital Devices: result = success");
+        return true;
+      }
+
+      this.LogDebug("Digital Devices: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      return false;
+    }
+
+    /// <summary>
+    /// Enter the menu for a specific CAM/slot.
+    /// </summary>
+    /// <param name="slot">The index of the CI context structure for the slot containing the CAM.</param>
+    /// <returns><c>true</c> if the request is successfully passed to and processed by the CAM, otherwise <c>false</c></returns>
+    private bool EnterMenu(int slot)
+    {
+      this.LogDebug("Digital Devices: slot {0} enter menu", slot + 1);
+
+      if (!_isDigitalDevices)
+      {
+        this.LogDebug("Digital Devices: interface not supported");
+        return false;
+      }
+      if (!_isCiSlotPresent || _ciContexts == null || _menuContext >= _ciContexts.Count)
+      {
+        this.LogDebug("Digital Devices: CI slot not present");
+        // If there are no CI slots then there is no point retrying.
+        return true;
+      }
+
+      KsMethod method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.EnterMenu, (int)KsMethodFlag.Send);
+      int returnedByteCount = 0;
+      int hr = ((IKsControl)_ciContexts[slot].Filter).KsMethod(ref method, KsMethodSize, IntPtr.Zero, 0, ref returnedByteCount);
+      if (hr == 0)
+      {
+        this.LogDebug("Digital Devices: result = success");
+        // Future menu interactions will be passed to this CI slot/CAM.
+        _menuContext = slot;
+        // Reset the menu depth tracker.
+        _ciContexts[slot].CamMenuId = 0;
         return true;
       }
 

@@ -7,7 +7,8 @@ using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 namespace Mediaportal.TV.Server.TVLibrary.Services
 {  
   public class ConflictService : IConflictService
-  {    
+  {
+    #region IConflictService Members
 
     public IList<Conflict> ListAllConflicts()
     {
@@ -25,6 +26,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       var conflict = ConflictManagement.GetConflict(idConflict);
       return conflict;
     }
+
+    #endregion
   }
 
   

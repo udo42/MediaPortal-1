@@ -41,6 +41,8 @@ namespace Mediaportal.TV.TvPlugin
 
     #region Overrides
 
+    private DateTime _updateTimer = DateTime.Now;
+
     public override bool Init()
     {
       bool bResult = Load(GUIGraphicsContext.Skin + @"\mytvtuningdetails.xml");
@@ -167,7 +169,6 @@ namespace Mediaportal.TV.TvPlugin
       }
     }
 
-    private DateTime _updateTimer = DateTime.Now;
     public override void Process()
     {
 

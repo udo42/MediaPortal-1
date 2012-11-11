@@ -656,6 +656,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.Device
     #region positioner (motor) control
 
     /// <summary>
+    /// Enable/disable the movement soft-limits for a positioner device.
+    /// </summary>
+    bool ForceLimits { set; }
+
+    /// <summary>
     /// Stop the movement of a positioner device.
     /// </summary>
     void Stop();
@@ -669,11 +674,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.Device
     /// Set the Westward soft-limit of movement for a positioner device.
     /// </summary>
     void SetWestLimit();
-
-    /// <summary>
-    /// Enable/disable the movement soft-limits for a positioner device.
-    /// </summary>
-    bool ForceLimits { set; }
 
     /// <summary>
     /// Drive a positioner device in a given direction for a specified period of time.

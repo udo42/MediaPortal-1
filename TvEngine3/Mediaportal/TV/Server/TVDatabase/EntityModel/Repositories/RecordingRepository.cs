@@ -21,7 +21,9 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
     public RecordingRepository(Model context)
       : base(context)
     {
-    }    
+    }
+
+    #region IRecordingRepository Members
 
     public Recording GetRecording (int idRecording)
     {      
@@ -52,5 +54,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
                                   .Include(r => r.ProgramCategory);
       return includeRelations;
     }
+
+    #endregion
   }
 }

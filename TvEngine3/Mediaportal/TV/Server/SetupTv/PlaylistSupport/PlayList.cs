@@ -28,8 +28,43 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
   [Serializable]
   public class PlayList : IEnumerable<PlayListItem> //, IComparer
   {
-    protected string _playListName = "";
     protected List<PlayListItem> _listPlayListItems = new List<PlayListItem>();
+    protected string _playListName = "";
+
+    public string Name
+    {
+      get { return _playListName; }
+      set
+      {
+        if (value == null) return;
+        _playListName = value;
+      }
+    }
+
+    public int Count
+    {
+      get { return _listPlayListItems.Count; }
+    }
+
+    public PlayListItem this[int iItem]
+    {
+      get { return _listPlayListItems[iItem]; }
+    }
+
+    #region IEnumerable<PlayListItem> Members
+
+    public IEnumerator<PlayListItem> GetEnumerator()
+    {
+      return _listPlayListItems.GetEnumerator();
+    }
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      IEnumerable enumerable = _listPlayListItems;
+      return enumerable.GetEnumerator();
+    }
+
+    #endregion
 
     public bool AllPlayed()
     {
@@ -88,16 +123,6 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
       return success;
     }
 
-    public string Name
-    {
-      get { return _playListName; }
-      set
-      {
-        if (value == null) return;
-        _playListName = value;
-      }
-    }
-
     public int Remove(string fileName)
     {
       if (fileName == null) return -1;
@@ -117,16 +142,6 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
     public void Clear()
     {
       _listPlayListItems.Clear();
-    }
-
-    public int Count
-    {
-      get { return _listPlayListItems.Count; }
-    }
-
-    public PlayListItem this[int iItem]
-    {
-      get { return _listPlayListItems[iItem]; }
     }
 
 
@@ -149,17 +164,6 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
         _listPlayListItems[nArbitrary] = _listPlayListItems[item];
         _listPlayListItems[item] = anItem;
       }
-    }
-
-    public IEnumerator<PlayListItem> GetEnumerator()
-    {
-      return _listPlayListItems.GetEnumerator();
-    }
-
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      IEnumerable enumerable = _listPlayListItems;
-      return enumerable.GetEnumerator();
     }
 
     public int MovePlayListItemUp(int iItem)

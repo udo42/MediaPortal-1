@@ -33,23 +33,20 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 {
   public class TvCardHandler : ITvCardHandler
   {
-
-
     #region variables
 
-    private ITVCard _card;
-    private Card _dbsCard;
-    private readonly UserManagement _userManagement;
-    private readonly IParkedUserManagement _parkedUserManagement;
-
     private readonly DisEqcManagement _disEqcManagement;
-    private readonly TeletextManagement _teletext;
-    private readonly ChannelScanning _scanner;
-    private readonly EpgGrabbing _epgGrabbing;    
+    private readonly EpgGrabbing _epgGrabbing;
+    private readonly IParkedUserManagement _parkedUserManagement;
     private readonly Recorder _recorder;
+    private readonly ChannelScanning _scanner;
+    private readonly TeletextManagement _teletext;
     private readonly TimeShifter _timerShifter;
     private readonly CardTuner _tuner;
-    private ICiMenuActions _ciMenu;    
+    private readonly UserManagement _userManagement;
+    private ITVCard _card;
+    private ICiMenuActions _ciMenu;
+    private Card _dbsCard;
 
     #endregion
 
@@ -108,6 +105,12 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 
     #endregion
 
+    private ITvCardContext Context
+    {
+      get { return _card.Context as ITvCardContext; }
+    }
+
+    #region ITvCardHandler Members
 
     public IUserManagement UserManagement
     {
@@ -601,11 +604,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
     }
 
-    private ITvCardContext Context
-    {
-      get { return _card.Context as ITvCardContext; }
-    }
-
     /// <summary>
     /// Gets the current channel name.
     /// </summary>
@@ -753,6 +751,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         this.LogError(ex);
       }
     }
+
+    #endregion
 
     private void FreeAllSubChannels()
     {

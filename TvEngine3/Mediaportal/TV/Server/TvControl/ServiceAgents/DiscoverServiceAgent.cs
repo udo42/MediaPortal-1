@@ -32,10 +32,14 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       }
     }
 
+    #region IDiscoverServiceAgent Members
+
     public IDiscoverService Channel
     {
       get { return _channel; }
     }
+
+    #endregion
 
     #region Implementation of IDiscoverService
 

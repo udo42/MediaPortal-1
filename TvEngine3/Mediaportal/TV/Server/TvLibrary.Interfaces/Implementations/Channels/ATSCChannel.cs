@@ -34,9 +34,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     #region variables
 
     [DataMember]
-    private int _physicalChannel;
-
-    [DataMember]
     private int _majorChannel;
 
     [DataMember]
@@ -44,6 +41,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
 
     [DataMember]
     private ModulationType _modulation = ModulationType.ModNotSet;
+
+    [DataMember]
+    private int _physicalChannel;
 
     #endregion
 

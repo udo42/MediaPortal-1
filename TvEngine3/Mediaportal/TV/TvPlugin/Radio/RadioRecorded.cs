@@ -44,9 +44,21 @@ namespace Mediaportal.TV.TvPlugin.Radio
 {
   public class RadioRecorded : WindowPluginBase, IComparer<GUIListItem>
   {
-
-
     #region Variables
+
+    private static Recording _oActiveRecording = null;
+    private static bool _bIsLiveRecording = false;
+    private DBView _currentDbView = DBView.Recordings;
+    private string _currentLabel = string.Empty;
+    private SortMethod _currentSortMethod = SortMethod.Date;
+    private bool _deleteWatchedShows = false;
+    private int _iSelectedItem = 0;
+    private bool _oldStateSMSsearch;
+    private bool _resetSMSsearch = false;
+    private DateTime _resetSMSsearchDelay;
+    private int _rootItem = 0;
+
+    #region Nested type: Controls
 
     private enum Controls
     {
@@ -55,6 +67,22 @@ namespace Mediaportal.TV.TvPlugin.Radio
       LABEL_PROGRAMDESCRIPTION = 15,
       LABEL_PROGRAMGENRE = 17,
     } ;
+
+    #endregion
+
+    #region Nested type: DBView
+
+    private enum DBView
+    {
+      Recordings,
+      Channel,
+      Genre,
+      History,
+    }
+
+    #endregion
+
+    #region Nested type: SortMethod
 
     private enum SortMethod
     {
@@ -66,25 +94,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
       Duration = 5
     }
 
-    private enum DBView
-    {
-      Recordings,
-      Channel,
-      Genre,
-      History,
-    }
-
-    private SortMethod _currentSortMethod = SortMethod.Date;
-    private DBView _currentDbView = DBView.Recordings;
-    private static Recording _oActiveRecording = null;
-    private static bool _bIsLiveRecording = false;
-    private bool _deleteWatchedShows = false;
-    private int _iSelectedItem = 0;
-    private string _currentLabel = string.Empty;
-    private int _rootItem = 0;
-    private bool _resetSMSsearch = false;
-    private bool _oldStateSMSsearch;
-    private DateTime _resetSMSsearchDelay;
+    #endregion
 
     #endregion
 
@@ -588,8 +598,8 @@ namespace Mediaportal.TV.TvPlugin.Radio
       try
       {
         Program ParamProg = ProgramFactory.CreateProgram(rec.IdChannel.GetValueOrDefault(), rec.StartTime, rec.EndTime, rec.Title, rec.Description, rec.ProgramCategory,
-                                        ProgramState.None, DateTime.MinValue, String.Empty, String.Empty,
-                                        String.Empty, String.Empty, 0, String.Empty, 0);
+                                                         ProgramState.None, DateTime.MinValue, String.Empty, String.Empty,
+                                                         String.Empty, String.Empty, 0, String.Empty, 0);
         TVProgramInfo.CurrentProgram = ParamProg;
         GUIWindowManager.ActivateWindow((int)Window.WINDOW_TV_PROGRAM_INFO);
       }
@@ -613,22 +623,22 @@ namespace Mediaportal.TV.TvPlugin.Radio
         return GUILocalizeStrings.Get(6040); // "Yesterday"
       else if (DateTime.Now.Subtract(aStartTime) < new TimeSpan(72, 0, 0))
         return GUILocalizeStrings.Get(6041); // "Two days ago"
-      //else if (DateTime.Now.Subtract(aStartTime) < new TimeSpan(168, 0, 0)) // current week
-      //{
-      //  switch (compareDate.DayOfWeek)
-      //  {
-      //    case DayOfWeek.Monday: return GUILocalizeStrings.Get(11);
-      //    case DayOfWeek.Tuesday: return GUILocalizeStrings.Get(12);
-      //    case DayOfWeek.Wednesday: return GUILocalizeStrings.Get(13);
-      //    case DayOfWeek.Thursday: return GUILocalizeStrings.Get(14);
-      //    case DayOfWeek.Friday: return GUILocalizeStrings.Get(15);
-      //    case DayOfWeek.Saturday: return GUILocalizeStrings.Get(16);
-      //    case DayOfWeek.Sunday: return GUILocalizeStrings.Get(12);
-      //    default: return "Current week";
-      //  }
-      //}
-      //else if (DateTime.Now.Subtract(aStartTime) < new TimeSpan(336, 0, 0)) // last week
-      //  return "Last week";
+        //else if (DateTime.Now.Subtract(aStartTime) < new TimeSpan(168, 0, 0)) // current week
+        //{
+        //  switch (compareDate.DayOfWeek)
+        //  {
+        //    case DayOfWeek.Monday: return GUILocalizeStrings.Get(11);
+        //    case DayOfWeek.Tuesday: return GUILocalizeStrings.Get(12);
+        //    case DayOfWeek.Wednesday: return GUILocalizeStrings.Get(13);
+        //    case DayOfWeek.Thursday: return GUILocalizeStrings.Get(14);
+        //    case DayOfWeek.Friday: return GUILocalizeStrings.Get(15);
+        //    case DayOfWeek.Saturday: return GUILocalizeStrings.Get(16);
+        //    case DayOfWeek.Sunday: return GUILocalizeStrings.Get(12);
+        //    default: return "Current week";
+        //  }
+        //}
+        //else if (DateTime.Now.Subtract(aStartTime) < new TimeSpan(336, 0, 0)) // last week
+        //  return "Last week";
       else if (DateTime.Now.Subtract(aStartTime) < new TimeSpan(672, 0, 0)) // current month
         return GUILocalizeStrings.Get(6060); // "Current month";
       else if (DateTime.Now.Year.Equals(compareDate.Year))
@@ -1369,21 +1379,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
 
     #endregion
 
-    #region Sort Members
-
-    private void OnSort()
-    {
-      try
-      {
-        SetLabels();
-        facadeLayout.Sort(this);
-        UpdateButtonStates();
-      }
-      catch (Exception ex)
-      {
-        this.LogError(ex, "RadioRecorded: Error sorting items");
-      }
-    }
+    #region IComparer<GUIListItem> Members
 
     public int Compare(GUIListItem item1, GUIListItem item2)
     {
@@ -1607,13 +1603,27 @@ namespace Mediaportal.TV.TvPlugin.Radio
       }
     }
 
+    #endregion
+
+    private void OnSort()
+    {
+      try
+      {
+        SetLabels();
+        facadeLayout.Sort(this);
+        UpdateButtonStates();
+      }
+      catch (Exception ex)
+      {
+        this.LogError(ex, "RadioRecorded: Error sorting items");
+      }
+    }
+
     private void SortChanged(object sender, SortEventArgs e)
     {
       m_bSortAscending = e.Order != SortOrder.Descending;
       OnSort();
     }
-
-    #endregion
 
     #region playback events
 

@@ -40,6 +40,12 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
     private String m_fileName;
     private String m_filter;
 
+    public CustomFileName(String fileName, String filter)
+    {
+      m_fileName = fileName;
+      m_filter = filter;
+    }
+
     public String FileName
     {
       get { return m_fileName; }
@@ -48,12 +54,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
     public String DisplayName
     {
       get { return ToString(); }
-    }
-
-    public CustomFileName(String fileName, String filter)
-    {
-      m_fileName = fileName;
-      m_filter = filter;
     }
 
     /// <summary>
@@ -75,6 +75,11 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
   {
     private String m_fileName;
 
+    public SimpleFileName(String fileName)
+    {
+      m_fileName = fileName;
+    }
+
     public String FileName
     {
       get { return m_fileName; }
@@ -83,11 +88,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
     public String DisplayName
     {
       get { return System.IO.Path.GetFileNameWithoutExtension(m_fileName); }
-    }
-
-    public SimpleFileName(String fileName)
-    {
-      m_fileName = fileName;
     }
 
     /// <summary>
@@ -115,28 +115,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
     private String[] files;
     private MPComboBox m_cbxCountries;
     private MPComboBox m_cbxRegions;
-
-    /// <summary>
-    /// Load existing list from xml file 
-    /// </summary>
-    /// <param name="fileName">Path for input filen</param>
-    public object LoadList(string fileName, Type ListType)
-    {
-      try
-      {
-        XmlReader parFileXML = XmlReader.Create(fileName);
-        XmlSerializer xmlSerializer = new XmlSerializer(ListType);
-        object result = xmlSerializer.Deserialize(parFileXML);
-        parFileXML.Close();
-        return result;
-      }
-      catch (Exception ex)
-      {
-        this.LogError(ex, "Error loading tuningdetails");
-        MessageBox.Show("Transponder list could not be loaded, check error.log for details.");
-        return null;
-      }
-    }
 
     /// <summary>
     /// CTOR
@@ -181,6 +159,28 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
           list.Add(new SimpleFileName(file));
         }
         return list;
+      }
+    }
+
+    /// <summary>
+    /// Load existing list from xml file 
+    /// </summary>
+    /// <param name="fileName">Path for input filen</param>
+    public object LoadList(string fileName, Type ListType)
+    {
+      try
+      {
+        XmlReader parFileXML = XmlReader.Create(fileName);
+        XmlSerializer xmlSerializer = new XmlSerializer(ListType);
+        object result = xmlSerializer.Deserialize(parFileXML);
+        parFileXML.Close();
+        return result;
+      }
+      catch (Exception ex)
+      {
+        this.LogError(ex, "Error loading tuningdetails");
+        MessageBox.Show("Transponder list could not be loaded, check error.log for details.");
+        return null;
       }
     }
 

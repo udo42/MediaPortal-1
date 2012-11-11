@@ -42,8 +42,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class TvRecording : SectionSettings
   {
- 
-
     #region CardInfo class
 
     public class CardInfo
@@ -65,36 +63,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     #region Example Format class
 
+    private readonly string[] _customFormat = new string[2];
     private readonly int[] _formatIndex = new int[2];
     private readonly string[][] _formatString = new string[2][];
-    private readonly string[] _customFormat = new string[2];
-
-    private class Example
-    {
-      public readonly string Channel;
-      public readonly string Title;
-      public readonly string Episode;
-      public readonly string SeriesNum;
-      public readonly string EpisodeNum;
-      public readonly string EpisodePart;
-      public DateTime StartDate;
-      public DateTime EndDate;
-      public readonly string Genre;
-
-      public Example(string channel, string title, string episode, string seriesNum, string episodeNum,
-                     string episodePart, string genre, DateTime startDate, DateTime endDate)
-      {
-        Channel = channel;
-        Title = title;
-        Episode = episode;
-        SeriesNum = seriesNum;
-        EpisodeNum = episodeNum;
-        EpisodePart = episodePart;
-        Genre = genre;
-        StartDate = startDate;
-        EndDate = endDate;
-      }
-    }
 
     private static string ShowExample(string strInput, int recType)
     {
@@ -165,6 +136,33 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         strReturn += "\\";
       strReturn += strName + ".ts";
       return strReturn;
+    }
+
+    private class Example
+    {
+      public readonly string Channel;
+      public readonly string Episode;
+      public readonly string EpisodeNum;
+      public readonly string EpisodePart;
+      public readonly string Genre;
+      public readonly string SeriesNum;
+      public readonly string Title;
+      public DateTime EndDate;
+      public DateTime StartDate;
+
+      public Example(string channel, string title, string episode, string seriesNum, string episodeNum,
+                     string episodePart, string genre, DateTime startDate, DateTime endDate)
+      {
+        Channel = channel;
+        Title = title;
+        Episode = episode;
+        SeriesNum = seriesNum;
+        EpisodeNum = episodeNum;
+        EpisodePart = episodePart;
+        Genre = genre;
+        StartDate = startDate;
+        EndDate = endDate;
+      }
     }
 
     #endregion
@@ -264,14 +262,14 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
 
       ServiceAgents.Instance.SettingServiceAgent.SaveSetting("moviesformat", _formatIndex[0] == (_formatString[0].Length - 1)
-                        ? _customFormat[0]
-                        : _formatString[0][_formatIndex[0]]);
+                                                                               ? _customFormat[0]
+                                                                               : _formatString[0][_formatIndex[0]]);
       
       ServiceAgents.Instance.SettingServiceAgent.SaveSetting("moviesformatindex",_formatIndex[0].ToString());
       
       ServiceAgents.Instance.SettingServiceAgent.SaveSetting("seriesformat", _formatIndex[1] == (_formatString[1].Length - 1)
-                        ? _customFormat[1]
-                        : _formatString[1][_formatIndex[1]]);
+                                                                               ? _customFormat[1]
+                                                                               : _formatString[1][_formatIndex[1]]);
 
       ServiceAgents.Instance.SettingServiceAgent.SaveSetting("seriesformatindex", _formatIndex[1].ToString());
       ServiceAgents.Instance.SettingServiceAgent.SaveSetting("FirstDayOfWeekend", comboBoxWeekend.SelectedIndex.ToString()); //default is Saturday=0      
@@ -410,7 +408,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       if (_needRestart)
       {
         if (MessageBox.Show(this, "Changes made require TvService to restart. Restart it now?", "TvService",
-            MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                            MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
         {
           var dlgNotify = new NotifyForm("Restart TvService...", "This can take some time\n\nPlease be patient...");
           dlgNotify.Show();
@@ -604,6 +602,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       // Compare the length of the strings, or the strings
       // themselves, if they are the same length.
+
+      #region IComparer<TreeNode> Members
+
       public int Compare(TreeNode tx, TreeNode ty)
       {
         int result = 0;
@@ -615,18 +616,17 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
         return result;
       }
+
+      #endregion
     }
 
     #endregion
 
-    #region Delegates
-
     protected delegate void MethodTreeViewTags(Dictionary<string, MatroskaTagInfo> FoundTags);
-
-    #endregion
 
     #region Fields
 
+    private readonly List<TreeNode> tvDbRecs = new List<TreeNode>();
     private string fCurrentImportPath;
 
     public string CurrentImportPath
@@ -634,8 +634,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       get { return fCurrentImportPath; }
       set { fCurrentImportPath = value; }
     }
-
-    private readonly List<TreeNode> tvDbRecs = new List<TreeNode>();
 
     #endregion
 
@@ -936,21 +934,21 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         }
 
         tagRec = RecordingFactory.CreateRecording(channelId,
-                               null,
-                               false,
-                               aTag.startTime,
-                               aTag.endTime,
-                               aTag.title,
-                               aTag.description,
-                               category,
-                               physicalFile,
-                               0,
-                               SqlDateTime.MaxValue.Value,
-                               0,                               
-                               aTag.episodeName,
-                               aTag.seriesNum,
-                               aTag.episodeNum,
-                               aTag.episodePart);                               
+                                                  null,
+                                                  false,
+                                                  aTag.startTime,
+                                                  aTag.endTime,
+                                                  aTag.title,
+                                                  aTag.description,
+                                                  category,
+                                                  physicalFile,
+                                                  0,
+                                                  SqlDateTime.MaxValue.Value,
+                                                  0,                               
+                                                  aTag.episodeName,
+                                                  aTag.seriesNum,
+                                                  aTag.episodeNum,
+                                                  aTag.episodePart);                               
 
         tagRec.MediaType = Convert.ToInt32(aTag.mediaType);
         tagRec.Channel = channel;

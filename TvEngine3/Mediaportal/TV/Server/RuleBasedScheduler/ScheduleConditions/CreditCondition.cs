@@ -23,6 +23,8 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
       set { _credits = value; }
     }
 
+    #region IScheduleCondition Members
+
     public IQueryable<Program> ApplyCondition(IQueryable<Program> baseQuery)
     {
       return
@@ -35,6 +37,8 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
               d =>
               d.Role.ToUpperInvariant().Contains(c.Role.ToUpperInvariant()) &&
               d.Person.ToUpperInvariant().Contains(c.Person.ToUpperInvariant())))));
-    }   
+    }
+
+    #endregion
   }
 }

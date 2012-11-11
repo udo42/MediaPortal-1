@@ -39,10 +39,10 @@ namespace WebEPG.config.Grabber
 
     #region Variables
 
+    [XmlAttribute("action")] public Action action;
     [XmlAttribute("channel")] public string channel;
     [XmlAttribute("field")] public string field;
     [XmlAttribute("search")] public string search;
-    [XmlAttribute("action")] public Action action;
     [XmlText()] public string text;
 
     #endregion

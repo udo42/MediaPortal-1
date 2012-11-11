@@ -639,6 +639,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
 
       #region static DLL functions
 
+      #region Nested type: CreateDtvCIAPI
+
       /// <summary>
       /// Create a new common interface API instance. One instance is required for each Anysee device.
       /// </summary>
@@ -647,6 +649,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
       [UnmanagedFunctionPointer(CallingConvention.StdCall)]
       private delegate Int32 CreateDtvCIAPI(IntPtr ciApiInstance);
 
+      #endregion
+
+      #region Nested type: DestroyDtvCIAPI
+
       /// <summary>
       /// Destroy a previously created common interface API instance.
       /// </summary>
@@ -654,6 +660,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
       /// <returns><c>one</c> if the instance is successfully destroyed, otherwise <c>zero</c></returns>
       [UnmanagedFunctionPointer(CallingConvention.StdCall)]
       private delegate Int32 DestroyDtvCIAPI(IntPtr ciApiInstance);
+
+      #endregion
+
+      #region Nested type: GetanyseeNumberofDevicesEx
 
       /// <summary>
       /// Get the number of Anysee devices connected to the system with corresponding
@@ -666,17 +676,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
 
       #endregion
 
+      #endregion
+
       #region CIAPI unmanaged class
 
-      /// <summary>
-      /// Open the common interface API for a specific Anysee device.
-      /// </summary>
-      /// <param name="ciApiInstance">A reference to the instance to open.</param>
-      /// <param name="windowHandle">A reference to a window to use as an alternative to callbacks (CIAPI.dll sends custom messages to the window).</param>
-      /// <param name="deviceIndex">The Anysee index for the device to open.</param>
-      /// <returns>an HRESULT indicating whether the API was successfully opened</returns>
-      [UnmanagedFunctionPointer(CallingConvention.StdCall)]
-      private delegate Int32 OpenCILib(IntPtr ciApiInstance, IntPtr windowHandle, Int32 deviceIndex);
+      #region Nested type: CI_Control
 
       /// <summary>
       /// Execute a command on an open common interface instance.
@@ -688,6 +692,22 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
       /// <returns>an HRESULT indicating whether the command was successfully executed</returns>
       [UnmanagedFunctionPointer(CallingConvention.StdCall)]
       private delegate Int32 CI_Control(IntPtr ciApiInstance, AnyseeCiCommand command, IntPtr inputParams, IntPtr outputParams);
+
+      #endregion
+
+      #region Nested type: OpenCILib
+
+      /// <summary>
+      /// Open the common interface API for a specific Anysee device.
+      /// </summary>
+      /// <param name="ciApiInstance">A reference to the instance to open.</param>
+      /// <param name="windowHandle">A reference to a window to use as an alternative to callbacks (CIAPI.dll sends custom messages to the window).</param>
+      /// <param name="deviceIndex">The Anysee index for the device to open.</param>
+      /// <returns>an HRESULT indicating whether the API was successfully opened</returns>
+      [UnmanagedFunctionPointer(CallingConvention.StdCall)]
+      private delegate Int32 OpenCILib(IntPtr ciApiInstance, IntPtr windowHandle, Int32 deviceIndex);
+
+      #endregion
 
       #endregion
 
@@ -706,24 +726,23 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
 
       // This variable tracks the number of open API instances which corresponds with used DLL indices.
       private static int _apiCount = 0;
+      private Thread _apiAccessThread = null;
+      private int _apiIndex = 0;
+      private IntPtr _ciApiInstance = IntPtr.Zero;
+      private CI_Control _ciControl = null;
 
       // Delegate instances for each API DLL function.
       private CreateDtvCIAPI _createApi = null;
       private DestroyDtvCIAPI _destroyApi = null;
-      private GetanyseeNumberofDevicesEx _getAnyseeDeviceCount = null;
-      private OpenCILib _openApi = null;
-      private CI_Control _ciControl = null;
-
-      private int _apiIndex = 0;
-      private bool _dllLoaded = false;
       private String _devicePath = String.Empty;
+      private bool _dllLoaded = false;
+      private GetanyseeNumberofDevicesEx _getAnyseeDeviceCount = null;
 
-      private IntPtr _ciApiInstance = IntPtr.Zero;
-      private IntPtr _windowHandle = IntPtr.Zero;
       private IntPtr _libHandle = IntPtr.Zero;
+      private OpenCILib _openApi = null;
 
-      private Thread _apiAccessThread = null;
       private bool _stopApiAccessThread = false;
+      private IntPtr _windowHandle = IntPtr.Zero;
 
       #endregion
 

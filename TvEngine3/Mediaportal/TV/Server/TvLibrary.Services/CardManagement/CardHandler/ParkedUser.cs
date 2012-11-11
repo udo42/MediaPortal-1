@@ -10,8 +10,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
   public class ParkedUser : User, IDisposable
   {        
     private readonly IDictionary<int, ManualResetEvent> _events; //key is subchannelid
-    private readonly IDictionary<int, double> _parkedDurations; //key is subchannelid
     private readonly IDictionary<int, DateTime> _parkedAtList; //key is subchannelid
+    private readonly IDictionary<int, double> _parkedDurations; //key is subchannelid
     //key is subch id
     //private readonly int _parkedSubChannel;
 
@@ -54,7 +54,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       get { return _parkedAtList; }
     }
 
-   
+    #region IDisposable Members
+
     public void Dispose()
     {
       foreach(ManualResetEvent evt in _events.Values)
@@ -64,5 +65,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       _events.Clear();
     }
+
+    #endregion
   }
 }

@@ -160,11 +160,11 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
     #region Members
 
-    private string _commandName;
+    private byte[] _commandData;
     private string _commandDesc;
+    private string _commandName;
     private Port _commandPort = Port.One;
     private Speed _commandSpeed = Speed.Fast;
-    private byte[] _commandData;
 
     [NonSerialized()] private Status _commandStatus;
 

@@ -8,14 +8,15 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 {
   internal class UnitOfWork : IUnitOfWork
   {
-
-    private DbTransaction _transaction;
     private readonly ObjectContext _objectContext;
+    private DbTransaction _transaction;
 
     public UnitOfWork(ObjectContext context)
     {
       _objectContext = context;
     }
+
+    #region IUnitOfWork Members
 
     public bool IsInTransaction
     {
@@ -104,7 +105,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
       _objectContext.SaveChanges(saveOptions);
     }
 
-  
+    #endregion
 
     /// <summary>
     /// Releases the current transaction
@@ -126,9 +127,9 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
       }
     }
 
-
-
     #region Implementation of IDisposable
+
+    private bool _disposed;
 
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
@@ -155,7 +156,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 
       _disposed = true;
     }
-    private bool _disposed;
+
     #endregion
   }
 }

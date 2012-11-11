@@ -278,17 +278,17 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     // A private class to help us handle the two MMI data formats cleanly and easily.
     private class MmiData
     {
-      public String Title = String.Empty;
-      public String SubTitle = String.Empty;
-      public String Footer = String.Empty;
+      public String Answer = String.Empty;
+      public Int32 AnswerLength = 0;
+      public Int32 ChoiceIndex = 0;
       public List<String> Entries = new List<string>();
       public Int32 EntryCount = 0;
-      public bool IsEnquiry = false;
+      public String Footer = String.Empty;
       public bool IsBlindAnswer = false;
-      public Int32 AnswerLength = 0;
+      public bool IsEnquiry = false;
       public String Prompt = String.Empty;
-      public Int32 ChoiceIndex = 0;
-      public String Answer = String.Empty;
+      public String SubTitle = String.Empty;
+      public String Title = String.Empty;
       public Int32 Type = 0;
 
       public void WriteToBuffer(IntPtr buffer, bool isTerraTecFormat)

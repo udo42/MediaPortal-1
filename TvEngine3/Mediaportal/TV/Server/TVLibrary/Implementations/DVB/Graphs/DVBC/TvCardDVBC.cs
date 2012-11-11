@@ -33,19 +33,17 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBC
   /// </summary>
   public class TvCardDVBC : TvCardDvbBase
   {
-
-
     #region variables
-
-    /// <summary>
-    /// A pre-configured tuning space, used to speed up the tuning process. 
-    /// </summary>
-    private IDVBTuningSpace _tuningSpace = null;
 
     /// <summary>
     /// A tune request template, used to speed up the tuning process.
     /// </summary>
     private IDVBTuneRequest _tuneRequest = null;
+
+    /// <summary>
+    /// A pre-configured tuning space, used to speed up the tuning process. 
+    /// </summary>
+    private IDVBTuningSpace _tuningSpace = null;
 
     #endregion
 

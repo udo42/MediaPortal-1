@@ -31,10 +31,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.ChannelLinkage
   {
     #region variables
 
-    private ushort _networkId;
-    private ushort _transportId;
-    private ushort _serviceId;
     private List<LinkedChannel> _linkedChannels;
+    private ushort _networkId;
+    private ushort _serviceId;
+    private ushort _transportId;
 
     #endregion
 

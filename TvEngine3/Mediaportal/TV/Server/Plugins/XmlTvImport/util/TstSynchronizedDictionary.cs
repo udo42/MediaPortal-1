@@ -49,6 +49,77 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
     }
 
     /// <summary>
+    /// 
+    /// </summary>
+    public override int Count
+    {
+      get { return Wrapped.Count; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public override bool IsFixedSize
+    {
+      get { return Wrapped.IsFixedSize; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public override bool IsSynchronized
+    {
+      get { return true; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public override bool IsReadOnly
+    {
+      get { return Wrapped.IsReadOnly; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public override ICollection Keys
+    {
+      get { return Wrapped.Keys; }
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    public override ICollection Values
+    {
+      get { return Wrapped.Values; }
+    }
+
+    /// <summary>
+    /// Synchronized indexer
+    /// </summary>
+    public override Object this[String key]
+    {
+      get { return Wrapped[key]; }
+      set
+      {
+        lock (Wrapped.SyncRoot)
+        {
+          Wrapped[key] = value;
+        }
+      }
+    }
+
+    /// <summary>
+    /// SyncRoot object
+    /// </summary>
+    public override Object SyncRoot
+    {
+      get { return Wrapped.SyncRoot; }
+    }
+
+    /// <summary>
     /// Synchronized Add method.
     /// </summary>
     /// <param name="key"></param>
@@ -116,14 +187,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
     /// <summary>
     /// 
     /// </summary>
-    public override int Count
-    {
-      get { return Wrapped.Count; }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
     /// <param name="key"></param>
     /// <returns></returns>
     public override TstDictionaryEntry Find(String key)
@@ -148,69 +211,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
     public override TstDictionaryEnumerator GetEnumerator()
     {
       return Wrapped.GetEnumerator();
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public override bool IsFixedSize
-    {
-      get { return Wrapped.IsFixedSize; }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public override bool IsSynchronized
-    {
-      get { return true; }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public override bool IsReadOnly
-    {
-      get { return Wrapped.IsReadOnly; }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public override ICollection Keys
-    {
-      get { return Wrapped.Keys; }
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public override ICollection Values
-    {
-      get { return Wrapped.Values; }
-    }
-
-    /// <summary>
-    /// Synchronized indexer
-    /// </summary>
-    public override Object this[String key]
-    {
-      get { return Wrapped[key]; }
-      set
-      {
-        lock (Wrapped.SyncRoot)
-        {
-          Wrapped[key] = value;
-        }
-      }
-    }
-
-    /// <summary>
-    /// SyncRoot object
-    /// </summary>
-    public override Object SyncRoot
-    {
-      get { return Wrapped.SyncRoot; }
     }
 
     /// <summary>

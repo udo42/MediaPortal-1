@@ -24,6 +24,13 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
 {
   public class WorldDateTime : IComparable
   {
+    private int _day;
+    private int _hour;
+    private int _minute;
+    private int _month;
+    private int _second;
+    private WorldTimeZone _timeZone;
+
     /// <summary>
     /// Date Time with WorldTimeZone
     /// </summary>
@@ -32,14 +39,6 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
 
     //private DateTime _dt;
     private int _year;
-    private int _month;
-    private int _day;
-    private int _hour;
-    private int _minute;
-    private int _second;
-    private WorldTimeZone _timeZone;
-
-    #endregion
 
     #region Constructors
 
@@ -542,6 +541,8 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
     {
       return lhs.DateTime < rhs.DateTime;
     }
+
+    #endregion
 
     #endregion
 

@@ -11,6 +11,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {
     }
 
+    #region ICardService Members
+
     public IList<Card> ListAllCards()
     {
       return _channel.ListAllCards();
@@ -126,5 +128,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {
       return _channel.SaveCards(cards);
     }
+
+    #endregion
   }
 }

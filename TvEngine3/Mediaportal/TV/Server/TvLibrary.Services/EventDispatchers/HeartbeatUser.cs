@@ -4,9 +4,9 @@ using System.Net;
 namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
 {
   public class HeartbeatUser
-  {    
-	  private DateTime _lastSeen;
-	  private readonly string _name;
+  {
+    private readonly string _name;
+    private DateTime _lastSeen;
 
     public HeartbeatUser()
     {            

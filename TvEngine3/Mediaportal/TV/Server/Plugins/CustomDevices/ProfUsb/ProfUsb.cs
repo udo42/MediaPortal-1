@@ -39,6 +39,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
   {
     #region enums
 
+    #region Nested type: BdaExtensionProperty
+
     private enum BdaExtensionProperty
     {
       Tuner = 0,            // For tuning.
@@ -51,11 +53,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       DeviceId              // For retrieving a device's ID (device path section).
     }
 
-    private enum ProfPolarisation : byte
-    {
-      Horizontal = 0,
-      Vertical
-    }
+    #endregion
+
+    #region Nested type: ProfDiseqcPort
 
     private enum ProfDiseqcPort : byte
     {
@@ -66,11 +66,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       PortD
     }
 
-    private enum ProfLnbPower : byte
-    {
-      Off = 0,
-      On
-    }
+    #endregion
+
+    #region Nested type: ProfIrCode
 
     private enum ProfIrCode : byte
     {
@@ -110,6 +108,28 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
 
     #endregion
 
+    #region Nested type: ProfLnbPower
+
+    private enum ProfLnbPower : byte
+    {
+      Off = 0,
+      On
+    }
+
+    #endregion
+
+    #region Nested type: ProfPolarisation
+
+    private enum ProfPolarisation : byte
+    {
+      Horizontal = 0,
+      Vertical
+    }
+
+    #endregion
+
+    #endregion
+
     #region structs
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -143,19 +163,19 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
 
     #region constants
 
-    private static readonly Guid BdaExtensionPropertySet = new Guid(0xc6efe5eb, 0x855a, 0x4f1b, 0xb7, 0xaa, 0x87, 0xb5, 0xe1, 0xdc, 0x41, 0x13);
     private const int BdaExtensionParamsSize = 288;
     private const int MaxDiseqcMessageLength = 5;
     private const int MacAddressLength = 6;
     private const int DeviceIdLength = 8;
+    private static readonly Guid BdaExtensionPropertySet = new Guid(0xc6efe5eb, 0x855a, 0x4f1b, 0xb7, 0xaa, 0x87, 0xb5, 0xe1, 0xdc, 0x41, 0x13);
 
     #endregion
 
     #region variables
 
+    private bool _isCustomTuningSupported = false;
     private bool _isProfUsb = false;
     private IKsPropertySet _propertySet = null;
-    private bool _isCustomTuningSupported = false;
 
     #endregion
 
@@ -387,9 +407,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       //DVB_MMI.DumpBinary(_generalBuffer, 0, BdaExtensionParamsSize);
 
       hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.LnbPower,
-        IntPtr.Zero, 0,
-        _generalBuffer, BdaExtensionParamsSize
-      );
+                            IntPtr.Zero, 0,
+                            _generalBuffer, BdaExtensionParamsSize
+        );
       if (hr == 0)
       {
         this.LogDebug("Prof (USB): result = success");
@@ -484,9 +504,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       //DVB_MMI.DumpBinary(_generalBuffer, 0, BdaExtensionParamsSize);
 
       int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.Tuner,
-        IntPtr.Zero, 0,
-        _generalBuffer, BdaExtensionParamsSize
-      );
+                                IntPtr.Zero, 0,
+                                _generalBuffer, BdaExtensionParamsSize
+        );
       if (hr == 0)
       {
         this.LogDebug("Prof (USB): result = success");
@@ -519,7 +539,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
 
       KSPropertySupport support;
       int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.Tone,
-                                  out support);
+                                           out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
         this.LogDebug("Prof (USB): property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -546,9 +566,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       //DVB_MMI.DumpBinary(_generalBuffer, 0, BdaExtensionParamsSize);
 
       hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.Tone,
-        IntPtr.Zero, 0,
-        _generalBuffer, BdaExtensionParamsSize
-      );
+                            IntPtr.Zero, 0,
+                            _generalBuffer, BdaExtensionParamsSize
+        );
       if (hr == 0)
       {
         this.LogDebug("Prof (USB): result = success");
@@ -592,9 +612,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       //DVB_MMI.DumpBinary(_generalBuffer, 0, BdaExtensionParamsSize);
 
       int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.Motor,
-        IntPtr.Zero, 0,
-        _generalBuffer, BdaExtensionParamsSize
-      );
+                                IntPtr.Zero, 0,
+                                _generalBuffer, BdaExtensionParamsSize
+        );
       if (hr == 0)
       {
         this.LogDebug("Prof (USB): result = success");

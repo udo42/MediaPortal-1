@@ -42,16 +42,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
   ///</summary>
   public class TvDvbChannel : BaseSubChannel, ITeletextCallBack, IPmtCallBack, ICaCallBack, ITvSubChannel, IVideoAudioObserver
   {
- 
-
     #region variables
 
     #region local variables
 
-    /// <summary>
-    /// The current PMT PID for the service that this subchannel represents.
-    /// </summary>
-    private int _pmtPid = -1;
+    /// set to true to enable PAT lookup of PMT
+    private bool _alwaysLookupPmtPidInPat = DebugSettings.UsePATLookup;
+
+    private Cat _cat;
 
     /// <summary>
     /// Set by the TsWriter OnPmtReceived() callback. Indicates whether the service
@@ -59,22 +57,24 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     /// </summary>
     private bool _isServiceRunning = false;
 
+    private List<UInt16> _pids;
+    private Pmt _pmt;
+
     /// <summary>
-    /// Ts filter instance
+    /// The current PMT PID for the service that this subchannel represents.
     /// </summary>
-    private ITsFilter _tsFilterInterface;
+    private int _pmtPid = -1;
 
     /// <summary>
     /// The handle that links this subchannel with a corresponding subchannel instance in TsWriter.
     /// </summary>
     private int _subChannelIndex = -1;
 
-    /// set to true to enable PAT lookup of PMT
-    private bool _alwaysLookupPmtPidInPat = DebugSettings.UsePATLookup;
+    /// <summary>
+    /// Ts filter instance
+    /// </summary>
+    private ITsFilter _tsFilterInterface;
 
-    private Pmt _pmt;
-    private Cat _cat;
-    private List<UInt16> _pids;
     private ITVCard _tuner;
 
     #endregion
@@ -82,14 +82,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     #region events
 
     /// <summary>
-    /// Event that gets signaled when a new PMT section is seen.
-    /// </summary>
-    protected ManualResetEvent _eventPmt;
-
-    /// <summary>
     /// Event that gets signaled when a new CAT section is seen.
     /// </summary>
     private ManualResetEvent _eventCa;
+
+    /// <summary>
+    /// Event that gets signaled when a new PMT section is seen.
+    /// </summary>
+    protected ManualResetEvent _eventPmt;
 
     #endregion
 
@@ -379,6 +379,23 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     #region Timeshifting - Recording methods
 
     /// <summary>
+    /// Cancel the current tuning process.
+    /// </summary>
+    public override void CancelTune()
+    {
+      this.LogDebug("TvDvbChannel: subchannel {0} cancel tune", _subChannelId);
+      _cancelTune = true;
+      if (_eventCa != null)
+      {
+        _eventCa.Set();
+      }
+      if (_eventPmt != null)
+      {
+        _eventPmt.Set();
+      }
+    }
+
+    /// <summary>
     /// Starts recording
     /// </summary>
     /// <param name="fileName">filename to which to recording should be saved</param>
@@ -418,7 +435,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         if (_tsFilterInterface != null)
         {
           this.LogDebug("tvdvbchannel.OnStopRecording subch:{0}-{1} tswriter StopRecording...", _subChannelId,
-                            _subChannelIndex);
+                        _subChannelIndex);
           _tsFilterInterface.RecordStopRecord(_subChannelIndex);
         }
       }
@@ -486,24 +503,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       _tsFilterInterface.TimeShiftGetCurrentFilePosition(_subChannelId, out position, out bufferId);
     }
 
-    /// <summary>
-    /// Cancel the current tuning process.
-    /// </summary>
-    public override void CancelTune()
-    {
-      this.LogDebug("TvDvbChannel: subchannel {0} cancel tune", _subChannelId);
-      _cancelTune = true;
-      if (_eventCa != null)
-      {
-        _eventCa.Set();
-      }
-      if (_eventPmt != null)
-      {
-        _eventPmt.Set();
-      }
-    }
-
     #endregion
+
+    #region ITvSubChannel Members
 
     /// <summary>
     /// Returns true when unscrambled audio/video is received otherwise false
@@ -530,6 +532,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         return ((audioEncrypted == 0) && (videoEncrypted == 0));*/
       }
     }
+
+    #endregion
 
     #region teletext
 
@@ -752,7 +756,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
           }
 
           this.LogDebug("TvDvbChannel: SID = {0} (0x{0:x}), PMT PID = {1} (0x{1:x}), version = {2}",
-                          pmt.ProgramNumber, _pmtPid, pmt.Version);
+                        pmt.ProgramNumber, _pmtPid, pmt.Version);
 
           // Have we already seen this PMT? If yes, then stop processing here. Theoretically this is a
           // redundant check as TsWriter should only pass us new PMT when the version changes.
@@ -901,7 +905,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     public int OnPmtReceived(int pmtPid, int serviceId, bool isServiceRunning)
     {
       this.LogDebug("TvDvbChannel: subchannel {0} OnPmtReceived(), PMT PID = {1} (0x{1:x}), service ID = {2} (0x{2:x}), is service running = {3}, dynamic = {4}",
-          _subChannelId, pmtPid, serviceId, isServiceRunning, _pmt != null);
+                    _subChannelId, pmtPid, serviceId, isServiceRunning, _pmt != null);
       _pmtPid = pmtPid;
       _isServiceRunning = isServiceRunning;
       if (_eventPmt != null)
@@ -952,7 +956,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
             currentDetail.PmtPid = pmtPid;
             ChannelManagement.SaveTuningDetail(currentDetail);
             this.LogDebug("TvDvbChannel: updated PMT PID for service {0} (0x{0:x}) from {1} (0x{1:x}) to {2} (0x{2:x})",
-                            dvbService.ServiceId, oldPid, pmtPid);
+                          dvbService.ServiceId, oldPid, pmtPid);
           }
           catch (Exception ex)
           {

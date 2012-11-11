@@ -5,29 +5,8 @@ namespace Mediaportal.TV.Server.TVDatabase.Presentation
   [DataContract]
   public class CardPresentation
   {
-    [DataMember] 
-    private string _isOwner;
-
-    [DataMember] 
-    private bool _idle;
-    
-    [DataMember] 
-    private string _isScrambled;
-
     [DataMember]     
     private readonly string _cardType = "unknown";
-    
-    [DataMember] 
-    private bool _subChannelsCountOk = true;
-
-    [DataMember]
-    private string _state = "";
-
-    [DataMember]
-    private string _channelName = "";
-
-    [DataMember]
-    private string _userName = "";    
 
     [DataMember]
     private int? _cardId;
@@ -36,7 +15,28 @@ namespace Mediaportal.TV.Server.TVDatabase.Presentation
     private string _cardName = "";
 
     [DataMember]
+    private string _channelName = "";
+
+    [DataMember] 
+    private bool _idle;
+
+    [DataMember] 
+    private string _isOwner;
+
+    [DataMember] 
+    private string _isScrambled;
+
+    [DataMember]
+    private string _state = "";
+
+    [DataMember]
     private int _subChannels;
+
+    [DataMember] 
+    private bool _subChannelsCountOk = true;
+
+    [DataMember]
+    private string _userName = "";
 
     public CardPresentation(string cardType, int cardId, string cardName)
     {

@@ -155,39 +155,14 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     #region Property Variables
 
     /// <summary>
-    /// Decides the multi select characteristics of an MWTreeView Control.
+    /// True if TreeNodes can be blank, i.e. contain no Text.
     /// </summary>
-    private TreeViewMultiSelect tvmsMultiSelect = TreeViewMultiSelect.Multi;
+    private bool bAllowBlankNodeText;
 
     /// <summary>
     /// True if multiple TreeNodes can be checked at once or false otherwise (true is standard for MS TreeView).
     /// </summary>
     private bool bAllowMultiCheck = true;
-
-    /// <summary>
-    /// HashTable containing the Selected TreeNodes wrapped in MWTreeNodeWrapper objects as values and the TreeNode.GetHashCodes as keys.
-    /// </summary>
-    private Hashtable htSelNodes = new Hashtable();
-
-    /// <summary>
-    /// HashTable containing the Checked TreeNodes as values and the TreeNode.GetHashCodes as keys.
-    /// </summary>
-    private Hashtable htCheckedNodes = new Hashtable();
-
-    /// <summary>
-    /// Last Selected TreeNode or null if no TreeNode is selected or if Last Selected TreeNode was deselected.
-    /// </summary>
-    private TreeNode tnSelNode;
-
-    /// <summary>
-    /// True if scrolling is done so the SelNode (Last Selected Tree Node) is always displayed or false otherwise.
-    /// </summary>
-    private bool bScrollToSelNode = true;
-
-    /// <summary>
-    /// True if TreeNodes can be blank, i.e. contain no Text.
-    /// </summary>
-    private bool bAllowBlankNodeText;
 
     /// <summary>
     /// True if no TreeNode has to be selected or false otherwise (false is standard for MS TreeView).
@@ -201,14 +176,34 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     private bool bAllowRubberbandSelect = true;
 
     /// <summary>
-    /// Regular expression that has to be satisfied before the Text of a TreeNode can be changed.
+    /// True if scrolling is done so the SelNode (Last Selected Tree Node) is always displayed or false otherwise.
     /// </summary>
-    private string strLabelEditRegEx = string.Empty;
+    private bool bScrollToSelNode = true;
+
+    /// <summary>
+    /// HashTable containing the Checked TreeNodes as values and the TreeNode.GetHashCodes as keys.
+    /// </summary>
+    private Hashtable htCheckedNodes = new Hashtable();
+
+    /// <summary>
+    /// HashTable containing the Selected TreeNodes wrapped in MWTreeNodeWrapper objects as values and the TreeNode.GetHashCodes as keys.
+    /// </summary>
+    private Hashtable htSelNodes = new Hashtable();
+
+    /// <summary>
+    /// Regular expression that has to be satisfied before a TreeNode can be checked.
+    /// </summary>
+    private string strCheckNodeRegEx = string.Empty;
 
     /// <summary>
     /// Regular expression that cannot be satisfied if the Text of a TreeNode should be able to be changed.
     /// </summary>
     private string strDisallowLabelEditRegEx = string.Empty;
+
+    /// <summary>
+    /// Regular expression that has to be satisfied before the Text of a TreeNode can be changed.
+    /// </summary>
+    private string strLabelEditRegEx = string.Empty;
 
     /// <summary>
     /// Regular expression that has to be satisfied before a TreeNode can be selected.
@@ -217,23 +212,25 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     private string strSelectNodeRegEx = string.Empty;
 
     /// <summary>
-    /// Regular expression that has to be satisfied before a TreeNode can be checked.
+    /// Last Selected TreeNode or null if no TreeNode is selected or if Last Selected TreeNode was deselected.
     /// </summary>
-    private string strCheckNodeRegEx = string.Empty;
+    private TreeNode tnSelNode;
+
+    /// <summary>
+    /// Decides the multi select characteristics of an MWTreeView Control.
+    /// </summary>
+    private TreeViewMultiSelect tvmsMultiSelect = TreeViewMultiSelect.Multi;
 
     #endregion Property Variables
 
     #region Help Variables
 
     /// <summary>
-    /// This variable is set to true if the keyboard was used for checking/unchecking a TreeNode (or group of TreeNodes).
+    /// When this MWTreeView is selected or has focus this variable is set to true.
+    /// When the mouse is used to click inside this MWTreeView this variable is checked to see if the TreeNodes should be repainted.
+    ///		This is necessary since the MouseDown event happens before the OnGotFocus and OnEnter events.
     /// </summary>
-    private bool bKeyCheck;
-
-    /// <summary>
-    /// This variable is set to true if the mouse was used for checking/unchecking a TreeNode (or group of TreeNodes).
-    /// </summary>
-    private bool bMouseCheck;
+    private bool bActive;
 
     /// <summary>
     /// This variable is set to true if the AllowMultiCheck property was set to false.
@@ -244,32 +241,6 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     /// This variable is set to true if the TreeNodes should be forced to be checked/unchecked.
     /// </summary>
     private bool bForceCheckNode;
-
-    /// <summary>
-    /// When this MWTreeView is selected or has focus this variable is set to true.
-    /// When the mouse is used to click inside this MWTreeView this variable is checked to see if the TreeNodes should be repainted.
-    ///		This is necessary since the MouseDown event happens before the OnGotFocus and OnEnter events.
-    /// </summary>
-    private bool bActive;
-
-    /// <summary>
-    /// True if a Label is allowed to be edited.
-    /// Note that LabelEdit has to be true as well.
-    /// </summary>
-    private bool bLabelEditAllowed;
-
-    /// <summary>
-    /// TreeNode that was in the coordinates of OnMouseDown.
-    /// Used in conjunction with the FullRowSelect property.
-    /// Note that this TreeNode is treated differently than the tnMouseDown TreeNode and they must therefore be separate variables.
-    /// </summary>
-    private TreeNode tnFullRowSelect;
-
-    /// <summary>
-    /// The selected state of the TreeNode that was in the coordinates of OnMouseDown.
-    /// Used in conjunction with the FullRowSelect property.
-    /// </summary>
-    private bool bFullRowSelectNodeSelected;
 
     /// <summary>
     /// The checked state of the TreeNode that was in the coordinates of OnMouseDown.
@@ -284,11 +255,40 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     private bool bFullRowSelectNodeExpanded;
 
     /// <summary>
-    /// TreeNode that was in the coordinates of the OnMouseDown.
-    /// Used in conjunction with the AllowRubberbandSelect property.
-    /// Note that this TreeNode is treated differently than the tnFullRowSelect TreeNode and they must therefore be separate variables.
+    /// The selected state of the TreeNode that was in the coordinates of OnMouseDown.
+    /// Used in conjunction with the FullRowSelect property.
     /// </summary>
-    private TreeNode tnMouseDown;
+    private bool bFullRowSelectNodeSelected;
+
+    /// <summary>
+    /// This variable is set to true if the keyboard was used for checking/unchecking a TreeNode (or group of TreeNodes).
+    /// </summary>
+    private bool bKeyCheck;
+
+    /// <summary>
+    /// True if a Label is allowed to be edited.
+    /// Note that LabelEdit has to be true as well.
+    /// </summary>
+    private bool bLabelEditAllowed;
+
+    /// <summary>
+    /// This variable is set to true if the mouse was used for checking/unchecking a TreeNode (or group of TreeNodes).
+    /// </summary>
+    private bool bMouseCheck;
+
+    /// <summary>
+    /// True if the 'next' TreeNode that enters the OnBeforeSelect EventHandler should be treated as a 'proper' selected TreeNode as far as
+    ///		the original TreeView Control is concerned. I.e. Hottracking works and the focus rectangle around the TreeNode is also
+    ///		displayed.
+    ///	If false the above does not happen.
+    /// </summary>
+    private bool bPaintFocusRectAndHottracking;
+
+    /// <summary>
+    /// True if a rubberband has been painted (and therefore must be cleared) or false otherwise.
+    /// Used in conjunction with the AllowRubberbandSelect property.
+    /// </summary>
+    private bool bRubberbandHasBeenPainted;
 
     /// <summary>
     /// Point in the coordinates of the OnMouseDown.
@@ -320,18 +320,18 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     private Point ptMouseMoveScreen = new Point(0, 0);
 
     /// <summary>
-    /// True if a rubberband has been painted (and therefore must be cleared) or false otherwise.
-    /// Used in conjunction with the AllowRubberbandSelect property.
+    /// TreeNode that was in the coordinates of OnMouseDown.
+    /// Used in conjunction with the FullRowSelect property.
+    /// Note that this TreeNode is treated differently than the tnMouseDown TreeNode and they must therefore be separate variables.
     /// </summary>
-    private bool bRubberbandHasBeenPainted;
+    private TreeNode tnFullRowSelect;
 
     /// <summary>
-    /// True if the 'next' TreeNode that enters the OnBeforeSelect EventHandler should be treated as a 'proper' selected TreeNode as far as
-    ///		the original TreeView Control is concerned. I.e. Hottracking works and the focus rectangle around the TreeNode is also
-    ///		displayed.
-    ///	If false the above does not happen.
+    /// TreeNode that was in the coordinates of the OnMouseDown.
+    /// Used in conjunction with the AllowRubberbandSelect property.
+    /// Note that this TreeNode is treated differently than the tnFullRowSelect TreeNode and they must therefore be separate variables.
     /// </summary>
-    private bool bPaintFocusRectAndHottracking;
+    private TreeNode tnMouseDown;
 
     #endregion Help Variables
 

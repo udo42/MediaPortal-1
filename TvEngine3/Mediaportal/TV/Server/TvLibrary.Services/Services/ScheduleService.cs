@@ -9,6 +9,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 {
   public class ScheduleService : IScheduleService
   {
+    #region IScheduleService Members
 
     public IList<Schedule> ListAllSchedules()
     {
@@ -126,5 +127,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     {
       return ScheduleManagement.SaveRuleBasedSchedule(schedule);
     }
+
+    #endregion
   }  
 }

@@ -46,14 +46,14 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     #region Variables
 
     private string _agent = "Mozilla/4.0 (compatible; MSIE 7.0; WindowsNT 5.0; .NET CLR 1 .1.4322)";
-    private string _postType = "application/x-www-form-urlencoded";
-    private CookieCollection _cookies;
-    private HttpWebResponse _response;
-    private string _error = string.Empty;
-    private int blockSize = 8196;
-    private byte[] _data;
     private IHttpAuthentication _auth;
+    private CookieCollection _cookies;
+    private byte[] _data;
+    private string _error = string.Empty;
+    private string _postType = "application/x-www-form-urlencoded";
+    private HttpWebResponse _response;
     private IHttpStatistics _stats;
+    private int blockSize = 8196;
 
     #endregion
 
@@ -82,6 +82,16 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     #region Public Methods
 
     /// <summary>
+    /// Gets or sets the cookies.
+    /// </summary>
+    /// <value>The cookies.</value>
+    public CookieCollection Cookies
+    {
+      get { return _cookies; }
+      set { _cookies = value; }
+    }
+
+    /// <summary>
     /// Performs HTTPRequest
     /// </summary>
     /// <param name="request">The request.</param>
@@ -107,16 +117,6 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     public string GetError()
     {
       return _error;
-    }
-
-    /// <summary>
-    /// Gets or sets the cookies.
-    /// </summary>
-    /// <value>The cookies.</value>
-    public CookieCollection Cookies
-    {
-      get { return _cookies; }
-      set { _cookies = value; }
     }
 
     /// <summary>

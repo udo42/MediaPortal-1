@@ -23,9 +23,13 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
       set { _notOndays = value; }
     }
 
+    #region IScheduleCondition Members
+
     public IQueryable<Program> ApplyCondition(IQueryable<Program> baseQuery)
     {
       return baseQuery.Where(program => !(_notOndays.Any(d => d == program.StartTime.DayOfWeek)));
     }
+
+    #endregion
   }
 }

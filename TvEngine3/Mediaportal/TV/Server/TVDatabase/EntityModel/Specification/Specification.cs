@@ -6,13 +6,29 @@ using Mediaportal.TV.Server.TVDatabase.EntityModel.Extensions;
 namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Specification
 {
     public class Specification<TEntity> : ISpecification<TEntity>
-    {   
-        public Specification(Expression<Func<TEntity, bool>> predicate)
+    {
+      public Expression<Func<TEntity, bool>> Predicate;
+
+      public Specification(Expression<Func<TEntity, bool>> predicate)
         {
             Predicate = predicate;
         }
 
-        public Specification<TEntity> And(Specification<TEntity> specification)
+      #region ISpecification<TEntity> Members
+
+      public TEntity SatisfyingEntityFrom(IQueryable<TEntity> query)
+      {
+        return query.Where(Predicate).SingleOrDefault();
+      }
+
+      public IQueryable<TEntity> SatisfyingEntitiesFrom(IQueryable<TEntity> query)
+      {
+        return query.Where(Predicate);
+      }
+
+      #endregion
+
+      public Specification<TEntity> And(Specification<TEntity> specification)
         {
             return new Specification<TEntity>(Predicate.And(specification.Predicate));
         }
@@ -31,17 +47,5 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Specification
         {
             return new Specification<TEntity>(Predicate.Or(predicate));
         }
-
-        public TEntity SatisfyingEntityFrom(IQueryable<TEntity> query)
-        {
-            return query.Where(Predicate).SingleOrDefault();
-        }
-
-        public IQueryable<TEntity> SatisfyingEntitiesFrom(IQueryable<TEntity> query)
-        {
-            return query.Where(Predicate);
-        }
-
-        public Expression<Func<TEntity, bool>> Predicate;
     }
 }

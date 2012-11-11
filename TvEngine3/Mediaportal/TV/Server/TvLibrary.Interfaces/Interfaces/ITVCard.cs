@@ -45,9 +45,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
   /// </summary>
   public interface ITVCard
   {
-
-
-
     #region events
     // Note: events are handled as set-only properties to enable clean hybrid tuner handling.
 
@@ -91,17 +88,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     /// Gets/sets the card device
     /// </summary>		
     string DevicePath { get; }
-
-    /// <summary>
-    /// Method to check if card can tune to the channel specified
-    /// </summary>
-    /// <returns>true if card can tune to the channel otherwise false</returns>
-    bool CanTune(IChannel channel);
-
-    /// <summary>
-    /// Stop the card.
-    /// </summary>
-    void Stop();
 
     /// <summary>
     /// returns the min. channel number for analog cards
@@ -154,9 +140,25 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     /// <value>The number of services currently being decrypted.</value>
     int NumberOfChannelsDecrypting { get; }
 
+    /// <summary>
+    /// Method to check if card can tune to the channel specified
+    /// </summary>
+    /// <returns>true if card can tune to the channel otherwise false</returns>
+    bool CanTune(IChannel channel);
+
+    /// <summary>
+    /// Stop the card.
+    /// </summary>
+    void Stop();
+
     #endregion
 
     #region Channel linkage handling
+
+    /// <summary>
+    /// Returns the channel linkages grabbed
+    /// </summary>
+    List<PortalChannel> ChannelLinkages { get; }
 
     /// <summary>
     /// Starts scanning for linkage info
@@ -168,14 +170,20 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     /// </summary>
     void ResetLinkageScanner();
 
-    /// <summary>
-    /// Returns the channel linkages grabbed
-    /// </summary>
-    List<PortalChannel> ChannelLinkages { get; }
-
     #endregion
 
     #region epg & scanning
+
+    /// <summary>
+    /// returns a list of all epg data for each channel found.
+    /// </summary>
+    /// <value>The epg.</value>
+    List<EpgChannel> Epg { get; }
+
+    /// <summary>
+    /// Get the device's channel scanning interface.
+    /// </summary>
+    ITVScanning ScanningInterface { get; }
 
     /// <summary>
     /// Grabs the epg.
@@ -192,17 +200,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     /// Aborts grabbing the epg. This also triggers the OnEpgReceived callback.
     /// </summary>
     void AbortGrabbing();
-
-    /// <summary>
-    /// returns a list of all epg data for each channel found.
-    /// </summary>
-    /// <value>The epg.</value>
-    List<EpgChannel> Epg { get; }
-
-    /// <summary>
-    /// Get the device's channel scanning interface.
-    /// </summary>
-    ITVScanning ScanningInterface { get; }
 
     #endregion
 
@@ -275,11 +272,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     int SignalLevel { get; }
 
     /// <summary>
-    /// Updates the signal state for a card.
-    /// </summary>
-    void ResetSignalUpdate();
-
-    /// <summary>
     /// Gets or sets the context.
     /// </summary>
     /// <value>The context.</value>
@@ -301,6 +293,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     /// </value>
     bool IsScanning { get; set; }
 
+    /// <summary>
+    /// Updates the signal state for a card.
+    /// </summary>
+    void ResetSignalUpdate();
+
     #endregion
 
     #region idisposable
@@ -313,6 +310,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     #endregion
 
     #region sub channels
+
+    /// <summary>
+    /// Gets the sub channels.
+    /// </summary>
+    /// <value>The sub channels.</value>
+    ITvSubChannel[] SubChannels { get; }
 
     /// <summary>
     /// Gets the sub channel.
@@ -328,12 +331,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     /// </summary>
     /// <param name="id">The id.</param>
     void FreeSubChannel(int id);
-
-    /// <summary>
-    /// Gets the sub channels.
-    /// </summary>
-    /// <value>The sub channels.</value>
-    ITvSubChannel[] SubChannels { get; }
 
     #endregion
   }

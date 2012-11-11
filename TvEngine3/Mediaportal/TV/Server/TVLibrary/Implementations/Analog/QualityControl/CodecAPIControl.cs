@@ -31,7 +31,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
   /// </summary>
   public class CodecAPIControl : BaseControl
   {
-
     #region variable
 
     /// <summary>
@@ -53,7 +52,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
     {
       _codecAPI = codecAPI;
       this.LogDebug("analog: ICodecAPI supported by: " + FilterGraphTools.GetFilterName(_codecAPI as IBaseFilter) +
-                        "; Checking capabilities ");
+                    "; Checking capabilities ");
       CheckCapabilities();
     }
 

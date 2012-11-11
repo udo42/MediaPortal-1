@@ -43,6 +43,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
   /// </summary>
   public abstract class BaseChannelLinkageScanner : IChannelLinkageCallback
   {
+    #region IChannelLinkageCallback Members
+
     /// <summary>
     /// Gets called when linkage infos have been received
     /// Should be overriden by the class
@@ -52,5 +54,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     {
       return 0;
     }
+
+    #endregion
   }
 }

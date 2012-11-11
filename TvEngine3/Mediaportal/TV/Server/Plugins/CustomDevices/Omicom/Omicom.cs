@@ -61,18 +61,17 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Omicom
 
     #region constants
 
-    private static readonly Guid BdaExtensionPropertySet = new Guid(0x7db2deea, 0x42b4, 0x423d, 0xa2, 0xf7, 0x19, 0xc3, 0x2e, 0x51, 0xcc, 0xc1);
-
     private const int DiseqcMessageSize = 72;
     private const int MaxDiseqcMessageLength = 64;
+    private static readonly Guid BdaExtensionPropertySet = new Guid(0x7db2deea, 0x42b4, 0x423d, 0xa2, 0xf7, 0x19, 0xc3, 0x2e, 0x51, 0xcc, 0xc1);
 
     #endregion
 
     #region variables
 
     private IntPtr _diseqcBuffer = IntPtr.Zero;
-    private IKsPropertySet _propertySet = null;
     private bool _isOmicom = false;
+    private IKsPropertySet _propertySet = null;
 
     #endregion
 
@@ -229,9 +228,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Omicom
       //DVB_MMI.DumpBinary(_diseqcBuffer, 0, DiseqcMessageSize);
 
       int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.DiseqcWrite,
-        _diseqcBuffer, DiseqcMessageSize,
-        _diseqcBuffer, DiseqcMessageSize
-      );
+                                _diseqcBuffer, DiseqcMessageSize,
+                                _diseqcBuffer, DiseqcMessageSize
+        );
       if (hr == 0)
       {
         this.LogDebug("Omicom: result = success");
@@ -265,10 +264,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Omicom
       }
       int returnedByteCount;
       int hr = _propertySet.Get(BdaExtensionPropertySet, (int)BdaExtensionProperty.DiseqcRead,
-        _diseqcBuffer, DiseqcMessageSize,
-        _diseqcBuffer, DiseqcMessageSize,
-        out returnedByteCount
-      );
+                                _diseqcBuffer, DiseqcMessageSize,
+                                _diseqcBuffer, DiseqcMessageSize,
+                                out returnedByteCount
+        );
       if (hr != 0 || returnedByteCount != DiseqcMessageSize)
       {
         this.LogDebug("Omicom: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));

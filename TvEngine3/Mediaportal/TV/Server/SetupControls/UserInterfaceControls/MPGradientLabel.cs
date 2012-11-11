@@ -31,17 +31,18 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   [ToolboxBitmap(typeof (Label))]
   public class MPGradientLabel : UserControl
   {
-    private Color firstColor;
-    private Color lastColor;
-
-    private int paddingTop, paddingLeft;
-
-    private Label workingLabel;
-
     /// <summary> 
     /// Required designer variable.
     /// </summary>
     private Container components = null;
+
+    private Color firstColor;
+    private Color lastColor;
+
+    private int paddingLeft;
+    private int paddingTop;
+
+    private Label workingLabel;
 
     public MPGradientLabel()
     {
@@ -56,42 +57,6 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       lastColor = Color.White;
 
       workingLabel.Paint += workingLabel_Paint;
-    }
-
-    private void DrawBackground(Graphics graphics)
-    {
-      //
-      // Create gradient brush
-      //
-      Brush gradientBrush = new LinearGradientBrush(workingLabel.ClientRectangle,
-                                                    firstColor,
-                                                    lastColor,
-                                                    LinearGradientMode.Horizontal);
-
-      //
-      // Draw brush
-      //
-      graphics.FillRectangle(gradientBrush, ClientRectangle);
-      gradientBrush.Dispose();
-    }
-
-    private void DrawForeground(Graphics graphics)
-    {
-      //
-      // Draw bevelbox
-      //
-      Pen grayPen = new Pen(Color.FromArgb(200, 200, 200));
-      graphics.DrawLine(grayPen, 0, 0, Width - 1, 0);
-      graphics.DrawLine(Pens.WhiteSmoke, 0, Height - 1, Width - 1, Height - 1);
-      grayPen.Dispose();
-
-      //
-      // Draw caption
-      //
-      graphics.DrawString(Caption,
-                          TextFont,
-                          new SolidBrush(TextColor),
-                          paddingLeft, paddingTop);
     }
 
     [Browsable(true), Category("Gradient")]
@@ -171,6 +136,42 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       }
     }
 
+    private void DrawBackground(Graphics graphics)
+    {
+      //
+      // Create gradient brush
+      //
+      Brush gradientBrush = new LinearGradientBrush(workingLabel.ClientRectangle,
+                                                    firstColor,
+                                                    lastColor,
+                                                    LinearGradientMode.Horizontal);
+
+      //
+      // Draw brush
+      //
+      graphics.FillRectangle(gradientBrush, ClientRectangle);
+      gradientBrush.Dispose();
+    }
+
+    private void DrawForeground(Graphics graphics)
+    {
+      //
+      // Draw bevelbox
+      //
+      Pen grayPen = new Pen(Color.FromArgb(200, 200, 200));
+      graphics.DrawLine(grayPen, 0, 0, Width - 1, 0);
+      graphics.DrawLine(Pens.WhiteSmoke, 0, Height - 1, Width - 1, Height - 1);
+      grayPen.Dispose();
+
+      //
+      // Draw caption
+      //
+      graphics.DrawString(Caption,
+                          TextFont,
+                          new SolidBrush(TextColor),
+                          paddingLeft, paddingTop);
+    }
+
     /// <summary> 
     /// Clean up any resources being used.
     /// </summary>
@@ -184,6 +185,14 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
         }
       }
       base.Dispose(disposing);
+    }
+
+    private void workingLabel_Paint(object sender, PaintEventArgs e)
+    {
+      e.Graphics.Clear(System.Drawing.SystemColors.Control);
+
+      DrawBackground(e.Graphics);
+      DrawForeground(e.Graphics);
     }
 
     #region Component Designer generated code
@@ -214,13 +223,5 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     }
 
     #endregion
-
-    private void workingLabel_Paint(object sender, PaintEventArgs e)
-    {
-      e.Graphics.Clear(System.Drawing.SystemColors.Control);
-
-      DrawBackground(e.Graphics);
-      DrawForeground(e.Graphics);
-    }
   }
 }

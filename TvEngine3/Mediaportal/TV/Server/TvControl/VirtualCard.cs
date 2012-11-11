@@ -44,71 +44,70 @@ namespace Mediaportal.TV.Server.TVControl
   [DataContract]
   public class VirtualCard : IVirtualCard
   {
-
     #region variables
-
-    [DataMember]
-    private int _nrOfOtherUsersTimeshiftingOnCard = 0;
-
-    [DataMember]
-    private string _server;
-
-    [DataMember]
-    private string _recordingFolder;
-
-    [DataMember]
-    private string _timeShiftFolder;
-
-    [DataMember]
-    private int _recordingFormat;
-
-    [DataMember]
-    private IUser _user;
 
     [DataMember]
     private const int CommandTimeOut = 3000;
 
     [DataMember]
-    private bool _isTimeshifting;
+    private CardType _cardType = CardType.Analog;
 
     [DataMember]
-    private bool _isScrambled;
-
-    [DataMember]
-    private bool _isScanning;
-
-    [DataMember]
-    private bool _isRecording;
-
-    [DataMember]
-    private bool _isGrabbingEpg;
+    private string _channelName;
 
     [DataMember]
     private bool _hasTeletext;
 
     [DataMember]
-    private string _rtspUrl;
+    private int _idChannel = -1;
 
     [DataMember]
-    private string _recordingFileName;
+    private bool _isGrabbingEpg;
+
+    [DataMember]
+    private bool _isRecording;
+
+    [DataMember]
+    private bool _isScanning;
+
+    [DataMember]
+    private bool _isScrambled;
+
+    [DataMember]
+    private bool _isTimeshifting;
+
+    [DataMember]
+    private MediaTypeEnum? _mediaType;
 
     [DataMember]
     private string _name;
 
     [DataMember]
-    private CardType _cardType = CardType.Analog;
+    private int _nrOfOtherUsersTimeshiftingOnCard = 0;
+
+    [DataMember]
+    private string _recordingFileName;
+
+    [DataMember]
+    private string _recordingFolder;
+
+    [DataMember]
+    private int _recordingFormat;
+
+    [DataMember]
+    private string _rtspUrl;
+
+    [DataMember]
+    private string _server;
 
     [DataMember]
     private string _timeShiftFileName;
 
     [DataMember]
-    private string _channelName;    
+    private string _timeShiftFolder;
 
     [DataMember]
-    private int _idChannel = -1;
-
-    [DataMember]
-    private MediaTypeEnum? _mediaType;
+    private IUser _user;
 
     #endregion
 
@@ -146,6 +145,21 @@ namespace Mediaportal.TV.Server.TVControl
                                        Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
 
       InitStaticProperties();
+    }
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="VirtualCard"/> class.
+    /// </summary>
+    /// <param name="user">The user.</param>
+    public VirtualCard(IUser user)
+    {
+      _user = user;
+      _server = Dns.GetHostName();
+
+      InitStaticProperties();
+
+      _recordingFolder = String.Format(@"{0}\Team MediaPortal\MediaPortal TV Server\recordings",
+                                       Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
     }
 
     private void InitStaticProperties()
@@ -192,23 +206,8 @@ namespace Mediaportal.TV.Server.TVControl
       }                        
     }
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="VirtualCard"/> class.
-    /// </summary>
-    /// <param name="user">The user.</param>
-    public VirtualCard(IUser user)
-    {
-      _user = user;
-      _server = Dns.GetHostName();
-
-      InitStaticProperties();
-
-      _recordingFolder = String.Format(@"{0}\Team MediaPortal\MediaPortal TV Server\recordings",
-                                       Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
-    }
-
     #endregion
-    
+
     #region properties
 
     #region static properties
@@ -1433,10 +1432,8 @@ namespace Mediaportal.TV.Server.TVControl
 
     #endregion
 
-    #endregion    
-
     #endregion
 
-   
+    #endregion
   }
 }

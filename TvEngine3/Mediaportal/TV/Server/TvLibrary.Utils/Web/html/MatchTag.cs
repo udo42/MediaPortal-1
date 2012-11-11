@@ -25,10 +25,10 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.html
     #region Variables
 
     private string _fullTag;
-    private string _tagName;
     private int _index;
-    private int _lenght;
     private bool _isClose;
+    private int _lenght;
+    private string _tagName;
 
     #endregion
 

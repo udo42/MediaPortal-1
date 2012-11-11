@@ -29,20 +29,15 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 {
   internal class RemoteWakeupHandler : IWakeupHandler
   {
+    public readonly string Url;
     private IWakeupHandler remote;
     private int tag;
-    public readonly string Url;
 
     public RemoteWakeupHandler(String URL, int tag)
     {
       remote = (IWakeupHandler)Activator.GetObject(typeof (IWakeupHandler), URL);
       this.tag = tag;
       Url = URL;
-    }
-
-    public void Close()
-    {
-      remote = null;
     }
 
     #region IWakeupHandler Members
@@ -82,5 +77,10 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     }
 
     #endregion
+
+    public void Close()
+    {
+      remote = null;
+    }
   }
 }

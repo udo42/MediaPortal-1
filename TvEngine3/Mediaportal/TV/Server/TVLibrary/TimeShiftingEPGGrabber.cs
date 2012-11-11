@@ -30,15 +30,14 @@ namespace Mediaportal.TV.Server.TVLibrary
 {
   internal class TimeShiftingEPGGrabber : BaseEpgGrabber
   {
-
     #region Variables
 
     private readonly ITVCard _card;
-    private readonly System.Timers.Timer _epgTimer = new System.Timers.Timer();
-    private DateTime _grabStartTime;
-    private List<EpgChannel> _epg;
-    private bool _updateThreadRunning;
     private readonly EpgDBUpdater _dbUpdater;
+    private readonly System.Timers.Timer _epgTimer = new System.Timers.Timer();
+    private List<EpgChannel> _epg;
+    private DateTime _grabStartTime;
+    private bool _updateThreadRunning;
 
     #endregion
 

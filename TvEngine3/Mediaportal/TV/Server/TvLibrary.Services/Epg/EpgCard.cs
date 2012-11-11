@@ -45,8 +45,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
   /// Class which will  grab the epg for for a specific card
   public class EpgCard : BaseEpgGrabber, IDisposable
   {
-
-
     #region const
 
     private int _epgTimeOut = (10*60); // 10 mins
@@ -66,22 +64,20 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
 
     #region variables
 
+    private readonly Card _card;
+    private readonly EpgDBUpdater _dbUpdater;
     private readonly System.Timers.Timer _epgTimer = new System.Timers.Timer();
-    private EpgState _state;
-
-    private bool _reEntrant;
+    private readonly TvServerEventHandler _eventHandler;
+    private Transponder _currentTransponder;
+    private bool _disposed;
     private List<EpgChannel> _epg;
 
     private DateTime _grabStartTime;
     private bool _isRunning;
+    private bool _reEntrant;
+    private EpgState _state;
 
-    private Transponder _currentTransponder;
-
-    private readonly TvServerEventHandler _eventHandler;
-    private bool _disposed;
-    private readonly Card _card;
     private IUser _user;
-    private readonly EpgDBUpdater _dbUpdater;
 
     #endregion
 
@@ -248,7 +244,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
       Channel channel = _currentTransponder.CurrentChannel;
 
       this.LogInfo("EpgCard: grab epg on card: #{0} transponder: #{1} ch:{2} ", _card.IdCard,
-              TransponderList.Instance.CurrentIndex, channel.DisplayName);
+                   TransponderList.Instance.CurrentIndex, channel.DisplayName);
 
       _state = EpgState.Idle;
       _isRunning = true;
@@ -264,7 +260,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
         return;
       }
       this.LogInfo("EpgCard: unable to grab epg transponder: {0} ch: {1} started on {2}",
-              TransponderList.Instance.CurrentIndex, channel.DisplayName, _user.CardId);
+                   TransponderList.Instance.CurrentIndex, channel.DisplayName, _user.CardId);
       this.LogInfo("{0}", _currentTransponder.Tuning.ToString());
     }
 
@@ -684,7 +680,18 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
 
     #endregion
 
-    #region IDisposable Members    
+    #region IDisposable Members
+
+    /// <summary>
+    /// Disposes the EPG card
+    /// </summary>    
+    public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    #endregion
 
     protected virtual void Dispose(bool disposing)
     {
@@ -699,16 +706,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
       }
 
       // get rid of unmanaged resources
-    }
-
-
-    /// <summary>
-    /// Disposes the EPG card
-    /// </summary>    
-    public void Dispose()
-    {
-      Dispose(true);
-      GC.SuppressFinalize(this);
     }
 
     ~EpgCard()
@@ -737,7 +734,5 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
             break;
         }
     }
-
-    #endregion
   }
 }

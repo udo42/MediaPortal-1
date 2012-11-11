@@ -52,55 +52,46 @@ namespace Mediaportal.TV.TvPlugin
   {
  
     // Member variables                                  
+
+    private readonly string PathIconNoTune = GUIGraphicsContext.Skin + @"\Media\remote_blue.png";
+    private readonly string PathIconRecord = GUIGraphicsContext.Skin + @"\Media\remote_red.png";
+    private readonly string PathIconTimeshift = GUIGraphicsContext.Skin + @"\Media\remote_yellow.png";
+    // fetch localized ID's only once from XML file
+    private readonly string local1054 = GUILocalizeStrings.Get(1054); // (recording)
+    private readonly string local1055 = GUILocalizeStrings.Get(1055); // (timeshifting)
+    private readonly string local1056 = GUILocalizeStrings.Get(1056); // (unavailable)    
+    private readonly string local736 = GUILocalizeStrings.Get(736); // No data available
+    private readonly string local789 = GUILocalizeStrings.Get(789); // Now:
+    private readonly string local790 = GUILocalizeStrings.Get(790); // Next:
+    private bool _byIndex = false;
+    private bool _canceled = false;
+    private List<ChannelGroup> _channelGroupList = null;
+    private List<Channel> _channelList = new List<Channel>();
+    private int _channelNumberMaxLength = 3;
+    private IDictionary<int, IDictionary<int, NowAndNext>> _listNowNext = new Dictionary<int, IDictionary<int, NowAndNext>>();
+    private Dictionary<int, DateTime> _nextEPGupdate = new Dictionary<int, DateTime>();
+    private Channel _selectedChannel;
+    private bool _showChannelNumber = false;
+    private Dictionary<int, List<Channel>> _tvGroupChannelListCache = null;
+    private bool _zap = true;
+    private Stopwatch benchClock = null;
+
     [SkinControl(34)]
     protected GUIButtonControl cmdExit = null;
+
+    protected GUIListControl lstChannels = null;
 
     [SkinControl(35)]
     protected GUIListControl lstChannelsNoStateIcons = null;
 
-    [SkinControl(36)]
-    protected GUISpinControl spinGroup = null;
-
     [SkinControl(37)]
     protected GUIListControl lstChannelsWithStateIcons = null;
 
-    protected GUIListControl lstChannels = null;
-
-    private bool _canceled = false;
-    /*
-    private bool _running = false;
-    private int _parentWindowID = 0;
-    private GUIWindow _parentWindow = null;
-    */
-    private Dictionary<int, List<Channel>> _tvGroupChannelListCache = null;    
-
-
-    private List<ChannelGroup> _channelGroupList = null;
-    private Channel _selectedChannel;
-    private bool _zap = true;
-    private Stopwatch benchClock = null;
-    private List<Channel> _channelList = new List<Channel>();
-
-    private bool _byIndex = false;
-    private bool _showChannelNumber = false;
-    private int _channelNumberMaxLength = 3;
-
-    private Dictionary<int, DateTime> _nextEPGupdate = new Dictionary<int, DateTime>();
-    private IDictionary<int, IDictionary<int, NowAndNext>> _listNowNext = new Dictionary<int, IDictionary<int, NowAndNext>>();
-
-    private readonly string PathIconNoTune = GUIGraphicsContext.Skin + @"\Media\remote_blue.png";
-    private readonly string PathIconTimeshift = GUIGraphicsContext.Skin + @"\Media\remote_yellow.png";
-    private readonly string PathIconRecord = GUIGraphicsContext.Skin + @"\Media\remote_red.png";
-    // fetch localized ID's only once from XML file
-    private readonly string local736 = GUILocalizeStrings.Get(736); // No data available
-    private readonly string local789 = GUILocalizeStrings.Get(789); // Now:
-    private readonly string local790 = GUILocalizeStrings.Get(790); // Next:
-    private readonly string local1054 = GUILocalizeStrings.Get(1054); // (recording)
-    private readonly string local1055 = GUILocalizeStrings.Get(1055); // (timeshifting)
-    private readonly string local1056 = GUILocalizeStrings.Get(1056); // (unavailable)    
-
     private StringBuilder sb = new StringBuilder();
     private StringBuilder sbTmp = new StringBuilder();
+
+    [SkinControl(36)]
+    protected GUISpinControl spinGroup = null;
 
     #region Serialisation
 

@@ -53,8 +53,6 @@ namespace Mediaportal.TV.TvPlugin
 {
   public class TvRecorded : WindowPluginBase, IComparer<GUIListItem>
   {
-  
-
     #region ThumbCacher
 
     public class RecordingThumbCacher
@@ -121,6 +119,29 @@ namespace Mediaportal.TV.TvPlugin
 
     #region Variables
 
+    private static Recording _activeRecording = null;
+    private static bool _bIsLiveRecording = false;
+    private static bool _thumbCreationActive = false;
+    private static bool _createRecordedThumbs = true;
+    private DBView _currentDbView = DBView.Recordings;
+    private string _currentLabel = string.Empty;
+    private SortMethod _currentSortMethod = SortMethod.Date;
+    private bool _deleteWatchedShows = false;
+    private int _iSelectedItem = 0;
+    private bool _oldStateSMSsearch;
+    private bool _resetSMSsearch = false;
+    private DateTime _resetSMSsearchDelay;
+    private int _rootItem = 0;
+
+    [SkinControl(6)]
+    protected GUIButtonControl btnCleanup = null;
+    [SkinControl(7)]
+    protected GUIButtonControl btnCompress = null;
+
+    private RecordingThumbCacher thumbworker = null;
+
+    #region Nested type: Controls
+
     private enum Controls
     {
       LABEL_PROGRAMTITLE = 13,
@@ -128,6 +149,22 @@ namespace Mediaportal.TV.TvPlugin
       LABEL_PROGRAMDESCRIPTION = 15,
       LABEL_PROGRAMGENRE = 17,
     } ;
+
+    #endregion
+
+    #region Nested type: DBView
+
+    private enum DBView
+    {
+      Recordings,
+      Channel,
+      Genre,
+      History,
+    }
+
+    #endregion
+
+    #region Nested type: SortMethod
 
     private enum SortMethod
     {
@@ -139,35 +176,7 @@ namespace Mediaportal.TV.TvPlugin
       Duration = 5
     }
 
-    private enum DBView
-    {
-      Recordings,
-      Channel,
-      Genre,
-      History,
-    }
-
-    private SortMethod _currentSortMethod = SortMethod.Date;
-    private DBView _currentDbView = DBView.Recordings;
-    private static Recording _activeRecording = null;
-    private static bool _bIsLiveRecording = false;
-    private static bool _thumbCreationActive = false;
-    private static bool _createRecordedThumbs = true;
-    private bool _deleteWatchedShows = false;
-    private int _iSelectedItem = 0;
-    private string _currentLabel = string.Empty;
-    private int _rootItem = 0;
-    private bool _resetSMSsearch = false;
-    private bool _oldStateSMSsearch;
-    private DateTime _resetSMSsearchDelay;
-
-    private RecordingThumbCacher thumbworker = null;
-    
-    [SkinControl(6)]
-    protected GUIButtonControl btnCleanup = null;
-    [SkinControl(7)]
-    protected GUIButtonControl btnCompress = null;
-    
+    #endregion
 
     #endregion
 
@@ -687,8 +696,8 @@ namespace Mediaportal.TV.TvPlugin
       try
       {
         Program paramProg = ProgramFactory.CreateProgram(rec.IdChannel.GetValueOrDefault(), rec.StartTime, rec.EndTime, rec.Title, rec.Description, rec.ProgramCategory,
-                                        ProgramState.None, DateTime.MinValue, String.Empty, String.Empty,
-                                        String.Empty, String.Empty, 0, String.Empty, 0);
+                                                         ProgramState.None, DateTime.MinValue, String.Empty, String.Empty,
+                                                         String.Empty, String.Empty, 0, String.Empty, 0);
         TVProgramInfo.CurrentProgram = paramProg;
         GUIWindowManager.ActivateWindow((int)Window.WINDOW_TV_PROGRAM_INFO);
       }
@@ -712,22 +721,22 @@ namespace Mediaportal.TV.TvPlugin
         return GUILocalizeStrings.Get(6040); // "Yesterday"
       else if (DateTime.Now.Subtract(aStartTime) < new TimeSpan(72, 0, 0))
         return GUILocalizeStrings.Get(6041); // "Two days ago"
-      //else if (DateTime.Now.Subtract(aStartTime) < new TimeSpan(168, 0, 0)) // current week
-      //{
-      //  switch (compareDate.DayOfWeek)
-      //  {
-      //    case DayOfWeek.Monday: return GUILocalizeStrings.Get(11);
-      //    case DayOfWeek.Tuesday: return GUILocalizeStrings.Get(12);
-      //    case DayOfWeek.Wednesday: return GUILocalizeStrings.Get(13);
-      //    case DayOfWeek.Thursday: return GUILocalizeStrings.Get(14);
-      //    case DayOfWeek.Friday: return GUILocalizeStrings.Get(15);
-      //    case DayOfWeek.Saturday: return GUILocalizeStrings.Get(16);
-      //    case DayOfWeek.Sunday: return GUILocalizeStrings.Get(12);
-      //    default: return "Current week";
-      //  }
-      //}
-      //else if (DateTime.Now.Subtract(aStartTime) < new TimeSpan(336, 0, 0)) // last week
-      //  return "Last week";
+        //else if (DateTime.Now.Subtract(aStartTime) < new TimeSpan(168, 0, 0)) // current week
+        //{
+        //  switch (compareDate.DayOfWeek)
+        //  {
+        //    case DayOfWeek.Monday: return GUILocalizeStrings.Get(11);
+        //    case DayOfWeek.Tuesday: return GUILocalizeStrings.Get(12);
+        //    case DayOfWeek.Wednesday: return GUILocalizeStrings.Get(13);
+        //    case DayOfWeek.Thursday: return GUILocalizeStrings.Get(14);
+        //    case DayOfWeek.Friday: return GUILocalizeStrings.Get(15);
+        //    case DayOfWeek.Saturday: return GUILocalizeStrings.Get(16);
+        //    case DayOfWeek.Sunday: return GUILocalizeStrings.Get(12);
+        //    default: return "Current week";
+        //  }
+        //}
+        //else if (DateTime.Now.Subtract(aStartTime) < new TimeSpan(336, 0, 0)) // last week
+        //  return "Last week";
       else if (DateTime.Now.Subtract(aStartTime) < new TimeSpan(672, 0, 0)) // current month
         return GUILocalizeStrings.Get(6060); // "Current month";
       else if (DateTime.Now.Year.Equals(compareDate.Year))
@@ -767,22 +776,22 @@ namespace Mediaportal.TV.TvPlugin
           ILookup<string, Recording> recItems = recordings.ToLookup(keySelector);            
 
           itemlist = recItems.Select(recs =>
-          {
-            var item =
-              BuildItemFromRecording(
-                recs.Aggregate(
-                  (ra, r) =>
-                    ra == null ? r :
-                    IsRecordingActual(r) ? r :
-                    r.StartTime > ra.StartTime ? r : ra));
-            if (recs.Count() > 1)
-            {
-              item.IsFolder = true;
-              Utils.SetDefaultIcons(item);
-              item.ThumbnailImage = item.IconImageBig;
-            }
-            return item;
-          }).ToList();
+                                       {
+                                         var item =
+                                           BuildItemFromRecording(
+                                             recs.Aggregate(
+                                               (ra, r) =>
+                                               ra == null ? r :
+                                                                IsRecordingActual(r) ? r :
+                                                                                           r.StartTime > ra.StartTime ? r : ra));
+                                         if (recs.Count() > 1)
+                                         {
+                                           item.IsFolder = true;
+                                           Utils.SetDefaultIcons(item);
+                                           item.ThumbnailImage = item.IconImageBig;
+                                         }
+                                         return item;
+                                       }).ToList();
         }        
         else
         {
@@ -1415,21 +1424,7 @@ namespace Mediaportal.TV.TvPlugin
 
     #endregion
 
-    #region Sort Members
-
-    private void OnSort()
-    {
-      try
-      {
-        SetLabels();
-        facadeLayout.Sort(this);
-        UpdateButtonStates();
-      }
-      catch (Exception ex)
-      {
-        this.LogError(ex, "TvRecorded: Error sorting items");
-      }
-    }
+    #region IComparer<GUIListItem> Members
 
     public int Compare(GUIListItem item1, GUIListItem item2)
     {
@@ -1666,13 +1661,27 @@ namespace Mediaportal.TV.TvPlugin
       }
     }
 
+    #endregion
+
+    private void OnSort()
+    {
+      try
+      {
+        SetLabels();
+        facadeLayout.Sort(this);
+        UpdateButtonStates();
+      }
+      catch (Exception ex)
+      {
+        this.LogError(ex, "TvRecorded: Error sorting items");
+      }
+    }
+
     private void SortChanged(object sender, SortEventArgs e)
     {
       m_bSortAscending = e.Order != SortOrder.Descending;
       OnSort();
     }
-
-    #endregion
 
     #region playback events
 

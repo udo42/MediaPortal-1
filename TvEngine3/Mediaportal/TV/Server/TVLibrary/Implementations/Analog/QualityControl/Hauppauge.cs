@@ -32,53 +32,20 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
   ///</summary>
   public class Hauppauge : IDisposable
   {
-
-
-    private bool disposed;
-
-    [DllImport("kernel32.dll")]
-    internal static extern IntPtr LoadLibrary(String dllname);
-
-    [DllImport("kernel32.dll")]
-    internal static extern IntPtr GetProcAddress(IntPtr hModule, String procname);
-
-    [DllImport("kernel32.dll")]
-    internal static extern bool FreeLibrary(IntPtr hModule);
-
-    private IntPtr hauppaugelib = IntPtr.Zero;
-
-    private delegate int Init(IBaseFilter capture, [MarshalAs(UnmanagedType.LPStr)] string tuner);
-
-    private delegate int DeInit();
-
-    private delegate bool IsHauppauge();
-
-    private delegate int SetVidBitRate(int maxkbps, int minkbps, bool isVBR);
-
-    private delegate int GetVidBitRate(out int maxkbps, out int minkbps, out bool isVBR);
-
-    private delegate int SetAudBitRate(int bitrate);
-
-    private delegate int GetAudBitRate(out int bitrate);
-
-    private delegate int SetStreamType(int stream);
-
-    private delegate int GetStreamType(out int stream);
-
-    private delegate int SetDNRFilter(bool onoff);
-
-    private readonly Init _Init;
     private readonly DeInit _DeInit;
-    private readonly IsHauppauge _IsHauppauge;
-    private readonly SetVidBitRate _SetVidBitRate;
-    private readonly GetVidBitRate _GetVidBitRate;
-    private readonly SetAudBitRate _SetAudBitRate;
     private readonly GetAudBitRate _GetAudBitRate;
-    private readonly SetStreamType _SetStreamType;
     private readonly GetStreamType _GetStreamType;
+    private readonly GetVidBitRate _GetVidBitRate;
+    private readonly Init _Init;
+    private readonly IsHauppauge _IsHauppauge;
+    private readonly SetAudBitRate _SetAudBitRate;
     private readonly SetDNRFilter _SetDNRFilter;
+    private readonly SetStreamType _SetStreamType;
+    private readonly SetVidBitRate _SetVidBitRate;
 
     private readonly HResult hr;
+    private bool disposed;
+    private IntPtr hauppaugelib = IntPtr.Zero;
 
     //Initializes the Hauppauge interfaces
 
@@ -145,6 +112,28 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
         this.LogError(ex, "Hauppauge Init failed");
       }
     }
+
+    #region IDisposable Members
+
+    /// <summary>
+    /// Deallocate Hauppauge class
+    /// </summary>
+    public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    #endregion
+
+    [DllImport("kernel32.dll")]
+    internal static extern IntPtr LoadLibrary(String dllname);
+
+    [DllImport("kernel32.dll")]
+    internal static extern IntPtr GetProcAddress(IntPtr hModule, String procname);
+
+    [DllImport("kernel32.dll")]
+    internal static extern bool FreeLibrary(IntPtr hModule);
 
     /// <summary>
     /// Toggles Dynamic Noise Reduction on/off
@@ -312,17 +301,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
       return false;
     }
 
-    #region IDisposable Members
-
-    /// <summary>
-    /// Deallocate Hauppauge class
-    /// </summary>
-    public void Dispose()
-    {
-      Dispose(true);
-      GC.SuppressFinalize(this);
-    }
-
     /// <summary>
     /// Deallocate Hauppauge class
     /// </summary>
@@ -361,6 +339,64 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
     {
       Dispose(false);
     }
+
+    #region Nested type: DeInit
+
+    private delegate int DeInit();
+
+    #endregion
+
+    #region Nested type: GetAudBitRate
+
+    private delegate int GetAudBitRate(out int bitrate);
+
+    #endregion
+
+    #region Nested type: GetStreamType
+
+    private delegate int GetStreamType(out int stream);
+
+    #endregion
+
+    #region Nested type: GetVidBitRate
+
+    private delegate int GetVidBitRate(out int maxkbps, out int minkbps, out bool isVBR);
+
+    #endregion
+
+    #region Nested type: Init
+
+    private delegate int Init(IBaseFilter capture, [MarshalAs(UnmanagedType.LPStr)] string tuner);
+
+    #endregion
+
+    #region Nested type: IsHauppauge
+
+    private delegate bool IsHauppauge();
+
+    #endregion
+
+    #region Nested type: SetAudBitRate
+
+    private delegate int SetAudBitRate(int bitrate);
+
+    #endregion
+
+    #region Nested type: SetDNRFilter
+
+    private delegate int SetDNRFilter(bool onoff);
+
+    #endregion
+
+    #region Nested type: SetStreamType
+
+    private delegate int SetStreamType(int stream);
+
+    #endregion
+
+    #region Nested type: SetVidBitRate
+
+    private delegate int SetVidBitRate(int maxkbps, int minkbps, bool isVBR);
 
     #endregion
   }

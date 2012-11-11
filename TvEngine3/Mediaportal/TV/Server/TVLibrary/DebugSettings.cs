@@ -38,6 +38,42 @@ namespace Mediaportal.TV.Server.TVLibrary
                                          @"\Team MediaPortal\MediaPortal TV Server\debug\";
 
     /// <summary>
+    /// When true, the graph should be reset after it is stopped
+    /// </summary>
+    public static bool ResetGraph
+    {
+      get { return GetSetting("ResetGraph"); }
+      set { SetSetting("ResetGraph", value); }
+    }
+
+    /// <summary>
+    /// When true, TSWriter should always use PAT lookup
+    /// </summary>
+    public static bool UsePATLookup
+    {
+      get { return GetSetting("UsePATLookup"); }
+      set { SetSetting("UsePATLookup", value); }
+    }
+
+    /// <summary>
+    /// When true, the raw timeshifted TS will be dumped to a file
+    /// </summary>
+    public static bool DumpRawTS
+    {
+      get { return GetSetting("DumpRawTS"); }
+      set { SetSetting("DumpRawTS", value); }
+    }
+
+    /// <summary>
+    /// When true, CRC checks should be disabled for DVB TS packets
+    /// </summary>
+    public static bool DisableCRCCheck
+    {
+      get { return GetSetting("DisableCRCCheck"); }
+      set { SetSetting("DisableCRCCheck", value); }
+    }
+
+    /// <summary>
     /// Get the path and filename of the requested debug setting
     /// </summary>
     /// <param name="setting">the name of the setting</param>
@@ -89,42 +125,6 @@ namespace Mediaportal.TV.Server.TVLibrary
       {
         Log.Error(ex, "Failed to write debug setting '{0}'", setting);
       }
-    }
-
-    /// <summary>
-    /// When true, the graph should be reset after it is stopped
-    /// </summary>
-    public static bool ResetGraph
-    {
-      get { return GetSetting("ResetGraph"); }
-      set { SetSetting("ResetGraph", value); }
-    }
-
-    /// <summary>
-    /// When true, TSWriter should always use PAT lookup
-    /// </summary>
-    public static bool UsePATLookup
-    {
-      get { return GetSetting("UsePATLookup"); }
-      set { SetSetting("UsePATLookup", value); }
-    }
-
-    /// <summary>
-    /// When true, the raw timeshifted TS will be dumped to a file
-    /// </summary>
-    public static bool DumpRawTS
-    {
-      get { return GetSetting("DumpRawTS"); }
-      set { SetSetting("DumpRawTS", value); }
-    }
-
-    /// <summary>
-    /// When true, CRC checks should be disabled for DVB TS packets
-    /// </summary>
-    public static bool DisableCRCCheck
-    {
-      get { return GetSetting("DisableCRCCheck"); }
-      set { SetSetting("DisableCRCCheck", value); }
     }
   }
 }

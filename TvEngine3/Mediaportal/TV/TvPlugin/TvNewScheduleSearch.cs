@@ -35,8 +35,6 @@ namespace Mediaportal.TV.TvPlugin
 {
   public class TvNewScheduleSearch : GUIInternalWindow
   {
- 
-
     #region enums
 
     public enum SearchType : int
@@ -51,15 +49,15 @@ namespace Mediaportal.TV.TvPlugin
     #region variables
 
     private static SearchType _searchType = SearchType.Title;
-    [SkinControl(50)] protected GUIListControl listResults = null;
-    [SkinControl(7)] protected GUIButtonControl btnSearchTitle = null;
-    [SkinControl(8)] protected GUIButtonControl btnSearchKeyword = null;
-    [SkinControl(9)] protected GUIButtonControl btnSearchGenre = null;
-    public string _searchKeyword = string.Empty;
-    public bool _refreshList = false;
 
     private Action LastAction = null; // Keeps the Last received Action from the OnAction Methode
     private int LastActionTime = 0; // stores the time of the last action from the OnAction Methode
+    public bool _refreshList = false;
+    public string _searchKeyword = string.Empty;
+    [SkinControl(9)] protected GUIButtonControl btnSearchGenre = null;
+    [SkinControl(8)] protected GUIButtonControl btnSearchKeyword = null;
+    [SkinControl(7)] protected GUIButtonControl btnSearchTitle = null;
+    [SkinControl(50)] protected GUIListControl listResults = null;
 
     #endregion
 
@@ -69,12 +67,18 @@ namespace Mediaportal.TV.TvPlugin
       GetID = (int)Window.WINDOW_TV_SEARCH;
     }
 
-    ~TvNewScheduleSearch() {}
-
     public override bool IsTv
     {
       get { return true; }
     }
+
+    public static SearchType SearchFor
+    {
+      get { return _searchType; }
+      set { _searchType = value; }
+    }
+
+    ~TvNewScheduleSearch() {}
 
     public override bool Init()
     {
@@ -102,12 +106,6 @@ namespace Mediaportal.TV.TvPlugin
           }
       }
       base.OnAction(action);
-    }
-
-    public static SearchType SearchFor
-    {
-      get { return _searchType; }
-      set { _searchType = value; }
     }
 
 

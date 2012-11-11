@@ -34,8 +34,8 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
   {
     #region Variables
 
-    private DateTime _nextWakeupTime = DateTime.MaxValue;
     private string _handlerName = "GenericWakeupHandler";
+    private DateTime _nextWakeupTime = DateTime.MaxValue;
 
     #endregion
 

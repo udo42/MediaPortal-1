@@ -358,7 +358,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       _timeVideoEvent = DateTime.MinValue;
 
       _tuneInProgress = false;
-    }    
+    }
 
     #endregion
 

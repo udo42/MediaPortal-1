@@ -34,33 +34,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class ChannelMapping : SectionSettings
   {
-
-    private MediaTypeEnum _mediaTypeEnum = MediaTypeEnum.TV;
-
-    public class CardInfo
-    {
-      protected Card _card;
-
-      public Card Card
-      {
-        get { return _card; }
-      }
-
-      public CardInfo(Card card)
-      {
-        _card = card;
-      }
-
-      public override string ToString()
-      {
-        return _card.IdCard + " - " + _card.Name;
-      }
-    }
-
-    
-
     private readonly MPListViewStringColumnSorter lvwColumnSorter1;
     private readonly MPListViewStringColumnSorter lvwColumnSorter2;
+    private MediaTypeEnum _mediaTypeEnum = MediaTypeEnum.TV;
 
     public ChannelMapping(string name, MediaTypeEnum mediaType)
       : base(name)
@@ -404,5 +380,29 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
       return imageIndex;
     }
+
+    #region Nested type: CardInfo
+
+    public class CardInfo
+    {
+      protected Card _card;
+
+      public CardInfo(Card card)
+      {
+        _card = card;
+      }
+
+      public Card Card
+      {
+        get { return _card; }
+      }
+
+      public override string ToString()
+      {
+        return _card.IdCard + " - " + _card.Name;
+      }
+    }
+
+    #endregion
   }
 }

@@ -17,8 +17,12 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Specification
             _rightSide = rightSide;
         }
 
-        public abstract TEntity SatisfyingEntityFrom(IQueryable<TEntity> query);
+      #region ISpecification<TEntity> Members
+
+      public abstract TEntity SatisfyingEntityFrom(IQueryable<TEntity> query);
 
         public abstract IQueryable<TEntity> SatisfyingEntitiesFrom(IQueryable<TEntity> query);
+
+      #endregion
     }
 }

@@ -41,8 +41,6 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
 
     #endregion
 
-    #region Public Members
-
     public override void OnSectionActivated()
     {
 
@@ -55,7 +53,5 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
       ServiceAgents.Instance.SettingServiceAgent.SaveSetting("PTVGDebugMode", debug.Checked ? "true" : "false");
       base.OnSectionDeActivated();
     }
-
-    #endregion
   }
 }

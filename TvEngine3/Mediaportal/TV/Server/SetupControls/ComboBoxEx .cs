@@ -27,15 +27,15 @@ namespace Mediaportal.TV.Server.SetupControls
   {
     private ImageList imageList;
 
+    public ComboBoxEx()
+    {
+      DrawMode = DrawMode.OwnerDrawFixed;
+    }
+
     public ImageList ImageList
     {
       get { return imageList; }
       set { imageList = value; }
-    }
-
-    public ComboBoxEx()
-    {
-      DrawMode = DrawMode.OwnerDrawFixed;
     }
 
     protected override void OnDrawItem(DrawItemEventArgs ea)
@@ -81,22 +81,10 @@ namespace Mediaportal.TV.Server.SetupControls
 
   public class ComboBoxExItem
   {
-    private string _text;
     private readonly int _id;
 
-    public string Text
-    {
-      get { return _text; }
-      set { _text = value; }
-    }
-
     private int _imageIndex;
-
-    public int ImageIndex
-    {
-      get { return _imageIndex; }
-      set { _imageIndex = value; }
-    }
+    private string _text;
 
     public ComboBoxExItem()
       : this("") {}
@@ -109,6 +97,18 @@ namespace Mediaportal.TV.Server.SetupControls
       _id = id;
       _text = text;
       _imageIndex = imageIndex;
+    }
+
+    public string Text
+    {
+      get { return _text; }
+      set { _text = value; }
+    }
+
+    public int ImageIndex
+    {
+      get { return _imageIndex; }
+      set { _imageIndex = value; }
     }
 
     public int Id

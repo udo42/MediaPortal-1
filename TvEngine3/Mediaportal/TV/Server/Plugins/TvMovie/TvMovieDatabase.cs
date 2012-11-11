@@ -41,11 +41,11 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
   public struct TVMChannel
   {
+    private string fBezeichnung;
     private string fID;
     private string fSenderKennung;
-    private string fBezeichnung;
-    private string fWebseite;
     private string fSortNrTVMovie;
+    private string fWebseite;
     private string fZeichen;
 
     public TVMChannel(string aID, string aSenderKennung, string aBezeichnung, string aWebseite, string aSortNrTVMovie,
@@ -106,32 +106,35 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
     #region Members
 
+    private static string _xmlFile;
     private readonly IDictionary<string, ProgramCategory> _categories = new ConcurrentDictionary<string, ProgramCategory>();
-    private OleDbConnection _databaseConnection = null;
+    private int _actorCount = 5;
     private bool _canceled = false;
+    private List<Channel> _channelList = null;
+    private OleDbConnection _databaseConnection = null;
+    private bool _extendDescription = true;
+    private int _programsCounter = 0;
+    private bool _showAudioFormat = false;
+    private bool _showLive = true;
+    private bool _showRatings = true;
+    private bool _showRepeat = false;
+    private bool _slowImport = true;
     private List<TVMChannel> _tvmEpgChannels;
     private List<Program> _tvmEpgProgs = new List<Program>(500);
-    private List<Channel> _channelList = null;
-    private int _programsCounter = 0;
     private bool _useShortProgramDesc = false;
-    private bool _extendDescription = true;
-    private bool _showRatings = true;
-    private bool _showAudioFormat = false;
-    private bool _slowImport = true;
-    private int _actorCount = 5;
-    private bool _showLive = true;
-    private bool _showRepeat = false;
-
-    private static string _xmlFile;
 
     #endregion
 
     #region Events
 
+    #region Delegates
+
     public delegate void ProgramsChanged(int value, int maximum, string text);
 
     //public event ProgramsChanged OnProgramsChanged;
     public delegate void StationsChanged(int value, int maximum, string text);
+
+    #endregion
 
     public event StationsChanged OnStationsChanged;
 
@@ -141,11 +144,11 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
     private struct Mapping
     {
+      private TimeSpan _end;
       private string _mpChannel;
-      private string _tvmEpgChannel;
       private int _mpIdChannel;
       private TimeSpan _start;
-      private TimeSpan _end;
+      private string _tvmEpgChannel;
 
       public Mapping(string mpChannel, int mpIdChannel, string tvmChannel, string start, string end)
       {
@@ -231,6 +234,32 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     #endregion
 
     #region Public functions
+
+    public bool NeedsImport
+    {
+      get
+      {
+        try
+        {
+          TimeSpan restTime = new TimeSpan(Convert.ToInt32(SettingsManagement.GetSetting("TvMovieRestPeriod", "24").Value), 0, 0);
+          DateTime lastUpdated = Convert.ToDateTime(SettingsManagement.GetSetting("TvMovieLastUpdate", "0").Value);          
+          if (lastUpdated >= (DateTime.Now - restTime))
+          {
+            return false;
+          }
+          else
+          {
+            this.LogDebug("TVMovie: Last update was at {0} - new import scheduled", Convert.ToString(lastUpdated));
+            return true;
+          }
+        }
+        catch (Exception ex)
+        {
+          this.LogError(ex, "TVMovie: An error occured checking the last import time");          
+          return true;
+        }
+      }
+    }
 
     public List<Channel> GetChannels()
     {
@@ -365,32 +394,6 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       return true;
     }
 
-    public bool NeedsImport
-    {
-      get
-      {
-        try
-        {
-          TimeSpan restTime = new TimeSpan(Convert.ToInt32(SettingsManagement.GetSetting("TvMovieRestPeriod", "24").Value), 0, 0);
-          DateTime lastUpdated = Convert.ToDateTime(SettingsManagement.GetSetting("TvMovieLastUpdate", "0").Value);          
-          if (lastUpdated >= (DateTime.Now - restTime))
-          {
-            return false;
-          }
-          else
-          {
-            this.LogDebug("TVMovie: Last update was at {0} - new import scheduled", Convert.ToString(lastUpdated));
-            return true;
-          }
-        }
-        catch (Exception ex)
-        {
-          this.LogError(ex, "TVMovie: An error occured checking the last import time");          
-          return true;
-        }
-      }
-    }
-
     /// <summary>
     /// Loops through all channel to find mappings and finally import EPG to MP's DB
     /// </summary>
@@ -459,7 +462,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
             counter++;
 
             this.LogInfo("TVMovie: Importing {3} time frame(s) for MP channel [{0}/{1}] - {2}", Convert.ToString(counter),
-                     Convert.ToString(maximum), display, Convert.ToString(channelNames.Count));
+                         Convert.ToString(maximum), display, Convert.ToString(channelNames.Count));
 
             _tvmEpgProgs.Clear();
 
@@ -499,7 +502,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
           TimeSpan ImportDuration = (DateTime.Now - ImportStartTime);
           this.LogDebug("TVMovie: Imported {0} database entries for {1} stations in {2} seconds", _programsCounter, counter,
-                    Convert.ToString(ImportDuration.TotalSeconds));
+                        Convert.ToString(ImportDuration.TotalSeconds));
         }
         catch (Exception)
         {
@@ -829,8 +832,8 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
           }
 
           Program prog = ProgramFactory.CreateProgram(progChannel.IdChannel, newStartDate, newEndDate, title, description, programCategory,
-                                     ProgramState.None, OnAirDate, String.Empty, String.Empty, episode,
-                                     String.Empty, EPGStarRating, classification, parentalRating);
+                                                      ProgramState.None, OnAirDate, String.Empty, String.Empty, episode,
+                                                      String.Empty, EPGStarRating, classification, parentalRating);
 
           _tvmEpgProgs.Add(prog);
 
@@ -865,7 +868,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
           catch (Exception)
           {
             this.LogInfo("TVMovie: Error loading mappings - make sure tv channel: {0} (ID: {1}) still exists!",
-                     mapping.StationName, mapping.IdChannel);
+                         mapping.StationName, mapping.IdChannel);
           }
         }
       }
@@ -1134,7 +1137,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
             BenchClock.Stop();
             UpdateDuration = (BenchClock.ElapsedMilliseconds / 1000);
             this.LogInfo("TVMovie: tvuptodate was already running - waited {0} seconds for internet update to finish",
-                     Convert.ToString(UpdateDuration));
+                         Convert.ToString(UpdateDuration));
             return UpdateDuration;
           }
 

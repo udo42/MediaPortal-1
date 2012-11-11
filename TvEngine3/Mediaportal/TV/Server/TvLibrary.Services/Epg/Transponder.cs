@@ -32,13 +32,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
   /// Class which holds all channels for a transponder
   public class Transponder
   {
-
-
     #region variables
 
-    private TuningDetail _detail;
     private List<Channel> _channels;
     private int _currentChannelIndex;
+    private TuningDetail _detail;
     private bool _inUse;
 
     #endregion
@@ -85,17 +83,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
       get { return Channels[_currentChannelIndex]; }
     }
 
-    public Channel GetNextChannel()
-    {
-      _currentChannelIndex++;
-      if (_currentChannelIndex == Channels.Count)
-      {
-        _currentChannelIndex = -1;
-        return null;
-      }
-      return Channels[_currentChannelIndex];
-    }
-
     /// <summary>
     /// Gets or sets the channels for this transponder
     /// </summary>
@@ -131,6 +118,17 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
         }                
         return ChannelManagement.GetTuningChannelByType(Channels[Index], TuningDetail.ChannelType);
       }
+    }
+
+    public Channel GetNextChannel()
+    {
+      _currentChannelIndex++;
+      if (_currentChannelIndex == Channels.Count)
+      {
+        _currentChannelIndex = -1;
+        return null;
+      }
+      return Channels[_currentChannelIndex];
     }
 
     #endregion
@@ -188,8 +186,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
     public void Dump()
     {
       this.LogDebug("Transponder:{0} {1} {2} {3} {4} {5}", _currentChannelIndex, TuningDetail.ChannelType,
-                TuningDetail.Frequency, TuningDetail.Modulation, TuningDetail.Symbolrate, TuningDetail.Bandwidth,
-                TuningDetail.Polarisation);
+                    TuningDetail.Frequency, TuningDetail.Modulation, TuningDetail.Symbolrate, TuningDetail.Bandwidth,
+                    TuningDetail.Polarisation);
       foreach (Channel c in _channels)
       {
         this.LogDebug(" {0}", c.DisplayName);

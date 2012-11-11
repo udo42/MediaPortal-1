@@ -42,13 +42,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
 #pragma warning disable 649,169,0649 // All fields are used by the Marshal.PtrToStructure function
     private struct MPEG2VideoInfo //  MPEG2VideoInfo
     {
-      internal VideoInfoHeader2 hdr;
-      internal UInt32 dwStartTimeCode;
       internal UInt32 cbSequenceHeader;
-      internal UInt32 dwProfile;
-      internal UInt32 dwLevel;
       internal UInt32 dwFlags;
+      internal UInt32 dwLevel;
+      internal UInt32 dwProfile;
       internal UInt32 dwSequenceHeader;
+      internal UInt32 dwStartTimeCode;
+      internal VideoInfoHeader2 hdr;
     }
 #pragma warning restore 649,169, 0649
 

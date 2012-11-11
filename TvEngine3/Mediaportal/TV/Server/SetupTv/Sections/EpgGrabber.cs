@@ -34,9 +34,10 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class EpgGrabber : SectionSettings
   {
-
-    private bool _loaded;
     private readonly MPListViewStringColumnSorter lvwColumnSorter;
+    private bool _ignoreItemCheckedEvent = true;
+    private bool _loaded;
+    private MediaTypeEnum _mediaTypeEnum;
 
     public EpgGrabber(string name, MediaTypeEnum mediaType)
       : base(name)
@@ -107,9 +108,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       base.OnSectionDeActivated();
       SaveSettings();
     }
-
-    private bool _ignoreItemCheckedEvent = true;
-    private MediaTypeEnum _mediaTypeEnum;
 
     public override void OnSectionActivated()
     {

@@ -40,13 +40,13 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
 
     private const int MS_SLEEP_BEFORE_FILTERING = 150;
 
-    internal ListView _listView = null; //the listview control that displays the items
-    internal IList<Channel> _allChannels = null; //all available channels
     internal Dictionary<int, CardType> _allCards = null; //all available cards
+    internal IList<Channel> _allChannels = null; //all available channels
     internal TextBox _currentText = null; //the textbox that contains the text for filtering
     private Thread _fillListViewThread; //the currently active thread
-    private MediaTypeEnum _type; //the type of the texbox, currently that's tv or radio
+    internal ListView _listView = null; //the listview control that displays the items
     private Dictionary<int, ListViewItem> _listViewCache; //A list of allready created listviewitems
+    private MediaTypeEnum _type; //the type of the texbox, currently that's tv or radio
 
     /// <summary>
     /// Creates a new ChannelListView Handler
@@ -67,6 +67,11 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
     }
 
     /// <summary>
+    /// Indicates if the listview is currently in the process of being populated
+    /// </summary>
+    internal bool PopulateRunning { get; set; }
+
+    /// <summary>
     /// Start filtering the list in a thread
     /// </summary>
     /// <param name="searchText"></param>
@@ -76,11 +81,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
       _fillListViewThread.Priority = ThreadPriority.BelowNormal;
       _fillListViewThread.Start(searchText);
     }
-
-    /// <summary>
-    /// Indicates if the listview is currently in the process of being populated
-    /// </summary>
-    internal bool PopulateRunning { get; set; }
 
     /// <summary>
     /// Fill the listview with all channels that fit the criteria (searchname)

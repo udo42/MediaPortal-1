@@ -114,12 +114,18 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 
   public class FormattableBooleanColumn : DataGridBoolColumn
   {
-    public event FormatCellEventHandler SetCellFormat;
+    public const int VK_SPACE = 32; // 0x20
+    private bool beingEdited;
+    private bool lockValue;
+    private int saveRow = -1;
+    private bool saveValue;
 
     public FormattableBooleanColumn()
     {
       AllowNull = false;
     }
+
+    public event FormatCellEventHandler SetCellFormat;
 
     //overridden to fire BoolChange event and Formatting event
     protected override void Paint(Graphics g, Rectangle bounds, CurrencyManager source, int rowNum, Brush backBrush,
@@ -159,12 +165,6 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 
     //changed event
     public event BoolValueChangedEventHandler BoolValueChanged;
-
-    private bool saveValue;
-    private int saveRow = -1;
-    private bool lockValue;
-    private bool beingEdited;
-    public const int VK_SPACE = 32; // 0x20
 
     //needed to get the space bar changing of the bool value
     [System.Runtime.InteropServices.DllImport("user32.dll")]
@@ -225,16 +225,16 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 
   public class DataGridFormatCellEventArgs : EventArgs
   {
-    private int colNum;
-    private int rowNum;
-    private Font fontVal;
-    private Brush backBrushVal;
-    private Brush foreBrushVal;
-    private bool fontDispose;
-    private bool backBrushDispose;
-    private bool foreBrushDispose;
-    private bool useBaseClassDrawingVal;
     private readonly object currentCellValue;
+    private bool backBrushDispose;
+    private Brush backBrushVal;
+    private int colNum;
+    private bool fontDispose;
+    private Font fontVal;
+    private bool foreBrushDispose;
+    private Brush foreBrushVal;
+    private int rowNum;
+    private bool useBaseClassDrawingVal;
 
     public DataGridFormatCellEventArgs(int row, int col, object cellValue)
     {
@@ -329,9 +329,9 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 
   public class BoolValueChangedEventArgs : EventArgs
   {
+    private bool boolVal;
     private int columnVal;
     private int rowVal;
-    private bool boolVal;
 
     public BoolValueChangedEventArgs(int row, int col, bool val)
     {

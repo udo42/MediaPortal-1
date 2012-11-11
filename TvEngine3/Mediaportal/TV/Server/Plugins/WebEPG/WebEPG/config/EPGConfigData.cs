@@ -27,13 +27,13 @@ namespace WebEPG.config
   {
     #region Variables
 
-    public string DisplayName;
     public string ChannelID;
+    public string DisplayName;
+    public bool Linked;
     public string PrimaryGrabberID;
     public string PrimaryGrabberName;
-    public bool Linked;
-    public int linkStart;
     public int linkEnd;
+    public int linkStart;
 
     #endregion
   }

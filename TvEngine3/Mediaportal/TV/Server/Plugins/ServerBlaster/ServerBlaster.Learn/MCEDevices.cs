@@ -113,8 +113,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
   /// </summary>
   internal sealed class Remote : Device
   {
-
-
     #region Constructor
 
     static Remote()
@@ -221,9 +219,9 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     #region Members
 
     private static Remote _deviceSingleton;
-    private int _doubleClickTime = -1;
-    private int _doubleClickTick = 0;
     private RemoteButton _doubleClickButton;
+    private int _doubleClickTick = 0;
+    private int _doubleClickTime = -1;
 
     #endregion Members
   }
@@ -237,8 +235,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
   /// </summary>
   internal sealed class Blaster : Device
   {
-
-
     #region Constructor
 
     static Blaster()
@@ -408,7 +404,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       }
 
       this.LogDebug("Blaster.FinalizePacket: {0} ({1} bytes)", BitConverter.ToString(packetFinal).Replace("-", ""),
-                packetFinal.Length);
+                    packetFinal.Length);
 
       lock (this) _packetArray = new ArrayList();
 
@@ -478,7 +474,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       }
 
       this.LogDebug("Blaster.FinalizePacket: {0} ({1} bytes)", BitConverter.ToString(packetFinal).Replace("-", ""),
-                packetFinal.Length);
+                    packetFinal.Length);
 
       _packetArray = new ArrayList();
 
@@ -505,9 +501,9 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     #region Members
 
     private static Blaster _deviceSingleton;
-    private ArrayList _packetArray;
-    private int _learnStartTick = 0;
     private static int _currentSpeed = 0;
+    private int _learnStartTick = 0;
+    private ArrayList _packetArray;
 
     #endregion Members
   }
@@ -521,8 +517,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
   /// </summary>
   internal abstract class Device
   {
-
-
     #region Implementation
 
     protected void OnDeviceArrival()
@@ -666,37 +660,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     [DllImport("kernel32", SetLastError = true)]
     protected static extern int GetLastError();
 
-    protected enum FileFlag
-    {
-      Overlapped = 0x40000000,
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    protected struct DeviceInfoData
-    {
-      public int Size;
-      public Guid Class;
-      public uint DevInst;
-      public uint Reserved;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    protected struct DeviceInterfaceData
-    {
-      public int Size;
-      public Guid Class;
-      public uint Flags;
-      public uint Reserved;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    protected struct DeviceInterfaceDetailData
-    {
-      public int Size;
-
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public string DevicePath;
-    }
-
     [DllImport("hid")]
     protected static extern void HidD_GetHidGuid(ref Guid guid);
 
@@ -726,6 +689,53 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     [DllImport("setupapi")]
     protected static extern bool SetupDiDestroyDeviceInfoList(IntPtr handle);
 
+    #region Nested type: DeviceInfoData
+
+    [StructLayout(LayoutKind.Sequential)]
+    protected struct DeviceInfoData
+    {
+      public int Size;
+      public Guid Class;
+      public uint DevInst;
+      public uint Reserved;
+    }
+
+    #endregion
+
+    #region Nested type: DeviceInterfaceData
+
+    [StructLayout(LayoutKind.Sequential)]
+    protected struct DeviceInterfaceData
+    {
+      public int Size;
+      public Guid Class;
+      public uint Flags;
+      public uint Reserved;
+    }
+
+    #endregion
+
+    #region Nested type: DeviceInterfaceDetailData
+
+    [StructLayout(LayoutKind.Sequential)]
+    protected struct DeviceInterfaceDetailData
+    {
+      public int Size;
+
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public string DevicePath;
+    }
+
+    #endregion
+
+    #region Nested type: FileFlag
+
+    protected enum FileFlag
+    {
+      Overlapped = 0x40000000,
+    }
+
+    #endregion
+
     #endregion Interop
 
     #region Events
@@ -747,11 +757,11 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
     #region Members
 
+    protected static bool _dumpDevices;
+    protected byte[] _deviceBuffer;
     protected Guid _deviceClass;
     protected FileStream _deviceStream;
-    protected byte[] _deviceBuffer;
     internal NotifyWindow _notifyWindow;
-    protected static bool _dumpDevices;
 
     #endregion Members
   }
@@ -769,38 +779,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     private const int DBT_DEVICEARRIVAL = 0x8000;
     private const int DBT_DEVICEREMOVECOMPLETE = 0x8004;
 
-    [StructLayout(LayoutKind.Sequential)]
-    private struct DeviceBroadcastHeader
-    {
-      public int Size;
-      public int DeviceType;
-      public int Reserved;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct DeviceBroadcastInterface
-    {
-      public int Size;
-      public int DeviceType;
-      public int Reserved;
-      public Guid ClassGuid;
-
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public string Name;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct DeviceBroadcastHandle
-    {
-      public int Size;
-      public int DeviceType;
-      public int Reserved;
-      public IntPtr Handle;
-      public IntPtr HandleNotify;
-      public Guid EventGuid;
-      public int NameOffset;
-      public byte Data;
-    }
-
     [DllImport("user32", SetLastError = true)]
     private static extern IntPtr RegisterDeviceNotification(IntPtr handle, ref DeviceBroadcastHandle filter, int flags);
 
@@ -816,6 +794,50 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
     [DllImport("kernel32", SetLastError = true)]
     private static extern bool CancelIo(IntPtr handle);
+
+    #region Nested type: DeviceBroadcastHandle
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct DeviceBroadcastHandle
+    {
+      public int Size;
+      public int DeviceType;
+      public int Reserved;
+      public IntPtr Handle;
+      public IntPtr HandleNotify;
+      public Guid EventGuid;
+      public int NameOffset;
+      public byte Data;
+    }
+
+    #endregion
+
+    #region Nested type: DeviceBroadcastHeader
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct DeviceBroadcastHeader
+    {
+      public int Size;
+      public int DeviceType;
+      public int Reserved;
+    }
+
+    #endregion
+
+    #region Nested type: DeviceBroadcastInterface
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct DeviceBroadcastInterface
+    {
+      public int Size;
+      public int DeviceType;
+      public int Reserved;
+      public Guid ClassGuid;
+
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public string Name;
+    }
+
+    #endregion
 
     #endregion Interop
 
@@ -947,20 +969,16 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
     #endregion Implementation
 
-    #region Delegates
-
     internal DeviceEventHandler DeviceArrival;
     internal DeviceEventHandler DeviceRemoval;
     internal SettingsChanged SettingsChanged;
 
-    #endregion Delegates
-
     #region Members
 
+    private Guid _deviceClass;
+    private IntPtr _deviceHandle;
     private IntPtr _handleDeviceArrival;
     private IntPtr _handleDeviceRemoval;
-    private IntPtr _deviceHandle;
-    private Guid _deviceClass;
 
     #endregion Members
   }

@@ -27,11 +27,11 @@ namespace WebEPG.config.WebEPG
   {
     #region Variables
 
-    [XmlAttribute("id")] public string id;
     [XmlAttribute("displayName")] public string displayName;
     //[XmlAttribute("country")]
     //public string country;
     [XmlAttribute("grabber")] public string grabber;
+    [XmlAttribute("id")] public string id;
     [XmlArrayItem("merged")] public List<MergedChannel> merged;
 
     #endregion

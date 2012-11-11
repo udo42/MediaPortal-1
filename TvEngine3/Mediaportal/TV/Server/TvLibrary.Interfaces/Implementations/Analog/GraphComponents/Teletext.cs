@@ -31,14 +31,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     #region variables
 
     /// <summary>
-    /// Name of the teletext device
-    /// </summary>
-    private string _name;
-
-    /// <summary>
     /// GUID of the category of the teletext device
     /// </summary>
     private Guid _category;
+
+    /// <summary>
+    /// Name of the teletext device
+    /// </summary>
+    private string _name;
 
     #endregion
 

@@ -5,8 +5,8 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
 {
   public abstract class EventDispatcher
   {
-    protected readonly object _usersLock = new object();
     protected readonly IDictionary<string, DateTime> _users = new Dictionary<string, DateTime>();
+    protected readonly object _usersLock = new object();
 
     ~EventDispatcher()
     {

@@ -9,10 +9,14 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {
     }
 
+    #region ICanceledScheduleService Members
+
     public CanceledSchedule SaveCanceledSchedule(CanceledSchedule canceledSchedule)
     {
       canceledSchedule.UnloadAllUnchangedRelationsForEntity();
       return _channel.SaveCanceledSchedule(canceledSchedule);
     }
+
+    #endregion
   }
 }

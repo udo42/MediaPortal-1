@@ -34,14 +34,14 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
     private int ColumnToSort;
 
     /// <summary>
-    /// Specifies the order in which to sort (i.e. 'Ascending').
-    /// </summary>
-    private SortOrder OrderOfSort;
-
-    /// <summary>
     /// Case insensitive comparer object
     /// </summary>
     private CaseInsensitiveComparer ObjectCompare;
+
+    /// <summary>
+    /// Specifies the order in which to sort (i.e. 'Ascending').
+    /// </summary>
+    private SortOrder OrderOfSort;
 
     /// <summary>
     /// Class constructor.  Initializes various elements
@@ -57,6 +57,26 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
       // Initialize the CaseInsensitiveComparer object
       ObjectCompare = new CaseInsensitiveComparer();
     }
+
+    /// <summary>
+    /// Gets or sets the number of the column to which to apply the sorting operation (Defaults to '0').
+    /// </summary>
+    public int SortColumn
+    {
+      set { ColumnToSort = value; }
+      get { return ColumnToSort; }
+    }
+
+    /// <summary>
+    /// Gets or sets the order of sorting to apply (for example, 'Ascending' or 'Descending').
+    /// </summary>
+    public SortOrder Order
+    {
+      set { OrderOfSort = value; }
+      get { return OrderOfSort; }
+    }
+
+    #region IComparer Members
 
     /// <summary>
     /// This method is inherited from the IComparer interface.  It compares the two objects passed using a case insensitive comparison.
@@ -91,22 +111,6 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
       }
     }
 
-    /// <summary>
-    /// Gets or sets the number of the column to which to apply the sorting operation (Defaults to '0').
-    /// </summary>
-    public int SortColumn
-    {
-      set { ColumnToSort = value; }
-      get { return ColumnToSort; }
-    }
-
-    /// <summary>
-    /// Gets or sets the order of sorting to apply (for example, 'Ascending' or 'Descending').
-    /// </summary>
-    public SortOrder Order
-    {
-      set { OrderOfSort = value; }
-      get { return OrderOfSort; }
-    }
+    #endregion
   }
 }

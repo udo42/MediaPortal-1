@@ -25,6 +25,13 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 {
   public class MPListViewSortOnColumn : IComparer
   {
+    private readonly ImageTextComparer FirstObjectCompare;
+
+    /// <summary>
+    /// Case insensitive comparer object
+    /// </summary>  
+    private readonly NumberCaseInsensitiveComparer ObjectCompare;
+
     /// <summary>
     /// Specifies the column to be sorted
     /// </summary>
@@ -34,13 +41,6 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     /// Specifies the order in which to sort (i.e. 'Ascending').
     /// </summary>
     private SortOrder OrderOfSort;
-
-    /// <summary>
-    /// Case insensitive comparer object
-    /// </summary>  
-    private readonly NumberCaseInsensitiveComparer ObjectCompare;
-
-    private readonly ImageTextComparer FirstObjectCompare;
 
     /// <summary>
     /// Class constructor.  Initializes various elements
@@ -80,6 +80,28 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       ObjectCompare = new NumberCaseInsensitiveComparer();
       FirstObjectCompare = new ImageTextComparer();
     }
+
+    /// <summary>
+    /// Gets or sets the number of the column to which
+    /// to apply the sorting operation (Defaults to '0').
+    /// </summary>
+    public int SortColumn
+    {
+      set { ColumnToSort = value; }
+      get { return ColumnToSort; }
+    }
+
+    /// <summary>
+    /// Gets or sets the order of sorting to apply
+    /// (for example, 'Ascending' or 'Descending').
+    /// </summary>
+    public SortOrder Order
+    {
+      set { OrderOfSort = value; }
+      get { return OrderOfSort; }
+    }
+
+    #region IComparer Members
 
     /// <summary>
     /// This method is inherited from the IComparer interface.
@@ -125,24 +147,6 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       return 0;
     }
 
-    /// <summary>
-    /// Gets or sets the number of the column to which
-    /// to apply the sorting operation (Defaults to '0').
-    /// </summary>
-    public int SortColumn
-    {
-      set { ColumnToSort = value; }
-      get { return ColumnToSort; }
-    }
-
-    /// <summary>
-    /// Gets or sets the order of sorting to apply
-    /// (for example, 'Ascending' or 'Descending').
-    /// </summary>
-    public SortOrder Order
-    {
-      set { OrderOfSort = value; }
-      get { return OrderOfSort; }
-    }
+    #endregion
   }
 }

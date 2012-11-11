@@ -10,16 +10,18 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
 {
   public class EventServiceAgent : ServiceAgent<IEventService>, IEventService, IServerEventCallback
   {
-
-
-
     #region events & delegates
 
-    public delegate void HeartbeatRequestReceivedDelegate();
-    public delegate void TvServerEventReceivedDelegate(TvServerEventArgs eventArgs);
+    #region Delegates
+
     public delegate void CiMenuCallbackDelegate(CiMenu menu);
 
     public delegate void ConnectionLostDelegate();
+
+    public delegate void HeartbeatRequestReceivedDelegate();
+    public delegate void TvServerEventReceivedDelegate(TvServerEventArgs eventArgs);
+
+    #endregion
 
     public event HeartbeatRequestReceivedDelegate OnHeartbeatRequestReceived;
     public event TvServerEventReceivedDelegate OnTvServerEventReceived;
@@ -29,8 +31,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
 
     #endregion
 
-    private readonly DuplexChannelFactory<IEventService> _channelFactory;    
-    private static string _hostname;    
+    private static string _hostname;
 
     #region ctor's
     /// <summary>
@@ -60,27 +61,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
 
     #endregion
 
-    void EventServiceAgent_Closed(object sender, EventArgs e)
-    {
-      var comm = sender as ICommunicationObject;
-      if (comm != null)
-      {
-       comm.Abort();
-       comm.Close();
-       Dispose();
-      }      
-    }
-
-    void EventServiceAgent_Faulted(object sender, EventArgs e)
-    {
-      var comm = sender as ICommunicationObject;
-      if (comm != null)
-      {
-        comm.Abort();
-        comm.Close();
-        Dispose();
-      }    
-    }
+    private readonly DuplexChannelFactory<IEventService> _channelFactory;
 
     private IEventService Channel
     {
@@ -104,13 +85,6 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       }
     }
 
-    private void AbortChannel()
-    {      
-      _channelFactory.Abort();
-      _channelFactory.Close();
-      Dispose();
-    }
-
     public void Unsubscribe(string username)
     {
       try
@@ -121,6 +95,13 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       {
         AbortChannel();
       }
+    }
+
+    private void AbortChannel()
+    {      
+      _channelFactory.Abort();
+      _channelFactory.Close();
+      Dispose();
     }
 
     #endregion
@@ -169,19 +150,19 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     public IAsyncResult BeginOnCallbackCiMenuEvent(CiMenu menu, AsyncCallback callback, object asyncState)
     {
       Action<CiMenu> act = (ciMenu) =>
-      {
-        try
-        {
-          if (OnCiMenuCallbackReceived != null)
-          {
-            OnCiMenuCallbackReceived(ciMenu);
-          }
-        }
-        catch (Exception ex)
-        {
-          this.LogError("BeginOnCallbackCiMenuEvent exception : {0}", ex);
-        }        
-      };
+                             {
+                               try
+                               {
+                                 if (OnCiMenuCallbackReceived != null)
+                                 {
+                                   OnCiMenuCallbackReceived(ciMenu);
+                                 }
+                               }
+                               catch (Exception ex)
+                               {
+                                 this.LogError("BeginOnCallbackCiMenuEvent exception : {0}", ex);
+                               }        
+                             };
       return act.BeginInvoke(menu, callback, asyncState); 
     }
 
@@ -201,19 +182,19 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     public IAsyncResult BeginOnCallbackHeartBeatEvent(AsyncCallback callback, object asyncState)
     {
       Action act = () =>
-      {
-        if (OnHeartbeatRequestReceived != null)
-        {
-          try
-          {
-            OnHeartbeatRequestReceived();
-          }
-          catch (Exception ex)
-          {
-            this.LogError("BeginOnCallbackHeartBeatEvent exception : {0}", ex);
-          }          
-        }
-      };
+                     {
+                       if (OnHeartbeatRequestReceived != null)
+                       {
+                         try
+                         {
+                           OnHeartbeatRequestReceived();
+                         }
+                         catch (Exception ex)
+                         {
+                           this.LogError("BeginOnCallbackHeartBeatEvent exception : {0}", ex);
+                         }          
+                       }
+                     };
       return act.BeginInvoke(callback, asyncState); 
     }
 
@@ -230,7 +211,29 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       }                
     }
 
-    #endregion    
+    #endregion
+
+    void EventServiceAgent_Closed(object sender, EventArgs e)
+    {
+      var comm = sender as ICommunicationObject;
+      if (comm != null)
+      {
+       comm.Abort();
+       comm.Close();
+       Dispose();
+      }      
+    }
+
+    void EventServiceAgent_Faulted(object sender, EventArgs e)
+    {
+      var comm = sender as ICommunicationObject;
+      if (comm != null)
+      {
+        comm.Abort();
+        comm.Close();
+        Dispose();
+      }    
+    }
 
     public override void Dispose ()
     {

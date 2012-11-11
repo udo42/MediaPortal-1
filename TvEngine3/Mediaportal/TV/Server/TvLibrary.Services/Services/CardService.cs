@@ -7,7 +7,8 @@ using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 namespace Mediaportal.TV.Server.TVLibrary.Services
 {
   public class CardService : ICardService
-  {    
+  {
+    #region ICardService Members
 
     public IList<Card> ListAllCards()
     {
@@ -122,5 +123,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     {
       return LnbTypeManagement.ListAllLnbTypes();
     }
+
+    #endregion
   }
 }

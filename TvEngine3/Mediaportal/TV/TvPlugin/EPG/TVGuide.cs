@@ -42,13 +42,6 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
     #region Overrides
 
-    public override bool Init()
-    {
-      bool result = Load(GUIGraphicsContext.Skin + @"\mytvguide.xml");
-      GetID = (int)Window.WINDOW_TVGUIDE;
-      return result;
-    }
-
     public override bool IsTv
     {
       get { return true; }
@@ -57,6 +50,13 @@ namespace Mediaportal.TV.TvPlugin.EPG
     public override bool SupportsDelayedLoad
     {
       get { return false; }
+    }
+
+    public override bool Init()
+    {
+      bool result = Load(GUIGraphicsContext.Skin + @"\mytvguide.xml");
+      GetID = (int)Window.WINDOW_TVGUIDE;
+      return result;
     }
 
     #endregion

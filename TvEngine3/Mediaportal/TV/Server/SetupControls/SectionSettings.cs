@@ -37,6 +37,11 @@ namespace Mediaportal.TV.Server.SetupControls
       Init(text);
     }
 
+    public virtual bool CanActivate
+    {
+      get { return true; }
+    }
+
     private void Init()
     {
       AutoScroll = true;
@@ -107,10 +112,5 @@ namespace Mediaportal.TV.Server.SetupControls
     public virtual void OnSectionActivated() {}
 
     public virtual void OnSectionDeActivated() {}
-
-    public virtual bool CanActivate
-    {
-      get { return true; }
-    }
   }
 }

@@ -42,6 +42,14 @@ namespace Mediaportal.TV.Server.SetupTV
   /// </summary>
   public class Utils
   {
+    #region Delegates
+
+    public delegate void UtilEventHandler(Process proc, bool waitForExit);
+
+    #endregion
+
+    // singleton. Dont allow any instance of this class
+    private Utils() {}
 
     [DllImport("kernel32.dll")]
     private static extern bool GetDiskFreeSpaceEx(string lpDirectoryName, out UInt64 lpFreeBytesAvailable,
@@ -83,12 +91,6 @@ namespace Mediaportal.TV.Server.SetupTV
 
     [DllImport("kernel32.dll", SetLastError = true)]
     private static extern bool CloseHandle(IntPtr hObject);
-
-    public delegate void UtilEventHandler(Process proc, bool waitForExit);
-
-
-    // singleton. Dont allow any instance of this class
-    private Utils() {}
 
     public static string GetDriveSerial(string drive)
     {

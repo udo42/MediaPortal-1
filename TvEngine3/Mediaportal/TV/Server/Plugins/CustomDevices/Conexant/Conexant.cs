@@ -33,9 +33,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Conexant
   /// </summary>
   public class Conexant : BaseCustomDevice, IDiseqcDevice
   {
- 
-
     #region enums
+
+    #region Nested type: BdaExtensionProperty
 
     /// <summary>
     /// The custom/extended properties supported by Conexant devices.
@@ -52,13 +52,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Conexant
       EffectiveFrequency
     }
 
-    private enum CxDiseqcVersion : uint
-    {
-      Undefined = 0,        // do not use - results in an error
-      Version1,
-      Version2,
-      EchostarLegacy
-    }
+    #endregion
+
+    #region Nested type: CxDiseqcReceiveMode
 
     private enum CxDiseqcReceiveMode : uint
     {
@@ -67,6 +63,20 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Conexant
       QuickReply,           // Expecting one response (receiving is suspended after first response).
       NoReply,              // Expecting no response.
     }
+
+    #endregion
+
+    #region Nested type: CxDiseqcVersion
+
+    private enum CxDiseqcVersion : uint
+    {
+      Undefined = 0,        // do not use - results in an error
+      Version1,
+      Version2,
+      EchostarLegacy
+    }
+
+    #endregion
 
     #endregion
 
@@ -94,8 +104,6 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Conexant
 
     #region constants
 
-    private static readonly Guid ConexantBdaExtensionPropertySet = new Guid(0xfaa8f3e5, 0x31d4, 0x4e41, 0x88, 0xef, 0xd9, 0xeb, 0x71, 0x6f, 0x6e, 0xc9);
-
     /// <summary>
     /// The size of a property instance (KSP_NODE) parameter.
     /// </summary>
@@ -104,17 +112,18 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Conexant
     private const int DiseqcMessageParamsSize = 188;
     private const int MaxDiseqcTxMessageLength = 151;   // 3 bytes per message * 50 messages, plus NULL termination
     private const int MaxDiseqcRxMessageLength = 9;     // reply first-in-first-out buffer size (hardware limited)
+    private static readonly Guid ConexantBdaExtensionPropertySet = new Guid(0xfaa8f3e5, 0x31d4, 0x4e41, 0x88, 0xef, 0xd9, 0xeb, 0x71, 0x6f, 0x6e, 0xc9);
 
     #endregion
 
     #region variables
 
-    private bool _isConexant = false;
-
     /// <summary>
     /// Buffer for the instance parameter when setting properties.
     /// </summary>
     protected IntPtr _instanceBuffer = IntPtr.Zero;
+
+    private bool _isConexant = false;
 
     /// <summary>
     /// Buffer for property parameters.
@@ -282,9 +291,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Conexant
       DVB_MMI.DumpBinary(_paramBuffer, 0, DiseqcMessageParamsSize);
 
       int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.DiseqcMessage,
-        _instanceBuffer, InstanceSize,
-        _paramBuffer, DiseqcMessageParamsSize
-      );
+                                _instanceBuffer, InstanceSize,
+                                _paramBuffer, DiseqcMessageParamsSize
+        );
 
       if (hr == 0)
       {
@@ -332,7 +341,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Conexant
       // We have no choice about sending a tone burst command. If this is a switch command for port A then
       // send a tone burst command ("simple A"), otherwise send a data burst command ("simple B").
       if (length == 4 && ((command[2] == (byte)DiseqcCommand.WriteN0 && (command[3] | 0x0c) == 0) ||
-        (command[2] == (byte)DiseqcCommand.WriteN1 && (command[3] | 0x0f) == 0)))
+                          (command[2] == (byte)DiseqcCommand.WriteN1 && (command[3] | 0x0f) == 0)))
       {
         message.IsToneBurstModulated = false;
       }
@@ -348,9 +357,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Conexant
       //DVB_MMI.DumpBinary(_paramBuffer, 0, DiseqcMessageParamsSize);
 
       int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.DiseqcMessage,
-        _instanceBuffer, InstanceSize,
-        _paramBuffer, DiseqcMessageParamsSize
-      );
+                                _instanceBuffer, InstanceSize,
+                                _paramBuffer, DiseqcMessageParamsSize
+        );
       if (hr == 0)
       {
         this.LogDebug("Conexant: result = success");

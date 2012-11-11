@@ -23,6 +23,8 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
     {
     }
 
+    #region ICardRepository Members
+
     public IQueryable<Card> IncludeAllRelations(IQueryable<Card> query)
     {
       IQueryable<Card> includeRelations =
@@ -60,5 +62,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
       }
       return query;
     }
+
+    #endregion
   }
 }

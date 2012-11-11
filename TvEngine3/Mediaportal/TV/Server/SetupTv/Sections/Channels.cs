@@ -39,41 +39,18 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class Channels : SectionSettings
   {
-    private MediaTypeEnum _mediaTypeEnum = MediaTypeEnum.TV;
-    private bool _ignoreItemCheckedEvent = false;
-
-    public class CardInfo
-    {
-      protected Card _card;
-
-      public Card Card
-      {
-        get { return _card; }
-      }
-
-      public CardInfo(Card card)
-      {
-        _card = card;
-      }
-
-      public override string ToString()
-      {
-        return _card.Name;
-      }
-    }
-
     private readonly MPListViewStringColumnSorter lvwColumnSorter;
     private readonly MPListViewStringColumnSorter lvwColumnSorter2;
-    private ChannelListViewHandler _lvChannelHandler;
-
-    private bool _suppressRefresh = false;
-    private bool _isScanning = false;
     private bool _abortScanning = false;
-    private Thread _scanThread;
-
-    private Dictionary<int, CardType> _cards = null;
     private IList<Channel> _allChannels = null;
-    
+    private Dictionary<int, CardType> _cards = null;
+    private bool _ignoreItemCheckedEvent = false;
+    private bool _isScanning = false;
+    private ChannelListViewHandler _lvChannelHandler;
+    private MediaTypeEnum _mediaTypeEnum = MediaTypeEnum.TV;
+    private Thread _scanThread;
+    private bool _suppressRefresh = false;
+
 
     public Channels(string name, MediaTypeEnum mediaType)
       : base(name)
@@ -1118,5 +1095,29 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         RefreshContextMenu();
       }
     }
+
+    #region Nested type: CardInfo
+
+    public class CardInfo
+    {
+      protected Card _card;
+
+      public CardInfo(Card card)
+      {
+        _card = card;
+      }
+
+      public Card Card
+      {
+        get { return _card; }
+      }
+
+      public override string ToString()
+      {
+        return _card.Name;
+      }
+    }
+
+    #endregion
   }
 }

@@ -29,20 +29,15 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 {
   internal class RemoteStandbyHandler : IStandbyHandler
   {
+    public readonly string Url;
     private IStandbyHandler remote;
     private int tag;
-    public readonly string Url;
 
     public RemoteStandbyHandler(String URL, int tag)
     {
       remote = (IStandbyHandler)Activator.GetObject(typeof (IStandbyHandler), URL);
       this.tag = tag;
       Url = URL;
-    }
-
-    public void Close()
-    {
-      remote = null;
     }
 
     #region IStandbyHandler Members
@@ -98,5 +93,10 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     }
 
     #endregion
+
+    public void Close()
+    {
+      remote = null;
+    }
   }
 }

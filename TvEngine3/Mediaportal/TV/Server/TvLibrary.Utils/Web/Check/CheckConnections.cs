@@ -28,38 +28,10 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Check
   /// </summary>
   public class CheckConnections
   {
-    [Flags]
-    private enum ConnectionState : int
-    {
-      INTERNET_CONNECTION_MODEM = 0x1,
-      INTERNET_CONNECTION_LAN = 0x2,
-      INTERNET_CONNECTION_PROXY = 0x4,
-      INTERNET_RAS_INSTALLED = 0x10,
-      INTERNET_CONNECTION_OFFLINE = 0x20,
-      INTERNET_CONNECTION_CONFIGURED = 0x40
-    }
-
     private bool _connected = false;
     private ConnectionState _currentState;
 
     // check connectivity http://www.developerfusion.co.uk/show/5346/
-    [DllImport("wininet.dll", CharSet = CharSet.Auto)]
-    private static extern bool InternetGetConnectedState(ref ConnectionState lpdwFlags, int dwReserved);
-
-    /// <summary>
-    /// This method gets the status of the computer's networking devices
-    /// </summary>
-    /// <returns>true if computer is connected to the internet</returns>
-    private bool CheckInternetConnection()
-    {
-      ConnectionState Description = 0;
-      string connState = InternetGetConnectedState(ref Description, 0).ToString();
-      _connected = Convert.ToBoolean(connState);
-      //        this.LogInfo("AudioscrobblerEngine: check connection - {0}", Description.ToString());
-      _currentState = Description;
-
-      return _connected;
-    }
 
     /// <summary>
     /// True if the computer has an active internet connection
@@ -128,5 +100,38 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Check
         }
       }
     }
+
+    [DllImport("wininet.dll", CharSet = CharSet.Auto)]
+    private static extern bool InternetGetConnectedState(ref ConnectionState lpdwFlags, int dwReserved);
+
+    /// <summary>
+    /// This method gets the status of the computer's networking devices
+    /// </summary>
+    /// <returns>true if computer is connected to the internet</returns>
+    private bool CheckInternetConnection()
+    {
+      ConnectionState Description = 0;
+      string connState = InternetGetConnectedState(ref Description, 0).ToString();
+      _connected = Convert.ToBoolean(connState);
+      //        this.LogInfo("AudioscrobblerEngine: check connection - {0}", Description.ToString());
+      _currentState = Description;
+
+      return _connected;
+    }
+
+    #region Nested type: ConnectionState
+
+    [Flags]
+    private enum ConnectionState : int
+    {
+      INTERNET_CONNECTION_MODEM = 0x1,
+      INTERNET_CONNECTION_LAN = 0x2,
+      INTERNET_CONNECTION_PROXY = 0x4,
+      INTERNET_RAS_INSTALLED = 0x10,
+      INTERNET_CONNECTION_OFFLINE = 0x20,
+      INTERNET_CONNECTION_CONFIGURED = 0x40
+    }
+
+    #endregion
   }
 }

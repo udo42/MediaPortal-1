@@ -39,30 +39,36 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
   /// </summary>
   public class ActiveSharesHandler : IStandbyHandler
   {
- 
-
     #region Structs
+
+    #region Nested type: ServerConnection
+
+    internal struct ServerConnection
+    {
+      public string ComputerName;
+      public int NumberOfFiles;
+      public string ShareName;
+      public string UserName;
+
+      public ServerConnection(string shareName, string computerName, string userName, int numFiles)
+      {
+        ShareName = shareName;
+        ComputerName = computerName;
+        UserName = userName;
+        NumberOfFiles = numFiles;
+      }
+    }
+
+    #endregion
+
+    #region Nested type: ShareMonitor
 
     internal class ShareMonitor
     {
-      internal enum ShareType
-      {
-        ShareOnly, // If anything is connected to the share, then prevent standby.
-        UserOnly, // If a matching user is connected to any share, then prevent standby.
-        HostOnly, // If a matching host is connected to any share, then prevent standby.
-        HostUsingShare, // If a matching host is connected to the matching share, then prevent standby.
-        UserUsingShare, // If a matching user is connected from any host to the matching share, then prevent standby.
-        UserFromHostConnected,
-        // If a matching user is connected to any share from the define host, then prevent standby.
-        UserFromHostUsingShare, // All three fields must match to prevent standby.
-        Undefined, // Invalid share configuration. Do not prevent standby.
-      } ;
-
-      private string _share;
-      private string _host;
-      private string _user;
-
       internal readonly ShareType MonitoringType;
+      private string _host;
+      private string _share;
+      private string _user;
 
       internal ShareMonitor(string shareName, string hostName, string userName)
       {
@@ -112,7 +118,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
           MonitoringType = ShareType.UserFromHostUsingShare;
         }
         this.LogDebug("ShareMonitor: Monitor user '{0}' from host '{1}' on share '{2}' Type '{3}'", _user, _host, _share,
-                  MonitoringType);
+                      MonitoringType);
       }
 
       internal bool Equals(ServerConnection serverConnection)
@@ -174,33 +180,37 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
         }
         return serverConnectionMatches;
       }
-    }
 
-    internal struct ServerConnection
-    {
-      public string ShareName;
-      public string ComputerName;
-      public string UserName;
-      public int NumberOfFiles;
+      #region Nested type: ShareType
 
-      public ServerConnection(string shareName, string computerName, string userName, int numFiles)
+      internal enum ShareType
       {
-        ShareName = shareName;
-        ComputerName = computerName;
-        UserName = userName;
-        NumberOfFiles = numFiles;
-      }
+        ShareOnly, // If anything is connected to the share, then prevent standby.
+        UserOnly, // If a matching user is connected to any share, then prevent standby.
+        HostOnly, // If a matching host is connected to any share, then prevent standby.
+        HostUsingShare, // If a matching host is connected to the matching share, then prevent standby.
+        UserUsingShare, // If a matching user is connected from any host to the matching share, then prevent standby.
+        UserFromHostConnected,
+        // If a matching user is connected to any share from the define host, then prevent standby.
+        UserFromHostUsingShare, // All three fields must match to prevent standby.
+        Undefined, // Invalid share configuration. Do not prevent standby.
+      } ;
+
+      #endregion
     }
+
+    #endregion
 
     #endregion
 
     #region Variables
 
     private bool _enabled = false;
-    private List<ShareMonitor> _sharesToMonitor = new List<ShareMonitor>();
 
     private ManagementObjectSearcher _searcher = new ManagementObjectSearcher(
       "SELECT ShareName, UserName, ComputerName, NumberOfFiles  FROM Win32_ServerConnection WHERE NumberOfFiles > 0");
+
+    private List<ShareMonitor> _sharesToMonitor = new List<ShareMonitor>();
 
     #endregion
 
@@ -306,7 +316,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
               if (shareBeingMonitored.Equals(connection))
               {
                 this.LogDebug("{0}: Standby cancelled due to connection '{1}:{2}' on share '{3}'", HandlerName,
-                          connection.UserName, connection.ComputerName, connection.ShareName);
+                              connection.UserName, connection.ComputerName, connection.ShareName);
                 return true;
               }
             }

@@ -35,6 +35,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     private readonly List<DsDevice> _devicesInUse;
 
     /// <summary>
+    /// ctor - private since this is a singleton class
+    /// </summary>
+    private DevicesInUse()
+    {
+      _devicesInUse = new List<DsDevice>();
+    }
+
+    /// <summary>
     /// static method to access this class
     /// </summary>
     public static DevicesInUse Instance
@@ -47,14 +55,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         }
         return _instance;
       }
-    }
-
-    /// <summary>
-    /// ctor - private since this is a singleton class
-    /// </summary>
-    private DevicesInUse()
-    {
-      _devicesInUse = new List<DsDevice>();
     }
 
     /// <summary>

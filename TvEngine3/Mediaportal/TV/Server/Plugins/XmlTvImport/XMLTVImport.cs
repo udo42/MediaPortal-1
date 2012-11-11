@@ -36,69 +36,21 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 {
   internal class XMLTVImport : IComparer
   {
+    #region Delegates
 
+    public delegate void ShowProgressHandler(Stats stats);
+
+    #endregion
+
+    private static bool _isImporting = false;
 
     private readonly IDictionary<string, ProgramCategory> _categories = new ConcurrentDictionary<string, ProgramCategory>();
 
     private readonly ProgramManagement _programManagement = new ProgramManagement();
-    
-    public delegate void ShowProgressHandler(Stats stats);
-
-    public event ShowProgressHandler ShowProgress;
-
-    private class ChannelPrograms
-    {
-      public string Name;
-      public string externalId;
-      //public ArrayList programs = new ArrayList();
-      public readonly ProgramList programs = new ProgramList();
-    } ;
-
-    public class Stats
-    {
-      private string _status = "";
-      private int _programs = 0;
-      private int _channels = 0;
-      private DateTime _startTime = DateTime.Now;
-      private DateTime _endTime = DateTime.Now;
-
-      public string Status
-      {
-        get { return _status; }
-        set { _status = value; }
-      }
-
-      public int Programs
-      {
-        get { return _programs; }
-        set { _programs = value; }
-      }
-
-      public int Channels
-      {
-        get { return _channels; }
-        set { _channels = value; }
-      }
-
-      public DateTime startTime
-      {
-        get { return _startTime; }
-        set { _startTime = value; }
-      }
-
-      public DateTime endTime
-      {
-        get { return _endTime; }
-        set { _endTime = value; }
-      }
-    } ;
+    private int _backgroundDelay = 0;
 
     private string _errorMessage = "";
     private Stats _status = new Stats();
-    private int _backgroundDelay = 0;
-    
-
-    private static bool _isImporting = false;
 
     public XMLTVImport()
       : this(0) {}
@@ -124,6 +76,29 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     {
       get { return _status; }
     }
+
+    #region IComparer Members
+
+    public int Compare(object x, object y)
+    {
+      if (x == y) return 0;
+      Program item1 = (Program)x;
+      Program item2 = (Program)y;
+      if (item1 == null) return -1;
+      if (item2 == null) return -1;
+
+      if (item1.IdChannel != item2.IdChannel)
+      {
+        return String.Compare(item1.Channel.DisplayName, item2.Channel.DisplayName, true);
+      }
+      if (item1.StartTime > item2.StartTime) return 1;
+      if (item1.StartTime < item2.StartTime) return -1;
+      return 0;
+    }
+
+    #endregion
+
+    public event ShowProgressHandler ShowProgress;
 
     private int ParseStarRating(string epgRating)
     {
@@ -1182,24 +1157,58 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       }            
     }
 
-    #region Sort Members
+    #region Nested type: ChannelPrograms
 
-    public int Compare(object x, object y)
+    private class ChannelPrograms
     {
-      if (x == y) return 0;
-      Program item1 = (Program)x;
-      Program item2 = (Program)y;
-      if (item1 == null) return -1;
-      if (item2 == null) return -1;
+      public readonly ProgramList programs = new ProgramList();
+      public string Name;
+      public string externalId;
+      //public ArrayList programs = new ArrayList();
+    } ;
 
-      if (item1.IdChannel != item2.IdChannel)
+    #endregion
+
+    #region Nested type: Stats
+
+    public class Stats
+    {
+      private int _channels = 0;
+      private DateTime _endTime = DateTime.Now;
+      private int _programs = 0;
+      private DateTime _startTime = DateTime.Now;
+      private string _status = "";
+
+      public string Status
       {
-        return String.Compare(item1.Channel.DisplayName, item2.Channel.DisplayName, true);
+        get { return _status; }
+        set { _status = value; }
       }
-      if (item1.StartTime > item2.StartTime) return 1;
-      if (item1.StartTime < item2.StartTime) return -1;
-      return 0;
-    }
+
+      public int Programs
+      {
+        get { return _programs; }
+        set { _programs = value; }
+      }
+
+      public int Channels
+      {
+        get { return _channels; }
+        set { _channels = value; }
+      }
+
+      public DateTime startTime
+      {
+        get { return _startTime; }
+        set { _startTime = value; }
+      }
+
+      public DateTime endTime
+      {
+        get { return _endTime; }
+        set { _endTime = value; }
+      }
+    } ;
 
     #endregion
   }

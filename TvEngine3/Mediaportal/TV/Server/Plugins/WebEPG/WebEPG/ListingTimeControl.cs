@@ -42,14 +42,14 @@ namespace WebEPG
 
     #region Variables
 
-    private int _lastTime;
-    private DateTime _startTime;
+    private int _addDays;
     private Expect _expectedTime;
     private int _grabDay;
-    private int _addDays;
+    private int _lastTime;
     private bool _newDay;
     private bool _nextDay;
     private int _programCount;
+    private DateTime _startTime;
 
     #endregion
 

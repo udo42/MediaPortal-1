@@ -33,10 +33,10 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 {
   public partial class FormEditChannel : Form
   {
-    private bool _newChannel;
+    private Channel _channel;
     private MediaTypeEnum _mediaType = MediaTypeEnum.TV;
-    private Channel _channel;    
-    
+    private bool _newChannel;
+
 
     public FormEditChannel()
     {

@@ -30,11 +30,6 @@ namespace MediaPortal.Common.Utils
     private readonly Version _minRequiredVersion;
 
 
-    private static Version ParseVersion(string version)
-    {
-      return version.Equals("own", StringComparison.InvariantCultureIgnoreCase) ? OwnAssemblyVersion : new Version(version);
-    }
-
     public CompatibleVersionAttribute(Version designedForVersion, Version minRequiredVersion)
     {
       _designedForVersion = designedForVersion;
@@ -69,6 +64,11 @@ namespace MediaPortal.Common.Utils
     public Version MinRequiredVersion
     {
       get { return _minRequiredVersion; }
+    }
+
+    private static Version ParseVersion(string version)
+    {
+      return version.Equals("own", StringComparison.InvariantCultureIgnoreCase) ? OwnAssemblyVersion : new Version(version);
     }
   }
 }

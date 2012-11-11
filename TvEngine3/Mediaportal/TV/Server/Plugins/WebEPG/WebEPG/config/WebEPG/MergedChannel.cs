@@ -29,10 +29,10 @@ namespace WebEPG.config.WebEPG
   {
     #region Variables
 
-    private string _id;
-    private string _grabber;
-    private string _start;
     private string _end;
+    private string _grabber;
+    private string _id;
+    private string _start;
 
     [XmlAttribute("id")]
     public string id

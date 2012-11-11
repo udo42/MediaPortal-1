@@ -27,7 +27,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 {
   public class Log
   {
-    private Log() {}
+    protected static string _logFilename;
+    protected static bool _logEnabled = true;
 
     static Log()
     {
@@ -41,6 +42,19 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       {
         _logFilename = "myblaster.log";
       }
+    }
+
+    private Log() {}
+
+    public static string Filename
+    {
+      get { return _logFilename; }
+    }
+
+    public static bool Enabled
+    {
+      get { return _logEnabled; }
+      set { _logEnabled = value; }
     }
 
     public static void Delete()
@@ -72,19 +86,5 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
         catch (Exception) {}
       }
     }
-
-    public static string Filename
-    {
-      get { return _logFilename; }
-    }
-
-    public static bool Enabled
-    {
-      get { return _logEnabled; }
-      set { _logEnabled = value; }
-    }
-
-    protected static string _logFilename;
-    protected static bool _logEnabled = true;
   }
 }

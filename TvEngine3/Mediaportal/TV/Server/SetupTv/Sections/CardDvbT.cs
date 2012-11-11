@@ -50,9 +50,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private List<DVBTTuning> _dvbtChannels = new List<DVBTTuning>();
     private String buttonText;
 
-    private FileFilters fileFilters;
-
     private CI_Menu_Dialog ciMenuDialog; // ci menu dialog object
+    private FileFilters fileFilters;
 
     private ScanState scanState; // scan state
 
@@ -96,8 +95,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     #region Constructors
 
-    private void EnableSections() {}
-
     public CardDvbT()
       : this("DVBT") {}
 
@@ -123,6 +120,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       base.Text = name;
       Init();
     }
+
+    private void EnableSections() {}
 
     #endregion
 

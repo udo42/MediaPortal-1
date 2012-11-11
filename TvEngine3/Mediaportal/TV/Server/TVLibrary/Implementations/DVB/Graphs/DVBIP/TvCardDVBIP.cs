@@ -34,9 +34,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
   /// </summary>
   public class TvCardDVBIP : TvCardDvbBase, ITVCard
   {
-
-
     #region variables
+
+    /// <summary>
+    /// The source filter's default URL.
+    /// </summary>
+    protected string _defaultUrl;
 
     /// <summary>
     /// The DVB-IP source filter.
@@ -44,19 +47,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
     private IBaseFilter _filterStreamSource = null;
 
     /// <summary>
-    /// The instance number of this DVB-IP tuner.
-    /// </summary>
-    private int _sequenceNumber = -1;
-
-    /// <summary>
     /// The input pin for the first filter connected to the source filter.
     /// </summary>
     private IPin _firstFilterInputPin = null;
 
     /// <summary>
-    /// The source filter's default URL.
+    /// The instance number of this DVB-IP tuner.
     /// </summary>
-    protected string _defaultUrl;
+    private int _sequenceNumber = -1;
 
     /// <summary>
     /// The CLSID/UUID for the source filter.
@@ -113,7 +111,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
 
         AddTsWriterFilterToGraph();
         _filterStreamSource = FilterGraphTools.AddFilterFromClsid(_graphBuilder, _sourceFilterGuid,
-                                                          "DVB-IP Source Filter");
+                                                                  "DVB-IP Source Filter");
         IBaseFilter lastFilter = _filterStreamSource;
 
         // Check for and load plugins, adding any additional device filters to the graph.
@@ -203,7 +201,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
     {
       this.LogDebug("TvCardDvbIp: add source filter");
       _filterStreamSource = FilterGraphTools.AddFilterFromClsid(_graphBuilder, _sourceFilterGuid,
-                                                                  "DVB-IP Source Filter");
+                                                                "DVB-IP Source Filter");
       AMMediaType mpeg2ProgramStream = new AMMediaType();
       mpeg2ProgramStream.majorType = MediaType.Stream;
       mpeg2ProgramStream.subType = MediaSubType.Mpeg2Transport;
@@ -255,6 +253,31 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
     #region tuning & scanning
 
     /// <summary>
+    /// Check if the tuner can tune to a specific channel.
+    /// </summary>
+    /// <param name="channel">The channel to check.</param>
+    /// <returns><c>true</c> if the tuner can tune to the channel, otherwise <c>false</c></returns>
+    public override bool CanTune(IChannel channel)
+    {
+      if (channel is DVBIPChannel)
+      {
+        return true;
+      }
+      return false;
+    }
+
+    /// <summary>
+    /// Get the device's channel scanning interface.
+    /// </summary>
+    public override ITVScanning ScanningInterface
+    {
+      get
+      {
+        return new DVBIPScanning(this);
+      }
+    }
+
+    /// <summary>
     /// Actually tune to a channel.
     /// </summary>
     /// <param name="channel">The channel to tune to.</param>
@@ -292,32 +315,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
       AddStreamSourceFilter(dvbipChannel.Url);
     }
 
-    /// <summary>
-    /// Check if the tuner can tune to a specific channel.
-    /// </summary>
-    /// <param name="channel">The channel to check.</param>
-    /// <returns><c>true</c> if the tuner can tune to the channel, otherwise <c>false</c></returns>
-    public override bool CanTune(IChannel channel)
-    {
-      if (channel is DVBIPChannel)
-      {
-        return true;
-      }
-      return false;
-    }
-
-    /// <summary>
-    /// Get the device's channel scanning interface.
-    /// </summary>
-    public override ITVScanning ScanningInterface
-    {
-      get
-      {
-        return new DVBIPScanning(this);
-      }
-    }
-
     #endregion
+
+    #region ITVCard Members
 
     /// <summary>
     /// Dispose resources
@@ -341,6 +341,23 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
         AddStreamSourceFilter(_defaultUrl);
       }
     }
+
+    /// <summary>
+    /// return the DevicePath
+    /// </summary>
+    public override string DevicePath
+    {
+      get
+      {
+        if (_sequenceNumber == 0)
+        {
+          return base.DevicePath;
+        }
+        return base.DevicePath + "(" + _sequenceNumber + ")";
+      }
+    }
+
+    #endregion
 
     /// <summary>
     /// Update the tuner signal status statistics.
@@ -375,21 +392,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
     protected override DVBBaseChannel CreateChannel()
     {
       return new DVBIPChannel();
-    }
-
-    /// <summary>
-    /// return the DevicePath
-    /// </summary>
-    public override string DevicePath
-    {
-      get
-      {
-        if (_sequenceNumber == 0)
-        {
-          return base.DevicePath;
-        }
-        return base.DevicePath + "(" + _sequenceNumber + ")";
-      }
     }
   }
 }

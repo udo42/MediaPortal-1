@@ -29,33 +29,33 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Ticket
   {
     #region vars
 
-    private readonly IUser _user;
-    private readonly IChannel _tuningDetail;
-    private readonly bool _isSameTransponder;
-    private readonly int _numberOfOtherUsersOnSameChannel;
-    private readonly int _numberOfOtherUsersOnCurrentCard;
-    private readonly int _numberOfUsersOnSameCurrentChannel;
-    private readonly bool _isAnySubChannelTimeshifting;    
-    private readonly List<IUser> _inactiveUsers = new List<IUser>();
     private readonly List<IUser> _activeUsers = new List<IUser>();
-    private readonly List<KeyValuePair<string, IUser>> _users = new List<KeyValuePair<string, IUser>>();
-    private readonly ISubChannel _ownerSubchannel = null;
-    private readonly bool _isOwner;    
-    private readonly int _idCard;
-    private readonly int _numberOfChannelsDecrypting;
-    private readonly bool _isFreeToAir = true;            
+    private readonly long? _channelTimeshiftingOnOtherMux;
     private readonly bool _conflictingSubchannelFound;
+    private readonly bool _hasEqualOrHigherPriority;
+    private readonly bool _hasHighestPriority;
+    private readonly int _idCard;
+    private readonly List<IUser> _inactiveUsers = new List<IUser>();
+    private readonly bool _isAnySubChannelTimeshifting;
     private readonly bool _isCamAlreadyDecodingChannel;
+    private readonly bool _isFreeToAir = true;
+    private readonly bool _isOwner;
+    private readonly bool _isSameTransponder;
+    private readonly int _numberOfChannelsDecrypting;
+    private readonly int _numberOfOtherUsersOnCurrentCard;
+    private readonly int _numberOfOtherUsersOnSameChannel;
+    private readonly int _numberOfUsersOnSameCurrentChannel;
+    private readonly ISubChannel _ownerSubchannel = null;
 
     private readonly List<IUser> _recordingUsers = new List<IUser>();
     private readonly IList<IUser> _timeshiftingUsers = new List<IUser>();
+    private readonly IChannel _tuningDetail;
+    private readonly IUser _user;
+    private readonly List<KeyValuePair<string, IUser>> _users = new List<KeyValuePair<string, IUser>>();
     private int _pendingSubchannel;
-    private readonly bool _hasHighestPriority;
-    private readonly bool _hasEqualOrHigherPriority;
-    private readonly long? _channelTimeshiftingOnOtherMux;
 
     #endregion
-    
+
     public CardTuneReservationTicket(
       IUser user, 
       IChannel tuningDetail, 
@@ -103,7 +103,9 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Ticket
       _hasHighestPriority = hasHighestPriority;
       _hasEqualOrHigherPriority = hasEqualOrHigherPriority;
       _channelTimeshiftingOnOtherMux = channelTimeshiftingOnOtherMux;
-    }    
+    }
+
+    #region ICardTuneReservationTicket Members
 
     public IChannel TuningDetail
     {
@@ -226,5 +228,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Ticket
     {
       get { return _numberOfUsersOnSameCurrentChannel; }
     }
+
+    #endregion
   }
 }

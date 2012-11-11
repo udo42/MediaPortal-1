@@ -46,7 +46,6 @@ namespace Mediaportal.TV.TvPlugin
   /// </summary>
   public class ChannelNavigator
   {
-
     #region config xml file
 
     private const string ConfigFileXml =
@@ -80,18 +79,18 @@ namespace Mediaportal.TV.TvPlugin
 
     #region Private members
 
+    private IDictionary<int, Channel> _channels = new Dictionary<int, Channel>();
     private List<ChannelGroup> _groups = new List<ChannelGroup>();
+    private Channel _lastViewedChannel = null; // saves the last viewed Channel  // mPod    
+    private ChannelBLL m_currentChannel = null;
     // Contains all channel groups (including an "all _channels" group)
 
     private int m_currentgroup = 0;
-    private DateTime m_zaptime;
-    private long m_zapdelay;
-    private ChannelBLL m_zapchannel = null;
     private int m_zapChannelNr = -1;
+    private ChannelBLL m_zapchannel = null;
+    private long m_zapdelay;
     private int m_zapgroup = -1;
-    private Channel _lastViewedChannel = null; // saves the last viewed Channel  // mPod    
-    private ChannelBLL m_currentChannel = null;
-    private IDictionary<int, Channel> _channels = new Dictionary<int, Channel>();
+    private DateTime m_zaptime;
     private bool reentrant = false;    
 
     #endregion
@@ -151,9 +150,9 @@ namespace Mediaportal.TV.TvPlugin
         SetupDatabaseConnection();
         Task taskGetAllChannels = Task.Factory.StartNew(GetAllChannels);
         Task taskGetOrCreateGroup = Task.Factory.StartNew(delegate
-        {
-          ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(TvConstants.TvGroupNames.AllChannels, MediaTypeEnum.TV);
-        });
+                                                            {
+                                                              ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(TvConstants.TvGroupNames.AllChannels, MediaTypeEnum.TV);
+                                                            });
         
         Task taskGetAllGroups = Task.Factory.StartNew(GetAllGroups);                
         taskGetOrCreateGroup.WaitAndHandleExceptions();
@@ -541,7 +540,7 @@ namespace Mediaportal.TV.TvPlugin
               if (detail.ChannelNumber == channelNr)
               {
                 this.LogDebug("find channel: iCounter {0}, detail.channelNumber {1}, detail.name {2}, _channels.Count {3}",
-                          iCounter, detail.ChannelNumber, detail.Name, channels.Count);
+                              iCounter, detail.ChannelNumber, detail.Name, channels.Count);
                 found = true;
                 ZapToChannel(iCounter + 1, useZapDelay);
               }
@@ -677,7 +676,7 @@ namespace Mediaportal.TV.TvPlugin
       m_zapchannel = new ChannelBLL(chan) {CurrentGroup = null};
       m_zapChannelNr = -1;
       this.LogInfo("Navigator:ZapPrevious {0}->{1}",
-               currentChan.DisplayName, m_zapchannel.Entity.DisplayName);
+                   currentChan.DisplayName, m_zapchannel.Entity.DisplayName);
       if (GUIWindowManager.ActiveWindow == (int)(int)GUIWindow.Window.WINDOW_TVFULLSCREEN)
       {
         if (useZapDelay)

@@ -1528,22 +1528,20 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
   /// </summary>
   public class Cat
   {
-
-
     #region variables
 
-    private byte _tableId;
-    private byte _sectionSyntaxIndicator;
-    private UInt16 _sectionLength;
-    private byte _version;
-    private byte _currentNextIndicator;
-    private byte _sectionNumber;
-    private byte _lastSectionNumber;
-    private List<IDescriptor> _descriptors;
     private List<IDescriptor> _caDescriptors;
     private byte[] _crc;
+    private byte _currentNextIndicator;
+    private List<IDescriptor> _descriptors;
+    private byte _lastSectionNumber;
 
     private byte[] _rawCat;
+    private UInt16 _sectionLength;
+    private byte _sectionNumber;
+    private byte _sectionSyntaxIndicator;
+    private byte _tableId;
+    private byte _version;
 
     #endregion
 
@@ -1799,26 +1797,24 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
   /// </summary>
   public class Pmt
   {
-
-
     #region variables
 
-    private byte _tableId;
-    private byte _sectionSyntaxIndicator;
-    private UInt16 _sectionLength;
-    private UInt16 _programNumber;
-    private byte _version;
+    private byte[] _crc;
     private byte _currentNextIndicator;
-    private byte _sectionNumber;
+    private List<PmtElementaryStream> _elementaryStreams;
     private byte _lastSectionNumber;
     private UInt16 _pcrPid;
-    private UInt16 _programInfoLength;
-    private List<IDescriptor> _programDescriptors;
     private List<IDescriptor> _programCaDescriptors;
-    private List<PmtElementaryStream> _elementaryStreams;
-    private byte[] _crc;
+    private List<IDescriptor> _programDescriptors;
+    private UInt16 _programInfoLength;
+    private UInt16 _programNumber;
 
     private byte[] _rawPmt;
+    private UInt16 _sectionLength;
+    private byte _sectionNumber;
+    private byte _sectionSyntaxIndicator;
+    private byte _tableId;
+    private byte _version;
 
     #endregion
 
@@ -2352,13 +2348,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
   {
     #region variables
 
-    private StreamType _streamType;
-    private UInt16 _pid;
-    private UInt16 _esInfoLength;
-    private List<IDescriptor> _descriptors;
     private List<IDescriptor> _caDescriptors;
+    private List<IDescriptor> _descriptors;
+    private UInt16 _esInfoLength;
 
     private LogicalStreamType _logicalStreamType;
+    private UInt16 _pid;
+    private StreamType _streamType;
 
     #endregion
 
@@ -2521,27 +2517,27 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
   /// </summary>
   public class Descriptor : IDescriptor
   {
- 
-
     #region variables
 
-    /// <summary>
-    /// The descriptor's tag.
-    /// </summary>
-    protected DescriptorTag _tag;
-    /// <summary>
-    /// The descriptor data length.
-    /// </summary>
-    protected byte _length;
     /// <summary>
     /// The descriptor data.
     /// </summary>
     protected byte[] _data;
 
     /// <summary>
+    /// The descriptor data length.
+    /// </summary>
+    protected byte _length;
+
+    /// <summary>
     /// The raw descriptor data (ie. including tag and length).
     /// </summary>
     protected byte[] _rawData;
+
+    /// <summary>
+    /// The descriptor's tag.
+    /// </summary>
+    protected DescriptorTag _tag;
 
     #endregion
 
@@ -2616,6 +2612,30 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
 
     #endregion
 
+    #region IDescriptor Members
+
+    /// <summary>
+    /// Retrieve a read-only copy of the original data that was decoded to create this Descriptor instance.
+    /// </summary>
+    /// <returns>a copy of the raw descriptor data</returns>
+    public ReadOnlyCollection<byte> GetRawData()
+    {
+      return new ReadOnlyCollection<byte>(_rawData);
+    }
+
+    /// <summary>
+    /// For debug use.
+    /// </summary>
+    public virtual void Dump()
+    {
+      this.LogDebug("Descriptor: dump...");
+      this.LogDebug("  tag    = {0}", _tag);
+      this.LogDebug("  length = {0}", _length);
+      DVB_MMI.DumpBinary(_data, 0, _data.Length);
+    }
+
+    #endregion
+
     /// <summary>
     /// Decode raw descriptor data.
     /// </summary>
@@ -2648,26 +2668,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
 
       return d;
     }
-
-    /// <summary>
-    /// Retrieve a read-only copy of the original data that was decoded to create this Descriptor instance.
-    /// </summary>
-    /// <returns>a copy of the raw descriptor data</returns>
-    public ReadOnlyCollection<byte> GetRawData()
-    {
-      return new ReadOnlyCollection<byte>(_rawData);
-    }
-
-    /// <summary>
-    /// For debug use.
-    /// </summary>
-    public virtual void Dump()
-    {
-      this.LogDebug("Descriptor: dump...");
-      this.LogDebug("  tag    = {0}", _tag);
-      this.LogDebug("  length = {0}", _length);
-      DVB_MMI.DumpBinary(_data, 0, _data.Length);
-    }
   }
 
   /// <summary>
@@ -2675,14 +2675,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
   /// </summary>
   public class ConditionalAccessDescriptor : Descriptor
   {
-
-
     #region variables
 
-    private UInt16 _caSystemId;
     private UInt16 _caPid;
-    private byte[] _privateData;
+    private UInt16 _caSystemId;
     private Dictionary<UInt16, HashSet<UInt32>> _pids;
+    private byte[] _privateData;
 
     #endregion
 
@@ -2821,6 +2819,28 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       return d;
     }
 
+    /// <summary>
+    /// For debug use.
+    /// </summary>
+    public override void Dump()
+    {
+      this.LogDebug("CA Descriptor: dump...");
+      this.LogDebug("  tag          = {0}", _tag);
+      this.LogDebug("  length       = {0}", _length);
+      this.LogDebug("  CA system ID = {0} (0x{0:x})", _caSystemId);
+      this.LogDebug("  CA PID       = {0} (0x{0:x})", _caPid);
+      foreach (UInt16 pid in _pids.Keys)
+      {
+        List<String> providerIds = new List<String>(_pids[pid].Count);
+        foreach (UInt32 providerId in _pids[pid])
+        {
+          providerIds.Add(String.Format("{0} (0x{0:x})", providerId));
+        }
+        this.LogDebug("  PID = {0} (0x{0:x}), provider IDs = {1}", pid, String.Join(", ", providerIds.ToArray()));
+      }
+      DVB_MMI.DumpBinary(_data, 0, _data.Length);
+    }
+
     #region proprietary descriptor format handling
 
     private static void HandleCanalPlusDescriptor(ConditionalAccessDescriptor d)
@@ -2952,28 +2972,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
     }
 
     #endregion
-
-    /// <summary>
-    /// For debug use.
-    /// </summary>
-    public override void Dump()
-    {
-      this.LogDebug("CA Descriptor: dump...");
-      this.LogDebug("  tag          = {0}", _tag);
-      this.LogDebug("  length       = {0}", _length);
-      this.LogDebug("  CA system ID = {0} (0x{0:x})", _caSystemId);
-      this.LogDebug("  CA PID       = {0} (0x{0:x})", _caPid);
-      foreach (UInt16 pid in _pids.Keys)
-      {
-        List<String> providerIds = new List<String>(_pids[pid].Count);
-        foreach (UInt32 providerId in _pids[pid])
-        {
-          providerIds.Add(String.Format("{0} (0x{0:x})", providerId));
-        }
-        this.LogDebug("  PID = {0} (0x{0:x}), provider IDs = {1}", pid, String.Join(", ", providerIds.ToArray()));
-      }
-      DVB_MMI.DumpBinary(_data, 0, _data.Length);
-    }
   }
 
   /// <summary>
@@ -2983,8 +2981,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
   /// </summary>
   public class DvbMmiHandler
   {
- 
-
     #region MMI/APDU interpretation
 
     /// <summary>
@@ -3026,7 +3022,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
         HandleEnquiry(mmi, offset, apduLength, ref ciMenuHandler);
       }
       else if (tag == MmiTag.ListLast || tag == MmiTag.MenuLast ||
-          tag == MmiTag.MenuMore || tag == MmiTag.ListMore)
+               tag == MmiTag.MenuMore || tag == MmiTag.ListMore)
       {
         // The CAM is providing a menu or list to present to the user.
         HandleMenu(mmi, offset, apduLength, ref ciMenuHandler);
@@ -3206,7 +3202,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
         return MmiTag.Unknown;
       }
       return (MmiTag)
-        ((sourceData[offset] << 16) | (sourceData[offset + 1] << 8) | (sourceData[offset + 2]));
+             ((sourceData[offset] << 16) | (sourceData[offset + 1] << 8) | (sourceData[offset + 2]));
     }
 
     /// <summary>

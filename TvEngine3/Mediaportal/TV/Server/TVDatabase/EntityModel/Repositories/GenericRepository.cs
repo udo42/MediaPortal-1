@@ -21,19 +21,13 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
   /// </summary>
   public class GenericRepository<TEntity> : IRepository<TEntity> where TEntity : ObjectContext
   {
-    private IUnitOfWork _unitOfWork;
     private readonly string _connectionStringName;
-    private TEntity _objectContext;
     private readonly PluralizationService _pluralizer = PluralizationService.CreateService(CultureInfo.GetCultureInfo("en"));
-    private bool _disposed;
 
     private readonly bool _trackingEnabled = false;
-
-    ~GenericRepository()
-    {
-      Dispose();
-      GC.SuppressFinalize(this);
-    }
+    private bool _disposed;
+    private TEntity _objectContext;
+    private IUnitOfWork _unitOfWork;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="GenericRepository&lt;TEntity&gt;"/> class.
@@ -70,6 +64,8 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
         throw new ArgumentNullException("objectContext");
       _objectContext = objectContext;
     }
+
+    #region IRepository<TEntity> Members
 
     public TEntity GetByKey<TEntity>(object keyValue) where TEntity : class
     {
@@ -205,42 +201,6 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
     }
 
 
-    private string GetEntitySetFullName<TEntity>(TEntity entity) where TEntity : class
-    {
-       // If the EntityKey exists, simply get the Entity Set name from the key
-       /*if (entity.EntityKey != null)
-       {
-          return entity.EntityKey.EntitySetName;
-       }
-       else*/
-       {
-          string entityTypeName = entity.GetType().Name;
-          var container = ObjectContext.MetadataWorkspace.GetEntityContainer(ObjectContext.DefaultContainerName, DataSpace.CSpace);
-          string entitySetName = (from meta in container.BaseEntitySets
-                                  where meta.ElementType.Name == entityTypeName
-                                  select meta.Name).First();
-
-          return entitySetName;
-       }
-    }
-
-    private bool IsAttached<TEntity>(string entitySetFullName, TEntity entity) where TEntity : class
-    {      
-      EntityKey key = ObjectContext.CreateEntityKey(entitySetFullName, entity);
-      if (key == null)
-      {
-        throw new ArgumentNullException("key");
-      }
-      ObjectStateEntry entry;
-      if (ObjectContext.ObjectStateManager.TryGetObjectStateEntry(key, out entry))
-      {
-        return (entry.State != EntityState.Detached);
-      }
-      return false;
-    }
-
-
-
     public void Delete<TEntity>(TEntity entity) where TEntity : class
     {
       if (entity == null)
@@ -372,20 +332,6 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
       }
     }
 
-    private EntityKey GetEntityKey<TEntity>(object keyValue) where TEntity : class
-    {
-      var entitySetName = GetEntityName<TEntity>();
-      var objectSet = ObjectContext.CreateObjectSet<TEntity>();
-      var keyPropertyName = objectSet.EntitySet.ElementType.KeyMembers[0].ToString();
-      var entityKey = new EntityKey(entitySetName, new[] { new EntityKeyMember(keyPropertyName, keyValue) });
-      return entityKey;
-    }
-
-    private string GetEntityName<TEntity>() where TEntity : class
-    {
-      return string.Format("{0}.{1}", ObjectContext.DefaultContainerName, _pluralizer.Pluralize(typeof(TEntity).Name));
-    }
-    
 
     public Expression<Func<TElement, bool>> BuildContainsExpression<TElement, TValue>(
       Expression<Func<TElement, TValue>> valueSelector, IEnumerable<TValue> values)
@@ -402,18 +348,6 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
       var body = @equals.Aggregate<Expression>((accumulate, equal) => Expression.Or(accumulate, equal));
       return Expression.Lambda<Func<TElement, bool>>(body, p);
 
-    }
-
-    private bool Exists<TEntity>(TEntity entity) where TEntity : class
-    {     
-      var objSet = ObjectContext.CreateObjectSet<TEntity>();
-      var entityKey = ObjectContext.CreateEntityKey(objSet.EntitySet.Name, entity);
-
-      Object foundEntity;
-      var exists = ObjectContext.TryGetObjectByKey(entityKey, out foundEntity);
-      // TryGetObjectByKey attaches a found entity      
-
-      return (exists);
     }
 
     public void AttachEntityIfChangeTrackingDisabled<TEntity>(ObjectSet<TEntity> objectSet, TEntity entity) where TEntity : class, IObjectWithChangeTracker
@@ -456,6 +390,74 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
           _disposed = true;
         }
       }
+    }
+
+    #endregion
+
+    ~GenericRepository()
+    {
+      Dispose();
+      GC.SuppressFinalize(this);
+    }
+
+    private string GetEntitySetFullName<TEntity>(TEntity entity) where TEntity : class
+    {
+      // If the EntityKey exists, simply get the Entity Set name from the key
+      /*if (entity.EntityKey != null)
+       {
+          return entity.EntityKey.EntitySetName;
+       }
+       else*/
+      {
+        string entityTypeName = entity.GetType().Name;
+        var container = ObjectContext.MetadataWorkspace.GetEntityContainer(ObjectContext.DefaultContainerName, DataSpace.CSpace);
+        string entitySetName = (from meta in container.BaseEntitySets
+                                where meta.ElementType.Name == entityTypeName
+                                select meta.Name).First();
+
+        return entitySetName;
+      }
+    }
+
+    private bool IsAttached<TEntity>(string entitySetFullName, TEntity entity) where TEntity : class
+    {      
+      EntityKey key = ObjectContext.CreateEntityKey(entitySetFullName, entity);
+      if (key == null)
+      {
+        throw new ArgumentNullException("key");
+      }
+      ObjectStateEntry entry;
+      if (ObjectContext.ObjectStateManager.TryGetObjectStateEntry(key, out entry))
+      {
+        return (entry.State != EntityState.Detached);
+      }
+      return false;
+    }
+
+    private EntityKey GetEntityKey<TEntity>(object keyValue) where TEntity : class
+    {
+      var entitySetName = GetEntityName<TEntity>();
+      var objectSet = ObjectContext.CreateObjectSet<TEntity>();
+      var keyPropertyName = objectSet.EntitySet.ElementType.KeyMembers[0].ToString();
+      var entityKey = new EntityKey(entitySetName, new[] { new EntityKeyMember(keyPropertyName, keyValue) });
+      return entityKey;
+    }
+
+    private string GetEntityName<TEntity>() where TEntity : class
+    {
+      return string.Format("{0}.{1}", ObjectContext.DefaultContainerName, _pluralizer.Pluralize(typeof(TEntity).Name));
+    }
+
+    private bool Exists<TEntity>(TEntity entity) where TEntity : class
+    {     
+      var objSet = ObjectContext.CreateObjectSet<TEntity>();
+      var entityKey = ObjectContext.CreateEntityKey(objSet.EntitySet.Name, entity);
+
+      Object foundEntity;
+      var exists = ObjectContext.TryGetObjectByKey(entityKey, out foundEntity);
+      // TryGetObjectByKey attaches a found entity      
+
+      return (exists);
     }
   }
 }

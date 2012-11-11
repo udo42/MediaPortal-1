@@ -27,6 +27,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
 {
   public class PlayListWPLIO : IPlayListIO
   {
+    #region IPlayListIO Members
 
     public bool Load(PlayList playlist, string playlistFileName)
     {
@@ -77,5 +78,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
     {
       throw new Exception("The method or operation is not implemented.");
     }
+
+    #endregion
   }
 }

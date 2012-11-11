@@ -34,13 +34,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     string Name { get; set; }
 
     /// <summary>
-    /// Check if the given channel and this instance are on different transponders.
-    /// </summary>
-    /// <param name="channel">The channel to check.</param>
-    /// <returns><c>false</c> if the channels are on the same transponder, otherwise <c>true</c></returns>
-    bool IsDifferentTransponder(IChannel channel);
-
-    /// <summary>
     /// Get/set whether the channel is a free-to-air or encrypted channel.
     /// </summary>
     bool FreeToAir { get; set; }
@@ -51,6 +44,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     /// 
     /// </summary>
     MediaTypeEnum MediaType { get; set; }
+
+    /// <summary>
+    /// Check if the given channel and this instance are on different transponders.
+    /// </summary>
+    /// <param name="channel">The channel to check.</param>
+    /// <returns><c>false</c> if the channels are on the same transponder, otherwise <c>true</c></returns>
+    bool IsDifferentTransponder(IChannel channel);
 
     /// <summary>
     /// Get a channel instance with properties set to enable tuning of this channel.

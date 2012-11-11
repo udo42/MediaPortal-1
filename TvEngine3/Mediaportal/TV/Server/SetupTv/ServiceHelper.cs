@@ -57,6 +57,66 @@ namespace Mediaportal.TV.Server.SetupTV
     }
 
     /// <summary>
+    /// Is the status of TvService == Running
+    /// </summary>
+    public static bool IsRunning
+    {
+      get
+      {
+        try
+        {
+          using (ServiceController sc = new ServiceController("TvService", Singleton<ServiceAgents>.Instance.Hostname))
+          {
+            return sc.Status == ServiceControllerStatus.Running;
+          }
+        }
+        catch (Exception ex)
+        {
+          Log.Error(ex, 
+                    "ServiceHelper: Check whether the tvservice is running failed. Please check your installation.");
+          return false;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Is TvService fully initialized?
+    /// </summary>
+    public static bool IsInitialized
+    {
+      get { return WaitInitialized(0); }
+    }
+
+    /// <summary>
+    /// Is the status of TvService == Stopped
+    /// </summary>
+    public static bool IsStopped
+    {
+      get
+      {
+        try
+        {
+          using (ServiceController sc = new ServiceController("TvService", Singleton<ServiceAgents>.Instance.Hostname))
+          {
+            return sc.Status == ServiceControllerStatus.Stopped; // should we consider Stopping as stopped?
+          }
+        }
+        catch (Exception ex)
+        {
+          Log.Error(ex,
+                    "ServiceHelper: Check whether the tvservice is stopped failed. Please check your installation.");
+          return false;
+        }
+      }
+    }
+
+    public static bool IgnoreDisconnections
+    {
+      get { return _ignoreDisconnections; }
+      set { _ignoreDisconnections = value; }
+    }
+
+    /// <summary>
     /// Read from DB card detection delay 
     /// </summary>
     /// <returns>number of seconds</returns>
@@ -110,37 +170,6 @@ namespace Mediaportal.TV.Server.SetupTV
     public static bool IsInstalled(string serviceToFind)
     {
       return IsInstalled(serviceToFind, Dns.GetHostName());
-    }
-
-    /// <summary>
-    /// Is the status of TvService == Running
-    /// </summary>
-    public static bool IsRunning
-    {
-      get
-      {
-        try
-        {
-          using (ServiceController sc = new ServiceController("TvService", Singleton<ServiceAgents>.Instance.Hostname))
-          {
-            return sc.Status == ServiceControllerStatus.Running;
-          }
-        }
-        catch (Exception ex)
-        {
-          Log.Error(ex, 
-            "ServiceHelper: Check whether the tvservice is running failed. Please check your installation.");
-          return false;
-        }
-      }
-    }
-
-    /// <summary>
-    /// Is TvService fully initialized?
-    /// </summary>
-    public static bool IsInitialized
-    {
-      get { return WaitInitialized(0); }
     }
 
     /// <summary>
@@ -211,35 +240,6 @@ namespace Mediaportal.TV.Server.SetupTV
         Thread.Sleep(250);
       }*/
       return false;
-    }
-
-    /// <summary>
-    /// Is the status of TvService == Stopped
-    /// </summary>
-    public static bool IsStopped
-    {
-      get
-      {
-        try
-        {
-          using (ServiceController sc = new ServiceController("TvService", Singleton<ServiceAgents>.Instance.Hostname))
-          {
-            return sc.Status == ServiceControllerStatus.Stopped; // should we consider Stopping as stopped?
-          }
-        }
-        catch (Exception ex)
-        {
-          Log.Error(ex,
-            "ServiceHelper: Check whether the tvservice is stopped failed. Please check your installation.");
-          return false;
-        }
-      }
-    }
-
-    public static bool IgnoreDisconnections
-    {
-      get { return _ignoreDisconnections; }
-      set { _ignoreDisconnections = value; }
     }
 
     /// <summary>

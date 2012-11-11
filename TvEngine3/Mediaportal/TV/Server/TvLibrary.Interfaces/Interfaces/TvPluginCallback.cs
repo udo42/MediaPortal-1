@@ -64,6 +64,17 @@ namespace TvLibrary.Interfaces
     private String m_Message;
 
     /// <summary>
+    /// CTOR
+    /// </summary>
+    /// <param name="Index">Index of entry</param>
+    /// <param name="Message">Message</param>
+    public CiMenuEntry(Int32 Index, String Message)
+    {
+      m_Index = Index;
+      m_Message = Message;
+    }
+
+    /// <summary>
     /// Index of menu entry
     /// </summary>
     public int Index
@@ -77,17 +88,6 @@ namespace TvLibrary.Interfaces
     public String Message
     {
       get { return m_Message; }
-    }
-
-    /// <summary>
-    /// CTOR
-    /// </summary>
-    /// <param name="Index">Index of entry</param>
-    /// <param name="Message">Message</param>
-    public CiMenuEntry(Int32 Index, String Message)
-    {
-      m_Index = Index;
-      m_Message = Message;
     }
 
     /// <summary>
@@ -109,16 +109,16 @@ namespace TvLibrary.Interfaces
   {
     #region private vars
 
-    private string _title;
-    private string _subtitle;
-    private string _bottomText;
-    private int _numChoices;
-    private CiMenuState _menuState;
-    private List<CiMenuEntry> _ciMenuEntries = new List<CiMenuEntry>();
-
     private int _answerLength;
-    private string _requestText;
     private bool _bPassword = false;
+    private string _bottomText;
+    private List<CiMenuEntry> _ciMenuEntries = new List<CiMenuEntry>();
+    private CiMenuState _menuState;
+    private int _numChoices;
+
+    private string _requestText;
+    private string _subtitle;
+    private string _title;
 
     #endregion
 

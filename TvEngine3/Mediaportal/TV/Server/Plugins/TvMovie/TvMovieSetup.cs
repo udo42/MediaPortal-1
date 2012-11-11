@@ -37,9 +37,15 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
     private class ChannelInfo
     {
-      private string _start = "00:00";
       private string _end = "00:00";
       private string _name = string.Empty;
+      private string _start = "00:00";
+
+      public ChannelInfo()
+      {
+        _start = "00:00";
+        _end = "00:00";
+      }
 
       public string Start
       {
@@ -57,12 +63,6 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       {
         get { return _name; }
         set { _name = value; }
-      }
-
-      public ChannelInfo()
-      {
-        _start = "00:00";
-        _end = "00:00";
       }
     }
 
@@ -409,7 +409,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
               catch (Exception exInner)
               {
                 this.LogDebug("TVMovie plugin: Mapping of station {0} failed; maybe it has been deleted / changed ({1})",
-                          MpChannelName, exInner.Message);
+                              MpChannelName, exInner.Message);
               }
             }
           }
@@ -625,7 +625,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
                           "Error loading TV Movie stations", MessageBoxButtons.OK, MessageBoxIcon.Error);
           checkBoxEnableImport.Checked = false;
           this.LogInfo("TVMovie plugin: Error enabling TV Movie import in LoadStations() - {0},{1}", ex1.Message,
-                   ex1.StackTrace);
+                       ex1.StackTrace);
           return;
         }
 
@@ -639,7 +639,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
                           "Error loading TVM <-> MP channel mapping", MessageBoxButtons.OK, MessageBoxIcon.Error);
           checkBoxEnableImport.Checked = false;
           this.LogInfo("TVMovie plugin: Error enabling TV Movie import in LoadMapping() - {0},{1}", ex2.Message,
-                   ex2.StackTrace);
+                       ex2.StackTrace);
           return;
         }
       }

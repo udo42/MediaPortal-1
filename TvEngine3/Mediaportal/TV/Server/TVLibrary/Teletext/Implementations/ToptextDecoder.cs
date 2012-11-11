@@ -49,13 +49,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
 
     #region variables
 
-    private int[] _pageType = new int[900];
-    private int[] _pageSubCount = new int[900];
-    private string[] _pageDescription = new string[900];
-    private int _pageRed = -1;
-    private int _pageGreen = -1;
-    private int _pageYellow = -1;
     private int _pageBlue = -1;
+    private string[] _pageDescription = new string[900];
+    private int _pageGreen = -1;
+    private int _pageRed = -1;
+    private int[] _pageSubCount = new int[900];
+    private int[] _pageType = new int[900];
+    private int _pageYellow = -1;
     private byte[] _row24 = new byte[42];
 
     #endregion

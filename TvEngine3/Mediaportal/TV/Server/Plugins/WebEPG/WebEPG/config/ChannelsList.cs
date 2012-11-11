@@ -35,10 +35,10 @@ namespace WebEPG.config
   {
     #region Variables
 
-    private string _strGrabberDir;
-    private string _strChannelsFile;
     private const float MIN_SIMILARITY = 0.5f;
     private Dictionary<string, ChannelGrabberInfo> _ChannelList = null;
+    private string _strChannelsFile;
+    private string _strGrabberDir;
     //string _Country;
 
     #endregion
@@ -389,7 +389,7 @@ namespace WebEPG.config
 
     #endregion
 
-    #region IComparer<T> Members
+    #region IComparer<ChannelGrabberInfo> Members
 
     public int Compare(ChannelGrabberInfo x, ChannelGrabberInfo y)
     {

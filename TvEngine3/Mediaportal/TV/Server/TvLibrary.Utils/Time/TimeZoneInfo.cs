@@ -29,14 +29,14 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
   {
     //public int Index;
     public string Display;
-    public string StdName;
+    public TimeZoneDate DltDate;
     public string DltName;
 
-    public Int32 Offset;
-    public Int32 StdOffset;
     public Int32 DltOffset;
+    public Int32 Offset;
 
     public TimeZoneDate StdDate;
-    public TimeZoneDate DltDate;
+    public string StdName;
+    public Int32 StdOffset;
   }
 }

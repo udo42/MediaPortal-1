@@ -40,8 +40,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
 {
   public class AdvancedCardAllocation : CardAllocationBase, ICardAllocation
   {
-
-
     #region private members
 
     public AdvancedCardAllocation()
@@ -158,19 +156,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
         stopwatch.Stop();
         this.LogInfo("AdvancedCardAllocation.GetFreeCardsForChannel took {0} msec", stopwatch.ElapsedMilliseconds);
       }
-    }
-
-    private static TvResult GetResultNoCards(IDictionary<int, TvResult> cardsUnAvailable)
-    {
-      TvResult resultNoCards = TvResult.ChannelNotMappedToAnyCard;
-      //Dictionary<int, TvResult>.ValueCollection values = cardsUnAvailable.Values;
-      ICollection<TvResult> values = cardsUnAvailable.Values;
-
-      if (values.Any(tvResult => tvResult == TvResult.ChannelIsScrambled))
-      {
-        resultNoCards = TvResult.ChannelIsScrambled;
-      }
-      return resultNoCards;
     }
 
     /// <summary>
@@ -292,6 +277,21 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
       }
     }
 
+    #endregion
+
+    private static TvResult GetResultNoCards(IDictionary<int, TvResult> cardsUnAvailable)
+    {
+      TvResult resultNoCards = TvResult.ChannelNotMappedToAnyCard;
+      //Dictionary<int, TvResult>.ValueCollection values = cardsUnAvailable.Values;
+      ICollection<TvResult> values = cardsUnAvailable.Values;
+
+      if (values.Any(tvResult => tvResult == TvResult.ChannelIsScrambled))
+      {
+        resultNoCards = TvResult.ChannelIsScrambled;
+      }
+      return resultNoCards;
+    }
+
     public virtual bool IsChannelTimeshiftingOnOtherMux(ITvCardHandler card, int idChannel, IChannel tuningDetail, out long? otherFrequency)
     {
       otherFrequency = null;
@@ -386,8 +386,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
         cardsUnAvailable.Add(cardId, tvResult);
       }
     }
-
-    #endregion
 
     #region public members
 

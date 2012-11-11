@@ -5,10 +5,10 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 {
   public class ImportParams
   {
-    public ProgramList ProgramList;
-    public DeleteBeforeImportOption ProgamsToDelete;
     public string ConnectString;
     public ThreadPriority Priority;
+    public DeleteBeforeImportOption ProgamsToDelete;
+    public ProgramList ProgramList;
     public int SleepTime;
   } ;
 }

@@ -14,7 +14,9 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         /// </summary>
         public SimpleObjectContextStorage() { }
 
-        /// <summary>
+      #region IObjectContextStorage Members
+
+      /// <summary>
         /// Returns the object context associated with the specified key or
 		/// null if the specified key is not found.
         /// </summary>
@@ -49,5 +51,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         {
             return storage.Values;
         }
+
+      #endregion
     }
 }

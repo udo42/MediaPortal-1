@@ -35,10 +35,10 @@ namespace Mediaportal.TV.TvPlugin.Radio
   {
     #region variables
 
-    private bool _showAllChannelsGroup = true;
+    private bool _autoTurnOnRadio = false;
     private bool _rememberLastGroup = true;
     private string _rootGroup = "(none)";
-    private bool _autoTurnOnRadio = false;
+    private bool _showAllChannelsGroup = true;
 
     #endregion
 

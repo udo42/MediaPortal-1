@@ -26,24 +26,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
 {
   public class PlayListB4sIO : IPlayListIO
   {
-    private static bool LoadXml(string fileName, out XmlNodeList nodeEntries)
-    {
-      nodeEntries = null;
-
-      XmlDocument doc = new XmlDocument();
-      doc.Load(fileName);
-      if (doc.DocumentElement == null)
-        return false;
-      string root = doc.DocumentElement.Name;
-      if (root != "WinampXML")
-        return false;
-
-      XmlNode nodeRoot = doc.DocumentElement.SelectSingleNode("/WinampXML/playlist");
-      if (nodeRoot == null)
-        return false;
-      nodeEntries = nodeRoot.SelectNodes("entry");
-      return true;
-    }
+    #region IPlayListIO Members
 
     public bool Load(PlayList playlist, string fileName)
     {
@@ -78,6 +61,56 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
       }
     }
 
+    public void Save(PlayList playListParam, string fileName)
+    {
+      XmlWriterSettings settings = new XmlWriterSettings();
+      settings.Indent = true;
+      settings.OmitXmlDeclaration = true;
+      using (XmlWriter writer = XmlWriter.Create(fileName, settings))
+      {
+        if (writer != null)
+        {
+          writer.WriteStartElement("WinampXML");
+          writer.WriteStartElement("playListParam");
+          writer.WriteAttributeString("num_entries", playListParam.Count.ToString());
+          writer.WriteAttributeString("label", playListParam.Name);
+
+          foreach (PlayListItem item in playListParam)
+          {
+            writer.WriteStartElement("entry");
+            writer.WriteAttributeString("Playstring", "file:" + item.FileName);
+            writer.WriteElementString("Name", item.Description);
+            writer.WriteElementString("Length", item.Duration.ToString());
+            writer.WriteEndElement();
+          }
+
+          writer.WriteEndElement();
+          writer.WriteEndElement();
+        }
+      }
+    }
+
+    #endregion
+
+    private static bool LoadXml(string fileName, out XmlNodeList nodeEntries)
+    {
+      nodeEntries = null;
+
+      XmlDocument doc = new XmlDocument();
+      doc.Load(fileName);
+      if (doc.DocumentElement == null)
+        return false;
+      string root = doc.DocumentElement.Name;
+      if (root != "WinampXML")
+        return false;
+
+      XmlNode nodeRoot = doc.DocumentElement.SelectSingleNode("/WinampXML/playlist");
+      if (nodeRoot == null)
+        return false;
+      nodeEntries = nodeRoot.SelectNodes("entry");
+      return true;
+    }
+
     private static int ReadLength(XmlNode node)
     {
       XmlNode nodeLength = node.SelectSingleNode("Length");
@@ -109,35 +142,6 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
       if (file.StartsWith(prefix))
         file = file.Substring(prefix.Length);
       return file;
-    }
-
-    public void Save(PlayList playListParam, string fileName)
-    {
-      XmlWriterSettings settings = new XmlWriterSettings();
-      settings.Indent = true;
-      settings.OmitXmlDeclaration = true;
-      using (XmlWriter writer = XmlWriter.Create(fileName, settings))
-      {
-        if (writer != null)
-        {
-          writer.WriteStartElement("WinampXML");
-          writer.WriteStartElement("playListParam");
-          writer.WriteAttributeString("num_entries", playListParam.Count.ToString());
-          writer.WriteAttributeString("label", playListParam.Name);
-
-          foreach (PlayListItem item in playListParam)
-          {
-            writer.WriteStartElement("entry");
-            writer.WriteAttributeString("Playstring", "file:" + item.FileName);
-            writer.WriteElementString("Name", item.Description);
-            writer.WriteElementString("Length", item.Duration.ToString());
-            writer.WriteEndElement();
-          }
-
-          writer.WriteEndElement();
-          writer.WriteEndElement();
-        }
-      }
     }
   }
 }

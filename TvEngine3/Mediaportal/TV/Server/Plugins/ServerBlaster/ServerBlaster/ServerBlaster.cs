@@ -44,8 +44,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
   [Interceptor("PluginExceptionInterceptor")]
   public class ServerBlaster : AnalogChannel, ITvServerPlugin
   {
-
-
     #region properties
 
     private const string _Author = "joboehl with ralphy mods";
@@ -54,6 +52,15 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
     private const string _version = "1.1.1.0";
 
     private HCWIRBlaster irblaster;
+
+    /// <summary>
+    /// returns if the plugin should only run on the master server
+    /// or also on slave servers
+    /// </summary>
+    public bool MasterOnly
+    {
+      get { return false; }
+    }
 
     /// <summary>
     /// returns the name of the plugin
@@ -77,15 +84,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
     public string Author
     {
       get { return _Author; }
-    }
-
-    /// <summary>
-    /// returns if the plugin should only run on the master server
-    /// or also on slave servers
-    /// </summary>
-    public bool MasterOnly
-    {
-      get { return false; }
     }
 
     #endregion
@@ -317,20 +315,20 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
 
     #region Members
 
-    private Hashtable _packetCollection;
-    private int _sendPort = 1;
-    private int _sleepTime = 100;
-    private bool _sendSelect;
+    private bool _advandeLogging;
     private int _blaster1Card = -1;
     private int _blaster2Card = 1;
-    private bool _advandeLogging;
-    private int _deviceType = 1;
-    private int _deviceSpeed;
-    private int _channel;
     private int _card;
-    private bool _send;
-    private bool _sending;
+    private int _channel;
+    private int _deviceSpeed;
+    private int _deviceType = 1;
+    private Hashtable _packetCollection;
     private bool _running;
+    private bool _send;
+    private int _sendPort = 1;
+    private bool _sendSelect;
+    private bool _sending;
+    private int _sleepTime = 100;
     private VideoInputType _videoInputType;
 
     #endregion Members

@@ -7,6 +7,14 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.CardHandler
   public interface IRecorder
   {
     /// <summary>
+    /// Gets a value indicating whether this card is recording.
+    /// </summary>
+    /// <value>
+    /// 	<c>true</c> if this card is recording; otherwise, <c>false</c>.
+    /// </value>
+    bool IsAnySubChannelRecording { get; }
+
+    /// <summary>
     /// Starts recording.
     /// </summary>
     /// <param name="user">User</param>
@@ -20,14 +28,6 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.CardHandler
     /// <param name="user">User</param>
     /// <returns></returns>
     bool Stop(ref IUser user);
-
-    /// <summary>
-    /// Gets a value indicating whether this card is recording.
-    /// </summary>
-    /// <value>
-    /// 	<c>true</c> if this card is recording; otherwise, <c>false</c>.
-    /// </value>
-    bool IsAnySubChannelRecording { get; }
 
     /// <summary>
     /// Returns if the card is recording or not

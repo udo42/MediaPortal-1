@@ -31,9 +31,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Epg
   {
     #region variables
 
+    private DateTime _endTime;
     private List<EpgLanguageText> _languageText;
     private DateTime _startTime;
-    private DateTime _endTime;
 
     #endregion
 

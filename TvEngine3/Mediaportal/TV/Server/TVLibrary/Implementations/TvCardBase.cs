@@ -45,14 +45,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
   /// </summary>
   public abstract class TvCardBase : ITVCard
   {
- 
-
     #region events
-
-    /// <summary>
-    /// New subchannel observer event, fired when a new subchannel is created.
-    /// </summary>
-    public event OnNewSubChannelDelegate NewSubChannelEvent;
 
     /// <summary>
     /// Set the device's new subchannel event handler.
@@ -65,6 +58,24 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         NewSubChannelEvent += value;
       }
     }
+
+    /// <summary>
+    /// Set the device's after tune event handler.
+    /// </summary>
+    /// <value>the delegate</value>
+    public OnAfterTuneDelegate OnAfterTuneEvent
+    {
+      set
+      {
+        AfterTuneEvent -= value;
+        AfterTuneEvent += value;
+      }
+    }
+
+    /// <summary>
+    /// New subchannel observer event, fired when a new subchannel is created.
+    /// </summary>
+    public event OnNewSubChannelDelegate NewSubChannelEvent;
 
     /// <summary>
     /// Fire the new subchannel observer event.
@@ -84,19 +95,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     public event OnAfterTuneDelegate AfterTuneEvent;
 
     /// <summary>
-    /// Set the device's after tune event handler.
-    /// </summary>
-    /// <value>the delegate</value>
-    public OnAfterTuneDelegate OnAfterTuneEvent
-    {
-      set
-      {
-        AfterTuneEvent -= value;
-        AfterTuneEvent += value;
-      }
-    }
-
-    /// <summary>
     /// Fire the after tune observer event.
     /// </summary>
     private void FireAfterTuneEvent()
@@ -112,44 +110,55 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     #region variables
 
     /// <summary>
-    /// Indicates if the card should be preloaded.
+    /// The type of conditional access module available to the conditional access interface.
     /// </summary>
-    protected bool _preloadCard;
+    /// <remarks>
+    /// Certain conditional access modules require specific handling to ensure compatibility.
+    /// </remarks>
+    protected CamType _camType = CamType.Default;
 
     /// <summary>
-    /// Scanning Paramters
+    /// A flag used by the TV service as a signal to abort the tuning process before it is completed.
     /// </summary>
-    protected ScanParameters _parameters;
+    protected bool _cancelTune = false;
 
     /// <summary>
-    /// Dictionary of the corresponding sub channels
+    /// The db card id
     /// </summary>
-    protected Dictionary<int, BaseSubChannel> _mapSubChannels;
+    protected int _cardId;
 
     /// <summary>
-    /// Indicates, if the card is a hybrid one
+    /// Indicates, if the card is present
     /// </summary>
-    protected bool _isHybrid;
+    protected bool _cardPresent = true;
 
     /// <summary>
-    /// Context reference
+    /// A list containing the custom device interfaces supported by this device. The list is ordered by
+    /// interface priority.
     /// </summary>
-    protected object m_context;
+    protected List<ICustomDevice> _customDeviceInterfaces = null;
 
     /// <summary>
-    /// Indicates, if the tuner is locked
+    /// The number of times to re-attempt decrypting the current service set when one or more services are
+    /// not able to be decrypted for whatever reason.
     /// </summary>
-    protected bool _tunerLocked;
+    /// <remarks>
+    /// Each available CA interface will be tried in order of priority. If decrypting is not started
+    /// successfully, all interfaces are retried until each interface has been tried
+    /// _decryptFailureRetryCount + 1 times, or until decrypting is successful.
+    /// </remarks>
+    protected int _decryptFailureRetryCount = 2;
 
     /// <summary>
-    /// Value of the signal level
+    /// The number of channels that the device is capable of or permitted to decrypt simultaneously. Zero means
+    /// there is no limit.
     /// </summary>
-    protected int _signalLevel;
+    protected int _decryptLimit = 0;
 
     /// <summary>
-    /// Value of the signal quality
+    /// Main device of the card
     /// </summary>
-    protected int _signalQuality;
+    protected DsDevice _device;
 
     /// <summary>
     /// Device Path of the tv card
@@ -162,64 +171,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     protected bool _epgGrabbing;
 
     /// <summary>
-    /// Name of the tv card
-    /// </summary>
-    protected String _name;
-
-    /// <summary>
-    /// Indicates, if the card is scanning
-    /// </summary>
-    protected bool _isScanning;
-
-    /// <summary>
     /// The graph builder
     /// </summary>
     protected IFilterGraph2 _graphBuilder;
-
-    /// <summary>
-    /// Indicates, if the card sub channels
-    /// </summary>
-    protected bool _supportsSubChannels;
-
-    /// <summary>
-    /// The tuner type (eg. DVB-S, DVB-T... etc.).
-    /// </summary>
-    protected CardType _tunerType;
-
-    /// <summary>
-    /// Date and time of the last signal update
-    /// </summary>
-    protected DateTime _lastSignalUpdate;
-
-    /// <summary>
-    /// Last subchannel id
-    /// </summary>
-    protected int _subChannelId;
-
-    /// <summary>
-    /// Indicates, if the signal is present
-    /// </summary>
-    protected bool _signalPresent;
-
-    /// <summary>
-    /// Indicates, if the card is present
-    /// </summary>
-    protected bool _cardPresent = true;
-
-    /// <summary>
-    /// The tuner device
-    /// </summary>
-    protected DsDevice _tunerDevice;
-
-    /// <summary>
-    /// Main device of the card
-    /// </summary>
-    protected DsDevice _device;
-
-    /// <summary>
-    /// The db card id
-    /// </summary>
-    protected int _cardId;
 
 
     /// <summary>
@@ -234,29 +188,24 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     protected bool _isDeviceInitialised = false;
 
     /// <summary>
-    /// A list containing the custom device interfaces supported by this device. The list is ordered by
-    /// interface priority.
+    /// Indicates, if the card is a hybrid one
     /// </summary>
-    protected List<ICustomDevice> _customDeviceInterfaces = null;
+    protected bool _isHybrid;
 
     /// <summary>
-    /// Enable or disable the use of conditional access interface(s).
+    /// Indicates, if the card is scanning
     /// </summary>
-    protected bool _useConditionalAccessInterace = true;
+    protected bool _isScanning;
 
     /// <summary>
-    /// The type of conditional access module available to the conditional access interface.
+    /// Date and time of the last signal update
     /// </summary>
-    /// <remarks>
-    /// Certain conditional access modules require specific handling to ensure compatibility.
-    /// </remarks>
-    protected CamType _camType = CamType.Default;
+    protected DateTime _lastSignalUpdate;
 
     /// <summary>
-    /// The number of channels that the device is capable of or permitted to decrypt simultaneously. Zero means
-    /// there is no limit.
+    /// Dictionary of the corresponding sub channels
     /// </summary>
-    protected int _decryptLimit = 0;
+    protected Dictionary<int, BaseSubChannel> _mapSubChannels;
 
     /// <summary>
     /// The method that should be used to communicate the set of channels that the device's conditional access
@@ -277,20 +226,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     protected MultiChannelDecryptMode _multiChannelDecryptMode = MultiChannelDecryptMode.List;
 
     /// <summary>
-    /// Enable or disable waiting for the conditional interface to be ready before sending commands.
+    /// Name of the tv card
     /// </summary>
-    protected bool _waitUntilCaInterfaceReady = true;
+    protected String _name;
 
     /// <summary>
-    /// The number of times to re-attempt decrypting the current service set when one or more services are
-    /// not able to be decrypted for whatever reason.
+    /// Scanning Paramters
     /// </summary>
-    /// <remarks>
-    /// Each available CA interface will be tried in order of priority. If decrypting is not started
-    /// successfully, all interfaces are retried until each interface has been tried
-    /// _decryptFailureRetryCount + 1 times, or until decrypting is successful.
-    /// </remarks>
-    protected int _decryptFailureRetryCount = 2;
+    protected ScanParameters _parameters;
 
     /// <summary>
     /// The mode to use for controlling device PID filter(s).
@@ -303,10 +246,60 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     protected PidFilterMode _pidFilterMode = PidFilterMode.Auto;
 
     /// <summary>
+    /// Indicates if the card should be preloaded.
+    /// </summary>
+    protected bool _preloadCard;
+
+    /// <summary>
     /// The previous channel that the device was tuned to. This variable is reset each time the device
     /// is stopped, paused or reset.
     /// </summary>
     protected IChannel _previousChannel = null;
+
+    /// <summary>
+    /// Value of the signal level
+    /// </summary>
+    protected int _signalLevel;
+
+    /// <summary>
+    /// Indicates, if the signal is present
+    /// </summary>
+    protected bool _signalPresent;
+
+    /// <summary>
+    /// Value of the signal quality
+    /// </summary>
+    protected int _signalQuality;
+
+    /// <summary>
+    /// Last subchannel id
+    /// </summary>
+    protected int _subChannelId;
+
+    /// <summary>
+    /// Indicates, if the card sub channels
+    /// </summary>
+    protected bool _supportsSubChannels;
+
+    /// <summary>
+    /// The tuner device
+    /// </summary>
+    protected DsDevice _tunerDevice;
+
+    /// <summary>
+    /// Indicates, if the tuner is locked
+    /// </summary>
+    protected bool _tunerLocked;
+
+    /// <summary>
+    /// The tuner type (eg. DVB-S, DVB-T... etc.).
+    /// </summary>
+    protected CardType _tunerType;
+
+    /// <summary>
+    /// Enable or disable the use of conditional access interface(s).
+    /// </summary>
+    protected bool _useConditionalAccessInterace = true;
 
     /// <summary>
     /// Enable or disable the use of custom device interfaces for tuning.
@@ -318,9 +311,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     protected bool _useCustomTuning = false;
 
     /// <summary>
-    /// A flag used by the TV service as a signal to abort the tuning process before it is completed.
+    /// Enable or disable waiting for the conditional interface to be ready before sending commands.
     /// </summary>
-    protected bool _cancelTune = false;
+    protected bool _waitUntilCaInterfaceReady = true;
+
+    /// <summary>
+    /// Context reference
+    /// </summary>
+    protected object m_context;
 
     #endregion
 
@@ -453,184 +451,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     }
 
     /// <summary>
-    /// Returns a <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.
-    /// </returns>
-    public override string ToString()
-    {
-      return _name;
-    }
-
-    #region tuning range properties
-
-    /// <summary>
-    /// Get the minimum channel number that the device is capable of tuning (only applicable for analog
-    /// tuners - should be removed if possible).
-    /// </summary>
-    /// <value>
-    /// <c>-1</c> if the property is not applicable, otherwise the minimum channel number that the device
-    /// is capable of tuning
-    /// </value>
-    public int MinChannel
-    {
-      get
-      {
-        return -1;
-      }
-    }
-
-    /// <summary>
-    /// Get the maximum channel number that the device is capable of tuning (only applicable for analog
-    /// tuners - should be removed if possible).
-    /// </summary>
-    /// <value>
-    /// <c>-1</c> if the property is not applicable, otherwise the maximum channel number that the device
-    /// is capable of tuning
-    /// </value>
-    public int MaxChannel
-    {
-      get
-      {
-        return -1;
-      }
-    }
-
-    #endregion
-
-    #region conditional access properties
-
-    /// <summary>
-    /// Get/set the type of conditional access module available to the conditional access interface.
-    /// </summary>
-    /// <value>The type of the cam.</value>
-    public CamType CamType
-    {
-      get
-      {
-        return _camType;
-      }
-      set
-      {
-        _camType = value;
-      }
-    }
-
-    /// <summary>
-    /// Get the device's conditional access interface decrypt limit. This is usually the number of channels
-    /// that the interface is able to decrypt simultaneously. A value of zero indicates that the limit is
-    /// to be ignored.
-    /// </summary>
-    public int DecryptLimit
-    {
-      get
-      {
-        return _decryptLimit;
-      }
-    }
-
-    /// <summary>
-    /// Does the device support conditional access?
-    /// </summary>
-    /// <value><c>true</c> if the device supports conditional access, otherwise <c>false</c></value>
-    public bool IsConditionalAccessSupported
-    {
-      get
-      {
-        if (!_useConditionalAccessInterace)
-        {
-          return false;
-        }
-        // Return true if any interface implements IConditionalAccessProvider.
-        foreach (ICustomDevice d in _customDeviceInterfaces)
-        {
-          if (d is IConditionalAccessProvider)
-          {
-            return true;
-          }
-        }
-        return false;
-      }
-    }
-
-    /// <summary>
-    /// Get the device's conditional access menu interaction interface. This interface is only applicable if
-    /// conditional access is supported.
-    /// </summary>
-    /// <value><c>null</c> if the device does not support conditional access</value>
-    public ICiMenuActions CaMenuInterface
-    {
-      get
-      {
-        if (!_useConditionalAccessInterace)
-        {
-          return null;
-        }
-        // Return the first interface that implements ICiMenuActions.
-        foreach (ICustomDevice d in _customDeviceInterfaces)
-        {
-          ICiMenuActions caMenuInterface = d as ICiMenuActions;
-          if (caMenuInterface != null)
-          {
-            return caMenuInterface;
-          }
-        }
-        return null;
-      }
-    }
-
-    /// <summary>
-    /// Get a count of the number of services that the device is currently decrypting.
-    /// </summary>
-    /// <value>The number of services currently being decrypted.</value>
-    public int NumberOfChannelsDecrypting
-    {
-      get
-      {
-        // If not decrypting any channels or the limit is diabled then return zero.
-        if (_mapSubChannels == null || _mapSubChannels.Count == 0 || _decryptLimit == 0)
-        {
-          return 0;
-        }
-
-        HashSet<long> decryptedServices = new HashSet<long>();
-        Dictionary<int, BaseSubChannel>.Enumerator en = _mapSubChannels.GetEnumerator();
-        while (en.MoveNext())
-        {
-          IChannel service = en.Current.Value.CurrentChannel;
-          DVBBaseChannel digitalService = service as DVBBaseChannel;
-          if (digitalService != null)
-          {
-            if (!decryptedServices.Contains(digitalService.ServiceId))
-            {
-              decryptedServices.Add(digitalService.ServiceId);
-            }
-          }
-          else
-          {
-            AnalogChannel analogService = service as AnalogChannel;
-            if (analogService != null)
-            {
-              if (!decryptedServices.Contains(analogService.Frequency))
-              {
-                decryptedServices.Add(analogService.Frequency);
-              }
-            }
-            else
-            {
-              throw new TvException("TvCardBase: service type not recognised, unable to count number of services being decrypted\r\n" + service.ToString());
-            }
-          }
-        }
-
-        return decryptedServices.Count;
-      }
-    }
-
-    #endregion
-
-    /// <summary>
     /// Get the device's DiSEqC control interface. This interface is only applicable for satellite tuners.
     /// It is used for controlling switch, positioner and LNB settings.
     /// </summary>
@@ -740,6 +560,184 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         _isScanning = value;
       }
     }
+
+    /// <summary>
+    /// Returns a <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.
+    /// </returns>
+    public override string ToString()
+    {
+      return _name;
+    }
+
+    #region tuning range properties
+
+    /// <summary>
+    /// Get the minimum channel number that the device is capable of tuning (only applicable for analog
+    /// tuners - should be removed if possible).
+    /// </summary>
+    /// <value>
+    /// <c>-1</c> if the property is not applicable, otherwise the minimum channel number that the device
+    /// is capable of tuning
+    /// </value>
+    public int MinChannel
+    {
+      get
+      {
+        return -1;
+      }
+    }
+
+    /// <summary>
+    /// Get the maximum channel number that the device is capable of tuning (only applicable for analog
+    /// tuners - should be removed if possible).
+    /// </summary>
+    /// <value>
+    /// <c>-1</c> if the property is not applicable, otherwise the maximum channel number that the device
+    /// is capable of tuning
+    /// </value>
+    public int MaxChannel
+    {
+      get
+      {
+        return -1;
+      }
+    }
+
+    #endregion
+
+    #region conditional access properties
+
+    /// <summary>
+    /// Get the device's conditional access interface decrypt limit. This is usually the number of channels
+    /// that the interface is able to decrypt simultaneously. A value of zero indicates that the limit is
+    /// to be ignored.
+    /// </summary>
+    public int DecryptLimit
+    {
+      get
+      {
+        return _decryptLimit;
+      }
+    }
+
+    /// <summary>
+    /// Get/set the type of conditional access module available to the conditional access interface.
+    /// </summary>
+    /// <value>The type of the cam.</value>
+    public CamType CamType
+    {
+      get
+      {
+        return _camType;
+      }
+      set
+      {
+        _camType = value;
+      }
+    }
+
+    /// <summary>
+    /// Does the device support conditional access?
+    /// </summary>
+    /// <value><c>true</c> if the device supports conditional access, otherwise <c>false</c></value>
+    public bool IsConditionalAccessSupported
+    {
+      get
+      {
+        if (!_useConditionalAccessInterace)
+        {
+          return false;
+        }
+        // Return true if any interface implements IConditionalAccessProvider.
+        foreach (ICustomDevice d in _customDeviceInterfaces)
+        {
+          if (d is IConditionalAccessProvider)
+          {
+            return true;
+          }
+        }
+        return false;
+      }
+    }
+
+    /// <summary>
+    /// Get the device's conditional access menu interaction interface. This interface is only applicable if
+    /// conditional access is supported.
+    /// </summary>
+    /// <value><c>null</c> if the device does not support conditional access</value>
+    public ICiMenuActions CaMenuInterface
+    {
+      get
+      {
+        if (!_useConditionalAccessInterace)
+        {
+          return null;
+        }
+        // Return the first interface that implements ICiMenuActions.
+        foreach (ICustomDevice d in _customDeviceInterfaces)
+        {
+          ICiMenuActions caMenuInterface = d as ICiMenuActions;
+          if (caMenuInterface != null)
+          {
+            return caMenuInterface;
+          }
+        }
+        return null;
+      }
+    }
+
+    /// <summary>
+    /// Get a count of the number of services that the device is currently decrypting.
+    /// </summary>
+    /// <value>The number of services currently being decrypted.</value>
+    public int NumberOfChannelsDecrypting
+    {
+      get
+      {
+        // If not decrypting any channels or the limit is diabled then return zero.
+        if (_mapSubChannels == null || _mapSubChannels.Count == 0 || _decryptLimit == 0)
+        {
+          return 0;
+        }
+
+        HashSet<long> decryptedServices = new HashSet<long>();
+        Dictionary<int, BaseSubChannel>.Enumerator en = _mapSubChannels.GetEnumerator();
+        while (en.MoveNext())
+        {
+          IChannel service = en.Current.Value.CurrentChannel;
+          DVBBaseChannel digitalService = service as DVBBaseChannel;
+          if (digitalService != null)
+          {
+            if (!decryptedServices.Contains(digitalService.ServiceId))
+            {
+              decryptedServices.Add(digitalService.ServiceId);
+            }
+          }
+          else
+          {
+            AnalogChannel analogService = service as AnalogChannel;
+            if (analogService != null)
+            {
+              if (!decryptedServices.Contains(analogService.Frequency))
+              {
+                decryptedServices.Add(analogService.Frequency);
+              }
+            }
+            else
+            {
+              throw new TvException("TvCardBase: service type not recognised, unable to count number of services being decrypted\r\n" + service.ToString());
+            }
+          }
+        }
+
+        return decryptedServices.Count;
+      }
+    }
+
+    #endregion
 
     #endregion
 
@@ -1324,40 +1322,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     #region abstract and virtual methods
 
     /// <summary>
-    /// Builds the graph.
-    /// </summary>
-    public virtual void BuildGraph() { }
-
-    /// <summary>
-    /// Wait for the tuner to acquire signal lock.
-    /// </summary>
-    public void LockInOnSignal()
-    {
-      this.LogDebug("TvCardBase: lock in on signal");
-      _tunerLocked = false;
-      DateTime timeStart = DateTime.Now;
-      TimeSpan ts = timeStart - timeStart;
-      while (!_tunerLocked && ts.TotalSeconds < _parameters.TimeOutTune)
-      {
-        ThrowExceptionIfTuneCancelled();
-        UpdateSignalStatus(true);
-        if (!_tunerLocked)
-        {
-          ts = DateTime.Now - timeStart;
-          this.LogDebug("  waiting 20ms");
-          System.Threading.Thread.Sleep(20);
-        }
-      }
-
-      if (!_tunerLocked)
-      {
-        throw new TvExceptionNoSignal("TvCardBase: failed to lock signal");
-      }
-
-      this.LogDebug("TvCardBase: locked");
-    }
-
-    /// <summary>
     /// Reload the device configuration.
     /// </summary>
     public virtual void ReloadCardConfiguration()
@@ -1374,20 +1338,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         return null;
       }
     }
-
-    /// <summary>
-    /// Update the tuner signal status statistics.
-    /// </summary>
-    protected virtual void UpdateSignalStatus()
-    {
-      UpdateSignalStatus(false);
-    }
-
-    /// <summary>
-    /// Update the tuner signal status statistics.
-    /// </summary>
-    /// <param name="force"><c>True</c> to force the status to be updated (status information may be cached).</param>
-    protected abstract void UpdateSignalStatus(bool force);
 
     /// <summary>
     /// Stop the device. The actual result of this function depends on device configuration.
@@ -1451,6 +1401,54 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         _previousChannel = null;
       }
     }
+
+    /// <summary>
+    /// Builds the graph.
+    /// </summary>
+    public virtual void BuildGraph() { }
+
+    /// <summary>
+    /// Wait for the tuner to acquire signal lock.
+    /// </summary>
+    public void LockInOnSignal()
+    {
+      this.LogDebug("TvCardBase: lock in on signal");
+      _tunerLocked = false;
+      DateTime timeStart = DateTime.Now;
+      TimeSpan ts = timeStart - timeStart;
+      while (!_tunerLocked && ts.TotalSeconds < _parameters.TimeOutTune)
+      {
+        ThrowExceptionIfTuneCancelled();
+        UpdateSignalStatus(true);
+        if (!_tunerLocked)
+        {
+          ts = DateTime.Now - timeStart;
+          this.LogDebug("  waiting 20ms");
+          System.Threading.Thread.Sleep(20);
+        }
+      }
+
+      if (!_tunerLocked)
+      {
+        throw new TvExceptionNoSignal("TvCardBase: failed to lock signal");
+      }
+
+      this.LogDebug("TvCardBase: locked");
+    }
+
+    /// <summary>
+    /// Update the tuner signal status statistics.
+    /// </summary>
+    protected virtual void UpdateSignalStatus()
+    {
+      UpdateSignalStatus(false);
+    }
+
+    /// <summary>
+    /// Update the tuner signal status statistics.
+    /// </summary>
+    /// <param name="force"><c>True</c> to force the status to be updated (status information may be cached).</param>
+    protected abstract void UpdateSignalStatus(bool force);
 
     /// <summary>
     /// Perform a specific device action. For example, stop the device.
@@ -1905,13 +1903,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     #region subchannel management
 
     /// <summary>
-    /// Allocate a new subchannel instance.
-    /// </summary>
-    /// <param name="channel">The service or channel to associate with the subchannel.</param>
-    /// <returns>the ID of the new subchannel</returns>
-    protected abstract int CreateNewSubChannel(IChannel channel);
-
-    /// <summary>
     /// Free a subchannel.
     /// </summary>
     /// <param name="id">The ID of the subchannel.</param>
@@ -1962,21 +1953,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     }
 
     /// <summary>
-    /// Free all subchannels.
-    /// </summary>
-    protected void FreeAllSubChannels()
-    {
-      this.LogInfo("tvcard:FreeAllSubChannels");
-      Dictionary<int, BaseSubChannel>.Enumerator en = _mapSubChannels.GetEnumerator();
-      while (en.MoveNext())
-      {
-        en.Current.Value.Decompose();
-      }
-      _mapSubChannels.Clear();
-      _subChannelId = 0;
-    }
-
-    /// <summary>
     /// Get a specific subchannel.
     /// </summary>
     /// <param name="id">The ID of the subchannel.</param>
@@ -2021,6 +1997,28 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         }
         return channels;
       }
+    }
+
+    /// <summary>
+    /// Allocate a new subchannel instance.
+    /// </summary>
+    /// <param name="channel">The service or channel to associate with the subchannel.</param>
+    /// <returns>the ID of the new subchannel</returns>
+    protected abstract int CreateNewSubChannel(IChannel channel);
+
+    /// <summary>
+    /// Free all subchannels.
+    /// </summary>
+    protected void FreeAllSubChannels()
+    {
+      this.LogInfo("tvcard:FreeAllSubChannels");
+      Dictionary<int, BaseSubChannel>.Enumerator en = _mapSubChannels.GetEnumerator();
+      while (en.MoveNext())
+      {
+        en.Current.Value.Decompose();
+      }
+      _mapSubChannels.Clear();
+      _subChannelId = 0;
     }
 
     #endregion

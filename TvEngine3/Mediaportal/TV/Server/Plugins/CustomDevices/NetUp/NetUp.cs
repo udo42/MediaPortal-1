@@ -39,6 +39,21 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
   {
     #region enums
 
+    #region Nested type: NetUpCiState
+
+    [Flags]
+    private enum NetUpCiState
+    {
+      Empty = 0,
+      CamPresent = 1,
+      MmiMenuReady = 2,
+      MmiEnquiryReady = 4
+    }
+
+    #endregion
+
+    #region Nested type: NetUpIoControl
+
     private enum NetUpIoControl : uint
     {
       Diseqc = 0x100000,
@@ -58,18 +73,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
       PmtListChange = 0x400000
     }
 
-    [Flags]
-    private enum NetUpCiState
-    {
-      Empty = 0,
-      CamPresent = 1,
-      MmiMenuReady = 2,
-      MmiEnquiryReady = 4
-    }
+    #endregion
 
     #endregion
 
     #region structs
+
+    #region Nested type: ApplicationInfo
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct ApplicationInfo    // NETUP_CAM_APPLICATION_INFO
@@ -80,6 +90,22 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxStringLength)]
       public String RootMenuTitle;
     }
+
+    #endregion
+
+    #region Nested type: CaInfo
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct CaInfo   // TYP_SLOT_INFO
+    {
+      public UInt32 NumberOfCaSystemIds;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxCaSystemIds)]
+      public UInt16[] CaSystemIds;
+    }
+
+    #endregion
+
+    #region Nested type: CiStateInfo
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct CiStateInfo    // NETUP_CAM_STATUS
@@ -94,22 +120,34 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
       public String RootMenuTitle;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    private struct CaInfo   // TYP_SLOT_INFO
-    {
-      public UInt32 NumberOfCaSystemIds;
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxCaSystemIds)]
-      public UInt16[] CaSystemIds;
-    }
+    #endregion
+
+    #region Nested type: MmiAnswer
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    private struct MmiMenuEntry
+    private struct MmiAnswer    // NETUP_CAM_MMI_ANSWER
     {
-      #pragma warning disable 0649
+      public byte AnswerLength;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxStringLength)]
-      public String Text;
-      #pragma warning restore 0649
+      public String Answer;
     }
+
+    #endregion
+
+    #region Nested type: MmiEnquiry
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    private struct MmiEnquiry   // NETUP_CAM_MMI_ENQUIRY
+    {
+      public bool IsBlindAnswer;
+      public byte ExpectedAnswerLength;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxStringLength)]
+      public String Prompt;
+    }
+
+    #endregion
+
+    #region Nested type: MmiMenu
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct MmiMenu    // NETUP_CAM_MENU
@@ -126,233 +164,20 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
       public UInt32 EntryCount;
     }
 
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    private struct MmiEnquiry   // NETUP_CAM_MMI_ENQUIRY
-    {
-      public bool IsBlindAnswer;
-      public byte ExpectedAnswerLength;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxStringLength)]
-      public String Prompt;
-    }
+    #endregion
+
+    #region Nested type: MmiMenuEntry
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    private struct MmiAnswer    // NETUP_CAM_MMI_ANSWER
+    private struct MmiMenuEntry
     {
-      public byte AnswerLength;
+#pragma warning disable 0649
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxStringLength)]
-      public String Answer;
+      public String Text;
+#pragma warning restore 0649
     }
 
     #endregion
-
-    /// <summary>
-    /// This class is used to "hide" the complexity of filling the command buffer.
-    /// </summary>
-    private class NetUpCommand
-    {
-      #region variables
-
-      private static int _operatingSystemIntSize = 0;
-      private UInt32 _controlCode;
-      private IntPtr _inBuffer;
-      private Int32 _inBufferSize;
-      private IntPtr _outBuffer;
-      private Int32 _outBufferSize;
-
-      #endregion
-
-      public NetUpCommand(NetUpIoControl controlCode, IntPtr inBuffer, Int32 inBufferSize, IntPtr outBuffer, Int32 outBufferSize)
-      {
-        _controlCode = (UInt32)controlCode;
-        _inBuffer = inBuffer;
-        _inBufferSize = inBufferSize;
-        _outBuffer = outBuffer;
-        _outBufferSize = outBufferSize;
-      }
-
-      /// <summary>
-      /// This function determines whether the operating system is a 64 bit operating system.
-      /// </summary>
-      /// <returns><c>true</c> if the operating system is a 64 bit operating system, otherwise <c>false</c></returns>
-      private bool Is64BitOperatingSystem()
-      {
-        this.LogDebug("NetUP: check is 64 bit operating system");
-
-        if (IntPtr.Size == 8)
-        {
-          this.LogDebug("NetUP: 64 bit process under 64 bit operating system");
-          return true;
-        }
-
-        // This isn't a 64 bit process, but it could be a 32 bit process under a 64 bit operating system.
-        // If the IsWow64Process() function isn't present in kernel32.dll then the OS doesn't have 64 bit
-        // support.
-        IntPtr moduleHandle = NativeMethods.GetModuleHandle("kernel32.dll");
-        if (moduleHandle == IntPtr.Zero)
-        {
-          this.LogDebug("NetUP: failed to get kernel32 module handle");
-          return false;
-        }
-        IntPtr functionHandle = NativeMethods.GetProcAddress(moduleHandle, "IsWow64Process");
-        moduleHandle = IntPtr.Zero;
-        if (functionHandle == IntPtr.Zero)
-        {
-          this.LogDebug("NetUP: failed to get IsWow64Process function handle");
-          return false;
-        }
-        functionHandle = IntPtr.Zero;
-
-        bool is64bitOs = false;
-        try
-        {
-          if (NativeMethods.IsWow64Process(Process.GetCurrentProcess().Handle, out is64bitOs))
-          {
-            if (is64bitOs)
-            {
-              this.LogDebug("NetUP: 32 bit process under 64 bit operating system");
-            }
-            else
-            {
-              this.LogDebug("NetUP: 32 bit process under 32 bit operating system");
-            }
-            return is64bitOs;
-          }
-          else
-          {
-            this.LogDebug("NetUP: failed to get IsWow64Process function handle");
-            return false;
-          }
-        }
-        catch (Exception ex)
-        {
-          this.LogError(ex, "NetUP: invoking IsWow64Process caused an exception");
-          return false;
-        }
-      }
-
-      /// <summary>
-      /// Execute a set operation on a property set.
-      /// </summary>
-      /// <param name="psGuid">The property set GUID.</param>
-      /// <param name="ps">The property set to operate on.</param>
-      /// <param name="returnedByteCount">The number of bytes returned by the operation.</param>
-      /// <returns>an HRESULT indicating whether the operation was successful</returns>
-      public int Execute(Guid psGuid, IKsPropertySet ps, out int returnedByteCount)
-      {
-        returnedByteCount = 0;
-        int hr = 1; // fail
-        if (ps == null)
-        {
-          return hr;
-        }
-
-        // Right now NetUP's drivers require 4 byte integers on 32 bit systems and 8 byte integers on
-        // 64 bit systems. This is somewhat inconvenient. I have reported the issue to NetUP but there
-        // has been no response.
-        // mm1352000, 01-04-2012
-        if (_operatingSystemIntSize == 0)
-        {
-          _operatingSystemIntSize = 4;
-          if (Is64BitOperatingSystem())
-          {
-            _operatingSystemIntSize = 8;
-          }
-        }
-
-        IntPtr instanceBuffer = Marshal.AllocCoTaskMem(InstanceSize);
-        IntPtr commandBuffer = Marshal.AllocCoTaskMem(CommandSize);
-        IntPtr returnedByteCountBuffer = Marshal.AllocCoTaskMem(sizeof(int));
-        try
-        {
-          // Clear buffers. This is probably not actually needed, but better
-          // to be safe than sorry!
-          for (int i = 0; i < InstanceSize; i++)
-          {
-            Marshal.WriteByte(instanceBuffer, i, 0);
-          }
-          Marshal.WriteInt32(returnedByteCountBuffer, 0);
-
-          if (_operatingSystemIntSize == 8)
-          {
-            Marshal.WriteInt64(commandBuffer, 0, _controlCode);
-            Marshal.WriteInt64(commandBuffer, 8, _inBuffer.ToInt64());
-            Marshal.WriteInt64(commandBuffer, 16, _inBufferSize);
-            Marshal.WriteInt64(commandBuffer, 24, _outBuffer.ToInt64());
-            Marshal.WriteInt64(commandBuffer, 32, _outBufferSize);
-            Marshal.WriteInt64(commandBuffer, 40, returnedByteCountBuffer.ToInt64());
-          }
-          else
-          {
-            Marshal.WriteInt32(commandBuffer, 0, (int)_controlCode);
-            Marshal.WriteInt32(commandBuffer, 4, _inBuffer.ToInt32());
-            Marshal.WriteInt32(commandBuffer, 8, _inBufferSize);
-            Marshal.WriteInt32(commandBuffer, 12, _outBuffer.ToInt32());
-            Marshal.WriteInt32(commandBuffer, 16, _outBufferSize);
-            Marshal.WriteInt32(commandBuffer, 20, returnedByteCountBuffer.ToInt32());
-            Marshal.WriteInt32(commandBuffer, 24, 0);
-            Marshal.WriteInt32(commandBuffer, 28, 0);
-            Marshal.WriteInt32(commandBuffer, 32, 0);
-            Marshal.WriteInt32(commandBuffer, 36, 0);
-            Marshal.WriteInt32(commandBuffer, 40, 0);
-            Marshal.WriteInt32(commandBuffer, 44, 0);
-          }
-
-          hr = ps.Set(psGuid, 0, instanceBuffer, InstanceSize, commandBuffer, CommandSize);
-          if (hr == 0)
-          {
-            returnedByteCount = Marshal.ReadInt32(returnedByteCountBuffer);
-          }
-        }
-        finally
-        {
-          Marshal.FreeCoTaskMem(instanceBuffer);
-          Marshal.FreeCoTaskMem(commandBuffer);
-          Marshal.FreeCoTaskMem(returnedByteCountBuffer);
-        }
-        return hr;
-      }
-    }
-
-    #region constants
-
-    private static readonly Guid NetUpBdaExtensionPropertySet = new Guid(0x5aa642f2, 0xbf94, 0x4199, 0xa9, 0x8c, 0xc2, 0x22, 0x20, 0x91, 0xe3, 0xc3);
-
-    private const int InstanceSize = 32;    // The size of a property instance (KSP_NODE) parameter.
-    private const int CommandSize = 48;
-    private const int ApplicationInfoSize = 6 + MaxStringLength;
-    private const int CiStateInfoSize = 8 + MaxStringLength;
-    private const int CaInfoSize = 4 + (MaxCaSystemIds * 2);
-    private const int MmiMenuSize = 8 + (MaxStringLength * (3 + MaxCamMenuEntries));
-    private const int MmiEnquirySize = 8 + MaxStringLength;
-    private const int MmiAnswerSize = 4 + MaxStringLength;
-    private const int MaxBufferSize = 65536;
-    private const int MaxStringLength = 256;
-    private const int MaxCaSystemIds = 256;
-    private const int MaxCamMenuEntries = 64;
-    private const int MaxDiseqcMessageLength = 64;        // This is to reduce the _generalBuffer size - the driver limit is MaxBufferSize.
-
-    private const int MmiHandlerThreadSleepTime = 2000;   // unit = ms
-
-    #endregion
-
-    #region variables
-
-    private bool _isNetUp = false;
-    private bool _isCamPresent = false;
-
-    // Functions that are called from both the main TV service threads
-    // as well as the MMI handler thread use their own local buffer to
-    // avoid buffer data corruption. Otherwise functions called exclusively
-    // by the MMI handler thread use the MMI buffer and other functions
-    // use the general buffer.
-    private IntPtr _generalBuffer = IntPtr.Zero;
-    private IntPtr _mmiBuffer = IntPtr.Zero;
-
-    private IKsPropertySet _propertySet = null;
-
-    private Thread _mmiHandlerThread = null;
-    private bool _stopMmiHandlerThread = false;
-    private ICiMenuCallbacks _ciMenuCallbacks = null;
 
     #endregion
 
@@ -1325,6 +1150,218 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
       }
       _isNetUp = false;
     }
+
+    #endregion
+
+    #region Nested type: NetUpCommand
+
+    /// <summary>
+    /// This class is used to "hide" the complexity of filling the command buffer.
+    /// </summary>
+    private class NetUpCommand
+    {
+      #region variables
+
+      private static int _operatingSystemIntSize = 0;
+      private UInt32 _controlCode;
+      private IntPtr _inBuffer;
+      private Int32 _inBufferSize;
+      private IntPtr _outBuffer;
+      private Int32 _outBufferSize;
+
+      #endregion
+
+      public NetUpCommand(NetUpIoControl controlCode, IntPtr inBuffer, Int32 inBufferSize, IntPtr outBuffer, Int32 outBufferSize)
+      {
+        _controlCode = (UInt32)controlCode;
+        _inBuffer = inBuffer;
+        _inBufferSize = inBufferSize;
+        _outBuffer = outBuffer;
+        _outBufferSize = outBufferSize;
+      }
+
+      /// <summary>
+      /// This function determines whether the operating system is a 64 bit operating system.
+      /// </summary>
+      /// <returns><c>true</c> if the operating system is a 64 bit operating system, otherwise <c>false</c></returns>
+      private bool Is64BitOperatingSystem()
+      {
+        this.LogDebug("NetUP: check is 64 bit operating system");
+
+        if (IntPtr.Size == 8)
+        {
+          this.LogDebug("NetUP: 64 bit process under 64 bit operating system");
+          return true;
+        }
+
+        // This isn't a 64 bit process, but it could be a 32 bit process under a 64 bit operating system.
+        // If the IsWow64Process() function isn't present in kernel32.dll then the OS doesn't have 64 bit
+        // support.
+        IntPtr moduleHandle = NativeMethods.GetModuleHandle("kernel32.dll");
+        if (moduleHandle == IntPtr.Zero)
+        {
+          this.LogDebug("NetUP: failed to get kernel32 module handle");
+          return false;
+        }
+        IntPtr functionHandle = NativeMethods.GetProcAddress(moduleHandle, "IsWow64Process");
+        moduleHandle = IntPtr.Zero;
+        if (functionHandle == IntPtr.Zero)
+        {
+          this.LogDebug("NetUP: failed to get IsWow64Process function handle");
+          return false;
+        }
+        functionHandle = IntPtr.Zero;
+
+        bool is64bitOs = false;
+        try
+        {
+          if (NativeMethods.IsWow64Process(Process.GetCurrentProcess().Handle, out is64bitOs))
+          {
+            if (is64bitOs)
+            {
+              this.LogDebug("NetUP: 32 bit process under 64 bit operating system");
+            }
+            else
+            {
+              this.LogDebug("NetUP: 32 bit process under 32 bit operating system");
+            }
+            return is64bitOs;
+          }
+          else
+          {
+            this.LogDebug("NetUP: failed to get IsWow64Process function handle");
+            return false;
+          }
+        }
+        catch (Exception ex)
+        {
+          this.LogError(ex, "NetUP: invoking IsWow64Process caused an exception");
+          return false;
+        }
+      }
+
+      /// <summary>
+      /// Execute a set operation on a property set.
+      /// </summary>
+      /// <param name="psGuid">The property set GUID.</param>
+      /// <param name="ps">The property set to operate on.</param>
+      /// <param name="returnedByteCount">The number of bytes returned by the operation.</param>
+      /// <returns>an HRESULT indicating whether the operation was successful</returns>
+      public int Execute(Guid psGuid, IKsPropertySet ps, out int returnedByteCount)
+      {
+        returnedByteCount = 0;
+        int hr = 1; // fail
+        if (ps == null)
+        {
+          return hr;
+        }
+
+        // Right now NetUP's drivers require 4 byte integers on 32 bit systems and 8 byte integers on
+        // 64 bit systems. This is somewhat inconvenient. I have reported the issue to NetUP but there
+        // has been no response.
+        // mm1352000, 01-04-2012
+        if (_operatingSystemIntSize == 0)
+        {
+          _operatingSystemIntSize = 4;
+          if (Is64BitOperatingSystem())
+          {
+            _operatingSystemIntSize = 8;
+          }
+        }
+
+        IntPtr instanceBuffer = Marshal.AllocCoTaskMem(InstanceSize);
+        IntPtr commandBuffer = Marshal.AllocCoTaskMem(CommandSize);
+        IntPtr returnedByteCountBuffer = Marshal.AllocCoTaskMem(sizeof(int));
+        try
+        {
+          // Clear buffers. This is probably not actually needed, but better
+          // to be safe than sorry!
+          for (int i = 0; i < InstanceSize; i++)
+          {
+            Marshal.WriteByte(instanceBuffer, i, 0);
+          }
+          Marshal.WriteInt32(returnedByteCountBuffer, 0);
+
+          if (_operatingSystemIntSize == 8)
+          {
+            Marshal.WriteInt64(commandBuffer, 0, _controlCode);
+            Marshal.WriteInt64(commandBuffer, 8, _inBuffer.ToInt64());
+            Marshal.WriteInt64(commandBuffer, 16, _inBufferSize);
+            Marshal.WriteInt64(commandBuffer, 24, _outBuffer.ToInt64());
+            Marshal.WriteInt64(commandBuffer, 32, _outBufferSize);
+            Marshal.WriteInt64(commandBuffer, 40, returnedByteCountBuffer.ToInt64());
+          }
+          else
+          {
+            Marshal.WriteInt32(commandBuffer, 0, (int)_controlCode);
+            Marshal.WriteInt32(commandBuffer, 4, _inBuffer.ToInt32());
+            Marshal.WriteInt32(commandBuffer, 8, _inBufferSize);
+            Marshal.WriteInt32(commandBuffer, 12, _outBuffer.ToInt32());
+            Marshal.WriteInt32(commandBuffer, 16, _outBufferSize);
+            Marshal.WriteInt32(commandBuffer, 20, returnedByteCountBuffer.ToInt32());
+            Marshal.WriteInt32(commandBuffer, 24, 0);
+            Marshal.WriteInt32(commandBuffer, 28, 0);
+            Marshal.WriteInt32(commandBuffer, 32, 0);
+            Marshal.WriteInt32(commandBuffer, 36, 0);
+            Marshal.WriteInt32(commandBuffer, 40, 0);
+            Marshal.WriteInt32(commandBuffer, 44, 0);
+          }
+
+          hr = ps.Set(psGuid, 0, instanceBuffer, InstanceSize, commandBuffer, CommandSize);
+          if (hr == 0)
+          {
+            returnedByteCount = Marshal.ReadInt32(returnedByteCountBuffer);
+          }
+        }
+        finally
+        {
+          Marshal.FreeCoTaskMem(instanceBuffer);
+          Marshal.FreeCoTaskMem(commandBuffer);
+          Marshal.FreeCoTaskMem(returnedByteCountBuffer);
+        }
+        return hr;
+      }
+    }
+
+    #endregion
+
+    #region constants
+
+    private const int InstanceSize = 32;    // The size of a property instance (KSP_NODE) parameter.
+    private const int CommandSize = 48;
+    private const int ApplicationInfoSize = 6 + MaxStringLength;
+    private const int CiStateInfoSize = 8 + MaxStringLength;
+    private const int CaInfoSize = 4 + (MaxCaSystemIds * 2);
+    private const int MmiMenuSize = 8 + (MaxStringLength * (3 + MaxCamMenuEntries));
+    private const int MmiEnquirySize = 8 + MaxStringLength;
+    private const int MmiAnswerSize = 4 + MaxStringLength;
+    private const int MaxBufferSize = 65536;
+    private const int MaxStringLength = 256;
+    private const int MaxCaSystemIds = 256;
+    private const int MaxCamMenuEntries = 64;
+    private const int MaxDiseqcMessageLength = 64;        // This is to reduce the _generalBuffer size - the driver limit is MaxBufferSize.
+
+    private const int MmiHandlerThreadSleepTime = 2000;   // unit = ms
+    private static readonly Guid NetUpBdaExtensionPropertySet = new Guid(0x5aa642f2, 0xbf94, 0x4199, 0xa9, 0x8c, 0xc2, 0x22, 0x20, 0x91, 0xe3, 0xc3);
+
+    #endregion
+
+    #region variables
+
+    // Functions that are called from both the main TV service threads
+    // as well as the MMI handler thread use their own local buffer to
+    // avoid buffer data corruption. Otherwise functions called exclusively
+    // by the MMI handler thread use the MMI buffer and other functions
+    // use the general buffer.
+    private ICiMenuCallbacks _ciMenuCallbacks = null;
+    private IntPtr _generalBuffer = IntPtr.Zero;
+    private bool _isCamPresent = false;
+    private bool _isNetUp = false;
+    private IntPtr _mmiBuffer = IntPtr.Zero;
+
+    private Thread _mmiHandlerThread = null;
+    private IKsPropertySet _propertySet = null;
+    private bool _stopMmiHandlerThread = false;
 
     #endregion
   }

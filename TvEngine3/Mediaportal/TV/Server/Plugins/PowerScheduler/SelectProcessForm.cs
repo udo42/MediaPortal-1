@@ -33,6 +33,11 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
       LoadProcesses();
     }
 
+    public String SelectedProcess
+    {
+      get { return _selectedProcess; }
+    }
+
     private void LoadProcesses()
     {
       comboBox1.Items.Clear();
@@ -40,11 +45,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
       {
         comboBox1.Items.Add(p.ProcessName);
       }
-    }
-
-    public String SelectedProcess
-    {
-      get { return _selectedProcess; }
     }
 
     private void button1_Click(object sender, EventArgs e)

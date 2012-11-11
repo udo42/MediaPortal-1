@@ -211,23 +211,84 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     #region Structs for Interop
 
+    #region Nested type: INTEROP_RECT
+
+    public struct INTEROP_RECT
+    {
+      public int Bottom;
+      public int Left;
+      public int Right;
+      public int Top;
+    }
+
+    #endregion
+
+    #region Nested type: INTEROP_SIZE
+
     public struct INTEROP_SIZE
     {
       public int cx;
       public int cy;
     }
 
-    public struct INTEROP_RECT
-    {
-      public int Left;
-      public int Top;
-      public int Right;
-      public int Bottom;
-    }
+    #endregion
 
     #endregion
 
     #region Structs for ListView API
+
+    #region Nested type: LVBKIMAGE
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct LVBKIMAGE
+    {
+      public int ulFlags;
+      public int hbm; // Not used according to MSDN
+      public string pszImage;
+      public int cchImageMax;
+      public int xOffsetPercent;
+      public int yOffsetPercent;
+    }
+
+    #endregion
+
+    #region Nested type: LVCOLUMN
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct LVCOLUMN
+    {
+      public int mask;
+      public int fmt;
+      public int cx;
+      [MarshalAs(UnmanagedType.LPTStr)] public string pszText;
+      public int cchTextMax;
+      public int iSubItem;
+      public int iImage;
+      public int iOrder;
+    }
+
+    #endregion
+
+    #region Nested type: LVGROUP
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct LVGROUP
+    {
+      public int cbSize;
+      public int mask;
+      [MarshalAs(UnmanagedType.LPWStr)] public string pszHeader;
+      public int cchHeader;
+      [MarshalAs(UnmanagedType.LPWStr)] public string pszFooter;
+      public int cchFooter;
+      public int iGroupId;
+      public int stateMask;
+      public int state;
+      public int uAlign;
+    }
+
+    #endregion
+
+    #region Nested type: LVITEM
 
     [StructLayout(LayoutKind.Sequential)]
     public struct LVITEM
@@ -247,33 +308,22 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       public int puColumns;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct LVCOLUMN
-    {
-      public int mask;
-      public int fmt;
-      public int cx;
-      [MarshalAs(UnmanagedType.LPTStr)] public string pszText;
-      public int cchTextMax;
-      public int iSubItem;
-      public int iImage;
-      public int iOrder;
-    }
+    #endregion
+
+    #region Nested type: LVTILEINFO
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct LVGROUP
+    public struct LVTILEINFO
     {
       public int cbSize;
-      public int mask;
-      [MarshalAs(UnmanagedType.LPWStr)] public string pszHeader;
-      public int cchHeader;
-      [MarshalAs(UnmanagedType.LPWStr)] public string pszFooter;
-      public int cchFooter;
-      public int iGroupId;
-      public int stateMask;
-      public int state;
-      public int uAlign;
+      public int iItem;
+      public int cColumns;
+      public int puColumns;
     }
+
+    #endregion
+
+    #region Nested type: LVTILEVIEWINFO
 
     [StructLayout(LayoutKind.Sequential)]
     public struct LVTILEVIEWINFO
@@ -286,33 +336,9 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       public INTEROP_SIZE rcLabelMargin;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct LVTILEINFO
-    {
-      public int cbSize;
-      public int iItem;
-      public int cColumns;
-      public int puColumns;
-    }
+    #endregion
 
-    [StructLayout(LayoutKind.Sequential)]
-    public struct LVBKIMAGE
-    {
-      public int ulFlags;
-      public int hbm; // Not used according to MSDN
-      public string pszImage;
-      public int cchImageMax;
-      public int xOffsetPercent;
-      public int yOffsetPercent;
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    public struct NMHDR
-    {
-      public IntPtr hwndFrom;
-      public int idFrom;
-      public int code;
-    }
+    #region Nested type: NMCUSTOMDRAW
 
     [StructLayout(LayoutKind.Sequential)]
     public struct NMCUSTOMDRAW
@@ -326,6 +352,22 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       public IntPtr lItemlParam;
     }
 
+    #endregion
+
+    #region Nested type: NMHDR
+
+    [StructLayout(LayoutKind.Sequential)]
+    public struct NMHDR
+    {
+      public IntPtr hwndFrom;
+      public int idFrom;
+      public int code;
+    }
+
+    #endregion
+
+    #region Nested type: RECT
+
     [StructLayout(LayoutKind.Sequential)]
     public struct RECT
     {
@@ -334,6 +376,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       public int right;
       public int bottom;
     }
+
+    #endregion
 
     #endregion
 

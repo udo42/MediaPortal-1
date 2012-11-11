@@ -35,8 +35,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
   /// </summary>
   internal class Tuner : IDisposable
   {
-
-
     #region variables
 
     /// <summary>
@@ -45,29 +43,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     private readonly DsDevice _tunerDevice;
 
     /// <summary>
-    /// The tuner filter
+    /// The current audio frequency
     /// </summary>
-    private IBaseFilter _filterTvTuner;
+    private int _audioFrequency;
 
     /// <summary>
-    /// The current minimum channel number
+    /// The audio output pin
     /// </summary>
-    private int _minChannel;
-
-    /// <summary>
-    /// The current maximum channel number
-    /// </summary>
-    private int _maxChannel;
-
-    /// <summary>
-    /// Indicates if the tuner supports FM radio
-    /// </summary>
-    private bool _supportsFMRadio;
-
-    /// <summary>
-    /// Indicates if the tuner supports AM radio
-    /// </summary>
-    private bool _supportsAMRadio;
+    private IPin _audioPin;
 
     /// <summary>
     /// The current analog channel
@@ -75,24 +58,19 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     private AnalogChannel _currentChannel;
 
     /// <summary>
-    /// The tuner interface
+    /// The tuner filter
     /// </summary>
-    private IAMTVTuner _tuner;
+    private IBaseFilter _filterTvTuner;
 
     /// <summary>
-    /// The current video frequency
+    /// The current maximum channel number
     /// </summary>
-    private int _videoFrequency;
+    private int _maxChannel;
 
     /// <summary>
-    /// The current audio frequency
+    /// The current minimum channel number
     /// </summary>
-    private int _audioFrequency;
-
-    /// <summary>
-    /// Indicates if the tuner is locked
-    /// </summary>
-    private bool _tunerLocked;
+    private int _minChannel;
 
     /// <summary>
     /// The current signal level
@@ -105,9 +83,29 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     private int _signalQuality;
 
     /// <summary>
-    /// The audio output pin
+    /// Indicates if the tuner supports AM radio
     /// </summary>
-    private IPin _audioPin;
+    private bool _supportsAMRadio;
+
+    /// <summary>
+    /// Indicates if the tuner supports FM radio
+    /// </summary>
+    private bool _supportsFMRadio;
+
+    /// <summary>
+    /// The tuner interface
+    /// </summary>
+    private IAMTVTuner _tuner;
+
+    /// <summary>
+    /// Indicates if the tuner is locked
+    /// </summary>
+    private bool _tunerLocked;
+
+    /// <summary>
+    /// The current video frequency
+    /// </summary>
+    private int _videoFrequency;
 
     #endregion
 
@@ -226,6 +224,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
 
     #region Dispose
 
+    /// <summary>
+    /// Diposes the tuner component
+    /// </summary>  
+    public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
     protected virtual void Dispose(bool disposing)
     {
       if (disposing)
@@ -244,15 +251,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
         while (Release.ComObject(_filterTvTuner) > 0) { }
         _filterTvTuner = null;        
       }     
-    }    
-
-    /// <summary>
-    /// Diposes the tuner component
-    /// </summary>  
-    public void Dispose()
-    {
-      Dispose(true);
-      GC.SuppressFinalize(this);
     }
 
     ~Tuner()
@@ -558,7 +556,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       UpdateSignalQuality();
       UpdateMinMaxChannel();
       this.LogDebug("Analog: Tuned to country:{0} video:{1} Hz audio:{2} Hz locked:{3}", analogChannel.Country.Id,
-                        _videoFrequency, _audioFrequency, _tunerLocked);
+                    _videoFrequency, _audioFrequency, _tunerLocked);
     }
 
     #endregion

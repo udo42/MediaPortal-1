@@ -41,6 +41,8 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       col = column;
     }
 
+    #region IComparer Members
+
     public int Compare(object x, object y)
     {
       int sortCol = col;
@@ -50,6 +52,8 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
         sortCol = 0;
       return String.Compare(((ListViewItem)x).SubItems[sortCol].Text, ((ListViewItem)y).SubItems[sortCol].Text);
     }
+
+    #endregion
   }
 
   public class ListViewItemComparerInt : IComparer
@@ -65,6 +69,8 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     {
       col = column;
     }
+
+    #region IComparer Members
 
     public int Compare(object x, object y)
     {
@@ -82,5 +88,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
         return 1;
       return 0;
     }
+
+    #endregion
   }
 }

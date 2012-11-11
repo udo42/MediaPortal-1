@@ -53,15 +53,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     #region properties
 
     /// <summary>
-    /// Get/set the channel's name.
-    /// </summary>
-    public string Name
-    {
-      get { return _channelName; }
-      set { _channelName = value; }
-    }
-
-    /// <summary>
     /// Get/set the channel's URL.
     /// </summary>
     public string Url
@@ -86,6 +77,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     {
       get { return true; }
       set { }
+    }
+
+    /// <summary>
+    /// Get/set the channel's name.
+    /// </summary>
+    public string Name
+    {
+      get { return _channelName; }
+      set { _channelName = value; }
     }
 
     /// <summary>
@@ -165,6 +165,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
 
     #endregion
 
+    #region IChannel Members
+
     /// <summary>
     /// Check if the given channel and this instance are on different transponders.
     /// </summary>
@@ -190,5 +192,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       get { return MediaTypeEnum.Radio; }
       set { }
     }
+
+    #endregion
   }
 }

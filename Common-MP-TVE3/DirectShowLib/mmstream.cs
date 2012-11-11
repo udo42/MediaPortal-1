@@ -33,11 +33,6 @@ namespace DirectShowLib.MultimediaStreaming
 
   public sealed class MsResults
   {
-    private MsResults()
-    {
-      // Prevent people from trying to instantiate this class
-    }
-
     public const int S_Pending = unchecked((int) 0x00040001);
     public const int S_NoUpdate = unchecked((int) 0x00040002);
     public const int S_EndOfStream = unchecked((int) 0x00040003);
@@ -51,6 +46,11 @@ namespace DirectShowLib.MultimediaStreaming
     public const int E_SourceAlreadyDefined = unchecked((int) 0x80040408);
     public const int E_InvalidStreamType = unchecked((int) 0x80040409);
     public const int E_NotRunning = unchecked((int) 0x8004040a);
+
+    private MsResults()
+    {
+      // Prevent people from trying to instantiate this class
+    }
   }
 
   public sealed class MsError
@@ -250,11 +250,6 @@ namespace DirectShowLib.MultimediaStreaming
 
   public sealed class MSPID
   {
-    private MSPID()
-    {
-      // Prevent people from trying to instantiate this class
-    }
-
     /// <summary> MSPID_PrimaryVideo </summary>
     public static readonly Guid PrimaryVideo = new Guid(0xa35ff56a, 0x9fda, 0x11d0, 0x8f, 0xdf, 0x0, 0xc0, 0x4f, 0xd9,
                                                         0x18, 0x9d);
@@ -262,6 +257,11 @@ namespace DirectShowLib.MultimediaStreaming
     /// <summary> MSPID_PrimaryAudio </summary>
     public static readonly Guid PrimaryAudio = new Guid(0xa35ff56b, 0x9fda, 0x11d0, 0x8f, 0xdf, 0x0, 0xc0, 0x4f, 0xd9,
                                                         0x18, 0x9d);
+
+    private MSPID()
+    {
+      // Prevent people from trying to instantiate this class
+    }
   }
 
   #endregion

@@ -34,10 +34,10 @@ namespace WebEPG.config.Grabber
     #region Variables
 
     [XmlElement("Template")] public List<HtmlParserTemplate> Templates;
-    [XmlArray("DataPreference")] [XmlArrayItem("Preference")] public List<DataPreference> preferences;
-    [XmlArray("Sublinks")] [XmlArrayItem("Sublink")] public List<SublinkInfo> sublinks;
-    [XmlArray("Searches")] [XmlArrayItem("Search")] public List<WebSearchData> searchList;
     [XmlArray("DateTime")] [XmlArrayItem("Month")] public string[] months;
+    [XmlArray("DataPreference")] [XmlArrayItem("Preference")] public List<DataPreference> preferences;
+    [XmlArray("Searches")] [XmlArrayItem("Search")] public List<WebSearchData> searchList;
+    [XmlArray("Sublinks")] [XmlArrayItem("Sublink")] public List<SublinkInfo> sublinks;
 
     #endregion
 

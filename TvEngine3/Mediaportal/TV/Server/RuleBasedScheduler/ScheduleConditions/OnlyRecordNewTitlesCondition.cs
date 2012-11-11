@@ -18,10 +18,13 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
     {
     }
 
+    #region IScheduleCondition Members
+
     public IQueryable<Program> ApplyCondition(IQueryable<Program> baseQuery)
     {
       return baseQuery.Where(program => !(_skipTitles.Any(t => program.Title.ToUpperInvariant().Equals(t.ToUpperInvariant()))));
     }
-   
+
+    #endregion
   }
 }

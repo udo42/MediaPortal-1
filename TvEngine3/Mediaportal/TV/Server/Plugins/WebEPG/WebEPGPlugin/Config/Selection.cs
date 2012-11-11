@@ -71,21 +71,24 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
   /// </summary>
   public class fSelection : Form
   {
-    private TreeNode tGrabbers;
-    private EventHandler handler;
-    private TreeView treeView1;
-    private MPGroupBox gbSelection;
-    private MPButton bSelect;
+    #region Delegates
+
+    public delegate void GrabberSelectedEventHandler(object sender, GrabberSelectedEventArgs e);
+
+    #endregion
+
     private MPButton bClose;
+    private MPButton bSelect;
 
     /// <summary>
     /// Required designer variable.
     /// </summary>
     private Container components = null;
 
-    public delegate void GrabberSelectedEventHandler(object sender, GrabberSelectedEventArgs e);
-
-    public event GrabberSelectedEventHandler GrabberSelected;
+    private MPGroupBox gbSelection;
+    private EventHandler handler;
+    private TreeNode tGrabbers;
+    private TreeView treeView1;
 
     public fSelection(TreeNode grabbers) //, bool bChanGrab, EventHandler select_click)
     {
@@ -116,6 +119,8 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
       get { return (GrabberSelectionInfo)treeView1.SelectedNode.Tag; }
     }
 
+    public event GrabberSelectedEventHandler GrabberSelected;
+
     /// <summary>
     /// Clean up any resources being used.
     /// </summary>
@@ -129,6 +134,56 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
         }
       }
       base.Dispose(disposing);
+    }
+
+    private void DoSelect(Object source, EventArgs e)
+    {
+      if (GrabberSelected != null)
+      {
+        GrabberSelectionInfo selection = Selected;
+        if (selection != null)
+        {
+          GrabberSelected(this, new GrabberSelectedEventArgs(Selected));
+        }
+      }
+    }
+
+    private void DoEvent(Object source, EventArgs e)
+    {
+      if (source == bClose)
+      {
+        Close();
+        return;
+      }
+    }
+
+    private void UpdateList()
+    {
+      //			TreeNode sNode = treeView1.SelectedNode;
+      treeView1.Nodes.Clear();
+      treeView1.Nodes.Add((TreeNode)tGrabbers.Clone());
+    }
+
+    private TreeNode FindNode(TreeNode tNode, GrabberSelectionInfo tag)
+    {
+      tNode.Expand();
+      foreach (TreeNode cNode in tNode.Nodes)
+      {
+        TreeNode rNode = FindNode(cNode, tag);
+        if (rNode != null)
+        {
+          return rNode;
+        }
+      }
+
+      GrabberSelectionInfo ntag = (GrabberSelectionInfo)tNode.Tag;
+      if (ntag != null && ntag.ChannelId == tag.ChannelId && ntag.GrabberId == tag.GrabberId)
+      {
+        return tNode;
+      }
+
+      tNode.Collapse();
+      return null;
     }
 
     #region Windows Form Designer generated code
@@ -214,56 +269,6 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
     }
 
     #endregion
-
-    private void DoSelect(Object source, EventArgs e)
-    {
-      if (GrabberSelected != null)
-      {
-        GrabberSelectionInfo selection = Selected;
-        if (selection != null)
-        {
-          GrabberSelected(this, new GrabberSelectedEventArgs(Selected));
-        }
-      }
-    }
-
-    private void DoEvent(Object source, EventArgs e)
-    {
-      if (source == bClose)
-      {
-        Close();
-        return;
-      }
-    }
-
-    private void UpdateList()
-    {
-      //			TreeNode sNode = treeView1.SelectedNode;
-      treeView1.Nodes.Clear();
-      treeView1.Nodes.Add((TreeNode)tGrabbers.Clone());
-    }
-
-    private TreeNode FindNode(TreeNode tNode, GrabberSelectionInfo tag)
-    {
-      tNode.Expand();
-      foreach (TreeNode cNode in tNode.Nodes)
-      {
-        TreeNode rNode = FindNode(cNode, tag);
-        if (rNode != null)
-        {
-          return rNode;
-        }
-      }
-
-      GrabberSelectionInfo ntag = (GrabberSelectionInfo)tNode.Tag;
-      if (ntag != null && ntag.ChannelId == tag.ChannelId && ntag.GrabberId == tag.GrabberId)
-      {
-        return tNode;
-      }
-
-      tNode.Collapse();
-      return null;
-    }
   }
 
   // Create a node sorter that implements the IComparer interface.
@@ -271,11 +276,16 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
   {
     // Compare the length of the strings, or the strings
     // themselves, if they are the same length.
+
+    #region IComparer Members
+
     public int Compare(object x, object y)
     {
       TreeNode tx = x as TreeNode;
       TreeNode ty = y as TreeNode;
       return string.Compare(tx.Text, ty.Text);
     }
+
+    #endregion
   }
 }

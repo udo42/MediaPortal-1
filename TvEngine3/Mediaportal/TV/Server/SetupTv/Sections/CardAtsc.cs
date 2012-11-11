@@ -41,19 +41,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class CardAtsc : SectionSettings
   {
-
-    [Serializable]
-    public class ATSCTuning
-    {
-      public int frequency; // frequency
-      public ATSCTuning() {}
-
-      public ATSCTuning(int f)
-      {
-        frequency = f;
-      }
-    }
-
     private readonly int _cardNumber;
     private List<ATSCTuning> _atscChannels = new List<ATSCTuning>();
     private bool _isScanning;
@@ -375,5 +362,21 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       mpComboBoxFrequencies.Enabled = checkBoxQAM.Checked;
     }
+
+    #region Nested type: ATSCTuning
+
+    [Serializable]
+    public class ATSCTuning
+    {
+      public int frequency; // frequency
+      public ATSCTuning() {}
+
+      public ATSCTuning(int f)
+      {
+        frequency = f;
+      }
+    }
+
+    #endregion
   }
 }

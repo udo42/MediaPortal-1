@@ -36,33 +36,15 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class TvCards : SectionSettings
   {
-  
-    private bool _needRestart;
-    private readonly Dictionary<string, CardType> cardTypes = new Dictionary<string, CardType>();
-    private TabPage usbWINTV_tabpage;
+    #region Delegates
 
     public delegate void ChangedEventHandler(object sender, EventArgs e);
 
-    public event ChangedEventHandler TvCardsChanged;
-
-    #region CardInfo class
-
-    public class CardInfo
-    {
-      public Card card;
-
-      public CardInfo(Card newcard)
-      {
-        card = newcard;
-      }
-
-      public override string ToString()
-      {
-        return card.Name;
-      }
-    }
-
     #endregion
+
+    private readonly Dictionary<string, CardType> cardTypes = new Dictionary<string, CardType>();
+    private bool _needRestart;
+    private TabPage usbWINTV_tabpage;
 
     public TvCards()
       : this("TV Cards") {}
@@ -72,6 +54,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       InitializeComponent();
     }
+
+    public event ChangedEventHandler TvCardsChanged;
 
     private void UpdateMenu()
     {
@@ -565,5 +549,24 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       _needRestart = true;
     }
+
+    #region CardInfo class
+
+    public class CardInfo
+    {
+      public Card card;
+
+      public CardInfo(Card newcard)
+      {
+        card = newcard;
+      }
+
+      public override string ToString()
+      {
+        return card.Name;
+      }
+    }
+
+    #endregion
   }
 }

@@ -41,38 +41,17 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
 {
   public partial class WebEPGSetup : SectionSettings
   {
-
-
-    private class CBChannelGroup
-    {
-      public string groupName;
-      public int idGroup;
-
-      public CBChannelGroup(string groupName, int idGroup)
-      {
-        this.groupName = groupName;
-        this.idGroup = idGroup;
-      }
-
-      public override string ToString()
-      {
-        return groupName;
-      }
-    }
-
-    private delegate void ShowStatusHandler(WebEPG.WebEPG.Stats status);
-
-    private string _webepgFilesDir;
-    private string _configFileDir;
-    private WebepgConfigFile _configFile;
-    private fSelection selection;
-    private TreeNode tGrabbers;
     private SortedList CountryList;
-    private Hashtable hChannelConfigInfo;
-    private Hashtable hGrabberConfigInfo;
     private ChannelsList _channelInfo;
+    private WebepgConfigFile _configFile;
+    private string _configFileDir;
     private Dictionary<string, string> _countryList;
     private bool _initialized = false;
+    private string _webepgFilesDir;
+    private Hashtable hChannelConfigInfo;
+    private Hashtable hGrabberConfigInfo;
+    private fSelection selection;
+    private TreeNode tGrabbers;
 
     public WebEPGSetup()
       : this("WebEPG") {}
@@ -262,6 +241,65 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
     {
       if (enabled)
         cfg.Days.Add(day);
+    }
+
+    private fSelection ShowGrabberSelection()
+    {
+      if (selection == null)
+      {
+        selection = new fSelection(tGrabbers); //, true, this.DoSelect);
+        selection.GrabberSelected += DoSelect;
+        selection.MinimizeBox = false;
+        selection.Closed += new EventHandler(CloseSelect);
+        selection.Show();
+      }
+      else
+      {
+        selection.BringToFront();
+      }
+      return selection;
+    }
+
+    private void buttonManualImport_Click(object sender, EventArgs e)
+    {
+      WebEPGImport importer = new WebEPGImport();
+
+      importer.ForceImport(ShowImportProgress);
+    }
+
+    private void ShowImportProgress(WebEPG.WebEPG.Stats status)
+    {
+      Invoke(new ShowStatusHandler(ShowStatus), new object[] {status});
+    }
+
+    private void StatusTimer_Tick(object sender, EventArgs e)
+    {
+      ShowStatus();
+    }
+
+    private void DestinationComboBox_SelectedIndexChanged(object sender, EventArgs e)
+    {
+      bool enable = (DestinationComboBox.SelectedIndex == 2);
+
+      textBoxFolder.Enabled = enable;
+      buttonBrowse.Enabled = enable;
+    }
+
+    private void buttonBrowse_Click(object sender, EventArgs e)
+    {
+      folderBrowserDialogTVGuide.ShowDialog();
+      textBoxFolder.Text = folderBrowserDialogTVGuide.SelectedPath;
+    }
+
+    private void Mappings_SelectGrabberClick(object sender, EventArgs e)
+    {
+      ShowGrabberSelection();
+    }
+
+    private void Mappings_AutoMapChannels(object sender, EventArgs e)
+    {
+      WebEPGMappingControl mappings = sender as WebEPGMappingControl;
+      AutoMapChannels(mappings.ChannelMapping.Values);
     }
 
     #region Private
@@ -736,63 +774,31 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
 
     #endregion
 
-    private fSelection ShowGrabberSelection()
+    #region Nested type: CBChannelGroup
+
+    private class CBChannelGroup
     {
-      if (selection == null)
+      public string groupName;
+      public int idGroup;
+
+      public CBChannelGroup(string groupName, int idGroup)
       {
-        selection = new fSelection(tGrabbers); //, true, this.DoSelect);
-        selection.GrabberSelected += DoSelect;
-        selection.MinimizeBox = false;
-        selection.Closed += new EventHandler(CloseSelect);
-        selection.Show();
+        this.groupName = groupName;
+        this.idGroup = idGroup;
       }
-      else
+
+      public override string ToString()
       {
-        selection.BringToFront();
+        return groupName;
       }
-      return selection;
     }
 
-    private void buttonManualImport_Click(object sender, EventArgs e)
-    {
-      WebEPGImport importer = new WebEPGImport();
+    #endregion
 
-      importer.ForceImport(ShowImportProgress);
-    }
+    #region Nested type: ShowStatusHandler
 
-    private void ShowImportProgress(WebEPG.WebEPG.Stats status)
-    {
-      Invoke(new ShowStatusHandler(ShowStatus), new object[] {status});
-    }
+    private delegate void ShowStatusHandler(WebEPG.WebEPG.Stats status);
 
-    private void StatusTimer_Tick(object sender, EventArgs e)
-    {
-      ShowStatus();
-    }
-
-    private void DestinationComboBox_SelectedIndexChanged(object sender, EventArgs e)
-    {
-      bool enable = (DestinationComboBox.SelectedIndex == 2);
-
-      textBoxFolder.Enabled = enable;
-      buttonBrowse.Enabled = enable;
-    }
-
-    private void buttonBrowse_Click(object sender, EventArgs e)
-    {
-      folderBrowserDialogTVGuide.ShowDialog();
-      textBoxFolder.Text = folderBrowserDialogTVGuide.SelectedPath;
-    }
-
-    private void Mappings_SelectGrabberClick(object sender, EventArgs e)
-    {
-      ShowGrabberSelection();
-    }
-
-    private void Mappings_AutoMapChannels(object sender, EventArgs e)
-    {
-      WebEPGMappingControl mappings = sender as WebEPGMappingControl;
-      AutoMapChannels(mappings.ChannelMapping.Values);
-    }
+    #endregion
   }
 }

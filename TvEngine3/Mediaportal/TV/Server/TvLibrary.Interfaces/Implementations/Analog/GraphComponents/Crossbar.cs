@@ -33,6 +33,16 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     #region variables
 
     /// <summary>
+    /// Index of the audio output pin
+    /// </summary>
+    private int _audioOut;
+
+    /// <summary>
+    /// Mapping of the available audio source and their pin index
+    /// </summary>
+    private Dictionary<AnalogChannel.AudioInputType, int> _audioPinMap;
+
+    /// <summary>
     /// Name of the crossbar device
     /// </summary>
     private string _name;
@@ -43,11 +53,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     private int _videoOut;
 
     /// <summary>
-    /// Index of the audio output pin
-    /// </summary>
-    private int _audioOut;
-
-    /// <summary>
     /// Mapping of the available video sources and their pin index
     /// </summary>
     private Dictionary<AnalogChannel.VideoInputType, int> _videoPinMap;
@@ -56,11 +61,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     /// Mapping of the available video source to the related audio pin index
     /// </summary>
     private Dictionary<AnalogChannel.VideoInputType, int> _videoPinRelatedAudioMap;
-
-    /// <summary>
-    /// Mapping of the available audio source and their pin index
-    /// </summary>
-    private Dictionary<AnalogChannel.AudioInputType, int> _audioPinMap;
 
     #endregion
 

@@ -36,56 +36,28 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
   /// </summary>
   public sealed unsafe class WaitableTimer : WaitHandle
   {
-    /// <summary>
-    /// Wrap the system function <i>SetWaitableTimer</i>.
-    /// </summary>
-    [DllImport("Kernel32.dll", EntryPoint = "SetWaitableTimer", SetLastError = true)]
-    private static extern bool SetWaitableTimer(SafeWaitHandle hTimer, Int64* pDue, Int32 lPeriod, IntPtr rNotify,
-                                                IntPtr pArgs, bool bResume);
+    #region Delegates
 
-    /// <summary>
-    /// Wrap the system function <i>CreateWaitableTimer</i>.
-    /// </summary>
-    [DllImport("Kernel32.dll", EntryPoint = "CreateWaitableTimer")]
-    private static extern SafeWaitHandle CreateWaitableTimer(IntPtr pSec, bool bManual, string szName);
-
-    /// <summary>
-    /// Wrap the system function <i>CancelWaitableTimer</i>.
-    /// </summary>
-    [DllImport("Kernel32.dll", EntryPoint = "CancelWaitableTimer")]
-    private static extern bool CancelWaitableTimer(SafeWaitHandle hTimer);
-
-    /// <summary>
-    /// Wrap the system function <i>CloseHandle</i>.
-    /// </summary>
-    [DllImport("Kernel32.dll", EntryPoint = "CloseHandle")]
-    private static extern bool CloseHandle(IntPtr hObject);
+    public delegate void TimerExceptionHandler(WaitableTimer sender, TimerException exception);
 
     /// <summary>
     /// Event handler to be used when the timer expires.
     /// </summary>
     public delegate void TimerExpiredHandler();
 
-    public delegate void TimerExceptionHandler(WaitableTimer sender, TimerException exception);
-
-    /// <summary>
-    /// Clients can register for the expiration of this timer.
-    /// </summary>
-    public event TimerExpiredHandler OnTimerExpired;
-
-    public event TimerExceptionHandler OnTimerException;
-
-    /// <summary>
-    /// This <see cref="Thread"/> will be create by <see cref="SecondsToWait"/> and
-    /// runs <see cref="WaitThread"/>.
-    /// </summary>
-    private Thread m_Waiting = null;
+    #endregion
 
     /// <summary>
     /// <see cref="DateTime.ToFileTime"/> of the time when the timer should
     /// expire.
     /// </summary>
     private long m_Interval = 0;
+
+    /// <summary>
+    /// This <see cref="Thread"/> will be create by <see cref="SecondsToWait"/> and
+    /// runs <see cref="WaitThread"/>.
+    /// </summary>
+    private Thread m_Waiting = null;
 
     /// <summary>
     /// Create the timer. The caller should call <see cref="Close"/> as soon as
@@ -106,40 +78,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
       {
         throw new TimerException("Unable to create Waitable Timer");
       }
-    }
-
-    /// <summary>
-    /// Make sure that <see cref="Close"/> is called.
-    /// </summary>
-    ~WaitableTimer()
-    {
-      // Forward
-      Close();
-    }
-
-    /// <summary>
-    /// Stop <see cref="m_Waiting"/> if necessary. To do so <see cref="Thread.Abort"/>
-    /// is used.
-    /// <seealso cref="SecondsToWait"/>
-    /// <seealso cref="Close"/>
-    /// </summary>
-    private void AbortWaiter()
-    {
-      // Kill thread
-      if (null == m_Waiting)
-      {
-        return;
-      }
-
-      // Terminate it
-      try
-      {
-        m_Waiting.Abort();
-      }
-      catch (Exception) {}
-
-      // Detach
-      m_Waiting = null;
     }
 
     /// <summary>
@@ -184,6 +122,72 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
           CancelWaitableTimer(SafeWaitHandle);
         }
       }
+    }
+
+    /// <summary>
+    /// Wrap the system function <i>SetWaitableTimer</i>.
+    /// </summary>
+    [DllImport("Kernel32.dll", EntryPoint = "SetWaitableTimer", SetLastError = true)]
+    private static extern bool SetWaitableTimer(SafeWaitHandle hTimer, Int64* pDue, Int32 lPeriod, IntPtr rNotify,
+                                                IntPtr pArgs, bool bResume);
+
+    /// <summary>
+    /// Wrap the system function <i>CreateWaitableTimer</i>.
+    /// </summary>
+    [DllImport("Kernel32.dll", EntryPoint = "CreateWaitableTimer")]
+    private static extern SafeWaitHandle CreateWaitableTimer(IntPtr pSec, bool bManual, string szName);
+
+    /// <summary>
+    /// Wrap the system function <i>CancelWaitableTimer</i>.
+    /// </summary>
+    [DllImport("Kernel32.dll", EntryPoint = "CancelWaitableTimer")]
+    private static extern bool CancelWaitableTimer(SafeWaitHandle hTimer);
+
+    /// <summary>
+    /// Wrap the system function <i>CloseHandle</i>.
+    /// </summary>
+    [DllImport("Kernel32.dll", EntryPoint = "CloseHandle")]
+    private static extern bool CloseHandle(IntPtr hObject);
+
+    /// <summary>
+    /// Clients can register for the expiration of this timer.
+    /// </summary>
+    public event TimerExpiredHandler OnTimerExpired;
+
+    public event TimerExceptionHandler OnTimerException;
+
+    /// <summary>
+    /// Make sure that <see cref="Close"/> is called.
+    /// </summary>
+    ~WaitableTimer()
+    {
+      // Forward
+      Close();
+    }
+
+    /// <summary>
+    /// Stop <see cref="m_Waiting"/> if necessary. To do so <see cref="Thread.Abort"/>
+    /// is used.
+    /// <seealso cref="SecondsToWait"/>
+    /// <seealso cref="Close"/>
+    /// </summary>
+    private void AbortWaiter()
+    {
+      // Kill thread
+      if (null == m_Waiting)
+      {
+        return;
+      }
+
+      // Terminate it
+      try
+      {
+        m_Waiting.Abort();
+      }
+      catch (Exception) {}
+
+      // Detach
+      m_Waiting = null;
     }
 
     /// <summary>

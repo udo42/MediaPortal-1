@@ -128,7 +128,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
     [DllImport("Resources\\KNCBDACTRL.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool KNCBDA_CI_GetName(Int32 deviceIndex, [MarshalAs(UnmanagedType.LPStr)] StringBuilder name,
-                                                UInt32 bufferSize);
+                                                 UInt32 bufferSize);
 
     /// <summary>
     /// Send CA PMT to the CAM.
@@ -183,7 +183,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
     [DllImport("Resources\\KNCBDACTRL.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     [return: MarshalAs(UnmanagedType.Bool)]
     private static extern bool KNCBDA_CI_SendMenuAnswer(Int32 deviceIndex, byte slotIndex, [MarshalAs(UnmanagedType.Bool)] bool cancel,
-                                                       [In, MarshalAs(UnmanagedType.LPStr)] String menuAnswer);
+                                                        [In, MarshalAs(UnmanagedType.LPStr)] String menuAnswer);
 
     /// <summary>
     /// Enable the use of the KNCBDA_HW_* functions by initialising internal variables and interfaces.
@@ -316,25 +316,20 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
 
     #region callback definitions
 
-    /// <summary>
-    /// Called by the tuner driver when the state of a CI slot changes.
-    /// </summary>
-    /// <param name="slotIndex">The index of the CI slot that changed state.</param>
-    /// <param name="state">The new state of the slot.</param>
-    /// <param name="menuTitle">The CAM root menu title. This will be blank when the CAM has not been completely
-    ///   initialised. Typically this will be the same string as can be retrieved by KNCBDA_CI_GetName().</param>
-    /// <param name="context">The optional context passed to the interface when the interface was opened.</param>
-    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    private delegate void OnKncCiState(
-      byte slotIndex, KncCiState state, [MarshalAs(UnmanagedType.LPStr)] String menuTitle, IntPtr context);
+    #region Nested type: OnKncCiCloseDisplay
 
     /// <summary>
-    /// Called by the tuner driver when the CAM menu is successfully opened.
+    /// Called by the tuner driver when the CAM wants to close the menu.
     /// </summary>
     /// <param name="slotIndex">The index of the CI slot containing the CAM.</param>
+    /// <param name="delay">The delay (in milliseconds) after which the menu should be closed.</param>
     /// <param name="context">The optional context passed to the interface when the interface was opened.</param>
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    private delegate void OnKncCiOpenDisplay(byte slotIndex, IntPtr context);
+    private delegate void OnKncCiCloseDisplay(byte slotIndex, UInt32 delay, IntPtr context);
+
+    #endregion
+
+    #region Nested type: OnKncCiMenu
 
     /// <summary>
     /// Called by the tuner driver to pass the menu meta-data when the user is browsing the CAM menu.
@@ -347,9 +342,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
     /// <param name="context">The optional context passed to the interface when the interface was opened.</param>
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     private delegate void OnKncCiMenu(byte slotIndex, [MarshalAs(UnmanagedType.LPStr)] String title,
-                                            [MarshalAs(UnmanagedType.LPStr)] String subTitle,
-                                            [MarshalAs(UnmanagedType.LPStr)] String footer,
-                                            UInt32 numEntries, IntPtr context);
+                                      [MarshalAs(UnmanagedType.LPStr)] String subTitle,
+                                      [MarshalAs(UnmanagedType.LPStr)] String footer,
+                                      UInt32 numEntries, IntPtr context);
+
+    #endregion
+
+    #region Nested type: OnKncCiMenuEntry
 
     /// <summary>
     /// Called by the tuner driver for each menu entry when the user is browsing the CAM menu.
@@ -361,6 +360,22 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
     private delegate void OnKncCiMenuEntry(
       byte slotIndex, UInt32 entryIndex, [MarshalAs(UnmanagedType.LPStr)] String text, IntPtr context);
+
+    #endregion
+
+    #region Nested type: OnKncCiOpenDisplay
+
+    /// <summary>
+    /// Called by the tuner driver when the CAM menu is successfully opened.
+    /// </summary>
+    /// <param name="slotIndex">The index of the CI slot containing the CAM.</param>
+    /// <param name="context">The optional context passed to the interface when the interface was opened.</param>
+    [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
+    private delegate void OnKncCiOpenDisplay(byte slotIndex, IntPtr context);
+
+    #endregion
+
+    #region Nested type: OnKncCiRequest
 
     /// <summary>
     /// Called by the tuner driver when the CAM requests input from the user.
@@ -374,130 +389,137 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
     private delegate void OnKncCiRequest(
       byte slotIndex, bool blind, UInt32 answerLength, [MarshalAs(UnmanagedType.LPStr)] String text, IntPtr context);
 
+    #endregion
+
+    #region Nested type: OnKncCiState
+
     /// <summary>
-    /// Called by the tuner driver when the CAM wants to close the menu.
+    /// Called by the tuner driver when the state of a CI slot changes.
     /// </summary>
-    /// <param name="slotIndex">The index of the CI slot containing the CAM.</param>
-    /// <param name="delay">The delay (in milliseconds) after which the menu should be closed.</param>
+    /// <param name="slotIndex">The index of the CI slot that changed state.</param>
+    /// <param name="state">The new state of the slot.</param>
+    /// <param name="menuTitle">The CAM root menu title. This will be blank when the CAM has not been completely
+    ///   initialised. Typically this will be the same string as can be retrieved by KNCBDA_CI_GetName().</param>
     /// <param name="context">The optional context passed to the interface when the interface was opened.</param>
     [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
-    private delegate void OnKncCiCloseDisplay(byte slotIndex, UInt32 delay, IntPtr context);
+    private delegate void OnKncCiState(
+      byte slotIndex, KncCiState state, [MarshalAs(UnmanagedType.LPStr)] String menuTitle, IntPtr context);
+
+    #endregion
 
     #endregion
 
     #region constants
 
-    private static readonly string[] ValidDeviceNames = new string[]
-    {
-      "KNC BDA DVB-S",
-      "KNC BDA DVB-S2",
-      "KNC BDA DVB-C",
-      "KNC BDA DVB-T",
-      "7160 KNC BDA DVBS2 Tuner",   // PCI-e: DVB-S2 Twin
-
-      "Mystique SaTiX DVB-S",
-      "Mystique SaTiX DVB-S2",
-      "Mystique CaBiX DVB-C2",
-      "Mystique TeRiX DVB-T2",
-      "Mystique SaTiX-S",
-      "Mystique SaTiX-S2",
-      "Mystique CaBiX-C2",
-      "Mystique TeRiX-T2",
-
-      "Satelco EasyWatch PCI (DVB-S)",
-      "Satelco EasyWatch PCI (DVB-S2)",
-      "Satelco EasyWatch PCI (DVB-C)",
-      "Satelco EasyWatch PCI (DVB-T)"
-    };
-
-    private static readonly string[] ValidDevicePaths = new string[]
-    {
-      // DVB-S - Old
-      "ven_1131&dev_7146&subsys_4f561131",  // KNC
-
-      // DVB-S - SH2
-      "ven_1131&dev_7146&subsys_00101894",  // KNC
-      "ven_1131&dev_7146&subsys_00111894",  // Mystique
-      "ven_1131&dev_7146&subsys_001a1894",  // Satelco
-
-      // DVB-S - X4
-      "ven_1131&dev_7146&subsys_00161894",  // KNC
-      "ven_1131&dev_7146&subsys_00151894",  // Mystique
-      "ven_1131&dev_7146&subsys_001b1894",  // Satelco
-
-      // DVB-S - X4 (no CI)
-      "ven_1131&dev_7146&subsys_00141894",  // KNC
-      "ven_1131&dev_7146&subsys_001e1894",  // Satelco
-
-      // DVB-S - X6
-      "ven_1131&dev_7146&subsys_00191894",  // KNC
-      "ven_1131&dev_7146&subsys_00181894",  // Mystique
-      "ven_1131&dev_7146&subsys_001d1894",  // Satelco
-      "ven_1131&dev_7146&subsys_001f1894",  // Satelco
-
-      // DVB-S2 - Sharp
-      "ven_1131&dev_7146&subsys_00501894",  // KNC
-      "ven_1131&dev_7146&subsys_00511894",  // Mystique
-      "ven_1131&dev_7146&subsys_00521894",  // Satelco
-
-      // DVB-S - X8
-      "ven_1131&dev_7146&subsys_00561894",  // KNC
-      "ven_1131&dev_7146&subsys_00551894",  // Mystique
-      "ven_1131&dev_7146&subsys_005b1894",  // Satelco
-
-      // DVB-S - X8 (no CI)
-      "ven_1131&dev_7146&subsys_00541894",  // KNC
-      "ven_1131&dev_7146&subsys_005e1894",  // Satelco
-
-      // DVB-C - MK2
-      "ven_1131&dev_7146&subsys_00201894",  // KNC
-      "ven_1131&dev_7146&subsys_00211894",  // Mystique
-      "ven_1131&dev_7146&subsys_002a1894",  // Satelco
-
-      // DVB-C - MK3
-      "ven_1131&dev_7146&subsys_00221894",  // KNC
-      "ven_1131&dev_7146&subsys_00231894",  // Mystique
-      "ven_1131&dev_7146&subsys_002c1894",  // Satelco
-
-      // DVB-C - MK32
-      "ven_1131&dev_7146&subsys_00281894",  // KNC
-
-      // DVB-T
-      "ven_1131&dev_7146&subsys_00301894",  // KNC
-      "ven_1131&dev_7146&subsys_00311894",  // Mystique
-      "ven_1131&dev_7146&subsys_003a1894",  // Satelco
-
-      // New KNC PCI-e tuners
-      "ven_1131&dev_7160&subsys_01101894",  // DVB-S/DVB-S2 (not yet released)
-      "ven_1131&dev_7160&subsys_02101894",  // DVB-S2/DVB-S2 (DVB-S2 Twin)
-      "ven_1131&dev_7160&subsys_03101894",  // DVB-T/DVB-C (not yet released)
-    };
-
     private const int CallbackSetSize = 28;
     private const int MaxDiseqcCommandLength = 64;
+
+    private static readonly string[] ValidDeviceNames = new string[]
+                                                          {
+                                                            "KNC BDA DVB-S",
+                                                            "KNC BDA DVB-S2",
+                                                            "KNC BDA DVB-C",
+                                                            "KNC BDA DVB-T",
+                                                            "7160 KNC BDA DVBS2 Tuner",   // PCI-e: DVB-S2 Twin
+
+                                                            "Mystique SaTiX DVB-S",
+                                                            "Mystique SaTiX DVB-S2",
+                                                            "Mystique CaBiX DVB-C2",
+                                                            "Mystique TeRiX DVB-T2",
+                                                            "Mystique SaTiX-S",
+                                                            "Mystique SaTiX-S2",
+                                                            "Mystique CaBiX-C2",
+                                                            "Mystique TeRiX-T2",
+
+                                                            "Satelco EasyWatch PCI (DVB-S)",
+                                                            "Satelco EasyWatch PCI (DVB-S2)",
+                                                            "Satelco EasyWatch PCI (DVB-C)",
+                                                            "Satelco EasyWatch PCI (DVB-T)"
+                                                          };
+
+    private static readonly string[] ValidDevicePaths = new string[]
+                                                          {
+                                                            // DVB-S - Old
+                                                            "ven_1131&dev_7146&subsys_4f561131",  // KNC
+
+                                                            // DVB-S - SH2
+                                                            "ven_1131&dev_7146&subsys_00101894",  // KNC
+                                                            "ven_1131&dev_7146&subsys_00111894",  // Mystique
+                                                            "ven_1131&dev_7146&subsys_001a1894",  // Satelco
+
+                                                            // DVB-S - X4
+                                                            "ven_1131&dev_7146&subsys_00161894",  // KNC
+                                                            "ven_1131&dev_7146&subsys_00151894",  // Mystique
+                                                            "ven_1131&dev_7146&subsys_001b1894",  // Satelco
+
+                                                            // DVB-S - X4 (no CI)
+                                                            "ven_1131&dev_7146&subsys_00141894",  // KNC
+                                                            "ven_1131&dev_7146&subsys_001e1894",  // Satelco
+
+                                                            // DVB-S - X6
+                                                            "ven_1131&dev_7146&subsys_00191894",  // KNC
+                                                            "ven_1131&dev_7146&subsys_00181894",  // Mystique
+                                                            "ven_1131&dev_7146&subsys_001d1894",  // Satelco
+                                                            "ven_1131&dev_7146&subsys_001f1894",  // Satelco
+
+                                                            // DVB-S2 - Sharp
+                                                            "ven_1131&dev_7146&subsys_00501894",  // KNC
+                                                            "ven_1131&dev_7146&subsys_00511894",  // Mystique
+                                                            "ven_1131&dev_7146&subsys_00521894",  // Satelco
+
+                                                            // DVB-S - X8
+                                                            "ven_1131&dev_7146&subsys_00561894",  // KNC
+                                                            "ven_1131&dev_7146&subsys_00551894",  // Mystique
+                                                            "ven_1131&dev_7146&subsys_005b1894",  // Satelco
+
+                                                            // DVB-S - X8 (no CI)
+                                                            "ven_1131&dev_7146&subsys_00541894",  // KNC
+                                                            "ven_1131&dev_7146&subsys_005e1894",  // Satelco
+
+                                                            // DVB-C - MK2
+                                                            "ven_1131&dev_7146&subsys_00201894",  // KNC
+                                                            "ven_1131&dev_7146&subsys_00211894",  // Mystique
+                                                            "ven_1131&dev_7146&subsys_002a1894",  // Satelco
+
+                                                            // DVB-C - MK3
+                                                            "ven_1131&dev_7146&subsys_00221894",  // KNC
+                                                            "ven_1131&dev_7146&subsys_00231894",  // Mystique
+                                                            "ven_1131&dev_7146&subsys_002c1894",  // Satelco
+
+                                                            // DVB-C - MK32
+                                                            "ven_1131&dev_7146&subsys_00281894",  // KNC
+
+                                                            // DVB-T
+                                                            "ven_1131&dev_7146&subsys_00301894",  // KNC
+                                                            "ven_1131&dev_7146&subsys_00311894",  // Mystique
+                                                            "ven_1131&dev_7146&subsys_003a1894",  // Satelco
+
+                                                            // New KNC PCI-e tuners
+                                                            "ven_1131&dev_7160&subsys_01101894",  // DVB-S/DVB-S2 (not yet released)
+                                                            "ven_1131&dev_7160&subsys_02101894",  // DVB-S2/DVB-S2 (DVB-S2 Twin)
+                                                            "ven_1131&dev_7160&subsys_03101894",  // DVB-T/DVB-C (not yet released)
+                                                          };
 
     #endregion
 
     #region variables
 
-    private bool _isKnc = false;
-    private bool _isPcie = false;
-    private int _deviceIndex = -1;
-    private byte _slotIndex = 0;
-    private String _name = "KNC";
+    private IntPtr _callbackBuffer = IntPtr.Zero;
+    private KncCiCallbacks _callbacks;
+    private IBaseFilter _captureFilter = null;
+    private ICiMenuCallbacks _ciMenuCallbacks = null;
     private KncCiState _ciState = KncCiState.Releasing;
+    private int _deviceIndex = -1;
+    private IntPtr _diseqcBuffer = IntPtr.Zero;
+    private IGraphBuilder _graphBuilder = null;
     private bool _isCamPresent = false;
     private bool _isCamReady = false;
-
-    private IntPtr _diseqcBuffer = IntPtr.Zero;
-    private IntPtr _callbackBuffer = IntPtr.Zero;
+    private bool _isKnc = false;
+    private bool _isPcie = false;
+    private String _name = "KNC";
+    private byte _slotIndex = 0;
 
     private IBaseFilter _tunerFilter = null;
-    private IBaseFilter _captureFilter = null;
-    private IGraphBuilder _graphBuilder = null;
-
-    private KncCiCallbacks _callbacks;
-    private ICiMenuCallbacks _ciMenuCallbacks = null;
 
     #endregion
 

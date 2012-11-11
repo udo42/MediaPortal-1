@@ -54,106 +54,101 @@ namespace Mediaportal.TV.TvPlugin
   /// </summary>
   public class TvFullScreen : GUIInternalWindow, IRenderLayer, IMDB.IProgress
   {
-  
     #region FullScreenState class
 
     private class FullScreenState
     {
-      public int SeekStep = 1;
-      public int Speed = 1;
+      public bool ContextMenuVisible = false;
+      public bool MsgBoxVisible = false;
       public bool OsdVisible = false;
       public bool Paused = false;
-      //public bool MsnVisible = false;       // msn related can be removed
-      public bool ContextMenuVisible = false;
-      public bool ShowStatusLine = false;
-      public bool ShowTime = false;
-      public bool ZapOsdVisible = false;
-      public bool MsgBoxVisible = false;
+      public int SeekStep = 1;
       public bool ShowGroup = false;
       public bool ShowInput = false;
-      public bool _notifyDialogVisible = false;
+      //public bool MsnVisible = false;       // msn related can be removed
+      public bool ShowStatusLine = false;
+      public bool ShowTime = false;
+      public int Speed = 1;
+      public bool ZapOsdVisible = false;
       public bool _bottomDialogMenuVisible = false;
-      public bool wasVMRBitmapVisible = false;
-      public bool volumeVisible = false;
       public bool _dialogYesNoVisible = false;
+      public bool _notifyDialogVisible = false;
+      public bool volumeVisible = false;
+      public bool wasVMRBitmapVisible = false;
     }
 
     #endregion
 
     #region variables
 
-    private bool _stepSeekVisible = false;
-    private bool _statusVisible = false;
-    private bool _groupVisible = false;
+    private bool _IsClosingDialog = false;
+    private List<Geometry.Type> _allowedArModes = new List<Geometry.Type>();
+    private bool _autoZapMode = false;
+    private Timer _autoZapTimer = new Timer();
+    private bool _bottomDialogMenuVisible = false;
     private bool _byIndex = false;
-    private DateTime _statusTimeOutTimer = DateTime.Now;
-
-    ///@
-    private TvZapOsd _zapWindow = null;
-
-    private TvOsd _osdWindow = null;
-
-    ///GUITVMSNOSD _msnWindow = null;       // msn related can be removed
-    private DateTime _osdTimeoutTimer;
-
-    private DateTime _zapTimeOutTimer;
+    private bool _channelInputVisible = false;
+    private string _channelName = "";
+    private int _channelNumberMaxLength = 3;
+    private GUIDialogMenuBottomRight _dialogBottomMenu = null;
+    private bool _dialogYesNoVisible = false;
+    private GUIDialogYesNo _dlgYesNo = null;
+    private TvPlugin.TVHome.ChannelErrorInfo _gotTvErrorMessage = null;
     private DateTime _groupTimeOutTimer;
-    private DateTime _vmr7UpdateTimer = DateTime.Now;
+    private bool _groupVisible = false;
+    private bool _immediateSeekIsRelative = true;
+    private int _immediateSeekValue = 10;
+    private bool _isDialogVisible = false;
     //		string			m_sZapChannel;
     //		long				m_iZapDelay;
     private volatile bool _isOsdVisible = false;
     private volatile bool _isPauseOsdVisible = false;
-    private volatile bool _zapOsdVisible = false;
-    //bool _msnWindowVisible = false;       // msn related can be removed
-    private bool _channelInputVisible = false;
-
-    private long _timeOsdOnscreen;
-    private long _zapTimeOutValue;
-    private DateTime _updateTimer = DateTime.Now;
-    private DateTime _updateTimerProgressbar = DateTime.Now;
+    private bool _isStartingTSForRecording = false;
+    private bool _isVolumeVisible = false;
+    private DateTime _keyPressedTimer = DateTime.Now;
     private bool _lastPause = false;
     private int _lastSpeed = 1;
-    private DateTime _keyPressedTimer = DateTime.Now;
-    private string _channelName = "";
-    private bool _isDialogVisible = false;
-    private bool _IsClosingDialog = false;
-    //bool _isMsnChatPopup = false;       // msn related can be removed
-    private GUIDialogMenu dlg;
-    private GUIDialogMenuBottomRight _dialogBottomMenu = null;
-    private GUIDialogYesNo _dlgYesNo = null;
-    // Message box
-    private bool _dialogYesNoVisible = false;
-    private bool _notifyDialogVisible = false;
-    private bool _bottomDialogMenuVisible = false;
     private bool _messageBoxVisible = false;
-    private DateTime _msgTimer = DateTime.Now;
     private int _msgBoxTimeout = 0;
+    private DateTime _msgTimer = DateTime.Now;
     private bool _needToClearScreen = false;
-    private bool _useVMR9Zap = false;
-    private bool _immediateSeekIsRelative = true;
-    private int _immediateSeekValue = 10;
-    private int _channelNumberMaxLength = 3;
+    private bool _notifyDialogVisible = false;
 
-    // Tv error handling
-    private TvPlugin.TVHome.ChannelErrorInfo _gotTvErrorMessage = null;
+    ///GUITVMSNOSD _msnWindow = null;       // msn related can be removed
+    private DateTime _osdTimeoutTimer;
+
+    private TvOsd _osdWindow = null;
 
     ///@
     ///VMR9OSD _vmr9OSD = null;
     private FullScreenState _screenState = new FullScreenState();
 
-    private bool _isVolumeVisible = false;
+    private bool _settingsLoaded;
+    private DateTime _statusTimeOutTimer = DateTime.Now;
+    private bool _statusVisible = false;
+    private bool _stepSeekVisible = false;
+    private long _timeOsdOnscreen;
+    private DateTime _updateTimer = DateTime.Now;
+    private DateTime _updateTimerProgressbar = DateTime.Now;
+    private bool _useVMR9Zap = false;
+    private DateTime _vmr7UpdateTimer = DateTime.Now;
+
     private DateTime _volumeTimer = DateTime.MinValue;
-    private bool _isStartingTSForRecording = false;
-    private bool _autoZapMode = false;
-    private Timer _autoZapTimer = new Timer();
-    [SkinControl(500)] protected GUIImage imgVolumeMuteIcon;
+    private volatile bool _zapOsdVisible = false;
+    private DateTime _zapTimeOutTimer;
+    private long _zapTimeOutValue;
+
+    ///@
+    private TvZapOsd _zapWindow = null;
+
+    private GUIDialogMenu dlg;
+
     [SkinControl(501)] protected GUIVolumeBar imgVolumeBar;
+    [SkinControl(500)] protected GUIImage imgVolumeMuteIcon;
 
     private int lastChannelWithNoSignal = -1;
     private VideoRendererStatistics.State videoState = VideoRendererStatistics.State.VideoPresent;
-    private List<Geometry.Type> _allowedArModes = new List<Geometry.Type>();
 
-    private bool _settingsLoaded;
     #endregion
 
     #region enums
@@ -234,71 +229,7 @@ namespace Mediaportal.TV.TvPlugin
       return true;
     }
 
-    #region serialisation
-
-    private void LoadSettings()
-    {
-      using (Settings xmlreader = new MPSettings())
-      {
-        //_isMsnChatPopup = (xmlreader.GetValueAsInt("MSNmessenger", "popupwindow", 0) == 1);       // msn related can be removed
-        _timeOsdOnscreen = 1000 * xmlreader.GetValueAsInt("movieplayer", "osdtimeout", 5);
-        //				m_iZapDelay = 1000*xmlreader.GetValueAsInt("movieplayer","zapdelay",2);
-        _zapTimeOutValue = 1000 * xmlreader.GetValueAsInt("movieplayer", "zaptimeout", 5);
-        _byIndex = xmlreader.GetValueAsBool("mytv", "byindex", true);
-        _channelNumberMaxLength = xmlreader.GetValueAsInt("mytv", "channelnumbermaxlength", 3);
-        if (xmlreader.GetValueAsBool("mytv", "allowarzoom", true))
-        {
-          _allowedArModes.Add(Geometry.Type.Zoom);
-        }
-        if (xmlreader.GetValueAsBool("mytv", "allowarstretch", true))
-        {
-          _allowedArModes.Add(Geometry.Type.Stretch);
-        }
-        if (xmlreader.GetValueAsBool("mytv", "allowarnormal", true))
-        {
-          _allowedArModes.Add(Geometry.Type.Normal);
-        }
-        if (xmlreader.GetValueAsBool("mytv", "allowaroriginal", true))
-        {
-          _allowedArModes.Add(Geometry.Type.Original);
-        }
-        if (xmlreader.GetValueAsBool("mytv", "allowarletterbox", true))
-        {
-          _allowedArModes.Add(Geometry.Type.LetterBox43);
-        }
-        if (xmlreader.GetValueAsBool("mytv", "allowarnonlinear", true))
-        {
-          _allowedArModes.Add(Geometry.Type.NonLinearStretch);
-        }
-        if (xmlreader.GetValueAsBool("mytv", "allowarzoom149", true))
-        {
-          _allowedArModes.Add(Geometry.Type.Zoom14to9);
-        }
-        if (!TVHome.settingsLoaded)
-        {
-          string strValue = xmlreader.GetValueAsString("mytv", "defaultar", "Normal");
-          GUIGraphicsContext.ARType = Utils.GetAspectRatio(strValue);
-        }
-      }
-
-      SettingsLoaded = true;
-    }
-
-    //		public string ZapChannel
-    //		{
-    //			set
-    //			{
-    //				m_sZapChannel = value;
-    //			}
-    //			get
-    //			{
-    //				return m_sZapChannel;
-    //			}
-    //		}
-
-    #endregion
-
-		public override void ResetAllControls()
+    public override void ResetAllControls()
 		{
 			//reset all
 
@@ -2036,19 +1967,6 @@ namespace Mediaportal.TV.TvPlugin
       OnMessage(msg);
     }
 
-    #region CI Menu 
-
-    /// <summary>
-    /// Sets callbacks and calls EnterCiMenu; Actions are done from callbacks and handled in TVHome globally
-    /// </summary>
-    private void PrepareCiMenu()
-    {
-      TVHome.RegisterCiMenu(TVHome.Card.Id); // Ensure listener attached
-      TVHome.Card.EnterCiMenu(); // Enter menu. Dialog shows up on callback
-    }
-
-    #endregion
-
     private void SortChannels()
     {
       GUIWindowManager.ActivateWindow((int)Window.WINDOW_SETTINGS_SORT_CHANNELS);
@@ -3256,6 +3174,72 @@ namespace Mediaportal.TV.TvPlugin
       }
     }
 
+    protected bool GetKeyboard(ref string strLine)
+    {
+      VirtualKeyboard keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
+      if (null == keyboard)
+      {
+        return false;
+      }
+      keyboard.Reset();
+      keyboard.Text = strLine;
+      keyboard.DoModal(GetID);
+      if (keyboard.IsConfirmed)
+      {
+        strLine = keyboard.Text;
+        return true;
+      }
+      return false;
+    }
+
+    private void g_Player_PlayBackChanged(g_Player.MediaType type, int stoptime, string filename)
+    {
+      SettingsLoaded = false; // we should reload
+    }
+
+    private void g_Player_PlayBackStopped(g_Player.MediaType type, int stoptime, string filename)
+    {
+      SettingsLoaded = false; // we should reload
+      // playback was stopped, if we are the current window, close our context menu, so we also get closed
+      if (type != g_Player.MediaType.Recording && type != g_Player.MediaType.TV) return;
+      if (GUIWindowManager.ActiveWindow != GetID) return;
+      if (!_IsClosingDialog)
+      {
+        _IsClosingDialog = true;
+        GUIDialogWindow.CloseRoutedWindow();
+        _IsClosingDialog = false;
+      }
+    }
+
+    private void g_Player_PlayBackEnded(g_Player.MediaType type, string filename)
+    {
+      SettingsLoaded = false; // we should reload
+      // playback ended, if we are the current window, close our context menu, so we also get closed
+      if (type != g_Player.MediaType.Recording && type != g_Player.MediaType.TV) return;
+      if (GUIWindowManager.ActiveWindow != GetID) return;
+      if (!_IsClosingDialog)
+      {
+        _IsClosingDialog = true;
+        GUIDialogWindow.CloseRoutedWindow();
+        _IsClosingDialog = false;
+      }
+    }
+
+    #region Properties
+    private bool SettingsLoaded
+    {
+      get
+      {
+        return _settingsLoaded;
+      }
+      set
+      {
+        _settingsLoaded = value;
+        //maybe additional logic?
+      }
+    }
+    #endregion
+
     #region IRenderLayer
 
     public bool ShouldRenderLayer()
@@ -3475,71 +3459,81 @@ namespace Mediaportal.TV.TvPlugin
 
     #endregion
 
-    protected bool GetKeyboard(ref string strLine)
+    #region CI Menu 
+
+    /// <summary>
+    /// Sets callbacks and calls EnterCiMenu; Actions are done from callbacks and handled in TVHome globally
+    /// </summary>
+    private void PrepareCiMenu()
     {
-      VirtualKeyboard keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
-      if (null == keyboard)
-      {
-        return false;
-      }
-      keyboard.Reset();
-      keyboard.Text = strLine;
-      keyboard.DoModal(GetID);
-      if (keyboard.IsConfirmed)
-      {
-        strLine = keyboard.Text;
-        return true;
-      }
-      return false;
+      TVHome.RegisterCiMenu(TVHome.Card.Id); // Ensure listener attached
+      TVHome.Card.EnterCiMenu(); // Enter menu. Dialog shows up on callback
     }
 
-    private void g_Player_PlayBackChanged(g_Player.MediaType type, int stoptime, string filename)
-    {
-      SettingsLoaded = false; // we should reload
-    }
-
-    private void g_Player_PlayBackStopped(g_Player.MediaType type, int stoptime, string filename)
-    {
-      SettingsLoaded = false; // we should reload
-      // playback was stopped, if we are the current window, close our context menu, so we also get closed
-      if (type != g_Player.MediaType.Recording && type != g_Player.MediaType.TV) return;
-      if (GUIWindowManager.ActiveWindow != GetID) return;
-      if (!_IsClosingDialog)
-      {
-        _IsClosingDialog = true;
-        GUIDialogWindow.CloseRoutedWindow();
-        _IsClosingDialog = false;
-      }
-    }
-
-    private void g_Player_PlayBackEnded(g_Player.MediaType type, string filename)
-    {
-      SettingsLoaded = false; // we should reload
-      // playback ended, if we are the current window, close our context menu, so we also get closed
-      if (type != g_Player.MediaType.Recording && type != g_Player.MediaType.TV) return;
-      if (GUIWindowManager.ActiveWindow != GetID) return;
-      if (!_IsClosingDialog)
-      {
-        _IsClosingDialog = true;
-        GUIDialogWindow.CloseRoutedWindow();
-        _IsClosingDialog = false;
-      }
-    }
-
-    #region Properties
-    private bool SettingsLoaded
-    {
-      get
-      {
-        return _settingsLoaded;
-      }
-      set
-      {
-        _settingsLoaded = value;
-        //maybe additional logic?
-      }
-    }
     #endregion
 
+    #region serialisation
+
+    private void LoadSettings()
+    {
+      using (Settings xmlreader = new MPSettings())
+      {
+        //_isMsnChatPopup = (xmlreader.GetValueAsInt("MSNmessenger", "popupwindow", 0) == 1);       // msn related can be removed
+        _timeOsdOnscreen = 1000 * xmlreader.GetValueAsInt("movieplayer", "osdtimeout", 5);
+        //				m_iZapDelay = 1000*xmlreader.GetValueAsInt("movieplayer","zapdelay",2);
+        _zapTimeOutValue = 1000 * xmlreader.GetValueAsInt("movieplayer", "zaptimeout", 5);
+        _byIndex = xmlreader.GetValueAsBool("mytv", "byindex", true);
+        _channelNumberMaxLength = xmlreader.GetValueAsInt("mytv", "channelnumbermaxlength", 3);
+        if (xmlreader.GetValueAsBool("mytv", "allowarzoom", true))
+        {
+          _allowedArModes.Add(Geometry.Type.Zoom);
+        }
+        if (xmlreader.GetValueAsBool("mytv", "allowarstretch", true))
+        {
+          _allowedArModes.Add(Geometry.Type.Stretch);
+        }
+        if (xmlreader.GetValueAsBool("mytv", "allowarnormal", true))
+        {
+          _allowedArModes.Add(Geometry.Type.Normal);
+        }
+        if (xmlreader.GetValueAsBool("mytv", "allowaroriginal", true))
+        {
+          _allowedArModes.Add(Geometry.Type.Original);
+        }
+        if (xmlreader.GetValueAsBool("mytv", "allowarletterbox", true))
+        {
+          _allowedArModes.Add(Geometry.Type.LetterBox43);
+        }
+        if (xmlreader.GetValueAsBool("mytv", "allowarnonlinear", true))
+        {
+          _allowedArModes.Add(Geometry.Type.NonLinearStretch);
+        }
+        if (xmlreader.GetValueAsBool("mytv", "allowarzoom149", true))
+        {
+          _allowedArModes.Add(Geometry.Type.Zoom14to9);
+        }
+        if (!TVHome.settingsLoaded)
+        {
+          string strValue = xmlreader.GetValueAsString("mytv", "defaultar", "Normal");
+          GUIGraphicsContext.ARType = Utils.GetAspectRatio(strValue);
+        }
+      }
+
+      SettingsLoaded = true;
+    }
+
+    //		public string ZapChannel
+    //		{
+    //			set
+    //			{
+    //				m_sZapChannel = value;
+    //			}
+    //			get
+    //			{
+    //				return m_sZapChannel;
+    //			}
+    //		}
+
+    #endregion
   }
 }

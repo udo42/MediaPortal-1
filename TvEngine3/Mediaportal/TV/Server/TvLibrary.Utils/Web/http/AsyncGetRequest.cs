@@ -29,19 +29,21 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
 {
   public class AsyncGetRequest
   {
-    public const string DefaultUserAgent = "Mozilla/4.0 (compatible; MSIE 7.0; WindowsNT 5.0; .NET CLR 1 .1.4322)";
+    #region Delegates
 
     public delegate void AsyncGetRequestCompleted(
       List<String> responseStrings, HttpStatusCode responseStatus, String requestedURLCommand);
 
-    public event AsyncGetRequestCompleted workerFinished;
-
     public delegate void AsyncGetRequestError(String commandURL, Exception errorReason);
 
-    public event AsyncGetRequestError workerError;
+    #endregion
+
+    public const string DefaultUserAgent = "Mozilla/4.0 (compatible; MSIE 7.0; WindowsNT 5.0; .NET CLR 1 .1.4322)";
 
     // not really threadsafe but this is only used for the following param - no harm if overwritten
     private int _requestDelay = 0;
+    public event AsyncGetRequestCompleted workerFinished;
+    public event AsyncGetRequestError workerError;
 
     public void SendAsyncGetRequest(String _url)
     {

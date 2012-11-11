@@ -28,32 +28,17 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
 {
   public class Logger : IntegrationProvider.Interfaces.ILogger
   {
-    private readonly Type _runtimeType;
     private static readonly IDictionary<Type, ILogger> _logCache = new Dictionary<Type, ILogger>();
     private static readonly object _logCacheLock = new object();
+    private readonly Type _runtimeType;
 
     public Logger ()
     {
       _runtimeType = GetType();
     }
-    
-    private static ILogger GetLogger(Type type)
-    {
-      ILogger logger;
-      lock (_logCacheLock)
-      {
-        bool hasLogger = _logCache.TryGetValue(type, out logger);
-        if (!hasLogger)
-        {
-          var container = GlobalServiceProvider.Instance.Get<IWindsorContainer>();
-          var loggerFactory = container.Resolve<ILoggerFactory>();
-          logger = loggerFactory.Create(type);      
-          _logCache[type] = logger;
-        }
-      }
-      return logger;
-    }
-   
+
+    #region ILogger Members
+
     /// <summary>
     /// Writes a debug message to the log.
     /// </summary>
@@ -295,6 +280,25 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     public void Critical(Exception ex)
     {
       Critical(_runtimeType, ex);
+    }
+
+    #endregion
+
+    private static ILogger GetLogger(Type type)
+    {
+      ILogger logger;
+      lock (_logCacheLock)
+      {
+        bool hasLogger = _logCache.TryGetValue(type, out logger);
+        if (!hasLogger)
+        {
+          var container = GlobalServiceProvider.Instance.Get<IWindsorContainer>();
+          var loggerFactory = container.Resolve<ILoggerFactory>();
+          logger = loggerFactory.Create(type);      
+          _logCache[type] = logger;
+        }
+      }
+      return logger;
     }
   }
 }

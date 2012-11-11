@@ -42,7 +42,6 @@ namespace Mediaportal.TV.TvPlugin.Radio
   [PluginIcons("Resources\\TvPlugin.Radio.gif", "Resources\\TvPlugin.Radio_disabled.gif")]
   public class Radio : WindowPluginBase, IComparer<GUIListItem>, ISetupForm, IShowPlugin
   {
-
     #region constants    
 
     #endregion
@@ -64,18 +63,18 @@ namespace Mediaportal.TV.TvPlugin.Radio
 
     private static Channel _currentChannel = null;
     private static bool _autoTurnOnRadio = false;
-    private SortMethod currentSortMethod = SortMethod.Number;    
-    private readonly DirectoryHistory directoryHistory = new DirectoryHistory();
-    private string currentFolder = null;
-    private string lastFolder = "..";
-    private int selectedItemIndex = -1;
     private static bool hideAllChannelsGroup = false;
-    private string rootGroup = "(none)";
     private static ChannelGroup selectedGroup;
     public static List<ChannelGroup> AllRadioGroups = new List<ChannelGroup>();
+    private readonly DirectoryHistory directoryHistory = new DirectoryHistory();
+    private string currentFolder = null;
+    private SortMethod currentSortMethod = SortMethod.Number;
+    private string lastFolder = "..";
+    private string rootGroup = "(none)";
+    private int selectedItemIndex = -1;
 
     #endregion
-    
+
     #region properties
     
     public static Channel CurrentChannel {
@@ -104,8 +103,8 @@ namespace Mediaportal.TV.TvPlugin.Radio
 
     #region SkinControls
 
-    [SkinControl(6)] protected GUIButtonControl btnPrevious = null;
     [SkinControl(7)] protected GUIButtonControl btnNext = null;
+    [SkinControl(6)] protected GUIButtonControl btnPrevious = null;
 
     #endregion
 
@@ -115,103 +114,218 @@ namespace Mediaportal.TV.TvPlugin.Radio
       GetID = (int)Window.WINDOW_RADIO;
     }
 
-    public override bool Init()
-    {      
-      return Load(GUIGraphicsContext.Skin + @"\MyRadio.xml");
-    }
-
-    #region Serialisation
-
-    protected override void LoadSettings()
-    {
-      base.LoadSettings();
-      using (Settings xmlreader = new MPSettings())
-      {
-        currentLayout = (GUIFacadeControl.Layout)xmlreader.GetValueAsInt(SerializeName, "layout", (int)GUIFacadeControl.Layout.List);
-        m_bSortAscending = xmlreader.GetValueAsBool(SerializeName, "sortasc", true);
-
-        string tmpLine = xmlreader.GetValue("myradio", "sort");
-        if (tmpLine != null)
-        {
-          if (tmpLine == "name")
-          {
-            currentSortMethod = SortMethod.Name;
-          }
-          else if (tmpLine == "type")
-          {
-            currentSortMethod = SortMethod.Type;
-          }
-          else if (tmpLine == "genre")
-          {
-            currentSortMethod = SortMethod.Genre;
-          }
-          else if (tmpLine == "bitrate")
-          {
-            currentSortMethod = SortMethod.Bitrate;
-          }
-          else if (tmpLine == "number")
-          {
-            currentSortMethod = SortMethod.Number;
-          }
-        }
-
-        if (xmlreader.GetValueAsBool("myradio", "rememberlastgroup", true))
-        {
-          currentFolder = xmlreader.GetValueAsString("myradio", "lastgroup", null);
-        }
-        hideAllChannelsGroup = xmlreader.GetValueAsBool("myradio", "hideAllChannelsGroup", false);
-        rootGroup = xmlreader.GetValueAsString("myradio", "rootgroup", "(none)");
-
-        _autoTurnOnRadio = xmlreader.GetValueAsBool("myradio", "autoturnonradio", false);
-      }
-    }
-
-    protected override void SaveSettings()
-    {
-      base.SaveSettings();
-      using (Settings xmlwriter = new MPSettings())
-      {
-        xmlwriter.SetValue(SerializeName, "layout", (int)currentLayout);
-        xmlwriter.SetValueAsBool(SerializeName, "sortasc", m_bSortAscending);
-        
-        switch (currentSortMethod)
-        {
-          case SortMethod.Name:
-            xmlwriter.SetValue("myradio", "sort", "name");
-            break;
-          case SortMethod.Type:
-            xmlwriter.SetValue("myradio", "sort", "type");
-            break;
-          case SortMethod.Genre:
-            xmlwriter.SetValue("myradio", "sort", "genre");
-            break;
-          case SortMethod.Bitrate:
-            xmlwriter.SetValue("myradio", "sort", "bitrate");
-            break;
-          case SortMethod.Number:
-            xmlwriter.SetValue("myradio", "sort", "number");
-            break;
-        }
-
-        xmlwriter.SetValue("myradio", "lastgroup", lastFolder);
-        if (_currentChannel != null)
-        {
-            xmlwriter.SetValue("myradio", "channel", _currentChannel.DisplayName);
-        }
-        
-      }
-    }
-
-    #endregion
-
-    #region BaseWindow Members
-
     protected override string SerializeName
     {
       get
       {
         return "myradio";
       }
+    }
+
+    #region IComparer<GUIListItem> Members
+
+    public int Compare(GUIListItem item1, GUIListItem item2)
+    {
+      if (item1 == item2)
+      {
+        return 0;
+      }
+      if (item1 == null)
+      {
+        return -1;
+      }
+      if (item2 == null)
+      {
+        return -1;
+      }
+      if (item1.IsFolder && item1.Label == "..")
+      {
+        return -1;
+      }
+      if (item2.IsFolder && item2.Label == "..")
+      {
+        return -1;
+      }
+      if (item1.IsFolder && !item2.IsFolder)
+      {
+        return -1;
+      }
+      if (!item1.IsFolder && item2.IsFolder)
+      {
+        return 1;
+      }
+
+
+      SortMethod method = currentSortMethod;
+      bool bAscending = m_bSortAscending;
+      Channel channel1 = item1.MusicTag as Channel;
+      Channel channel2 = item2.MusicTag as Channel;
+      switch (method)
+      {
+        case SortMethod.Name:
+          if (bAscending)
+          {
+            return String.Compare(item1.Label, item2.Label, true);
+          }
+          return String.Compare(item2.Label, item1.Label, true);
+
+        case SortMethod.Type:
+          string strURL1 = "0";
+          string strURL2 = "0";
+          if (item1.IconImage.ToLower().Equals("defaultmyradiostream.png"))
+          {
+            strURL1 = "1";
+          }
+          if (item2.IconImage.ToLower().Equals("defaultmyradiostream.png"))
+          {
+            strURL2 = "1";
+          }
+          if (strURL1.Equals(strURL2))
+          {
+            if (bAscending)
+            {
+              return String.Compare(item1.Label, item2.Label, true);
+            }
+            return String.Compare(item2.Label, item1.Label, true);
+          }
+          if (bAscending)
+          {
+            if (strURL1.Length > 0)
+            {
+              return 1;
+            }
+            return -1;
+          }
+          if (strURL1.Length > 0)
+          {
+            return -1;
+          }
+          return 1;
+          //break;
+
+        case SortMethod.Number:
+          if (channel1 != null && channel2 != null)
+          {
+            GroupMap channel1GroupMap = (GroupMap)item1.AlbumInfoTag;
+            GroupMap channel2GroupMap = (GroupMap)item2.AlbumInfoTag;
+            int channel1GroupSort = channel1GroupMap.SortOrder;
+            int channel2GroupSort = channel2GroupMap.SortOrder;
+            if (bAscending)
+            {
+              if (channel1GroupSort > channel2GroupSort)
+              {
+                return 1;
+              }
+              return -1;
+            }
+            if (channel2GroupSort > channel1GroupSort)
+            {
+              return 1;
+            }
+            return -1;
+          }
+
+          if (channel1 != null)
+          {
+            return -1;
+          }
+          return channel2 != null ? 1 : 0;
+          //break;
+        case SortMethod.Bitrate:
+          IList<TuningDetail> details1 = channel1.TuningDetails;
+          TuningDetail detail1 = details1[0];
+          IList<TuningDetail> details2 = channel2.TuningDetails;
+          TuningDetail detail2 = details2[0];
+          if (detail1 != null && detail2 != null)
+          {
+            if (bAscending)
+            {
+              if (detail1.Bitrate > detail2.Bitrate)
+              {
+                return 1;
+              }
+              return -1;
+            }
+            if (detail2.Bitrate > detail1.Bitrate)
+            {
+              return 1;
+            }
+            return -1;
+          }
+          return 0;
+      }
+      return 0;
+    }
+
+    #endregion
+
+    #region ISetupForm Members
+
+    public bool CanEnable()
+    {
+      return true;
+    }
+
+    public string PluginName()
+    {
+      return "Radio";
+    }
+
+    public bool HasSetup()
+    {
+      return true;
+    }
+
+    public bool DefaultEnabled()
+    {
+      return true;
+    }
+
+    public int GetWindowId()
+    {
+      return GetID;
+    }
+
+    public bool GetHome(out string strButtonText, out string strButtonImage, out string strButtonImageFocus,
+                        out string strPictureImage)
+    {
+      strButtonText = GUILocalizeStrings.Get(665);
+      strButtonImage = String.Empty;
+      strButtonImageFocus = String.Empty;
+      strPictureImage = @"hover_my radio.png";
+      return true;
+    }
+
+    public string Author()
+    {
+      return "Frodo, gemx";
+    }
+
+    public string Description()
+    {
+      return "Connect to TV service to listen to analog, DVB and internet radio";
+    }
+
+    public void ShowPlugin()
+    {
+      RadioSetupForm setup = new RadioSetupForm();
+      setup.ShowDialog();
+    }
+
+    #endregion
+
+    #region IShowPlugin Members
+
+    public bool ShowDefaultHome()
+    {
+      return true;
+    }
+
+    #endregion
+
+    public override bool Init()
+    {      
+      return Load(GUIGraphicsContext.Skin + @"\MyRadio.xml");
     }
 
     public override void OnAction(Action action)
@@ -571,14 +685,10 @@ namespace Mediaportal.TV.TvPlugin.Radio
 
     }
 
-    #endregion
-
     private static void SetLabels()
     {
       return;
     }
-
-    #region Sort Members
 
     private void OnSort()
     {
@@ -587,142 +697,6 @@ namespace Mediaportal.TV.TvPlugin.Radio
       UpdateButtonStates();
     }
 
-    public int Compare(GUIListItem item1, GUIListItem item2)
-    {
-      if (item1 == item2)
-      {
-        return 0;
-      }
-      if (item1 == null)
-      {
-        return -1;
-      }
-      if (item2 == null)
-      {
-        return -1;
-      }
-      if (item1.IsFolder && item1.Label == "..")
-      {
-        return -1;
-      }
-      if (item2.IsFolder && item2.Label == "..")
-      {
-        return -1;
-      }
-      if (item1.IsFolder && !item2.IsFolder)
-      {
-        return -1;
-      }
-      if (!item1.IsFolder && item2.IsFolder)
-      {
-        return 1;
-      }
-
-
-      SortMethod method = currentSortMethod;
-      bool bAscending = m_bSortAscending;
-      Channel channel1 = item1.MusicTag as Channel;
-      Channel channel2 = item2.MusicTag as Channel;
-      switch (method)
-      {
-        case SortMethod.Name:
-          if (bAscending)
-          {
-            return String.Compare(item1.Label, item2.Label, true);
-          }
-          return String.Compare(item2.Label, item1.Label, true);
-
-        case SortMethod.Type:
-          string strURL1 = "0";
-          string strURL2 = "0";
-          if (item1.IconImage.ToLower().Equals("defaultmyradiostream.png"))
-          {
-            strURL1 = "1";
-          }
-          if (item2.IconImage.ToLower().Equals("defaultmyradiostream.png"))
-          {
-            strURL2 = "1";
-          }
-          if (strURL1.Equals(strURL2))
-          {
-            if (bAscending)
-            {
-              return String.Compare(item1.Label, item2.Label, true);
-            }
-            return String.Compare(item2.Label, item1.Label, true);
-          }
-          if (bAscending)
-          {
-            if (strURL1.Length > 0)
-            {
-              return 1;
-            }
-            return -1;
-          }
-          if (strURL1.Length > 0)
-          {
-            return -1;
-          }
-          return 1;
-          //break;
-
-        case SortMethod.Number:
-          if (channel1 != null && channel2 != null)
-          {
-            GroupMap channel1GroupMap = (GroupMap)item1.AlbumInfoTag;
-            GroupMap channel2GroupMap = (GroupMap)item2.AlbumInfoTag;
-            int channel1GroupSort = channel1GroupMap.SortOrder;
-            int channel2GroupSort = channel2GroupMap.SortOrder;
-            if (bAscending)
-            {
-              if (channel1GroupSort > channel2GroupSort)
-              {
-                return 1;
-              }
-              return -1;
-            }
-            if (channel2GroupSort > channel1GroupSort)
-            {
-              return 1;
-            }
-            return -1;
-          }
-
-          if (channel1 != null)
-          {
-            return -1;
-          }
-          return channel2 != null ? 1 : 0;
-          //break;
-        case SortMethod.Bitrate:
-          IList<TuningDetail> details1 = channel1.TuningDetails;
-          TuningDetail detail1 = details1[0];
-          IList<TuningDetail> details2 = channel2.TuningDetails;
-          TuningDetail detail2 = details2[0];
-          if (detail1 != null && detail2 != null)
-          {
-            if (bAscending)
-            {
-              if (detail1.Bitrate > detail2.Bitrate)
-              {
-                return 1;
-              }
-              return -1;
-            }
-            if (detail2.Bitrate > detail1.Bitrate)
-            {
-              return 1;
-            }
-            return -1;
-          }
-          return 0;
-      }
-      return 0;
-    }
-
-    #endregion
-
-    
 
     protected override void OnShowSort()
     {
@@ -859,68 +833,88 @@ namespace Mediaportal.TV.TvPlugin.Radio
       UpdateButtonStates();
 
       GUIControl.FocusControl(GetID, ((GUIControl)sender).GetID);
-    }    
-    
-    #region ISetupForm Members
-
-    public bool CanEnable()
-    {
-      return true;
     }
 
-    public string PluginName()
+    #region Serialisation
+
+    protected override void LoadSettings()
     {
-      return "Radio";
+      base.LoadSettings();
+      using (Settings xmlreader = new MPSettings())
+      {
+        currentLayout = (GUIFacadeControl.Layout)xmlreader.GetValueAsInt(SerializeName, "layout", (int)GUIFacadeControl.Layout.List);
+        m_bSortAscending = xmlreader.GetValueAsBool(SerializeName, "sortasc", true);
+
+        string tmpLine = xmlreader.GetValue("myradio", "sort");
+        if (tmpLine != null)
+        {
+          if (tmpLine == "name")
+          {
+            currentSortMethod = SortMethod.Name;
+          }
+          else if (tmpLine == "type")
+          {
+            currentSortMethod = SortMethod.Type;
+          }
+          else if (tmpLine == "genre")
+          {
+            currentSortMethod = SortMethod.Genre;
+          }
+          else if (tmpLine == "bitrate")
+          {
+            currentSortMethod = SortMethod.Bitrate;
+          }
+          else if (tmpLine == "number")
+          {
+            currentSortMethod = SortMethod.Number;
+          }
+        }
+
+        if (xmlreader.GetValueAsBool("myradio", "rememberlastgroup", true))
+        {
+          currentFolder = xmlreader.GetValueAsString("myradio", "lastgroup", null);
+        }
+        hideAllChannelsGroup = xmlreader.GetValueAsBool("myradio", "hideAllChannelsGroup", false);
+        rootGroup = xmlreader.GetValueAsString("myradio", "rootgroup", "(none)");
+
+        _autoTurnOnRadio = xmlreader.GetValueAsBool("myradio", "autoturnonradio", false);
+      }
     }
 
-    public bool HasSetup()
+    protected override void SaveSettings()
     {
-      return true;
-    }
+      base.SaveSettings();
+      using (Settings xmlwriter = new MPSettings())
+      {
+        xmlwriter.SetValue(SerializeName, "layout", (int)currentLayout);
+        xmlwriter.SetValueAsBool(SerializeName, "sortasc", m_bSortAscending);
+        
+        switch (currentSortMethod)
+        {
+          case SortMethod.Name:
+            xmlwriter.SetValue("myradio", "sort", "name");
+            break;
+          case SortMethod.Type:
+            xmlwriter.SetValue("myradio", "sort", "type");
+            break;
+          case SortMethod.Genre:
+            xmlwriter.SetValue("myradio", "sort", "genre");
+            break;
+          case SortMethod.Bitrate:
+            xmlwriter.SetValue("myradio", "sort", "bitrate");
+            break;
+          case SortMethod.Number:
+            xmlwriter.SetValue("myradio", "sort", "number");
+            break;
+        }
 
-    public bool DefaultEnabled()
-    {
-      return true;
-    }
-
-    public int GetWindowId()
-    {
-      return GetID;
-    }
-
-    public bool GetHome(out string strButtonText, out string strButtonImage, out string strButtonImageFocus,
-                        out string strPictureImage)
-    {
-      strButtonText = GUILocalizeStrings.Get(665);
-      strButtonImage = String.Empty;
-      strButtonImageFocus = String.Empty;
-      strPictureImage = @"hover_my radio.png";
-      return true;
-    }
-
-    public string Author()
-    {
-      return "Frodo, gemx";
-    }
-
-    public string Description()
-    {
-      return "Connect to TV service to listen to analog, DVB and internet radio";
-    }
-
-    public void ShowPlugin()
-    {
-      RadioSetupForm setup = new RadioSetupForm();
-      setup.ShowDialog();
-    }
-
-    #endregion
-
-    #region IShowPlugin Members
-
-    public bool ShowDefaultHome()
-    {
-      return true;
+        xmlwriter.SetValue("myradio", "lastgroup", lastFolder);
+        if (_currentChannel != null)
+        {
+          xmlwriter.SetValue("myradio", "channel", _currentChannel.DisplayName);
+        }
+        
+      }
     }
 
     #endregion

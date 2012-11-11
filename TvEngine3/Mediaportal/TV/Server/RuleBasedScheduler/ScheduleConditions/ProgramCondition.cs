@@ -23,11 +23,15 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
     {
       
     }
-   
+
+    #region IScheduleCondition Members
+
     public IQueryable<Program> ApplyCondition(IQueryable<Program> baseQuery)
     {
       return DynamicLinqBuilder.ApplyFilter(baseQuery, _programFieldName, _programFieldValue, _operator);        
     }
+
+    #endregion
 
     public override string ToString()
     {

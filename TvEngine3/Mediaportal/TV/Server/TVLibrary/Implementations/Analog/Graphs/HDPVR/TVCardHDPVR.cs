@@ -39,14 +39,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
   /// </summary>
   public class TvCardHDPVR : TvCardBase, ITVCard
   {
-
-
     #region constants
 
     // Assume the capture card is a Hauppauge HD PVR by default.
-    private readonly string _deviceType = "HDPVR";
-    private readonly string _crossbarDeviceName = "Hauppauge HD PVR Crossbar";
     private readonly string _captureDeviceName = "Hauppauge HD PVR Capture Device";
+    private readonly string _crossbarDeviceName = "Hauppauge HD PVR Crossbar";
+    private readonly string _deviceType = "HDPVR";
     private readonly string _encoderDeviceName = "Hauppauge HD PVR Encoder";
 
     #endregion
@@ -60,17 +58,25 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
 
     #region variables
 
-    private DsROTEntry _rotEntry;
+    private int _audioOutPinIndex;
+
+    /// <summary>
+    /// The mapping of the audio input sources to their pin index
+    /// </summary>
+    private Dictionary<AnalogChannel.AudioInputType, int> _audioPinMap;
+
     private ICaptureGraphBuilder2 _capBuilder;
-    private DsDevice _crossBarDevice;
     private DsDevice _captureDevice;
+    private Configuration _configuration;
+    private DsDevice _crossBarDevice;
     private DsDevice _encoderDevice;
-    private IBaseFilter _filterCrossBar;
     private IBaseFilter _filterCapture;
+    private IBaseFilter _filterCrossBar;
     private IBaseFilter _filterEncoder;
     private IBaseFilter _filterTsWriter;
-    private Configuration _configuration;
     private IQuality _qualityControl;
+    private DsROTEntry _rotEntry;
+    private int _videoOutPinIndex;
 
     /// <summary>
     /// The mapping of the video input sources to their pin index
@@ -81,14 +87,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
     /// The mapping of the video input sources to their related audio pin index
     /// </summary>
     private Dictionary<AnalogChannel.VideoInputType, int> _videoPinRelatedAudioMap;
-
-    /// <summary>
-    /// The mapping of the audio input sources to their pin index
-    /// </summary>
-    private Dictionary<AnalogChannel.AudioInputType, int> _audioPinMap;
-
-    private int _videoOutPinIndex;
-    private int _audioOutPinIndex;
 
     #endregion
 
@@ -644,8 +642,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
 
       // Audio
       if ((_previousChannel == null || previousChannel.AudioSource != analogChannel.AudioSource) &&
-        analogChannel.AudioSource != AnalogChannel.AudioInputType.Automatic &&
-        _audioPinMap.ContainsKey(analogChannel.AudioSource))
+          analogChannel.AudioSource != AnalogChannel.AudioInputType.Automatic &&
+          _audioPinMap.ContainsKey(analogChannel.AudioSource))
       {
         this.LogDebug("HDPVR:   audio input -> {0}", analogChannel.AudioSource);
         crossBarFilter.Route(_audioOutPinIndex, _audioPinMap[analogChannel.AudioSource]);

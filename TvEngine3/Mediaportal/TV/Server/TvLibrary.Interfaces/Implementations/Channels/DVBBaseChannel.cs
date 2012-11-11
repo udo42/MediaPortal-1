@@ -39,34 +39,34 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     #region variables
 
     [DataMember]
+    private long _channelFrequency = -1;
+
+    [DataMember]
     private string _channelName = String.Empty;
 
     [DataMember]
-    private string _providerName = String.Empty;
+    private bool _freeToAir = true;
 
     [DataMember]
-    private long _channelFrequency = -1;
+    private int _lcn = 10000;
+
+    [DataMember]
+    private MediaTypeEnum _mediaType;
 
     [DataMember]
     private int _networkId = -1;
 
     [DataMember]
-    private int _transportId = -1;
+    private int _pmtPid = -1;
+
+    [DataMember]
+    private string _providerName = String.Empty;
 
     [DataMember]
     private int _serviceId = -1;
 
     [DataMember]
-    private int _pmtPid = -1;
-
-    [DataMember]
-    private int _lcn = 10000;
-        
-    [DataMember]
-    private bool _freeToAir = true;
-
-    [DataMember]
-    private MediaTypeEnum _mediaType;
+    private int _transportId = -1;
 
     #endregion
 
@@ -111,15 +111,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     #endregion
 
     #region properties
-
-    /// <summary>
-    /// Get/set the channel's name.
-    /// </summary>
-    public string Name
-    {
-      get { return _channelName; }
-      set { _channelName = value; }
-    }
 
     /// <summary>
     /// Get/set the channel provider's name.
@@ -182,6 +173,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     {
       get { return _lcn; }
       set { _lcn = value; }
+    }
+
+    /// <summary>
+    /// Get/set the channel's name.
+    /// </summary>
+    public string Name
+    {
+      get { return _channelName; }
+      set { _channelName = value; }
     }
 
 
@@ -285,8 +285,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     public override int GetHashCode()
     {
       return base.GetHashCode() ^ _channelName.GetHashCode() ^ _providerName.GetHashCode() ^
-            _channelFrequency.GetHashCode() ^ _networkId.GetHashCode() ^ _transportId.GetHashCode() ^
-            _serviceId.GetHashCode() ^ _pmtPid.GetHashCode() ^ _lcn.GetHashCode() ^ _mediaType.GetHashCode() 
+             _channelFrequency.GetHashCode() ^ _networkId.GetHashCode() ^ _transportId.GetHashCode() ^
+             _serviceId.GetHashCode() ^ _pmtPid.GetHashCode() ^ _lcn.GetHashCode() ^ _mediaType.GetHashCode() 
              ^ _freeToAir.GetHashCode();
     }
 
@@ -304,6 +304,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     }
 
     #endregion
+
+    #region IChannel Members
 
     /// <summary>
     /// Check if the given channel and this instance are on different transponders.
@@ -324,5 +326,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       // No adjustments required.
       return (IChannel)Clone();
     }
+
+    #endregion
   }
 }

@@ -37,8 +37,6 @@ namespace WebEPG
   /// </summary>
   public class WebEPG
   {
-  
-
     #region Delegates
 
     public delegate void ShowProgressHandler(Stats stats);
@@ -56,12 +54,12 @@ namespace WebEPG
     // hold information from config file.
     private struct grabInfo
     {
-      public string id;
-      public string name;
-      public bool merged;
       public string grabber;
-      public bool linked;
+      public string id;
       public TimeRange linkTime;
+      public bool linked;
+      public bool merged;
+      public string name;
     }
 
     #endregion
@@ -70,11 +68,11 @@ namespace WebEPG
 
     public class Stats
     {
-      private string _status = "";
-      private int _programs = 0;
       private int _channels = 0;
-      private DateTime _startTime = DateTime.Now;
       private DateTime _endTime = DateTime.Now;
+      private int _programs = 0;
+      private DateTime _startTime = DateTime.Now;
+      private string _status = "";
 
       public string Status
       {
@@ -111,12 +109,12 @@ namespace WebEPG
 
     #region Variables
 
-    private WebListingGrabber _epgGrabber;
+    private string _baseDirectory;
+    private WebepgConfigFile _config;
     private string _configFile;
     //private string _xmltvDirectory;
     private IEpgDataSink _epgDataSink;
-    private string _baseDirectory;
-    private WebepgConfigFile _config;
+    private WebListingGrabber _epgGrabber;
     private Dictionary<string, List<grabInfo>> _grabList;
     private Stats _status = new Stats();
 
@@ -244,7 +242,7 @@ namespace WebEPG
               grab.linked = true;
               grab.linkTime = new TimeRange(merged.start, merged.end);
               this.LogDebug("  Loading Merged Sub-channel: {0} Time range: {1}", merged.id,
-                        grab.linkTime.ToString());
+                            grab.linkTime.ToString());
 
               if (!_grabList.ContainsKey(merged.id))
               {
@@ -260,7 +258,7 @@ namespace WebEPG
             else
             {
               this.LogInfo("  Ignoring Merged Sub-channel: {0}/{1} - No Grabber id", channel.displayName,
-                       merged.id);
+                           merged.id);
             }
           }
         }

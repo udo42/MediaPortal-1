@@ -30,9 +30,9 @@ namespace Mediaportal.TV.Server.Plugins.Base
 {
   public class PluginLoader //: LogProvider
   {
-    private List<ITvServerPlugin> _plugins = new List<ITvServerPlugin>();
     private readonly List<Type> _incompatiblePlugins = new List<Type>();
-    
+    private List<ITvServerPlugin> _plugins = new List<ITvServerPlugin>();
+
 
     /// <summary>
     /// returns a list of all plugins loaded.

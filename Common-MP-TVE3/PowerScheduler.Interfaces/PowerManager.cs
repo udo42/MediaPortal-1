@@ -38,7 +38,44 @@ namespace TvEngine.PowerScheduler.Interfaces
 
     #endregion
 
-    #region External power management methods and enumerations
+    [DllImport("kernel32.dll", EntryPoint = "SetThreadExecutionState")]
+    private static extern ExecutionState SetThreadExecutionState(ExecutionState esFlags);
+
+    #region Power management wrapper methods
+
+    /// <summary>
+    /// Set the PowerManager to allow standby
+    /// </summary>
+    /// <returns>bool indicating whether or not standby is allowed</returns>
+    public bool AllowStandby()
+    {
+      // If was prevented, enable
+      if (!_standbyAllowed)
+        SetThreadExecutionState(ExecutionState.Continuous);
+      _standbyAllowed = true;
+      return true;
+    }
+
+    /// <summary>
+    /// Set the PowerManager to prevent standby
+    /// </summary>
+    /// <returns>bool indicating whether or not standby is prevented</returns>
+    public bool PreventStandby()
+    {
+      lock (this)
+      {
+        // If was allowed, disable
+        if (_standbyAllowed)
+          SetThreadExecutionState(ExecutionState.Continuous | ExecutionState.SystemRequired |
+                                  ExecutionState.Awaymode_Required);
+        _standbyAllowed = false;
+        return true;
+      }
+    }
+
+    #endregion
+
+    #region Nested type: ExecutionState
 
     [Flags]
     private enum ExecutionState : uint
@@ -74,43 +111,6 @@ namespace TvEngine.PowerScheduler.Interfaces
       /// Away mode should be used only by media-recording and media-distribution applications that must perform critical background processing on desktop computers while the computer appears to be sleeping.
       /// </summary>
       Awaymode_Required = 0x00000040
-    }
-
-    [DllImport("kernel32.dll", EntryPoint = "SetThreadExecutionState")]
-    private static extern ExecutionState SetThreadExecutionState(ExecutionState esFlags);
-
-    #endregion
-
-    #region Power management wrapper methods
-
-    /// <summary>
-    /// Set the PowerManager to allow standby
-    /// </summary>
-    /// <returns>bool indicating whether or not standby is allowed</returns>
-    public bool AllowStandby()
-    {
-      // If was prevented, enable
-      if (!_standbyAllowed)
-        SetThreadExecutionState(ExecutionState.Continuous);
-      _standbyAllowed = true;
-      return true;
-    }
-
-    /// <summary>
-    /// Set the PowerManager to prevent standby
-    /// </summary>
-    /// <returns>bool indicating whether or not standby is prevented</returns>
-    public bool PreventStandby()
-    {
-      lock (this)
-      {
-        // If was allowed, disable
-        if (_standbyAllowed)
-          SetThreadExecutionState(ExecutionState.Continuous | ExecutionState.SystemRequired |
-                                  ExecutionState.Awaymode_Required);
-        _standbyAllowed = false;
-        return true;
-      }
     }
 
     #endregion

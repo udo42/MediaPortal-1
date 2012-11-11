@@ -35,16 +35,32 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
   /// </summary>
   public class TeVii : BaseCustomDevice, ICustomTuner, IDiseqcDevice
   {
- 
-
     #region enums
 
-    private enum TeViiPolarisation
+    #region Nested type: TeViiFecRate
+
+    private enum TeViiFecRate
     {
-      None = 0,
-      Vertical,     // also use for circular right
-      Horizontal    // also use for circular left
+      Auto = 0,
+      Rate1_2,
+      Rate1_3,
+      Rate1_4,
+      Rate2_3,
+      Rate2_5,
+      Rate3_4,
+      Rate3_5,
+      Rate4_5,
+      Rate5_6,
+      Rate5_11,
+      Rate6_7,
+      Rate7_8,
+      Rate8_9,
+      Rate9_10
     }
+
+    #endregion
+
+    #region Nested type: TeViiModulation
 
     private enum TeViiModulation
     {
@@ -66,24 +82,18 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
       Turbo16Psk
     }
 
-    private enum TeViiFecRate
+    #endregion
+
+    #region Nested type: TeViiPolarisation
+
+    private enum TeViiPolarisation
     {
-      Auto = 0,
-      Rate1_2,
-      Rate1_3,
-      Rate1_4,
-      Rate2_3,
-      Rate2_5,
-      Rate3_4,
-      Rate3_5,
-      Rate4_5,
-      Rate5_6,
-      Rate5_11,
-      Rate6_7,
-      Rate7_8,
-      Rate8_9,
-      Rate9_10
+      None = 0,
+      Vertical,     // also use for circular right
+      Horizontal    // also use for circular left
     }
+
+    #endregion
 
     #endregion
 
@@ -222,8 +232,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
 
     private int _deviceIndex = -1;
     private bool _isTeVii = false;
-    private CardType _tunerType = CardType.Unknown;
     private Tone22k _toneState = Tone22k.Auto;
+    private CardType _tunerType = CardType.Unknown;
 
     #endregion
 
@@ -250,7 +260,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
       {
         switch (mod)
         {
-          // DVB-C, DVB-T and North American cable
+            // DVB-C, DVB-T and North American cable
           case ModulationType.Mod16Qam:
             return TeViiModulation.Qam16;
           case ModulationType.Mod32Qam:
@@ -262,11 +272,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
           case ModulationType.Mod256Qam:
             return TeViiModulation.Qam256;
 
-          // ATSC
+            // ATSC
           case ModulationType.Mod8Vsb:
             return TeViiModulation.Vsb8;
 
-          // Default: only use auto as a last resort as it is slower.
+            // Default: only use auto as a last resort as it is slower.
           default:
             return TeViiModulation.Auto;
         }
@@ -276,15 +286,15 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
       // See OnBeforeTune() in the Genpix plugin for more detailed comments about mapping.
       switch (mod)
       {
-        // DVB-S
+          // DVB-S
         case ModulationType.ModNotSet:
           return TeViiModulation.Qpsk;
 
-        // DVB-SNG
+          // DVB-SNG
         case ModulationType.ModBpsk:
           return TeViiModulation.Bpsk;
 
-        // DVB-S2
+          // DVB-S2
         case ModulationType.ModQpsk:
           return TeViiModulation.Dvbs2_Qpsk;
         case ModulationType.Mod8Psk:
@@ -294,7 +304,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
         case ModulationType.Mod32Apsk:
           return TeViiModulation.Dvbs2_32Apsk;
 
-        // Turbo *PSK
+          // Turbo *PSK
         case ModulationType.Mod64Qam:
           return TeViiModulation.TurboQPsk;
         case ModulationType.Mod80Qam:
@@ -302,7 +312,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
         case ModulationType.Mod160Qam:
           return TeViiModulation.Turbo16Psk;
 
-        // Default: only use auto as a last resort as it is slower.
+          // Default: only use auto as a last resort as it is slower.
         default:
           return TeViiModulation.Auto;
       }
@@ -488,7 +498,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
       }
 
       bool result = TuneTransponder(_deviceIndex, (int)ch.Frequency, ch.SymbolRate * 1000, lnbLof,
-        Translate(ch.Polarisation), toneOn, Translate(true, ch.ModulationType), Translate(ch.InnerFecRate));
+                                    Translate(ch.Polarisation), toneOn, Translate(true, ch.ModulationType), Translate(ch.InnerFecRate));
       if (result)
       {
         this.LogDebug("TeVii: result = success");

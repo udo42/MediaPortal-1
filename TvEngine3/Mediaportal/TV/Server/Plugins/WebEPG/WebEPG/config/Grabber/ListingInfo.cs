@@ -41,12 +41,12 @@ namespace WebEPG.config.Grabber
 
     #region Variables
 
-    [XmlAttribute("type")] public Type listingType;
+    [XmlElement("Data")] public DataParserTemplate DataTemplate;
+    [XmlElement("Html")] public WebParserTemplate HtmlTemplate;
     [XmlElement("Site")] public HTTPRequest Request;
     [XmlElement("Search")] public RequestData SearchParameters;
-    [XmlElement("Html")] public WebParserTemplate HtmlTemplate;
     [XmlElement("Xml")] public XmlParserTemplate XmlTemplate;
-    [XmlElement("Data")] public DataParserTemplate DataTemplate;
+    [XmlAttribute("type")] public Type listingType;
 
     #endregion
   }

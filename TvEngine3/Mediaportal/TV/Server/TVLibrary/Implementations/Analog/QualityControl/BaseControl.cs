@@ -32,29 +32,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
   /// </summary>
   public abstract class BaseControl : IQuality
   {
-
-
     #region variables
-
-    /// <summary>
-    /// Current Quality type
-    /// </summary>
-    protected QualityType _qualityType;
-
-    /// <summary>
-    /// Indicates if the encoder supports to set a bit rate mode
-    /// </summary>
-    protected bool _supported_BitRateMode;
-
-    /// <summary>
-    /// Indicates if the encoder supports to set a bit rate
-    /// </summary>
-    protected bool _supported_BitRate;
-
-    /// <summary>
-    /// Indicates if the encoder supports to set the peak bit rate mode
-    /// </summary>
-    protected bool _supported_PeakBitRate;
 
     /// <summary>
     /// The current bit rate mode
@@ -65,6 +43,26 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
     /// The standard configuration for this encoder
     /// </summary>
     protected Configuration _configuration;
+
+    /// <summary>
+    /// Current Quality type
+    /// </summary>
+    protected QualityType _qualityType;
+
+    /// <summary>
+    /// Indicates if the encoder supports to set a bit rate
+    /// </summary>
+    protected bool _supported_BitRate;
+
+    /// <summary>
+    /// Indicates if the encoder supports to set a bit rate mode
+    /// </summary>
+    protected bool _supported_BitRateMode;
+
+    /// <summary>
+    /// Indicates if the encoder supports to set the peak bit rate mode
+    /// </summary>
+    protected bool _supported_PeakBitRate;
 
     #endregion
 

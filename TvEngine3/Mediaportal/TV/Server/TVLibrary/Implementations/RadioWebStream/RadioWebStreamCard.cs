@@ -34,9 +34,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.RadioWebStream
   /// </summary>
   public class RadioWebStreamCard : TvCardBase
   {
-
-
-
     #region variables
 
     private DateTime _dateRecordingStarted = DateTime.MinValue;
@@ -147,8 +144,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.RadioWebStream
 
     #endregion
 
-    #region IDisposable Members
-
     /// <summary>
     /// Disposes this instance.
     /// </summary>
@@ -156,7 +151,5 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.RadioWebStream
     {
       this.LogDebug("RadioWebStream:Dispose()");
     }
-
-    #endregion
   }
 }

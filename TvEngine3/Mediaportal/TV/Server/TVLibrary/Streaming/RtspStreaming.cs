@@ -36,9 +36,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
   /// </summary>
   public class RtspStreaming
   {
-
-
-
     #region imports
 
     [DllImport("StreamingServer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
@@ -85,10 +82,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
 
     #region variables
 
-    private int _port;
-    private bool _running;
     private readonly bool _initialized;
     private readonly Dictionary<string, RtspStream> _streams;
+    private int _port;
+    private bool _running;
 
     #endregion
 

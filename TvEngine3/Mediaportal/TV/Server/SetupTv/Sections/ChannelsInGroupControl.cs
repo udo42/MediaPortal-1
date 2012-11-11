@@ -33,16 +33,14 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {  
   public partial class ChannelsInGroupControl : UserControl
   {
-
-
-    private string _allChannelsGroupName = TvConstants.TvGroupNames.AllChannels;
-    private MediaTypeEnum _mediaTypeEnum = MediaTypeEnum.TV;
-    private readonly MPListViewStringColumnSorter lvwColumnSorter;
-
     private static bool _userConfirmedAutoReorder = false;
-    private SortOrder _lastSortOrder = SortOrder.None;
+    private readonly MPListViewStringColumnSorter lvwColumnSorter;
+    private string _allChannelsGroupName = TvConstants.TvGroupNames.AllChannels;
 
     private ChannelGroup _channelGroup;
+    private bool _ignoreItemCheckedEvent = false;
+    private SortOrder _lastSortOrder = SortOrder.None;
+    private MediaTypeEnum _mediaTypeEnum = MediaTypeEnum.TV;
 
     public ChannelsInGroupControl(MediaTypeEnum mediaType)
     {
@@ -81,8 +79,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private void listView1_SelectedIndexChanged(object sender, EventArgs e) {}
 
     private void ChannelsInGroupControl_Load(object sender, EventArgs e) {}
-
-    private bool _ignoreItemCheckedEvent = false;    
 
     public void OnActivated()
     {

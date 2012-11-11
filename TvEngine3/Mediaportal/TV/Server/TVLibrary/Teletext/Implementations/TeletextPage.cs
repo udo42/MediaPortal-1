@@ -37,11 +37,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
 
     #region variables
 
-    private readonly int _pageNumber = -1;
-    private int _numberOfSubPages = -1;
     private readonly IntPtr[] _pageCache = new IntPtr[MAX_SUB_PAGES];
-    private DateTime _lastTimeRoulated = DateTime.MinValue;
+    private readonly int _pageNumber = -1;
     private DateTime _lastTimeReceived = DateTime.MinValue;
+    private DateTime _lastTimeRoulated = DateTime.MinValue;
+    private int _numberOfSubPages = -1;
     private int _previousSubPageNumber = -1;
     private TimeSpan _rotationTime = new TimeSpan(0, 0, 15);
 
@@ -485,24 +485,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
 
     #endregion
 
-    #region IDisposable Members   
-		
-		protected virtual void Dispose(bool disposing)
-		{
-		  if (disposing)
-		  {
-		    // get rid of managed resources
-		  }
-		
-		  // get rid of unmanaged resources
-		  for (int i = 0; i < MAX_SUB_PAGES; ++i)
-      {
-        FreePage(i);
-      }
-		}
-		
-		
-		/// <summary>
+    #region IDisposable Members
+
+    /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
     /// </summary>  
 		public void Dispose()
@@ -510,13 +495,26 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
 		  Dispose(true);
 		  GC.SuppressFinalize(this);
 		}
+
+    #endregion
+
+    protected virtual void Dispose(bool disposing)
+    {
+      if (disposing)
+      {
+        // get rid of managed resources
+      }
 		
-		~TeletextPage()
+      // get rid of unmanaged resources
+      for (int i = 0; i < MAX_SUB_PAGES; ++i)
+      {
+        FreePage(i);
+      }
+    }
+
+    ~TeletextPage()
 		{
 		  Dispose(false);
 		}
-		
-
-    #endregion
   }
 }

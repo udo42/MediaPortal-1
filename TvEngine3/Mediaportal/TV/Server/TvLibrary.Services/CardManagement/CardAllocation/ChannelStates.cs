@@ -37,9 +37,12 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
 {
   public class ChannelStates : CardAllocationBase
   {
-
+    #region Delegates
 
     public delegate void OnChannelStatesSetDelegate(IUser user);
+
+    #endregion
+
     public event OnChannelStatesSetDelegate OnChannelStatesSet;
 
     #region private members   
@@ -56,18 +59,18 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
     private void UpdateChannelStateUsers(IEnumerable<IUser> allUsers, ChannelState chState, int channelId)
     {
       Parallel.ForEach(allUsers, user =>
-          {
-            if (user != null && user.UserType != UserType.Scheduler)
-            {
-              try
-              {
-                UpdateChannelStateUser(user, chState, channelId);
-              }
-              catch (NullReferenceException)
-              {
-              }
-            }
-          }
+                                   {
+                                     if (user != null && user.UserType != UserType.Scheduler)
+                                     {
+                                       try
+                                       {
+                                         UpdateChannelStateUser(user, chState, channelId);
+                                       }
+                                       catch (NullReferenceException)
+                                       {
+                                       }
+                                     }
+                                   }
         );      
     }
 
@@ -152,7 +155,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
               continue;
             }
 
-              ICollection<IChannel> tuningDetails = CardAllocationCache.GetTuningDetailsByChannelId(channel);
+            ICollection<IChannel> tuningDetails = CardAllocationCache.GetTuningDetailsByChannelId(channel);
             bool isValidTuningDetails = IsValidTuningDetails(tuningDetails);
             if (!isValidTuningDetails)
             {
@@ -219,12 +222,12 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
         }
         catch (InvalidOperationException tex)
         {
-            this.LogError("ChannelState.DoSetChannelStatesForAllUsers: Possible race condition occured setting channel states - {0}", tex);
+          this.LogError("ChannelState.DoSetChannelStatesForAllUsers: Possible race condition occured setting channel states - {0}", tex);
         }
         catch (Exception ex)
         {
-            this.LogError("ChannelState.DoSetChannelStatesForAllUsers: An unknown error occured while setting channel states - {0}\n{1}", ex.Message,
-                      ex);
+          this.LogError("ChannelState.DoSetChannelStatesForAllUsers: An unknown error occured while setting channel states - {0}\n{1}", ex.Message,
+                        ex);
         }
         finally
         {
@@ -261,14 +264,14 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
     private static void RemoveAllTunableChannelStates(IEnumerable<IUser> allUsers)
     {
       Parallel.ForEach(allUsers, user =>
-      {
-        var keysToDelete = user.ChannelStates.Where(x => x.Value == ChannelState.tunable).Select(kvp => kvp.Key).ToList();
-        foreach (int key in keysToDelete)
-        {
-          user.ChannelStates.Remove(key);
-        }
-      }
-      );         
+                                   {
+                                     var keysToDelete = user.ChannelStates.Where(x => x.Value == ChannelState.tunable).Select(kvp => kvp.Key).ToList();
+                                     foreach (int key in keysToDelete)
+                                     {
+                                       user.ChannelStates.Remove(key);
+                                     }
+                                   }
+        );         
     }
 
     private void UpdateRecOrTSChannelStateForUsers(IEnumerable<IUser> allUsers)
@@ -279,7 +282,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
       IDictionary<int, ChannelState> timeshiftingAndRecordingStates = tvControllerService.GetAllTimeshiftingAndRecordingChannels();
       stopwatchTimeshiftingAndRecording.Stop();
       this.LogInfo("ChannelStates.GetAllTimeshiftingAndRecordingChannels took {0} msec",
-                  stopwatchTimeshiftingAndRecording.ElapsedMilliseconds);
+                   stopwatchTimeshiftingAndRecording.ElapsedMilliseconds);
 
       foreach (KeyValuePair<int, ChannelState> kvp in timeshiftingAndRecordingStates)
       {
@@ -298,23 +301,23 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
     }
 
     private void CheckTransponderAllUsers(Channel ch, IEnumerable<IUser> allUsers, ITvCardHandler tvcard,
-                                                 IChannel tuningDetail)
+                                          IChannel tuningDetail)
     {
       Parallel.ForEach(allUsers, user =>
-                {
-                  if (user.UserType != UserType.Scheduler)
-                  {
-                    bool checkTransponder = CheckTransponder(user, tvcard, tuningDetail);
-                    if (checkTransponder)
-                    {
-                      UpdateChannelStateUser(user, ChannelState.tunable, ch.IdChannel);
-                    }
-                    else
-                    {
-                      UpdateChannelStateUser(user, ChannelState.nottunable, ch.IdChannel);
-                    }
-                  }
-                }
+                                   {
+                                     if (user.UserType != UserType.Scheduler)
+                                     {
+                                       bool checkTransponder = CheckTransponder(user, tvcard, tuningDetail);
+                                       if (checkTransponder)
+                                       {
+                                         UpdateChannelStateUser(user, ChannelState.tunable, ch.IdChannel);
+                                       }
+                                       else
+                                       {
+                                         UpdateChannelStateUser(user, ChannelState.nottunable, ch.IdChannel);
+                                       }
+                                     }
+                                   }
         );
     }
 
@@ -353,7 +356,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
                                       Priority = ThreadPriority.Lowest
                                     };
         _setChannelStatesThread.Start();
-    }
+      }
     }    
 
     /// <summary>

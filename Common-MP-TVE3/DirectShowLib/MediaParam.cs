@@ -33,11 +33,6 @@ namespace DirectShowLib.DMO
 
   public sealed class MediaParamTimeFormat
   {
-    private MediaParamTimeFormat()
-    {
-      // Prevent people from trying to instantiate this class
-    }
-
     /// <summary> GUID_TIME_REFERENCE </summary>
     public static readonly Guid Reference = new Guid(0x93ad712b, 0xdaa0, 0x4ffe, 0xbc, 0x81, 0xb0, 0xce, 0x50, 0x0f,
                                                      0xcd, 0xd9);
@@ -49,6 +44,11 @@ namespace DirectShowLib.DMO
     /// <summary> GUID_TIME_SAMPLES, audio capture category </summary>
     public static readonly Guid Samples = new Guid(0xa8593d05, 0x0c43, 0x4984, 0x9a, 0x63, 0x97, 0xaf, 0x9e, 0x02, 0xc4,
                                                    0xc0);
+
+    private MediaParamTimeFormat()
+    {
+      // Prevent people from trying to instantiate this class
+    }
   }
 
   /// <summary>

@@ -9,10 +9,12 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
 {
   public class ChannelBLL
   {
-    private Program _currentProgram;
-    private Program _nextProgram;    
-    private Channel _entity;
     private ChannelGroup _currentGroup;
+    private Program _currentProgram;
+    private Channel _entity;
+    private Program _nextProgram;
+    private DateTime _updateNowAndNextLastRun = DateTime.MinValue;
+    private bool _updateNowAndNextRun = false;
 
     public ChannelBLL (Channel entity)
     {      
@@ -52,8 +54,6 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
       set { _entity = value; }
     }
 
-    private bool _updateNowAndNextRun = false;
-    private DateTime _updateNowAndNextLastRun = DateTime.MinValue;
     private void UpdateNowAndNext()
     {
       try

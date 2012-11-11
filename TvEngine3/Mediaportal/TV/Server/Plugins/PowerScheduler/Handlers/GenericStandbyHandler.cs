@@ -36,10 +36,10 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
   {
     #region Variables
 
-    private int _timeout = 5;
     private bool _disAllowShutdown = false;
-    private DateTime _lastUpdate = DateTime.MinValue;
     private string _handlerName = "GenericStandbyHandler";
+    private DateTime _lastUpdate = DateTime.MinValue;
+    private int _timeout = 5;
 
     #endregion
 

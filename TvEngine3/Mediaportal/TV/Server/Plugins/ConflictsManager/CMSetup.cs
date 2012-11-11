@@ -39,8 +39,6 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
 
     #endregion
 
-    #region Public Members
-
     public override void OnSectionActivated()
     {
       
@@ -53,7 +51,5 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
       ServiceAgents.Instance.SettingServiceAgent.SaveSetting("CMDebugMode", debug.Checked ? "true" : "false");
       base.OnSectionDeActivated();
     }
-
-    #endregion
   }
 }

@@ -57,32 +57,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
   {
     #region Enums
 
-    /// <summary>
-    /// HResult severity enum
-    /// </summary>
-    public enum Severity
-    {
-      /// <summary>
-      /// Unknown severity
-      /// </summary>
-      Unknown = -1,
-      /// <summary>
-      /// Success severity
-      /// </summary>
-      Success = 0,
-      /// <summary>
-      /// Info severity
-      /// </summary>
-      Info = 1,
-      /// <summary>
-      /// Warning severity
-      /// </summary>
-      Warning = 2,
-      /// <summary>
-      /// Errror severity
-      /// </summary>
-      Error = 3
-    }
+    #region Facility enum
 
     /// <summary>
     /// Facility code enum
@@ -209,14 +184,47 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
 
     #endregion
 
+    #region Severity enum
+
+    /// <summary>
+    /// HResult severity enum
+    /// </summary>
+    public enum Severity
+    {
+      /// <summary>
+      /// Unknown severity
+      /// </summary>
+      Unknown = -1,
+      /// <summary>
+      /// Success severity
+      /// </summary>
+      Success = 0,
+      /// <summary>
+      /// Info severity
+      /// </summary>
+      Info = 1,
+      /// <summary>
+      /// Warning severity
+      /// </summary>
+      Warning = 2,
+      /// <summary>
+      /// Errror severity
+      /// </summary>
+      Error = 3
+    }
+
+    #endregion
+
+    #endregion
+
     #region Variables
 
-    private uint _hresult;
-    private int _facilityCode;
-    private Facility _facility = Facility.Unknown;
-    private int _severityCode;
-    private Severity _severity = Severity.Unknown;
     private int _code;
+    private Facility _facility = Facility.Unknown;
+    private int _facilityCode;
+    private uint _hresult;
+    private Severity _severity = Severity.Unknown;
+    private int _severityCode;
 
     #endregion
 

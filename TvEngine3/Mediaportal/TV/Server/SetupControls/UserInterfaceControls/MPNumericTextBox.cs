@@ -29,6 +29,17 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   /// </summary>
   public class MPNumericTextBox : TextBox
   {
+    public int Value
+    {
+      get
+      {
+        int val = 0;
+        int.TryParse(Text, out val);
+        return val;
+      }
+      set { Text = value.ToString(); }
+    }
+
     protected override void OnKeyPress(KeyPressEventArgs e)
     {
       base.OnKeyPress(e);
@@ -70,17 +81,6 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
         OnFormatError(e);
       }
       base.OnTextChanged(e);
-    }
-
-    public int Value
-    {
-      get
-      {
-        int val = 0;
-        int.TryParse(Text, out val);
-        return val;
-      }
-      set { Text = value.ToString(); }
     }
   }
 }

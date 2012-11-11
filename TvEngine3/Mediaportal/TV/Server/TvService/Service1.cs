@@ -38,6 +38,7 @@ namespace Mediaportal.TV.Server.TVService
 
     //private Thread _tvServiceThread = null;
     private static Thread _unhandledExceptionInThread = null;
+    private TvServiceThread _tvServiceThread;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="Service1"/> class.
@@ -153,8 +154,6 @@ namespace Mediaportal.TV.Server.TVService
       OnStop();
     }
 
-
-    private TvServiceThread _tvServiceThread;
 
     /// <summary>
     /// When implemented in a derived class, executes when a Start command is sent to the service by the Service Control Manager (SCM) or when the operating system starts (for a service that starts automatically). Specifies actions to take when the service starts.

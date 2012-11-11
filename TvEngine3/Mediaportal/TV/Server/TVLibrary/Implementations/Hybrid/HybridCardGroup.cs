@@ -87,19 +87,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Hybrid
 
     #endregion
 
-    #region ITVCard Members
-
-    /// <summary>
-    /// Stop the device. The actual result of this function depends on device configuration:
-    /// - graph stop
-    /// - graph pause
-    /// TODO graph destroy
-    /// </summary>
-    public void Stop()
-    {
-      _cards[_currentCardIndex].Stop();
-    }
-
     /// <summary>
     /// returns true if card is currently grabbing the epg
     /// </summary>
@@ -121,6 +108,86 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Hybrid
     }
 
     /// <summary>
+    /// Returns the channel linkages grabbed
+    /// </summary>
+    public List<PortalChannel> ChannelLinkages
+    {
+      get { return _cards[_currentCardIndex].ChannelLinkages; }
+    }
+
+    /// <summary>
+    /// returns a list of all epg data for each channel found.
+    /// </summary>
+    /// <value>The epg.</value>
+    public List<EpgChannel> Epg
+    {
+      get { return _cards[_currentCardIndex].Epg; }
+    }
+
+    /// <summary>
+    /// Property which returns true if card supports quality control
+    /// </summary>
+    /// <value></value>
+    public bool SupportsQualityControl
+    {
+      get { return _cards[_currentCardIndex].SupportsQualityControl; }
+    }
+
+    /// <summary>
+    /// returns the signal quality
+    /// </summary>
+    /// <value></value>
+    public int SignalQuality
+    {
+      get { return _cards[_currentCardIndex].SignalQuality; }
+    }
+
+    /// <summary>
+    /// returns the signal level
+    /// </summary>
+    /// <value></value>
+    public int SignalLevel
+    {
+      get { return _cards[_currentCardIndex].SignalLevel; }
+    }
+
+    /// <summary>
+    /// Gets or sets the context.
+    /// </summary>
+    /// <value>The context.</value>
+    public object Context
+    {
+      get { return _cards[_currentCardIndex].Context; }
+      set
+      {
+        for (int i = 0; i < _cards.Count; ++i)
+        {
+          _cards[i].Context = value;
+        }
+      }
+    }
+
+    /// <summary>
+    /// Gets the sub channels.
+    /// </summary>
+    /// <value>The sub channels.</value>
+    public ITvSubChannel[] SubChannels
+    {
+      get { return _cards[_currentCardIndex].SubChannels; }
+    }
+
+    /// <summary>
+    /// Stop the device. The actual result of this function depends on device configuration:
+    /// - graph stop
+    /// - graph pause
+    /// TODO graph destroy
+    /// </summary>
+    public void Stop()
+    {
+      _cards[_currentCardIndex].Stop();
+    }
+
+    /// <summary>
     /// Starts scanning for linkage info
     /// </summary>
     public void StartLinkageScanner(BaseChannelLinkageScanner callback)
@@ -134,14 +201,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Hybrid
     public void ResetLinkageScanner()
     {
       _cards[_currentCardIndex].ResetLinkageScanner();
-    }
-
-    /// <summary>
-    /// Returns the channel linkages grabbed
-    /// </summary>
-    public List<PortalChannel> ChannelLinkages
-    {
-      get { return _cards[_currentCardIndex].ChannelLinkages; }
     }
 
     /// <summary>
@@ -167,15 +226,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Hybrid
     public void AbortGrabbing()
     {
       _cards[_currentCardIndex].AbortGrabbing();
-    }
-
-    /// <summary>
-    /// returns a list of all epg data for each channel found.
-    /// </summary>
-    /// <value>The epg.</value>
-    public List<EpgChannel> Epg
-    {
-      get { return _cards[_currentCardIndex].Epg; }
     }
 
     /// <summary>
@@ -231,54 +281,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Hybrid
     }
 
     /// <summary>
-    /// Property which returns true if card supports quality control
-    /// </summary>
-    /// <value></value>
-    public bool SupportsQualityControl
-    {
-      get { return _cards[_currentCardIndex].SupportsQualityControl; }
-    }
-
-    /// <summary>
-    /// returns the signal quality
-    /// </summary>
-    /// <value></value>
-    public int SignalQuality
-    {
-      get { return _cards[_currentCardIndex].SignalQuality; }
-    }
-
-    /// <summary>
-    /// returns the signal level
-    /// </summary>
-    /// <value></value>
-    public int SignalLevel
-    {
-      get { return _cards[_currentCardIndex].SignalLevel; }
-    }
-
-    /// <summary>
     /// Updates the signal state for a card.
     /// </summary>
     public void ResetSignalUpdate()
     {
       _cards[_currentCardIndex].ResetSignalUpdate();
-    }
-
-    /// <summary>
-    /// Gets or sets the context.
-    /// </summary>
-    /// <value>The context.</value>
-    public object Context
-    {
-      get { return _cards[_currentCardIndex].Context; }
-      set
-      {
-        for (int i = 0; i < _cards.Count; ++i)
-        {
-          _cards[i].Context = value;
-        }
-      }
     }
 
     /// <summary>
@@ -302,15 +309,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Hybrid
     }
 
     /// <summary>
-    /// Gets the sub channels.
-    /// </summary>
-    /// <value>The sub channels.</value>
-    public ITvSubChannel[] SubChannels
-    {
-      get { return _cards[_currentCardIndex].SubChannels; }
-    }
-
-    /// <summary>
     /// Frees the sub channel.
     /// </summary>
     /// <param name="id">The id.</param>
@@ -318,7 +316,5 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Hybrid
     {
       _cards[_currentCardIndex].FreeSubChannel(id);
     }
-
-    #endregion
   }
 }

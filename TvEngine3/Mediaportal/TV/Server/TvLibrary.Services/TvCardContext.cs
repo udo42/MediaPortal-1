@@ -39,9 +39,9 @@ namespace Mediaportal.TV.Server.TVLibrary
   {
     #region variables
     //private readonly Timer _timer = new Timer();
+    private readonly IDictionary<string, ParkedUser> _parkedUsers = new Dictionary<string, ParkedUser>();
     private readonly IDictionary<string,IUser> _users;
     private readonly IDictionary<string, IUser> _usersHistory;
-    private readonly IDictionary<string, ParkedUser> _parkedUsers = new Dictionary<string, ParkedUser>();
     //holding a list of all the timeshifting users that have been stopped - mkaing it possible for the client to query the possible stop reason.
 
     private OwnerSubChannel _ownerSubChannel;

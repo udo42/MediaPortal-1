@@ -33,15 +33,12 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class ScanSettings : SectionSettings
   {
- 
     #region private classes
 
     private class DisplaySoftwareEncoder
     {
-      private String _installed;
       private SoftwareEncoder _encoder;
-
-      public event PropertyChangedEventHandler _propertyChanged;
+      private String _installed;
 
       public DisplaySoftwareEncoder(SoftwareEncoder encoder)
       {
@@ -80,6 +77,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         }
       }
 
+      public event PropertyChangedEventHandler _propertyChanged;
+
       private void NotifyPropertyChanged(String name)
       {
         if (_propertyChanged != null)
@@ -97,8 +96,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     #endregion
 
-    private BindingList<DisplaySoftwareEncoder> _bindingVideoEncoders;
     private BindingList<DisplaySoftwareEncoder> _bindingAudioEncoders;
+    private BindingList<DisplaySoftwareEncoder> _bindingVideoEncoders;
 
     public ScanSettings()
       : this("General") {}

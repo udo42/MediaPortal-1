@@ -28,9 +28,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Simmetrics
   [Serializable]
   public sealed class Levenstein : AbstractStringMetric //, System.Runtime.Serialization.ISerializable
   {
-    private void InitBlock()
+    private AbstractSubstitutionCost dCostFunc;
+
+    ///<summary>
+    /// Constructor
+    ///</summary>
+    public Levenstein()
     {
-      dCostFunc = new SubCost01();
+      InitBlock();
     }
 
     /// <summary>
@@ -49,12 +54,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Simmetrics
       get { return "Implements the basic Levenstein algorithm providing a similarity measure between two strings"; }
     }
 
-    ///<summary>
-    /// Constructor
-    ///</summary>
-    public Levenstein()
+    private void InitBlock()
     {
-      InitBlock();
+      dCostFunc = new SubCost01();
     }
 
     /// <summary>
@@ -138,7 +140,5 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Simmetrics
 
       return d[n][m];
     }
-
-    private AbstractSubstitutionCost dCostFunc;
   }
 }

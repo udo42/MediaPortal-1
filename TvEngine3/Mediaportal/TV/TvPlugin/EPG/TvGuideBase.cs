@@ -46,8 +46,6 @@ namespace Mediaportal.TV.TvPlugin.EPG
   /// </summary>
   public class TvGuideBase : GuideBase, IMDB.IProgress
   {
-  
-
     #region constants
 
     private const string SKIN_PROPERTY_PREFIX = "#TV";
@@ -748,7 +746,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
       if (IMDBFetcher.GetInfoFromIMDB(this, ref movieDetails, true, false))
       {
         IList<Program> progs = ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByChannelAndStartEndTimes(_currentProgram.Entity.IdChannel,
-          _currentProgram.Entity.StartTime, _currentProgram.Entity.EndTime).ToList();
+                                                                                                               _currentProgram.Entity.StartTime, _currentProgram.Entity.EndTime).ToList();
 
         if (progs != null && progs.Count > 0)
         {

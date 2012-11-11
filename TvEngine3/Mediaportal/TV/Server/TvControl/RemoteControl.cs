@@ -30,11 +30,9 @@ namespace Mediaportal.TV.Server.TVControl
   /// </summary>
   public class RemoteControl
   {
-  
+    #region consts
 
-      #region consts
-
-      public const string InitializedEventName = @"Global\MPTVServiceInitializedEvent";
+    public const string InitializedEventName = @"Global\MPTVServiceInitializedEvent";
     private const int MAX_TCP_TIMEOUT = 1000; //msecs
     private const int REMOTING_PORT = 8000;
 
@@ -62,8 +60,6 @@ namespace Mediaportal.TV.Server.TVControl
 
     #endregion
 
-    
-
     #region public properties
 
     public static bool IsConnected
@@ -78,7 +74,7 @@ namespace Mediaportal.TV.Server.TVControl
       {
         _useIncreasedTimeoutForInitialConnection = value;
         //if (value)
-          //_firstFailure = true;
+        //_firstFailure = true;
       }
     }
 

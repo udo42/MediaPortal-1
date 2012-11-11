@@ -25,14 +25,25 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 {
   public class XPListViewItemCollection : System.Windows.Forms.ListView.ListViewItemCollection
   {
+    #region Delegates
+
     public delegate void ItemAddedEventHandler(object sender, ListViewItemEventArgs e);
 
     public delegate void ItemRemovedEventHandler(object sender, ListViewItemEventArgs e);
 
-    public event ItemAddedEventHandler ItemAdded;
-    public event ItemRemovedEventHandler ItemRemoved;
+    #endregion
 
     public XPListViewItemCollection(XPListView owner) : base(((ListView)owner)) {}
+
+    public new XPListViewItem this[int displayIndex]
+    {
+      get { return ((XPListViewItem)base[displayIndex]); //((XPListViewItem)this[displayIndex])
+      }
+      set { base[displayIndex] = value; }
+    }
+
+    public event ItemAddedEventHandler ItemAdded;
+    public event ItemRemovedEventHandler ItemRemoved;
 
     public XPListViewItem Add(XPListViewItem item)
     {
@@ -83,13 +94,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
     public XPListViewItem Insert(int index, XPListViewItem item)
     {
       return ((XPListViewItem)base.Insert(index, item));
-    }
-
-    public new XPListViewItem this[int displayIndex]
-    {
-      get { return ((XPListViewItem)base[displayIndex]); //((XPListViewItem)this[displayIndex])
-      }
-      set { base[displayIndex] = value; }
     }
 
     public void Remove(XPListViewItem item)

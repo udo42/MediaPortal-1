@@ -57,15 +57,6 @@ namespace Mediaportal.TV.Server.TVControl
     private static readonly int _priorityScheduler;
     private static readonly IDictionary<string, int> _priorityCustomUsers = new Dictionary<string, int>();
 
-    private static decimal ValueSanityCheck(decimal value, int min, int max)
-    {
-      if (value < min)
-        return min;
-      if (value > max)
-        return max;
-      return value;
-    }
-
     static UserFactory()
     {
         
@@ -109,6 +100,15 @@ namespace Mediaportal.TV.Server.TVControl
         Log.Error("UserFactory - error reading priority settings from database", ex);        
       }
       
+    }
+
+    private static decimal ValueSanityCheck(decimal value, int min, int max)
+    {
+      if (value < min)
+        return min;
+      if (value > max)
+        return max;
+      return value;
     }
 
     public static IUser CreateEpgUser()

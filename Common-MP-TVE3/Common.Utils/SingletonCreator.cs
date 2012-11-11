@@ -5,19 +5,6 @@ namespace MediaPortal.Common.Utils
 {
   public class Singleton<T> where T : class
   {
-    private static class SingletonCreator
-    {
-      static SingletonCreator() { }
-
-      internal static readonly T Instance =
-          typeof(T).InvokeMember(typeof(T).Name,
-                                  BindingFlags.CreateInstance |
-                                  BindingFlags.Instance |
-                                  BindingFlags.Public |
-                                  BindingFlags.NonPublic,
-                                  null, null, null) as T;
-    }
-
     public static T Instance
     {
       get
@@ -36,6 +23,23 @@ namespace MediaPortal.Common.Utils
         return null;
       }
     }
+
+    #region Nested type: SingletonCreator
+
+    private static class SingletonCreator
+    {
+      internal static readonly T Instance =
+        typeof(T).InvokeMember(typeof(T).Name,
+                               BindingFlags.CreateInstance |
+                               BindingFlags.Instance |
+                               BindingFlags.Public |
+                               BindingFlags.NonPublic,
+                               null, null, null) as T;
+
+      static SingletonCreator() { }
+    }
+
+    #endregion
   }
 
 }

@@ -39,33 +39,11 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
 
   public partial class WebEPGMappingControl : UserControl
   {
-
-
-    private class CBChannelGroup
-    {
-      public string groupName;
-      public int idGroup;
-
-      public CBChannelGroup(string groupName, int idGroup)
-      {
-        this.groupName = groupName;
-        this.idGroup = idGroup;
-      }
-
-      public override string ToString()
-      {
-        return groupName;
-      }
-    }
-
     private Dictionary<string, ChannelMap> _channelMapping;
     private Hashtable _hChannelConfigInfo;
     //private MergedChannelDetails _mergeConfig;
-    private ListViewColumnSorter lvwColumnSorter;
     private bool _isTvMapping;
-
-    public event EventHandler SelectGrabberClick;
-    public event EventHandler AutoMapChannels;
+    private ListViewColumnSorter lvwColumnSorter;
 
     public WebEPGMappingControl()
     {
@@ -105,6 +83,9 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
       get { return _hChannelConfigInfo; }
       set { _hChannelConfigInfo = value; }
     }
+
+    public event EventHandler SelectGrabberClick;
+    public event EventHandler AutoMapChannels;
 
     public void LoadGroups()
     {
@@ -706,6 +687,27 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
       OnAutoMapChannels();
       UpdateList();
       Cursor.Current = Cursors.Default;
+    }
+
+    #endregion
+
+    #region Nested type: CBChannelGroup
+
+    private class CBChannelGroup
+    {
+      public string groupName;
+      public int idGroup;
+
+      public CBChannelGroup(string groupName, int idGroup)
+      {
+        this.groupName = groupName;
+        this.idGroup = idGroup;
+      }
+
+      public override string ToString()
+      {
+        return groupName;
+      }
     }
 
     #endregion

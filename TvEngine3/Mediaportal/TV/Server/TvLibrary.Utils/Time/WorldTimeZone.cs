@@ -56,31 +56,6 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
 
     #endregion
 
-    //#region Structs
-    //private struct TimeZoneDate
-    //{
-    //  public int Month;
-    //  public DayOfWeek DayOfWeek;
-    //  public int WeekOfMonth;
-    //  public TimeSpan TimeOfDay;
-    //}
-
-    //private struct TimeZoneInfo
-    //{
-    //  //public int Index;
-    //  public string Display;
-    //  public string StdName;
-    //  public string DltName;
-
-    //  public Int32 Offset;
-    //  public Int32 StdOffset;
-    //  public Int32 DltOffset;
-
-    //  public TimeZoneDate StdDate;
-    //  public TimeZoneDate DltDate;
-    //}
-    //#endregion
-
     #region Constructors/Destructors
 
     /// <summary>
@@ -484,5 +459,30 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
     }
 
     #endregion
+
+    //#region Structs
+    //private struct TimeZoneDate
+    //{
+    //  public int Month;
+    //  public DayOfWeek DayOfWeek;
+    //  public int WeekOfMonth;
+    //  public TimeSpan TimeOfDay;
+    //}
+
+    //private struct TimeZoneInfo
+    //{
+    //  //public int Index;
+    //  public string Display;
+    //  public string StdName;
+    //  public string DltName;
+
+    //  public Int32 Offset;
+    //  public Int32 StdOffset;
+    //  public Int32 DltOffset;
+
+    //  public TimeZoneDate StdDate;
+    //  public TimeZoneDate DltDate;
+    //}
+    //#endregion
   }
 }

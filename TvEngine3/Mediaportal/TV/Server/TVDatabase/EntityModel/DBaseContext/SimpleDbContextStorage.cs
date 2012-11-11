@@ -11,7 +11,9 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.DBaseContext
         /// </summary>
         public SimpleDbContextStorage() { }
 
-        /// <summary>
+      #region IDbContextStorage Members
+
+      /// <summary>
         /// Returns the db context associated with the specified key or
 		/// null if the specified key is not found.
         /// </summary>
@@ -46,5 +48,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.DBaseContext
         {
             return _storage.Values;
         }
+
+      #endregion
     }
 }

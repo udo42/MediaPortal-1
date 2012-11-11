@@ -64,6 +64,17 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     int Cards { [OperationContract] get; }
 
     /// <summary>
+    /// Enable or disable the epg-grabber
+    /// </summary>
+    bool EpgGrabberEnabled { [OperationContract] get; [OperationContract] set; }
+
+    /// <summary>
+    /// Returns a list of all ip adresses on the server.
+    /// </summary>
+    /// <value>The server ip adresses.</value>
+    IEnumerable<string> ServerIpAdresses { [OperationContract] get; }
+
+    /// <summary>
     /// Initialized Conditional Access handler
     /// </summary>
     /// <param name="cardId">id of the card.</param>
@@ -314,11 +325,6 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     [OperationContract]
     void OnNewSchedule();
 
-    /// <summary>
-    /// Enable or disable the epg-grabber
-    /// </summary>
-    bool EpgGrabberEnabled { [OperationContract] get; [OperationContract] set; }
-
 
     /// <summary>
     /// Restarts the service.
@@ -352,12 +358,6 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     /// <returns>an enum indicating tunable/timeshifting/recording</returns>
     [OperationContract]
     ChannelState GetChannelState(int idChannel, string userName);
-
-    /// <summary>
-    /// Returns a list of all ip adresses on the server.
-    /// </summary>
-    /// <value>The server ip adresses.</value>
-    IEnumerable<string> ServerIpAdresses { [OperationContract] get; }
 
     #endregion
 

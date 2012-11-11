@@ -33,12 +33,11 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.CIMenu
   /// </summary>
   public partial class CI_Menu_Dialog : SectionSettings
   {
- 
-    private CiMenuEventHandler _ciMenuEventHandler;
-    private CiMenuState ciMenuState = CiMenuState.Closed;
-    private int ciMenuChoices = 0;
-    private int cardNumber = 0;
     private bool InitSuccess = false;
+    private CiMenuEventHandler _ciMenuEventHandler;
+    private int cardNumber = 0;
+    private int ciMenuChoices = 0;
+    private CiMenuState ciMenuState = CiMenuState.Closed;
 
     /// <summary>
     /// CTOR

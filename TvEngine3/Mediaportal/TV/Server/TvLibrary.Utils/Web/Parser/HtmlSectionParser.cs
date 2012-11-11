@@ -32,13 +32,15 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
   {
     #region Private Structs
 
+    #region Nested type: DataField
+
     private struct DataField
     {
-      public MatchTag htmlTag;
+      public ArrayList dataElements;
       public bool hasData;
+      public MatchTag htmlTag;
       public bool optional;
       public string source;
-      public ArrayList dataElements;
 
       public override string ToString()
       {
@@ -53,28 +55,38 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
       }
     }
 
-    private struct Sections
-    {
-      public ArrayList dataFields;
-      public int minFields;
-      public int dataTags;
-      public bool optionalData;
-    }
+    #endregion
+
+    #region Nested type: ElementData
 
     private struct ElementData
     {
+      public string end;
       public string name;
       public string start;
-      public string end;
     }
+
+    #endregion
+
+    #region Nested type: Sections
+
+    private struct Sections
+    {
+      public ArrayList dataFields;
+      public int dataTags;
+      public int minFields;
+      public bool optionalData;
+    }
+
+    #endregion
 
     #endregion
 
     #region Variables
 
-    private Sections _templateData;
-    private HtmlSectionTemplate _template;
     private string _matchField;
+    private HtmlSectionTemplate _template;
+    private Sections _templateData;
 
     #endregion
 

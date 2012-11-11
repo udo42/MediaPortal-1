@@ -1729,15 +1729,11 @@ namespace DirectShowLib
 
   internal abstract class DsMarshaler : ICustomMarshaler
   {
-    #region Data Members
-
     // The cookie isn't currently being used.
     protected string m_cookie;
 
     // The managed object passed in to MarshalManagedToNative, and modified in MarshalNativeToManaged
     protected object m_obj;
-
-    #endregion
 
     // The constructor.  This is called from GetInstance (below)
     public DsMarshaler(string cookie)
@@ -1748,6 +1744,9 @@ namespace DirectShowLib
 
     // Called just before invoking the COM method.  The returned IntPtr is what goes on the stack
     // for the COM call.  The input arg is the parameter that was passed to the method.
+
+    #region ICustomMarshaler Members
+
     public virtual IntPtr MarshalManagedToNative(object managedObj)
     {
       // Save off the passed-in value.  Safe since we just checked the type.
@@ -1790,6 +1789,8 @@ namespace DirectShowLib
 
     // This routine is (apparently) never called by the marshaler.  However it can be useful.
     public abstract int GetNativeDataSize();
+
+    #endregion
 
     // GetInstance is called by the marshaler in preparation to doing custom marshaling.  The (optional)
     // cookie is the value specified in MarshalCookie="asdf", or "" is none is specified.

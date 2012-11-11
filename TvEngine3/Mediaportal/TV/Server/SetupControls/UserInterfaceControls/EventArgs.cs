@@ -44,8 +44,8 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   /// </summary>
   public class TextDirEventArgs : System.EventArgs
   {
-    private readonly TextDir tdOldTextDir = TextDir.Normal;
     private readonly TextDir tdNewTextDir = TextDir.Normal;
+    private readonly TextDir tdOldTextDir = TextDir.Normal;
 
     /// <summary>
     /// Standard Constructor.
@@ -89,8 +89,8 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   /// </summary>
   public class StringFormatEnumEventArgs : System.EventArgs
   {
-    private readonly StringFormatEnum sfeOldStringFormatEnum = StringFormatEnum.GenericDefault;
     private readonly StringFormatEnum sfeNewStringFormatEnum = StringFormatEnum.GenericDefault;
+    private readonly StringFormatEnum sfeOldStringFormatEnum = StringFormatEnum.GenericDefault;
 
     /// <summary>
     /// Standard Constructor.

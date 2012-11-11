@@ -33,19 +33,15 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
   public struct DigitalDevicesCiSlot
   {
     /// <summary>
-    /// The name of the CI slot device.
-    /// </summary>
-    public String DeviceName;
-
-    /// <summary>
-    /// The device path of the CI slot device.
-    /// </summary>
-    public String DevicePath;
-
-    /// <summary>
     /// The root menu title for the CAM in the slot.
     /// </summary>
     public String CamRootMenuTitle;
+
+    /// <summary>
+    /// A set of device paths. Each entry represents a tuner that is using this CI slot to decrypt
+    /// a service.
+    /// </summary>
+    public HashSet<String> CurrentTunerSet;
 
     /// <summary>
     /// The number of services that the slot/CAM is capable of decrypting simultaneously.
@@ -56,10 +52,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     public int DecryptLimit;
 
     /// <summary>
-    /// A set of device paths. Each entry represents a tuner that is using this CI slot to decrypt
-    /// a service.
+    /// The name of the CI slot device.
     /// </summary>
-    public HashSet<String> CurrentTunerSet;
+    public String DeviceName;
+
+    /// <summary>
+    /// The device path of the CI slot device.
+    /// </summary>
+    public String DevicePath;
 
     /// <summary>
     /// A hash set of provider names (eg. ORF, Canal Digitaal, BSkyB).

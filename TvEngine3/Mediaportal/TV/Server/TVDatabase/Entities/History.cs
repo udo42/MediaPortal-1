@@ -18,378 +18,393 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
     [KnownType(typeof(ProgramCategory))]
     public partial class History: IObjectWithChangeTracker, INotifyPropertyChanged
     {
-        #region Primitive Properties
-    
-        [DataMember]
-        public int IdHistory
-        {
-            get { return _idHistory; }
-            set
-            {
-                if (_idHistory != value)
-                {
-                    if (ChangeTracker.ChangeTrackingEnabled && ChangeTracker.State != ObjectState.Added)
-                    {
-                        throw new InvalidOperationException("The property 'IdHistory' is part of the object's key and cannot be changed. Changes to key properties can only be made when the object is not being tracked or is in the Added state.");
-                    }
-                    _idHistory = value;
-                    OnPropertyChanged("IdHistory");
-                }
-            }
-        }
-        private int _idHistory;
-    
-        [DataMember]
-        public int IdChannel
-        {
-            get { return _idChannel; }
-            set
-            {
-                if (_idChannel != value)
-                {
-                    ChangeTracker.RecordOriginalValue("IdChannel", _idChannel);
-                    if (!IsDeserializing)
-                    {
-                        if (Channel != null && Channel.IdChannel != value)
-                        {
-                            Channel = null;
-                        }
-                    }
-                    _idChannel = value;
-                    OnPropertyChanged("IdChannel");
-                }
-            }
-        }
-        private int _idChannel;
-    
-        [DataMember]
-        public System.DateTime StartTime
-        {
-            get { return _startTime; }
-            set
-            {
-                if (_startTime != value)
-                {
-                    _startTime = value;
-                    OnPropertyChanged("StartTime");
-                }
-            }
-        }
-        private System.DateTime _startTime;
-    
-        [DataMember]
-        public System.DateTime EndTime
-        {
-            get { return _endTime; }
-            set
-            {
-                if (_endTime != value)
-                {
-                    _endTime = value;
-                    OnPropertyChanged("EndTime");
-                }
-            }
-        }
-        private System.DateTime _endTime;
-    
-        [DataMember]
-        public string Title
-        {
-            get { return _title; }
-            set
-            {
-                if (_title != value)
-                {
-                    _title = value;
-                    OnPropertyChanged("Title");
-                }
-            }
-        }
-        private string _title;
-    
-        [DataMember]
-        public string Description
-        {
-            get { return _description; }
-            set
-            {
-                if (_description != value)
-                {
-                    _description = value;
-                    OnPropertyChanged("Description");
-                }
-            }
-        }
-        private string _description;
-    
-        [DataMember]
-        public bool Recorded
-        {
-            get { return _recorded; }
-            set
-            {
-                if (_recorded != value)
-                {
-                    _recorded = value;
-                    OnPropertyChanged("Recorded");
-                }
-            }
-        }
-        private bool _recorded;
-    
-        [DataMember]
-        public int Watched
-        {
-            get { return _watched; }
-            set
-            {
-                if (_watched != value)
-                {
-                    _watched = value;
-                    OnPropertyChanged("Watched");
-                }
-            }
-        }
-        private int _watched;
-    
-        [DataMember]
-        public Nullable<int> IdProgramCategory
-        {
-            get { return _idProgramCategory; }
-            set
-            {
-                if (_idProgramCategory != value)
-                {
-                    ChangeTracker.RecordOriginalValue("IdProgramCategory", _idProgramCategory);
-                    if (!IsDeserializing)
-                    {
-                        if (ProgramCategory != null && ProgramCategory.IdProgramCategory != value)
-                        {
-                            ProgramCategory = null;
-                        }
-                    }
-                    _idProgramCategory = value;
-                    OnPropertyChanged("IdProgramCategory");
-                }
-            }
-        }
-        private Nullable<int> _idProgramCategory;
+      #region Primitive Properties
 
-        #endregion
-        #region Navigation Properties
-    
-        [DataMember]
-        public Channel Channel
-        {
-            get { return _channel; }
-            set
-            {
-                if (!ReferenceEquals(_channel, value))
-                {
-                    var previousValue = _channel;
-                    _channel = value;
-                    FixupChannel(previousValue);
-                    OnNavigationPropertyChanged("Channel");
-                }
-            }
-        }
-        private Channel _channel;
-    
-        [DataMember]
-        public ProgramCategory ProgramCategory
-        {
-            get { return _programCategory; }
-            set
-            {
-                if (!ReferenceEquals(_programCategory, value))
-                {
-                    var previousValue = _programCategory;
-                    _programCategory = value;
-                    FixupProgramCategory(previousValue);
-                    OnNavigationPropertyChanged("ProgramCategory");
-                }
-            }
-        }
-        private ProgramCategory _programCategory;
+      private string _description;
+      private System.DateTime _endTime;
+      private int _idChannel;
+      private int _idHistory;
+      private Nullable<int> _idProgramCategory;
+      private bool _recorded;
+      private System.DateTime _startTime;
+      private string _title;
+      private int _watched;
 
-        #endregion
-        #region ChangeTracking
-    
-        protected virtual void OnPropertyChanged(String propertyName)
+      [DataMember]
+      public int IdHistory
+      {
+        get { return _idHistory; }
+        set
         {
-            if (ChangeTracker.State != ObjectState.Added && ChangeTracker.State != ObjectState.Deleted)
+          if (_idHistory != value)
+          {
+            if (ChangeTracker.ChangeTrackingEnabled && ChangeTracker.State != ObjectState.Added)
             {
-                ChangeTracker.State = ObjectState.Modified;
+              throw new InvalidOperationException("The property 'IdHistory' is part of the object's key and cannot be changed. Changes to key properties can only be made when the object is not being tracked or is in the Added state.");
             }
-            if (_propertyChanged != null)
-            {
-                _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            _idHistory = value;
+            OnPropertyChanged("IdHistory");
+          }
         }
-    
-        protected virtual void OnNavigationPropertyChanged(String propertyName)
-        {
-            if (_propertyChanged != null)
-            {
-                _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-    
-        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged{ add { _propertyChanged += value; } remove { _propertyChanged -= value; } }
-        private event PropertyChangedEventHandler _propertyChanged;
-        private ObjectChangeTracker _changeTracker;
-    
-        [DataMember]
-        public ObjectChangeTracker ChangeTracker
-        {
-            get
-            {
-                if (_changeTracker == null)
-                {
-                    _changeTracker = new ObjectChangeTracker();
-                    _changeTracker.ObjectStateChanging += HandleObjectStateChanging;
-                }
-                return _changeTracker;
-            }
-            set
-            {
-                if(_changeTracker != null)
-                {
-                    _changeTracker.ObjectStateChanging -= HandleObjectStateChanging;
-                }
-                _changeTracker = value;
-                if(_changeTracker != null)
-                {
-                    _changeTracker.ObjectStateChanging += HandleObjectStateChanging;
-                }
-            }
-        }
-    
-        private void HandleObjectStateChanging(object sender, ObjectStateChangingEventArgs e)
-        {
-            if (e.NewState == ObjectState.Deleted)
-            {
-                ClearNavigationProperties();
-            }
-        }
-    
-        // This entity type is the dependent end in at least one association that performs cascade deletes.
-        // This event handler will process notifications that occur when the principal end is deleted.
-        internal void HandleCascadeDelete(object sender, ObjectStateChangingEventArgs e)
-        {
-            if (e.NewState == ObjectState.Deleted)
-            {
-                this.MarkAsDeleted();
-            }
-        }
-    
-        protected bool IsDeserializing { get; private set; }
-    
-        [OnDeserializing]
-        public void OnDeserializingMethod(StreamingContext context)
-        {
-            IsDeserializing = true;
-        }
-    
-        [OnDeserialized]
-        public void OnDeserializedMethod(StreamingContext context)
-        {
-            IsDeserializing = false;
-            ChangeTracker.ChangeTrackingEnabled = true;
-        }
-    
-        protected virtual void ClearNavigationProperties()
-        {
-            Channel = null;
-            ProgramCategory = null;
-        }
+      }
 
-        #endregion
-        #region Association Fixup
-    
-        private void FixupChannel(Channel previousValue)
+      [DataMember]
+      public int IdChannel
+      {
+        get { return _idChannel; }
+        set
         {
-            if (IsDeserializing)
+          if (_idChannel != value)
+          {
+            ChangeTracker.RecordOriginalValue("IdChannel", _idChannel);
+            if (!IsDeserializing)
             {
-                return;
+              if (Channel != null && Channel.IdChannel != value)
+              {
+                Channel = null;
+              }
             }
-    
-            if (previousValue != null && previousValue.Histories.Contains(this))
-            {
-                previousValue.Histories.Remove(this);
-            }
-    
-            if (Channel != null)
-            {
-                if (!Channel.Histories.Contains(this))
-                {
-                    Channel.Histories.Add(this);
-                }
-    
-                IdChannel = Channel.IdChannel;
-            }
-            if (ChangeTracker.ChangeTrackingEnabled)
-            {
-                if (ChangeTracker.OriginalValues.ContainsKey("Channel")
-                    && (ChangeTracker.OriginalValues["Channel"] == Channel))
-                {
-                    ChangeTracker.OriginalValues.Remove("Channel");
-                }
-                else
-                {
-                    ChangeTracker.RecordOriginalValue("Channel", previousValue);
-                }
-                if (Channel != null && !Channel.ChangeTracker.ChangeTrackingEnabled)
-                {
-                    Channel.StartTracking();
-                }
-            }
+            _idChannel = value;
+            OnPropertyChanged("IdChannel");
+          }
         }
-    
-        private void FixupProgramCategory(ProgramCategory previousValue, bool skipKeys = false)
-        {
-            if (IsDeserializing)
-            {
-                return;
-            }
-    
-            if (previousValue != null && previousValue.Histories.Contains(this))
-            {
-                previousValue.Histories.Remove(this);
-            }
-    
-            if (ProgramCategory != null)
-            {
-                if (!ProgramCategory.Histories.Contains(this))
-                {
-                    ProgramCategory.Histories.Add(this);
-                }
-    
-                IdProgramCategory = ProgramCategory.IdProgramCategory;
-            }
-            else if (!skipKeys)
-            {
-                IdProgramCategory = null;
-            }
-    
-            if (ChangeTracker.ChangeTrackingEnabled)
-            {
-                if (ChangeTracker.OriginalValues.ContainsKey("ProgramCategory")
-                    && (ChangeTracker.OriginalValues["ProgramCategory"] == ProgramCategory))
-                {
-                    ChangeTracker.OriginalValues.Remove("ProgramCategory");
-                }
-                else
-                {
-                    ChangeTracker.RecordOriginalValue("ProgramCategory", previousValue);
-                }
-                if (ProgramCategory != null && !ProgramCategory.ChangeTracker.ChangeTrackingEnabled)
-                {
-                    ProgramCategory.StartTracking();
-                }
-            }
-        }
+      }
 
-        #endregion
+      [DataMember]
+      public System.DateTime StartTime
+      {
+        get { return _startTime; }
+        set
+        {
+          if (_startTime != value)
+          {
+            _startTime = value;
+            OnPropertyChanged("StartTime");
+          }
+        }
+      }
+
+      [DataMember]
+      public System.DateTime EndTime
+      {
+        get { return _endTime; }
+        set
+        {
+          if (_endTime != value)
+          {
+            _endTime = value;
+            OnPropertyChanged("EndTime");
+          }
+        }
+      }
+
+      [DataMember]
+      public string Title
+      {
+        get { return _title; }
+        set
+        {
+          if (_title != value)
+          {
+            _title = value;
+            OnPropertyChanged("Title");
+          }
+        }
+      }
+
+      [DataMember]
+      public string Description
+      {
+        get { return _description; }
+        set
+        {
+          if (_description != value)
+          {
+            _description = value;
+            OnPropertyChanged("Description");
+          }
+        }
+      }
+
+      [DataMember]
+      public bool Recorded
+      {
+        get { return _recorded; }
+        set
+        {
+          if (_recorded != value)
+          {
+            _recorded = value;
+            OnPropertyChanged("Recorded");
+          }
+        }
+      }
+
+      [DataMember]
+      public int Watched
+      {
+        get { return _watched; }
+        set
+        {
+          if (_watched != value)
+          {
+            _watched = value;
+            OnPropertyChanged("Watched");
+          }
+        }
+      }
+
+      [DataMember]
+      public Nullable<int> IdProgramCategory
+      {
+        get { return _idProgramCategory; }
+        set
+        {
+          if (_idProgramCategory != value)
+          {
+            ChangeTracker.RecordOriginalValue("IdProgramCategory", _idProgramCategory);
+            if (!IsDeserializing)
+            {
+              if (ProgramCategory != null && ProgramCategory.IdProgramCategory != value)
+              {
+                ProgramCategory = null;
+              }
+            }
+            _idProgramCategory = value;
+            OnPropertyChanged("IdProgramCategory");
+          }
+        }
+      }
+
+      #endregion
+
+      #region Navigation Properties
+
+      private Channel _channel;
+
+      private ProgramCategory _programCategory;
+
+      [DataMember]
+      public Channel Channel
+      {
+        get { return _channel; }
+        set
+        {
+          if (!ReferenceEquals(_channel, value))
+          {
+            var previousValue = _channel;
+            _channel = value;
+            FixupChannel(previousValue);
+            OnNavigationPropertyChanged("Channel");
+          }
+        }
+      }
+
+      [DataMember]
+      public ProgramCategory ProgramCategory
+      {
+        get { return _programCategory; }
+        set
+        {
+          if (!ReferenceEquals(_programCategory, value))
+          {
+            var previousValue = _programCategory;
+            _programCategory = value;
+            FixupProgramCategory(previousValue);
+            OnNavigationPropertyChanged("ProgramCategory");
+          }
+        }
+      }
+
+      #endregion
+
+      #region ChangeTracking
+
+      private ObjectChangeTracker _changeTracker;
+      protected bool IsDeserializing { get; private set; }
+
+      #region INotifyPropertyChanged Members
+
+      event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged{ add { _propertyChanged += value; } remove { _propertyChanged -= value; } }
+
+      #endregion
+
+      #region IObjectWithChangeTracker Members
+
+      [DataMember]
+      public ObjectChangeTracker ChangeTracker
+      {
+        get
+        {
+          if (_changeTracker == null)
+          {
+            _changeTracker = new ObjectChangeTracker();
+            _changeTracker.ObjectStateChanging += HandleObjectStateChanging;
+          }
+          return _changeTracker;
+        }
+        set
+        {
+          if(_changeTracker != null)
+          {
+            _changeTracker.ObjectStateChanging -= HandleObjectStateChanging;
+          }
+          _changeTracker = value;
+          if(_changeTracker != null)
+          {
+            _changeTracker.ObjectStateChanging += HandleObjectStateChanging;
+          }
+        }
+      }
+
+      #endregion
+
+      protected virtual void OnPropertyChanged(String propertyName)
+      {
+        if (ChangeTracker.State != ObjectState.Added && ChangeTracker.State != ObjectState.Deleted)
+        {
+          ChangeTracker.State = ObjectState.Modified;
+        }
+        if (_propertyChanged != null)
+        {
+          _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+      }
+    
+      protected virtual void OnNavigationPropertyChanged(String propertyName)
+      {
+        if (_propertyChanged != null)
+        {
+          _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+      }
+
+      private event PropertyChangedEventHandler _propertyChanged;
+
+      private void HandleObjectStateChanging(object sender, ObjectStateChangingEventArgs e)
+      {
+        if (e.NewState == ObjectState.Deleted)
+        {
+          ClearNavigationProperties();
+        }
+      }
+    
+      // This entity type is the dependent end in at least one association that performs cascade deletes.
+      // This event handler will process notifications that occur when the principal end is deleted.
+      internal void HandleCascadeDelete(object sender, ObjectStateChangingEventArgs e)
+      {
+        if (e.NewState == ObjectState.Deleted)
+        {
+          this.MarkAsDeleted();
+        }
+      }
+
+      [OnDeserializing]
+      public void OnDeserializingMethod(StreamingContext context)
+      {
+        IsDeserializing = true;
+      }
+    
+      [OnDeserialized]
+      public void OnDeserializedMethod(StreamingContext context)
+      {
+        IsDeserializing = false;
+        ChangeTracker.ChangeTrackingEnabled = true;
+      }
+    
+      protected virtual void ClearNavigationProperties()
+      {
+        Channel = null;
+        ProgramCategory = null;
+      }
+
+      #endregion
+
+      #region Association Fixup
+    
+      private void FixupChannel(Channel previousValue)
+      {
+        if (IsDeserializing)
+        {
+          return;
+        }
+    
+        if (previousValue != null && previousValue.Histories.Contains(this))
+        {
+          previousValue.Histories.Remove(this);
+        }
+    
+        if (Channel != null)
+        {
+          if (!Channel.Histories.Contains(this))
+          {
+            Channel.Histories.Add(this);
+          }
+    
+          IdChannel = Channel.IdChannel;
+        }
+        if (ChangeTracker.ChangeTrackingEnabled)
+        {
+          if (ChangeTracker.OriginalValues.ContainsKey("Channel")
+              && (ChangeTracker.OriginalValues["Channel"] == Channel))
+          {
+            ChangeTracker.OriginalValues.Remove("Channel");
+          }
+          else
+          {
+            ChangeTracker.RecordOriginalValue("Channel", previousValue);
+          }
+          if (Channel != null && !Channel.ChangeTracker.ChangeTrackingEnabled)
+          {
+            Channel.StartTracking();
+          }
+        }
+      }
+    
+      private void FixupProgramCategory(ProgramCategory previousValue, bool skipKeys = false)
+      {
+        if (IsDeserializing)
+        {
+          return;
+        }
+    
+        if (previousValue != null && previousValue.Histories.Contains(this))
+        {
+          previousValue.Histories.Remove(this);
+        }
+    
+        if (ProgramCategory != null)
+        {
+          if (!ProgramCategory.Histories.Contains(this))
+          {
+            ProgramCategory.Histories.Add(this);
+          }
+    
+          IdProgramCategory = ProgramCategory.IdProgramCategory;
+        }
+        else if (!skipKeys)
+        {
+          IdProgramCategory = null;
+        }
+    
+        if (ChangeTracker.ChangeTrackingEnabled)
+        {
+          if (ChangeTracker.OriginalValues.ContainsKey("ProgramCategory")
+              && (ChangeTracker.OriginalValues["ProgramCategory"] == ProgramCategory))
+          {
+            ChangeTracker.OriginalValues.Remove("ProgramCategory");
+          }
+          else
+          {
+            ChangeTracker.RecordOriginalValue("ProgramCategory", previousValue);
+          }
+          if (ProgramCategory != null && !ProgramCategory.ChangeTracker.ChangeTrackingEnabled)
+          {
+            ProgramCategory.StartTracking();
+          }
+        }
+      }
+
+      #endregion
     }
 }

@@ -41,9 +41,9 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
     #region variables
 
     //private TvBusinessLayer cmLayer = new TvBusinessLayer();
-    private bool _stopService = false;
-    private bool _isUpdating = false;
     private bool _debugMode = true;
+    private bool _isUpdating = false;
+    private bool _stopService = false;
 
     #endregion
 
@@ -193,6 +193,15 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
 
     #endregion
 
+    /// <summary>
+    /// returns if the plugin should only run on the master server
+    /// or also on slave servers
+    /// </summary>
+    public bool MasterOnly
+    {
+      get { return false; }
+    }
+
     #region ITvServerPlugin Members
 
     /// <summary>
@@ -217,15 +226,6 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
     public string Author
     {
       get { return "Bavarian"; }
-    }
-
-    /// <summary>
-    /// returns if the plugin should only run on the master server
-    /// or also on slave servers
-    /// </summary>
-    public bool MasterOnly
-    {
-      get { return false; }
     }
 
     /// <summary>

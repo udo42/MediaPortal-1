@@ -28,8 +28,8 @@ namespace Mediaportal.TV.TvPlugin
   {
     [SkinControl(12)] protected GUIImage imgLogo = null;
 
-    private bool m_bNeedRefresh = false;
     private string logoUrl = string.Empty;
+    private bool m_bNeedRefresh = false;
 
     public TVNotifyYesNoDialog()
     {

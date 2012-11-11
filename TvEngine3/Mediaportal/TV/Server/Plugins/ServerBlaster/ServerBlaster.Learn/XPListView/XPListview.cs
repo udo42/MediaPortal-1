@@ -36,14 +36,14 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 {
   public class XPListView : System.Windows.Forms.ListView
   {
+    private IntPtr _apiRetVal;
+    private bool _autoGroup = false;
     private ColumnHeader _autoGroupCol = null;
     private ArrayList _autoGroupList = new ArrayList();
-    private XPListViewItemCollection _items;
-    private XPListViewGroupCollection _groups;
-    private bool _showInGroups = false;
-    private bool _autoGroup = false;
     private string _emptyAutoGroupText = "";
-    private IntPtr _apiRetVal;
+    private XPListViewGroupCollection _groups;
+    private XPListViewItemCollection _items;
+    private bool _showInGroups = false;
 
     public XPListView()
     {
@@ -544,9 +544,13 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       col = column;
     }
 
+    #region IComparer Members
+
     public int Compare(object x, object y)
     {
       return String.Compare(((ListViewItem)x).SubItems[col].Text, ((ListViewItem)y).SubItems[col].Text);
     }
+
+    #endregion
   }
 }

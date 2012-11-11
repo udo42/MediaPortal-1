@@ -40,6 +40,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     private readonly Dictionary<DsDevice, int> _encodersInUse;
 
     /// <summary>
+    /// ctor - private since this is a singleton class
+    /// </summary>
+    private EncodersInUse()
+    {
+      _encodersInUse = new Dictionary<DsDevice, int>();      
+    }
+
+    /// <summary>
     /// static method to access this class
     /// </summary>
     public static EncodersInUse Instance
@@ -52,14 +60,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         }
         return _instance;
       }
-    }
-
-    /// <summary>
-    /// ctor - private since this is a singleton class
-    /// </summary>
-    private EncodersInUse()
-    {
-      _encodersInUse = new Dictionary<DsDevice, int>();      
     }
 
     /// <summary>

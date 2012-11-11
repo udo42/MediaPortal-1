@@ -29,9 +29,9 @@ namespace WebEPG.config.Grabber
   {
     #region Variables
 
-    [XmlAttribute("rowDelimitor")] public string rowDelimiter;
-    [XmlAttribute("dataDelimitor")] public string dataDelimiter;
     [XmlText()] public string Template;
+    [XmlAttribute("dataDelimitor")] public string dataDelimiter;
+    [XmlAttribute("rowDelimitor")] public string rowDelimiter;
 
     #endregion
   }

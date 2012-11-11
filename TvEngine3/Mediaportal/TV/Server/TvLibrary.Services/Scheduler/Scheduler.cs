@@ -59,8 +59,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
   /// </summary>
   public class Scheduler
   {
-
-
     #region const
 
     private const int SCHEDULE_THREADING_TIMER_INTERVAL = 15000;
@@ -85,23 +83,22 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     #endregion
 
     #region variables
-    
-    
-    
-    private EpisodeManagement _episodeManagement;    
-    private List<RecordingDetail> _recordingsInProgressList;
-    private bool _createTagInfoXML;
-    private bool _preventDuplicateEpisodes;
+
     private static int _preventDuplicateEpisodesKey;
-    private Thread _schedulerThread = null;    
 
     private static ManualResetEvent _evtSchedulerCtrl;
     private static ManualResetEvent _evtSchedulerWaitCtrl;
+    private bool _createTagInfoXML;
+    private EpisodeManagement _episodeManagement;
 
     /// <summary>
     /// Indicates how many free cards to try for recording
     /// </summary>
     private int _maxRecordFreeCardsToTry;
+
+    private bool _preventDuplicateEpisodes;
+    private List<RecordingDetail> _recordingsInProgressList;
+    private Thread _schedulerThread = null;
 
     #endregion
 
@@ -118,6 +115,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     #endregion
 
     #region public members
+
+    /// <summary>
+    /// Returns the number of active recordings
+    /// </summary>
+    public int ActiveRecordingsCount
+    {
+      get { return _recordingsInProgressList.Count; }
+    }
 
     /// <summary>
     /// Resets the scheduler timer. This causes the scheduler to immediatly check
@@ -276,14 +281,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       {
         StopRecord(foundRec);
       }
-    }
-
-    /// <summary>
-    /// Returns the number of active recordings
-    /// </summary>
-    public int ActiveRecordingsCount
-    {
-      get { return _recordingsInProgressList.Count; }
     }
 
     #endregion
@@ -510,7 +507,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
             if (scheduleType != (int)ScheduleRecordingType.Once)
             {
               this.LogInfo("Scheduler: No epsisode title found for schedule {0} - omitting repeating check.",
-                       currentProgram.Title);
+                           currentProgram.Title);
             }
           }
         }
@@ -523,7 +520,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     }
 
     private bool ShouldRecordEpisodeBasedOnPastRecordings(RecordingDetail newRecording, string currentEpisodeName, Program currentProgram,
-                                       string currentEpisodeTitle)
+                                                          string currentEpisodeTitle)
     {
       bool shouldRecordEpisode = true;      
       IList<Recording> pastRecordings = TVDatabase.TVBusinessLayer.RecordingManagement.ListAllRecordingsByMediaType(MediaTypeEnum.TV);
@@ -620,18 +617,18 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       }
 
       this.LogInfo("Scheduler: Schedule {0}-{1} ({2}) has already been recorded ({3}) - aborting...",
-               program.StartTime.ToString(CultureInfo.InvariantCulture), episodeTitle, episodeName,
-               pastRecording.StartTime.ToString(CultureInfo.InvariantCulture));
+                   program.StartTime.ToString(CultureInfo.InvariantCulture), episodeTitle, episodeName,
+                   pastRecording.StartTime.ToString(CultureInfo.InvariantCulture));
     }
 
     private void FireScheduleDeletedEvent(RecordingDetail newRecording)
     {
       IUser user = newRecording.User;
       ServiceManager.Instance.InternalControllerService.Fire(this,
-                                             new TvServerEventArgs(TvServerEventType.ScheduleDeleted,
-                                                                   new VirtualCard(user), (User)user,
-                                                                   newRecording.Schedule.Entity.IdSchedule,
-                                                                   -1));
+                                                             new TvServerEventArgs(TvServerEventType.ScheduleDeleted,
+                                                                                   new VirtualCard(user), (User)user,
+                                                                                   newRecording.Schedule.Entity.IdSchedule,
+                                                                                   -1));
     }
 
     private static bool AlreadyHasValidRecordingFile(string filename)
@@ -690,7 +687,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     private void CancelSchedule(RecordingDetail newRecording, int scheduleId)
     {
       CanceledSchedule canceled = CanceledScheduleFactory.CreateCanceledSchedule(scheduleId, newRecording.Program.Entity.IdChannel,
-                                                     newRecording.Program.Entity.StartTime);      
+                                                                                 newRecording.Program.Entity.StartTime);      
       CanceledScheduleManagement.SaveCanceledSchedule(canceled);
       _episodeManagement.OnScheduleEnded(newRecording.FileName, newRecording.Schedule.Entity,
                                          newRecording.Program.Entity);
@@ -789,7 +786,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     {
       bool isTimeToRecord = false;      
       Program current = ProgramManagement.GetProgramAt(currentTime.AddMinutes(schedule.PreRecordInterval),
-                                                  schedule.ProgramName);
+                                                       schedule.ProgramName);
 
       if (current != null)
       {
@@ -822,8 +819,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       bool createSpawnedOnceSchedule = false;
 
       IList<Program> programs = ProgramManagement.RetrieveCurrentRunningByTitle(schedule.ProgramName,
-                                                                                            schedule.PreRecordInterval,
-                                                                                            schedule.PostRecordInterval);
+                                                                                schedule.PreRecordInterval,
+                                                                                schedule.PostRecordInterval);
       var scheduleBLL = new ScheduleBLL(schedule);
       foreach (Program program in programs)
       {
@@ -847,7 +844,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       bool isTimeToRecord = false;
       Program current =
         ProgramManagement.GetProgramAt(currentTime.AddMinutes(schedule.PreRecordInterval),
-                                                  schedule.ProgramName);
+                                       schedule.ProgramName);
 
       if (current != null)
       {
@@ -937,7 +934,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       bool isSpawnedOnceScheduleCreated = false;
 
       Schedule dbSchedule = ScheduleManagement.RetrieveOnce(current.IdChannel, current.Title, current.StartTime,
-                                                  current.EndTime);
+                                                            current.EndTime);
       if (dbSchedule == null) // not created yet
       {
         Schedule once = ScheduleManagement.RetrieveOnce(current.IdChannel, current.Title, current.StartTime, current.EndTime);
@@ -996,8 +993,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       IUser user = recDetail.User;
 
       this.LogDebug("Scheduler: Time to record {0} {1}-{2} {3}", recDetail.Channel.DisplayName,
-                DateTime.Now.ToShortTimeString(), recDetail.EndTime.ToShortTimeString(),
-                recDetail.Schedule.Entity.ProgramName);
+                    DateTime.Now.ToShortTimeString(), recDetail.EndTime.ToShortTimeString(),
+                    recDetail.Schedule.Entity.ProgramName);
       //get list of all cards we can use todo the recording      
       StartRecordOnFreeCard(recDetail, ref user);
     }
@@ -1006,7 +1003,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     
     private void StartRecordOnCard(
       RecordingDetail recDetail, 
-		  ref IUser user,      
+      ref IUser user,      
       ICollection<CardDetail> cardsForReservation)
     {
       var cardRes = new CardReservationRec();                
@@ -1047,8 +1044,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
           ICollection<ICardTuneReservationTicket> ticketsList = tickets.Values;
           var cardAllocationTicket = new AdvancedCardAllocationTicket(ticketsList);
           ICollection<CardDetail> cards = cardAllocationTicket.UpdateFreeCardsForChannelBasedOnTicket(
-                                                                              cardsForReservation,
-                                                                              user, out tvResult);
+            cardsForReservation,
+            user, out tvResult);
 
           CardReservationHelper.CancelCardReservationsExceedingMaxConcurrentTickets(tickets, cards);
           CardReservationHelper.CancelCardReservationsNotFoundInFreeCards(cardsForReservation, tickets, cards);
@@ -1062,11 +1059,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
             recSucceded = IterateTicketsUntilRecording(recDetail, user, cards, cardRes, maxCards, tickets, cardsIterated);
             moreCardsAvailable = _maxRecordFreeCardsToTry == 0 || _maxRecordFreeCardsToTry > cardIterations;
           }
-      else
-      {
-        this.LogDebug("scheduler: no free cards found for recording.");
+          else
+          {
+            this.LogDebug("scheduler: no free cards found for recording.");
             break;
-      }
+          }
         } // end of while
       }
       finally
@@ -1076,7 +1073,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     }
 
     private bool IterateTicketsUntilRecording(RecordingDetail recDetail, IUser user, ICollection<CardDetail> cards, CardReservationRec cardRes, int maxCards, IDictionary<CardDetail, ICardTuneReservationTicket> tickets, ICollection<CardDetail> cardsIterated)
-        {
+    {
       bool recSucceded = false;
       while (!recSucceded && tickets.Count > 0)
       {
@@ -1269,8 +1266,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
           }
 
           this.LogDebug("Scheduler: recList: count: {0} add scheduleid: {1} card: {2}",
-                    _recordingsInProgressList.Count,
-                    recDetail.Schedule.Entity.IdSchedule, recDetail.CardInfo.Card.Name);
+                        _recordingsInProgressList.Count,
+                        recDetail.Schedule.Entity.IdSchedule, recDetail.CardInfo.Card.Name);
           result = true;
         }
       }
@@ -1297,8 +1294,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
         }
 
         this.LogDebug("Scheduler: stop failed record {0} {1}-{2} {3}", recording.Channel.DisplayName,
-                  recording.RecordingStartDateTime,
-                  recording.EndTime, recording.Schedule.Entity.ProgramName);
+                      recording.RecordingStartDateTime,
+                      recording.EndTime, recording.Schedule.Entity.ProgramName);
 
         if (ServiceManager.Instance.InternalControllerService.IsRecording(ref user))
         {
@@ -1356,13 +1353,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       CardDetail cardInfo = HijackCardTimeshiftingOnSameTransponder(availableCards, ticket);
 
       if (cardInfo == null)
-    {
+      {
         cardInfo = HijackCardTimeshiftingOnDifferentTransponder(availableCards, ticket);
-          }
-        if (cardInfo == null)
-        {
+      }
+      if (cardInfo == null)
+      {
         this.LogDebug("Scheduler : no free card was found and no card was found where user can be kicked.");
-        }
+      }
       return cardInfo;
     }
 
@@ -1375,12 +1372,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
         {
           bool canKickAll = CanKickAllUsersOnTransponder(ticket);
           if (canKickAll)
-        {
+          {
             cardInfo = cardDetail;
             KickAllUsersOnTransponder(cardDetail, ticket);
             break;
+          }
         }
-      }
       }
       return cardInfo;
     }
@@ -1423,9 +1420,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
         KickUserOnSameTransponder(cardDetail, ticket, ref cardInfo);
         if (cardInfo != null)
         {
-            break;
-          }
+          break;
         }
+      }
       return cardInfo;
     }
 
@@ -1441,8 +1438,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
           foreach (var subchannel in timeshiftingUser.SubChannels.Values)
           {
             this.LogDebug(
-               "Scheduler : card is tuned to the same transponder but not free. record on card:{0} priority:{1}, kicking user:{2}",
-             cardDetail.Id, cardDetail.Card.Priority, timeshiftingUser.Name);
+              "Scheduler : card is tuned to the same transponder but not free. record on card:{0} priority:{1}, kicking user:{2}",
+              cardDetail.Id, cardDetail.Card.Priority, timeshiftingUser.Name);
             ServiceManager.Instance.InternalControllerService.StopTimeShifting(ref timeshiftingUser, TvStoppedReason.RecordingStarted, subchannel.IdChannel);
             cardInfo = cardDetail;            
           }            
@@ -1454,7 +1451,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     {
       IUser user = recDetail.User;
       ServiceManager.Instance.InternalControllerService.Fire(this,
-                         new TvServerEventArgs(TvServerEventType.RecordingFailed, new VirtualCard(user), (User)user));
+                                                             new TvServerEventArgs(TvServerEventType.RecordingFailed, new VirtualCard(user), (User)user));
     }
 
 
@@ -1462,16 +1459,16 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     {
       IUser user = recDetail.User;
       ServiceManager.Instance.InternalControllerService.Fire(this,
-                         new TvServerEventArgs(TvServerEventType.RecordingStarted, new VirtualCard(user), (User)user,
-                                               recDetail.Schedule.Entity.IdSchedule, recDetail.Recording.IdRecording));
+                                                             new TvServerEventArgs(TvServerEventType.RecordingStarted, new VirtualCard(user), (User)user,
+                                                                                   recDetail.Schedule.Entity.IdSchedule, recDetail.Recording.IdRecording));
     }
 
     private void StartRecordingNotification(RecordingDetail recDetail)
     {
       IUser user = recDetail.User;
       ServiceManager.Instance.InternalControllerService.Fire(this,
-                         new TvServerEventArgs(TvServerEventType.StartRecording, new VirtualCard(user), (User)user,
-                                               recDetail.Schedule.Entity.IdSchedule, -1));
+                                                             new TvServerEventArgs(TvServerEventType.StartRecording, new VirtualCard(user), (User)user,
+                                                                                   recDetail.Schedule.Entity.IdSchedule, -1));
     }
 
     private void SetupRecordingFolder(CardDetail cardInfo)
@@ -1482,8 +1479,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
                                                         Environment.SpecialFolder.CommonApplicationData));
       if (cardInfo.Card.TimeshiftingFolder == String.Empty)
         cardInfo.Card.TimeshiftingFolder = String.Format(@"{0}\Team MediaPortal\MediaPortal TV Server\timeshiftbuffer",
-                                                      Environment.GetFolderPath(
-                                                        Environment.SpecialFolder.CommonApplicationData));
+                                                         Environment.GetFolderPath(
+                                                           Environment.SpecialFolder.CommonApplicationData));
     }
 
     private bool StartRecordingOnDisc(RecordingDetail recDetail, ref IUser user, CardDetail cardInfo, ICardTuneReservationTicket ticket, CardReservationRec cardResImpl)
@@ -1507,12 +1504,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
                               recDetail.Program.Entity.Title, recDetail.Schedule.Entity.ScheduleType));
 
       recDetail.Recording = RecordingFactory.CreateRecording(recDetail.Schedule.Entity.IdChannel, recDetail.Schedule.Entity.IdSchedule, true,
-                                          recDetail.RecordingStartDateTime, DateTime.Now, recDetail.Program.Entity.Title,
-                                          recDetail.Program.Entity.Description, recDetail.Program.Entity.ProgramCategory, recDetail.FileName,
-                                          recDetail.Schedule.Entity.KeepMethod,
-                                          recDetail.Schedule.Entity.KeepDate.GetValueOrDefault(DateTime.MinValue), 0, recDetail.Program.Entity.EpisodeName,
-                                          recDetail.Program.Entity.SeriesNum, recDetail.Program.Entity.EpisodeNum,
-                                          recDetail.Program.Entity.EpisodePart);
+                                                             recDetail.RecordingStartDateTime, DateTime.Now, recDetail.Program.Entity.Title,
+                                                             recDetail.Program.Entity.Description, recDetail.Program.Entity.ProgramCategory, recDetail.FileName,
+                                                             recDetail.Schedule.Entity.KeepMethod,
+                                                             recDetail.Schedule.Entity.KeepDate.GetValueOrDefault(DateTime.MinValue), 0, recDetail.Program.Entity.EpisodeName,
+                                                             recDetail.Program.Entity.SeriesNum, recDetail.Program.Entity.EpisodeNum,
+                                                             recDetail.Program.Entity.EpisodePart);
       
       TVDatabase.TVBusinessLayer.RecordingManagement.SaveRecording(recDetail.Recording);
     }
@@ -1559,19 +1556,19 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
           category = recDetail.Program.Entity.ProgramCategory.Category;
         }
         var info = new MatroskaTagInfo
-                                 {
-                                   title = recDetail.Program.Entity.Title,
-                                   description = recDetail.Program.Entity.Description,
-                                   genre = category,
-                                   channelName = recDetail.Schedule.Entity.Channel.DisplayName,
-                                   episodeName = recDetail.Program.Entity.EpisodeName,
-                                   seriesNum = recDetail.Program.Entity.SeriesNum,
-                                   episodeNum = recDetail.Program.Entity.EpisodeNum,
-                                   episodePart = recDetail.Program.Entity.EpisodePart,
-                                   startTime = recDetail.RecordingStartDateTime,
-                                   endTime = recDetail.EndTime,
-                                   mediaType = Convert.ToString(recDetail.Recording.MediaType)
-                                 };
+                     {
+                       title = recDetail.Program.Entity.Title,
+                       description = recDetail.Program.Entity.Description,
+                       genre = category,
+                       channelName = recDetail.Schedule.Entity.Channel.DisplayName,
+                       episodeName = recDetail.Program.Entity.EpisodeName,
+                       seriesNum = recDetail.Program.Entity.SeriesNum,
+                       episodeNum = recDetail.Program.Entity.EpisodeNum,
+                       episodePart = recDetail.Program.Entity.EpisodePart,
+                       startTime = recDetail.RecordingStartDateTime,
+                       endTime = recDetail.EndTime,
+                       mediaType = Convert.ToString(recDetail.Recording.MediaType)
+                     };
 
         MatroskaTagHandler.WriteTag(Path.ChangeExtension(fileName, ".xml"), info);
       }
@@ -1596,8 +1593,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
         }
 
         this.LogDebug("Scheduler: stop record {0} {1}-{2} {3}", recording.Channel.DisplayName,
-                  recording.RecordingStartDateTime,
-                  recording.EndTime, recording.Schedule.Entity.ProgramName);
+                      recording.RecordingStartDateTime,
+                      recording.EndTime, recording.Schedule.Entity.ProgramName);
 
         if (ServiceManager.Instance.InternalControllerService.StopRecording(user.Name, user.CardId, out user))
         {
@@ -1630,8 +1627,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     private void RetryStopRecord(RecordingDetail recording)
     {
       this.LogDebug("Scheduler: stop record did not succeed (trying again in 1 min.) {0} {1}-{2} {3}",
-                recording.Channel.DisplayName, recording.RecordingStartDateTime, recording.EndTime,
-                recording.Schedule.Entity.ProgramName);
+                    recording.Channel.DisplayName, recording.RecordingStartDateTime, recording.EndTime,
+                    recording.Schedule.Entity.ProgramName);
       recording.Recording.EndTime = recording.Recording.EndTime.AddMinutes(1);
       //lets try and stop the recording in 1 min. again.      
       TVDatabase.TVBusinessLayer.RecordingManagement.SaveRecording(recording.Recording);
@@ -1641,14 +1638,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     {
       IUser user = recording.User;
       ServiceManager.Instance.InternalControllerService.Fire(this,
-                         new TvServerEventArgs(TvServerEventType.RecordingEnded, new VirtualCard(user), (User)user,
-                                               recording.Schedule.Entity.IdSchedule, recording.Recording.IdRecording));
+                                                             new TvServerEventArgs(TvServerEventType.RecordingEnded, new VirtualCard(user), (User)user,
+                                                                                   recording.Schedule.Entity.IdSchedule, recording.Recording.IdRecording));
     }
 
     private void StopRecordOnSeriesSchedule(RecordingDetail recording)
     {
       this.LogDebug("Scheduler: endtime={0}, Program.endTime={1}, postRecTime={2}", recording.EndTime,
-                recording.Program.Entity.EndTime, recording.Schedule.Entity.PostRecordInterval);
+                    recording.Program.Entity.EndTime, recording.Schedule.Entity.PostRecordInterval);
       if (DateTime.Now <= recording.Program.Entity.EndTime.AddMinutes(recording.Schedule.Entity.PostRecordInterval))
       {
         CancelSchedule(recording, recording.Schedule.Entity.IdSchedule);
@@ -1667,8 +1664,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
         _episodeManagement.OnScheduleEnded(recording.FileName, recording.Schedule.Entity, recording.Program.Entity);
       }
       ServiceManager.Instance.InternalControllerService.Fire(this,
-                         new TvServerEventArgs(TvServerEventType.ScheduleDeleted, new VirtualCard(user), (User)user,
-                                               recording.Schedule.Entity.IdSchedule, -1));
+                                                             new TvServerEventArgs(TvServerEventType.ScheduleDeleted, new VirtualCard(user), (User)user,
+                                                                                   recording.Schedule.Entity.IdSchedule, -1));
       // now we can safely delete it      
       ScheduleManagement.DeleteSchedule(recording.Schedule.Entity.IdSchedule);
     }

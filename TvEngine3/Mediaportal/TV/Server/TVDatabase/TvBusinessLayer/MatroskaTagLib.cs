@@ -29,27 +29,31 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 {
   public class MatroskaTagInfo
   {
-    public string title;
-    public string description;
-    public string genre;
     public string channelName;
+    public string description;
+    public DateTime endTime = SqlDateTime.MinValue.Value;
     public string episodeName = "";
-    public string seriesNum = "";
     public string episodeNum = "";
     public string episodePart = "";
-    public DateTime startTime = SqlDateTime.MinValue.Value;
-    public DateTime endTime = SqlDateTime.MinValue.Value;
+    public string genre;
     public string mediaType = "1";
+    public string seriesNum = "";
+    public DateTime startTime = SqlDateTime.MinValue.Value;
+    public string title;
   }
 
   /// <summary>
   /// Contains basic read and write methods to handle Matroska tags for recordings
   /// </summary>
   public class MatroskaTagHandler
-  {   
+  {
     #region Event delegates
 
+    #region Delegates
+
     public delegate void TagLookupSuccessful(Dictionary<string, MatroskaTagInfo> FoundTags);
+
+    #endregion
 
     public static event TagLookupSuccessful OnTagLookupCompleted;
 

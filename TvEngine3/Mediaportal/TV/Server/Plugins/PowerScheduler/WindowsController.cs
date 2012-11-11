@@ -115,11 +115,28 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
   /// </summary>
   public class WindowsController
   {
-
+    #region Delegates
 
     public delegate void AfterExitWindowsHandler(RestartOptions how, bool force, bool result);
 
     public delegate void ExitWindowsHandler(RestartOptions how, bool force, AfterExitWindowsHandler after);
+
+    #endregion
+
+    /// <summary>Required to enable or disable the privileges in an access token.</summary>
+    private const int TOKEN_ADJUST_PRIVILEGES = 0x20;
+
+    /// <summary>Required to query an access token.</summary>
+    private const int TOKEN_QUERY = 0x8;
+
+    /// <summary>The privilege is enabled.</summary>
+    private const int SE_PRIVILEGE_ENABLED = 0x2;
+
+    /// <summary>Specifies that the function should search the system message-table resource(s) for the requested message.</summary>
+    private const int FORMAT_MESSAGE_FROM_SYSTEM = 0x1000;
+
+    /// <summary>Forces processes to terminate. When this flag is set, the system does not send the WM_QUERYENDSESSION and WM_ENDSESSION messages. This can cause the applications to lose data. Therefore, you should only use this flag in an emergency.</summary>
+    private const int EWX_FORCE = 4;
 
     private static ExitWindowsHandler _exitWindows = ExitWindowsDefault;
 
@@ -156,13 +173,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
       _exitWindows(how, force, after);
     }
 
-
-    protected class ExitWindowsDefaultEnv
-    {
-      public RestartOptions how;
-      public bool force;
-      public AfterExitWindowsHandler after;
-    }
 
     /// <summary>
     /// Default ExitWindows. Kicks off a thread which handles t
@@ -204,21 +214,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
       if (env.after != null)
         env.after(how, force, res);
     }
-
-    /// <summary>Required to enable or disable the privileges in an access token.</summary>
-    private const int TOKEN_ADJUST_PRIVILEGES = 0x20;
-
-    /// <summary>Required to query an access token.</summary>
-    private const int TOKEN_QUERY = 0x8;
-
-    /// <summary>The privilege is enabled.</summary>
-    private const int SE_PRIVILEGE_ENABLED = 0x2;
-
-    /// <summary>Specifies that the function should search the system message-table resource(s) for the requested message.</summary>
-    private const int FORMAT_MESSAGE_FROM_SYSTEM = 0x1000;
-
-    /// <summary>Forces processes to terminate. When this flag is set, the system does not send the WM_QUERYENDSESSION and WM_ENDSESSION messages. This can cause the applications to lose data. Therefore, you should only use this flag in an emergency.</summary>
-    private const int EWX_FORCE = 4;
 
     /// <summary>
     /// The LoadLibrary function maps the specified executable module into the address space of the calling process.
@@ -401,6 +396,17 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
         return "Unspecified error [" + number.ToString() + "]";
       }
     }
+
+    #region Nested type: ExitWindowsDefaultEnv
+
+    protected class ExitWindowsDefaultEnv
+    {
+      public AfterExitWindowsHandler after;
+      public bool force;
+      public RestartOptions how;
+    }
+
+    #endregion
   }
 
   /// <summary>

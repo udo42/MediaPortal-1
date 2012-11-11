@@ -29,8 +29,8 @@ namespace WebEPG.config.Grabber
   {
     #region Variables
 
-    [XmlAttribute("match")] public string Match;
     [XmlAttribute("field")] public string Field;
+    [XmlAttribute("match")] public string Match;
     [XmlAttribute("remove")] public bool Remove;
 
     #endregion

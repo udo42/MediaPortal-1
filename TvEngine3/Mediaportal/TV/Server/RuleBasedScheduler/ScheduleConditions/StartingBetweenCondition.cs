@@ -7,8 +7,8 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
   [Serializable]
   public class StartingBetweenCondition : IScheduleCondition
   {
-    private readonly DateTime? _startTimeInterval;
     private readonly DateTime? _endTimeInterval;
+    private readonly DateTime? _startTimeInterval;
 
     public StartingBetweenCondition(DateTime? startTimeInterval, DateTime? endTimeInterval)
     {
@@ -20,6 +20,8 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
     {
     }
 
+    #region IScheduleCondition Members
+
     public IQueryable<Program> ApplyCondition(IQueryable<Program> baseQuery)
     {
       if (_startTimeInterval.HasValue && _endTimeInterval.HasValue)
@@ -29,5 +31,6 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
       return baseQuery;
     }
 
+    #endregion
   }
 }

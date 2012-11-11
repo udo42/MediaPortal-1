@@ -221,18 +221,18 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       return _mcsServices;
     }
 
+    private void mpButtonMCS_Click(object sender, EventArgs e)
+    {
+      McsPolicyManipulation(false);
+      RefreshForm();
+    }
+
     private enum McsPolicyStatus
     {
       NotAMceSystem,
       ServicesRunning,
       ServicesStopped,
       PolicyInPlace
-    }
-
-    private void mpButtonMCS_Click(object sender, EventArgs e)
-    {
-      McsPolicyManipulation(false);
-      RefreshForm();
     }
 
     #endregion

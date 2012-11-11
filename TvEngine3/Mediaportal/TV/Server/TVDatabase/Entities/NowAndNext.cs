@@ -26,21 +26,21 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
   [DataContract]
   public class NowAndNext
   {
-    private int _idChannel;
-    private DateTime _nowStart;
-    private DateTime _nowEnd;
-    private string _titleNow;
-    private string _titleNext;
-    private int _idProgramNow;
-    private int _idProgramNext;
     private string _episodeName;
     private string _episodeNameNext;
-    private string _seriesNum;
-    private string _seriesNumNext;
     private string _episodeNum;
     private string _episodeNumNext;
     private string _episodePart;
     private string _episodePartNext;
+    private int _idChannel;
+    private int _idProgramNext;
+    private int _idProgramNow;
+    private DateTime _nowEnd;
+    private DateTime _nowStart;
+    private string _seriesNum;
+    private string _seriesNumNext;
+    private string _titleNext;
+    private string _titleNow;
 
     public NowAndNext(int idChannel, DateTime nowStart, DateTime nowEnd, string titleNow, string titleNext,
                       int idProgramNow, int idProgramNext,

@@ -35,6 +35,18 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       InitializeComponent();
     }
 
+    public string HostName
+    {
+      get { return _hostName; }
+      set { _hostName = value; }
+    }
+
+    public int PortNo
+    {
+      get { return _portNo; }
+      set { _portNo = value; }
+    }
+
     private void FormEditIpAdress_Load(object sender, EventArgs e)
     {
       IEnumerable<string> ipAdresses = ServiceAgents.Instance.ControllerServiceAgent.ServerIpAdresses;
@@ -69,18 +81,6 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       }
       DialogResult = DialogResult.OK;
       Close();
-    }
-
-    public string HostName
-    {
-      get { return _hostName; }
-      set { _hostName = value; }
-    }
-
-    public int PortNo
-    {
-      get { return _portNo; }
-      set { _portNo = value; }
     }
   }
 }

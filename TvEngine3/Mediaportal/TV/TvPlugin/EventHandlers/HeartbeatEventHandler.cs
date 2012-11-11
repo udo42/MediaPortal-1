@@ -3,7 +3,7 @@
 namespace Mediaportal.TV.TvPlugin.EventHandlers
 {
   public class HeartbeatEventHandler : IHeartbeatEventCallbackClient
-  {    
+  {
     #region Implementation of IHeartbeatEventCallbackClient
 
     public void HeartbeatRequestReceived()

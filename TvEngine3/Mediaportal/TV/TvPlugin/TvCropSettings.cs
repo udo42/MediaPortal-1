@@ -35,41 +35,23 @@ namespace Mediaportal.TV.TvPlugin
   /// </summary>
   public class TvCropSettings : GUIInternalWindow, IRenderLayer
   {
+    private CropSettings _cropSettings;
+    private GUIWindow _parentWindow = null;
+    private int _parentWindowID = 0;
+    private bool _running;
     [SkinControl(2)] protected GUIButtonControl btnClose = null;
-    [SkinControl(8)] protected GUISpinControl spinTop = null;
     [SkinControl(12)] protected GUISpinControl spinBottom = null;
     [SkinControl(16)] protected GUISpinControl spinLeft = null;
     [SkinControl(20)] protected GUISpinControl spinRight = null;
-
-    private bool _running;
-    private int _parentWindowID = 0;
-    private CropSettings _cropSettings;
-    private GUIWindow _parentWindow = null;
+    [SkinControl(8)] protected GUISpinControl spinTop = null;
 
     /// <summary>
-    /// Collection of Controls which are accessed from this class
+    /// Delayed load
     /// </summary>
-    private enum Controls
+    public override bool SupportsDelayedLoad
     {
-      CONTROL_EXIT = 2,
-      CONTROL_CARD_LABEL = 5,
-      CONTROL_CROP_TOP = 8,
-      CONTROL_CROP_BOTTOM = 12,
-      CONTROL_CROP_LEFT = 16,
-      CONTROL_CROP_RIGHT = 20,
+      get { return false; }
     }
-
-    #region Ctor
-
-    /// <summary>
-    /// Constructor
-    /// </summary>
-    public TvCropSettings()
-    {
-      GetID = (int)Window.WINDOW_TV_CROP_SETTINGS;
-    }
-
-    #endregion
 
     /// <summary>
     /// Init method
@@ -81,14 +63,6 @@ namespace Mediaportal.TV.TvPlugin
       GetID = (int)Window.WINDOW_TV_CROP_SETTINGS;
       GUILayerManager.RegisterLayer(this, GUILayerManager.LayerType.Dialog);
       return bResult;
-    }
-
-    /// <summary>
-    /// Delayed load
-    /// </summary>
-    public override bool SupportsDelayedLoad
-    {
-      get { return false; }
     }
 
     /// <summary>
@@ -281,6 +255,35 @@ namespace Mediaportal.TV.TvPlugin
       {
         Render(timePassed);
       }
+    }
+
+    #endregion
+
+    #region Nested type: Controls
+
+    /// <summary>
+    /// Collection of Controls which are accessed from this class
+    /// </summary>
+    private enum Controls
+    {
+      CONTROL_EXIT = 2,
+      CONTROL_CARD_LABEL = 5,
+      CONTROL_CROP_TOP = 8,
+      CONTROL_CROP_BOTTOM = 12,
+      CONTROL_CROP_LEFT = 16,
+      CONTROL_CROP_RIGHT = 20,
+    }
+
+    #endregion
+
+    #region Ctor
+
+    /// <summary>
+    /// Constructor
+    /// </summary>
+    public TvCropSettings()
+    {
+      GetID = (int)Window.WINDOW_TV_CROP_SETTINGS;
     }
 
     #endregion

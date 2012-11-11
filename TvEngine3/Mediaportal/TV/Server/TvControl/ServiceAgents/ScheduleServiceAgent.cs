@@ -11,6 +11,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {
     }
 
+    #region IScheduleService Members
+
     public IList<Schedule> ListAllSchedules()
     {
       return _channel.ListAllSchedules();
@@ -97,5 +99,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       schedule.UnloadAllUnchangedRelationsForEntity();
       return _channel.SaveRuleBasedSchedule(schedule);
     }
+
+    #endregion
   }
 }

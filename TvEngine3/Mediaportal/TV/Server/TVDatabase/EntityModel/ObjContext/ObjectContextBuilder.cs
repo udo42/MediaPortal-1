@@ -16,12 +16,12 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
 
     public class ObjectContextBuilder<T> : DbModelBuilder, IObjectContextBuilder<T> where T : System.Data.Objects.ObjectContext
     {
-        private readonly DbProviderFactory _factory;
-        private readonly ConnectionStringSettings _cnStringSettings;
-        private readonly bool _recreateDatabaseIfExists;
-        private readonly bool _lazyLoadingEnabled;
+      private readonly ConnectionStringSettings _cnStringSettings;
+      private readonly DbProviderFactory _factory;
+      private readonly bool _lazyLoadingEnabled;
+      private readonly bool _recreateDatabaseIfExists;
 
-        public ObjectContextBuilder(string connectionStringName, string[] mappingAssemblies, bool recreateDatabaseIfExists, bool lazyLoadingEnabled)
+      public ObjectContextBuilder(string connectionStringName, string[] mappingAssemblies, bool recreateDatabaseIfExists, bool lazyLoadingEnabled)
         {
             Conventions.Remove<IncludeMetadataConvention>();
 
@@ -33,7 +33,9 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
             AddConfigurations(mappingAssemblies);
         }
 
-        /// <summary>
+      #region IObjectContextBuilder<T> Members
+
+      /// <summary>
         /// Creates a new <see cref="ObjectContext"/>.
         /// </summary>
         /// <param name="lazyLoadingEnabled">if set to <c>true</c> [lazy loading enabled].</param>
@@ -62,7 +64,9 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
             return (T)ctx;
         }
 
-        /// <summary>
+      #endregion
+
+      /// <summary>
         /// Adds mapping classes contained in provided assemblies and register entities as well
         /// </summary>
         /// <param name="mappingAssemblies"></param>

@@ -36,15 +36,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
 
     #region variables
 
-    private readonly int[] _magazineCurrentSubPage = new int[MAX_MAGAZINE + 2];
     private readonly int[] _magazineCurrentPageNr = new int[MAX_MAGAZINE + 2];
+    private readonly int[] _magazineCurrentSubPage = new int[MAX_MAGAZINE + 2];
     private readonly int[] _magazineLastRow = new int[MAX_MAGAZINE + 2];
+    private readonly TeletextPageCache _pageCache;
     private readonly string[] _vbiLine = new string[MAX_MAGAZINE + 2];
     private readonly List<byte[]> _workingPage = new List<byte[]>();
-    private readonly TeletextPageCache _pageCache;
-    //bool[,] _rowsReceived = new bool[MAX_MAGAZINE + 2, 32];
-    private string _line = String.Empty;
     private bool _isSerial = true;
+    private string _line = String.Empty;
     private int _prevMagazine;
 
     #endregion

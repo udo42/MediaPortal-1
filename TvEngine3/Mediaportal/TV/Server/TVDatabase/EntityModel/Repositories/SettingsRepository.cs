@@ -18,6 +18,8 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
     {      
     }
 
+    #region ISettingsRepository Members
+
     /// <summary>
     /// saves a value to the database table "Setting"
     /// </summary>    
@@ -73,5 +75,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
       var setting = GetOrSaveSetting(tagName, "");
       return setting;
     }
+
+    #endregion
   }
 }

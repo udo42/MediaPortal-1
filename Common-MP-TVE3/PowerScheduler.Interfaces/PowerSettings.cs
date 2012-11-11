@@ -48,23 +48,24 @@ namespace TvEngine.PowerScheduler.Interfaces
   {
     #region Variables
 
-    private bool _shutdownEnabled;
-    private bool _wakeupEnabled;
-    private bool _forceShutdown;
-    private bool _extensiveLogging;
-    private int _idleTimeout;
-    private int _preWakeupTime;
-    private int _preNoShutdownTime;
-    private int _checkInterval;
     private int _allowedStart;
     private int _allowedStop;
+    private int _checkInterval;
+    private bool _extensiveLogging;
+    private bool _forceShutdown;
+    private int _idleTimeout;
+    private int _preNoShutdownTime;
+    private int _preWakeupTime;
     private bool _reinitializeController;
-    private ShutdownMode _shutdownMode = ShutdownMode.StayOn;
 
     /// <summary>
     /// Placeholder for additional PowerScheduler settings
     /// </summary>
     [NonSerialized] private Dictionary<string, PowerSetting> _settings;
+
+    private bool _shutdownEnabled;
+    private ShutdownMode _shutdownMode = ShutdownMode.StayOn;
+    private bool _wakeupEnabled;
 
     #endregion
 
@@ -170,6 +171,41 @@ namespace TvEngine.PowerScheduler.Interfaces
     }
 
     /// <summary>
+    /// if _wakeupEnabled, the time (in seconds) the system is not allowed to 
+    /// go to shutodwn before the actual wakeup time
+    /// </summary>
+    public int PreNoShutdownTime
+    {
+      get { return _preNoShutdownTime; }
+      set
+      {
+        if (value < 0)
+        {
+          throw new ArgumentException("PrenoshutdownTime cannot be smaller than 0");
+        }
+        _preNoShutdownTime = value;
+      }
+    }
+
+    /// <summary>
+    /// Controls the minimum start hour of suspends. 
+    /// </summary>
+    public int AllowedSleepStartTime
+    {
+      get { return _allowedStart; }
+      set { _allowedStart = value; }
+    }
+
+    /// <summary>
+    /// Controls the maximum start hour for a suspend.
+    /// </summary>
+    public int AllowedSleepStopTime
+    {
+      get { return _allowedStop; }
+      set { _allowedStop = value; }
+    }
+
+    /// <summary>
     /// Should PowerScheduler actively try to put the system into standby?
     /// </summary>
     public bool ShutdownEnabled
@@ -240,23 +276,6 @@ namespace TvEngine.PowerScheduler.Interfaces
     }
 
     /// <summary>
-    /// if _wakeupEnabled, the time (in seconds) the system is not allowed to 
-    /// go to shutodwn before the actual wakeup time
-    /// </summary>
-    public int PreNoShutdownTime
-    {
-      get { return _preNoShutdownTime; }
-      set
-      {
-        if (value < 0)
-        {
-          throw new ArgumentException("PrenoshutdownTime cannot be smaller than 0");
-        }
-        _preNoShutdownTime = value;
-      }
-    }
-
-    /// <summary>
     /// Controls the granularity of the standby/wakeup checks in seconds
     /// </summary>
     public int CheckInterval
@@ -270,24 +289,6 @@ namespace TvEngine.PowerScheduler.Interfaces
         }
         _checkInterval = value;
       }
-    }
-
-    /// <summary>
-    /// Controls the minimum start hour of suspends. 
-    /// </summary>
-    public int AllowedSleepStartTime
-    {
-      get { return _allowedStart; }
-      set { _allowedStart = value; }
-    }
-
-    /// <summary>
-    /// Controls the maximum start hour for a suspend.
-    /// </summary>
-    public int AllowedSleepStopTime
-    {
-      get { return _allowedStop; }
-      set { _allowedStop = value; }
     }
 
     /// <summary>

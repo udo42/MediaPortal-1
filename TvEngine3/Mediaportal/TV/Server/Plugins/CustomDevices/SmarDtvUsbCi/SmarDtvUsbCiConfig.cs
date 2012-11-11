@@ -35,15 +35,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
 {
   public partial class SmarDtvUsbCiConfig : SectionSettings
   {
-
-
-    private ReadOnlyCollection<SmarDtvUsbCiProduct> _products = null;
-    private MPComboBox[] _tunerSelections = null;
-    private Label[] _installStateLabels = null;
-
-    private readonly ISettingService _settingServiceAgent = ServiceAgents.Instance.SettingServiceAgent;
     private readonly ICardService _cardServiceAgent = ServiceAgents.Instance.CardServiceAgent;
     private readonly IControllerService _controllerServiceAgent = ServiceAgents.Instance.ControllerServiceAgent;
+    private readonly ISettingService _settingServiceAgent = ServiceAgents.Instance.SettingServiceAgent;
+    private Label[] _installStateLabels = null;
+    private ReadOnlyCollection<SmarDtvUsbCiProduct> _products = null;
+    private MPComboBox[] _tunerSelections = null;
 
     public SmarDtvUsbCiConfig()
       : this("SmarDTV USB CI")
@@ -59,6 +56,16 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
       _installStateLabels = new Label[_products.Count];
       InitializeComponent();
       this.LogDebug("SmarDTV USB CI config: constructed");
+    }
+
+    public override bool CanActivate
+    {
+      get
+      {
+        // The section can always be activated (disabling it might be confusing for people), but we don't
+        // necessarily enable all of the tuner selection fields.
+        return true;
+      }
     }
 
     public override void SaveSettings()
@@ -150,16 +157,6 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
       this.LogDebug("SmarDTV USB CI config: deactivated");
       SaveSettings();
       base.OnSectionDeActivated();
-    }
-
-    public override bool CanActivate
-    {
-      get
-      {
-        // The section can always be activated (disabling it might be confusing for people), but we don't
-        // necessarily enable all of the tuner selection fields.
-        return true;
-      }
     }
   }
 }

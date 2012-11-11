@@ -28,68 +28,16 @@ namespace Mediaportal.TV.Server.SetupTV
 {
   public partial class WizardForm : MPForm
   {
-    internal class SectionHolder
-    {
-      public SectionSettings Section;
-      public string Topic;
-      public string Information;
-      public string Expression;
+    private static readonly ArrayList wizardPages = new ArrayList();
 
-      public SectionHolder(SectionSettings section, string topic, string information, string expression)
-      {
-        Section = section;
-        Topic = topic;
-        Information = information;
-        Expression = expression;
-      }
-    }
+    private static WizardForm wizardForm;
 
+    private int visiblePageIndex = -1;
+    private string wizardCaption = String.Empty;
 
     public WizardForm()
     {
       InitializeComponent();
-    }
-
-
-    //
-    // Private members
-    //
-    public static ArrayList WizardPages
-    {
-      get { return wizardPages; }
-    }
-
-    private static readonly ArrayList wizardPages = new ArrayList();
-
-    public static WizardForm Form
-    {
-      get { return wizardForm; }
-    }
-
-    private static WizardForm wizardForm;
-
-    private string wizardCaption = String.Empty;
-
-    private int visiblePageIndex = -1;
-
-    public void AddSection(SectionSettings settings, string topic, string information)
-    {
-      AddSection(settings, topic, information, String.Empty);
-    }
-
-    public void AddSection(SectionSettings settings, string topic, string information, string expression)
-    {
-      wizardPages.Add(new SectionHolder(settings, topic, information, expression));
-    }
-
-    public void DisableBack(bool disabled)
-    {
-      backButton.Enabled = !disabled;
-    }
-
-    public void DisableNext(bool disabled)
-    {
-      nextButton.Enabled = !disabled;
     }
 
     public WizardForm(string sectionConfiguration)
@@ -113,6 +61,36 @@ namespace Mediaportal.TV.Server.SetupTV
       {
         LoadSections(sectionConfiguration);
       }
+    }
+
+    public static ArrayList WizardPages
+    {
+      get { return wizardPages; }
+    }
+
+    public static WizardForm Form
+    {
+      get { return wizardForm; }
+    }
+
+    public void AddSection(SectionSettings settings, string topic, string information)
+    {
+      AddSection(settings, topic, information, String.Empty);
+    }
+
+    public void AddSection(SectionSettings settings, string topic, string information, string expression)
+    {
+      wizardPages.Add(new SectionHolder(settings, topic, information, expression));
+    }
+
+    public void DisableBack(bool disabled)
+    {
+      backButton.Enabled = !disabled;
+    }
+
+    public void DisableNext(bool disabled)
+    {
+      nextButton.Enabled = !disabled;
     }
 
     /// <summary>
@@ -478,5 +456,25 @@ namespace Mediaportal.TV.Server.SetupTV
         holder.Section.SaveSettings();
       }
     }
+
+    #region Nested type: SectionHolder
+
+    internal class SectionHolder
+    {
+      public string Expression;
+      public string Information;
+      public SectionSettings Section;
+      public string Topic;
+
+      public SectionHolder(SectionSettings section, string topic, string information, string expression)
+      {
+        Section = section;
+        Topic = topic;
+        Information = information;
+        Expression = expression;
+      }
+    }
+
+    #endregion
   }
 }

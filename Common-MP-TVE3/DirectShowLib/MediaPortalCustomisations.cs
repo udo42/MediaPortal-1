@@ -793,9 +793,9 @@ namespace DirectShowLib
 
   public struct KsMethod
   {
-    public Guid Set;
-    public Int32 Id;
     public Int32 Flags;
+    public Int32 Id;
+    public Guid Set;
 
     public KsMethod(Guid set, Int32 id, Int32 flags)
     {
@@ -839,10 +839,11 @@ namespace DirectShowLib.BDA
   /// </summary>
   public struct BdaDiseqcMessage
   {
-    public UInt32 RequestId;
-    public UInt32 PacketLength;
     [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
     public byte[] PacketData;
+
+    public UInt32 PacketLength;
+    public UInt32 RequestId;
   }
 
   #endregion

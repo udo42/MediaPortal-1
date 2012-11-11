@@ -8,10 +8,6 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
   {
     protected T _channel;
 
-    public event EventHandler ServiceAgentRemoved;
-    public event EventHandler ServiceAgentFaulted;
-    public event EventHandler ServiceAgentClosed;
-
     protected ServiceAgent ()
     {
       
@@ -39,7 +35,9 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
         ((IClientChannel)_channel).Faulted += new EventHandler(ServiceAgent_Faulted);
         ((IClientChannel)_channel).Closed += new EventHandler(ServiceAgent_Closed);
       }
-    }    
+    }
+
+    #region IDisposable Members
 
     public virtual void Dispose()
     {
@@ -84,6 +82,12 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
         clientChannel = null;
       }
     }
+
+    #endregion
+
+    public event EventHandler ServiceAgentRemoved;
+    public event EventHandler ServiceAgentFaulted;
+    public event EventHandler ServiceAgentClosed;
 
     private void ServiceAgent_Closed(object sender, EventArgs e)
     {

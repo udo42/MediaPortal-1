@@ -35,6 +35,8 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       ObjectCompare = new NumberCaseInsensitiveComparer();
     }
 
+    #region IComparer Members
+
     public int Compare(object x, object y)
     {
       //int compareResult;
@@ -53,6 +55,8 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       }
       return 1;
     }
+
+    #endregion
   }
 
   public class NumberCaseInsensitiveComparer : CaseInsensitiveComparer

@@ -28,26 +28,6 @@ namespace Mediaportal.TV.Server.TVLibrary
 {
   internal class DeviceSorter
   {
-
-
-    private class SortItem : IComparable
-    {
-      public float rate;
-      public DsDevice device;
-
-      #region IComparable Members
-
-      public int CompareTo(object obj)
-      {
-        SortItem item = obj as SortItem;
-        if (item == null || item.rate < rate)
-          return -1;
-        return 1;
-      }
-
-      #endregion
-    } ;
-
     public static DsDevice[] Sort(DsDevice[] devices, params object[] arg)
     {
       try
@@ -130,5 +110,27 @@ namespace Mediaportal.TV.Server.TVLibrary
         return devices;
       }
     }
+
+    #region Nested type: SortItem
+
+    private class SortItem : IComparable
+    {
+      public DsDevice device;
+      public float rate;
+
+      #region IComparable Members
+
+      public int CompareTo(object obj)
+      {
+        SortItem item = obj as SortItem;
+        if (item == null || item.rate < rate)
+          return -1;
+        return 1;
+      }
+
+      #endregion
+    } ;
+
+    #endregion
   }
 }

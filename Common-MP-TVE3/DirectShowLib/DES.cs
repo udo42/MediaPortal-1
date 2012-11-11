@@ -34,17 +34,17 @@ namespace DirectShowLib.DES
 
   public sealed class DESResults
   {
-    private DESResults()
-    {
-      // Prevent people from trying to instantiate this class
-    }
-
     public const int E_NotInTree = unchecked((int) 0x80040400);
     public const int E_RenderEngineIsBroken = unchecked((int) 0x80040401);
     public const int E_MustInitRenderer = unchecked((int) 0x80040402);
     public const int E_NotDetermind = unchecked((int) 0x80040403);
     public const int E_NoTimeline = unchecked((int) 0x80040404);
     public const int S_WarnOutputReset = unchecked((int) 40404);
+
+    private DESResults()
+    {
+      // Prevent people from trying to instantiate this class
+    }
   }
 
 

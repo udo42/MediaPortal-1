@@ -28,8 +28,8 @@ namespace WebEPG.config.WebEPG
   {
     #region Variables
 
-    [XmlElement("Info")] public WebepgInfo Info;
     [XmlArray("ChannelMap")] [XmlArrayItem("Channel")] public List<ChannelMap> Channels;
+    [XmlElement("Info")] public WebepgInfo Info;
     [XmlArray("RadioChannelMap")] [XmlArrayItem("Channel")] public List<ChannelMap> RadioChannels;
     [XmlArray("Authentication")] [XmlArrayItem("Site")] public List<SiteAuth> Sites;
 

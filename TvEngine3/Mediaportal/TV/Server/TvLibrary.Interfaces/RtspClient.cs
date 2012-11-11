@@ -30,11 +30,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
   {
     #region variables
 
-    private readonly bool _isActive;
-    private readonly string _ipAdress;
-    private readonly string _streamName;
     private readonly DateTime _dateTimeStarted;
     private readonly string _description;
+    private readonly string _ipAdress;
+    private readonly bool _isActive;
+    private readonly string _streamName;
 
     #endregion
 

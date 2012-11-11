@@ -41,17 +41,15 @@ namespace Mediaportal.TV.TvPlugin
 {
   public class TvNotifyManager : ITvServerEventCallbackClient
   {
- 
-    private readonly Timer _timer;
-    // flag indicating that notifies have been added/changed/removed
-    private readonly IRecordingService _recordingServiceAgent = ServiceAgents.Instance.RecordingServiceAgent;
     private static bool _notifiesListChanged;
     private static bool _enableRecNotification;
     private static bool _busy;
-    private readonly int _preNotifyConfig;
 
     //list of all notifies (alert me n minutes before program starts)
     private readonly IList<ProgramBLL> _notifiesList = new List<ProgramBLL>();
+    private readonly int _preNotifyConfig;
+    private readonly IRecordingService _recordingServiceAgent = ServiceAgents.Instance.RecordingServiceAgent;
+    private readonly Timer _timer;
 
     public TvNotifyManager()
     {
@@ -69,6 +67,11 @@ namespace Mediaportal.TV.TvPlugin
       _timer.Interval = 15000;
       _timer.Enabled = true;
       _timer.Tick += new EventHandler(_timer_Tick);
+    }
+
+    public static bool RecordingNotificationEnabled
+    {
+      get { return _enableRecNotification; }
     }
 
     private void OnRecordingFailed(int idSchedule)
@@ -161,11 +164,6 @@ namespace Mediaportal.TV.TvPlugin
       }
       _timer.Stop();
     }
-
-    public static bool RecordingNotificationEnabled
-      {
-      get { return _enableRecNotification; }
-        }
 
 
     public static void OnNotifiesChanged()

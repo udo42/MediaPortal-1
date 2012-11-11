@@ -43,6 +43,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       _cardHandler = cardHandler;
     }
 
+    #region IEpgGrabbing Members
+
     /// <summary>
     /// grabs the epg.
     /// </summary>
@@ -149,5 +151,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }      
       _cardHandler.Card.IsEpgGrabbing = false;
     }
+
+    #endregion
   }
 }

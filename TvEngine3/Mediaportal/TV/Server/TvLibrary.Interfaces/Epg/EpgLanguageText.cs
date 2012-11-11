@@ -30,13 +30,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Epg
   {
     #region variables
 
-    private string _language;
-    private string _title;
+    private string _classification;
     private string _description;
     private string _genre;
-    private int _starRating;
-    private string _classification;
+    private string _language;
     private int _parentalRating;
+    private int _starRating;
+    private string _title;
 
     #endregion
 

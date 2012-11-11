@@ -22,6 +22,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
     {
     }
 
+    #region IChannelGroupRepository Members
 
     public IQueryable<ChannelGroup> IncludeAllRelations(IQueryable<ChannelGroup> query)
     {
@@ -62,5 +63,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 
       return query;
     }
+
+    #endregion
   }
 }

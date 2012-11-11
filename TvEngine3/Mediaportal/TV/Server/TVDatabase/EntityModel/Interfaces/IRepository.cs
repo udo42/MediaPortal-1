@@ -14,6 +14,14 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Interfaces
   public interface IRepository<T> : IDisposable where T : ObjectContext, IDisposable
   {
     /// <summary>
+    /// Gets the unit of work.
+    /// </summary>
+    /// <value>The unit of work.</value>
+    IUnitOfWork UnitOfWork { get; }
+
+    T ObjectContext { get; }
+
+    /// <summary>
     /// Gets entity by key.
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
@@ -217,14 +225,6 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Interfaces
     /// <param name="criteria">The criteria.</param>
     /// <returns></returns>
     int Count<TEntity>(ISpecification<TEntity> criteria) where TEntity : class;
-
-    /// <summary>
-    /// Gets the unit of work.
-    /// </summary>
-    /// <value>The unit of work.</value>
-    IUnitOfWork UnitOfWork { get; }
-
-    T ObjectContext { get; }
 
     void AddList<TEntity>(IEnumerable<TEntity> entities) where TEntity : class;
     void DeleteList<TEntity>(IList<TEntity> entities) where TEntity : class;

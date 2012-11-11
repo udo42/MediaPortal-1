@@ -35,9 +35,6 @@ namespace Mediaportal.TV.Server.TVControl.Events
   public class TvServerEventArgs : EventArgs
   {
     #region variables
-    
-    [DataMember]
-    private readonly IUser _user;
 
     [DataMember] 
     private readonly IVirtualCard _card;
@@ -46,29 +43,33 @@ namespace Mediaportal.TV.Server.TVControl.Events
     private readonly IChannel _channel;
 
     [DataMember] 
-    private readonly int _schedule;
+    private readonly TvServerEventType _eventType;
 
     [DataMember] 
     private readonly int _recording;
 
     [DataMember] 
-    private int _conflict;
+    private readonly int _schedule;
 
-    // Added by Broce for exchanges between TVPlugin & ConflictsManager
-    [DataMember] 
-    private IList<int> _schedules;
-
-    [DataMember] 
-    private IList<int> _conflicts;
+    [DataMember]
+    private readonly IUser _user;
 
     [DataMember] 
     private object _argsUpdatedState;
+
+    [DataMember] 
+    private int _conflict;
+
+    // Added by Broce for exchanges between TVPlugin & ConflictsManager
+
+    [DataMember] 
+    private IList<int> _conflicts;
 
     [NonSerialized]
     private EpgChannel _epgChannel;
 
     [DataMember] 
-    private readonly TvServerEventType _eventType;
+    private IList<int> _schedules;
 
     #endregion
 

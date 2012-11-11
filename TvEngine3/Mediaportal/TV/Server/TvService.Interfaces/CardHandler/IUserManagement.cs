@@ -7,8 +7,7 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.CardHandler
 {
   public interface IUserManagement
   {
-
-
+    IDictionary<string, IUser> UsersCopy { get; }
     IUser GetUserCopy(string name);
 
     /// <summary>
@@ -154,7 +153,6 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.CardHandler
     bool IsAnyUserLockedOnChannel(int channelId);
     IEnumerable<int> GetAllSubChannelForChannel(int channelId, TvUsage tvUsage);
     IDictionary<int, ChannelState> GetAllTimeShiftingAndRecordingChannelIds();
-    IDictionary<string, IUser> UsersCopy { get; }
     IUser GetUserRecordingChannel(int idChannel);
 
     IEnumerable<IUser> GetUsersCopy(UserType? userType = null);

@@ -36,21 +36,18 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
   /// </summary>
   public class RecordingDetail
   {
-
-
     #region variables
-    
-    
-    private readonly ScheduleBLL _schedule;
+
     private readonly Channel _channel;
-    private string _fileName;
     private readonly DateTime _endTime;
+    private readonly bool _isSerie;
     private readonly ProgramBLL _program;
+    private readonly ScheduleBLL _schedule;
+    private readonly IUser _user;
     private CardDetail _cardInfo;
     private DateTime _dateTimeRecordingStarted;
+    private string _fileName;
     private Recording _recording;
-    private readonly bool _isSerie;
-    private readonly IUser _user;
 
     #endregion
 
@@ -93,9 +90,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       if (program == null)
       {
         program = ProgramFactory.CreateProgram(0, DateTime.Now, endTime, "manual", "", null,
-                                                   ProgramState.None,
-                                                   System.Data.SqlTypes.SqlDateTime.MinValue.Value, string.Empty, string.Empty,
-                                                   string.Empty, string.Empty, -1, string.Empty, 0);        
+                                               ProgramState.None,
+                                               System.Data.SqlTypes.SqlDateTime.MinValue.Value, string.Empty, string.Empty,
+                                               string.Empty, string.Empty, -1, string.Empty, 0);        
       }
       _program = new ProgramBLL(program);
     }

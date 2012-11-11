@@ -25,8 +25,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
   [TypeConverter(typeof (XPListViewGroupConverter))]
   public class XPListViewGroup
   {
-    private string _text;
     private int _index;
+    private string _text;
 
     public XPListViewGroup() {}
 

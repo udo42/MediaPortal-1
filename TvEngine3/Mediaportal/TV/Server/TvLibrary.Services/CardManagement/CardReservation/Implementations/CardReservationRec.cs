@@ -37,11 +37,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Impleme
     private RecordingDetail _recDetail;
 
 
-    protected override bool IsTunedToTransponder(ITvCardHandler tvcard, IChannel tuningDetail)
-    {
-      return tvcard.Tuner.IsTunedToTransponder(tuningDetail);
-    }
-
     public CardDetail CardInfo
     {
       get { return _cardInfo; }
@@ -52,8 +47,13 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Impleme
     {
       get { return _recDetail; }
       set { _recDetail = value; }
-    }  
-    
+    }
+
+    protected override bool IsTunedToTransponder(ITvCardHandler tvcard, IChannel tuningDetail)
+    {
+      return tvcard.Tuner.IsTunedToTransponder(tuningDetail);
+    }
+
     protected override bool OnStartTune(ITvCardHandler tvcard, IUser user, int idChannel)
     {
       bool startRecordingOnDisc = true;

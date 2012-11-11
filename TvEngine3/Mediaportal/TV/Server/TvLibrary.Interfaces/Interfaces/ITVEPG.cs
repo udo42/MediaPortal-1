@@ -45,11 +45,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
   /// </summary>
   public abstract class BaseEpgGrabber : IEpgCallback
   {
-    /// <summary>
-    /// Gets called when epg has been cancelled
-    /// Should be overriden by the class
-    /// </summary>
-    public virtual void OnEpgCancelled() {}
+    #region IEpgCallback Members
 
     /// <summary>
     /// Gets called when epg has been received
@@ -60,6 +56,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     {
       return 0;
     }
+
+    #endregion
+
+    /// <summary>
+    /// Gets called when epg has been cancelled
+    /// Should be overriden by the class
+    /// </summary>
+    public virtual void OnEpgCancelled() {}
   }
 
   /// <summary>
@@ -68,16 +72,16 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
   public interface ITVEPG
   {
     /// <summary>
-    /// Starts the EPG grabber.
-    /// When the epg has been received the OnEpgReceived event will be fired
-    /// </summary>
-    void GrabEpg(BaseEpgGrabber callback);
-
-    /// <summary>
     /// returns a list of all epg data for each channel found.
     /// </summary>
     /// <value>The epg.</value>
     List<EpgChannel> Epg { get; }
+
+    /// <summary>
+    /// Starts the EPG grabber.
+    /// When the epg has been received the OnEpgReceived event will be fired
+    /// </summary>
+    void GrabEpg(BaseEpgGrabber callback);
   }
 
   /// <summary>

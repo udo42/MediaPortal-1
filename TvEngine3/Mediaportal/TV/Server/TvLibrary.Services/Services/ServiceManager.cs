@@ -16,15 +16,80 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     private readonly object _lock = new object();    
     private readonly IDictionary<Type, ServiceHost> _serviceHosts = new Dictionary<Type, ServiceHost>();
 
+    private ServiceManager ()
+    {
+      Init();
+    }
+
+    public IEventService EventService
+    {
+      get { return GlobalServiceProvider.Get<IEventService>(); }
+    }
+
+    public ICardService CardService
+    {
+      get { return GlobalServiceProvider.Get<ICardService>(); }
+    }
+
+    public IProgramService ProgramService
+    {
+      get { return GlobalServiceProvider.Get<IProgramService>(); }
+    }
+
+    public IRecordingService RecordingService
+    {
+      get { return GlobalServiceProvider.Get<IRecordingService>(); }
+    }
+
+    public IChannelGroupService ChannelGroupService
+    {
+      get { return GlobalServiceProvider.Get<IChannelGroupService>(); }
+    }
+
+    public ISettingService SettingService
+    {
+      get { return GlobalServiceProvider.Get<ISettingService>(); }
+    }
+
+    public IChannelService ChannelService
+    {
+      get { return GlobalServiceProvider.Get<IChannelService>(); }
+    }
+
+    public IScheduleService ScheduleService
+    {
+      get { return GlobalServiceProvider.Get<IScheduleService>(); }
+    }
+
+    public ICanceledScheduleService CanceledScheduleService
+    {
+      get { return GlobalServiceProvider.Get<ICanceledScheduleService>(); }
+    }
+
+    public IConflictService ConflictService
+    {
+      get { return GlobalServiceProvider.Get<IConflictService>(); }
+    }
+
+    public IProgramCategoryService ProgramCategoryService
+    {
+      get { return GlobalServiceProvider.Get<IProgramCategoryService>(); }
+    }    
+
+    public IInternalControllerService InternalControllerService
+    {
+      get { return GlobalServiceProvider.Get<IInternalControllerService>(); }
+    }
+
+    public IControllerService ControllerService
+    {
+      get { return GlobalServiceProvider.Get<IControllerService>(); }
+    }
+
     ~ServiceManager()
     {
       Dispose();      
     }
-
-    private ServiceManager ()
-    {
-      Init();
-    }   
 
     private void Init()
     {
@@ -150,71 +215,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       }
     }
 
-    public IEventService EventService
-    {
-      get { return GlobalServiceProvider.Get<IEventService>(); }
-    }
-
-    public ICardService CardService
-    {
-      get { return GlobalServiceProvider.Get<ICardService>(); }
-    }
-
-    public IProgramService ProgramService
-    {
-      get { return GlobalServiceProvider.Get<IProgramService>(); }
-    }
-
-    public IRecordingService RecordingService
-    {
-      get { return GlobalServiceProvider.Get<IRecordingService>(); }
-    }
-
-    public IChannelGroupService ChannelGroupService
-    {
-      get { return GlobalServiceProvider.Get<IChannelGroupService>(); }
-    }
-
-    public ISettingService SettingService
-    {
-      get { return GlobalServiceProvider.Get<ISettingService>(); }
-    }
-
-    public IChannelService ChannelService
-    {
-      get { return GlobalServiceProvider.Get<IChannelService>(); }
-    }
-
-    public IScheduleService ScheduleService
-    {
-      get { return GlobalServiceProvider.Get<IScheduleService>(); }
-    }
-
-    public ICanceledScheduleService CanceledScheduleService
-    {
-      get { return GlobalServiceProvider.Get<ICanceledScheduleService>(); }
-    }
-
-    public IConflictService ConflictService
-    {
-      get { return GlobalServiceProvider.Get<IConflictService>(); }
-    }
-
-    public IProgramCategoryService ProgramCategoryService
-    {
-      get { return GlobalServiceProvider.Get<IProgramCategoryService>(); }
-    }    
-
-    public IInternalControllerService InternalControllerService
-    {
-      get { return GlobalServiceProvider.Get<IInternalControllerService>(); }
-    }
-
-    public IControllerService ControllerService
-    {
-      get { return GlobalServiceProvider.Get<IControllerService>(); }
-    }
-
     public void AddService(Type interfaceType, object instance)
     {
       Type implType = instance.GetType();      
@@ -253,9 +253,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
         }
       }
     }
-   
 
-   
     #region Implementation of IDisposable
 
     /// <summary>

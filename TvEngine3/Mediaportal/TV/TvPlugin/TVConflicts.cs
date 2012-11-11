@@ -310,13 +310,13 @@ namespace Mediaportal.TV.TvPlugin
           case (int)ScheduleRecordingType.WeeklyEveryTimeOnThisChannel:
             switch (rec.StartTime.DayOfWeek)
             {
-                case DayOfWeek.Monday: day = GUILocalizeStrings.Get(11); break;
-                case DayOfWeek.Tuesday: day = GUILocalizeStrings.Get(12); break;
-                case DayOfWeek.Wednesday: day = GUILocalizeStrings.Get(13); break;
-                case DayOfWeek.Thursday: day = GUILocalizeStrings.Get(14); break;
-                case DayOfWeek.Friday: day = GUILocalizeStrings.Get(15); break;
-                case DayOfWeek.Saturday: day = GUILocalizeStrings.Get(16); break;
-                default: day = GUILocalizeStrings.Get(17); break;
+              case DayOfWeek.Monday: day = GUILocalizeStrings.Get(11); break;
+              case DayOfWeek.Tuesday: day = GUILocalizeStrings.Get(12); break;
+              case DayOfWeek.Wednesday: day = GUILocalizeStrings.Get(13); break;
+              case DayOfWeek.Thursday: day = GUILocalizeStrings.Get(14); break;
+              case DayOfWeek.Friday: day = GUILocalizeStrings.Get(15); break;
+              case DayOfWeek.Saturday: day = GUILocalizeStrings.Get(16); break;
+              default: day = GUILocalizeStrings.Get(17); break;
             }
 
             item.Label = rec.ProgramName;

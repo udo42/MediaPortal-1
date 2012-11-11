@@ -27,11 +27,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
   {
     #region variables
 
-    private int _redPage = -1;
-    private int _greenPage = -1;
-    private int _yellowPage = -1;
     private int _bluePage = -1;
+    private int _greenPage = -1;
+    private int _redPage = -1;
     private int _whitePage = -1;
+    private int _yellowPage = -1;
 
     #endregion
 

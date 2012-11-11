@@ -35,6 +35,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
   public class EpgCardPriorityComparer : IComparer<EpgCard>
   {
     // Highest priority first
+
+    #region IComparer<EpgCard> Members
+
     public int Compare(EpgCard x, EpgCard y)
     {
       if (x.Card.Priority < y.Card.Priority)
@@ -43,6 +46,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
         return 0;
       return -1;
     }
+
+    #endregion
   }
 
   /// <summary>
@@ -54,17 +59,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
   /// </summary>
   public class EpgGrabber : IDisposable
   {
-
-
     #region variables    
-    
-    private int _epgReGrabAfter = 4 * 60; //hours
+
     private readonly System.Timers.Timer _epgTimer = new System.Timers.Timer();
 
     private bool _disposed;
-    private bool _isRunning;
-    private bool _reEntrant;    
     private List<EpgCard> _epgCards;
+    private int _epgReGrabAfter = 4 * 60; //hours
+    private bool _isRunning;
+    private bool _reEntrant;
 
     #endregion
 
@@ -182,25 +185,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
 
     #endregion
 
-    #region IDisposable Members    
+    #region IDisposable Members
 
-    protected virtual void Dispose(bool disposing)
-		{
-		  if (disposing)
-		  {
-		    // get rid of managed resources
-        if (!_disposed)
-        {
-          _epgTimer.SafeDispose();
-          _epgCards.SafeDispose();
-          _disposed = true;
-        }
-		  }
-		  // get rid of unmanaged resources
-		}
-		
-		
-		/// <summary>
+    /// <summary>
 		/// Disposes the EPG card grabber
 		/// </summary>    
 		public void Dispose()
@@ -208,13 +195,28 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
 		  Dispose(true);
 		  GC.SuppressFinalize(this);
 		}
-		
-		~EpgGrabber()
+
+    #endregion
+
+    protected virtual void Dispose(bool disposing)
+    {
+      if (disposing)
+      {
+        // get rid of managed resources
+        if (!_disposed)
+        {
+          _epgTimer.SafeDispose();
+          _epgCards.SafeDispose();
+          _disposed = true;
+        }
+      }
+      // get rid of unmanaged resources
+    }
+
+    ~EpgGrabber()
 		{
 		  Dispose(false);
 		}
-
-    #endregion
 
     #region private members
 
@@ -316,8 +318,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
           if (TVDatabase.TVBusinessLayer.CardManagement.CanTuneTvChannel(epgCard.Card, ch.IdChannel))
           {
             this.LogInfo("Grab for card:#{0} transponder #{1}/{2} channel: {3}",
-                    epgCard.Card.IdCard, TransponderList.Instance.CurrentIndex + 1, TransponderList.Instance.Count,
-                    ch.DisplayName);
+                         epgCard.Card.IdCard, TransponderList.Instance.CurrentIndex + 1, TransponderList.Instance.Count,
+                         ch.DisplayName);
             //start grabbing
             epgCard.GrabEpg();
             return;

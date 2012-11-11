@@ -35,9 +35,19 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     #region variables
 
     /// <summary>
+    /// The TvAudio device
+    /// </summary>
+    private DsDevice _audioDevice;
+
+    /// <summary>
     /// The TvAudio filter
     /// </summary>
     private IBaseFilter _filterTvAudioTuner;
+
+    /// <summary>
+    /// The set of audio modes that the hardware supports.
+    /// </summary>
+    private TVAudioMode _hardwareSupportedModes;
 
     /// <summary>
     /// The TvAudio interface for changing the audio stream
@@ -45,19 +55,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     private IAMTVAudio _tvAudioTunerInterface;
 
     /// <summary>
-    /// The TvAudio device
-    /// </summary>
-    private DsDevice _audioDevice;
-
-    /// <summary>
     /// The variant or mode of the audio source in the graph.
     /// </summary>
     private TvAudioVariant _variant;
-
-    /// <summary>
-    /// The set of audio modes that the hardware supports.
-    /// </summary>
-    private TVAudioMode _hardwareSupportedModes;
 
     #endregion
 
@@ -78,6 +78,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     #endregion
 
     #region Dispose
+
+    /// <summary>
+    /// Disposes the TvAudio component
+    /// </summary>    
+    public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
 
     protected virtual void Dispose(bool disposing)
     {
@@ -101,15 +110,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
           _filterTvAudioTuner = null;          
         }
       }
-    }
-
-    /// <summary>
-    /// Disposes the TvAudio component
-    /// </summary>    
-    public void Dispose()
-    {
-      Dispose(true);
-      GC.SuppressFinalize(this);
     }
 
     ~TvAudio()
@@ -413,6 +413,34 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     #region public methods
 
     /// <summary>
+    /// get/set the audio mode
+    /// </summary>
+    public TVAudioMode CurrentAudioMode
+    {
+      get
+      {
+        if (_filterTvAudioTuner == null)
+        {
+          return TVAudioMode.None;
+        }
+        TVAudioMode currentMode;
+        _tvAudioTunerInterface.get_TVAudioMode(out currentMode);
+        return currentMode;
+      }
+      set
+      {
+        if (_filterTvAudioTuner != null && (value & _hardwareSupportedModes) != 0)
+        {
+          IAMTVAudio tvAudioTunerInterface = _filterTvAudioTuner as IAMTVAudio;
+          if (tvAudioTunerInterface != null)
+          {
+            tvAudioTunerInterface.put_TVAudioMode(value);
+          }
+        }
+      }
+    }
+
+    /// <summary>
     /// Gets the available audio modes.
     /// </summary>
     /// <returns>List of available audio modes.</returns>
@@ -447,34 +475,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
         }
       }
       return availableStreams;
-    }
-
-    /// <summary>
-    /// get/set the audio mode
-    /// </summary>
-    public TVAudioMode CurrentAudioMode
-    {
-      get
-      {
-        if (_filterTvAudioTuner == null)
-        {
-          return TVAudioMode.None;
-        }
-        TVAudioMode currentMode;
-        _tvAudioTunerInterface.get_TVAudioMode(out currentMode);
-        return currentMode;
-      }
-      set
-      {
-        if (_filterTvAudioTuner != null && (value & _hardwareSupportedModes) != 0)
-        {
-          IAMTVAudio tvAudioTunerInterface = _filterTvAudioTuner as IAMTVAudio;
-          if (tvAudioTunerInterface != null)
-          {
-            tvAudioTunerInterface.put_TVAudioMode(value);
-          }
-        }
-      }
     }
 
     #endregion

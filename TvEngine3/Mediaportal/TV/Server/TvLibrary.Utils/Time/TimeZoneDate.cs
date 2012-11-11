@@ -27,9 +27,9 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
   /// </summary>
   public struct TimeZoneDate
   {
-    public int Month;
     public DayOfWeek DayOfWeek;
-    public int WeekOfMonth;
+    public int Month;
     public TimeSpan TimeOfDay;
+    public int WeekOfMonth;
   }
 }

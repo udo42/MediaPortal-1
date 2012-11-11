@@ -34,8 +34,8 @@ namespace Mediaportal.TV.TvPlugin
   {
     [SkinControl(4)] protected GUICheckMarkControl cbAutoDeleteRecordings = null;
     [SkinControl(5)] protected GUICheckMarkControl cbCreateTagInfoXML = null;
-    [SkinControl(27)] protected GUISpinControl spinPreRecord = null;
     [SkinControl(30)] protected GUISpinControl spinPostRecord = null;
+    [SkinControl(27)] protected GUISpinControl spinPreRecord = null;
 
     public TvRecordingSettings()
     {

@@ -26,6 +26,8 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 
     }
 
+    #region IProgramRepository Members
+
     public IQueryable<Program> GetNowProgramsForChannelGroup(int idGroup)
     {
       IQueryable<int> channels = GetQuery<Channel>(c => c.GroupMaps.Any(g => g.IdGroup == idGroup)).Select(g=>g.IdChannel);
@@ -217,5 +219,6 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
       return includeRelations;
     }
 
+    #endregion
   }
 }

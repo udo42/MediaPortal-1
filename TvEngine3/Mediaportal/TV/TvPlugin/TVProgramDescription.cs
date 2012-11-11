@@ -31,11 +31,11 @@ namespace Mediaportal.TV.TvPlugin
     #region Variables
 
     private Channel _channel = null;
-    private string _genre = string.Empty;
-    private string _title = string.Empty;
     private string _description = string.Empty;
-    private DateTime _startTime;
     private DateTime _endTime;
+    private string _genre = string.Empty;
+    private DateTime _startTime;
+    private string _title = string.Empty;
 
     #endregion
 

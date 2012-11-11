@@ -40,28 +40,28 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     private DiseqcPort _diseqc = DiseqcPort.None;
 
     [DataMember]
+    private BinaryConvolutionCodeRate _innerFecRate = BinaryConvolutionCodeRate.RateNotSet;
+
+    [DataMember]
     private LnbType _lnbType = null;
-
-    [DataMember]
-    private int _satelliteIndex = -1;
-
-    [DataMember]
-    private Polarisation _polarisation = Polarisation.NotSet;
-
-    [DataMember]
-    private int _symbolRate = -1;
 
     [DataMember]
     private ModulationType _modulation = ModulationType.ModQpsk;
 
     [DataMember]
-    private BinaryConvolutionCodeRate _innerFecRate = BinaryConvolutionCodeRate.RateNotSet;
-
-    [DataMember]
     private Pilot _pilot = Pilot.NotSet;
 
     [DataMember]
+    private Polarisation _polarisation = Polarisation.NotSet;
+
+    [DataMember]
     private RollOff _rollOff = RollOff.NotSet;
+
+    [DataMember]
+    private int _satelliteIndex = -1;
+
+    [DataMember]
+    private int _symbolRate = -1;
 
     #endregion
 
@@ -271,9 +271,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     public override int GetHashCode()
     {
       return base.GetHashCode() ^ _diseqc.GetHashCode() ^ _lnbType.GetHashCode() ^
-            _satelliteIndex.GetHashCode() ^ _polarisation.GetHashCode() ^ _symbolRate.GetHashCode() ^
-            _modulation.GetHashCode() ^ _innerFecRate.GetHashCode() ^ _pilot.GetHashCode() ^
-            _rollOff.GetHashCode();
+             _satelliteIndex.GetHashCode() ^ _polarisation.GetHashCode() ^ _symbolRate.GetHashCode() ^
+             _modulation.GetHashCode() ^ _innerFecRate.GetHashCode() ^ _pilot.GetHashCode() ^
+             _rollOff.GetHashCode();
     }
 
     #endregion

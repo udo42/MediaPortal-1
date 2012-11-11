@@ -37,9 +37,21 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
   /// </summary>
   public class Prof : BaseCustomDevice, IPowerDevice, IDiseqcDevice
   {
-
-
     #region enums
+
+    #region Nested type: BdaExtensionCommand
+
+    private enum BdaExtensionCommand : uint
+    {
+      LnbPower = 0,
+      Motor,
+      Tone,
+      Diseqc
+    }
+
+    #endregion
+
+    #region Nested type: BdaExtensionProperty
 
     private enum BdaExtensionProperty
     {
@@ -56,13 +68,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       NbcParams             // For setting DVB-S2 parameters that could not initially be set through BDA interfaces.
     }
 
-    private enum BdaExtensionCommand : uint
-    {
-      LnbPower = 0,
-      Motor,
-      Tone,
-      Diseqc
-    }
+    #endregion
+
+    #region Nested type: Prof22k
 
     /// <summary>
     /// Enum listing all possible 22 kHz oscillator states.
@@ -78,6 +86,75 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       /// </summary>
       On
     }
+
+    #endregion
+
+    #region Nested type: ProfDiseqcReceiveMode
+
+    private enum ProfDiseqcReceiveMode : uint
+    {
+      Interrogation = 0,    // Expecting multiple devices attached.
+      QuickReply,           // Expecting one response (receiving is suspended after first response).
+      NoReply,              // Expecting no response(s).
+    }
+
+    #endregion
+
+    #region Nested type: ProfDvbsStandard
+
+    private enum ProfDvbsStandard : uint
+    {
+      Auto = 0,
+      Dvbs,
+      Dvbs2
+    }
+
+    #endregion
+
+    #region Nested type: ProfIrProperty
+
+    private enum ProfIrProperty
+    {
+      Keystrokes = 0,
+      Command
+    }
+
+    #endregion
+
+    #region Nested type: ProfLnbPower
+
+    private enum ProfLnbPower : uint
+    {
+      Off = 0,
+      On
+    }
+
+    #endregion
+
+    #region Nested type: ProfPilot
+
+    private enum ProfPilot : uint
+    {
+      Off = 0,
+      On,
+      Unknown               // (Not used...)
+    }
+
+    #endregion
+
+    #region Nested type: ProfRollOff
+
+    private enum ProfRollOff : uint
+    {
+      Undefined = 0xff,
+      Twenty = 0,           // 0.2
+      TwentyFive,           // 0.25
+      ThirtyFive            // 0.35
+    }
+
+    #endregion
+
+    #region Nested type: ProfToneBurst
 
     /// <summary>
     /// Enum listing all possible tone burst (simple DiSEqC) messages.
@@ -98,6 +175,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       Off
     }
 
+    #endregion
+
+    #region Nested type: ProfToneModulation
+
     private enum ProfToneModulation : uint
     {
       Undefined = 0,        // (Results in an error - *do not use*!)
@@ -105,50 +186,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       Unmodulated
     }
 
-    private enum ProfDiseqcReceiveMode : uint
-    {
-      Interrogation = 0,    // Expecting multiple devices attached.
-      QuickReply,           // Expecting one response (receiving is suspended after first response).
-      NoReply,              // Expecting no response(s).
-    }
-
-    private enum ProfPilot : uint
-    {
-      Off = 0,
-      On,
-      Unknown               // (Not used...)
-    }
-
-    private enum ProfRollOff : uint
-    {
-      Undefined = 0xff,
-      Twenty = 0,           // 0.2
-      TwentyFive,           // 0.25
-      ThirtyFive            // 0.35
-    }
-
-    private enum ProfDvbsStandard : uint
-    {
-      Auto = 0,
-      Dvbs,
-      Dvbs2
-    }
-
-    private enum ProfLnbPower : uint
-    {
-      Off = 0,
-      On
-    }
-
-    private enum ProfIrProperty
-    {
-      Keystrokes = 0,
-      Command
-    }
+    #endregion
 
     #endregion
 
     #region structs
+
+    #region Nested type: BdaExtensionParams
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct BdaExtensionParams
@@ -176,6 +220,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       public ProfLnbPower LnbPower;
     }
 
+    #endregion
+
+    #region Nested type: NbcTuningParams
+
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct NbcTuningParams
     {
@@ -188,14 +236,15 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
 
     #endregion
 
-    #region constants
+    #endregion
 
-    private static readonly Guid BdaExtensionPropertySet = new Guid(0xfaa8f3e5, 0x31d4, 0x4e41, 0x88, 0xef, 0xd9, 0xeb, 0x71, 0x6f, 0x6e, 0xc9);
+    #region constants
 
     private const int BdaExtensionParamsSize = 188;
     private const int NbcTuningParamsSize = 20;
     private const byte MaxDiseqcTxMessageLength = 151;  // 3 bytes per message * 50 messages
     private const byte MaxDiseqcRxMessageLength = 9;    // reply fifo size, do not increase (hardware limitation)
+    private static readonly Guid BdaExtensionPropertySet = new Guid(0xfaa8f3e5, 0x31d4, 0x4e41, 0x88, 0xef, 0xd9, 0xeb, 0x71, 0x6f, 0x6e, 0xc9);
 
     #endregion
 
@@ -206,9 +255,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
     /// </summary>
     protected IntPtr _generalBuffer = IntPtr.Zero;
 
-    private IKsPropertySet _propertySet = null;
-
     private bool _isProf = false;
+    private IKsPropertySet _propertySet = null;
 
     #endregion
 
@@ -371,9 +419,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       //DVB_MMI.DumpBinary(_generalBuffer, 0, NbcTuningParamsSize);
 
       hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.NbcParams,
-        _generalBuffer, NbcTuningParamsSize,
-        _generalBuffer, NbcTuningParamsSize
-      );
+                            _generalBuffer, NbcTuningParamsSize,
+                            _generalBuffer, NbcTuningParamsSize
+        );
       if (hr == 0)
       {
         this.LogDebug("Prof: result = success");
@@ -418,10 +466,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
 
       int returnedByteCount = 0;
       int hr = _propertySet.Get(BdaExtensionPropertySet, (int)BdaExtensionProperty.DiseqcMessage,
-         _generalBuffer, BdaExtensionParamsSize,
-         _generalBuffer, BdaExtensionParamsSize,
-         out returnedByteCount
-      );
+                                _generalBuffer, BdaExtensionParamsSize,
+                                _generalBuffer, BdaExtensionParamsSize,
+                                out returnedByteCount
+        );
       if (hr == 0)
       {
         this.LogDebug("Prof: result = success");
@@ -477,10 +525,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
 
       int returnedByteCount = 0;
       int hr = _propertySet.Get(BdaExtensionPropertySet, (int)BdaExtensionProperty.DiseqcMessage,
-        _generalBuffer, BdaExtensionParamsSize,
-        _generalBuffer, BdaExtensionParamsSize,
-        out returnedByteCount
-      );
+                                _generalBuffer, BdaExtensionParamsSize,
+                                _generalBuffer, BdaExtensionParamsSize,
+                                out returnedByteCount
+        );
       if (hr == 0)
       {
         this.LogDebug("Prof: result = success");
@@ -530,10 +578,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
 
       int returnedByteCount = 0;
       int hr = _propertySet.Get(BdaExtensionPropertySet, (int)BdaExtensionProperty.DiseqcMessage,
-        _generalBuffer, BdaExtensionParamsSize,
-        _generalBuffer, BdaExtensionParamsSize,
-        out returnedByteCount
-      );
+                                _generalBuffer, BdaExtensionParamsSize,
+                                _generalBuffer, BdaExtensionParamsSize,
+                                out returnedByteCount
+        );
       if (hr == 0)
       {
         this.LogDebug("Prof: result = success");

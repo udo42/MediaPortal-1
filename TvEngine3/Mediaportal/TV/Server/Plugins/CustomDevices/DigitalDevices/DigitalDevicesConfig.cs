@@ -33,14 +33,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
 {
   public partial class DigitalDevicesConfig : SectionSettings
   {
-
-
+    private readonly ISettingService _settingServiceAgent = ServiceAgents.Instance.SettingServiceAgent;
     private List<DigitalDevicesCiSlot> _ciSlots = null;
     private NumericUpDown[] _decryptLimits = null;
-    private MPTextBox[] _providerLists = null;
     private bool _isFirstActivation = true;
-
-    private readonly ISettingService _settingServiceAgent = ServiceAgents.Instance.SettingServiceAgent;
+    private MPTextBox[] _providerLists = null;
 
     public DigitalDevicesConfig()
       : this("Digital Devices CI")
@@ -124,6 +121,16 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       this.LogDebug("Digital Devices config: constructed, slot count = {0}", _ciSlots.Count);
     }
 
+    public override bool CanActivate
+    {
+      get
+      {
+        // The section can always be activated (disabling it might be confusing for people). If there
+        // are no CI slots detected then we show a message in a label to say this.
+        return true;
+      }
+    }
+
     public override void SaveSettings()
     {
       this.LogDebug("Digital Devices config: saving settings, slot count = {0}", _ciSlots.Count);
@@ -198,16 +205,6 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       this.LogDebug("Digital Devices config: deactivated");
       SaveSettings();
       base.OnSectionDeActivated();
-    }
-
-    public override bool CanActivate
-    {
-      get
-      {
-        // The section can always be activated (disabling it might be confusing for people). If there
-        // are no CI slots detected then we show a message in a label to say this.
-        return true;
-      }
     }
   }
 }

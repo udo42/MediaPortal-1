@@ -30,11 +30,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
   {
     #region variables
 
-    private readonly string _fileName;
-    private readonly string _streamName;
     private readonly ITVCard _card;
-    private readonly string _recording;
+    private readonly string _fileName;
     private readonly MediaTypeEnum _mediaType;
+    private readonly string _recording;
+    private readonly string _streamName;
 
     #endregion
 

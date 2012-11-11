@@ -30,6 +30,17 @@ namespace MediaPortal.Common.Utils
 
     #region Public Methods
 
+    public bool HasServices
+    {
+      get
+      {
+        lock (_servicesLock)
+        {
+          return _services.Count() > 0;
+        }
+      }
+    }
+
     /// <summary>
     /// Determines whether this instance is registered.
     /// </summary>
@@ -194,19 +205,6 @@ namespace MediaPortal.Common.Utils
       Add<T>(callback);
     }
 
-    public bool HasServices
-    {
-      get
-      {
-        lock (_servicesLock)
-        {
-          return _services.Count() > 0;
-        }
-      }
-    }
-
     #endregion
-
-   
   }
 }

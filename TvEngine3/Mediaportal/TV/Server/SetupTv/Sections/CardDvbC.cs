@@ -44,8 +44,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class CardDvbC : SectionSettings
   {
-
-
     #region Member variables
 
     private readonly int _cardNumber;
@@ -53,9 +51,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private List<DVBCTuning> _dvbcChannels = new List<DVBCTuning>();
     private String buttonText;
 
-    private FileFilters fileFilters;
-
     private CI_Menu_Dialog ciMenuDialog; // ci menu dialog object
+    private FileFilters fileFilters;
 
     private ScanState scanState; // scan state
 
@@ -99,8 +96,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     #region Constructors
 
-    private void EnableSections() {}
-
     public CardDvbC()
       : this("DVBC") {}
 
@@ -126,6 +121,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       base.Text = name;
       Init();
     }
+
+    private void EnableSections() {}
 
     #endregion
 

@@ -35,9 +35,8 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 {
   public partial class FormPreview : MPForm
   {
-
-    private Channel _channel;
     private IVirtualCard _card;
+    private Channel _channel;
     private Player _player;
 
     public FormPreview()

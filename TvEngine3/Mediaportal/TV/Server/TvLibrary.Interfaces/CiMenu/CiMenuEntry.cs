@@ -12,6 +12,17 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.CiMenu
     private readonly String _message;
 
     /// <summary>
+    /// CTOR
+    /// </summary>
+    /// <param name="index">Index of entry</param>
+    /// <param name="message">Message</param>
+    public CiMenuEntry(Int32 index, String message)
+    {
+      _index = index;
+      _message = message;
+    }
+
+    /// <summary>
     /// Index of menu entry
     /// </summary>
     public int Index
@@ -25,17 +36,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.CiMenu
     public String Message
     {
       get { return _message; }
-    }
-
-    /// <summary>
-    /// CTOR
-    /// </summary>
-    /// <param name="index">Index of entry</param>
-    /// <param name="message">Message</param>
-    public CiMenuEntry(Int32 index, String message)
-    {
-      _index = index;
-      _message = message;
     }
 
     /// <summary>

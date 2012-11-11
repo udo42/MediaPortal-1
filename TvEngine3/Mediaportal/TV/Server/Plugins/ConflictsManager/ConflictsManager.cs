@@ -40,18 +40,25 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
   [Interceptor("PluginExceptionInterceptor")]
   public class ConflictsManager : ITvServerPlugin
   {
-
-
     #region variables
 
-    private IList<Schedule> _schedules = null;
     private IList<Card> _cards = null;
 
     private IList<Program> _conflictingPrograms;
+    private IList<Schedule> _schedules = null;
 
     #endregion
 
     #region properties
+
+    /// <summary>
+    /// returns if the plugin should only run on the master server
+    /// or also on slave servers
+    /// </summary>
+    public bool MasterOnly
+    {
+      get { return true; }
+    }
 
     /// <summary>
     /// returns the name of the plugin
@@ -75,15 +82,6 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
     public string Author
     {
       get { return "Broceliande"; }
-    }
-
-    /// <summary>
-    /// returns if the plugin should only run on the master server
-    /// or also on slave servers
-    /// </summary>
-    public bool MasterOnly
-    {
-      get { return true; }
     }
 
     #endregion
@@ -122,6 +120,14 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
     }
 
     /// <summary>
+    /// Plugin setup form
+    /// </summary>
+    public SectionSettings Setup
+    {
+      get { return new CMSetup(); }
+    }
+
+    /// <summary>
     /// Handles the OnTvServerEvent event fired by the server.
     /// </summary>
     /// <param name="sender">The source of the event.</param>
@@ -136,14 +142,6 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
         SettingsManagement.SaveSetting("CMLastUpdateTime", DateTime.Now.ToString());        
 
       }
-    }
-
-    /// <summary>
-    /// Plugin setup form
-    /// </summary>
-    public SectionSettings Setup
-    {
-      get { return new CMSetup(); }
     }
 
     /// <summary>
@@ -340,7 +338,7 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
 
           ConflictManagement.SaveConflict(newConflict);          
           Program prg = ProgramManagement.RetrieveByTitleTimesAndChannel(schedule.ProgramName, schedule.StartTime,
-                                                               schedule.EndTime, schedule.IdChannel);
+                                                                         schedule.EndTime, schedule.IdChannel);
 
           if (prg != null)
           {
@@ -644,7 +642,7 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
         if (schedule.Canceled != Schedule.MinSchedule) continue;
         if (scheduleType != ScheduleRecordingType.EveryTimeOnEveryChannel) continue;
         IList<Program> programsList = ProgramManagement.RetrieveByTitleAndTimesInterval(schedule.ProgramName, schedule.StartTime,
-                                                                              schedule.StartTime.AddMonths(1));
+                                                                                        schedule.StartTime.AddMonths(1));
         foreach (Program program in programsList)
         {
           if ((program.Title == schedule.ProgramName) && (program.IdChannel == schedule.IdChannel) &&
@@ -680,8 +678,8 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
         Channel channel = ChannelManagement.GetChannel(schedule.IdChannel);
 
         IList<Program> programsList = ProgramManagement.GetProgramsByChannelAndTitleAndStartEndTimes(channel.IdChannel,
-                                                                        schedule.ProgramName, DateTime.Now,
-                                                                        DateTime.Now.AddMonths(1));          
+                                                                                                     schedule.ProgramName, DateTime.Now,
+                                                                                                     DateTime.Now.AddMonths(1));          
         if (programsList != null)
         {
           foreach (Program program in programsList)
@@ -717,8 +715,8 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
         Channel channel = ChannelManagement.GetChannel(schedule.IdChannel);
 
         IList<Program> programsList = ProgramManagement.GetProgramsByChannelAndTitleAndStartEndTimes(channel.IdChannel,
-                                                                        schedule.ProgramName, DateTime.Now,
-                                                                        DateTime.Now.AddMonths(1));          
+                                                                                                     schedule.ProgramName, DateTime.Now,
+                                                                                                     DateTime.Now.AddMonths(1));          
        
         if (programsList != null)
         {

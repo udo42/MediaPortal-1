@@ -9,11 +9,7 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
   public class NotOnCategoryCondition : IScheduleCondition
   {
     private IList<ProgramCategory> _categories;
-    public IList<ProgramCategory> Categories
-    {
-      get { return _categories; }
-      set { _categories = value; }
-    }
+
     public NotOnCategoryCondition(IList<ProgramCategory> categories)
     {
       _categories = categories;
@@ -21,9 +17,20 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
     public NotOnCategoryCondition()
     {
     }
+
+    public IList<ProgramCategory> Categories
+    {
+      get { return _categories; }
+      set { _categories = value; }
+    }
+
+    #region IScheduleCondition Members
+
     public IQueryable<Program> ApplyCondition(IQueryable<Program> baseQuery)
     {
       return baseQuery.Where(program => !(_categories.Any(ch => ch.IdProgramCategory  == program.ProgramCategory.IdProgramCategory)));
     }
+
+    #endregion
   }
 }

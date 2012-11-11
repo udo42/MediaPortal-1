@@ -32,8 +32,6 @@ namespace Mediaportal.TV.TvPlugin
 {
   internal class TvTimeShiftPositionWatcher
   {
- 
-
     #region Variables
     private static int idChannelToWatch = -1;
     private static Int64 snapshotBuferPosition = -1;
@@ -177,7 +175,7 @@ namespace Mediaportal.TV.TvPlugin
           Log.Info("**");
           Log.Info("**");
           ServiceAgents.Instance.ControllerServiceAgent.CopyTimeShiftFile(snapshotBuferPosition, snapshotBufferFile, currentPosition,
-                                                   currentFile, recordingFilename);
+                                                                          currentFile, recordingFilename);
         }
       }
     }

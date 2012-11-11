@@ -31,16 +31,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
   /// </summary>
   internal class TeletextComponent : IDisposable
   {
-
-
-
-
     #region variable
-
-    /// <summary>
-    /// The see sink filter
-    /// </summary>
-    private IBaseFilter _teeSink;
 
     /// <summary>
     /// The teletext decoder filter
@@ -51,6 +42,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     /// The teletext output pin
     /// </summary>
     private IPin _pinWST_VBI;
+
+    /// <summary>
+    /// The see sink filter
+    /// </summary>
+    private IBaseFilter _teeSink;
 
     #endregion
 

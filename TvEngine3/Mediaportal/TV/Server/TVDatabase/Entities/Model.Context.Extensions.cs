@@ -855,45 +855,17 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
             }
             return false;
         }
-    
-        private sealed class AddHelper
+
+      #region Nested type: AddHelper
+
+      private sealed class AddHelper
         {
             private readonly ObjectContext _context;
-            private readonly EntityIndex _entityIndex;
-    
-            // Used during add processing
-            private readonly Queue<Tuple<string, IObjectWithChangeTracker>> _entitiesToAdd;
-            private readonly Queue<Tuple<ObjectStateEntry, string, IEnumerable<object>>> _entitiesDuringAdd;
-    
-            public static EntityIndex AddAllEntities(ObjectContext context, string entitySetName, IObjectWithChangeTracker entity)
-            {
-                AddHelper addHelper = new AddHelper(context);
-    
-                try
-                {
-                    // Include the root element to start the Apply
-                    addHelper.QueueAdd(entitySetName, entity);
-    
-                    // Add everything
-                    while (addHelper.HasMore)
-                    {
-                        Tuple<string, IObjectWithChangeTracker> entityInSet = addHelper.NextAdd();
-                        // Only add the object if it's not already in the context
-                        ObjectStateEntry entry = null;
-                        if (!context.ObjectStateManager.TryGetObjectStateEntry(entityInSet.Item2, out entry))
-                        {
-                            context.AddObject(entityInSet.Item1, entityInSet.Item2);
-                        }
-                    }
-                }
-                finally
-                {
-                    addHelper.Detach();
-                }
-                return addHelper.EntityIndex;
-            }
-    
-            private AddHelper(ObjectContext context)
+        private readonly Queue<Tuple<ObjectStateEntry, string, IEnumerable<object>>> _entitiesDuringAdd;
+        private readonly Queue<Tuple<string, IObjectWithChangeTracker>> _entitiesToAdd;
+        private readonly EntityIndex _entityIndex;
+
+        private AddHelper(ObjectContext context)
             {
                 _context = context;
                 _context.ObjectStateManager.ObjectStateManagerChanged += HandleStateManagerChange;
@@ -902,49 +874,8 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
                 _entitiesToAdd = new Queue<Tuple<string, IObjectWithChangeTracker>>();
                 _entitiesDuringAdd = new Queue<Tuple<ObjectStateEntry, string, IEnumerable<object>>>();
             }
-    
-            private void Detach()
-            {
-                _context.ObjectStateManager.ObjectStateManagerChanged -= HandleStateManagerChange;
-            }
-    
-            private void HandleStateManagerChange(object sender, CollectionChangeEventArgs args)
-            {
-                if (args.Action == CollectionChangeAction.Add)
-                {
-                    IObjectWithChangeTracker entity = args.Element as IObjectWithChangeTracker;
-                    ObjectStateEntry entry = _context.ObjectStateManager.GetObjectStateEntry(entity);
-                    ObjectChangeTracker changeTracker = entity.ChangeTracker;
-    
-                    changeTracker.ChangeTrackingEnabled = false;
-                    _entityIndex.Add(entry, changeTracker);
-    
-                    // Queue removed reference values
-                    var navPropNames = _context.MetadataWorkspace.GetCSpaceEntityType(entity.GetType()).NavigationProperties.Select(n => n.Name);
-                    var entityRefOriginalValues = changeTracker.OriginalValues.Where(kvp => navPropNames.Contains(kvp.Key));
-                    foreach (KeyValuePair<string, object> originalValueWithName in entityRefOriginalValues)
-                    {
-                        if (originalValueWithName.Value != null)
-                        {
-                            _entitiesDuringAdd.Enqueue(new Tuple<ObjectStateEntry, string, IEnumerable<object>>(
-                                entry,
-                                originalValueWithName.Key,
-                                new object[] { originalValueWithName.Value }));
-                        }
-                    }
-    
-                    // Queue removed collection values
-                    foreach (KeyValuePair<string, ObjectList> collectionPropertyChangesWithName in changeTracker.ObjectsRemovedFromCollectionProperties)
-                    {
-                        _entitiesDuringAdd.Enqueue(new Tuple<ObjectStateEntry, string, IEnumerable<object>>(
-                            entry,
-                            collectionPropertyChangesWithName.Key,
-                            collectionPropertyChangesWithName.Value));
-                    }
-                }
-            }
-    
-            private EntityIndex EntityIndex
+
+        private EntityIndex EntityIndex
             {
                 get { return _entityIndex; }
             }
@@ -953,8 +884,77 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
             {
                 get { ProcessNewAdds(); return _entitiesToAdd.Count > 0; }
             }
+
+        public static EntityIndex AddAllEntities(ObjectContext context, string entitySetName, IObjectWithChangeTracker entity)
+        {
+          AddHelper addHelper = new AddHelper(context);
     
-            private void QueueAdd(string entitySetName, IObjectWithChangeTracker entity)
+          try
+          {
+            // Include the root element to start the Apply
+            addHelper.QueueAdd(entitySetName, entity);
+    
+            // Add everything
+            while (addHelper.HasMore)
+            {
+              Tuple<string, IObjectWithChangeTracker> entityInSet = addHelper.NextAdd();
+              // Only add the object if it's not already in the context
+              ObjectStateEntry entry = null;
+              if (!context.ObjectStateManager.TryGetObjectStateEntry(entityInSet.Item2, out entry))
+              {
+                context.AddObject(entityInSet.Item1, entityInSet.Item2);
+              }
+            }
+          }
+          finally
+          {
+            addHelper.Detach();
+          }
+          return addHelper.EntityIndex;
+        }
+
+        private void Detach()
+        {
+          _context.ObjectStateManager.ObjectStateManagerChanged -= HandleStateManagerChange;
+        }
+    
+        private void HandleStateManagerChange(object sender, CollectionChangeEventArgs args)
+        {
+          if (args.Action == CollectionChangeAction.Add)
+          {
+            IObjectWithChangeTracker entity = args.Element as IObjectWithChangeTracker;
+            ObjectStateEntry entry = _context.ObjectStateManager.GetObjectStateEntry(entity);
+            ObjectChangeTracker changeTracker = entity.ChangeTracker;
+    
+            changeTracker.ChangeTrackingEnabled = false;
+            _entityIndex.Add(entry, changeTracker);
+    
+            // Queue removed reference values
+            var navPropNames = _context.MetadataWorkspace.GetCSpaceEntityType(entity.GetType()).NavigationProperties.Select(n => n.Name);
+            var entityRefOriginalValues = changeTracker.OriginalValues.Where(kvp => navPropNames.Contains(kvp.Key));
+            foreach (KeyValuePair<string, object> originalValueWithName in entityRefOriginalValues)
+            {
+              if (originalValueWithName.Value != null)
+              {
+                _entitiesDuringAdd.Enqueue(new Tuple<ObjectStateEntry, string, IEnumerable<object>>(
+                                             entry,
+                                             originalValueWithName.Key,
+                                             new object[] { originalValueWithName.Value }));
+              }
+            }
+    
+            // Queue removed collection values
+            foreach (KeyValuePair<string, ObjectList> collectionPropertyChangesWithName in changeTracker.ObjectsRemovedFromCollectionProperties)
+            {
+              _entitiesDuringAdd.Enqueue(new Tuple<ObjectStateEntry, string, IEnumerable<object>>(
+                                           entry,
+                                           collectionPropertyChangesWithName.Key,
+                                           collectionPropertyChangesWithName.Value));
+            }
+          }
+        }
+
+        private void QueueAdd(string entitySetName, IObjectWithChangeTracker entity)
             {
                 if (!_entityIndex.Contains(entity))
                 {
@@ -984,15 +984,18 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
                 }
             }
         }
-    
-        private sealed class EntityIndex
+
+      #endregion
+
+      #region Nested type: EntityIndex
+
+      private sealed class EntityIndex
         {
-            private readonly ObjectContext _context;
-    
-            // Set of all entities
+        // Set of all entities
             private readonly HashSet<IObjectWithChangeTracker> _allEntities;
-    
-            // Index of the final key that will be used in the context (could be real for non-added, could be temporary for added)
+        private readonly ObjectContext _context;
+
+        // Index of the final key that will be used in the context (could be real for non-added, could be temporary for added)
             // to the initial temporary key
             private readonly Dictionary<EntityKey, EntityKey> _temporaryKeyMap;
     
@@ -1003,8 +1006,13 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
                 _allEntities = new HashSet<IObjectWithChangeTracker>();
                 _temporaryKeyMap = new Dictionary<EntityKey, EntityKey>();
             }
-    
-            public void Add(ObjectStateEntry entry, ObjectChangeTracker changeTracker)
+
+        public IEnumerable<IObjectWithChangeTracker> AllEntities
+        {
+          get { return _allEntities; }
+        }
+
+        public void Add(ObjectStateEntry entry, ObjectChangeTracker changeTracker)
             {
                 EntityKey temporaryKey = entry.EntityKey;
                 EntityKey finalKey;
@@ -1033,13 +1041,8 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
             {
                 return _allEntities.Contains(entity);
             }
-    
-            public IEnumerable<IObjectWithChangeTracker> AllEntities
-            {
-                get { return _allEntities; }
-            }
-    
-            // Converts the passed in EntityKey to the EntityKey that is usable by the current state of ApplyChanges
+
+        // Converts the passed in EntityKey to the EntityKey that is usable by the current state of ApplyChanges
             public EntityKey ConvertEntityKey(EntityKey targetKey)
             {
                 ObjectStateEntry targetEntry;
@@ -1057,15 +1060,20 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
                 return targetKey;
             }
         }
-    
-        // The RelationshipSet builds a list of all relationships from an
+
+      #endregion
+
+      // The RelationshipSet builds a list of all relationships from an
         // initial set of entities
-        private sealed class RelationshipSet : IEnumerable<RelationshipWrapper>
+
+      #region Nested type: RelationshipSet
+
+      private sealed class RelationshipSet : IEnumerable<RelationshipWrapper>
         {
-            private readonly HashSet<RelationshipWrapper> _relationships;
-            private readonly ObjectContext _context;
-    
-            public RelationshipSet(ObjectContext context, IEnumerable<object> allEntities)
+        private readonly ObjectContext _context;
+        private readonly HashSet<RelationshipWrapper> _relationships;
+
+        public RelationshipSet(ObjectContext context, IEnumerable<object> allEntities)
             {
                 _context = context;
                 _relationships = new HashSet<RelationshipWrapper>();
@@ -1125,26 +1133,31 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
                     _relationships.Remove(wrapper);
                 }
             }
+
+        #region IEnumerable<RelationshipWrapper>
     
-            #region IEnumerable<RelationshipWrapper>
-    
-            public IEnumerator<RelationshipWrapper> GetEnumerator()
-            {
-                return _relationships.GetEnumerator();
-            }
-    
-            System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
-            {
-                return _relationships.GetEnumerator();
-            }
-    
-            #endregion
+        public IEnumerator<RelationshipWrapper> GetEnumerator()
+        {
+          return _relationships.GetEnumerator();
         }
     
-        // A RelationshipWrapper is used to identify a relationship between two entities
+        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        {
+          return _relationships.GetEnumerator();
+        }
+    
+        #endregion
+        }
+
+      #endregion
+
+      // A RelationshipWrapper is used to identify a relationship between two entities
         // The relationship is identified by the AssociationSet, and the order of the entities based
         // on the roles they play (via AssociationEndMember)
-        private sealed class RelationshipWrapper : IEquatable<RelationshipWrapper>
+
+      #region Nested type: RelationshipWrapper
+
+      private sealed class RelationshipWrapper : IEquatable<RelationshipWrapper>
         {
             internal readonly AssociationSet AssociationSet;
             internal readonly object End0;
@@ -1184,8 +1197,21 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
             {
                 get { return AssociationSet.ElementType.AssociationEndMembers; }
             }
-    
-            public override int GetHashCode()
+
+        #region IEquatable<RelationshipWrapper> Members
+
+        public bool Equals(RelationshipWrapper wrapper)
+        {
+          return (Object.ReferenceEquals(this, wrapper) ||
+                  ((null != wrapper) &&
+                   Object.ReferenceEquals(AssociationSet, wrapper.AssociationSet) &&
+                   Object.ReferenceEquals(End0, wrapper.End0) &&
+                   Object.ReferenceEquals(End1, wrapper.End1)));
+        }
+
+        #endregion
+
+        public override int GetHashCode()
             {
                 return AssociationSet.Name.GetHashCode() ^ (End0.GetHashCode() + End1.GetHashCode());
             }
@@ -1194,15 +1220,8 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
             {
                 return Equals(obj as RelationshipWrapper);
             }
-    
-            public bool Equals(RelationshipWrapper wrapper)
-            {
-                return (Object.ReferenceEquals(this, wrapper) ||
-                        ((null != wrapper) &&
-                         Object.ReferenceEquals(AssociationSet, wrapper.AssociationSet) &&
-                         Object.ReferenceEquals(End0, wrapper.End0) &&
-                         Object.ReferenceEquals(End1, wrapper.End1)));
-            }
         }
+
+      #endregion
     }
 }

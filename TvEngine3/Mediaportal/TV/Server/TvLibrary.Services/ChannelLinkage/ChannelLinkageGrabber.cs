@@ -30,8 +30,6 @@ namespace Mediaportal.TV.Server.TVLibrary.ChannelLinkage
 {
   public class ChannelLinkageGrabber : BaseChannelLinkageScanner
   {
-  
-
     #region variables
 
     private readonly ITVCard _card;
@@ -66,7 +64,7 @@ namespace Mediaportal.TV.Server.TVLibrary.ChannelLinkage
     private static void PersistPortalChannel(PortalChannel pChannel)
     {      
       Channel dbPortalChannel = ChannelManagement.GetChannelByTuningDetail(pChannel.NetworkId, pChannel.TransportId,
-                                                               pChannel.ServiceId);
+                                                                           pChannel.ServiceId);
       if (dbPortalChannel == null)
       {
         Log.Info("Portal channel with networkId={0}, transportId={1}, serviceId={2} not found", pChannel.NetworkId,
@@ -77,7 +75,7 @@ namespace Mediaportal.TV.Server.TVLibrary.ChannelLinkage
       foreach (LinkedChannel lChannel in pChannel.LinkedChannels)
       {
         Channel dbLinkedChannnel = ChannelManagement.GetChannelByTuningDetail(lChannel.NetworkId, lChannel.TransportId,
-                                                                  lChannel.ServiceId);        
+                                                                              lChannel.ServiceId);        
         if (dbLinkedChannnel == null)
         {
           Log.Info("Linked channel with name={0}, networkId={1}, transportId={2}, serviceId={3} not found",
@@ -88,11 +86,11 @@ namespace Mediaportal.TV.Server.TVLibrary.ChannelLinkage
         ChannelManagement.SaveChannel(dbLinkedChannnel);
 
         var map = new ChannelLinkageMap
-                                  {
-                                    IdLinkedChannel = dbLinkedChannnel.IdChannel,
-                                    IdPortalChannel = dbPortalChannel.IdChannel,
-                                    DisplayName = lChannel.Name
-                                  };
+                    {
+                      IdLinkedChannel = dbLinkedChannnel.IdChannel,
+                      IdPortalChannel = dbPortalChannel.IdChannel,
+                      DisplayName = lChannel.Name
+                    };
 
         ChannelManagement.SaveChannelLinkageMap(map);
       }
@@ -106,11 +104,11 @@ namespace Mediaportal.TV.Server.TVLibrary.ChannelLinkage
       foreach (PortalChannel pChannel in linkages)
       {
         this.LogInfo("[Linkage Scanner] New portal channel {0} {1} {2}", pChannel.NetworkId, pChannel.ServiceId,
-                 pChannel.TransportId);
+                     pChannel.TransportId);
         foreach (LinkedChannel lchan in pChannel.LinkedChannels)
         {
           this.LogInfo("[Linkage Scanner] - {0} nid={1},tid={2} sid={3}", lchan.Name, lchan.NetworkId, lchan.TransportId,
-                   lchan.ServiceId);
+                       lchan.ServiceId);
         }
         PersistPortalChannel(pChannel);
       }

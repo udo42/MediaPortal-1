@@ -47,48 +47,21 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Impleme
 
   public abstract class CardReservationBase : ICardReservation
   {
-
-
     #region events & delegates
 
+    #region Delegates
+
     public delegate TvResult StartCardTuneDelegate(ref IUser user, ref string fileName, int idChannel);
+
+    #endregion
+
     public event StartCardTuneDelegate OnStartCardTune;
    
     protected abstract bool OnStartTune(ITvCardHandler tvcard, IUser user, int idChannel);
 
-    #endregion    
+    #endregion
 
     #region public members
-    
-    /// <summary>
-    /// deletes time shifting files left in the specified folder.
-    /// </summary>
-    /// <param name="folder">The folder.</param>
-    /// <param name="fileName">Name of the file.</param>
-    private static void CleanTimeShiftFiles(string folder, string fileName)
-    {
-      try
-      {
-        Log.Debug(@"Controller: delete timeshift files {0}\{1}", folder, fileName);
-        string[] files = Directory.GetFiles(folder);
-        foreach (string t in files.Where(t => t.IndexOf(fileName) >= 0)) 
-        {
-          try
-          {
-            Log.Debug("Controller:   delete {0}", t);
-            File.Delete(t);
-          }
-          catch (Exception e)
-          {
-            Log.Debug("Controller: Error \"{0}\" on delete in CleanTimeshiftFiles", e.Message);
-          }
-        }
-      }
-      catch (Exception ex)
-      {
-        Log.Error(ex);
-      }
-    }
 
     public TvResult Tune(ITvCardHandler tvcard, ref IUser user, IChannel channel, int idChannel, ICardTuneReservationTicket ticket)
     {
@@ -327,29 +300,29 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Impleme
 
           
           cardTuneReservationTicket = new CardTuneReservationTicket
-              (                
-              user,
-              tuningDetail, 
-              isTunedToTransponder, 
-              numberOfOtherUsersOnSameChannel, 
-              isAnySubChannelTimeshifting, 
-              inactiveUsers, 
-              activeUsers, 
-              users, 
-              ownerSubchannel, 
-              isOwner, 
-              tvcard.DataBaseCard.IdCard, 
-              tvcard.NumberOfChannelsDecrypting, 
-              isFreeToAir, 
-              numberOfOtherUsersOnCurrentCard, 
-              recUsers, 
-              tsUsers,               
-              conflictingSubchannelFound,
-              numberOfUsersOnSameCurrentChannel,
-              isCamAlreadyDecodingChannel,
-              hasUserHighestPriority,
-              hasUserEqualOrHigherPriority,
-              channelTimeshiftingOnOtherMux);
+            (                
+            user,
+            tuningDetail, 
+            isTunedToTransponder, 
+            numberOfOtherUsersOnSameChannel, 
+            isAnySubChannelTimeshifting, 
+            inactiveUsers, 
+            activeUsers, 
+            users, 
+            ownerSubchannel, 
+            isOwner, 
+            tvcard.DataBaseCard.IdCard, 
+            tvcard.NumberOfChannelsDecrypting, 
+            isFreeToAir, 
+            numberOfOtherUsersOnCurrentCard, 
+            recUsers, 
+            tsUsers,               
+            conflictingSubchannelFound,
+            numberOfUsersOnSameCurrentChannel,
+            isCamAlreadyDecodingChannel,
+            hasUserHighestPriority,
+            hasUserEqualOrHigherPriority,
+            channelTimeshiftingOnOtherMux);
           tvcard.Tuner.ActiveCardTuneReservationTicket = cardTuneReservationTicket;
           tvcard.Tuner.ReservationsForTune.Add(cardTuneReservationTicket);          
         }        
@@ -380,7 +353,36 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Impleme
       return cardTuneReservationTicket;
     }
 
-    
+    /// <summary>
+    /// deletes time shifting files left in the specified folder.
+    /// </summary>
+    /// <param name="folder">The folder.</param>
+    /// <param name="fileName">Name of the file.</param>
+    private static void CleanTimeShiftFiles(string folder, string fileName)
+    {
+      try
+      {
+        Log.Debug(@"Controller: delete timeshift files {0}\{1}", folder, fileName);
+        string[] files = Directory.GetFiles(folder);
+        foreach (string t in files.Where(t => t.IndexOf(fileName) >= 0)) 
+        {
+          try
+          {
+            Log.Debug("Controller:   delete {0}", t);
+            File.Delete(t);
+          }
+          catch (Exception e)
+          {
+            Log.Debug("Controller: Error \"{0}\" on delete in CleanTimeshiftFiles", e.Message);
+          }
+        }
+      }
+      catch (Exception ex)
+      {
+        Log.Error(ex);
+      }
+    }
+
 
     private static bool IsOwner(ITvCardHandler tvcard, IUser user, int idChannel)
     {
@@ -426,7 +428,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Impleme
       {
         hasUserHigherPriority = (user.Priority > blockingUser.Priority);
         Log.Debug("CardReservationBase.HasUserHigherPriorityThanBlockingUser: {0} - user '{1}' with prio={2} vs blocking user '{3}' with prio={4}", hasUserHigherPriority,
-          user.Name, user.Priority, blockingUser.Name, blockingUser.Priority);
+                  user.Name, user.Priority, blockingUser.Name, blockingUser.Priority);
       }
 
       return hasUserHigherPriority;
@@ -459,6 +461,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Impleme
 
     protected abstract bool IsTunedToTransponder(ITvCardHandler tvcard, IChannel tuningDetail);    
 
-    #endregion    
+    #endregion
   }
 }

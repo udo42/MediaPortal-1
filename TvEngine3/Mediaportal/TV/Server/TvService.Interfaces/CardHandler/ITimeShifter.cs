@@ -7,6 +7,14 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.CardHandler
   public interface ITimeShifter
   {
     /// <summary>
+    /// Gets a value indicating whether this card is recording.
+    /// </summary>
+    /// <value>
+    /// 	<c>true</c> if this card is recording; otherwise, <c>false</c>.
+    /// </value>
+    bool IsAnySubChannelTimeshifting { get; }
+
+    /// <summary>
     /// Gets the name of the time shift file.
     /// </summary>
     /// <value>The name of the time shift file.</value>
@@ -19,14 +27,6 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.CardHandler
     /// <param name="position">The position in the current timeshift buffer file</param>
     /// <param name="bufferId">The id of the current timeshift buffer file</param>
     bool GetCurrentFilePosition(string userName, ref long position, ref long bufferId);
-
-    /// <summary>
-    /// Gets a value indicating whether this card is recording.
-    /// </summary>
-    /// <value>
-    /// 	<c>true</c> if this card is recording; otherwise, <c>false</c>.
-    /// </value>
-    bool IsAnySubChannelTimeshifting { get; }
 
     /// <summary>
     /// Returns if the card is timeshifting or not

@@ -10,7 +10,7 @@ namespace MediaPortal.Common.Utils
   /// default services.
   /// </remarks>
   public class GlobalServiceProvider : Singleton<ServiceProvider>
-  {        
+  {
     #region Public Methods
 
     /// <summary>

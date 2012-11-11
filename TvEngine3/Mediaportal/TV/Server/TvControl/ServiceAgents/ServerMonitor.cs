@@ -6,24 +6,27 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
 {
   public class ServerMonitor
   {
-    
-
     #region events & delegates
 
-    public delegate void ServerDisconnectedDelegate();
+    #region Delegates
+
     public delegate void ServerConnectedDelegate();
+
+    public delegate void ServerDisconnectedDelegate();
+
+    #endregion
 
     public event ServerDisconnectedDelegate OnServerDisconnected;
     public event ServerConnectedDelegate OnServerConnected;
 
     #endregion
 
-    private Thread _serverMonitorThread;
-    private readonly static ManualResetEvent _evtHeartbeatCtrl = new ManualResetEvent(false);
     private const int SERVER_ALIVE_INTERVAL_SEC = 5;
-    private bool _isConnected;
+    private readonly static ManualResetEvent _evtHeartbeatCtrl = new ManualResetEvent(false);
 
     private readonly ManualResetEvent _evtServer = new ManualResetEvent(false);
+    private bool _isConnected;
+    private Thread _serverMonitorThread;
 
     public void Start()
     {

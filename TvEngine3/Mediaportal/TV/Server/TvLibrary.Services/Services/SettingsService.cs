@@ -6,7 +6,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 {
   public class SettingService : ISettingService
   {
-    
+    #region ISettingService Members
+
     public Setting GetSetting(string tagName)
     {
       return SettingsManagement.GetSetting(tagName);
@@ -20,6 +21,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     public void SaveSetting(string tagName, string defaultValue)
     {
       SettingsManagement.SaveSetting(tagName, defaultValue);
-    }    
+    }
+
+    #endregion
   }
 }

@@ -30,7 +30,7 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
     public FileInfo info;
     public Recording record;
 
-    #region IComparable Members
+    #region IComparable<RecordingFileInfo> Members
 
     public int CompareTo(RecordingFileInfo fi)
     {

@@ -49,11 +49,6 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     #region Variables
 
     /// <summary>
-    /// Core TreeNode of this MWTreeNodeWrapper object.
-    /// </summary>
-    private TreeNode tnNode;
-
-    /// <summary>
     /// Original ImageIndex of the TreeNode in the Node property.
     /// </summary>
     private int iImageIndex = -1;
@@ -62,6 +57,11 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     /// Original SelectedImageIndex of the TreeNode in the Node property.
     /// </summary>
     private int iSelectedImageIndex = -1;
+
+    /// <summary>
+    /// Core TreeNode of this MWTreeNodeWrapper object.
+    /// </summary>
+    private TreeNode tnNode;
 
     #endregion Variables
 

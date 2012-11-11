@@ -36,13 +36,12 @@ namespace Mediaportal.TV.TvPlugin
   /// </summary>
   public class TvRecordedInfo : GUIInternalWindow
   {
-    [SkinControl(17)] protected GUILabelControl lblProgramGenre = null;
+    private static Recording currentProgram = null;
+    [SkinControl(2)] protected GUIButtonControl btnKeep = null;
     [SkinControl(15)] protected GUITextScrollUpControl lblProgramDescription = null;
+    [SkinControl(17)] protected GUILabelControl lblProgramGenre = null;
     [SkinControl(14)] protected GUILabelControl lblProgramTime = null;
     [SkinControl(13)] protected GUIFadeLabel lblProgramTitle = null;
-    [SkinControl(2)] protected GUIButtonControl btnKeep = null;
-
-    private static Recording currentProgram = null;
 
     public TvRecordedInfo()
     {
@@ -52,6 +51,12 @@ namespace Mediaportal.TV.TvPlugin
     public override bool IsTv
     {
       get { return true; }
+    }
+
+    public static Recording CurrentProgram
+    {
+      get { return currentProgram; }
+      set { currentProgram = value; }
     }
 
     public override bool Init()
@@ -64,12 +69,6 @@ namespace Mediaportal.TV.TvPlugin
     {
       base.OnPageLoad();
       Update();
-    }
-
-    public static Recording CurrentProgram
-    {
-      get { return currentProgram; }
-      set { currentProgram = value; }
     }
 
     private void Update()

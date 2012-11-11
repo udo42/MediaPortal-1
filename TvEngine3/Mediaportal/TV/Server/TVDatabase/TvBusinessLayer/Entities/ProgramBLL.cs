@@ -163,13 +163,6 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
       }
     }
 
-    public void ClearRecordPendingState()
-    {
-      _entity.State &=
-        ~(int)
-         (ProgramState.RecordOncePending | ProgramState.RecordSeriesPending | ProgramState.PartialRecordSeriesPending);
-    }
-
 
     /// <summary>
     /// Property relating to database column isRecording
@@ -215,6 +208,13 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
 
         _entity.State = (int)newState;
       }
+    }
+
+    public void ClearRecordPendingState()
+    {
+      _entity.State &=
+        ~(int)
+         (ProgramState.RecordOncePending | ProgramState.RecordSeriesPending | ProgramState.PartialRecordSeriesPending);
     }
 
     /// <summary>

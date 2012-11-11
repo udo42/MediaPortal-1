@@ -33,20 +33,26 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.GenpixOpenSource
   /// </summary>
   public class GenpixOpenSource : BaseCustomDevice, IDiseqcDevice
   {
-
-
     #region enums
+
+    #region Nested type: BdaExtensionProperty
 
     private enum BdaExtensionProperty : int
     {
       Diseqc = 0
     }
 
+    #endregion
+
+    #region Nested type: GenpixToneBurst
+
     private enum GenpixToneBurst : byte
     {
       ToneBurst = 0,
       DataBurst
     }
+
+    #endregion
 
     #endregion
 
@@ -64,20 +70,19 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.GenpixOpenSource
 
     #region constants
 
-    private static readonly Guid BdaExtensionPropertySet = new Guid(0x0b5221eb, 0xf4c4, 0x4976, 0xb9, 0x59, 0xef, 0x74, 0x42, 0x74, 0x64, 0xd9);
-
     private const int InstanceSize = 32;    // The size of a property instance (KSP_NODE) parameter.
 
     private const int DiseqcMessageSize = 7;
     private const int MaxDiseqcMessageLength = 6;
+    private static readonly Guid BdaExtensionPropertySet = new Guid(0x0b5221eb, 0xf4c4, 0x4976, 0xb9, 0x59, 0xef, 0x74, 0x42, 0x74, 0x64, 0xd9);
 
     #endregion
 
     #region variables
 
-    private bool _isGenpixOpenSource = false;
     private IntPtr _diseqcBuffer = IntPtr.Zero;
     private IntPtr _instanceBuffer = IntPtr.Zero;
+    private bool _isGenpixOpenSource = false;
     private IKsPropertySet _propertySet = null;
 
     #endregion
@@ -188,9 +193,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.GenpixOpenSource
 
       Marshal.StructureToPtr(message, _diseqcBuffer, true);
       int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.Diseqc,
-        _instanceBuffer, InstanceSize,
-        _diseqcBuffer, DiseqcMessageSize
-      );
+                                _instanceBuffer, InstanceSize,
+                                _diseqcBuffer, DiseqcMessageSize
+        );
       if (hr == 0)
       {
         this.LogDebug("Genpix (Open Source): result = success");
@@ -233,9 +238,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.GenpixOpenSource
 
       Marshal.StructureToPtr(message, _diseqcBuffer, true);
       int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.Diseqc,
-        _instanceBuffer, InstanceSize,
-        _diseqcBuffer, DiseqcMessageSize
-      );
+                                _instanceBuffer, InstanceSize,
+                                _diseqcBuffer, DiseqcMessageSize
+        );
       if (hr == 0)
       {
         this.LogDebug("Genpix (Open Source): result = success");

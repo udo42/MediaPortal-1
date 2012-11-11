@@ -47,12 +47,10 @@ namespace Mediaportal.TV.TvPlugin.Helper
   /// </summary>
   public class TVUtil
   {
-
-
     #region vars
 
-    private int _days;
     private static int _showEpisodeInfo = -1;
+    private int _days;
 
     private static int ShowEpisodeInfo
     {
@@ -80,10 +78,6 @@ namespace Mediaportal.TV.TvPlugin.Helper
     {
       _days = days;
     }
-
-    #region IDisposable Members
-
-    #endregion
 
     public static void SetGentleConfigFile()
     {
@@ -413,6 +407,16 @@ namespace Mediaportal.TV.TvPlugin.Helper
     }
 
 
+    public static string GetCategory(ProgramCategory programCategory)
+    {
+      string category = "";
+      if (programCategory != null)
+      {
+        category = programCategory.Category;
+      }
+      return category;
+    }
+
     #region scheduler helper methods
 
 
@@ -568,14 +572,14 @@ namespace Mediaportal.TV.TvPlugin.Helper
       if (IsValidSchedule(schedule))
       {
         Program prg = ServiceAgents.Instance.ProgramServiceAgent.GetProgramByTitleAndTimes(schedule.ProgramName, schedule.StartTime,
-                                                                     schedule.EndTime);
+                                                                                           schedule.EndTime);
         wasDeleted = DeleteRecAndSchedWithPrompt(schedule, prg);
       }
       
       return wasDeleted;     
     }   
 
-        /// <summary>
+    /// <summary>
     /// Deletes a single or a complete schedule.
     /// The user is being prompted if the schedule is currently recording.
     /// If the schedule is currently recording, then this is stopped also.
@@ -874,15 +878,5 @@ namespace Mediaportal.TV.TvPlugin.Helper
     }
 
     #endregion
-
-    public static string GetCategory(ProgramCategory programCategory)
-    {
-      string category = "";
-      if (programCategory != null)
-      {
-        category = programCategory.Category;
-      }
-      return category;
-    }
   }
 }

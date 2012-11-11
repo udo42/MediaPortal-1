@@ -32,8 +32,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Epg
   {
     #region variables
 
-    private List<EpgProgram> _programs;
     private IChannel _channel;
+    private List<EpgProgram> _programs;
 
     #endregion
 

@@ -45,18 +45,18 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.CardHandler
     Card DataBaseCard { get; set; }
     CardType Type { get; }
     string CardName { get; }
-    string CardDevice();
     int NumberOfChannelsDecrypting { get; }
     
 
     bool SupportsSubChannels { get; }
 
-    void UpdateSignalSate();
     bool TunerLocked { get; }
     int SignalQuality { get; }
     int SignalLevel { get; }
     int MinChannel { get; }
     int MaxChannel { get; }
+    string CardDevice();
+    void UpdateSignalSate();
 
     IChannel CurrentChannel(string userName, int idChannel);
     int CurrentDbChannel(string userName);

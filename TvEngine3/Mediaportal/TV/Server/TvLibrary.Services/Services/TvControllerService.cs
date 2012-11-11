@@ -38,9 +38,21 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
   /// </summary>  
   public class TvControllerService : IControllerService
   {
-    private IInternalControllerService _service;    
+    private IInternalControllerService _service;
 
     #region Implementation of IControllerService
+
+    private IInternalControllerService Service
+    {
+      get
+      {
+        if (_service == null)
+        {
+          _service = GlobalServiceProvider.Get<IInternalControllerService>();
+        }
+        return _service;
+      }
+    }
 
     /// <summary>
     /// Gets the assembly of tvservice.exe
@@ -439,18 +451,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     public List<RtspClient> StreamingClients
     {
       get { return Service.StreamingClients; }
-    }
-
-    private IInternalControllerService Service
-    {
-      get
-      {
-        if (_service == null)
-        {
-          _service = GlobalServiceProvider.Get<IInternalControllerService>();
-        }
-        return _service;
-      }
     }
 
     /// <summary>
@@ -1125,8 +1125,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       return Service.SetCiMenuHandler(cardId, callbackHandler);
     }
 
-    public event CiMenuCallback OnCiMenu;
-
     /// <summary>
     /// Fetches the stream quality information
     /// </summary>
@@ -1199,6 +1197,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     {
       return Service.ListAllCards();
     }
+
+    public event CiMenuCallback OnCiMenu;
 
     #endregion
   }

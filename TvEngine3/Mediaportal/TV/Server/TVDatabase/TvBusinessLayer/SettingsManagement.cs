@@ -6,7 +6,22 @@ using Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories;
 namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 {
   public static class SettingsManagement
-  {    
+  {
+    private static int _epgKeepDuration;
+    public static int EpgKeepDuration
+    {
+      get
+      {
+        if (_epgKeepDuration == 0)
+        {
+          // first time query settings, caching
+          Setting duration = GetSetting("epgKeepDuration", "24");          
+          _epgKeepDuration = Convert.ToInt32(duration.Value);
+        }
+        return _epgKeepDuration;
+      }
+    }
+
     public static Setting GetSetting(string tagName)
     {
       using (ISettingsRepository settingsRepository = new SettingsRepository())
@@ -32,20 +47,5 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     }
 
     // maximum hours to keep old program info
-    private static int _epgKeepDuration;
-    public static int EpgKeepDuration
-    {
-      get
-      {
-        if (_epgKeepDuration == 0)
-        {
-          // first time query settings, caching
-          Setting duration = GetSetting("epgKeepDuration", "24");          
-          _epgKeepDuration = Convert.ToInt32(duration.Value);
-        }
-        return _epgKeepDuration;
-      }
-    }
-
   }
 }

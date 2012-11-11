@@ -64,7 +64,7 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
     public void OnScheduleEnded(string recordingFilename, Schedule recording, Program program)
     {
       this.LogDebug("diskmanagement: recording {0} ended. type:{1} max episodes:{2}",
-                program.Title, (ScheduleRecordingType)recording.ScheduleType, recording.MaxAirings);
+                    program.Title, (ScheduleRecordingType)recording.ScheduleType, recording.MaxAirings);
 
       CheckEpsiodesForRecording(recording, program);
     }
@@ -90,10 +90,10 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
         if (oldestEpisode == null)
           return;
         this.LogDebug("diskmanagement:   Delete episode {0} {1} {2} {3}",
-                  oldestEpisode.Channel,
-                  oldestEpisode.Title,
-                  oldestEpisode.StartTime.ToLongDateString(),
-                  oldestEpisode.StartTime.ToLongTimeString());
+                      oldestEpisode.Channel,
+                      oldestEpisode.Title,
+                      oldestEpisode.StartTime.ToLongDateString(),
+                      oldestEpisode.StartTime.ToLongTimeString());
 
         // Delete the file from disk and the recording entry from the database.        
         bool result = RecordingFileHandler.DeleteRecordingOnDisk(oldestEpisode.FileName);

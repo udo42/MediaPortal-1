@@ -30,9 +30,9 @@ namespace WebEPG.config.Grabber
   {
     #region Variables
 
-    [XmlAttribute("xpath")] public string XPath;
     [XmlAttribute("channel")] public string Channel;
     [XmlArray("Fields")] [XmlArrayItem("Field")] public List<XmlField> Fields;
+    [XmlAttribute("xpath")] public string XPath;
 
     #endregion
   }

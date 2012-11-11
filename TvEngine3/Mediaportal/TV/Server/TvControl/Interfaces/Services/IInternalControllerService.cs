@@ -14,6 +14,14 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
 
   public interface IInternalControllerService : IControllerService, IEpgEvents
   {
+    /// <summary>
+    /// Determines the number of active streams on the server
+    /// </summary>
+    int ActiveStreams { get; }
+
+    bool CanSuspend { get; }
+    IDictionary<int, ITvCardHandler> CardCollection { get; }
+    bool AllCardsIdle { get; }
 
     /// <summary>
     /// Gets the card Id for a card
@@ -32,13 +40,6 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     bool IsRecording(ref IUser user);
 
     /// <summary>
-    /// Determines the number of active streams on the server
-    /// </summary>
-    int ActiveStreams { get; }
-
-    bool CanSuspend { get; }
-
-    /// <summary>
     /// Returns a dictionary of channels that are timeshfiting and recording.
     /// </summary>
     IDictionary<int, ChannelState> GetAllTimeshiftingAndRecordingChannels();
@@ -55,8 +56,6 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     void Init();
     event TvServerEventHandler OnTvServerEvent;
     IDictionary<int, ChannelState> GetAllChannelStatesForIdleUserCached();
-    IDictionary<int, ITvCardHandler> CardCollection { get; }
-    bool AllCardsIdle { get; }
 
     /// <summary>
     /// returns if the card is enabled or disabled

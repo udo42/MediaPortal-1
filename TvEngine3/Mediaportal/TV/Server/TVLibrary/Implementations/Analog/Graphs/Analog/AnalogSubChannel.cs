@@ -34,14 +34,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
   /// </summary>
   public class AnalogSubChannel : BaseSubChannel, ITvSubChannel, IAnalogTeletextCallBack, IAnalogVideoAudioObserver
   {
-
-
     #region variables
 
     private readonly TvCardAnalog _card;
-    private readonly TvAudio _tvAudio;
     private readonly IBaseFilter _mpFileWriter;
     private readonly IMPRecord _mpRecord;
+    private readonly TvAudio _tvAudio;
 
     #endregion
 
@@ -223,6 +221,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
 
     #endregion
 
+    #region ITvSubChannel Members
+
     /// <summary>
     /// Returns true when unscrambled audio/video is received otherwise false
     /// </summary>
@@ -231,6 +231,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
     {
       get { return true; }
     }
+
+    #endregion
 
     #region teletext
 

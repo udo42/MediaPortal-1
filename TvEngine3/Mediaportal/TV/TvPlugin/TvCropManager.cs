@@ -33,7 +33,6 @@ namespace Mediaportal.TV.TvPlugin
 {
   internal class TvCropManager
   {
-  
     #region Ctor/Dtor
 
     public TvCropManager()

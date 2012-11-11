@@ -19,33 +19,25 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
     [DataContract(IsReference = true)]
     public class ObjectChangeTracker
     {
-        #region  Fields
+      #region  Fields
+
+      private bool _changeTrackingEnabled;
+      private ExtendedPropertiesDictionary _extendedProperties;
+      private bool _isDeserializing;
+      private ObjectState _objectState = ObjectState.Added;
+      private ObjectsAddedToCollectionProperties _objectsAddedToCollections = new ObjectsAddedToCollectionProperties();
+      private ObjectsRemovedFromCollectionProperties _objectsRemovedFromCollections = new ObjectsRemovedFromCollectionProperties();
+      private OriginalValuesDictionary _originalValues;
+
+      #endregion
+
+      #region Events
     
-        private bool _isDeserializing;
-        private ObjectState _objectState = ObjectState.Added;
-        private bool _changeTrackingEnabled;
-        private OriginalValuesDictionary _originalValues;
-        private ExtendedPropertiesDictionary _extendedProperties;
-        private ObjectsAddedToCollectionProperties _objectsAddedToCollections = new ObjectsAddedToCollectionProperties();
-        private ObjectsRemovedFromCollectionProperties _objectsRemovedFromCollections = new ObjectsRemovedFromCollectionProperties();
+      public event EventHandler<ObjectStateChangingEventArgs> ObjectStateChanging;
     
-        #endregion
-    
-        #region Events
-    
-        public event EventHandler<ObjectStateChangingEventArgs> ObjectStateChanging;
-    
-        #endregion
-    
-        protected virtual void OnObjectStateChanging(ObjectState newState)
-        {
-            if (ObjectStateChanging != null)
-            {
-                ObjectStateChanging(this, new ObjectStateChangingEventArgs(){ NewState = newState });
-            }
-        }
-    
-        [DataMember]
+      #endregion
+
+      [DataMember]
         public ObjectState State
         {
             get { return _objectState; }
@@ -122,107 +114,115 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
                 return _objectsAddedToCollections;
             }
         }
+
+      #region MethodsForChangeTrackingOnClient
     
-        #region MethodsForChangeTrackingOnClient
+      [OnDeserializing]
+      public void OnDeserializingMethod(StreamingContext context)
+      {
+        _isDeserializing = true;
+      }
     
-        [OnDeserializing]
-        public void OnDeserializingMethod(StreamingContext context)
+      [OnDeserialized]
+      public void OnDeserializedMethod(StreamingContext context)
+      {
+        _isDeserializing = false;
+      }
+    
+      // Resets the ObjectChangeTracker to the Unchanged state and
+      // clears the original values as well as the record of changes
+      // to collection properties
+      public void AcceptChanges()
+      {
+        OnObjectStateChanging(ObjectState.Unchanged);
+        OriginalValues.Clear();
+        ObjectsAddedToCollectionProperties.Clear();
+        ObjectsRemovedFromCollectionProperties.Clear();
+        ChangeTrackingEnabled = true;
+        _objectState = ObjectState.Unchanged;
+      }
+    
+      // Captures the original value for a property that is changing.
+      internal void RecordOriginalValue(string propertyName, object value)
+      {
+        if (_changeTrackingEnabled && _objectState != ObjectState.Added)
         {
-            _isDeserializing = true;
+          if (!OriginalValues.ContainsKey(propertyName))
+          {
+            OriginalValues[propertyName] = value;
+          }
         }
+      }
     
-        [OnDeserialized]
-        public void OnDeserializedMethod(StreamingContext context)
+      // Records an addition to collection valued properties on SelfTracking Entities.
+      internal void RecordAdditionToCollectionProperties(string propertyName, object value)
+      {
+        if (_changeTrackingEnabled)
         {
-            _isDeserializing = false;
-        }
-    
-        // Resets the ObjectChangeTracker to the Unchanged state and
-        // clears the original values as well as the record of changes
-        // to collection properties
-        public void AcceptChanges()
-        {
-            OnObjectStateChanging(ObjectState.Unchanged);
-            OriginalValues.Clear();
-            ObjectsAddedToCollectionProperties.Clear();
-            ObjectsRemovedFromCollectionProperties.Clear();
-            ChangeTrackingEnabled = true;
-            _objectState = ObjectState.Unchanged;
-        }
-    
-        // Captures the original value for a property that is changing.
-        internal void RecordOriginalValue(string propertyName, object value)
-        {
-            if (_changeTrackingEnabled && _objectState != ObjectState.Added)
+          // Add the entity back after deleting it, we should do nothing here then
+          if (ObjectsRemovedFromCollectionProperties.ContainsKey(propertyName)
+              && ObjectsRemovedFromCollectionProperties[propertyName].Contains(value))
+          {
+            ObjectsRemovedFromCollectionProperties[propertyName].Remove(value);
+            if (ObjectsRemovedFromCollectionProperties[propertyName].Count == 0)
             {
-                if (!OriginalValues.ContainsKey(propertyName))
-                {
-                    OriginalValues[propertyName] = value;
-                }
+              ObjectsRemovedFromCollectionProperties.Remove(propertyName);
             }
-        }
+            return;
+          }
     
-        // Records an addition to collection valued properties on SelfTracking Entities.
-        internal void RecordAdditionToCollectionProperties(string propertyName, object value)
+          if (!ObjectsAddedToCollectionProperties.ContainsKey(propertyName))
+          {
+            ObjectsAddedToCollectionProperties[propertyName] = new ObjectList();
+            ObjectsAddedToCollectionProperties[propertyName].Add(value);
+          }
+          else
+          {
+            ObjectsAddedToCollectionProperties[propertyName].Add(value);
+          }
+        }
+      }
+    
+      // Records a removal to collection valued properties on SelfTracking Entities.
+      internal void RecordRemovalFromCollectionProperties(string propertyName, object value)
+      {
+        if (_changeTrackingEnabled)
         {
-            if (_changeTrackingEnabled)
+          // Delete the entity back after adding it, we should do nothing here then
+          if (ObjectsAddedToCollectionProperties.ContainsKey(propertyName)
+              && ObjectsAddedToCollectionProperties[propertyName].Contains(value))
+          {
+            ObjectsAddedToCollectionProperties[propertyName].Remove(value);
+            if (ObjectsAddedToCollectionProperties[propertyName].Count == 0)
             {
-                // Add the entity back after deleting it, we should do nothing here then
-                if (ObjectsRemovedFromCollectionProperties.ContainsKey(propertyName)
-                    && ObjectsRemovedFromCollectionProperties[propertyName].Contains(value))
-                {
-                    ObjectsRemovedFromCollectionProperties[propertyName].Remove(value);
-                    if (ObjectsRemovedFromCollectionProperties[propertyName].Count == 0)
-                    {
-                        ObjectsRemovedFromCollectionProperties.Remove(propertyName);
-                    }
-                    return;
-                }
-    
-                if (!ObjectsAddedToCollectionProperties.ContainsKey(propertyName))
-                {
-                    ObjectsAddedToCollectionProperties[propertyName] = new ObjectList();
-                    ObjectsAddedToCollectionProperties[propertyName].Add(value);
-                }
-                else
-                {
-                    ObjectsAddedToCollectionProperties[propertyName].Add(value);
-                }
+              ObjectsAddedToCollectionProperties.Remove(propertyName);
             }
-        }
+            return;
+          }
     
-        // Records a removal to collection valued properties on SelfTracking Entities.
-        internal void RecordRemovalFromCollectionProperties(string propertyName, object value)
+          if (!ObjectsRemovedFromCollectionProperties.ContainsKey(propertyName))
+          {
+            ObjectsRemovedFromCollectionProperties[propertyName] = new ObjectList();
+            ObjectsRemovedFromCollectionProperties[propertyName].Add(value);
+          }
+          else
+          {
+            if (!ObjectsRemovedFromCollectionProperties[propertyName].Contains(value))
+            {
+              ObjectsRemovedFromCollectionProperties[propertyName].Add(value);
+            }
+          }
+        }
+      }
+      #endregion
+
+      protected virtual void OnObjectStateChanging(ObjectState newState)
+      {
+        if (ObjectStateChanging != null)
         {
-            if (_changeTrackingEnabled)
-            {
-                // Delete the entity back after adding it, we should do nothing here then
-                if (ObjectsAddedToCollectionProperties.ContainsKey(propertyName)
-                    && ObjectsAddedToCollectionProperties[propertyName].Contains(value))
-                {
-                    ObjectsAddedToCollectionProperties[propertyName].Remove(value);
-                    if (ObjectsAddedToCollectionProperties[propertyName].Count == 0)
-                    {
-                        ObjectsAddedToCollectionProperties.Remove(propertyName);
-                    }
-                    return;
-                }
-    
-                if (!ObjectsRemovedFromCollectionProperties.ContainsKey(propertyName))
-                {
-                    ObjectsRemovedFromCollectionProperties[propertyName] = new ObjectList();
-                    ObjectsRemovedFromCollectionProperties[propertyName].Add(value);
-                }
-                else
-                {
-                    if (!ObjectsRemovedFromCollectionProperties[propertyName].Contains(value))
-                    {
-                        ObjectsRemovedFromCollectionProperties[propertyName].Add(value);
-                    }
-                }
-            }
+          ObjectStateChanging(this, new ObjectStateChangingEventArgs(){ NewState = newState });
         }
-        #endregion
+      }
     }
     
     #region EnumForObjectState

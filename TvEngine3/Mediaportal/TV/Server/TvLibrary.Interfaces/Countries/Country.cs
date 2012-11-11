@@ -30,10 +30,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Countries
   [Serializable]
   public class Country
   {
-    private readonly int _id;
-    private int _index;
-    private readonly string _name;
     private readonly string _code;
+    private readonly int _id;
+    private readonly string _name;
+    private int _index;
     private AnalogVideoStandard _standard;
 
     /// <summary>
@@ -69,17 +69,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Countries
       _name = country;
       _code = code;
       _index = index;
-    }
-
-    /// <summary>
-    /// Returns a <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.
-    /// </summary>
-    /// <returns>
-    /// A <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.
-    /// </returns>
-    public override string ToString()
-    {
-      return _name;
     }
 
     /// <summary>
@@ -123,6 +112,17 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Countries
     {
       get { return _standard; }
       set { _standard = value; }
+    }
+
+    /// <summary>
+    /// Returns a <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.
+    /// </summary>
+    /// <returns>
+    /// A <see cref="T:System.String"></see> that represents the current <see cref="T:System.Object"></see>.
+    /// </returns>
+    public override string ToString()
+    {
+      return _name;
     }
   }
 }

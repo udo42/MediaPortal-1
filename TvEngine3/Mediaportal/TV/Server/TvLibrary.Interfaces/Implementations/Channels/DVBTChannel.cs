@@ -31,6 +31,37 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
   public struct DVBTTuning
   {
     /// <summary>
+    /// The transmission bandwidth, in kHz.
+    /// </summary>
+    public int Bandwidth;
+
+    /// <summary>
+    /// The transmitter's cell identifier.
+    /// </summary>
+    public int CellId;
+
+    /// <summary>
+    /// The transmitter's cell identifier extension.
+    /// </summary>
+    public int CellIdExtension;
+
+    /// <summary>
+    /// The transmission frequency, in kHz.
+    /// </summary>
+    public int Frequency;
+
+    /// <summary>
+    /// Indicates whether the transmission complies with the second generation DVB terrestrial
+    /// broadcasting standard (DVB-T2 EN 302 755).
+    /// </summary>
+    public bool IsDvbT2;
+
+    /// <summary>
+    /// The transmission frequency offset, in kHz.
+    /// </summary>
+    public int Offset;
+
+    /// <summary>
     /// Initialise a new instance of the <see cref="DVBTTuning"/> class.
     /// </summary>
     /// <param name="frequency">The transmission frequency, in kHz.</param>
@@ -48,37 +79,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       CellIdExtension = cellIdExtension;
       IsDvbT2 = isDvbT2;
     }
-
-    /// <summary>
-    /// The transmission frequency, in kHz.
-    /// </summary>
-    public int Frequency;
-
-    /// <summary>
-    /// The transmission bandwidth, in kHz.
-    /// </summary>
-    public int Bandwidth;
-
-    /// <summary>
-    /// The transmission frequency offset, in kHz.
-    /// </summary>
-    public int Offset;
-
-    /// <summary>
-    /// The transmitter's cell identifier.
-    /// </summary>
-    public int CellId;
-
-    /// <summary>
-    /// The transmitter's cell identifier extension.
-    /// </summary>
-    public int CellIdExtension;
-
-    /// <summary>
-    /// Indicates whether the transmission complies with the second generation DVB terrestrial
-    /// broadcasting standard (DVB-T2 EN 302 755).
-    /// </summary>
-    public bool IsDvbT2;
 
     /// <summary>
     /// ToString

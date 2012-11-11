@@ -35,22 +35,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Epg
     // 
     // There were 22 B codes; scc and scr are now deprecated but still used by some EPG providers :(
     //
-    private string[] LanguageNameExceptions = {
-                                                "Albanian", "Armenian",
-                                                "Basque", "Burmese",
-                                                "Chinese", "Czech",
-                                                "Dutch",
-                                                "French",
-                                                "Georgian", "German", "Greek (Modern)",
-                                                "Icelandic",
-                                                "Macedonian", "Malay", "Maori",
-                                                "Persian",
-                                                "Romanian",
-                                                "Tibetan",
-                                                "Welsh",
-                                                "Serbo-Croatian (Cyrillic)",
-                                                "Serbo-Croatian (Roman)"
-                                              };
 
     private string[] LanguageCodeExceptions = {
                                                 "alb", "arm",
@@ -67,6 +51,23 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Epg
                                                 "wel",
                                                 "scc",
                                                 "scr"
+                                              };
+
+    private string[] LanguageNameExceptions = {
+                                                "Albanian", "Armenian",
+                                                "Basque", "Burmese",
+                                                "Chinese", "Czech",
+                                                "Dutch",
+                                                "French",
+                                                "Georgian", "German", "Greek (Modern)",
+                                                "Icelandic",
+                                                "Macedonian", "Malay", "Maori",
+                                                "Persian",
+                                                "Romanian",
+                                                "Tibetan",
+                                                "Welsh",
+                                                "Serbo-Croatian (Cyrillic)",
+                                                "Serbo-Croatian (Roman)"
                                               };
 
     /// <summary>

@@ -56,9 +56,9 @@ namespace Mediaportal.TV.Server.TestApp
 
     private readonly TvCardCollection _tvcards = new TvCardCollection();
     private ITVCard _currentCard;
+    private int _currentPageNumber = 0x600;
     private bool _stopStreaming;
     private bool _streamingRunning;
-    private int _currentPageNumber = 0x600;
     //Player _player;
 
     public Form1()

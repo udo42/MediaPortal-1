@@ -27,14 +27,14 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
   /// </summary>
   public class TstDictionaryEntry : ICloneable
   {
-    private char splitChar;
-    private bool isKey;
-    private string key;
-    private Object value;
-    private TstDictionaryEntry parent;
-    private TstDictionaryEntry lowChild;
     private TstDictionaryEntry eqChild;
     private TstDictionaryEntry highChild;
+    private bool isKey;
+    private string key;
+    private TstDictionaryEntry lowChild;
+    private TstDictionaryEntry parent;
+    private char splitChar;
+    private Object value;
 
     /// <summary>
     /// Construct a tst node.
@@ -224,6 +224,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
       return entry;
     }
 
+    #endregion
+
     public override string ToString()
     {
       char c;
@@ -241,7 +243,5 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
       else
         return String.Format("{0} {1}", c, SplitChar);
     }
-
-    #endregion
   }
 }

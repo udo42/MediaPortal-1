@@ -25,6 +25,8 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
   [Serializable]
   public class PlayListItem
   {
+    #region PlayListItemType enum
+
     public enum PlayListItemType
     {
       Unknown,
@@ -36,12 +38,14 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
       Pictures
     }
 
-    protected string _fileName = "";
+    #endregion
+
     protected string _description = "";
     protected int _duration;
-    protected object _musicTag;
+    protected string _fileName = "";
     private bool _isPlayed;
     private PlayListItemType _itemType = PlayListItemType.Unknown;
+    protected object _musicTag;
 
     public PlayListItem() {}
 

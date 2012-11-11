@@ -44,7 +44,6 @@ namespace Mediaportal.TV.TvPlugin.EPG
   /// </summary>
   public class RadioGuideBase : GuideBase
   {
- 
     #region constants
 
     private const string SKIN_PROPERTY_PREFIX = "#Radio";

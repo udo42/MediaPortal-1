@@ -29,11 +29,11 @@ namespace WebEPG.config.Grabber
   {
     #region Variables
 
+    [XmlAttribute("description")] public int Description = 0;
+    [XmlAttribute("genre")] public int Genre = 0;
+    [XmlAttribute("subtitle")] public int Subtitle = 0;
     [XmlAttribute("template")] public string Template;
     [XmlAttribute("title")] public int Title = 0;
-    [XmlAttribute("subtitle")] public int Subtitle = 0;
-    [XmlAttribute("genre")] public int Genre = 0;
-    [XmlAttribute("description")] public int Description = 0;
 
     #endregion
 

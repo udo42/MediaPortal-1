@@ -19,16 +19,16 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.CiMenu
   {
     #region private vars
 
-    private readonly string _title;
-    private readonly string _subtitle;
     private readonly string _bottomText;
-    private int _numChoices;
-    private CiMenuState _menuState;
     private readonly List<CiMenuEntry> _ciMenuEntries = new List<CiMenuEntry>();
+    private readonly string _subtitle;
+    private readonly string _title;
 
     private int _answerLength;
-    private string _requestText;
     private bool _bPassword;
+    private CiMenuState _menuState;
+    private int _numChoices;
+    private string _requestText;
 
     #endregion
 

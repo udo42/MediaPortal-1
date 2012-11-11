@@ -38,9 +38,8 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 {
   public partial class FormEditSchedule : Form
   {
-
-    private Schedule _schedule;
     private Program _program;
+    private Schedule _schedule;
     private ScheduleRulesTemplate _scheduleRulesTemplate;
 
     public FormEditSchedule()
@@ -858,14 +857,14 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       ConditionOperator = op;
     }
 
+    public T Value { get; private set; }
+    public ConditionOperator ConditionOperator { get; private set; }
+    public string Name { get; set; }
+
     public override string ToString()
     {
       return ("[" + Name + "] " + ConditionOperator + " [" + Value + "]");
     }
-
-    public T Value { get; private set; }
-    public ConditionOperator ConditionOperator { get; private set; }
-    public string Name { get; set; }
   }
 
   internal class ProgramField
@@ -877,6 +876,11 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       ConditionOperators = GetConditionOperator(type);
       Control = GetControl(type);
     }
+
+    public Control Control { get; private set; }
+    public string Name { get; private set; }
+    public Type Type { get; private set; }
+    public IList<ConditionOperator> ConditionOperators { get; private set; }
 
     private Control GetControl(Type type)
     {
@@ -911,11 +915,6 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       }
       return conditionOperators;
     }
-
-    public Control Control { get; private set; }
-    public string Name { get; private set; }
-    public Type Type { get; private set; }
-    public IList<ConditionOperator> ConditionOperators { get; private set; }
 
     public override string ToString()
     {

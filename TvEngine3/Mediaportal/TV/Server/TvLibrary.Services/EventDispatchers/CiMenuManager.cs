@@ -9,20 +9,18 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
 {
   public class CiMenuManager : EventDispatcher, ICiMenuCallbacks
   {
-
-
     #region CI Menu Event handling
+
+    /// <summary>
+    /// Remember the number of currently attached CI menu supporting card.
+    /// </summary>
+    private int _activeCiMenuCard = -1;
 
     /// <summary>
     /// Flag that is that to true when a users opens CI menu interactive.
     /// It is used to filter out unwanted, unrequested CI callbacks.
     /// </summary>
     private bool _isCiMenuInteractive;
-
-    /// <summary>
-    /// Remember the number of currently attached CI menu supporting card.
-    /// </summary>
-    private int _activeCiMenuCard = -1;
 
     #endregion
 

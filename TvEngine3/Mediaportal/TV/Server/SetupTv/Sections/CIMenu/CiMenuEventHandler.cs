@@ -36,10 +36,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.CIMenu
 
     private CI_Menu_Dialog _refDlg;
 
-    public void SetCaller(CI_Menu_Dialog caller)
-    {
-      _refDlg = caller;
-    }
+    #region ICiMenuEventCallback Members
 
     /// <summary>
     /// eventhandler to show CI Menu dialog
@@ -63,6 +60,13 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.CIMenu
         if (_refDlg != null)
           _refDlg.CiMenuCallback(menu);
       }
+    }
+
+    #endregion
+
+    public void SetCaller(CI_Menu_Dialog caller)
+    {
+      _refDlg = caller;
     }
   }
 

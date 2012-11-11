@@ -37,8 +37,6 @@ namespace Mediaportal.TV.Server.Plugins.ComSkipLauncher
   [Interceptor("PluginExceptionInterceptor")]
   public class ComSkipLauncher : ITvServerPlugin
   {
-
-
     #region Constants
 
     private const bool DefaultRunAtStrart = true;
@@ -56,30 +54,6 @@ namespace Mediaportal.TV.Server.Plugins.ComSkipLauncher
     #endregion Members
 
     #region Properties
-
-    /// <summary>
-    /// returns the name of the plugin
-    /// </summary>
-    public string Name
-    {
-      get { return "ComSkipLauncher"; }
-    }
-
-    /// <summary>
-    /// returns the version of the plugin
-    /// </summary>
-    public string Version
-    {
-      get { return "1.0.2.0"; }
-    }
-
-    /// <summary>
-    /// returns the author of the plugin
-    /// </summary>
-    public string Author
-    {
-      get { return "and-81"; }
-    }
 
     /// <summary>
     /// returns if the plugin should only run on the master server
@@ -108,9 +82,33 @@ namespace Mediaportal.TV.Server.Plugins.ComSkipLauncher
       set { _parameters = value; }
     }
 
+    /// <summary>
+    /// returns the name of the plugin
+    /// </summary>
+    public string Name
+    {
+      get { return "ComSkipLauncher"; }
+    }
+
+    /// <summary>
+    /// returns the version of the plugin
+    /// </summary>
+    public string Version
+    {
+      get { return "1.0.2.0"; }
+    }
+
+    /// <summary>
+    /// returns the author of the plugin
+    /// </summary>
+    public string Author
+    {
+      get { return "and-81"; }
+    }
+
     #endregion Properties
 
-    #region IPlugin Members
+    #region ITvServerPlugin Members
 
     [CLSCompliant(false)]
     public void Start(IInternalControllerService controllerService)

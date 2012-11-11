@@ -26,8 +26,15 @@ namespace Mediaportal.TV.Server.SetupControls
 {
   public partial class SettingsForm : MPForm
   {
-    protected SectionSettings _previousSection;
     protected static Hashtable settingSections = new Hashtable();
+    protected SectionSettings _previousSection;
+
+    public SettingsForm(bool isRestrictedMode)
+    {
+      InitializeComponent();
+      linkLabel1.Links.Add(0, linkLabel1.Text.Length, "http://www.team-mediaportal.com/donate.html");
+      btnRestrictedMode.Visible = isRestrictedMode;
+    }
 
     /// <summary>
     /// Hashtable where we store each added tree node/section for faster access
@@ -35,13 +42,6 @@ namespace Mediaportal.TV.Server.SetupControls
     public static Hashtable SettingSections
     {
       get { return settingSections; }
-    }
-
-    public SettingsForm(bool isRestrictedMode)
-    {
-      InitializeComponent();
-      linkLabel1.Links.Add(0, linkLabel1.Text.Length, "http://www.team-mediaportal.com/donate.html");
-      btnRestrictedMode.Visible = isRestrictedMode;
     }
 
     public virtual void AddSection(SectionSettings section)

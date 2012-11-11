@@ -14,6 +14,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     {
     }
 
+    #region IProgramService Members
+
     public IDictionary<int, NowAndNext> GetNowAndNextForChannelGroup(int idGroup)
     {
       var nowAndNexts = ProgramManagement.GetNowAndNextForChannelGroup(idGroup);
@@ -189,5 +191,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     {
       ProgramManagement.InitiateInsertPrograms();
     }
+
+    #endregion
   }
 }

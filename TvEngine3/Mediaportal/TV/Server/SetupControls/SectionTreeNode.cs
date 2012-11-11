@@ -24,17 +24,17 @@ namespace Mediaportal.TV.Server.SetupControls
 {
   public class SectionTreeNode : TreeNode
   {
-    public SectionSettings Section
-    {
-      get { return section; }
-    }
-
     private readonly SectionSettings section;
 
     public SectionTreeNode(SectionSettings section)
     {
       this.section = section;
       Text = section.Text;
+    }
+
+    public SectionSettings Section
+    {
+      get { return section; }
     }
 
     public override string ToString()

@@ -39,6 +39,11 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces.Interfaces
   public interface IPowerScheduler
   {
     /// <summary>
+    /// Provides access to PowerScheduler's settings
+    /// </summary>
+    PowerSettings Settings { get; }
+
+    /// <summary>
     /// Register to this event to receive status changes from the PowerScheduler
     /// </summary>
     event PowerSchedulerEventHandler OnPowerSchedulerEvent;
@@ -121,10 +126,5 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces.Interfaces
     /// </summary>
     /// <returns>is the system currently trying to suspend?</returns>
     bool IsSuspendInProgress();
-
-    /// <summary>
-    /// Provides access to PowerScheduler's settings
-    /// </summary>
-    PowerSettings Settings { get; }
   }
 }

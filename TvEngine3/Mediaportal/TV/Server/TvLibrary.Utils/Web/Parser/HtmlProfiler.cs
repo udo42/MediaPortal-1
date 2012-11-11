@@ -33,19 +33,19 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
 
     private struct Profile
     {
-      public MatchTagCollection tags;
       public string tagMap;
+      public MatchTagCollection tags;
     }
 
     #endregion
 
     #region Variables
 
-    private Profile _template;
-    private Profile _page;
-    private HtmlSectionTemplate _sectionTemplate;
-    private string _pageSource;
     private MatchCollection _matches;
+    private Profile _page;
+    private string _pageSource;
+    private HtmlSectionTemplate _sectionTemplate;
+    private Profile _template;
 
     #endregion
 

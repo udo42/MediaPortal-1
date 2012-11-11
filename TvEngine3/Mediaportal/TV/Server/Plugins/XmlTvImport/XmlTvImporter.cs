@@ -42,8 +42,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
   [Interceptor("PluginExceptionInterceptor")]
   public class XmlTvImporter : ITvServerPlugin, ITvServerPluginStartedAll, ITvServerPluginCommunciation
   {
-
-
     #region constants        
 
     private const int remoteFileDonwloadTimeoutSecs = 360; //6 minutes
@@ -52,11 +50,11 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
     #region variables
 
-    private bool _workerThreadRunning = false;
-    private bool _remoteFileDownloadInProgress = false;
     private DateTime _remoteFileDonwloadInProgressAt = DateTime.MinValue;
+    private bool _remoteFileDownloadInProgress = false;
     private string _remoteURL = "";
     private System.Timers.Timer _timer1;
+    private bool _workerThreadRunning = false;
 
     #endregion
 
@@ -70,6 +68,20 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     #endregion
 
     #region properties
+
+    /// <summary>
+    /// returns if the plugin should only run on the master server
+    /// or also on slave servers
+    /// </summary>
+    public bool MasterOnly
+    {
+      get { return true; }
+    }
+
+    public static string DefaultOutputFolder
+    {
+      get { return PathManager.GetDataPath + @"\xmltv"; }
+    }
 
     /// <summary>
     /// returns the name of the plugin
@@ -93,20 +105,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     public string Author
     {
       get { return "Frodo"; }
-    }
-
-    /// <summary>
-    /// returns if the plugin should only run on the master server
-    /// or also on slave servers
-    /// </summary>
-    public bool MasterOnly
-    {
-      get { return true; }
-    }
-
-    public static string DefaultOutputFolder
-    {
-      get { return PathManager.GetDataPath + @"\xmltv"; }
     }
 
     #endregion
@@ -146,6 +144,14 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
         _timer1.Dispose();
         _timer1 = null;
       }
+    }
+
+    /// <summary>
+    /// returns the setup sections for display in SetupTv
+    /// </summary>
+    public SectionSettings Setup
+    {
+      get { return new XmlTvSetup(); }
     }
 
     private void RegisterPowerEventHandler()
@@ -238,14 +244,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       {
         this.LogInfo("xmlTV plugin resume exception [" + e.Message + "]");
       }
-    }
-
-    /// <summary>
-    /// returns the setup sections for display in SetupTv
-    /// </summary>
-    public SectionSettings Setup
-    {
-      get { return new XmlTvSetup(); }
     }
 
     private void DownloadFileCallback(object sender, DownloadDataCompletedEventArgs e)
@@ -760,7 +758,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
             catch (Exception e)
             {
               this.LogError(@"plugin:xmltv StartImport - File [" + tvguideFileName + "] doesn't have read access : " +
-                        e.Message);
+                            e.Message);
               return;
             }
           }
@@ -792,13 +790,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       workerThread.Start(param);
     }
 
-
-    private class ThreadParams
-    {
-      public bool _importXML;
-      public bool _importLST;
-      public DateTime _importDate;
-    } ;
 
     private void ThreadFunctionImportTVGuide(object aparam)
     {
@@ -942,16 +933,16 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       }
     }
 
-    #endregion
-
-    #region ITvServerPluginStartedAll Members
-
-    public void StartedAll()
+    private class ThreadParams
     {
-      RegisterForEPGSchedule();
-    }
+      public DateTime _importDate;
+      public bool _importLST;
+      public bool _importXML;
+    } ;
 
     #endregion
+
+    #region ITvServerPluginCommunciation Members
 
     public object GetServiceInstance
     {
@@ -962,5 +953,16 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     {
       get { return typeof(IXMLTVImportService); }
     }
+
+    #endregion
+
+    #region ITvServerPluginStartedAll Members
+
+    public void StartedAll()
+    {
+      RegisterForEPGSchedule();
+    }
+
+    #endregion
   }
 }

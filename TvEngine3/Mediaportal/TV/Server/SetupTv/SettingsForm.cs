@@ -43,9 +43,9 @@ namespace Mediaportal.TV.Server.SetupTV
   {
 
     private readonly PluginLoaderSetupTv _pluginLoader = new PluginLoaderSetupTv();
+    private TvCards cardPage;
     private Sections.Plugins pluginsRoot;
     private Servers servers;
-    private TvCards cardPage;
     private bool showAdvancedSettings;
 
     public SetupTvSettingsForm()

@@ -35,8 +35,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
   /// </summary>
   public class Genpix : BaseCustomDevice, ICustomTuner, IDiseqcDevice
   {
- 
     #region enums
+
+    #region Nested type: BdaExtensionProperty
 
     private enum BdaExtensionProperty : int
     {
@@ -45,11 +46,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
       SignalStatus,           // For retrieving signal quality, strength, lock status and the actual lock frequency.
     }
 
-    private enum GenpixToneBurst : byte
-    {
-      ToneBurst = 0,
-      DataBurst
-    }
+    #endregion
+
+    #region Nested type: GenpixSwitchPort
 
     private enum GenpixSwitchPort : uint
     {
@@ -100,6 +99,18 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
 
     #endregion
 
+    #region Nested type: GenpixToneBurst
+
+    private enum GenpixToneBurst : byte
+    {
+      ToneBurst = 0,
+      DataBurst
+    }
+
+    #endregion
+
+    #endregion
+
     #region structs
 
     [StructLayout(LayoutKind.Sequential)]
@@ -131,20 +142,19 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
 
     #region constants
 
-    private static readonly Guid BdaExtensionPropertySet = new Guid(0xdf981009, 0x0d8a, 0x430e, 0xa8, 0x03, 0x17, 0xc5, 0x14, 0xdc, 0x8e, 0xc0);
-
     private const int InstanceSize = 32;    // The size of a property instance (KSP_NODE) parameter.
 
     private const int BdaExtensionParamsSize = 68;
     private const int MaxDiseqcMessageLength = 8;
+    private static readonly Guid BdaExtensionPropertySet = new Guid(0xdf981009, 0x0d8a, 0x430e, 0xa8, 0x03, 0x17, 0xc5, 0x14, 0xdc, 0x8e, 0xc0);
 
     #endregion
 
     #region variables
 
-    private bool _isGenpix = false;
     private IntPtr _generalBuffer = IntPtr.Zero;
     private IntPtr _instanceBuffer = IntPtr.Zero;
+    private bool _isGenpix = false;
     private IKsPropertySet _propertySet = null;
 
     #endregion
@@ -366,9 +376,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
       DVB_MMI.DumpBinary(_generalBuffer, 0, BdaExtensionParamsSize);
 
       int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.Tune,
-        _instanceBuffer, InstanceSize,
-        _generalBuffer, BdaExtensionParamsSize
-      );
+                                _instanceBuffer, InstanceSize,
+                                _generalBuffer, BdaExtensionParamsSize
+        );
       if (hr == 0)
       {
         this.LogDebug("Genpix: result = success");
@@ -427,9 +437,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
 
       Marshal.StructureToPtr(command, _generalBuffer, true);
       int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.Diseqc,
-        _instanceBuffer, InstanceSize,
-        _generalBuffer, BdaExtensionParamsSize
-      );
+                                _instanceBuffer, InstanceSize,
+                                _generalBuffer, BdaExtensionParamsSize
+        );
       if (hr == 0)
       {
         this.LogDebug("Genpix: result = success");
@@ -474,9 +484,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
 
       Marshal.StructureToPtr(message, _generalBuffer, true);
       int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.Diseqc,
-        _instanceBuffer, InstanceSize,
-        _generalBuffer, BdaExtensionParamsSize
-      );
+                                _instanceBuffer, InstanceSize,
+                                _generalBuffer, BdaExtensionParamsSize
+        );
       if (hr == 0)
       {
         this.LogDebug("Genpix: result = success");

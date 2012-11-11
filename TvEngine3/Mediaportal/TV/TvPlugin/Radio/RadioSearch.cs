@@ -44,64 +44,42 @@ namespace Mediaportal.TV.TvPlugin.Radio
   /// </summary>
   public class RadioSearch : GUIInternalWindow
   {
-
-
-    [SkinControl(2)] protected GUISortButtonControl btnSortBy = null;
-    [SkinControl(4)] protected GUIToggleButtonControl btnSearchByGenre = null;
-    [SkinControl(5)] protected GUIToggleButtonControl btnSearchByTitle = null;
-    [SkinControl(6)] protected GUIToggleButtonControl btnSearchByDescription = null;
+    [SkinControl(9)] protected GUISelectButtonControl btnEpisode = null;
     [SkinControl(7)] protected GUISelectButtonControl btnLetter = null;
     [SkinControl(19)] protected GUIButtonControl btnSMSInput = null;
-    [SkinControl(8)] protected GUISelectButtonControl btnShow = null;
-    [SkinControl(9)] protected GUISelectButtonControl btnEpisode = null;
-    [SkinControl(10)] protected GUIListControl listView = null;
-    [SkinControl(11)] protected GUIListControl titleView = null;
-    [SkinControl(12)] protected GUILabelControl lblNumberOfItems = null;
-    [SkinControl(13)] protected GUIFadeLabel lblProgramTitle = null;
-    [SkinControl(14)] protected GUILabelControl lblProgramTime = null;
-    [SkinControl(15)] protected GUITextScrollUpControl lblProgramDescription = null;
-    [SkinControl(16)] protected GUILabelControl lblChannel = null;
-    [SkinControl(17)] protected GUILabelControl lblProgramGenre = null;
-    [SkinControl(18)] protected GUIImage imgChannelLogo = null;
-    [SkinControl(20)] protected GUIButtonControl btnViewBy = null; // is replacing btnSearchByTitle, btnSearchByGenre
+    [SkinControl(6)] protected GUIToggleButtonControl btnSearchByDescription = null;
+    [SkinControl(4)] protected GUIToggleButtonControl btnSearchByGenre = null;
+    [SkinControl(5)] protected GUIToggleButtonControl btnSearchByTitle = null;
     [SkinControl(21)] protected GUIButtonControl btnSearchDescription = null; // is replacing btnSearchByDescription 
-
-    private DirectoryHistory history = new DirectoryHistory();
-
-    private enum SearchMode
-    {
-      Genre,
-      Title,
-      Description
-    }
-
-    private enum SortMethod
-    {
-      Auto,
-      Name,
-      Channel,
-      Date
-    }
-
-    private SortMethod currentSortMethod = SortMethod.Name;
+    [SkinControl(8)] protected GUISelectButtonControl btnShow = null;
+    [SkinControl(2)] protected GUISortButtonControl btnSortBy = null;
+    [SkinControl(20)] protected GUIButtonControl btnViewBy = null; // is replacing btnSearchByTitle, btnSearchByGenre
     private SortMethod chosenSortMethod = SortMethod.Auto;
-    private bool sortAscending = true;
-    private IList<ScheduleBLL> listRecordings;
-
-    private SearchMode currentSearchMode = SearchMode.Title;
-    private int currentLevel = 0;
     private string currentGenre = String.Empty;
+    private int currentLevel = 0;
+    private SearchMode currentSearchMode = SearchMode.Title;
+    private SortMethod currentSortMethod = SortMethod.Name;
+    private string filterEpisode = String.Empty;
     private string filterLetter = "A";
     private string filterShow = String.Empty;
-    private string filterEpisode = String.Empty;
-
-
-    private SearchMode prevcurrentSearchMode = SearchMode.Title;
-    private int prevcurrentLevel = 0;
+    private DirectoryHistory history = new DirectoryHistory();
+    [SkinControl(18)] protected GUIImage imgChannelLogo = null;
+    [SkinControl(16)] protected GUILabelControl lblChannel = null;
+    [SkinControl(12)] protected GUILabelControl lblNumberOfItems = null;
+    [SkinControl(15)] protected GUITextScrollUpControl lblProgramDescription = null;
+    [SkinControl(17)] protected GUILabelControl lblProgramGenre = null;
+    [SkinControl(14)] protected GUILabelControl lblProgramTime = null;
+    [SkinControl(13)] protected GUIFadeLabel lblProgramTitle = null;
+    private IList<ScheduleBLL> listRecordings;
+    [SkinControl(10)] protected GUIListControl listView = null;
     private string prevcurrentGenre = String.Empty;
+    private int prevcurrentLevel = 0;
+    private SearchMode prevcurrentSearchMode = SearchMode.Title;
+    private string prevfilterEpisode = String.Empty;
     private string prevfilterLetter = "a";
     private string prevfilterShow = String.Empty;
-    private string prevfilterEpisode = String.Empty;
+    private bool sortAscending = true;
+    [SkinControl(11)] protected GUIListControl titleView = null;
 
     #region Serialisation
 
@@ -109,9 +87,9 @@ namespace Mediaportal.TV.TvPlugin.Radio
     {
       using (Settings xmlreader = new MPSettings())
       {
-          currentSortMethod = (SortMethod)Enum.Parse(typeof(SortMethod), xmlreader.GetValueAsString("radiosearch", "cursortmethod", "Name"), true);
-           chosenSortMethod = (SortMethod)Enum.Parse(typeof(SortMethod), xmlreader.GetValueAsString("radiosearch", "chosortmethod", "Auto"), true);
-          currentSearchMode = (SearchMode)Enum.Parse(typeof(SearchMode), xmlreader.GetValueAsString("radiosearch", "searchmode", "Title"), true);
+        currentSortMethod = (SortMethod)Enum.Parse(typeof(SortMethod), xmlreader.GetValueAsString("radiosearch", "cursortmethod", "Name"), true);
+        chosenSortMethod = (SortMethod)Enum.Parse(typeof(SortMethod), xmlreader.GetValueAsString("radiosearch", "chosortmethod", "Auto"), true);
+        currentSearchMode = (SearchMode)Enum.Parse(typeof(SearchMode), xmlreader.GetValueAsString("radiosearch", "searchmode", "Title"), true);
       }
     }
 
@@ -1060,16 +1038,12 @@ namespace Mediaportal.TV.TvPlugin.Radio
       }
     }
 
-    #region Sort Members
-
     private void OnSort()
     {
       Comparer c = new Comparer(currentSortMethod, sortAscending);
       listView.Sort(c);
       titleView.Sort(c);
     }
-
-    #endregion
 
     private GUIListItem GetItem(int iItem)
     {
@@ -1438,6 +1412,8 @@ namespace Mediaportal.TV.TvPlugin.Radio
       return channels.ToDictionary(channel => channel.IdChannel);
     }
 
+    #region Nested type: Comparer
+
     private class Comparer : IComparer<GUIListItem>
     {
       private Dictionary<int, Channel> channelMap;
@@ -1453,6 +1429,9 @@ namespace Mediaportal.TV.TvPlugin.Radio
           channelMap = GetChannelMap();
         }
       }
+
+      #region IComparer<GUIListItem> Members
+
       public int Compare(GUIListItem item1, GUIListItem item2)
       {
         if (item1 == item2)
@@ -1527,7 +1506,34 @@ namespace Mediaportal.TV.TvPlugin.Radio
         }
         return iComp;
       }
+
+      #endregion
     }
+
+    #endregion
+
+    #region Nested type: SearchMode
+
+    private enum SearchMode
+    {
+      Genre,
+      Title,
+      Description
+    }
+
+    #endregion
+
+    #region Nested type: SortMethod
+
+    private enum SortMethod
+    {
+      Auto,
+      Name,
+      Channel,
+      Date
+    }
+
+    #endregion
   }
 
 

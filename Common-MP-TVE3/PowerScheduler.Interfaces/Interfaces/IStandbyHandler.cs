@@ -32,13 +32,13 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces.Interfaces
     bool DisAllowShutdown { get; }
 
     /// <summary>
-    /// Called when the user turns away from the system.
-    /// </summary>
-    void UserShutdownNow();
-
-    /// <summary>
     /// Description of the source that allows / disallows shutdown
     /// </summary>
     string HandlerName { get; }
+
+    /// <summary>
+    /// Called when the user turns away from the system.
+    /// </summary>
+    void UserShutdownNow();
   }
 }

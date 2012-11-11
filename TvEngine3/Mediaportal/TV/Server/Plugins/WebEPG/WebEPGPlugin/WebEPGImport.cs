@@ -42,8 +42,6 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
   [Interceptor("PluginExceptionInterceptor")]
   public class WebEPGImport : ITvServerPlugin, ITvServerPluginStartedAll, IWakeupHandler 
   {
-
-
     #region constants
 
     private const string _wakeupHandlerName = "WebEPGWakeupHandler";
@@ -52,8 +50,8 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
 
     #region variables
 
-    private bool _workerThreadRunning = false;
     private System.Timers.Timer _scheduleTimer;
+    private bool _workerThreadRunning = false;
 
     #endregion
 
@@ -67,6 +65,15 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
     #endregion
 
     #region properties
+
+    /// <summary>
+    /// returns if the plugin should only run on the master server
+    /// or also on slave servers
+    /// </summary>
+    public bool MasterOnly
+    {
+      get { return true; }
+    }
 
     /// <summary>
     /// returns the name of the plugin
@@ -90,15 +97,6 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
     public string Author
     {
       get { return "Arion_p - James"; }
-    }
-
-    /// <summary>
-    /// returns if the plugin should only run on the master server
-    /// or also on slave servers
-    /// </summary>
-    public bool MasterOnly
-    {
-      get { return true; }
     }
 
     #endregion
@@ -176,11 +174,6 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
       workerThread.Priority = ThreadPriority.Lowest;
       workerThread.Start(param);
     }
-
-    private class ThreadParams
-    {
-      public WebEPG.WebEPG.ShowProgressHandler showProgress;
-    } ;
 
     private void ThreadFunctionImportTVGuide(object aparam)
     {
@@ -289,7 +282,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
         if (ShouldRunNow())
         {
           this.LogInfo("WebEPGImporter: WebEPG schedule {0}:{1} is due: {2}:{3}",
-                   config.Hour, config.Minutes, DateTime.Now.Hour, DateTime.Now.Minute);
+                       config.Hour, config.Minutes, DateTime.Now.Hour, DateTime.Now.Minute);
           StartImport(null);
           config.LastRun = DateTime.Now;
           SettingsManagement.SaveSetting("webepgSchedule", config.SerializeAsString());
@@ -426,6 +419,11 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
       }
       return nextRun;
     }
+
+    private class ThreadParams
+    {
+      public WebEPG.WebEPG.ShowProgressHandler showProgress;
+    } ;
 
     #endregion
 

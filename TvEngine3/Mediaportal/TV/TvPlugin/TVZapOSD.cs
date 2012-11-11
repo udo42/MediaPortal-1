@@ -36,25 +36,29 @@ namespace Mediaportal.TV.TvPlugin
   /// 
   public class TvZapOsd : GUIInternalWindow
   {
-
-    [SkinControl(35)] protected GUILabelControl lblCurrentChannel = null;
-    [SkinControl(36)] protected GUITextControl lblOnTvNow = null;
-    [SkinControl(37)] protected GUITextControl lblOnTvNext = null;
-    [SkinControl(100)] protected GUILabelControl lblCurrentTime = null;
-    [SkinControl(101)] protected GUILabelControl lblStartTime = null;
-    [SkinControl(102)] protected GUILabelControl lblEndTime = null;
+    private string channelName = "";
+    private string channelNr = "";
+    private int idChannel;
     [SkinControl(39)] protected GUIImage imgRecIcon = null;
     [SkinControl(10)] protected GUIImage imgTvChannelLogo = null;
+    [SkinControl(35)] protected GUILabelControl lblCurrentChannel = null;
+    [SkinControl(100)] protected GUILabelControl lblCurrentTime = null;
+    [SkinControl(102)] protected GUILabelControl lblEndTime = null;
+    [SkinControl(37)] protected GUITextControl lblOnTvNext = null;
+    [SkinControl(36)] protected GUITextControl lblOnTvNow = null;
+    [SkinControl(101)] protected GUILabelControl lblStartTime = null;
     [SkinControl(38)] protected GUILabelControl lblZapToCannelNo = null;
 
 
     private bool m_bNeedRefresh = false;
     private DateTime m_dateTime = DateTime.Now;
-    private string channelName = "";
-    private string channelNr = "";
-    private int idChannel;
 
     private TVHome.ChannelErrorInfo m_lastError;
+
+    public TvZapOsd()
+    {
+      GetID = (int)Window.WINDOW_TVZAPOSD;
+    }
 
     public TVHome.ChannelErrorInfo LastError
     {
@@ -65,14 +69,15 @@ namespace Mediaportal.TV.TvPlugin
       }
     }
 
-    public TvZapOsd()
-    {
-      GetID = (int)Window.WINDOW_TVZAPOSD;
-    }
-
     public override bool IsTv
     {
       get { return true; }
+    }
+
+
+    public override bool SupportsDelayedLoad
+    {
+      get { return false; }
     }
 
     public override bool Init()
@@ -80,12 +85,6 @@ namespace Mediaportal.TV.TvPlugin
       bool bResult = Load(GUIGraphicsContext.Skin + @"\tvZAPOSD.xml");
       GetID = (int)Window.WINDOW_TVZAPOSD;
       return bResult;
-    }
-
-
-    public override bool SupportsDelayedLoad
-    {
-      get { return false; }
     }
 
     public override void Render(float timePassed)

@@ -40,12 +40,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
   /// </summary>
   public class DvbBaseScanning : IChannelScanCallBack, ITVScanning
   {
-
-
     #region variables
 
-    private ITsChannelScan _analyzer;
     private readonly TvCardDvbBase _card;
+    private ITsChannelScan _analyzer;
     private ManualResetEvent _event;
 
     #endregion
@@ -63,10 +61,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
 
     #endregion
 
+    #region ITVScanning Members
+
     /// <summary>
     /// Resets this instance.
     /// </summary>
     public void Reset() { }
+
+    #endregion
 
     #region IChannelScanCallBack member
 
@@ -99,7 +101,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         _card.Scan(0, channel);
 
         this.LogDebug("Scan: tuner locked:{0} signal:{1} quality:{2}", _card.IsTunerLocked, _card.SignalLevel,
-                          _card.SignalQuality);
+                      _card.SignalQuality);
 
         _analyzer = _card.StreamAnalyzer;
         if (_analyzer == null)
@@ -173,24 +175,24 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
             int unavailableInCountryCount;
             IntPtr unavailableInCountryBuffer;
             _analyzer.GetServiceDetail(i,
-                          out originalNetworkId, out transportStreamId, out serviceId,
-                          out serviceNamePtr, out providerNamePtr, out logicalChannelNumberPtr,
-                          out serviceType, out videoStreamCount, out audioStreamCount, out isHighDefinition, out isEncrypted, out isRunning, out pmtPid,
-                          out previousOriginalNetworkId, out previousTransportStreamId, out previousServiceId,
-                          out networkIdCount, out networkIdBuffer,
-                          out bouquetIdCount, out bouquetIdBuffer,
-                          out languageCount, out languageBuffer,
-                          out availableInCellCount, out availableInCellBuffer, out unavailableInCellCount, out unavailableInCellBuffer,
-                          out targetRegionCount, out targetRegionBuffer,
-                          out availableInCountryCount, out availableInCountryBuffer, out unavailableInCountryCount, out unavailableInCountryBuffer);
+                                       out originalNetworkId, out transportStreamId, out serviceId,
+                                       out serviceNamePtr, out providerNamePtr, out logicalChannelNumberPtr,
+                                       out serviceType, out videoStreamCount, out audioStreamCount, out isHighDefinition, out isEncrypted, out isRunning, out pmtPid,
+                                       out previousOriginalNetworkId, out previousTransportStreamId, out previousServiceId,
+                                       out networkIdCount, out networkIdBuffer,
+                                       out bouquetIdCount, out bouquetIdBuffer,
+                                       out languageCount, out languageBuffer,
+                                       out availableInCellCount, out availableInCellBuffer, out unavailableInCellCount, out unavailableInCellBuffer,
+                                       out targetRegionCount, out targetRegionBuffer,
+                                       out availableInCountryCount, out availableInCountryBuffer, out unavailableInCountryCount, out unavailableInCountryBuffer);
 
             string serviceName = DvbTextConverter.Convert(serviceNamePtr, "");
             string providerName = DvbTextConverter.Convert(providerNamePtr, "");
             string logicalChannelNumber = Marshal.PtrToStringAnsi(logicalChannelNumberPtr);
             this.LogDebug("{0}) {1,-32} provider = {2,-16}, LCN = {3,-7}, ONID = 0x{4:x4}, TSID = 0x{5:x4}, SID = 0x{6:x4}, PMT PID = 0x{7:x4}, previous ONID = 0x{8:x4}, previous TSID = 0x{9:x4}, previous SID = 0x{10:x4}",
-                            i + 1, serviceName, providerName, logicalChannelNumber, originalNetworkId, transportStreamId, serviceId, pmtPid, previousOriginalNetworkId, previousTransportStreamId, previousServiceId);
+                          i + 1, serviceName, providerName, logicalChannelNumber, originalNetworkId, transportStreamId, serviceId, pmtPid, previousOriginalNetworkId, previousTransportStreamId, previousServiceId);
             this.LogDebug("    type = {0}, video stream count = {1}, audio stream count = {2}, is high definition = {3}, is encrypted = {4}, is running = {5}",
-                            serviceType, videoStreamCount, audioStreamCount, isHighDefinition, isEncrypted, isRunning);
+                          serviceType, videoStreamCount, audioStreamCount, isHighDefinition, isEncrypted, isRunning);
 
             List<String> details = new List<String>();
             IntPtr name;
@@ -328,7 +330,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
           _analyzer.ScanNetwork();
 
           this.LogDebug("ScanNIT: tuner locked:{0} signal:{1} quality:{2}", _card.IsTunerLocked, _card.SignalLevel,
-                            _card.SignalQuality);
+                        _card.SignalQuality);
 
           // Start scanning, then wait for TsWriter to tell us that scanning is complete.
           _event = new ManualResetEvent(false);
@@ -367,9 +369,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
             int cellIdExtension;
             int plpId;
             _analyzer.GetMultiplexDetail(i,
-                          out originalNetworkId, out transportStreamId, out type,
-                          out frequency, out polarisation, out modulation, out symbolRate, out bandwidth, out innerFecRate, out rollOff,
-                          out longitude, out cellId, out cellIdExtension, out plpId);
+                                         out originalNetworkId, out transportStreamId, out type,
+                                         out frequency, out polarisation, out modulation, out symbolRate, out bandwidth, out innerFecRate, out rollOff,
+                                         out longitude, out cellId, out cellIdExtension, out plpId);
 
             DVBBaseChannel ch;
             if (type == 2)
@@ -513,24 +515,24 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
             int unavailableInCountryCount;
             IntPtr unavailableInCountryBuffer;
             _analyzer.GetServiceDetail(i,
-                          out originalNetworkId, out transportStreamId, out serviceId,
-                          out serviceNamePtr, out providerNamePtr, out logicalChannelNumberPtr,
-                          out serviceType, out videoStreamCount, out audioStreamCount, out isHighDefinition, out isEncrypted, out isRunning, out pmtPid,
-                          out previousOriginalNetworkId, out previousTransportStreamId, out previousServiceId,
-                          out networkIdCount, out networkIdBuffer,
-                          out bouquetIdCount, out bouquetIdBuffer,
-                          out languageCount, out languageBuffer,
-                          out availableInCellCount, out availableInCellBuffer, out unavailableInCellCount, out unavailableInCellBuffer,
-                          out targetRegionCount, out targetRegionBuffer,
-                          out availableInCountryCount, out availableInCountryBuffer, out unavailableInCountryCount, out unavailableInCountryBuffer);
+                                       out originalNetworkId, out transportStreamId, out serviceId,
+                                       out serviceNamePtr, out providerNamePtr, out logicalChannelNumberPtr,
+                                       out serviceType, out videoStreamCount, out audioStreamCount, out isHighDefinition, out isEncrypted, out isRunning, out pmtPid,
+                                       out previousOriginalNetworkId, out previousTransportStreamId, out previousServiceId,
+                                       out networkIdCount, out networkIdBuffer,
+                                       out bouquetIdCount, out bouquetIdBuffer,
+                                       out languageCount, out languageBuffer,
+                                       out availableInCellCount, out availableInCellBuffer, out unavailableInCellCount, out unavailableInCellBuffer,
+                                       out targetRegionCount, out targetRegionBuffer,
+                                       out availableInCountryCount, out availableInCountryBuffer, out unavailableInCountryCount, out unavailableInCountryBuffer);
 
             string serviceName = DvbTextConverter.Convert(serviceNamePtr, "");
             string providerName = DvbTextConverter.Convert(providerNamePtr, "");
             string logicalChannelNumber = Marshal.PtrToStringAnsi(logicalChannelNumberPtr);
             this.LogDebug("{0}) {1,-32} provider = {2,-16}, LCN = {3,-7}, ONID = 0x{4:x4}, TSID = 0x{5:x4}, SID = 0x{6:x4}, PMT PID = 0x{7:x4}, previous ONID = 0x{8:x4}, previous TSID = 0x{9:x4}, previous SID = 0x{10:x4}",
-                            i + 1, serviceName, providerName, logicalChannelNumber, originalNetworkId, transportStreamId, serviceId, pmtPid, previousOriginalNetworkId, previousTransportStreamId, previousServiceId);
+                          i + 1, serviceName, providerName, logicalChannelNumber, originalNetworkId, transportStreamId, serviceId, pmtPid, previousOriginalNetworkId, previousTransportStreamId, previousServiceId);
             this.LogDebug("    type = {0}, video stream count = {1}, audio stream count = {2}, is high definition = {3}, is encrypted = {4}, is running = {5}",
-                            serviceType, videoStreamCount, audioStreamCount, isHighDefinition, isEncrypted, isRunning);
+                          serviceType, videoStreamCount, audioStreamCount, isHighDefinition, isEncrypted, isRunning);
 
             List<String> details = new List<String>();
             IntPtr name;

@@ -33,8 +33,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
   /// </summary>
   public class DVBTeletext : ITeletext
   {
-
-
     #region constants
 
     private const int MIN_PAGE = 0x100;
@@ -64,16 +62,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
 
     #region variables
 
-    private readonly TeletextPageCache _pageCache = new TeletextPageCache();
-    private readonly TeletextPageRenderer _renderer = new TeletextPageRenderer();
     private readonly TeletextDecoder _decoder;
     private readonly FastTextDecoder _fastTextDecoder = new FastTextDecoder();
+    private readonly TeletextPageCache _pageCache = new TeletextPageCache();
+    private readonly TeletextPageRenderer _renderer = new TeletextPageRenderer();
     private readonly ToptextDecoder _topTextDecoder = new ToptextDecoder();
+    private readonly byte[] tmpBuffer = new byte[46];
 
     private int _currentPageNumber = 0x100;
     private int _currentSubPageNumber;
-
-    private readonly byte[] tmpBuffer = new byte[46];
 
     #endregion
 
@@ -211,6 +208,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
 
     #region properties
 
+    ///<summary>
+    /// Gets/Sets the fullscreen mode
+    ///</summary>
+    public bool FullscreenMode
+    {
+      get { return _renderer.FullscreenMode; }
+      set { _renderer.FullscreenMode = value; }
+    }
+
     /// <summary>
     /// Gets/Sets  the percentage of the maximum height for the font size
     /// </summary>
@@ -240,15 +246,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       set { _renderer.TransparentMode = value; }
     }
 
-    ///<summary>
-    /// Gets/Sets the fullscreen mode
-    ///</summary>
-    public bool FullscreenMode
-    {
-      get { return _renderer.FullscreenMode; }
-      set { _renderer.FullscreenMode = value; }
-    }
-
     #endregion
 
     #region public methods
@@ -273,16 +270,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
     }
 
     #endregion
-
-    /// <summary>
-    /// Clears the buffers and cache
-    /// </summary>
-    public void ClearBuffer()
-    {
-      _decoder.Clear();
-      _renderer.Clear();
-      _pageCache.Clear();
-    }
 
     /// <summary>
     /// returns the rotation time for the page.
@@ -406,6 +393,16 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
     public int NumberOfSubpages(int currentPageNumber)
     {
       return _pageCache.NumberOfSubpages(currentPageNumber);
+    }
+
+    /// <summary>
+    /// Clears the buffers and cache
+    /// </summary>
+    public void ClearBuffer()
+    {
+      _decoder.Clear();
+      _renderer.Clear();
+      _pageCache.Clear();
     }
 
     #endregion

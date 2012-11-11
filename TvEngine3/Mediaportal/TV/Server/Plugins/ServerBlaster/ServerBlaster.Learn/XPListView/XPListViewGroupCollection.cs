@@ -26,13 +26,20 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 {
   public class XPListViewGroupCollection : System.Collections.CollectionBase
   {
+    #region Delegates
+
     public delegate void GroupAddedEventHandler(object sender, ListViewGroupEventArgs e);
 
     public delegate void GroupRemovedEventHandler(object sender, ListViewGroupEventArgs e);
 
-    public event GroupAddedEventHandler GroupAdded;
-    public event GroupRemovedEventHandler GroupRemoved;
+    #endregion
+
     private XPListView _owner;
+
+    public XPListViewGroupCollection(XPListView owner)
+    {
+      _owner = owner;
+    }
 
     public XPListViewGroup this[int index]
     {
@@ -40,10 +47,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       set { List[index] = value; }
     }
 
-    public XPListViewGroupCollection(XPListView owner)
-    {
-      _owner = owner;
-    }
+    public event GroupAddedEventHandler GroupAdded;
+    public event GroupRemovedEventHandler GroupRemoved;
 
     public int Add(XPListViewGroup value)
     {
@@ -105,6 +110,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
   public class ListViewGroupEventArgs : EventArgs
   {
+    private XPListViewGroup mItem;
+
     public ListViewGroupEventArgs(XPListViewGroup item)
     {
       mItem = item;
@@ -115,7 +122,5 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       get { return mItem; }
       set { mItem = value; }
     }
-
-    private XPListViewGroup mItem;
   }
 }

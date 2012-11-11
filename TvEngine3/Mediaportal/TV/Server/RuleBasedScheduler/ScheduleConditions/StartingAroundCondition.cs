@@ -32,6 +32,8 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
       set { _deviationMins = value; }
     }
 
+    #region IScheduleCondition Members
+
     public IQueryable<Program> ApplyCondition(IQueryable<Program> baseQuery)
     {
       if (_aroundTime.HasValue && _deviationMins.HasValue)
@@ -46,6 +48,7 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
       // deviation +/- 10 mins
       // => starttime between 16.30 and 16.50
     }
- 
+
+    #endregion
   }
 }

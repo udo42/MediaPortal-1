@@ -29,9 +29,9 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
   {
     #region Variables
 
-    private string _site;
-    private int _pages;
     private int _bytes;
+    private int _pages;
+    private string _site;
     private TimeSpan _totalTime;
 
     #endregion

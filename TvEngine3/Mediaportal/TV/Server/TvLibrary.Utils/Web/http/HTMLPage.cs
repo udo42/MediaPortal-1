@@ -33,17 +33,16 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
   /// </summary>
   public class HTMLPage
   {
- 
     #region Variables
 
-    private string _strPageHead = string.Empty;
-    private string _strPageSource = string.Empty;
+    private InternetExplorer _IE;
+    private IHtmlCache _cache;
     private string _defaultEncode = "iso-8859-1";
-    private string _pageEncodingMessage = string.Empty;
     private string _encoding = string.Empty;
     private string _error;
-    private IHtmlCache _cache;
-    private InternetExplorer _IE;
+    private string _pageEncodingMessage = string.Empty;
+    private string _strPageHead = string.Empty;
+    private string _strPageSource = string.Empty;
 
     #endregion
 

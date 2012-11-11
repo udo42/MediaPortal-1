@@ -48,15 +48,16 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class CardDvbS : SectionSettings
   {
- 
     #region private classes
+
+    #region Nested type: SatelliteContext
 
     private class SatelliteContext : IComparable<SatelliteContext>
     {
-      public string SatelliteName;
-      public string Url;
       public string FileName;
       public Satellite Satellite;
+      public string SatelliteName;
+      public string Url;
 
       public SatelliteContext()
       {
@@ -71,6 +72,15 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         get { return System.IO.Path.GetFileNameWithoutExtension(FileName); }
       }
 
+      #region IComparable<SatelliteContext> Members
+
+      int IComparable<SatelliteContext>.CompareTo(SatelliteContext other)
+      {
+        return SatelliteName.CompareTo(other.SatelliteName);
+      }
+
+      #endregion
+
       public override string ToString()
       {
         return SatelliteName;
@@ -80,27 +90,22 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       {
         return SatelliteName.CompareTo(other.SatelliteName);
       }
-
-      #region IComparable<SatelliteContext> Members
-
-      int IComparable<SatelliteContext>.CompareTo(SatelliteContext other)
-      {
-        return SatelliteName.CompareTo(other.SatelliteName);
-      }
-
-      #endregion
     }
+
+    #endregion
+
+    #region Nested type: Transponder
 
     [Serializable]
     public class Transponder : IComparable<Transponder>
     {
       public int CarrierFrequency; // frequency
-      public Polarisation Polarisation; // polarisation 0=hori, 1=vert
-      public int SymbolRate; // symbol rate
-      public ModulationType Modulation = ModulationType.ModNotSet;
       public BinaryConvolutionCodeRate InnerFecRate = BinaryConvolutionCodeRate.RateNotSet;
+      public ModulationType Modulation = ModulationType.ModNotSet;
       public Pilot Pilot = Pilot.NotSet;
+      public Polarisation Polarisation; // polarisation 0=hori, 1=vert
       public RollOff Rolloff = RollOff.NotSet;
+      public int SymbolRate; // symbol rate
 
       public DVBSChannel toDVBSChannel
       {
@@ -119,6 +124,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         }
       }
 
+      #region IComparable<Transponder> Members
+
       public int CompareTo(Transponder other)
       {
         if (Polarisation < other.Polarisation)
@@ -136,6 +143,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return 0;
       }
 
+      #endregion
+
       public override string ToString()
       {
         return String.Format("{0} {1} {2} {3} {4}", CarrierFrequency, SymbolRate, Polarisation, Modulation, InnerFecRate);
@@ -144,17 +153,19 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     #endregion
 
+    #endregion
+
     #region variables
 
     private readonly int _cardNumber;
+    private bool _enableEvents;
+    private bool _ignoreCheckBoxCreateGroupsClickEvent;
+    private int _radioChannelsNew;
+    private int _radioChannelsUpdated;
     private List<Transponder> _transponders = new List<Transponder>();
 
     private int _tvChannelsNew;
-    private int _radioChannelsNew;
     private int _tvChannelsUpdated;
-    private int _radioChannelsUpdated;
-    private bool _enableEvents;
-    private bool _ignoreCheckBoxCreateGroupsClickEvent;
     private IUser _user;
 
     private CI_Menu_Dialog ciMenuDialog; // ci menu dialog object
@@ -681,32 +692,32 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         curBox = mpComboDiseqc[ctlIndex];
         curBox.Items.Clear();
         curBox.Items.AddRange(new object[] {
-            "None",
-            // Simple DiSEqC (burst)
-            "Simple A (tone burst)",
-            "Simple B (data burst)",
-            // DiSEqC 1.0
-            "Port A (option A, position A)",
-            "Port B (option A, position B)",
-            "Port C (option B, position A)",
-            "Port D (option B, position B)",
-            // DiSEqC 1.1+
-            "Port 1",
-            "Port 2",
-            "Port 3",
-            "Port 4",
-            "Port 5",
-            "Port 6",
-            "Port 7",
-            "Port 8",
-            "Port 9",
-            "Port 10",
-            "Port 11",
-            "Port 12",
-            "Port 13",
-            "Port 14",
-            "Port 15",
-            "Port 16"});
+                                             "None",
+                                             // Simple DiSEqC (burst)
+                                             "Simple A (tone burst)",
+                                             "Simple B (data burst)",
+                                             // DiSEqC 1.0
+                                             "Port A (option A, position A)",
+                                             "Port B (option A, position B)",
+                                             "Port C (option B, position A)",
+                                             "Port D (option B, position B)",
+                                             // DiSEqC 1.1+
+                                             "Port 1",
+                                             "Port 2",
+                                             "Port 3",
+                                             "Port 4",
+                                             "Port 5",
+                                             "Port 6",
+                                             "Port 7",
+                                             "Port 8",
+                                             "Port 9",
+                                             "Port 10",
+                                             "Port 11",
+                                             "Port 12",
+                                             "Port 13",
+                                             "Port 14",
+                                             "Port 15",
+                                             "Port 16"});
         curBox.SelectedIndex =
           Int32.Parse(ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue(String.Format("dvbs{0}DiSEqC{1}", _cardNumber, idx), "0").Value);
 
@@ -808,57 +819,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         ciMenuDialog.OnSectionActivated();
       }
     }
-
-    #region Scan handling
-
-    private void InitScanProcess()
-    {
-      // once completed reset to new beginning
-      switch (scanState)
-      {
-        case ScanState.Done:
-          scanState = ScanState.Initialized;
-          listViewStatus.Items.Clear();
-          SetControlStates();
-          return;
-
-        case ScanState.Initialized:
-         SaveSettings();
-          
-          Card card = ServiceAgents.Instance.CardServiceAgent.GetCardByDevicePath(ServiceAgents.Instance.ControllerServiceAgent.CardDevice(_cardNumber));
-          if (card.Enabled == false)
-          {
-            MessageBox.Show(this, "Tuner is disabled. Please enable the tuner before scanning.");
-            return;
-          }
-          if (!ServiceAgents.Instance.ControllerServiceAgent.IsCardPresent(card.IdCard))
-          {
-            MessageBox.Show(this, "Tuner is not found. Please make sure the tuner is present before scanning.");
-            return;
-          }
-          // Check if the card is locked for scanning.
-          IUser user;
-          if (ServiceAgents.Instance.ControllerServiceAgent.IsCardInUse(_cardNumber, out user))
-          {
-            MessageBox.Show(this,
-                            "Tuner is locked. Scanning is not possible at the moment. Perhaps you are using another part of a hybrid card?");
-            return;
-          }
-
-          StartScanThread();
-          break;
-
-        case ScanState.Scanning:
-          scanState = ScanState.Cancel;
-          SetControlStates();
-          break;
-
-        case ScanState.Cancel:
-          return;
-      }
-    }
-
-    #endregion
 
     private void mpButtonScanTv_Click(object sender, EventArgs e)
     {
@@ -1203,9 +1163,63 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private void CardDvbS_Load(object sender, EventArgs e) {}
 
+    #region Scan handling
+
+    private void InitScanProcess()
+    {
+      // once completed reset to new beginning
+      switch (scanState)
+      {
+        case ScanState.Done:
+          scanState = ScanState.Initialized;
+          listViewStatus.Items.Clear();
+          SetControlStates();
+          return;
+
+        case ScanState.Initialized:
+          SaveSettings();
+          
+          Card card = ServiceAgents.Instance.CardServiceAgent.GetCardByDevicePath(ServiceAgents.Instance.ControllerServiceAgent.CardDevice(_cardNumber));
+          if (card.Enabled == false)
+          {
+            MessageBox.Show(this, "Tuner is disabled. Please enable the tuner before scanning.");
+            return;
+          }
+          if (!ServiceAgents.Instance.ControllerServiceAgent.IsCardPresent(card.IdCard))
+          {
+            MessageBox.Show(this, "Tuner is not found. Please make sure the tuner is present before scanning.");
+            return;
+          }
+          // Check if the card is locked for scanning.
+          IUser user;
+          if (ServiceAgents.Instance.ControllerServiceAgent.IsCardInUse(_cardNumber, out user))
+          {
+            MessageBox.Show(this,
+                            "Tuner is locked. Scanning is not possible at the moment. Perhaps you are using another part of a hybrid card?");
+            return;
+          }
+
+          StartScanThread();
+          break;
+
+        case ScanState.Scanning:
+          scanState = ScanState.Cancel;
+          SetControlStates();
+          break;
+
+        case ScanState.Cancel:
+          return;
+      }
+    }
+
+    #endregion
+
     #endregion
 
     #region DiSEqC Motor tab
+
+    private DateTime _signalTimer = DateTime.MinValue;
+    private bool reentrant;
 
     private void SetupMotor()
     {
@@ -1272,7 +1286,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       //move motor west
       ServiceAgents.Instance.ControllerServiceAgent.DiSEqCDriveMotor(_cardNumber, DiseqcDirection.West,
-                                              (byte)(1 + comboBoxStepSize.SelectedIndex));
+                                                                     (byte)(1 + comboBoxStepSize.SelectedIndex));
       comboBox1_SelectedIndexChanged(null, null); //tune..;
     }
 
@@ -1357,7 +1371,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       //move motor east
       ServiceAgents.Instance.ControllerServiceAgent.DiSEqCDriveMotor(_cardNumber, DiseqcDirection.East,
-                                              (byte)(1 + comboBoxStepSize.SelectedIndex));
+                                                                     (byte)(1 + comboBoxStepSize.SelectedIndex));
       comboBox1_SelectedIndexChanged(null, null); //tune..
     }
 
@@ -1497,7 +1511,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       //move motor up
       ServiceAgents.Instance.ControllerServiceAgent.DiSEqCDriveMotor(_cardNumber, DiseqcDirection.Up,
-                                              (byte)(1 + comboBoxStepSize.SelectedIndex));
+                                                                     (byte)(1 + comboBoxStepSize.SelectedIndex));
     }
 
     private void buttonDown_Click(object sender, EventArgs e)
@@ -1508,7 +1522,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       //move motor up
       ServiceAgents.Instance.ControllerServiceAgent.DiSEqCDriveMotor(_cardNumber, DiseqcDirection.Down,
-                                              (byte)(1 + comboBoxStepSize.SelectedIndex));
+                                                                     (byte)(1 + comboBoxStepSize.SelectedIndex));
     }
 
     private void comboBoxStepSize_SelectedIndexChanged(object sender, EventArgs e)
@@ -1540,9 +1554,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
       ServiceAgents.Instance.SettingServiceAgent.SaveSetting("dvbs" + _cardNumber + "motorEnabled", checkBox1.Checked ? "yes" : "no");      
     }
-
-    private bool reentrant;
-    private DateTime _signalTimer = DateTime.MinValue;
 
     private void timer1_Tick(object sender, EventArgs e)
     {
@@ -1624,41 +1635,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       SetControlStates();
     }
 
-    #region LNB selection tab
-
-    private void mpLNB1_CheckedChanged(object sender, EventArgs e)
-    {
-      mpTransponder1.Visible = mpComboLnbType1.Visible = mpComboDiseqc1.Visible = mpLNB1.Checked;
-    }
-
-    private void mpLNB2_CheckedChanged(object sender, EventArgs e)
-    {
-      mpTransponder2.Visible = mpComboLnbType2.Visible = mpComboDiseqc2.Visible = mpLNB2.Checked;
-    }
-
-    private void mpLNB3_CheckedChanged(object sender, EventArgs e)
-    {
-      mpTransponder3.Visible = mpComboLnbType3.Visible = mpComboDiseqc3.Visible = mpLNB3.Checked;
-    }
-
-    private void mpLNB4_CheckedChanged(object sender, EventArgs e)
-    {
-      mpTransponder4.Visible = mpComboLnbType4.Visible = mpComboDiseqc4.Visible = mpLNB4.Checked;
-    }
-
-    private void checkEnableDVBS2_CheckedChanged(object sender, EventArgs e)
-    {
-      mpComboBoxPilot.Enabled = false;
-      mpComboBoxRollOff.Enabled = false;
-      if (checkBoxEnableDVBS2.Enabled && checkBoxEnableDVBS2.Checked && ActiveScanType != ScanTypes.Predefined)
-      {
-        mpComboBoxPilot.Enabled = true;
-        mpComboBoxRollOff.Enabled = true;
-      }
-    }
-
-    #endregion
-
     private void checkBoxCreateGroupsSat_CheckedChanged(object sender, EventArgs e)
     {
       if (_ignoreCheckBoxCreateGroupsClickEvent)
@@ -1684,6 +1660,85 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     }
 
     private void mpButtonManualScan_Click(object sender, EventArgs e) {}
+
+    private void StartScanThread()
+    {
+      Thread scanThread = new Thread(DoScan);
+      scanThread.Name = "DVB-S scan thread";
+      scanThread.Start();
+    }
+
+    private static Transponder ToTransonder(IChannel channel)
+    {
+      DVBSChannel ch = (DVBSChannel)channel;
+      Transponder t = new Transponder();
+      t.CarrierFrequency = Convert.ToInt32(ch.Frequency);
+      t.InnerFecRate = ch.InnerFecRate;
+      t.Modulation = ch.ModulationType;
+      t.Pilot = ch.Pilot;
+      t.Rolloff = ch.RollOff;
+      t.SymbolRate = ch.SymbolRate;
+      t.Polarisation = ch.Polarisation;
+      return t;
+    }
+
+    private DVBSChannel GetManualTuning()
+    {
+      DVBSChannel tuneChannel = new DVBSChannel();
+      tuneChannel.Frequency = Int32.Parse(textBoxFreq.Text);
+      tuneChannel.SymbolRate = Int32.Parse(textBoxSymbolRate.Text);
+      tuneChannel.Polarisation = (Polarisation)mpComboBoxPolarisation.SelectedIndex - 1;
+      tuneChannel.ModulationType = (ModulationType)mpComboBoxMod.SelectedIndex - 1;
+      tuneChannel.InnerFecRate = (BinaryConvolutionCodeRate)mpComboBoxInnerFecRate.SelectedIndex - 1;
+      if (checkBoxEnableDVBS2.Checked)
+      {
+        tuneChannel.Pilot = (Pilot)mpComboBoxPilot.SelectedIndex - 1;
+        tuneChannel.RollOff = (RollOff)mpComboBoxRollOff.SelectedIndex - 1;
+      }
+      else
+      {
+        tuneChannel.Pilot = Pilot.NotSet;
+        tuneChannel.RollOff = RollOff.NotSet;
+      }
+      return tuneChannel;
+    }
+
+    private void mpButtonSaveList_Click(object sender, EventArgs e)
+    {
+      SaveManualScanList();
+    }
+
+    private String SaveManualScanList()
+    {
+      _transponders.Sort();
+      String filePath = String.Format(@"{0}\TuningParameters\dvbs\Manual_Scans.{1}.xml", PathManager.GetDataPath,
+                                      DateTime.Now.ToString("yyyy-MM-dd"));
+      System.IO.TextWriter parFileXML = System.IO.File.CreateText(filePath);
+      XmlSerializer xmlSerializer = new XmlSerializer(typeof (List<Transponder>));
+      xmlSerializer.Serialize(parFileXML, _transponders);
+      parFileXML.Close();
+      Init();
+      return Path.GetFileNameWithoutExtension(filePath);
+    }
+
+    private void mpButtonScanSingleTP_Click(object sender, EventArgs e)
+    {
+      DVBSChannel tuneChannel = GetManualTuning();
+      Transponder t = ToTransonder(tuneChannel);
+      _transponders.Add(t);
+      StartScanThread();
+    }
+
+    private void checkBoxAdvancedTuning_CheckedChanged(object sender, EventArgs e)
+    {
+      mpGrpAdvancedTuning.Visible = checkBoxAdvancedTuning.Checked;
+      SetControlStates();
+    }
+
+    private void mpCombo_MouseHover(object sender, EventArgs e)
+    {
+      toolTip1.SetToolTip((Control)sender, ((MPComboBox)sender).SelectedItem.ToString());
+    }
 
     #region GUI handling
 
@@ -1804,83 +1859,39 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     #endregion
 
-    private void StartScanThread()
+    #region LNB selection tab
+
+    private void mpLNB1_CheckedChanged(object sender, EventArgs e)
     {
-      Thread scanThread = new Thread(DoScan);
-      scanThread.Name = "DVB-S scan thread";
-      scanThread.Start();
+      mpTransponder1.Visible = mpComboLnbType1.Visible = mpComboDiseqc1.Visible = mpLNB1.Checked;
     }
 
-    private static Transponder ToTransonder(IChannel channel)
+    private void mpLNB2_CheckedChanged(object sender, EventArgs e)
     {
-      DVBSChannel ch = (DVBSChannel)channel;
-      Transponder t = new Transponder();
-      t.CarrierFrequency = Convert.ToInt32(ch.Frequency);
-      t.InnerFecRate = ch.InnerFecRate;
-      t.Modulation = ch.ModulationType;
-      t.Pilot = ch.Pilot;
-      t.Rolloff = ch.RollOff;
-      t.SymbolRate = ch.SymbolRate;
-      t.Polarisation = ch.Polarisation;
-      return t;
+      mpTransponder2.Visible = mpComboLnbType2.Visible = mpComboDiseqc2.Visible = mpLNB2.Checked;
     }
 
-    private DVBSChannel GetManualTuning()
+    private void mpLNB3_CheckedChanged(object sender, EventArgs e)
     {
-      DVBSChannel tuneChannel = new DVBSChannel();
-      tuneChannel.Frequency = Int32.Parse(textBoxFreq.Text);
-      tuneChannel.SymbolRate = Int32.Parse(textBoxSymbolRate.Text);
-      tuneChannel.Polarisation = (Polarisation)mpComboBoxPolarisation.SelectedIndex - 1;
-      tuneChannel.ModulationType = (ModulationType)mpComboBoxMod.SelectedIndex - 1;
-      tuneChannel.InnerFecRate = (BinaryConvolutionCodeRate)mpComboBoxInnerFecRate.SelectedIndex - 1;
-      if (checkBoxEnableDVBS2.Checked)
+      mpTransponder3.Visible = mpComboLnbType3.Visible = mpComboDiseqc3.Visible = mpLNB3.Checked;
+    }
+
+    private void mpLNB4_CheckedChanged(object sender, EventArgs e)
+    {
+      mpTransponder4.Visible = mpComboLnbType4.Visible = mpComboDiseqc4.Visible = mpLNB4.Checked;
+    }
+
+    private void checkEnableDVBS2_CheckedChanged(object sender, EventArgs e)
+    {
+      mpComboBoxPilot.Enabled = false;
+      mpComboBoxRollOff.Enabled = false;
+      if (checkBoxEnableDVBS2.Enabled && checkBoxEnableDVBS2.Checked && ActiveScanType != ScanTypes.Predefined)
       {
-        tuneChannel.Pilot = (Pilot)mpComboBoxPilot.SelectedIndex - 1;
-        tuneChannel.RollOff = (RollOff)mpComboBoxRollOff.SelectedIndex - 1;
+        mpComboBoxPilot.Enabled = true;
+        mpComboBoxRollOff.Enabled = true;
       }
-      else
-      {
-        tuneChannel.Pilot = Pilot.NotSet;
-        tuneChannel.RollOff = RollOff.NotSet;
-      }
-      return tuneChannel;
     }
 
-    private void mpButtonSaveList_Click(object sender, EventArgs e)
-    {
-      SaveManualScanList();
-    }
-
-    private String SaveManualScanList()
-    {
-      _transponders.Sort();
-      String filePath = String.Format(@"{0}\TuningParameters\dvbs\Manual_Scans.{1}.xml", PathManager.GetDataPath,
-                                      DateTime.Now.ToString("yyyy-MM-dd"));
-      System.IO.TextWriter parFileXML = System.IO.File.CreateText(filePath);
-      XmlSerializer xmlSerializer = new XmlSerializer(typeof (List<Transponder>));
-      xmlSerializer.Serialize(parFileXML, _transponders);
-      parFileXML.Close();
-      Init();
-      return Path.GetFileNameWithoutExtension(filePath);
-    }
-
-    private void mpButtonScanSingleTP_Click(object sender, EventArgs e)
-    {
-      DVBSChannel tuneChannel = GetManualTuning();
-      Transponder t = ToTransonder(tuneChannel);
-      _transponders.Add(t);
-      StartScanThread();
-    }
-
-    private void checkBoxAdvancedTuning_CheckedChanged(object sender, EventArgs e)
-    {
-      mpGrpAdvancedTuning.Visible = checkBoxAdvancedTuning.Checked;
-      SetControlStates();
-    }
-
-    private void mpCombo_MouseHover(object sender, EventArgs e)
-    {
-      toolTip1.SetToolTip((Control)sender, ((MPComboBox)sender).SelectedItem.ToString());
-    }
+    #endregion
   }
 }

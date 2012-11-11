@@ -40,6 +40,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       _cardHandler = cardHandler;
     }
 
+    #region ITeletextManagement Members
+
     /// <summary>
     /// Returns if the card is grabbing teletext or not
     /// </summary>
@@ -327,5 +329,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         return -1;
       }
     }
+
+    #endregion
   }
 }

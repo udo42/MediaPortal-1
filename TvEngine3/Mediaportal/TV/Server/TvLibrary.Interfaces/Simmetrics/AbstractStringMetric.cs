@@ -29,6 +29,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Simmetrics
   ///</summary>
   public abstract class AbstractStringMetric : InterfaceStringMetric
   {
+    #region InterfaceStringMetric Members
+
     /// <summary>
     /// Short Descritpion
     /// </summary>
@@ -54,6 +56,24 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Simmetrics
       long timeAfter = (DateTime.Now.Ticks - 621355968000000000) / 10000;
       return timeAfter - timeBefore;
     }
+
+    /// <summary>
+    /// Return the similarty timing estimation
+    /// </summary>
+    /// <param name="s">Param1</param>
+    /// <param name="s1">Param2</param>
+    /// <returns>similarty timing estimation</returns>
+    public abstract float getSimilarityTimingEstimated(String s, String s1);
+
+    /// <summary>
+    /// Return the similarity
+    /// </summary>
+    /// <param name="s">Param1</param>
+    /// <param name="s1">Param2</param>
+    /// <returns>Similarity</returns>
+    public abstract float getSimilarity(String s, String s1);
+
+    #endregion
 
     /// <summary>
     /// Batch compare of string
@@ -88,21 +108,5 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Simmetrics
 
       return results;
     }
-
-    /// <summary>
-    /// Return the similarty timing estimation
-    /// </summary>
-    /// <param name="s">Param1</param>
-    /// <param name="s1">Param2</param>
-    /// <returns>similarty timing estimation</returns>
-    public abstract float getSimilarityTimingEstimated(String s, String s1);
-
-    /// <summary>
-    /// Return the similarity
-    /// </summary>
-    /// <param name="s">Param1</param>
-    /// <param name="s1">Param2</param>
-    /// <returns>Similarity</returns>
-    public abstract float getSimilarity(String s, String s1);
   }
 }

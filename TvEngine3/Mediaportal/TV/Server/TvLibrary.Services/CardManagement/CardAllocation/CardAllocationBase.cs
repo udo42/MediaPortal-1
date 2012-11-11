@@ -198,7 +198,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
           if (LogEnabled)
           {
             this.LogInfo("Controller:    card:{0} type:{1} is not available, tuned to different transponder",
-                     cardId, tvcard.Type);
+                         cardId, tvcard.Type);
           }
           checkTransponder = false;
         }

@@ -28,8 +28,6 @@ namespace Mediaportal.TV.TvPlugin.Teletext
 {
   public class TeletextPageRenderer
   {
-
-
     #region constructors
 
     public TeletextPageRenderer()
@@ -52,43 +50,23 @@ namespace Mediaportal.TV.TvPlugin.Teletext
 
     //regional stuff
     private readonly bool _isRegionalDKorNO;
+    private Color Transparent = new Color();
 
     private Font _fontTeletext;
 
-    private bool _hiddenMode = true;
-    private bool _transparentMode;
     private bool _fullscreenMode;
+    private bool _hiddenMode = true;
 
+    private int _pageRenderHeight = 540;
+    private int _pageRenderWidth = 720;
+    private int _percentageOfMaximumHeight = 100;
     private string _selectedPageText = "";
     private string _selectedSubPageText = "";
-
-    private int _pageRenderWidth = 720;
-    private int _pageRenderHeight = 540;
-    private int _percentageOfMaximumHeight = 100;
-
-    private Color Transparent = new Color();
+    private bool _transparentMode;
 
     #endregion
 
     #region enums
-
-    /// <summary>
-    /// Enumeration of all availabel colors in teletext
-    /// </summary>
-    private enum TextColors
-    {
-      None,
-      Black,
-      Red,
-      Green,
-      Yellow,
-      Blue,
-      Magenta,
-      Cyan,
-      White,
-      Trans1,
-      Trans2
-    }
 
     /// <summary>
     /// Enumeration of all possible attributes for a position in teletext
@@ -127,6 +105,24 @@ namespace Mediaportal.TV.TvPlugin.Teletext
       NewBackground,
       HoldMosaic,
       ReleaseMosaic
+    }
+
+    /// <summary>
+    /// Enumeration of all availabel colors in teletext
+    /// </summary>
+    private enum TextColors
+    {
+      None,
+      Black,
+      Red,
+      Green,
+      Yellow,
+      Blue,
+      Magenta,
+      Cyan,
+      White,
+      Trans1,
+      Trans2
     }
 
     #endregion

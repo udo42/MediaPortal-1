@@ -6,7 +6,7 @@ namespace Mediaportal.TV.Server.Plugins.Base
 {
   public class PluginExceptionInterceptor : IInterceptor
   {
-
+    #region IInterceptor Members
 
     public void Intercept(IInvocation invocation)
     {
@@ -20,5 +20,7 @@ namespace Mediaportal.TV.Server.Plugins.Base
         throw;
       }                                                            
     }
+
+    #endregion
   }
 }

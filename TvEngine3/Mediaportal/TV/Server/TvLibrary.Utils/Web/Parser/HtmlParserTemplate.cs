@@ -31,10 +31,10 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
   {
     #region Variables
 
-    [XmlAttribute("name")] public string Name;
-    [XmlAttribute("start")] public string Start;
     [XmlAttribute("end")] public string End;
+    [XmlAttribute("name")] public string Name;
     [XmlElement("SectionTemplate")] public HtmlSectionTemplate SectionTemplate;
+    [XmlAttribute("start")] public string Start;
 
     #endregion
   }

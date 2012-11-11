@@ -30,6 +30,11 @@ namespace Mediaportal.TV.Server.Plugins.Base.Interfaces
     #region  methods
 
     /// <summary>
+    /// returns the setup sections for display in SetupTv
+    /// </summary>
+    SectionSettings Setup { get; }
+
+    /// <summary>
     /// Starts the plugin
     /// </summary>
     void Start(IInternalControllerService controllerService);
@@ -38,11 +43,6 @@ namespace Mediaportal.TV.Server.Plugins.Base.Interfaces
     /// Stops the plugin
     /// </summary>
     void Stop();
-
-    /// <summary>
-    /// returns the setup sections for display in SetupTv
-    /// </summary>
-    SectionSettings Setup { get; }
 
     #endregion
   }

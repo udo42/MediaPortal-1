@@ -36,11 +36,11 @@ namespace WebEPG.MPCode
     //static string						_strFileName="";
     //static bool							_bChanged=false;
 
-    private string _rootName = "profile";
-    private Encoding _encoding = Encoding.UTF8;
-    private XmlDocument _doc = null;
-    private string _strFileName = "";
     private bool _bChanged = false;
+    private XmlDocument _doc = null;
+    private Encoding _encoding = Encoding.UTF8;
+    private string _rootName = "profile";
+    private string _strFileName = "";
 
     /// <summary>
     ///   Initializes a new instance of the Xml class by setting the <see cref="Profile.Name" /> to <see cref="Profile.DefaultName" />. </summary>
@@ -59,6 +59,15 @@ namespace WebEPG.MPCode
       }
       _strFileName = fileName;
     }
+
+    #region IDisposable Members
+
+    public void Dispose()
+    {
+      Save();
+    }
+
+    #endregion
 
     public void Clear()
     {
@@ -465,14 +474,5 @@ namespace WebEPG.MPCode
       root.RemoveChild(sectionNode);
       _bChanged = true;
     }
-
-    #region IDisposable Members
-
-    public void Dispose()
-    {
-      Save();
-    }
-
-    #endregion
   }
 }

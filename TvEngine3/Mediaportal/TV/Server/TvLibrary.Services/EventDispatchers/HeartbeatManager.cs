@@ -16,11 +16,11 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
     private const int HEARTBEAT_REQUEST_INTERVAL_SECS = 15;
     private const int HEARTBEAT_MAX_SECS_EXCEED_ALLOWED = 30;
 
-    private Thread _requestHeartBeatThread;
+    private static readonly ManualResetEvent _evtHeartbeatCtrl = new ManualResetEvent(false);
+    private readonly IDictionary<string, DateTime> _diconnectedHeartbeatUsers = new Dictionary<string, DateTime>();
+    private readonly object _disconnectedHeartbeatUsersLock = new object();
     private Thread _heartBeatMonitorThread;
-    private static readonly ManualResetEvent _evtHeartbeatCtrl = new ManualResetEvent(false);        
-    private readonly object _disconnectedHeartbeatUsersLock = new object();        
-    private readonly IDictionary<string, DateTime> _diconnectedHeartbeatUsers = new Dictionary<string, DateTime>();    
+    private Thread _requestHeartBeatThread;
 
     ~HeartbeatManager()
     {
@@ -42,24 +42,6 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
       //  this.LogInfo("HeartbeatManager: will not monitor parked user '{0}'", username);
      // }
     }
-
-    #region public methods
-    
-    public override void Start()
-    {
-      this.LogInfo("HeartbeatManager: start");
-      SetupHeartbeatThreads();      
-      EventService.UserDisconnectedFromService += UserDisconnectedFromService;
-    }
-
-    public override void Stop()
-    {
-      this.LogInfo("HeartbeatManager: stop");
-      StopHeartbeatThreads();
-      EventService.UserDisconnectedFromService -= UserDisconnectedFromService;
-    }
-
-    #endregion
 
     private void SetupHeartbeatThreads()
     {            
@@ -199,5 +181,22 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
       //#endif
     }
 
+    #region public methods
+    
+    public override void Start()
+    {
+      this.LogInfo("HeartbeatManager: start");
+      SetupHeartbeatThreads();      
+      EventService.UserDisconnectedFromService += UserDisconnectedFromService;
+    }
+
+    public override void Stop()
+    {
+      this.LogInfo("HeartbeatManager: stop");
+      StopHeartbeatThreads();
+      EventService.UserDisconnectedFromService -= UserDisconnectedFromService;
+    }
+
+    #endregion
   }
 }

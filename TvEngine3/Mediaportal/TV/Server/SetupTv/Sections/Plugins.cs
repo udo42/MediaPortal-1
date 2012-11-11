@@ -29,13 +29,15 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class Plugins : SectionSettings
   {
-    private readonly PluginLoaderSetupTv _loader;
-    private bool _needRestart;
-    private bool _ignoreEvents;
+    #region Delegates
 
     public delegate void ChangedEventHandler(object sender, EventArgs e);
 
-    public event ChangedEventHandler ChangedActivePlugins;
+    #endregion
+
+    private readonly PluginLoaderSetupTv _loader;
+    private bool _ignoreEvents;
+    private bool _needRestart;
 
 
     public Plugins(string name, PluginLoaderSetupTv loader)
@@ -44,6 +46,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       _loader = loader;
       InitializeComponent();
     }
+
+    public event ChangedEventHandler ChangedActivePlugins;
 
     public override void OnSectionActivated()
     {

@@ -50,6 +50,14 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     #region ITvServerPlugin implementation
 
     /// <summary>
+    /// Should this plugin run only on a master tvserver?
+    /// </summary>
+    public bool MasterOnly
+    {
+      get { return false; }
+    }
+
+    /// <summary>
     /// Called by the tvservice PluginLoader to start the PowerScheduler plugin
     /// </summary>
     /// <param name="controllerService">Reference to the tvservice's TVController</param>
@@ -72,14 +80,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     public string Author
     {
       get { return "micheloe"; }
-    }
-
-    /// <summary>
-    /// Should this plugin run only on a master tvserver?
-    /// </summary>
-    public bool MasterOnly
-    {
-      get { return false; }
     }
 
     /// <summary>

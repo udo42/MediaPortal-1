@@ -48,11 +48,11 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
 
     private readonly int _cardNumber;
+    private string _cardName;
+    private Configuration _configuration;
+    private string _devicePath;
     private bool _isScanning;
     private bool _stopScanning;
-    private string _cardName;
-    private string _devicePath;
-    private Configuration _configuration;
 
     public CardAnalog()
       : this("Analog") {}

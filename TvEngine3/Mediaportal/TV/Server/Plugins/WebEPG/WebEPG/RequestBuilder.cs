@@ -34,10 +34,10 @@ namespace WebEPG
     #region Variables
 
     private HTTPRequest _baseRequest;
-    private WorldDateTime _requestTime;
     private RequestData _data;
     private int _dayOffset;
     private int _offset;
+    private WorldDateTime _requestTime;
 
     #endregion
 

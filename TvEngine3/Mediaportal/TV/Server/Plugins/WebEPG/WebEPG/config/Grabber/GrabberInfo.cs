@@ -29,16 +29,16 @@ namespace WebEPG.config.Grabber
   {
     #region Variables
 
+    [XmlIgnore()] public string Country;
+    [XmlAttribute("availableDays")] public int GrabDays;
     [XmlIgnore()] public string GrabberID;
     [XmlIgnore()] public string GrabberName;
-    [XmlIgnore()] public string SiteDesc;
-    [XmlIgnore()] public string Country;
     [XmlAttribute("language")] public string Language;
-    [XmlAttribute("availableDays")] public int GrabDays;
-    [XmlAttribute("timezone")] public string TimeZone;
-    [XmlAttribute("version")] public string Version;
-    [XmlAttribute("treatErrorAsWarning")] public bool TreatErrorAsWarning;
     [XmlIgnore()] public bool Linked;
+    [XmlIgnore()] public string SiteDesc;
+    [XmlAttribute("timezone")] public string TimeZone;
+    [XmlAttribute("treatErrorAsWarning")] public bool TreatErrorAsWarning;
+    [XmlAttribute("version")] public string Version;
 
     #endregion
   }

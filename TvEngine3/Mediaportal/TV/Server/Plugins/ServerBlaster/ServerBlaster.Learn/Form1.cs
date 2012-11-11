@@ -34,20 +34,18 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
   /// </summary>
   public class Form1 : System.Windows.Forms.Form
   {
-   
-
     #region Form members
 
     #endregion Form members
 
     private System.Windows.Forms.Button buttonStart;
     private System.Windows.Forms.Button buttonTest;
-    private System.Windows.Forms.Timer timerLearn;
-    private System.Windows.Forms.PropertyGrid propertyGrid;
-    private System.Windows.Forms.ImageList imageList;
     private System.Windows.Forms.ColumnHeader columnButton;
-    private XPListView.XPListView listButtons;
     private System.ComponentModel.IContainer components;
+    private System.Windows.Forms.ImageList imageList;
+    private XPListView.XPListView listButtons;
+    private System.Windows.Forms.PropertyGrid propertyGrid;
+    private System.Windows.Forms.Timer timerLearn;
 
     public Form1()
     {
@@ -75,121 +73,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       }
       base.Dispose(disposing);
     }
-
-    #region Windows Form Designer generated code
-
-    /// <summary>
-    /// Required method for Designer support - do not modify
-    /// the contents of this method with the code editor.
-    /// </summary>
-    private void InitializeComponent()
-    {
-      this.components = new System.ComponentModel.Container();
-      this.imageList = new System.Windows.Forms.ImageList(this.components);
-      this.buttonStart = new System.Windows.Forms.Button();
-      this.buttonTest = new System.Windows.Forms.Button();
-      this.timerLearn = new System.Windows.Forms.Timer(this.components);
-      this.propertyGrid = new System.Windows.Forms.PropertyGrid();
-      this.listButtons = new XPListView.XPListView();
-      this.columnButton = new System.Windows.Forms.ColumnHeader();
-      this.SuspendLayout();
-      // 
-      // imageList
-      // 
-      this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
-      this.imageList.ImageSize = new System.Drawing.Size(16, 16);
-      this.imageList.TransparentColor = System.Drawing.Color.Transparent;
-      // 
-      // buttonStart
-      // 
-      this.buttonStart.Anchor =
-        ((System.Windows.Forms.AnchorStyles)
-         ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.buttonStart.Location = new System.Drawing.Point(8, 392);
-      this.buttonStart.Name = "buttonStart";
-      this.buttonStart.Size = new System.Drawing.Size(75, 23);
-      this.buttonStart.TabIndex = 1;
-      this.buttonStart.Text = "&Learn";
-      this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
-      // 
-      // buttonTest
-      // 
-      this.buttonTest.Anchor =
-        ((System.Windows.Forms.AnchorStyles)
-         ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-      this.buttonTest.Location = new System.Drawing.Point(144, 392);
-      this.buttonTest.Name = "buttonTest";
-      this.buttonTest.Size = new System.Drawing.Size(75, 23);
-      this.buttonTest.TabIndex = 6;
-      this.buttonTest.Text = "&Test";
-      this.buttonTest.Click += new System.EventHandler(this.buttonTest_Click);
-      // 
-      // timerLearn
-      // 
-      this.timerLearn.Interval = 1000;
-      this.timerLearn.Tick += new System.EventHandler(this.timerLearn_Tick);
-      // 
-      // propertyGrid
-      // 
-      this.propertyGrid.Anchor =
-        ((System.Windows.Forms.AnchorStyles)
-         (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-           | System.Windows.Forms.AnchorStyles.Right)));
-      this.propertyGrid.LineColor = System.Drawing.SystemColors.ScrollBar;
-      this.propertyGrid.Location = new System.Drawing.Point(224, 8);
-      this.propertyGrid.Name = "propertyGrid";
-      this.propertyGrid.PropertySort = System.Windows.Forms.PropertySort.Categorized;
-      this.propertyGrid.Size = new System.Drawing.Size(368, 408);
-      this.propertyGrid.TabIndex = 9;
-      this.propertyGrid.ToolbarVisible = false;
-      this.propertyGrid.PropertyValueChanged +=
-        new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
-      // 
-      // listButtons
-      // 
-      this.listButtons.Anchor =
-        ((System.Windows.Forms.AnchorStyles)
-         ((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-            | System.Windows.Forms.AnchorStyles.Left)
-           | System.Windows.Forms.AnchorStyles.Right)));
-      this.listButtons.Columns.AddRange(new System.Windows.Forms.ColumnHeader[]
-                                          {
-                                            this.columnButton
-                                          });
-      this.listButtons.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
-      this.listButtons.HideSelection = false;
-      this.listButtons.LabelEdit = true;
-      this.listButtons.Location = new System.Drawing.Point(8, 8);
-      this.listButtons.MultiSelect = false;
-      this.listButtons.Name = "listButtons";
-      this.listButtons.Size = new System.Drawing.Size(208, 376);
-      this.listButtons.SmallImageList = this.imageList;
-      this.listButtons.TabIndex = 0;
-      this.listButtons.UseCompatibleStateImageBehavior = false;
-      this.listButtons.View = System.Windows.Forms.View.Details;
-      this.listButtons.DoubleClick += new System.EventHandler(this.listButtons_DoubleClick);
-      this.listButtons.SelectedIndexChanged += new System.EventHandler(this.listButtons_SelectedIndexChanged);
-      // 
-      // columnButton
-      // 
-      this.columnButton.Text = "Button";
-      this.columnButton.Width = 175;
-      // 
-      // Form1
-      // 
-      this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
-      this.ClientSize = new System.Drawing.Size(600, 421);
-      this.Controls.Add(this.listButtons);
-      this.Controls.Add(this.propertyGrid);
-      this.Controls.Add(this.buttonTest);
-      this.Controls.Add(this.buttonStart);
-      this.Name = "Form1";
-      this.Text = "ServerBlaster Learn";
-      this.Load += new System.EventHandler(this.Form1_Load);
-      this.ResumeLayout(false);
-    }
-
-    #endregion
 
     /// <summary>
     /// The main entry point for the application.
@@ -698,15 +581,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       Save2();
     }
 
-    #region Members
-
-    private ListViewItem _selectedItem;
-    private int _timeoutRemaining;
-    private int _timeoutMax = 10;
-    public bool _gumboTest = false;
-
-    #endregion Members
-
     private void propertyGrid_PropertyValueChanged(object s, System.Windows.Forms.PropertyValueChangedEventArgs e)
     {
       if (_selectedItem == null) return;
@@ -840,5 +714,129 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
         Log.Write("Form1.LoadConfig: " + ex);
       }
     }
+
+    #region Members
+
+    public bool _gumboTest = false;
+    private ListViewItem _selectedItem;
+    private int _timeoutMax = 10;
+    private int _timeoutRemaining;
+
+    #endregion Members
+
+    #region Windows Form Designer generated code
+
+    /// <summary>
+    /// Required method for Designer support - do not modify
+    /// the contents of this method with the code editor.
+    /// </summary>
+    private void InitializeComponent()
+    {
+      this.components = new System.ComponentModel.Container();
+      this.imageList = new System.Windows.Forms.ImageList(this.components);
+      this.buttonStart = new System.Windows.Forms.Button();
+      this.buttonTest = new System.Windows.Forms.Button();
+      this.timerLearn = new System.Windows.Forms.Timer(this.components);
+      this.propertyGrid = new System.Windows.Forms.PropertyGrid();
+      this.listButtons = new XPListView.XPListView();
+      this.columnButton = new System.Windows.Forms.ColumnHeader();
+      this.SuspendLayout();
+      // 
+      // imageList
+      // 
+      this.imageList.ColorDepth = System.Windows.Forms.ColorDepth.Depth8Bit;
+      this.imageList.ImageSize = new System.Drawing.Size(16, 16);
+      this.imageList.TransparentColor = System.Drawing.Color.Transparent;
+      // 
+      // buttonStart
+      // 
+      this.buttonStart.Anchor =
+        ((System.Windows.Forms.AnchorStyles)
+         ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.buttonStart.Location = new System.Drawing.Point(8, 392);
+      this.buttonStart.Name = "buttonStart";
+      this.buttonStart.Size = new System.Drawing.Size(75, 23);
+      this.buttonStart.TabIndex = 1;
+      this.buttonStart.Text = "&Learn";
+      this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
+      // 
+      // buttonTest
+      // 
+      this.buttonTest.Anchor =
+        ((System.Windows.Forms.AnchorStyles)
+         ((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+      this.buttonTest.Location = new System.Drawing.Point(144, 392);
+      this.buttonTest.Name = "buttonTest";
+      this.buttonTest.Size = new System.Drawing.Size(75, 23);
+      this.buttonTest.TabIndex = 6;
+      this.buttonTest.Text = "&Test";
+      this.buttonTest.Click += new System.EventHandler(this.buttonTest_Click);
+      // 
+      // timerLearn
+      // 
+      this.timerLearn.Interval = 1000;
+      this.timerLearn.Tick += new System.EventHandler(this.timerLearn_Tick);
+      // 
+      // propertyGrid
+      // 
+      this.propertyGrid.Anchor =
+        ((System.Windows.Forms.AnchorStyles)
+         (((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+           | System.Windows.Forms.AnchorStyles.Right)));
+      this.propertyGrid.LineColor = System.Drawing.SystemColors.ScrollBar;
+      this.propertyGrid.Location = new System.Drawing.Point(224, 8);
+      this.propertyGrid.Name = "propertyGrid";
+      this.propertyGrid.PropertySort = System.Windows.Forms.PropertySort.Categorized;
+      this.propertyGrid.Size = new System.Drawing.Size(368, 408);
+      this.propertyGrid.TabIndex = 9;
+      this.propertyGrid.ToolbarVisible = false;
+      this.propertyGrid.PropertyValueChanged +=
+        new System.Windows.Forms.PropertyValueChangedEventHandler(this.propertyGrid_PropertyValueChanged);
+      // 
+      // listButtons
+      // 
+      this.listButtons.Anchor =
+        ((System.Windows.Forms.AnchorStyles)
+         ((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
+           | System.Windows.Forms.AnchorStyles.Right)));
+      this.listButtons.Columns.AddRange(new System.Windows.Forms.ColumnHeader[]
+                                          {
+                                            this.columnButton
+                                          });
+      this.listButtons.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+      this.listButtons.HideSelection = false;
+      this.listButtons.LabelEdit = true;
+      this.listButtons.Location = new System.Drawing.Point(8, 8);
+      this.listButtons.MultiSelect = false;
+      this.listButtons.Name = "listButtons";
+      this.listButtons.Size = new System.Drawing.Size(208, 376);
+      this.listButtons.SmallImageList = this.imageList;
+      this.listButtons.TabIndex = 0;
+      this.listButtons.UseCompatibleStateImageBehavior = false;
+      this.listButtons.View = System.Windows.Forms.View.Details;
+      this.listButtons.DoubleClick += new System.EventHandler(this.listButtons_DoubleClick);
+      this.listButtons.SelectedIndexChanged += new System.EventHandler(this.listButtons_SelectedIndexChanged);
+      // 
+      // columnButton
+      // 
+      this.columnButton.Text = "Button";
+      this.columnButton.Width = 175;
+      // 
+      // Form1
+      // 
+      this.AutoScaleBaseSize = new System.Drawing.Size(5, 13);
+      this.ClientSize = new System.Drawing.Size(600, 421);
+      this.Controls.Add(this.listButtons);
+      this.Controls.Add(this.propertyGrid);
+      this.Controls.Add(this.buttonTest);
+      this.Controls.Add(this.buttonStart);
+      this.Name = "Form1";
+      this.Text = "ServerBlaster Learn";
+      this.Load += new System.EventHandler(this.Form1_Load);
+      this.ResumeLayout(false);
+    }
+
+    #endregion
   }
 }

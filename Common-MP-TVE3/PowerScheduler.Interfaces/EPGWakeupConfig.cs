@@ -48,9 +48,9 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
   [Serializable]
   public class EPGWakeupConfig
   {
-    public DateTime LastRun = DateTime.MinValue;
     public List<EPGGrabDays> Days = new List<EPGGrabDays>();
     public int Hour;
+    public DateTime LastRun = DateTime.MinValue;
     public int Minutes;
 
     public EPGWakeupConfig() {}

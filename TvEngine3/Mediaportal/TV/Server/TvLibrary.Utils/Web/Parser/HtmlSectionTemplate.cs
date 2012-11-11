@@ -32,9 +32,9 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
   {
     #region Variables
 
+    [XmlArray("MatchList")] [XmlArrayItem("Match")] public List<HtmlSectionMatch> MatchValues;
     [XmlAttribute("tags")] public string Tags;
     [XmlElement("TemplateText")] public string Template;
-    [XmlArray("MatchList")] [XmlArrayItem("Match")] public List<HtmlSectionMatch> MatchValues;
 
     #endregion
   }

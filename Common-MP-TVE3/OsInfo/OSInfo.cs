@@ -28,118 +28,7 @@ namespace OSInfo
   /// </summary>
   public class OSInfo
   {
-    [StructLayout(LayoutKind.Sequential)]
-    private struct OSVERSIONINFOEX
-    {
-      public int dwOSVersionInfoSize;
-      public int dwMajorVersion;
-      public int dwMinorVersion;
-      public int dwBuildNumber;
-      public int dwPlatformId;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)] public string szCSDVersion;
-      public short wServicePackMajor;
-      public short wServicePackMinor;
-      public short wSuiteMask;
-      public byte wProductType;
-      public byte wReserved;
-    }
-
-    [DllImport("kernel32.dll")]
-    private static extern bool GetVersionEx(ref OSVERSIONINFOEX osVersionInfo);
-
-    [DllImport("kernel32.dll")]
-    private static extern bool GetProductInfo(
-      [In] int dwOSMajorVersion,
-      [In] int dwOSMinorVersion,
-      [In] int dwSpMajorVersion,
-      [In] int dwSpMinorVersion,
-      [Out] out int pdwReturnedProductType);
-
-    [DllImport("user32.dll")]
-    private static extern bool GetSystemMetrics([In] int nIndex);
-
-    #region Private Constants
-
-    //wProductType ( http://msdn.microsoft.com/en-us/library/ms724833(VS.85).aspx )
-    private const int NT_WORKSTATION = 1;
-    private const int NT_DOMAIN_CONTROLLER = 2;
-    private const int NT_SERVER = 3;
-
-    //SuiteMask ( http://msdn.microsoft.com/en-us/library/ms724833(VS.85).aspx )
-    private const int VER_SUITE_SMALLBUSINESS = 0x00000001;
-    private const int VER_SUITE_ENTERPRISE = 0x00000002;
-    private const int VER_SUITE_BACKOFFICE = 0x00000004;
-    private const int VER_SUITE_TERMINAL = 0x00000010;
-    private const int VER_SUITE_SMALLBUSINESS_RESTRICTED = 0x00000020;
-    private const int VER_SUITE_EMBEDDEDNT = 0x00000040;
-    private const int VER_SUITE_DATACENTER = 0x00000080;
-    private const int VER_SUITE_SINGLEUSERTS = 0x00000100;
-    private const int VER_SUITE_PERSONAL = 0x00000200;
-    private const int VER_SUITE_BLADE = 0x00000400;
-    private const int VER_SUITE_STORAGE_SERVER = 0x00002000;
-    private const int VER_SUITE_COMPUTE_SERV = 0x00004000;
-    private const int VER_SUITE_WH_SERVER = 0x00008000;
-
-    //ProductType ( http://msdn.microsoft.com/en-us/library/ms724358(VS.85).aspx )
-    private const int PRODUCT_BUSINESS = 0x00000006;
-    private const int PRODUCT_BUSINESS_N = 0x00000010;
-    private const int PRODUCT_CLUSTER_SERVER = 0x00000012;
-    private const int PRODUCT_DATACENTER_SERVER = 0x00000008;
-    private const int PRODUCT_DATACENTER_SERVER_CORE = 0x0000000C;
-    private const int PRODUCT_DATACENTER_SERVER_CORE_V = 0x00000027;
-    private const int PRODUCT_DATACENTER_SERVER_V = 0x00000025;
-    private const int PRODUCT_ENTERPRISE = 0x00000004;
-    private const int PRODUCT_ENTERPRISE_E = 0x00000046;
-    private const int PRODUCT_ENTERPRISE_N = 0x0000001B;
-    private const int PRODUCT_ENTERPRISE_SERVER = 0x0000000A;
-    private const int PRODUCT_ENTERPRISE_SERVER_CORE = 0x0000000E;
-    private const int PRODUCT_ENTERPRISE_SERVER_CORE_V = 0x00000029;
-    private const int PRODUCT_ENTERPRISE_SERVER_IA64 = 0x0000000F;
-    private const int PRODUCT_ENTERPRISE_SERVER_V = 0x00000026;
-    private const int PRODUCT_HOME_BASIC = 0x00000002;
-    private const int PRODUCT_HOME_BASIC_E = 0x00000043;
-    private const int PRODUCT_HOME_BASIC_N = 0x00000005;
-    private const int PRODUCT_HOME_PREMIUM = 0x00000003;
-    private const int PRODUCT_HOME_PREMIUM_E = 0x00000044;
-    private const int PRODUCT_HOME_PREMIUM_N = 0x0000001A;
-    private const int PRODUCT_HYPERV = 0x0000002A;
-    private const int PRODUCT_MEDIUMBUSINESS_SERVER_MANAGEMENT = 0x0000001E;
-    private const int PRODUCT_MEDIUMBUSINESS_SERVER_MESSAGING = 0x00000020;
-    private const int PRODUCT_MEDIUMBUSINESS_SERVER_SECURITY = 0x0000001F;
-    private const int PRODUCT_PROFESSIONAL = 0x00000030;
-    private const int PRODUCT_PROFESSIONAL_E = 0x00000045;
-    private const int PRODUCT_PROFESSIONAL_N = 0x00000031;
-    private const int PRODUCT_SERVER_FOR_SMALLBUSINESS = 0x00000018;
-    private const int PRODUCT_SERVER_FOR_SMALLBUSINESS_V = 0x00000023;
-    private const int PRODUCT_SERVER_FOUNDATION = 0x00000021;
-    private const int PRODUCT_SMALLBUSINESS_SERVER = 0x00000009;
-    private const int PRODUCT_STANDARD_SERVER = 0x00000007;
-    private const int PRODUCT_STANDARD_SERVER_CORE = 0x0000000D;
-    private const int PRODUCT_STANDARD_SERVER_CORE_V = 0x00000028;
-    private const int PRODUCT_STANDARD_SERVER_V = 0x00000024;
-    private const int PRODUCT_STARTER = 0x0000000B;
-    private const int PRODUCT_STARTER_E = 0x00000042;
-    private const int PRODUCT_STARTER_N = 0x0000002F;
-    private const int PRODUCT_STORAGE_ENTERPRISE_SERVER = 0x00000017;
-    private const int PRODUCT_STORAGE_EXPRESS_SERVER = 0x00000014;
-    private const int PRODUCT_STORAGE_STANDARD_SERVER = 0x00000015;
-    private const int PRODUCT_STORAGE_WORKGROUP_SERVER = 0x00000016;
-    private const int PRODUCT_UNDEFINED = 0x00000000;
-    private const int PRODUCT_ULTIMATE = 0x00000001;
-    private const int PRODUCT_ULTIMATE_E = 0x00000047;
-    private const int PRODUCT_ULTIMATE_N = 0x0000001C;
-    private const int PRODUCT_WEB_SERVER = 0x00000011;
-    private const int PRODUCT_WEB_SERVER_CORE = 0x0000001D;
-
-    //sysMetrics ( http://msdn.microsoft.com/en-us/library/ms724385(VS.85).aspx )
-    private const int SM_TABLETPC = 86;
-    private const int SM_MEDIACENTER = 87;
-    private const int SM_STARTER = 88;
-    private const int SM_SERVERR2 = 89;
-
-    #endregion
-
-    #region Operating System enum
+    #region OSList enum
 
     /// <summary>
     /// List of all operating systems
@@ -187,6 +76,25 @@ namespace OSInfo
     #endregion
 
     #region Public Methods
+
+    /// <summary>
+    /// List of available status of current OS
+    /// </summary>
+    public enum OsSupport
+    {
+      /// <summary>
+      /// Blocked: will cause an immediate exit of the program
+      /// </summary>
+      Blocked = 0,
+      /// <summary>
+      /// FullySupported: self explanatory
+      /// </summary>
+      FullySupported = 1,
+      /// <summary>
+      /// NotSupported: officially not supported, will log/display a warning
+      /// </summary>
+      NotSupported = 2
+    }
 
     /// <summary>
     /// Returns the product type of the operating system running on this computer.
@@ -547,25 +455,6 @@ namespace OSInfo
     }
 
     /// <summary>
-    /// List of available status of current OS
-    /// </summary>
-    public enum OsSupport
-    {
-      /// <summary>
-      /// Blocked: will cause an immediate exit of the program
-      /// </summary>
-      Blocked = 0,
-      /// <summary>
-      /// FullySupported: self explanatory
-      /// </summary>
-      FullySupported = 1,
-      /// <summary>
-      /// NotSupported: officially not supported, will log/display a warning
-      /// </summary>
-      NotSupported = 2
-    }
-
-    /// <summary>
     /// Return a numeric value rappresenting OS version
     /// </summary>
     /// <returns>(OSMajorVersion * 10 + OSMinorVersion)</returns>
@@ -700,6 +589,121 @@ namespace OSInfo
         if (!GetVersionEx(ref osVersionInfo)) return 0x0;
         return osVersionInfo.wProductType;
       }
+    }
+
+    #endregion
+
+    [DllImport("kernel32.dll")]
+    private static extern bool GetVersionEx(ref OSVERSIONINFOEX osVersionInfo);
+
+    [DllImport("kernel32.dll")]
+    private static extern bool GetProductInfo(
+      [In] int dwOSMajorVersion,
+      [In] int dwOSMinorVersion,
+      [In] int dwSpMajorVersion,
+      [In] int dwSpMinorVersion,
+      [Out] out int pdwReturnedProductType);
+
+    [DllImport("user32.dll")]
+    private static extern bool GetSystemMetrics([In] int nIndex);
+
+    #region Private Constants
+
+    //wProductType ( http://msdn.microsoft.com/en-us/library/ms724833(VS.85).aspx )
+    private const int NT_WORKSTATION = 1;
+    private const int NT_DOMAIN_CONTROLLER = 2;
+    private const int NT_SERVER = 3;
+
+    //SuiteMask ( http://msdn.microsoft.com/en-us/library/ms724833(VS.85).aspx )
+    private const int VER_SUITE_SMALLBUSINESS = 0x00000001;
+    private const int VER_SUITE_ENTERPRISE = 0x00000002;
+    private const int VER_SUITE_BACKOFFICE = 0x00000004;
+    private const int VER_SUITE_TERMINAL = 0x00000010;
+    private const int VER_SUITE_SMALLBUSINESS_RESTRICTED = 0x00000020;
+    private const int VER_SUITE_EMBEDDEDNT = 0x00000040;
+    private const int VER_SUITE_DATACENTER = 0x00000080;
+    private const int VER_SUITE_SINGLEUSERTS = 0x00000100;
+    private const int VER_SUITE_PERSONAL = 0x00000200;
+    private const int VER_SUITE_BLADE = 0x00000400;
+    private const int VER_SUITE_STORAGE_SERVER = 0x00002000;
+    private const int VER_SUITE_COMPUTE_SERV = 0x00004000;
+    private const int VER_SUITE_WH_SERVER = 0x00008000;
+
+    //ProductType ( http://msdn.microsoft.com/en-us/library/ms724358(VS.85).aspx )
+    private const int PRODUCT_BUSINESS = 0x00000006;
+    private const int PRODUCT_BUSINESS_N = 0x00000010;
+    private const int PRODUCT_CLUSTER_SERVER = 0x00000012;
+    private const int PRODUCT_DATACENTER_SERVER = 0x00000008;
+    private const int PRODUCT_DATACENTER_SERVER_CORE = 0x0000000C;
+    private const int PRODUCT_DATACENTER_SERVER_CORE_V = 0x00000027;
+    private const int PRODUCT_DATACENTER_SERVER_V = 0x00000025;
+    private const int PRODUCT_ENTERPRISE = 0x00000004;
+    private const int PRODUCT_ENTERPRISE_E = 0x00000046;
+    private const int PRODUCT_ENTERPRISE_N = 0x0000001B;
+    private const int PRODUCT_ENTERPRISE_SERVER = 0x0000000A;
+    private const int PRODUCT_ENTERPRISE_SERVER_CORE = 0x0000000E;
+    private const int PRODUCT_ENTERPRISE_SERVER_CORE_V = 0x00000029;
+    private const int PRODUCT_ENTERPRISE_SERVER_IA64 = 0x0000000F;
+    private const int PRODUCT_ENTERPRISE_SERVER_V = 0x00000026;
+    private const int PRODUCT_HOME_BASIC = 0x00000002;
+    private const int PRODUCT_HOME_BASIC_E = 0x00000043;
+    private const int PRODUCT_HOME_BASIC_N = 0x00000005;
+    private const int PRODUCT_HOME_PREMIUM = 0x00000003;
+    private const int PRODUCT_HOME_PREMIUM_E = 0x00000044;
+    private const int PRODUCT_HOME_PREMIUM_N = 0x0000001A;
+    private const int PRODUCT_HYPERV = 0x0000002A;
+    private const int PRODUCT_MEDIUMBUSINESS_SERVER_MANAGEMENT = 0x0000001E;
+    private const int PRODUCT_MEDIUMBUSINESS_SERVER_MESSAGING = 0x00000020;
+    private const int PRODUCT_MEDIUMBUSINESS_SERVER_SECURITY = 0x0000001F;
+    private const int PRODUCT_PROFESSIONAL = 0x00000030;
+    private const int PRODUCT_PROFESSIONAL_E = 0x00000045;
+    private const int PRODUCT_PROFESSIONAL_N = 0x00000031;
+    private const int PRODUCT_SERVER_FOR_SMALLBUSINESS = 0x00000018;
+    private const int PRODUCT_SERVER_FOR_SMALLBUSINESS_V = 0x00000023;
+    private const int PRODUCT_SERVER_FOUNDATION = 0x00000021;
+    private const int PRODUCT_SMALLBUSINESS_SERVER = 0x00000009;
+    private const int PRODUCT_STANDARD_SERVER = 0x00000007;
+    private const int PRODUCT_STANDARD_SERVER_CORE = 0x0000000D;
+    private const int PRODUCT_STANDARD_SERVER_CORE_V = 0x00000028;
+    private const int PRODUCT_STANDARD_SERVER_V = 0x00000024;
+    private const int PRODUCT_STARTER = 0x0000000B;
+    private const int PRODUCT_STARTER_E = 0x00000042;
+    private const int PRODUCT_STARTER_N = 0x0000002F;
+    private const int PRODUCT_STORAGE_ENTERPRISE_SERVER = 0x00000017;
+    private const int PRODUCT_STORAGE_EXPRESS_SERVER = 0x00000014;
+    private const int PRODUCT_STORAGE_STANDARD_SERVER = 0x00000015;
+    private const int PRODUCT_STORAGE_WORKGROUP_SERVER = 0x00000016;
+    private const int PRODUCT_UNDEFINED = 0x00000000;
+    private const int PRODUCT_ULTIMATE = 0x00000001;
+    private const int PRODUCT_ULTIMATE_E = 0x00000047;
+    private const int PRODUCT_ULTIMATE_N = 0x0000001C;
+    private const int PRODUCT_WEB_SERVER = 0x00000011;
+    private const int PRODUCT_WEB_SERVER_CORE = 0x0000001D;
+
+    //sysMetrics ( http://msdn.microsoft.com/en-us/library/ms724385(VS.85).aspx )
+    private const int SM_TABLETPC = 86;
+    private const int SM_MEDIACENTER = 87;
+    private const int SM_STARTER = 88;
+    private const int SM_SERVERR2 = 89;
+
+    #endregion
+
+    #region Nested type: OSVERSIONINFOEX
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct OSVERSIONINFOEX
+    {
+      public int dwOSVersionInfoSize;
+      public int dwMajorVersion;
+      public int dwMinorVersion;
+      public int dwBuildNumber;
+      public int dwPlatformId;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)] public string szCSDVersion;
+      public short wServicePackMajor;
+      public short wServicePackMinor;
+      public short wSuiteMask;
+      public byte wProductType;
+      public byte wReserved;
     }
 
     #endregion

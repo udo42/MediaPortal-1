@@ -30,6 +30,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Simmetrics
   /// </summary>
   public abstract class AbstractSubstitutionCost : InterfaceSubstitutionCost
   {
+    #region InterfaceSubstitutionCost Members
+
     /// <summary>
     /// Short Descritption
     /// </summary>
@@ -57,5 +59,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Simmetrics
     /// </summary>
     /// <returns>Minimum cost</returns>
     public abstract float getMinCost();
+
+    #endregion
   }
 }

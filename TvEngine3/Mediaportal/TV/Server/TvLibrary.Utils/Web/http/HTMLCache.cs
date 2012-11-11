@@ -78,19 +78,6 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     #region Public Methods
 
     /// <summary>
-    /// Initialises the WebCache.
-    /// </summary>
-    public void WebCacheInitialise()
-    {
-      if (!Directory.Exists(CACHE_DIR))
-      {
-        Directory.CreateDirectory(CACHE_DIR);
-      }
-
-      _initialised = true;
-    }
-
-    /// <summary>
     /// Deletes a cached page.
     /// </summary>
     /// <param name="pageUri">The page URI.</param>
@@ -141,6 +128,19 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     public string GetPage() //string strURL, string strEncode)
     {
       return _strPageSource;
+    }
+
+    /// <summary>
+    /// Initialises the WebCache.
+    /// </summary>
+    public void WebCacheInitialise()
+    {
+      if (!Directory.Exists(CACHE_DIR))
+      {
+        Directory.CreateDirectory(CACHE_DIR);
+      }
+
+      _initialised = true;
     }
 
     #endregion

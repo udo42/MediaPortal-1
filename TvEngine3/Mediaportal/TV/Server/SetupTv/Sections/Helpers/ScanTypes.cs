@@ -40,20 +40,20 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
   {
     private List<IChannel> _allNewChannels = new List<IChannel>();
 
+    public int newChannel = 0;
+    public int updChannel = 0;
+
+    public int updChannelSum = 0;
+
     public List<IChannel> newChannels
     {
       get { return _allNewChannels; }
     }
 
-    public int newChannel = 0;
-    public int updChannel = 0;
-
     public int newChannelSum
     {
       get { return _allNewChannels.Count; }
     }
-
-    public int updChannelSum = 0;
   }
 
   /// <summary>

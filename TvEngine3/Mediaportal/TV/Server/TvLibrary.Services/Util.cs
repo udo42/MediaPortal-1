@@ -34,7 +34,16 @@ namespace Mediaportal.TV.Server.TVLibrary
   /// </summary>
   public class Utils
   {
-  
+    #region Delegates
+
+    public delegate void UtilEventHandler(Process proc, bool waitForExit);
+
+    #endregion
+
+    private static char[] crypt = new char[10] {'G', 'D', 'J', 'S', 'I', 'B', 'T', 'P', 'W', 'Q'};
+
+    // singleton. Dont allow any instance of this class
+    private Utils() {}
 
     [DllImport("kernel32.dll")]
     private static extern bool GetDiskFreeSpaceEx(string lpDirectoryName, out UInt64 lpFreeBytesAvailable,
@@ -76,13 +85,6 @@ namespace Mediaportal.TV.Server.TVLibrary
 
     [DllImport("kernel32.dll", SetLastError = true)]
     private static extern bool CloseHandle(IntPtr hObject);
-
-    public delegate void UtilEventHandler(Process proc, bool waitForExit);
-
-    private static char[] crypt = new char[10] {'G', 'D', 'J', 'S', 'I', 'B', 'T', 'P', 'W', 'Q'};
-
-    // singleton. Dont allow any instance of this class
-    private Utils() {}
 
     public static string GetDriveSerial(string drive)
     {

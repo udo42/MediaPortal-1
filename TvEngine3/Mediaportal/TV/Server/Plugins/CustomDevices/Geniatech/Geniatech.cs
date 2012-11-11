@@ -37,6 +37,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
   {
     #region enums
 
+    #region Nested type: BdaExtensionProperty
+
     private new enum BdaExtensionProperty
     {
       /// For sending and receiving DiSEqC messages.
@@ -65,12 +67,20 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
       LnbPower
     }
 
+    #endregion
+
+    #region Nested type: GtPilot
+
     private enum GtPilot
     {
       Off = 0,
       On,
       Unknown               // (Not used...)
     }
+
+    #endregion
+
+    #region Nested type: GtRollOff
 
     private enum GtRollOff
     {
@@ -79,6 +89,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
       TwentyFive,           // 0.25
       ThirtyFive            // 0.35
     }
+
+    #endregion
 
     #endregion
 
@@ -229,9 +241,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
 
       Marshal.StructureToPtr(nbcParams, _paramBuffer, true);
       int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.NbcParams,
-        _instanceBuffer, InstanceSize,
-        _paramBuffer, NbcParamsSize
-      );
+                                _instanceBuffer, InstanceSize,
+                                _paramBuffer, NbcParamsSize
+        );
       if (hr != 0)
       {
         this.LogDebug("Geniatech: failed to set pilot and roll-off, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -275,9 +287,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
         Marshal.WriteInt32(_paramBuffer, 0, 0);
       }
       hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.LnbPower,
-        _instanceBuffer, InstanceSize,
-        _paramBuffer, sizeof(Int32)
-      );
+                            _instanceBuffer, InstanceSize,
+                            _paramBuffer, sizeof(Int32)
+        );
       if (hr == 0)
       {
         this.LogDebug("Geniatech: result = success");

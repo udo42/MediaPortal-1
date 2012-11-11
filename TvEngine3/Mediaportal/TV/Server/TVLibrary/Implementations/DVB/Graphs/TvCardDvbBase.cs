@@ -43,8 +43,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
   /// </summary>
   public abstract class TvCardDvbBase : TvCardBase, IDisposable, ITVCard
   {
-
-
     #region constants
 
     [ComImport, Guid("fc50bed6-fe38-42d3-b831-771690091a6e")]
@@ -54,45 +52,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
 
     #region variables
 
+    private readonly TimeShiftingEPGGrabber _timeshiftingEPGGrabber;
+
     /// <summary>
     /// Capture graph builder
     /// </summary>
     protected ICaptureGraphBuilder2 _capBuilder;
-
-    /// <summary>
-    /// ROT entry
-    /// </summary>
-    protected DsROTEntry _rotEntry;
-
-    /// <summary>
-    /// Network provider filter
-    /// </summary>
-    protected IBaseFilter _filterNetworkProvider;
-
-    /// <summary>
-    /// MPEG2 Demux filter
-    /// </summary>
-    protected IBaseFilter _filterMpeg2DemuxTif;
-
-    /// <summary>
-    /// Main inf tee
-    /// </summary>
-    protected IBaseFilter _infTee;
-
-    /// <summary>
-    /// Tuner filter
-    /// </summary>
-    protected IBaseFilter _filterTuner;
-
-    /// <summary>
-    /// Capture filter
-    /// </summary>
-    protected IBaseFilter _filterCapture;
-
-    /// <summary>
-    /// TIF filter
-    /// </summary>
-    protected IBaseFilter _filterTIF;
 
     /// <summary>
     /// Capture device
@@ -105,9 +70,24 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     protected BaseEpgGrabber _epgGrabberCallback;
 
     /// <summary>
-    /// Tuner statistics
+    /// Capture filter
     /// </summary>
-    protected List<IBDA_SignalStatistics> _tunerStatistics = new List<IBDA_SignalStatistics>();
+    protected IBaseFilter _filterCapture;
+
+    /// <summary>
+    /// MPEG2 Demux filter
+    /// </summary>
+    protected IBaseFilter _filterMpeg2DemuxTif;
+
+    /// <summary>
+    /// Network provider filter
+    /// </summary>
+    protected IBaseFilter _filterNetworkProvider;
+
+    /// <summary>
+    /// TIF filter
+    /// </summary>
+    protected IBaseFilter _filterTIF;
 
     /// <summary>
     /// TsWriter filter
@@ -115,9 +95,19 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     protected IBaseFilter _filterTsWriter;
 
     /// <summary>
-    /// EPG Grabber interface
+    /// Tuner filter
     /// </summary>
-    protected ITsEpgScanner _interfaceEpgGrabber;
+    protected IBaseFilter _filterTuner;
+
+    /// <summary>
+    /// Main inf tee
+    /// </summary>
+    protected IBaseFilter _infTee;
+
+    /// <summary>
+    /// Channel linkage scanner interface
+    /// </summary>
+    protected ITsChannelLinkageScanner _interfaceChannelLinkageScanner;
 
     /// <summary>
     /// Channel scan interface
@@ -125,21 +115,29 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     protected ITsChannelScan _interfaceChannelScan;
 
     /// <summary>
+    /// EPG Grabber interface
+    /// </summary>
+    protected ITsEpgScanner _interfaceEpgGrabber;
+
+    /// <summary>
     /// Internal Network provider instance
     /// </summary>
     protected IDvbNetworkProvider _interfaceNetworkProvider;
 
     /// <summary>
+    /// ROT entry
+    /// </summary>
+    protected DsROTEntry _rotEntry;
+
+    /// <summary>
+    /// Tuner statistics
+    /// </summary>
+    protected List<IBDA_SignalStatistics> _tunerStatistics = new List<IBDA_SignalStatistics>();
+
+    /// <summary>
     /// Indicates if the internal network provider is used
     /// </summary>
     protected bool _useInternalNetworkProvider;
-
-    /// <summary>
-    /// Channel linkage scanner interface
-    /// </summary>
-    protected ITsChannelLinkageScanner _interfaceChannelLinkageScanner;
-
-    private readonly TimeShiftingEPGGrabber _timeshiftingEPGGrabber;
 
     #endregion
 
@@ -160,6 +158,17 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     #endregion
 
     #region tuning & scanning
+
+    /// <summary>
+    /// Get the device's channel scanning interface.
+    /// </summary>
+    public override ITVScanning ScanningInterface
+    {
+      get
+      {
+        return new DvbBaseScanning(this);
+      }
+    }
 
     protected virtual void OnAfterTune(IChannel channel) { }
 
@@ -234,13 +243,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       {
         DVBTChannel dvbtChannel = channel as DVBTChannel;
         FrequencySettings fSettings = new FrequencySettings
-        {
-          Multiplier = 1000,
-          Frequency = (uint)(dvbtChannel.Frequency),
-          Bandwidth = (uint)dvbtChannel.Bandwidth,
-          Polarity = Polarisation.NotSet,
-          Range = (uint)undefinedValue
-        };
+                                        {
+                                          Multiplier = 1000,
+                                          Frequency = (uint)(dvbtChannel.Frequency),
+                                          Bandwidth = (uint)dvbtChannel.Bandwidth,
+                                          Polarity = Polarisation.NotSet,
+                                          Range = (uint)undefinedValue
+                                        };
         hr = _interfaceNetworkProvider.TuneDVBT(fSettings);
       }
       if (channel is DVBSChannel)
@@ -251,62 +260,62 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
           dvbsChannel.ModulationType = ModulationType.ModQpsk;
         }
         FrequencySettings fSettings = new FrequencySettings
-        {
-          Multiplier = 1000,
-          Frequency = (uint)dvbsChannel.Frequency,
-          Bandwidth = (uint)undefinedValue,
-          Polarity = dvbsChannel.Polarisation,
-          Range = (uint)undefinedValue
-        };
+                                        {
+                                          Multiplier = 1000,
+                                          Frequency = (uint)dvbsChannel.Frequency,
+                                          Bandwidth = (uint)undefinedValue,
+                                          Polarity = dvbsChannel.Polarisation,
+                                          Range = (uint)undefinedValue
+                                        };
         DigitalDemodulator2Settings dSettings = new DigitalDemodulator2Settings
-        {
-          InnerFECRate = dvbsChannel.InnerFecRate,
-          InnerFECMethod = FECMethod.MethodNotSet,
-          Modulation = dvbsChannel.ModulationType,
-          OuterFECMethod = FECMethod.MethodNotSet,
-          OuterFECRate = BinaryConvolutionCodeRate.RateNotSet,
-          Pilot = Pilot.NotSet,
-          RollOff = RollOff.NotSet,
-          SpectralInversion = SpectralInversion.NotSet,
-          SymbolRate = (uint)dvbsChannel.SymbolRate,
-          TransmissionMode = TransmissionMode.ModeNotSet
-        };
+                                                  {
+                                                    InnerFECRate = dvbsChannel.InnerFecRate,
+                                                    InnerFECMethod = FECMethod.MethodNotSet,
+                                                    Modulation = dvbsChannel.ModulationType,
+                                                    OuterFECMethod = FECMethod.MethodNotSet,
+                                                    OuterFECRate = BinaryConvolutionCodeRate.RateNotSet,
+                                                    Pilot = Pilot.NotSet,
+                                                    RollOff = RollOff.NotSet,
+                                                    SpectralInversion = SpectralInversion.NotSet,
+                                                    SymbolRate = (uint)dvbsChannel.SymbolRate,
+                                                    TransmissionMode = TransmissionMode.ModeNotSet
+                                                  };
         LnbInfoSettings lSettings = new LnbInfoSettings
-        {
-          LnbSwitchFrequency = (uint)dvbsChannel.LnbType.SwitchFrequency,
-          LowOscillator = (uint)dvbsChannel.LnbType.LowBandFrequency,
-          HighOscillator = (uint)dvbsChannel.LnbType.HighBandFrequency
-        };
+                                      {
+                                        LnbSwitchFrequency = (uint)dvbsChannel.LnbType.SwitchFrequency,
+                                        LowOscillator = (uint)dvbsChannel.LnbType.LowBandFrequency,
+                                        HighOscillator = (uint)dvbsChannel.LnbType.HighBandFrequency
+                                      };
         DiseqcSatelliteSettings sSettings = new DiseqcSatelliteSettings
-        {
-          ToneBurstEnabled = 0,
-          Diseq10Selection = LNB_Source.NOT_SET,
-          Diseq11Selection = DiseqC11Switches.Switch_NOT_SET,
-          Enabled = 0
-        };
+                                              {
+                                                ToneBurstEnabled = 0,
+                                                Diseq10Selection = LNB_Source.NOT_SET,
+                                                Diseq11Selection = DiseqC11Switches.Switch_NOT_SET,
+                                                Enabled = 0
+                                              };
         hr = _interfaceNetworkProvider.TuneDVBS(fSettings, dSettings, lSettings, sSettings);
       }
       if (channel is DVBCChannel)
       {
         DVBCChannel dvbcChannel = channel as DVBCChannel;
         FrequencySettings fSettings = new FrequencySettings
-        {
-          Multiplier = 1000,
-          Frequency = (uint)dvbcChannel.Frequency,
-          Bandwidth = (uint)undefinedValue,
-          Polarity = Polarisation.NotSet,
-          Range = (uint)undefinedValue
-        };
+                                        {
+                                          Multiplier = 1000,
+                                          Frequency = (uint)dvbcChannel.Frequency,
+                                          Bandwidth = (uint)undefinedValue,
+                                          Polarity = Polarisation.NotSet,
+                                          Range = (uint)undefinedValue
+                                        };
         DigitalDemodulatorSettings dSettings = new DigitalDemodulatorSettings
-        {
-          InnerFECRate = BinaryConvolutionCodeRate.RateNotSet,
-          InnerFECMethod = FECMethod.MethodNotSet,
-          Modulation = dvbcChannel.ModulationType,
-          OuterFECMethod = FECMethod.MethodNotSet,
-          OuterFECRate = BinaryConvolutionCodeRate.RateNotSet,
-          SpectralInversion = SpectralInversion.NotSet,
-          SymbolRate = (uint)dvbcChannel.SymbolRate
-        };
+                                                 {
+                                                   InnerFECRate = BinaryConvolutionCodeRate.RateNotSet,
+                                                   InnerFECMethod = FECMethod.MethodNotSet,
+                                                   Modulation = dvbcChannel.ModulationType,
+                                                   OuterFECMethod = FECMethod.MethodNotSet,
+                                                   OuterFECRate = BinaryConvolutionCodeRate.RateNotSet,
+                                                   SpectralInversion = SpectralInversion.NotSet,
+                                                   SymbolRate = (uint)dvbcChannel.SymbolRate
+                                                 };
 
         hr = _interfaceNetworkProvider.TuneDVBC(fSettings, dSettings);
       }
@@ -316,46 +325,46 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         if (atscChannel.ModulationType == ModulationType.Mod256Qam)
         {
           FrequencySettings fSettings = new FrequencySettings
-          {
-            Multiplier = 1000,
-            Frequency = (uint)atscChannel.Frequency,
-            Bandwidth = (uint)undefinedValue,
-            Polarity = Polarisation.NotSet,
-            Range = (uint)undefinedValue
-          };
+                                          {
+                                            Multiplier = 1000,
+                                            Frequency = (uint)atscChannel.Frequency,
+                                            Bandwidth = (uint)undefinedValue,
+                                            Polarity = Polarisation.NotSet,
+                                            Range = (uint)undefinedValue
+                                          };
           DigitalDemodulatorSettings dSettings = new DigitalDemodulatorSettings
-          {
-            InnerFECRate = BinaryConvolutionCodeRate.RateNotSet,
-            InnerFECMethod = FECMethod.MethodNotSet,
-            Modulation = atscChannel.ModulationType,
-            OuterFECMethod = FECMethod.MethodNotSet,
-            OuterFECRate = BinaryConvolutionCodeRate.RateNotSet,
-            SpectralInversion = SpectralInversion.NotSet,
-            SymbolRate = (uint)undefinedValue
-          };
+                                                   {
+                                                     InnerFECRate = BinaryConvolutionCodeRate.RateNotSet,
+                                                     InnerFECMethod = FECMethod.MethodNotSet,
+                                                     Modulation = atscChannel.ModulationType,
+                                                     OuterFECMethod = FECMethod.MethodNotSet,
+                                                     OuterFECRate = BinaryConvolutionCodeRate.RateNotSet,
+                                                     SpectralInversion = SpectralInversion.NotSet,
+                                                     SymbolRate = (uint)undefinedValue
+                                                   };
 
           hr = _interfaceNetworkProvider.TuneATSC((uint)undefinedValue, fSettings, dSettings);
         }
         else
         {
           FrequencySettings fSettings = new FrequencySettings
-          {
-            Multiplier = (uint)undefinedValue,
-            Frequency = (uint)undefinedValue,
-            Bandwidth = (uint)undefinedValue,
-            Polarity = Polarisation.NotSet,
-            Range = (uint)undefinedValue
-          };
+                                          {
+                                            Multiplier = (uint)undefinedValue,
+                                            Frequency = (uint)undefinedValue,
+                                            Bandwidth = (uint)undefinedValue,
+                                            Polarity = Polarisation.NotSet,
+                                            Range = (uint)undefinedValue
+                                          };
           DigitalDemodulatorSettings dSettings = new DigitalDemodulatorSettings
-          {
-            InnerFECRate = BinaryConvolutionCodeRate.RateNotSet,
-            InnerFECMethod = FECMethod.MethodNotSet,
-            Modulation = atscChannel.ModulationType,
-            OuterFECMethod = FECMethod.MethodNotSet,
-            OuterFECRate = BinaryConvolutionCodeRate.RateNotSet,
-            SpectralInversion = SpectralInversion.NotSet,
-            SymbolRate = (uint)undefinedValue
-          };
+                                                   {
+                                                     InnerFECRate = BinaryConvolutionCodeRate.RateNotSet,
+                                                     InnerFECMethod = FECMethod.MethodNotSet,
+                                                     Modulation = atscChannel.ModulationType,
+                                                     OuterFECMethod = FECMethod.MethodNotSet,
+                                                     OuterFECRate = BinaryConvolutionCodeRate.RateNotSet,
+                                                     SpectralInversion = SpectralInversion.NotSet,
+                                                     SymbolRate = (uint)undefinedValue
+                                                   };
 
           hr = _interfaceNetworkProvider.TuneATSC((uint)undefinedValue, fSettings, dSettings);
         }
@@ -364,24 +373,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       if (hr != 0)
       {
         this.LogDebug("dvb:SubmitTuneRequest  returns:0x{0:X} - {1}{2}", hr, HResult.GetDXErrorString(hr),
-                          HResult.GetDXErrorString(hr));
+                      HResult.GetDXErrorString(hr));
         //remove subchannel.
         /*if (newSubChannel)
             {
             _mapSubChannels.Remove(subChannelId);
             }*/
         throw new TvException("Unable to tune to channel");
-      }
-    }
-
-    /// <summary>
-    /// Get the device's channel scanning interface.
-    /// </summary>
-    public override ITVScanning ScanningInterface
-    {
-      get
-      {
-        return new DvbBaseScanning(this);
       }
     }
 
@@ -1306,9 +1304,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       try
       {
         if (!GraphRunning() ||
-          CurrentChannel == null ||
-          _tunerStatistics == null ||
-          _tunerStatistics.Count == 0)
+            CurrentChannel == null ||
+            _tunerStatistics == null ||
+            _tunerStatistics.Count == 0)
         {
           //System.Diagnostics.Debugger.Launch();
           _tunerLocked = false;
@@ -1413,27 +1411,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
 
     #region Channel linkage handling
 
-    private static bool SameAsPortalChannel(PortalChannel pChannel, LinkedChannel lChannel)
-    {
-      return ((pChannel.NetworkId == lChannel.NetworkId) && (pChannel.TransportId == lChannel.TransportId) &&
-              (pChannel.ServiceId == lChannel.ServiceId));
-    }
-
-    private static bool IsNewLinkedChannel(PortalChannel pChannel, LinkedChannel lChannel)
-    {
-      bool bRet = true;
-      foreach (LinkedChannel lchan in pChannel.LinkedChannels)
-      {
-        if ((lchan.NetworkId == lChannel.NetworkId) && (lchan.TransportId == lChannel.TransportId) &&
-            (lchan.ServiceId == lChannel.ServiceId))
-        {
-          bRet = false;
-          break;
-        }
-      }
-      return bRet;
-    }
-
     /// <summary>
     /// Starts scanning for linkage info
     /// </summary>
@@ -1509,6 +1486,27 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       }
     }
 
+    private static bool SameAsPortalChannel(PortalChannel pChannel, LinkedChannel lChannel)
+    {
+      return ((pChannel.NetworkId == lChannel.NetworkId) && (pChannel.TransportId == lChannel.TransportId) &&
+              (pChannel.ServiceId == lChannel.ServiceId));
+    }
+
+    private static bool IsNewLinkedChannel(PortalChannel pChannel, LinkedChannel lChannel)
+    {
+      bool bRet = true;
+      foreach (LinkedChannel lchan in pChannel.LinkedChannels)
+      {
+        if ((lchan.NetworkId == lChannel.NetworkId) && (lchan.TransportId == lChannel.TransportId) &&
+            (lchan.ServiceId == lChannel.ServiceId))
+        {
+          bRet = false;
+          break;
+        }
+      }
+      return bRet;
+    }
+
     #endregion
 
     #region EPG
@@ -1535,37 +1533,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     {
       if (_timeshiftingEPGGrabber.StartGrab())
         GrabEpg(_timeshiftingEPGGrabber);
-    }
-
-    /// <summary>
-    /// Activates / deactivates the epg grabber
-    /// </summary>
-    /// <param name="value">Mode</param>
-    protected override void UpdateEpgGrabber(bool value)
-    {
-      if (_epgGrabbing && value == false)
-      {
-        if (_epgGrabberCallback != null)
-        {
-          _epgGrabberCallback.OnEpgCancelled();
-        }
-        _interfaceEpgGrabber.Reset();
-      }
-      _epgGrabbing = value;
-    }
-
-    /// <summary>
-    /// Gets the UTC.
-    /// </summary>
-    /// <param name="val">The val.</param>
-    /// <returns></returns>
-    private static int getUTC(int val)
-    {
-      if ((val & 0xF0) >= 0xA0)
-        return 0;
-      if ((val & 0xF) >= 0xA)
-        return 0;
-      return ((val & 0xF0) >> 4) * 10 + (val & 0xF);
     }
 
     /// <summary>
@@ -1841,6 +1808,37 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
           return new List<EpgChannel>();
         }
       }
+    }
+
+    /// <summary>
+    /// Activates / deactivates the epg grabber
+    /// </summary>
+    /// <param name="value">Mode</param>
+    protected override void UpdateEpgGrabber(bool value)
+    {
+      if (_epgGrabbing && value == false)
+      {
+        if (_epgGrabberCallback != null)
+        {
+          _epgGrabberCallback.OnEpgCancelled();
+        }
+        _interfaceEpgGrabber.Reset();
+      }
+      _epgGrabbing = value;
+    }
+
+    /// <summary>
+    /// Gets the UTC.
+    /// </summary>
+    /// <param name="val">The val.</param>
+    /// <returns></returns>
+    private static int getUTC(int val)
+    {
+      if ((val & 0xF0) >= 0xA0)
+        return 0;
+      if ((val & 0xF) >= 0xA)
+        return 0;
+      return ((val & 0xF0) >> 4) * 10 + (val & 0xF);
     }
 
     /// <summary>

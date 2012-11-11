@@ -11,6 +11,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {
     }
 
+    #region IRecordingService Members
+
     public Recording GetRecording(int idRecording)
     {
       return _channel.GetRecording(idRecording);
@@ -51,5 +53,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {
       _channel.DeleteRecording(idRecording);
     }
+
+    #endregion
   }
 }

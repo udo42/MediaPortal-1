@@ -7,11 +7,10 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         private static readonly object syncLock = new object();
         private static ObjectContextInitializer instance;
 
-        protected ObjectContextInitializer() { }
+      private bool isInitialized = false;
+      protected ObjectContextInitializer() { }
 
-        private bool isInitialized = false;
-
-        public static ObjectContextInitializer Instance()
+      public static ObjectContextInitializer Instance()
         {
             if (instance == null) {
                 lock (syncLock) {

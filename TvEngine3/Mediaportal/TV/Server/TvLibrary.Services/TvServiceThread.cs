@@ -20,19 +20,17 @@ namespace Mediaportal.TV.Server.TVLibrary
 {
   public class TvServiceThread : IPowerEventHandler
   {
-  
-
     #region variables
 
-    private Thread _tvServiceThread;
-    private bool _priorityApplied;
-    private readonly ManualResetEvent _tvServiceThreadEvt = new ManualResetEvent(false);
-    private readonly EventWaitHandle _initializedEvent;
     private static bool _started;
+    private readonly string _applicationPath;
+    private readonly EventWaitHandle _initializedEvent;
     private readonly List<PowerEventHandler> _powerEventHandlers;
+    private readonly ManualResetEvent _tvServiceThreadEvt = new ManualResetEvent(false);
     private PluginLoader _plugins;
     private List<ITvServerPlugin> _pluginsStarted = new List<ITvServerPlugin>();
-    private readonly string _applicationPath;
+    private bool _priorityApplied;
+    private Thread _tvServiceThread;
 
     #endregion
 
@@ -99,18 +97,6 @@ namespace Mediaportal.TV.Server.TVLibrary
     private Thread _powerEventThread;
     private uint _powerEventThreadId;
 
-    [StructLayout(LayoutKind.Sequential)]
-    private struct MSG
-    {
-      public IntPtr hwnd;
-      public int message;
-      public IntPtr wParam;
-      public IntPtr lParam;
-      public int time;
-      public int pt_x;
-      public int pt_y;
-    }
-
     [DllImport("user32.dll", CharSet = CharSet.Ansi, ExactSpelling = true)]
     private static extern bool GetMessageA([In, Out] ref MSG msg, IntPtr hWnd, int uMsgFilterMin, int uMsgFilterMax);
 
@@ -132,46 +118,11 @@ namespace Mediaportal.TV.Server.TVLibrary
     [DllImport("kernel32.dll")]
     private static extern uint GetCurrentThreadId();
 
-    private delegate IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
-    private struct WNDCLASS
-    {
-      public uint style;
-      public WndProc lpfnWndProc;
-      public int cbClsExtra;
-      public int cbWndExtra;
-      public IntPtr hInstance;
-      public IntPtr hIcon;
-      public IntPtr hCursor;
-      public IntPtr hbrBackground;
-      public string lpszMenuName;
-      public string lpszClassName;
-    }
-
     [DllImport("user32", CharSet = CharSet.Auto)]
     private static extern int RegisterClass(ref WNDCLASS wndclass);
 
     [DllImport("user32.dll")]
     private static extern IntPtr DefWindowProc(IntPtr hWnd, uint Msg, IntPtr wParam, IntPtr lParam);
-
-    #region WndProc message constants
-
-    private const int WM_QUIT = 0x0012;
-    private const int WM_POWERBROADCAST = 0x0218;
-    private const int PBT_APMQUERYSUSPEND = 0x0000;
-    private const int PBT_APMQUERYSTANDBY = 0x0001;
-    private const int PBT_APMQUERYSUSPENDFAILED = 0x0002;
-    private const int PBT_APMQUERYSTANDBYFAILED = 0x0003;
-    private const int PBT_APMSUSPEND = 0x0004;
-    private const int PBT_APMSTANDBY = 0x0005;
-    private const int PBT_APMRESUMECRITICAL = 0x0006;
-    private const int PBT_APMRESUMESUSPEND = 0x0007;
-    private const int PBT_APMRESUMESTANDBY = 0x0008;
-    private const int PBT_APMRESUMEAUTOMATIC = 0x0012;
-    private const int BROADCAST_QUERY_DENY = 0x424D5144;
-
-    #endregion
 
     private IntPtr PowerEventThreadWndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam)
     {
@@ -279,6 +230,65 @@ namespace Mediaportal.TV.Server.TVLibrary
         this.LogDebug("TV service PowerEventThread finished");
       }
     }
+
+    #region WndProc message constants
+
+    private const int WM_QUIT = 0x0012;
+    private const int WM_POWERBROADCAST = 0x0218;
+    private const int PBT_APMQUERYSUSPEND = 0x0000;
+    private const int PBT_APMQUERYSTANDBY = 0x0001;
+    private const int PBT_APMQUERYSUSPENDFAILED = 0x0002;
+    private const int PBT_APMQUERYSTANDBYFAILED = 0x0003;
+    private const int PBT_APMSUSPEND = 0x0004;
+    private const int PBT_APMSTANDBY = 0x0005;
+    private const int PBT_APMRESUMECRITICAL = 0x0006;
+    private const int PBT_APMRESUMESUSPEND = 0x0007;
+    private const int PBT_APMRESUMESTANDBY = 0x0008;
+    private const int PBT_APMRESUMEAUTOMATIC = 0x0012;
+    private const int BROADCAST_QUERY_DENY = 0x424D5144;
+
+    #endregion
+
+    #region Nested type: MSG
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct MSG
+    {
+      public IntPtr hwnd;
+      public int message;
+      public IntPtr wParam;
+      public IntPtr lParam;
+      public int time;
+      public int pt_x;
+      public int pt_y;
+    }
+
+    #endregion
+
+    #region Nested type: WNDCLASS
+
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Auto)]
+    private struct WNDCLASS
+    {
+      public uint style;
+      public WndProc lpfnWndProc;
+      public int cbClsExtra;
+      public int cbWndExtra;
+      public IntPtr hInstance;
+      public IntPtr hIcon;
+      public IntPtr hCursor;
+      public IntPtr hbrBackground;
+      public string lpszMenuName;
+      public string lpszClassName;
+    }
+
+    #endregion
+
+    #region Nested type: WndProc
+
+    private delegate IntPtr WndProc(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+
+    #endregion
 
     #endregion
 

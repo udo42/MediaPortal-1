@@ -31,8 +31,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
   /// </summary>
   public class VideoEncoderControl : BaseControl
   {
-
-
     #region variable
 
     /// <summary>
@@ -54,7 +52,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
     {
       _videoEncoder = videoEncoder;
       this.LogDebug("analog: IVideoEncoder supported by: " +
-                        FilterGraphTools.GetFilterName(_videoEncoder as IBaseFilter) + "; Checking capabilities ");
+                    FilterGraphTools.GetFilterName(_videoEncoder as IBaseFilter) + "; Checking capabilities ");
       CheckCapabilities();
     }
 

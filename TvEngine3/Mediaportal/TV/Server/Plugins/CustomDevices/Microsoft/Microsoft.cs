@@ -48,25 +48,19 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
 
     #region variables
 
-    private bool _isMicrosoft = false;
-
-    // DiSEqC
-    private IKsPropertySet _diseqcPropertySet = null;           // IBDA_DiseqCommand
-    private uint _requestId = 1;                                // Unique request ID for raw DiSEqC commands.
-    private IBDA_FrequencyFilter _oldDiseqcInterface = null;    // IBDA_FrequencyFilter
-    private IBDA_DeviceControl _deviceControl = null;
     private List<byte[]> _commands = new List<byte[]>();        // A cache of commands.
-    private bool _useToneBurst = false;
-
-    // Annex C QAM (North American cable)
-    private IKsPropertySet _qamPropertySet = null;
-
-    // PID filter
-    private IMPEG2PIDMap _pidFilterInterface = null;
     private HashSet<UInt16> _currentPids = new HashSet<UInt16>();
+    private IBDA_DeviceControl _deviceControl = null;
+    private IKsPropertySet _diseqcPropertySet = null;           // IBDA_DiseqCommand
 
     private IntPtr _instanceBuffer = IntPtr.Zero;
+    private bool _isMicrosoft = false;
+    private IBDA_FrequencyFilter _oldDiseqcInterface = null;    // IBDA_FrequencyFilter
     private IntPtr _paramBuffer = IntPtr.Zero;
+    private IMPEG2PIDMap _pidFilterInterface = null;
+    private IKsPropertySet _qamPropertySet = null;
+    private uint _requestId = 1;                                // Unique request ID for raw DiSEqC commands.
+    private bool _useToneBurst = false;
 
     #endregion
 
@@ -307,7 +301,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
           }
         }
       }
-      // For ATSC tuners: check if clear QAM tuning is supported.
+        // For ATSC tuners: check if clear QAM tuning is supported.
       else if (tunerType == CardType.Atsc)
       {
         _qamPropertySet = CheckQamTuningSupport(tunerFilter);
@@ -596,10 +590,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
       // IBDA_DiseqCommand interface (so we want to use the simpler LNB source property if possible).
       int portNumber = -1;
       if (command.Length == 4 &&
-        (command[0] == (byte)DiseqcFrame.CommandFirstTransmissionNoReply ||
-        command[0] == (byte)DiseqcFrame.CommandRepeatTransmissionNoReply) &&
-        command[1] == (byte)DiseqcAddress.AnySwitch &&
-        command[2] == (byte)DiseqcCommand.WriteN0)
+          (command[0] == (byte)DiseqcFrame.CommandFirstTransmissionNoReply ||
+           command[0] == (byte)DiseqcFrame.CommandRepeatTransmissionNoReply) &&
+          command[1] == (byte)DiseqcAddress.AnySwitch &&
+          command[2] == (byte)DiseqcCommand.WriteN0)
       {
         portNumber = (command[3] & 0xc) >> 2;
         this.LogDebug("Microsoft: DiSEqC 1.0 command recognised for port {0}", portNumber);
@@ -679,7 +673,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
           }
         }
       }
-      // IBDA_FrequencyFilter interface
+        // IBDA_FrequencyFilter interface
       else if (_oldDiseqcInterface != null)
       {
         // The two rightmost bytes encode option and position respectively.

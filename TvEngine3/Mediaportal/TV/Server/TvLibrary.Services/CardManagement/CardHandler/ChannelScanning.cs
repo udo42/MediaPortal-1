@@ -42,6 +42,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       _cardHandler = cardHandler;
     }
 
+    #region IChannelScanning Members
+
     /// <summary>
     /// Returns if the card is scanning or not
     /// </summary>
@@ -128,5 +130,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         return null;
       }
     }
+
+    #endregion
   }
 }

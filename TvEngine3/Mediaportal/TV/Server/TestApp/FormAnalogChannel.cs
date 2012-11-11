@@ -29,8 +29,8 @@ namespace Mediaportal.TV.Server.TestApp
 {
   public partial class FormAnalogChannel : Form
   {
-    private AnalogChannel _channel = new AnalogChannel();
     private readonly CountryCollection countries = new CountryCollection();
+    private AnalogChannel _channel = new AnalogChannel();
 
     public FormAnalogChannel()
     {

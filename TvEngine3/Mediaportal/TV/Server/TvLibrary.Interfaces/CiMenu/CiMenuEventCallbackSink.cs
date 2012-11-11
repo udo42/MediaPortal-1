@@ -9,6 +9,16 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.CiMenu
   /// </summary>
   public abstract class CiMenuEventCallbackSink : ICiMenuEventCallback
   {
+    #region ICiMenuEventCallback Members
+
+    /// <summary>
+    /// Client overrides this method to receive the callback events from the server
+    /// </summary>
+    /// <param name="menu">a CiMenu object</param>
+    public abstract void CiMenuCallback(CiMenu menu);
+
+    #endregion
+
     /// <summary>
     /// Called by the server to fire the call back to the client
     /// </summary>
@@ -18,11 +28,5 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.CiMenu
       //Console.WriteLine("Activating callback");
       CiMenuCallback(menu);
     }
-
-    /// <summary>
-    /// Client overrides this method to receive the callback events from the server
-    /// </summary>
-    /// <param name="menu">a CiMenu object</param>
-    public abstract void CiMenuCallback(CiMenu menu);
   }
 }

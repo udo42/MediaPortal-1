@@ -16,182 +16,195 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
     [DataContract(IsReference = true)]
     public partial class ScheduleRulesTemplate: IObjectWithChangeTracker, INotifyPropertyChanged
     {
-        #region Primitive Properties
-    
-        [DataMember]
-        public int IdScheduleRulesTemplate
-        {
-            get { return _idScheduleRulesTemplate; }
-            set
-            {
-                if (_idScheduleRulesTemplate != value)
-                {
-                    if (ChangeTracker.ChangeTrackingEnabled && ChangeTracker.State != ObjectState.Added)
-                    {
-                        throw new InvalidOperationException("The property 'IdScheduleRulesTemplate' is part of the object's key and cannot be changed. Changes to key properties can only be made when the object is not being tracked or is in the Added state.");
-                    }
-                    _idScheduleRulesTemplate = value;
-                    OnPropertyChanged("IdScheduleRulesTemplate");
-                }
-            }
-        }
-        private int _idScheduleRulesTemplate;
-    
-        [DataMember]
-        public string Name
-        {
-            get { return _name; }
-            set
-            {
-                if (_name != value)
-                {
-                    _name = value;
-                    OnPropertyChanged("Name");
-                }
-            }
-        }
-        private string _name;
-    
-        [DataMember]
-        public string Rules
-        {
-            get { return _rules; }
-            set
-            {
-                if (_rules != value)
-                {
-                    _rules = value;
-                    OnPropertyChanged("Rules");
-                }
-            }
-        }
-        private string _rules;
-    
-        [DataMember]
-        public bool Enabled
-        {
-            get { return _enabled; }
-            set
-            {
-                if (_enabled != value)
-                {
-                    _enabled = value;
-                    OnPropertyChanged("Enabled");
-                }
-            }
-        }
-        private bool _enabled;
-    
-        [DataMember]
-        public int Usages
-        {
-            get { return _usages; }
-            set
-            {
-                if (_usages != value)
-                {
-                    _usages = value;
-                    OnPropertyChanged("Usages");
-                }
-            }
-        }
-        private int _usages;
-    
-        [DataMember]
-        public bool Editable
-        {
-            get { return _editable; }
-            set
-            {
-                if (_editable != value)
-                {
-                    _editable = value;
-                    OnPropertyChanged("Editable");
-                }
-            }
-        }
-        private bool _editable;
+      #region Primitive Properties
 
-        #endregion
-        #region ChangeTracking
-    
-        protected virtual void OnPropertyChanged(String propertyName)
-        {
-            if (ChangeTracker.State != ObjectState.Added && ChangeTracker.State != ObjectState.Deleted)
-            {
-                ChangeTracker.State = ObjectState.Modified;
-            }
-            if (_propertyChanged != null)
-            {
-                _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-    
-        protected virtual void OnNavigationPropertyChanged(String propertyName)
-        {
-            if (_propertyChanged != null)
-            {
-                _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-    
-        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged{ add { _propertyChanged += value; } remove { _propertyChanged -= value; } }
-        private event PropertyChangedEventHandler _propertyChanged;
-        private ObjectChangeTracker _changeTracker;
-    
-        [DataMember]
-        public ObjectChangeTracker ChangeTracker
-        {
-            get
-            {
-                if (_changeTracker == null)
-                {
-                    _changeTracker = new ObjectChangeTracker();
-                    _changeTracker.ObjectStateChanging += HandleObjectStateChanging;
-                }
-                return _changeTracker;
-            }
-            set
-            {
-                if(_changeTracker != null)
-                {
-                    _changeTracker.ObjectStateChanging -= HandleObjectStateChanging;
-                }
-                _changeTracker = value;
-                if(_changeTracker != null)
-                {
-                    _changeTracker.ObjectStateChanging += HandleObjectStateChanging;
-                }
-            }
-        }
-    
-        private void HandleObjectStateChanging(object sender, ObjectStateChangingEventArgs e)
-        {
-            if (e.NewState == ObjectState.Deleted)
-            {
-                ClearNavigationProperties();
-            }
-        }
-    
-        protected bool IsDeserializing { get; private set; }
-    
-        [OnDeserializing]
-        public void OnDeserializingMethod(StreamingContext context)
-        {
-            IsDeserializing = true;
-        }
-    
-        [OnDeserialized]
-        public void OnDeserializedMethod(StreamingContext context)
-        {
-            IsDeserializing = false;
-            ChangeTracker.ChangeTrackingEnabled = true;
-        }
-    
-        protected virtual void ClearNavigationProperties()
-        {
-        }
+      private bool _editable;
+      private bool _enabled;
+      private int _idScheduleRulesTemplate;
 
-        #endregion
+      private string _name;
+
+      private string _rules;
+      private int _usages;
+
+      [DataMember]
+      public int IdScheduleRulesTemplate
+      {
+        get { return _idScheduleRulesTemplate; }
+        set
+        {
+          if (_idScheduleRulesTemplate != value)
+          {
+            if (ChangeTracker.ChangeTrackingEnabled && ChangeTracker.State != ObjectState.Added)
+            {
+              throw new InvalidOperationException("The property 'IdScheduleRulesTemplate' is part of the object's key and cannot be changed. Changes to key properties can only be made when the object is not being tracked or is in the Added state.");
+            }
+            _idScheduleRulesTemplate = value;
+            OnPropertyChanged("IdScheduleRulesTemplate");
+          }
+        }
+      }
+
+      [DataMember]
+      public string Name
+      {
+        get { return _name; }
+        set
+        {
+          if (_name != value)
+          {
+            _name = value;
+            OnPropertyChanged("Name");
+          }
+        }
+      }
+
+      [DataMember]
+      public string Rules
+      {
+        get { return _rules; }
+        set
+        {
+          if (_rules != value)
+          {
+            _rules = value;
+            OnPropertyChanged("Rules");
+          }
+        }
+      }
+
+      [DataMember]
+      public bool Enabled
+      {
+        get { return _enabled; }
+        set
+        {
+          if (_enabled != value)
+          {
+            _enabled = value;
+            OnPropertyChanged("Enabled");
+          }
+        }
+      }
+
+      [DataMember]
+      public int Usages
+      {
+        get { return _usages; }
+        set
+        {
+          if (_usages != value)
+          {
+            _usages = value;
+            OnPropertyChanged("Usages");
+          }
+        }
+      }
+
+      [DataMember]
+      public bool Editable
+      {
+        get { return _editable; }
+        set
+        {
+          if (_editable != value)
+          {
+            _editable = value;
+            OnPropertyChanged("Editable");
+          }
+        }
+      }
+
+      #endregion
+
+      #region ChangeTracking
+
+      private ObjectChangeTracker _changeTracker;
+      protected bool IsDeserializing { get; private set; }
+
+      #region INotifyPropertyChanged Members
+
+      event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged{ add { _propertyChanged += value; } remove { _propertyChanged -= value; } }
+
+      #endregion
+
+      #region IObjectWithChangeTracker Members
+
+      [DataMember]
+      public ObjectChangeTracker ChangeTracker
+      {
+        get
+        {
+          if (_changeTracker == null)
+          {
+            _changeTracker = new ObjectChangeTracker();
+            _changeTracker.ObjectStateChanging += HandleObjectStateChanging;
+          }
+          return _changeTracker;
+        }
+        set
+        {
+          if(_changeTracker != null)
+          {
+            _changeTracker.ObjectStateChanging -= HandleObjectStateChanging;
+          }
+          _changeTracker = value;
+          if(_changeTracker != null)
+          {
+            _changeTracker.ObjectStateChanging += HandleObjectStateChanging;
+          }
+        }
+      }
+
+      #endregion
+
+      protected virtual void OnPropertyChanged(String propertyName)
+      {
+        if (ChangeTracker.State != ObjectState.Added && ChangeTracker.State != ObjectState.Deleted)
+        {
+          ChangeTracker.State = ObjectState.Modified;
+        }
+        if (_propertyChanged != null)
+        {
+          _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+      }
+    
+      protected virtual void OnNavigationPropertyChanged(String propertyName)
+      {
+        if (_propertyChanged != null)
+        {
+          _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+      }
+
+      private event PropertyChangedEventHandler _propertyChanged;
+
+      private void HandleObjectStateChanging(object sender, ObjectStateChangingEventArgs e)
+      {
+        if (e.NewState == ObjectState.Deleted)
+        {
+          ClearNavigationProperties();
+        }
+      }
+
+      [OnDeserializing]
+      public void OnDeserializingMethod(StreamingContext context)
+      {
+        IsDeserializing = true;
+      }
+    
+      [OnDeserialized]
+      public void OnDeserializedMethod(StreamingContext context)
+      {
+        IsDeserializing = false;
+        ChangeTracker.ChangeTrackingEnabled = true;
+      }
+    
+      protected virtual void ClearNavigationProperties()
+      {
+      }
+
+      #endregion
     }
 }

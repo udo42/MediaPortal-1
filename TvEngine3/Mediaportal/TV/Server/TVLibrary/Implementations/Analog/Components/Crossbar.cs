@@ -33,34 +33,17 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
   /// </summary>
   internal class Crossbar : IDisposable
   {
-
-
     #region variables
 
     /// <summary>
-    /// The crossbar filter
+    /// The audio output pin
     /// </summary>
-    private IBaseFilter _filterCrossBar;
+    private IPin _audioOut;
 
     /// <summary>
-    /// The crossbar device
+    /// The audio output pin index
     /// </summary>
-    private DsDevice _crossBarDevice;
-
-    /// <summary>
-    /// The crossbar interface
-    /// </summary>
-    private IAMCrossbar _crossBarFilter;
-
-    /// <summary>
-    /// The mapping of the video input sources to their pin index
-    /// </summary>
-    private Dictionary<AnalogChannel.VideoInputType, int> _videoPinMap;
-
-    /// <summary>
-    /// The mapping of the video input sources to their related audio pin index
-    /// </summary>
-    private Dictionary<AnalogChannel.VideoInputType, int> _videoPinRelatedAudioMap;
+    private int _audioOutPinIndex;
 
     /// <summary>
     /// The mapping of the audio input sources to their pin index
@@ -73,14 +56,24 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     private IPin _audioTunerIn;
 
     /// <summary>
-    /// The video output pin index 
+    /// The crossbar device
     /// </summary>
-    private int _videoOutPinIndex;
+    private DsDevice _crossBarDevice;
 
     /// <summary>
-    /// The audio output pin index
+    /// The crossbar interface
     /// </summary>
-    private int _audioOutPinIndex;
+    private IAMCrossbar _crossBarFilter;
+
+    /// <summary>
+    /// The current analog channel
+    /// </summary>
+    private AnalogChannel _currentChannel;
+
+    /// <summary>
+    /// The crossbar filter
+    /// </summary>
+    private IBaseFilter _filterCrossBar;
 
     /// <summary>
     /// The video output pin
@@ -88,14 +81,19 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     private IPin _videoOut;
 
     /// <summary>
-    /// The audio output pin
+    /// The video output pin index 
     /// </summary>
-    private IPin _audioOut;
+    private int _videoOutPinIndex;
 
     /// <summary>
-    /// The current analog channel
+    /// The mapping of the video input sources to their pin index
     /// </summary>
-    private AnalogChannel _currentChannel;
+    private Dictionary<AnalogChannel.VideoInputType, int> _videoPinMap;
+
+    /// <summary>
+    /// The mapping of the video input sources to their related audio pin index
+    /// </summary>
+    private Dictionary<AnalogChannel.VideoInputType, int> _videoPinRelatedAudioMap;
 
     #endregion
 
@@ -145,6 +143,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
 
     #region Dispose
 
+    /// <summary>
+    /// Disposes the crossbar component
+    /// </summary>   
+    public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
     protected virtual void Dispose(bool disposing)
     {
       if (disposing)
@@ -176,16 +183,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
         Release.ComObject("crossbar filter", _filterCrossBar);        
         _filterCrossBar = null;
       }
-    }
-
-
-    /// <summary>
-    /// Disposes the crossbar component
-    /// </summary>   
-    public void Dispose()
-    {
-      Dispose(true);
-      GC.SuppressFinalize(this);
     }
 
     ~Crossbar()

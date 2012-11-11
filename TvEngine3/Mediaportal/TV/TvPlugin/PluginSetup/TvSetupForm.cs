@@ -31,14 +31,14 @@ namespace Mediaportal.TV.TvPlugin.PluginSetup
   {
     #region variables
 
-    private string _serverHostName;
-    private string _preferredLanguages;
-    private bool _preferAC3;
-    private bool _rebuildGraphOnNewVideoSpecs = true;
-    private bool _rebuildGraphOnNewAudioSpecs = true;
     private bool _avoidSeeking;
-    private List<String> languagesAvail;
+    private bool _preferAC3;
+    private string _preferredLanguages;
+    private bool _rebuildGraphOnNewAudioSpecs = true;
+    private bool _rebuildGraphOnNewVideoSpecs = true;
+    private string _serverHostName;
     private List<String> languageCodes;
+    private List<String> languagesAvail;
 
     #endregion
 

@@ -98,50 +98,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
       get { return version; }
     }
 
-    ///<summary>
-    /// Gets the number of key-and-value pairs contained in the <see cref="TstDictionary"/>.
-    /// </summary>	
-    /// <value>
-    /// The number of key-and-value pairs contained in the <see cref="TstDictionary"/>.
-    /// </value>
-    /// <remarks>
-    /// Complexity: O(N)
-    /// </remarks>
-    public virtual int Count
-    {
-      get
-      {
-        IEnumerator en = GetEnumerator();
-        int n = 0;
-        while (en.MoveNext())
-          ++n;
-        return n;
-      }
-    }
-
-    /// <summary>
-    /// Get a value indicating whether access to the <see cref="TstDictionary"/> is synchronized (thread-safe).
-    /// </summary>
-    /// <value>
-    /// true if access to the <see cref="TstDictionary"/> is synchronized (thread-safe); 
-    /// otherwise, false. The default is false.
-    /// </value>
-    public virtual bool IsSynchronized
-    {
-      get { return false; }
-    }
-
-    /// <summary>
-    /// Gets an object that can be used to synchronize access to the <see cref="TstDictionary"/>.
-    /// </summary>
-    /// <value>
-    /// An object that can be used to synchronize access to the <see cref="TstDictionary"/>.
-    /// </value>
-    public virtual Object SyncRoot
-    {
-      get { return this; }
-    }
-
     /// <summary>
     /// Gets a value indicating whether the <see cref="TstDictionary"/> has a fixed size. 
     /// </summary>
@@ -204,78 +160,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
     }
 
     /// <summary>
-    /// Creates a shallow copy of the <see cref="TstDictionary"/>.
-    /// </summary>
-    /// <returns>A shallow copy of the <see cref="TstDictionary"/>.</returns>
-    public virtual Object Clone()
-    {
-      return new TstDictionary(Root.Clone() as TstDictionaryEntry);
-    }
-
-    /// <summary>
-    /// Returns a synchronized (thread-safe) wrapper for 
-    /// the <see cref="TstDictionary"/>.
-    /// </summary>
-    /// <param name="table">The <see cref="TstDictionary"/> to synchronize.</param>
-    /// <returns>A synchronized (thread-safe) wrapper for the 
-    /// <see cref="TstDictionary"/>.</returns>
-    /// <exception cref="ArgumentNullException"><paramref name="table"/> is a null reference.</exception>
-    public static TstDictionary Synchronized(TstDictionary table)
-    {
-      if (table == null)
-        throw new ArgumentNullException("table");
-      return new TstSynchronizedDictionary(table);
-    }
-
-    /// <summary>
-    /// Copies the <see cref="TstDictionary"/> elements to a one-dimensional Array instance at the specified index.
-    /// </summary>
-    /// <param name="array">The one-dimensional <see cref="Array"/> that is the destination of the 
-    /// <see cref="DictionaryEntry"/> 
-    /// objects copied from <see cref="TstDictionary"/>. The <see cref="Array"/> must have zero-based indexing.
-    /// </param>
-    /// <param name="arrayIndex">The zero-based index in <paramref name="array"/> at which copying begins.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="array"/> is a null reference</exception>
-    /// <exception cref="ArgumentOutOfRangeException">
-    /// <paramref name="arrayIndex"/> is less than zero.
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="array"/> is multidimensional. 
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// <paramref name="arrayIndex"/> is equal to or greater than the length of <paramref name="array"/>. 
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// The number of elements in the source <see cref="TstDictionary"/> is greater than 
-    /// the available space from <paramref name="arrayIndex"/> to the end of the destination array. 
-    /// </exception>
-    /// <exception cref="ArgumentException">
-    /// The type of the source <see cref="TstDictionary"/> cannot be cast automatically 
-    /// to the type of the destination array. 
-    /// </exception>
-    public virtual void CopyTo(Array array, int arrayIndex)
-    {
-      if (array == null)
-        throw new ArgumentNullException("array");
-      if (arrayIndex < 0)
-        throw new ArgumentOutOfRangeException("index is negative");
-      if (array.Rank > 1)
-        throw new ArgumentException("array is multi-dimensional");
-      if (arrayIndex >= array.Length)
-        throw new ArgumentException("index >= array.Length");
-
-      int i = arrayIndex;
-      foreach (Object de in this)
-      {
-        if (i > array.Length)
-          throw new ArgumentException(
-            "The number of elements in the source ICollection is greater than the available space from index to the end of the destination array.");
-
-        array.SetValue(de, i++);
-      }
-    }
-
-    /// <summary>
     /// Gets or sets the value associated with the specified key.
     /// </summary>
     /// <remarks>
@@ -331,6 +215,143 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
           de.Value = value;
         }
       }
+    }
+
+    #region ICloneable Members
+
+    /// <summary>
+    /// Creates a shallow copy of the <see cref="TstDictionary"/>.
+    /// </summary>
+    /// <returns>A shallow copy of the <see cref="TstDictionary"/>.</returns>
+    public virtual Object Clone()
+    {
+      return new TstDictionary(Root.Clone() as TstDictionaryEntry);
+    }
+
+    #endregion
+
+    #region ICollection Members
+
+    ///<summary>
+    /// Gets the number of key-and-value pairs contained in the <see cref="TstDictionary"/>.
+    /// </summary>	
+    /// <value>
+    /// The number of key-and-value pairs contained in the <see cref="TstDictionary"/>.
+    /// </value>
+    /// <remarks>
+    /// Complexity: O(N)
+    /// </remarks>
+    public virtual int Count
+    {
+      get
+      {
+        IEnumerator en = GetEnumerator();
+        int n = 0;
+        while (en.MoveNext())
+          ++n;
+        return n;
+      }
+    }
+
+    /// <summary>
+    /// Get a value indicating whether access to the <see cref="TstDictionary"/> is synchronized (thread-safe).
+    /// </summary>
+    /// <value>
+    /// true if access to the <see cref="TstDictionary"/> is synchronized (thread-safe); 
+    /// otherwise, false. The default is false.
+    /// </value>
+    public virtual bool IsSynchronized
+    {
+      get { return false; }
+    }
+
+    /// <summary>
+    /// Gets an object that can be used to synchronize access to the <see cref="TstDictionary"/>.
+    /// </summary>
+    /// <value>
+    /// An object that can be used to synchronize access to the <see cref="TstDictionary"/>.
+    /// </value>
+    public virtual Object SyncRoot
+    {
+      get { return this; }
+    }
+
+    /// <summary>
+    /// Copies the <see cref="TstDictionary"/> elements to a one-dimensional Array instance at the specified index.
+    /// </summary>
+    /// <param name="array">The one-dimensional <see cref="Array"/> that is the destination of the 
+    /// <see cref="DictionaryEntry"/> 
+    /// objects copied from <see cref="TstDictionary"/>. The <see cref="Array"/> must have zero-based indexing.
+    /// </param>
+    /// <param name="arrayIndex">The zero-based index in <paramref name="array"/> at which copying begins.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="array"/> is a null reference</exception>
+    /// <exception cref="ArgumentOutOfRangeException">
+    /// <paramref name="arrayIndex"/> is less than zero.
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="array"/> is multidimensional. 
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// <paramref name="arrayIndex"/> is equal to or greater than the length of <paramref name="array"/>. 
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The number of elements in the source <see cref="TstDictionary"/> is greater than 
+    /// the available space from <paramref name="arrayIndex"/> to the end of the destination array. 
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    /// The type of the source <see cref="TstDictionary"/> cannot be cast automatically 
+    /// to the type of the destination array. 
+    /// </exception>
+    public virtual void CopyTo(Array array, int arrayIndex)
+    {
+      if (array == null)
+        throw new ArgumentNullException("array");
+      if (arrayIndex < 0)
+        throw new ArgumentOutOfRangeException("index is negative");
+      if (array.Rank > 1)
+        throw new ArgumentException("array is multi-dimensional");
+      if (arrayIndex >= array.Length)
+        throw new ArgumentException("index >= array.Length");
+
+      int i = arrayIndex;
+      foreach (Object de in this)
+      {
+        if (i > array.Length)
+          throw new ArgumentException(
+            "The number of elements in the source ICollection is greater than the available space from index to the end of the destination array.");
+
+        array.SetValue(de, i++);
+      }
+    }
+
+    #endregion
+
+    #region IEnumerable Members
+
+    /// <summary>
+    /// Returns an <see cref="IDictionaryEnumerator"/> that can iterate through the <see cref="TstDictionary"/>.
+    /// </summary>
+    /// <returns>An <see cref="IDictionaryEnumerator"/> for the <see cref="TstDictionary"/>.</returns>		
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+      return GetEnumerator();
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Returns a synchronized (thread-safe) wrapper for 
+    /// the <see cref="TstDictionary"/>.
+    /// </summary>
+    /// <param name="table">The <see cref="TstDictionary"/> to synchronize.</param>
+    /// <returns>A synchronized (thread-safe) wrapper for the 
+    /// <see cref="TstDictionary"/>.</returns>
+    /// <exception cref="ArgumentNullException"><paramref name="table"/> is a null reference.</exception>
+    public static TstDictionary Synchronized(TstDictionary table)
+    {
+      if (table == null)
+        throw new ArgumentNullException("table");
+      return new TstSynchronizedDictionary(table);
     }
 
     ///<summary>
@@ -520,15 +541,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
     public virtual TstDictionaryEnumerator GetEnumerator()
     {
       return new TstDictionaryEnumerator(this);
-    }
-
-    /// <summary>
-    /// Returns an <see cref="IDictionaryEnumerator"/> that can iterate through the <see cref="TstDictionary"/>.
-    /// </summary>
-    /// <returns>An <see cref="IDictionaryEnumerator"/> for the <see cref="TstDictionary"/>.</returns>		
-    IEnumerator IEnumerable.GetEnumerator()
-    {
-      return GetEnumerator();
     }
 
     /// <summary>

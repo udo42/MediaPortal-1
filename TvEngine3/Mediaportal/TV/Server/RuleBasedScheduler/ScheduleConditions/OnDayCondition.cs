@@ -24,10 +24,13 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
       set { _ondays = value; }
     }
 
+    #region IScheduleCondition Members
+
     public IQueryable<Program> ApplyCondition(IQueryable<Program> baseQuery)
     {
       return baseQuery.Where(program => (_ondays.Any(d => d == program.StartTime.DayOfWeek)));
     }
-    
+
+    #endregion
   }
 }

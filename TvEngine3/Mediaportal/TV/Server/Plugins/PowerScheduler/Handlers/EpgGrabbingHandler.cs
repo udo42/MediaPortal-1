@@ -42,16 +42,14 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
   /// </summary>
   public class EpgGrabbingHandler : IStandbyHandler, IWakeupHandler, IEpgHandler
   {
-
-
     #region Structs
 
     private class GrabberSource // don't use struct! they are value types and mess when used in a dictionary!
     {
       private string _name;
+      private DateTime _nextWakeupTime;
       private bool _standbyAllowed;
       private DateTime _timeout;
-      private DateTime _nextWakeupTime;
 
       public GrabberSource(string name, bool standbyAllowed, int timeout)
       {
@@ -71,12 +69,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
         get { return _standbyAllowed; }
       }
 
-      public void SetStandbyAllowed(bool allowed, int timeout)
-      {
-        _standbyAllowed = allowed;
-        _timeout = DateTime.Now.AddSeconds(timeout);
-      }
-
       public DateTime Timeout
       {
         get { return _timeout; }
@@ -86,6 +78,12 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       {
         get { return _nextWakeupTime; }
         set { _nextWakeupTime = value; }
+      }
+
+      public void SetStandbyAllowed(bool allowed, int timeout)
+      {
+        _standbyAllowed = allowed;
+        _timeout = DateTime.Now.AddSeconds(timeout);
       }
     }
 
@@ -120,6 +118,8 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     #endregion
 
     #region Private methods
+
+    private bool _epgThreadRunning;
 
     [MethodImpl(MethodImplOptions.Synchronized)]
     private void EpgGrabbingHandler_OnPowerSchedulerEvent(PowerSchedulerEventArgs args)
@@ -208,7 +208,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
             if (s.Timeout < DateTime.Now)
             {
               this.LogDebug("PowerScheduler: EPG source '{0}' timed out, setting allow-standby = true for this source.",
-                        s.Name);
+                            s.Name);
               // timeout passed, standby is allowed
               s.SetStandbyAllowed(true, 0);
 
@@ -264,8 +264,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     }
 
 
-    private bool _epgThreadRunning;
-
     private void EPGThreadFunction()
     {
       // ShouldRun still returns true until LastRun is updated, 
@@ -275,7 +273,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       EPGWakeupConfig config = new EPGWakeupConfig((SettingsManagement.GetSetting("EPGWakeupConfig", String.Empty).Value));
 
       this.LogInfo("PowerScheduler: EPG schedule {0}:{1} is due: {2}:{3}",
-               config.Hour, config.Minutes, DateTime.Now.Hour, DateTime.Now.Minute);
+                   config.Hour, config.Minutes, DateTime.Now.Hour, DateTime.Now.Minute);
 
       // start external command
       RunExternalCommand("epg");
@@ -388,6 +386,8 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
     #region IStandbyHandler/IWakeupHandler implementation
 
+    #region IStandbyHandler Members
+
     public bool DisAllowShutdown
     {
       [MethodImpl(MethodImplOptions.Synchronized)]
@@ -423,6 +423,17 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       }
     }
 
+    public void UserShutdownNow() {}
+
+    public string HandlerName
+    {
+      get { return "EpgGrabbingHandler"; }
+    }
+
+    #endregion
+
+    #region IWakeupHandler Members
+
     [MethodImpl(MethodImplOptions.Synchronized)]
     public DateTime GetNextWakeupTime(DateTime earliestWakeupTime)
     {
@@ -454,12 +465,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       return nextRun;
     }
 
-    public void UserShutdownNow() {}
-
-    public string HandlerName
-    {
-      get { return "EpgGrabbingHandler"; }
-    }
+    #endregion
 
     #endregion
 

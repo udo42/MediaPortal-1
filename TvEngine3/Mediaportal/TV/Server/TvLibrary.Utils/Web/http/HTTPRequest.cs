@@ -25,15 +25,15 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
 {
   public class HTTPRequest
   {
-    private string _host = string.Empty;
-    private string _getQuery = string.Empty;
-    private string _postQuery = string.Empty;
-    private string _cookies = string.Empty;
-    private string _scheme = string.Empty;
-    private bool _externalBrowser = false;
-    private string _encoding = string.Empty;
-    private int _delay = 0;
     private string _agent = string.Empty;
+    private string _cookies = string.Empty;
+    private int _delay = 0;
+    private string _encoding = string.Empty;
+    private bool _externalBrowser = false;
+    private string _getQuery = string.Empty;
+    private string _host = string.Empty;
+    private string _postQuery = string.Empty;
+    private string _scheme = string.Empty;
 
     public HTTPRequest() {}
 
@@ -78,15 +78,6 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     {
       Uri request = new Uri(uri);
       BuildRequest(request);
-    }
-
-    private void BuildRequest(Uri request)
-    {
-      _host = request.Authority;
-      _scheme = request.Scheme;
-      _getQuery = request.PathAndQuery;
-      _getQuery = _getQuery.Replace("%5B", "[");
-      _getQuery = _getQuery.Replace("%5D", "]");
     }
 
     public string Host
@@ -158,6 +149,15 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
       get { return new Uri(_scheme + Uri.SchemeDelimiter + _host); }
     }
 
+    private void BuildRequest(Uri request)
+    {
+      _host = request.Authority;
+      _scheme = request.Scheme;
+      _getQuery = request.PathAndQuery;
+      _getQuery = _getQuery.Replace("%5B", "[");
+      _getQuery = _getQuery.Replace("%5D", "]");
+    }
+
     // Add relative or absolute url
     public HTTPRequest Add(string relativeUri)
     {
@@ -198,8 +198,6 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
       return Url + " POST: " + _postQuery;
     }
 
-    #region Operator Members
-
     public static bool operator ==(HTTPRequest r1, HTTPRequest r2)
     {
       if ((object)r1 == null || (object)r2 == null)
@@ -234,7 +232,5 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     {
       return (_host + _getQuery + _scheme + _postQuery).GetHashCode();
     }
-
-    #endregion
   }
 }

@@ -28,10 +28,10 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
   /// </summary>
   public sealed class TstDictionaryEnumerator : IDictionaryEnumerator
   {
-    private long version;
-    private Stack stack;
     private TstDictionaryEntry currentNode;
     private TstDictionary dictionary;
+    private Stack stack;
+    private long version;
 
     /// <summary>Constructs an enumerator over <paramref name="tst"/></summary>
     /// <param name="tst">dictionary to enumerate.</param>
@@ -43,16 +43,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
       version = tst.Version;
       dictionary = tst;
       currentNode = null;
-      stack = null;
-    }
-
-    /// <summary>
-    /// Sets the enumerator to its initial position, which is before the first element in the collection.
-    /// </summary>
-    public void Reset()
-    {
-      ThrowIfChanged();
-      stack.Clear();
       stack = null;
     }
 
@@ -68,6 +58,38 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
         ThrowIfChanged();
         return Entry;
       }
+    }
+
+    /// <summary>
+    /// Gets the key of the current dictionary entry.
+    /// </summary>
+    /// <value>
+    /// The key of the current element of the enumeration.
+    /// </value>
+    /// <exception cref="InvalidOperationException">
+    /// The enumerator is positioned before the first entry of the dictionary or after the last entry. 
+    /// </exception>	
+    public String Key
+    {
+      get
+      {
+        ThrowIfChanged();
+        if (currentNode == null)
+          throw new InvalidOperationException();
+        return currentNode.Key;
+      }
+    }
+
+    #region IDictionaryEnumerator Members
+
+    /// <summary>
+    /// Sets the enumerator to its initial position, which is before the first element in the collection.
+    /// </summary>
+    public void Reset()
+    {
+      ThrowIfChanged();
+      stack.Clear();
+      stack = null;
     }
 
     /// <summary>
@@ -97,26 +119,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
         if (currentNode == null)
           throw new InvalidOperationException();
         return new DictionaryEntry(currentNode.Key, currentNode.Value);
-      }
-    }
-
-    /// <summary>
-    /// Gets the key of the current dictionary entry.
-    /// </summary>
-    /// <value>
-    /// The key of the current element of the enumeration.
-    /// </value>
-    /// <exception cref="InvalidOperationException">
-    /// The enumerator is positioned before the first entry of the dictionary or after the last entry. 
-    /// </exception>	
-    public String Key
-    {
-      get
-      {
-        ThrowIfChanged();
-        if (currentNode == null)
-          throw new InvalidOperationException();
-        return currentNode.Key;
       }
     }
 
@@ -196,6 +198,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
 
       return currentNode != null;
     }
+
+    #endregion
 
     internal void ThrowIfChanged()
     {

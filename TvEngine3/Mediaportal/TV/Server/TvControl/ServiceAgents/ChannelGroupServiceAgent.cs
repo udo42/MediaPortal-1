@@ -10,7 +10,9 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     public ChannelGroupServiceAgent(string hostname) : base(hostname)
     {
     }
-  
+
+    #region IChannelGroupService Members
+
     public IList<ChannelGroup> ListAllChannelGroupsByMediaType(MediaTypeEnum mediaType)
     {
       return _channel.ListAllChannelGroupsByMediaType(mediaType);
@@ -66,5 +68,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {
       return _channel.ListAllCustomChannelGroups(includeRelations, mediaType);
     }
+
+    #endregion
   }
 }

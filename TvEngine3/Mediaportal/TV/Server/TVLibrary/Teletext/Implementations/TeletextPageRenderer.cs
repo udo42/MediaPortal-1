@@ -29,8 +29,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
   ///</summary>
   public class TeletextPageRenderer
   {
-
-
     #region constructors
 
     ///<summary>
@@ -54,40 +52,22 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
     //regional stuff
     private readonly bool _isRegionalDK;
 
-    private Bitmap _pageBitmap;
-    private Graphics _renderGraphics;
     private Font _fontTeletext;
 
-    private bool _hiddenMode = true;
-    private bool _transparentMode;
     private bool _fullscreenMode;
+    private bool _hiddenMode = true;
+    private Bitmap _pageBitmap;
 
-    private string _selectedPageText = "";
-
-    private int _pageRenderWidth = 1920;
     private int _pageRenderHeight = 1080;
+    private int _pageRenderWidth = 1920;
     private int _percentageOfMaximumHeight = 80;
+    private Graphics _renderGraphics;
+    private string _selectedPageText = "";
+    private bool _transparentMode;
 
     #endregion
 
     #region enums
-
-    /// <summary>
-    /// Enumeration of all availabel colors in teletext
-    /// </summary>
-    private enum TextColors
-    {
-      Black,
-      Red,
-      Green,
-      Yellow,
-      Blue,
-      Magenta,
-      Cyan,
-      White,
-      Trans1,
-      Trans2
-    }
 
     /// <summary>
     /// Enumeration of all possible attributes for a position in teletext
@@ -222,6 +202,23 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       /// Release mosaic attribute
       /// </summary>
       ReleaseMosaic
+    }
+
+    /// <summary>
+    /// Enumeration of all availabel colors in teletext
+    /// </summary>
+    private enum TextColors
+    {
+      Black,
+      Red,
+      Green,
+      Yellow,
+      Blue,
+      Magenta,
+      Cyan,
+      White,
+      Trans1,
+      Trans2
     }
 
     #endregion

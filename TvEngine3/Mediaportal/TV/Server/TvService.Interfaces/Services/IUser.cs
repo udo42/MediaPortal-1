@@ -80,7 +80,9 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.Services
     [DataMember]
     TvStoppedReason TvStoppedReason { get; set; }
 
-    
+
+    [DataMember]
+    IDictionary<int, ISubChannel> SubChannels { get; set; }
 
     /// <summary>
     /// Creates a new object that is a copy of the current instance.
@@ -89,8 +91,5 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.Services
     /// A new object that is a copy of this instance.
     /// </returns>
     object Clone();
-
-    [DataMember]
-    IDictionary<int, ISubChannel> SubChannels { get; set; }        
   }
 }

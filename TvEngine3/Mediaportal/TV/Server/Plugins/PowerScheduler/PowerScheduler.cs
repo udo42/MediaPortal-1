@@ -46,11 +46,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
   /// </summary>
   public class PowerScheduler : IPowerScheduler, IPowerController
   {
-
-
     #region Variables
-
-    public event PowerSchedulerEventHandler OnPowerSchedulerEvent;
 
     /// <summary>
     /// PowerScheduler single instance
@@ -64,29 +60,9 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     private static readonly object _mutex = new object();
 
     /// <summary>
-    /// Reference to tvservice's TVController
+    /// Indicator if the cards have been stopped
     /// </summary>
-    private IInternalControllerService _controllerService;
-
-    /// <summary>
-    /// Factory for creating various IStandbyHandlers/IWakeupHandlers
-    /// </summary>
-    private PowerSchedulerFactory _factory;
-
-    /// <summary>
-    /// Manages setting the according thread execution state
-    /// </summary>
-    private PowerManager _powerManager;
-
-    /// <summary>
-    /// List of registered standby handlers ("disable standby" plugins)
-    /// </summary>
-    private List<IStandbyHandler> _standbyHandlers;
-
-    /// <summary>
-    /// List of registered wakeup handlers ("enable wakeup" plugins)
-    /// </summary>
-    private List<IWakeupHandler> _wakeupHandlers;
+    private bool _cardsStopped = false;
 
     /// <summary>
     /// IStandbyHandler for the client in singleseat setups
@@ -99,30 +75,14 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     private GenericWakeupHandler _clientWakeupHandler;
 
     /// <summary>
-    /// Polls standby handlers to check if shutdown is allowed
+    /// Reference to tvservice's TVController
     /// </summary>
-    /// 
-    private Thread _pollThread;
+    private IInternalControllerService _controllerService;
 
     /// <summary>
-    ///  How often we should reload settings
+    /// Factory for creating various IStandbyHandlers/IWakeupHandlers
     /// </summary>
-    private int _reloadInterval = 60;
-
-    /// <summary>
-    ///  Stop poll thread 
-    /// </summary>
-    private ManualResetEvent _stopThread;
-
-    /// <summary>
-    /// Timer with support for waking up the system
-    /// </summary>
-    private WaitableTimer _wakeupTimer;
-
-    /// <summary>
-    /// Last time any activity by the user was detected.
-    /// </summary>
-    private DateTime _lastUserTime;
+    private PowerSchedulerFactory _factory;
 
     /// <summary>
     /// Global indicator if the PowerScheduler thinks the system is idle
@@ -130,19 +90,20 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     private bool _idle = false;
 
     /// <summary>
-    /// Indicating whether the PowerScheduler is in standby-mode.
+    /// Last time any activity by the user was detected.
     /// </summary>
-    private bool _standby = false;
+    private DateTime _lastUserTime;
 
     /// <summary>
-    /// All PowerScheduler related settings are stored here
+    /// Polls standby handlers to check if shutdown is allowed
     /// </summary>
-    private PowerSettings _settings;
+    /// 
+    private Thread _pollThread;
 
     /// <summary>
-    /// Indicator if remoting has been setup
+    /// Manages setting the according thread execution state
     /// </summary>
-    private bool _remotingStarted = false;
+    private PowerManager _powerManager;
 
     /// <summary>
     /// Indicator if the TVController should be reinitialized
@@ -151,9 +112,46 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     private bool _reinitializeController = false;
 
     /// <summary>
-    /// Indicator if the cards have been stopped
+    ///  How often we should reload settings
     /// </summary>
-    private bool _cardsStopped = false;
+    private int _reloadInterval = 60;
+
+    /// <summary>
+    /// Indicator if remoting has been setup
+    /// </summary>
+    private bool _remotingStarted = false;
+
+    /// <summary>
+    /// All PowerScheduler related settings are stored here
+    /// </summary>
+    private PowerSettings _settings;
+
+    /// <summary>
+    /// Indicating whether the PowerScheduler is in standby-mode.
+    /// </summary>
+    private bool _standby = false;
+
+    /// <summary>
+    /// List of registered standby handlers ("disable standby" plugins)
+    /// </summary>
+    private List<IStandbyHandler> _standbyHandlers;
+
+    /// <summary>
+    ///  Stop poll thread 
+    /// </summary>
+    private ManualResetEvent _stopThread;
+
+    /// <summary>
+    /// List of registered wakeup handlers ("enable wakeup" plugins)
+    /// </summary>
+    private List<IWakeupHandler> _wakeupHandlers;
+
+    /// <summary>
+    /// Timer with support for waking up the system
+    /// </summary>
+    private WaitableTimer _wakeupTimer;
+
+    public event PowerSchedulerEventHandler OnPowerSchedulerEvent;
 
     #endregion
 
@@ -203,6 +201,180 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     #region Public methods
 
     #region Start/Stop methods
+
+    /// <summary>
+    /// Used to avoid concurrent suspend requests which could result in a suspend - user resumes - immediately suspends.
+    /// </summary>
+    private DateTime _ignoreSuspendUntil = DateTime.MinValue;
+
+    /// <summary>
+    /// Configure remoting for power control from MP
+    /// </summary>
+    /*private void StartRemoting()
+    {
+      if (_remotingStarted)
+        return;
+      try
+      {
+        ListDictionary channelProperties = new ListDictionary();
+        channelProperties.Add("port", 31457);
+        channelProperties.Add("exclusiveAddressUse", false);
+        HttpChannel channel = new HttpChannel(channelProperties,
+                                              new SoapClientFormatterSinkProvider(),
+                                              new SoapServerFormatterSinkProvider());
+
+        ChannelServices.RegisterChannel(channel, false);
+      }
+      catch (RemotingException) {}
+      catch (System.Net.Sockets.SocketException) {}
+      ObjRef objref = RemotingServices.Marshal(this, "PowerControl", typeof (IPowerController));
+      RemotePowerControl.Clear();
+      this.LogDebug("PowerScheduler: Registered PowerScheduler as \"PowerControl\" remoting service");
+      _remotingStarted = true;
+    }*/
+
+    #endregion
+
+    #region IPowerScheduler implementation
+
+    /// <summary>
+    /// Registers a new IStandbyHandler plugin which can prevent entering standby
+    /// </summary>
+    /// <param name="handler">handler to register</param>
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public void Register(IStandbyHandler handler)
+    {
+      if (!_standbyHandlers.Contains(handler))
+        _standbyHandlers.Add(handler);
+    }
+
+    /// <summary>
+    /// Registers a new IWakeupHandler plugin which can wakeup the system at a desired time
+    /// </summary>
+    /// <param name="handler">handler to register</param>
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public void Register(IWakeupHandler handler)
+    {
+      if (!_wakeupHandlers.Contains(handler))
+        _wakeupHandlers.Add(handler);
+    }
+
+    /// <summary>
+    /// Unregisters a IStandbyHandler plugin
+    /// </summary>
+    /// <param name="handler">handler to unregister</param>
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public void Unregister(IStandbyHandler handler)
+    {
+      if (_standbyHandlers.Contains(handler))
+        _standbyHandlers.Remove(handler);
+    }
+
+    /// <summary>
+    /// Unregisters a IWakeupHandler plugin
+    /// </summary>
+    /// <param name="handler">handler to register</param>
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public void Unregister(IWakeupHandler handler)
+    {
+      if (_wakeupHandlers.Contains(handler))
+        _wakeupHandlers.Remove(handler);
+    }
+
+    /// <summary>
+    /// Checks if the given IStandbyHandler is registered
+    /// </summary>
+    /// <param name="handler">IStandbyHandler to check</param>
+    /// <returns>is the given handler registered?</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public bool IsRegistered(IStandbyHandler handler)
+    {
+      return _standbyHandlers.Contains(handler);
+    }
+
+    /// <summary>
+    /// Checks if the given IWakeupHandler is registered
+    /// </summary>
+    /// <param name="handler">IWakeupHandler to check</param>
+    /// <returns>is the given handler registered?</returns>
+    [MethodImpl(MethodImplOptions.Synchronized)]
+    public bool IsRegistered(IWakeupHandler handler)
+    {
+      return _wakeupHandlers.Contains(handler);
+    }
+
+    /// <summary>
+    /// Checks if a suspend request is in progress
+    /// </summary>
+    /// <returns>is the system currently trying to suspend?</returns>
+    public bool IsSuspendInProgress()
+    {
+      return _isSuspendInProgress;
+    }
+
+
+    /// <summary>
+    /// Manually puts the system in Standby (Suspend/Hibernate depending on what is configured)
+    /// </summary>
+    /// <param name="source">description of the source who puts the system into standby</param>
+    /// <param name="force">should we ignore PowerScheduler's current state (true) or not? (false)</param>
+    /// <returns></returns>
+    public void SuspendSystem(string source, bool force)
+    {
+      this.LogInfo("PowerScheduler: Manual system suspend requested by {0}", source);
+
+      // determine standby mode
+      switch (_settings.ShutdownMode)
+      {
+        case ShutdownMode.Suspend:
+          SuspendSystemWithOptions(source, (int)RestartOptions.Suspend, force);
+          break;
+        case ShutdownMode.Hibernate:
+          SuspendSystemWithOptions(source, (int)RestartOptions.Hibernate, force);
+          break;
+        case ShutdownMode.StayOn:
+          this.LogDebug("PowerScheduler: Standby requested but system is configured to stay on");
+          break;
+        default:
+          this.LogError("PowerScheduler: unknown shutdown mode: {0}", _settings.ShutdownMode);
+          break;
+      }
+    }
+
+    /// <summary>
+    /// Puts the system into the configured standby mode (Suspend/Hibernate)
+    /// </summary>
+    /// <param name="force">should the system be forced to enter standby?</param>
+    /// <returns>bool indicating whether or not the request was honoured</returns>
+    public void SuspendSystemWithOptions(string source, int how, bool force)
+    {
+      lock (this)
+      {
+        DateTime now = DateTime.Now;
+
+        // block concurrent request?
+        if (_ignoreSuspendUntil > now)
+        {
+          this.LogInfo("PowerScheduler: Concurrent shutdown was ignored: {0} ; force: {1}", (RestartOptions)how, force);
+          return;
+        }
+
+        // block any other request forever (for now)
+        _ignoreSuspendUntil = DateTime.MaxValue;
+      }
+
+      this.LogInfo("PowerScheduler: Entering shutdown {0} ; forced: {1} -- kick off shutdown thread", (RestartOptions)how,
+                   force);
+      SuspendSystemThreadEnv data = new SuspendSystemThreadEnv();
+      data.that = this;
+      data.how = (RestartOptions)how;
+      data.force = force;
+      data.source = source;
+
+      Thread suspendThread = new Thread(SuspendSystemThread);
+      suspendThread.Name = "Powerscheduler Suspender";
+      suspendThread.Start(data);
+    }
 
     /// <summary>
     /// Called by the PowerSchedulerPlugin to start the PowerScheduler
@@ -319,194 +491,12 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     }
 
     /// <summary>
-    /// Configure remoting for power control from MP
-    /// </summary>
-    /*private void StartRemoting()
-    {
-      if (_remotingStarted)
-        return;
-      try
-      {
-        ListDictionary channelProperties = new ListDictionary();
-        channelProperties.Add("port", 31457);
-        channelProperties.Add("exclusiveAddressUse", false);
-        HttpChannel channel = new HttpChannel(channelProperties,
-                                              new SoapClientFormatterSinkProvider(),
-                                              new SoapServerFormatterSinkProvider());
-
-        ChannelServices.RegisterChannel(channel, false);
-      }
-      catch (RemotingException) {}
-      catch (System.Net.Sockets.SocketException) {}
-      ObjRef objref = RemotingServices.Marshal(this, "PowerControl", typeof (IPowerController));
-      RemotePowerControl.Clear();
-      this.LogDebug("PowerScheduler: Registered PowerScheduler as \"PowerControl\" remoting service");
-      _remotingStarted = true;
-    }*/
-
-    #endregion
-
-    #region IPowerScheduler implementation
-
-    /// <summary>
-    /// Registers a new IStandbyHandler plugin which can prevent entering standby
-    /// </summary>
-    /// <param name="handler">handler to register</param>
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    public void Register(IStandbyHandler handler)
-    {
-      if (!_standbyHandlers.Contains(handler))
-        _standbyHandlers.Add(handler);
-    }
-
-    /// <summary>
-    /// Registers a new IWakeupHandler plugin which can wakeup the system at a desired time
-    /// </summary>
-    /// <param name="handler">handler to register</param>
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    public void Register(IWakeupHandler handler)
-    {
-      if (!_wakeupHandlers.Contains(handler))
-        _wakeupHandlers.Add(handler);
-    }
-
-    /// <summary>
-    /// Unregisters a IStandbyHandler plugin
-    /// </summary>
-    /// <param name="handler">handler to unregister</param>
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    public void Unregister(IStandbyHandler handler)
-    {
-      if (_standbyHandlers.Contains(handler))
-        _standbyHandlers.Remove(handler);
-    }
-
-    /// <summary>
-    /// Unregisters a IWakeupHandler plugin
-    /// </summary>
-    /// <param name="handler">handler to register</param>
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    public void Unregister(IWakeupHandler handler)
-    {
-      if (_wakeupHandlers.Contains(handler))
-        _wakeupHandlers.Remove(handler);
-    }
-
-    /// <summary>
-    /// Checks if the given IStandbyHandler is registered
-    /// </summary>
-    /// <param name="handler">IStandbyHandler to check</param>
-    /// <returns>is the given handler registered?</returns>
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    public bool IsRegistered(IStandbyHandler handler)
-    {
-      return _standbyHandlers.Contains(handler);
-    }
-
-    /// <summary>
-    /// Checks if the given IWakeupHandler is registered
-    /// </summary>
-    /// <param name="handler">IWakeupHandler to check</param>
-    /// <returns>is the given handler registered?</returns>
-    [MethodImpl(MethodImplOptions.Synchronized)]
-    public bool IsRegistered(IWakeupHandler handler)
-    {
-      return _wakeupHandlers.Contains(handler);
-    }
-
-    /// <summary>
-    /// Checks if a suspend request is in progress
-    /// </summary>
-    /// <returns>is the system currently trying to suspend?</returns>
-    public bool IsSuspendInProgress()
-    {
-      return _isSuspendInProgress;
-    }
-
-
-    /// <summary>
-    /// Used to avoid concurrent suspend requests which could result in a suspend - user resumes - immediately suspends.
-    /// </summary>
-    private DateTime _ignoreSuspendUntil = DateTime.MinValue;
-
-    /// <summary>
-    /// Manually puts the system in Standby (Suspend/Hibernate depending on what is configured)
-    /// </summary>
-    /// <param name="source">description of the source who puts the system into standby</param>
-    /// <param name="force">should we ignore PowerScheduler's current state (true) or not? (false)</param>
-    /// <returns></returns>
-    public void SuspendSystem(string source, bool force)
-    {
-      this.LogInfo("PowerScheduler: Manual system suspend requested by {0}", source);
-
-      // determine standby mode
-      switch (_settings.ShutdownMode)
-      {
-        case ShutdownMode.Suspend:
-          SuspendSystemWithOptions(source, (int)RestartOptions.Suspend, force);
-          break;
-        case ShutdownMode.Hibernate:
-          SuspendSystemWithOptions(source, (int)RestartOptions.Hibernate, force);
-          break;
-        case ShutdownMode.StayOn:
-          this.LogDebug("PowerScheduler: Standby requested but system is configured to stay on");
-          break;
-        default:
-          this.LogError("PowerScheduler: unknown shutdown mode: {0}", _settings.ShutdownMode);
-          break;
-      }
-    }
-
-    /// <summary>
     /// Puts the system into the configured standby mode (Suspend/Hibernate)
     /// </summary>
     /// <returns>bool indicating whether or not the request was honoured</returns>
     private void SuspendSystem()
     {
       SuspendSystem("", _settings.ForceShutdown);
-    }
-
-    protected class SuspendSystemThreadEnv
-    {
-      public PowerScheduler that;
-      public RestartOptions how;
-      public bool force;
-      public string source;
-    }
-
-    /// <summary>
-    /// Puts the system into the configured standby mode (Suspend/Hibernate)
-    /// </summary>
-    /// <param name="force">should the system be forced to enter standby?</param>
-    /// <returns>bool indicating whether or not the request was honoured</returns>
-    public void SuspendSystemWithOptions(string source, int how, bool force)
-    {
-      lock (this)
-      {
-        DateTime now = DateTime.Now;
-
-        // block concurrent request?
-        if (_ignoreSuspendUntil > now)
-        {
-          this.LogInfo("PowerScheduler: Concurrent shutdown was ignored: {0} ; force: {1}", (RestartOptions)how, force);
-          return;
-        }
-
-        // block any other request forever (for now)
-        _ignoreSuspendUntil = DateTime.MaxValue;
-      }
-
-      this.LogInfo("PowerScheduler: Entering shutdown {0} ; forced: {1} -- kick off shutdown thread", (RestartOptions)how,
-               force);
-      SuspendSystemThreadEnv data = new SuspendSystemThreadEnv();
-      data.that = this;
-      data.how = (RestartOptions)how;
-      data.force = force;
-      data.source = source;
-
-      Thread suspendThread = new Thread(SuspendSystemThread);
-      suspendThread.Name = "Powerscheduler Suspender";
-      suspendThread.Start(data);
     }
 
     protected static void SuspendSystemThread(object _data)
@@ -595,9 +585,25 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
       }
     }
 
+    protected class SuspendSystemThreadEnv
+    {
+      public bool force;
+      public RestartOptions how;
+      public string source;
+      public PowerScheduler that;
+    }
+
     #endregion
 
     #region IPowerController implementation
+
+    private Dictionary<string, int> _remoteStandbyHandlerURIs = new Dictionary<string, int>();
+    private Hashtable _remoteStandbyHandlers = new Hashtable();
+    private int _remoteTags = 0;
+    private Dictionary<string, int> _remoteWakeupHandlerURIs = new Dictionary<string, int>();
+    private Hashtable _remoteWakeupHandlers = new Hashtable();
+
+    #region IPowerController Members
 
     /// <summary>
     /// Allows the PowerScheduler client plugin to register its powerstate with the tvserver PowerScheduler
@@ -623,20 +629,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     }
 
     /// <summary>
-    /// Resets the idle timer of the PowerScheduler. When enough time has passed (IdleTimeout), the system
-    /// is suspended as soon as possible (no handler disallows shutdown).
-    /// Note that the idle timer is automatically reset when the user moves the mouse or touchs the keyboard.
-    /// </summary>
-    public void UserActivityDetected(DateTime when)
-    {
-      if (when > _lastUserTime)
-      {
-        _lastUserTime = when;
-        LogVerbose("PowerScheduler: User input detected at {0}", _lastUserTime);
-      }
-    }
-
-    /// <summary>
     /// Indicates whether or not the client is connected to the server (or not)
     /// </summary>
     public bool IsConnected()
@@ -648,12 +640,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     {
       return _settings;
     }
-
-    private int _remoteTags = 0;
-    private Hashtable _remoteStandbyHandlers = new Hashtable();
-    private Hashtable _remoteWakeupHandlers = new Hashtable();
-    private Dictionary<string, int> _remoteStandbyHandlerURIs = new Dictionary<string, int>();
-    private Dictionary<string, int> _remoteWakeupHandlerURIs = new Dictionary<string, int>();
 
     [MethodImpl(MethodImplOptions.Synchronized)]
     public int RegisterRemote(string standbyHandlerURI, string wakeupHandlerURI)
@@ -771,6 +757,26 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
         }
       }
     }
+
+    #endregion
+
+    #region IPowerScheduler Members
+
+    /// <summary>
+    /// Resets the idle timer of the PowerScheduler. When enough time has passed (IdleTimeout), the system
+    /// is suspended as soon as possible (no handler disallows shutdown).
+    /// Note that the idle timer is automatically reset when the user moves the mouse or touchs the keyboard.
+    /// </summary>
+    public void UserActivityDetected(DateTime when)
+    {
+      if (when > _lastUserTime)
+      {
+        _lastUserTime = when;
+        LogVerbose("PowerScheduler: User input detected at {0}", _lastUserTime);
+      }
+    }
+
+    #endregion
 
     #endregion
 
@@ -972,15 +978,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
         args.SetData<PowerSettings>(_settings.Clone());
         SendPowerSchedulerEvent(args);
       }
-    }
-
-    /// <summary>
-    /// struct for GetLastInpoutInfo
-    /// </summary>
-    internal struct LASTINPUTINFO
-    {
-      public uint cbSize;
-      public uint dwTime;
     }
 
     /// <summary>
@@ -1221,6 +1218,103 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
         this.LogDebug("PowerScheduler: Warning WakeupEnabled is not set.");
     }
 
+    /// <summary>
+    /// action: standby, wakeup, epg
+    /// </summary>
+    /// <param name="action"></param>
+    public void RunExternalCommand(String action)
+    {
+      PowerSetting setting = _settings.GetSetting("ExternalCommand");
+      if (setting.Get<string>().Equals(String.Empty))
+        return;
+      using (Process p = new Process())
+      {
+        ProcessStartInfo psi = new ProcessStartInfo();
+        psi.FileName = setting.Get<string>();
+        psi.UseShellExecute = true;
+        psi.WindowStyle = ProcessWindowStyle.Minimized;
+        psi.Arguments = action;
+        psi.ErrorDialog = false;
+        if (OSInfo.OSInfo.VistaOrLater())
+        {
+          psi.Verb = "runas";
+        }
+
+        p.StartInfo = psi;
+        LogVerbose("Starting external command: {0} {1}", p.StartInfo.FileName, p.StartInfo.Arguments);
+        try
+        {
+          p.Start();
+          p.WaitForExit();
+        }
+        catch (Exception e)
+        {
+          Log.Error(e);
+        }
+        LogVerbose("External command finished");
+      }
+    }
+
+    /// <summary>
+    /// Frees the tv tuners before entering standby
+    /// </summary>
+    private void DeInitController()
+    {
+      if (_cardsStopped)
+        return;
+      // only free tuner cards if reinitialization is enabled in settings
+      if (!_settings.ReinitializeController)
+        return;
+
+
+      if (_controllerService != null)
+      {
+        this.LogDebug("PowerScheduler: DeInit controller");
+        _controllerService.DeInit();
+        _cardsStopped = true;
+        _reinitializeController = true;
+      }
+    }
+
+    /// <summary>
+    /// Restarts the TVController when resumed from standby
+    /// </summary>
+    private void ReInitController()
+    {
+      if (!_reinitializeController)
+        return;
+      // only reinitialize controller if enabled in settings
+      if (!_settings.ReinitializeController)
+        return;
+
+
+      if (_controllerService != null && _reinitializeController)
+      {
+        this.LogDebug("PowerScheduler: ReInit Controller");
+        Thread.Sleep(5000); // Give it a few seconds.
+        _controllerService.Init();
+        _reinitializeController = false;
+        _cardsStopped = false;
+      }
+    }
+
+    #region Logging wrapper methods
+
+    private void LogVerbose(string msg)
+    {
+      //don't just do this: LogVerbose(msg, null);!!
+      if (_settings.ExtensiveLogging)
+        this.LogDebug(msg);
+    }
+
+    private void LogVerbose(string format, params object[] args)
+    {
+      if (_settings.ExtensiveLogging)
+        this.LogDebug(format, args);
+    }
+
+    #endregion
+
     #region Message handling
 
     /// <summary>
@@ -1278,112 +1372,26 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     #endregion
 
     /// <summary>
-    /// action: standby, wakeup, epg
+    /// struct for GetLastInpoutInfo
     /// </summary>
-    /// <param name="action"></param>
-    public void RunExternalCommand(String action)
+    internal struct LASTINPUTINFO
     {
-      PowerSetting setting = _settings.GetSetting("ExternalCommand");
-      if (setting.Get<string>().Equals(String.Empty))
-        return;
-      using (Process p = new Process())
-      {
-        ProcessStartInfo psi = new ProcessStartInfo();
-        psi.FileName = setting.Get<string>();
-        psi.UseShellExecute = true;
-        psi.WindowStyle = ProcessWindowStyle.Minimized;
-        psi.Arguments = action;
-        psi.ErrorDialog = false;
-        if (OSInfo.OSInfo.VistaOrLater())
-        {
-          psi.Verb = "runas";
-        }
-
-        p.StartInfo = psi;
-        LogVerbose("Starting external command: {0} {1}", p.StartInfo.FileName, p.StartInfo.Arguments);
-        try
-        {
-          p.Start();
-          p.WaitForExit();
-        }
-        catch (Exception e)
-        {
-          Log.Error(e);
-        }
-        LogVerbose("External command finished");
-      }
-    }
-
-    #region Logging wrapper methods
-
-    private void LogVerbose(string msg)
-    {
-      //don't just do this: LogVerbose(msg, null);!!
-      if (_settings.ExtensiveLogging)
-        this.LogDebug(msg);
-    }
-
-    private void LogVerbose(string format, params object[] args)
-    {
-      if (_settings.ExtensiveLogging)
-        this.LogDebug(format, args);
+      public uint cbSize;
+      public uint dwTime;
     }
 
     #endregion
 
-    /// <summary>
-    /// Frees the tv tuners before entering standby
-    /// </summary>
-    private void DeInitController()
-    {
-      if (_cardsStopped)
-        return;
-      // only free tuner cards if reinitialization is enabled in settings
-      if (!_settings.ReinitializeController)
-        return;
-
-
-      if (_controllerService != null)
-      {
-        this.LogDebug("PowerScheduler: DeInit controller");
-        _controllerService.DeInit();
-        _cardsStopped = true;
-        _reinitializeController = true;
-      }
-    }
-
-    /// <summary>
-    /// Restarts the TVController when resumed from standby
-    /// </summary>
-    private void ReInitController()
-    {
-      if (!_reinitializeController)
-        return;
-      // only reinitialize controller if enabled in settings
-      if (!_settings.ReinitializeController)
-        return;
-
-
-      if (_controllerService != null && _reinitializeController)
-      {
-        this.LogDebug("PowerScheduler: ReInit Controller");
-        Thread.Sleep(5000); // Give it a few seconds.
-        _controllerService.Init();
-        _reinitializeController = false;
-        _cardsStopped = false;
-      }
-    }
-
-    #endregion
-
-    private bool _currentUnattended = false;
-    private DateTime _currentNextWakeupTime = DateTime.MaxValue;
-    private String _currentNextWakeupHandler = "";
     private bool _currentDisAllowShutdown = false;
     private String _currentDisAllowShutdownHandler = "";
+    private String _currentNextWakeupHandler = "";
+    private DateTime _currentNextWakeupTime = DateTime.MaxValue;
+    private bool _currentUnattended = false;
     private bool _denySuspendQuery = true;
-    private int _querySuspendFailed = 0;
     private bool _isSuspendInProgress = false;
+    private int _querySuspendFailed = 0;
+
+    #region IPowerScheduler Members
 
     public void GetCurrentState(bool refresh, out bool unattended, out bool disAllowShutdown,
                                 out String disAllowShutdownHandler, out DateTime nextWakeupTime,
@@ -1403,6 +1411,8 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
       nextWakeupTime = _currentNextWakeupTime;
       nextWakeupHandler = _currentNextWakeupHandler;
     }
+
+    #endregion
 
     #region Private properties
 

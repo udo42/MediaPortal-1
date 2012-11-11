@@ -9,12 +9,6 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
   {
     private DateTime? _onDate;
 
-    public DateTime? OnDate
-    {
-      get { return _onDate; }
-      set { _onDate = value; }
-    }
-
     public OnDateCondition(DateTime? onDate)
     {
       _onDate = onDate;
@@ -24,6 +18,14 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
     {
     }
 
+    public DateTime? OnDate
+    {
+      get { return _onDate; }
+      set { _onDate = value; }
+    }
+
+    #region IScheduleCondition Members
+
     public IQueryable<Program> ApplyCondition(IQueryable<Program> baseQuery)
     {
       if (_onDate.HasValue)
@@ -32,5 +34,7 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
       }
       return baseQuery;
     }
+
+    #endregion
   }
 }

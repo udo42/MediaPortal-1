@@ -44,35 +44,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
   internal static class ComHelper
   {
     // DllGetClassObject fuction pointer signature
-    private delegate int DllGetClassObject(ref Guid classId, ref Guid interfaceId, [Out, MarshalAs(UnmanagedType.Interface)] out object ppunk);
-
-    /// <summary>
-    /// Holds a list of dll handles and unloads the dlls 
-    /// in the destructor
-    /// </summary>
-    private class DllList
-    {
-      private readonly List<IntPtr> _handleList = new List<IntPtr>();
-      public void AddDllHandle(IntPtr dllHandle)
-      {
-        lock (_handleList)
-        {
-          _handleList.Add(dllHandle);
-        }
-      }
-
-      ~DllList()
-      {
-        foreach (IntPtr dllHandle in _handleList)
-        {
-          try
-          {
-            MediaPortal.Common.Utils.NativeMethods.FreeLibrary(dllHandle);
-          }
-          catch { }
-        }
-      }
-    }
 
     static readonly DllList DLL_LIST = new DllList();
 
@@ -116,5 +87,43 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 
       return (unk as IClassFactory);
     }
+
+    #region Nested type: DllGetClassObject
+
+    private delegate int DllGetClassObject(ref Guid classId, ref Guid interfaceId, [Out, MarshalAs(UnmanagedType.Interface)] out object ppunk);
+
+    #endregion
+
+    #region Nested type: DllList
+
+    /// <summary>
+    /// Holds a list of dll handles and unloads the dlls 
+    /// in the destructor
+    /// </summary>
+    private class DllList
+    {
+      private readonly List<IntPtr> _handleList = new List<IntPtr>();
+      public void AddDllHandle(IntPtr dllHandle)
+      {
+        lock (_handleList)
+        {
+          _handleList.Add(dllHandle);
+        }
+      }
+
+      ~DllList()
+      {
+        foreach (IntPtr dllHandle in _handleList)
+        {
+          try
+          {
+            MediaPortal.Common.Utils.NativeMethods.FreeLibrary(dllHandle);
+          }
+          catch { }
+        }
+      }
+    }
+
+    #endregion
   }
 }

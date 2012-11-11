@@ -35,32 +35,32 @@ namespace Mediaportal.TV.Server.TVControl
   {
     #region private members
 
-    [DataMember] 
-    private UserType _userType;
-
-    [DataMember]
-    private string _hostName;
-
     [DataMember]
     private int _cardId;
 
     [DataMember]
-    private int _failedCardId;
+    private Dictionary<int, ChannelState> _channelStates; //used primarily for miniepg.
 
     [DataMember]
-    private TvStoppedReason _timeshiftStoppedReason;
+    private int _failedCardId;
 
     [NonSerialized]
     private object _history;
 
     [DataMember]
-    private Dictionary<int, ChannelState> _channelStates; //used primarily for miniepg.
+    private string _hostName;
 
     [DataMember]
     private int? _priority;
 
     [DataMember]
     private IDictionary<int, ISubChannel> _subChannels; //key is subChannelId
+
+    [DataMember]
+    private TvStoppedReason _timeshiftStoppedReason;
+
+    [DataMember] 
+    private UserType _userType;
 
     #endregion
 
@@ -116,7 +116,33 @@ namespace Mediaportal.TV.Server.TVControl
       _priority = priority;           
     }
 
-    #endregion    
+    #endregion
+
+    #region ICloneable Members
+
+    /// <summary>
+    /// Creates a new object that is a copy of the current instance.
+    /// </summary>
+    /// <returns>
+    /// A new object that is a copy of this instance.
+    /// </returns>
+    public object Clone()
+    {
+      var user = new User(_hostName, _userType, _cardId, _priority.GetValueOrDefault())
+                   {                                              
+                     SubChannels = new SortedDictionary<int, ISubChannel>(_subChannels),
+                     History = _history,
+                     ChannelStates = new Dictionary<int, ChannelState>(_channelStates),
+                     FailedCardId = _failedCardId,
+                     TvStoppedReason = _timeshiftStoppedReason                      
+                   };
+
+      return user;
+    }
+
+    #endregion
+
+    #region IUser Members
 
     /// <summary>
     /// Gets an integer defining the user's card lock priority (higher number=higher priority)
@@ -193,37 +219,11 @@ namespace Mediaportal.TV.Server.TVControl
       set { _subChannels = value; }
     }
 
-    #region ICloneable Members
-
-    /// <summary>
-    /// Creates a new object that is a copy of the current instance.
-    /// </summary>
-    /// <returns>
-    /// A new object that is a copy of this instance.
-    /// </returns>
-    public object Clone()
-    {
-      var user = new User(_hostName, _userType, _cardId, _priority.GetValueOrDefault())
-                    {                                              
-                      SubChannels = new SortedDictionary<int, ISubChannel>(_subChannels),
-                      History = _history,
-                      ChannelStates = new Dictionary<int, ChannelState>(_channelStates),
-                      FailedCardId = _failedCardId,
-                      TvStoppedReason = _timeshiftStoppedReason                      
-                    };
-
-      return user;
-    }
-
     public UserType UserType
     {
       get { return _userType; }
     }
 
-
     #endregion
-
-
-   
   }
 }

@@ -124,18 +124,28 @@ namespace Mediaportal.TV.Server.TestApp
 
     #endregion
 
-    [ComImport, Guid("4F8BF30C-3BEB-43A3-8BF2-10096FD28CF2")]
-    protected class TsFileSource {}
-
     protected IFilterGraph2 _graphBuilder;
+    private IMediaControl _mediaCtrl;
+    protected IBaseFilter _mpegDemux;
+    private bool _paused;
+    protected IPin _pinAudio;
+    protected IPin _pinVideo;
     protected DsROTEntry _rotEntry;
     protected TsFileSource _tsFileSource;
-    protected IBaseFilter _mpegDemux;
-    protected IPin _pinVideo;
-    protected IPin _pinAudio;
-    private IMediaControl _mediaCtrl;
     protected IVideoWindow _videoWin;
-    private bool _paused;
+
+    public bool Paused
+    {
+      get { return _paused; }
+      set
+      {
+        _paused = value;
+        if (_paused)
+          _mediaCtrl.Pause();
+        else
+          _mediaCtrl.Run();
+      }
+    }
 
     public bool Play(string fileName, Form form)
     {
@@ -335,19 +345,6 @@ namespace Mediaportal.TV.Server.TestApp
       }
     }
 
-    public bool Paused
-    {
-      get { return _paused; }
-      set
-      {
-        _paused = value;
-        if (_paused)
-          _mediaCtrl.Pause();
-        else
-          _mediaCtrl.Run();
-      }
-    }
-
     private static AMMediaType GetAudioMpg2Media()
     {
       AMMediaType mediaAudio = new AMMediaType();
@@ -381,5 +378,12 @@ namespace Mediaportal.TV.Server.TestApp
       Marshal.Copy(Mpeg2ProgramVideo, 0, mediaVideo.formatPtr, mediaVideo.formatSize);
       return mediaVideo;
     }
+
+    #region Nested type: TsFileSource
+
+    [ComImport, Guid("4F8BF30C-3BEB-43A3-8BF2-10096FD28CF2")]
+    protected class TsFileSource {}
+
+    #endregion
   }
 }

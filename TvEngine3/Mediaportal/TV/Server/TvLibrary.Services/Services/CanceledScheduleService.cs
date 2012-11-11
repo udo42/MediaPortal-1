@@ -6,9 +6,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 {
   public class CanceledScheduleService : ICanceledScheduleService
   {
+    #region ICanceledScheduleService Members
+
     public CanceledSchedule SaveCanceledSchedule(CanceledSchedule canceledSchedule)
     {
       return CanceledScheduleManagement.SaveCanceledSchedule(canceledSchedule);
     }
+
+    #endregion
   }  
 }

@@ -218,6 +218,5 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
     }    
 
     #endregion
-
   }
 }

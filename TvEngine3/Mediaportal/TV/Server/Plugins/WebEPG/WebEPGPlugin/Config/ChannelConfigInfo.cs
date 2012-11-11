@@ -27,14 +27,14 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
   /// </summary>
   public class ChannelConfigInfo
   {
+    public string ChannelID;
     public string DisplayName;
     public string FullName;
-    public string ChannelID;
+    public SortedList GrabberList;
+    public bool Linked;
     public string PrimaryGrabberID;
     public string PrimaryGrabberName;
-    public bool Linked;
-    public int linkStart;
     public int linkEnd;
-    public SortedList GrabberList;
+    public int linkStart;
   }
 }

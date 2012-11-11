@@ -31,19 +31,19 @@ namespace Mediaportal.TV.TvPlugin.Helper
     private Int32 _value = 0;
 
     /// <summary>
-    /// Returns values
-    /// </summary>
-    public Int32 Value
-    {
-      get { return _value; }
-    }
-
-    /// <summary>
     /// ctor
     /// </summary>
     public BitHelper()
     {
       Clear();
+    }
+
+    /// <summary>
+    /// Returns values
+    /// </summary>
+    public Int32 Value
+    {
+      get { return _value; }
     }
 
     /// <summary>

@@ -35,21 +35,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
   public class VideoQuality
   {
     /// <summary>
-    /// The minimum value
-    /// </summary>
-    private readonly int _minValue;
-
-    /// <summary>
-    /// The maximum value
-    /// </summary>
-    private readonly int _maxValue;
-
-    /// <summary>
-    /// The stepping delta
-    /// </summary>
-    private readonly int _steppingDelta;
-
-    /// <summary>
     /// The default value
     /// </summary>
     private readonly int _defaultValue;
@@ -58,6 +43,21 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     /// Value can be adjusted manualyy
     /// </summary>
     private readonly bool _manual;
+
+    /// <summary>
+    /// The maximum value
+    /// </summary>
+    private readonly int _maxValue;
+
+    /// <summary>
+    /// The minimum value
+    /// </summary>
+    private readonly int _minValue;
+
+    /// <summary>
+    /// The stepping delta
+    /// </summary>
+    private readonly int _steppingDelta;
 
     /// <summary>
     /// The current value
@@ -176,9 +176,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     #region variables
 
     /// <summary>
-    /// Name of the capture file
+    /// Name of the optional audio capture device
     /// </summary>
-    private string _name;
+    private string _audioCaptureName;
+
+    /// <summary>
+    /// Index of the audio input pin
+    /// </summary>
+    private int _audioIn;
 
     /// <summary>
     /// Bitmask of the available video standards
@@ -189,11 +194,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     /// The current video standard
     /// </summary>
     private AnalogVideoStandard _currentVideoStandard;
-
-    /// <summary>
-    /// Index of the teletext pin
-    /// </summary>
-    private int _teletextPin;
 
     /// <summary>
     /// The current frame rate
@@ -211,9 +211,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     private int _imageWidth;
 
     /// <summary>
-    /// Dictionary of the VideoProcAmp values
+    /// Name of the capture file
     /// </summary>
-    private Dictionary<VideoProcAmpProperty, VideoQuality> _videoProcAmpValues;
+    private string _name;
+
+    /// <summary>
+    /// Index of the teletext pin
+    /// </summary>
+    private int _teletextPin;
 
     /// <summary>
     /// Index of the video input pin
@@ -221,14 +226,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     private int _videoIn;
 
     /// <summary>
-    /// Index of the audio input pin
+    /// Dictionary of the VideoProcAmp values
     /// </summary>
-    private int _audioIn;
-
-    /// <summary>
-    /// Name of the optional audio capture device
-    /// </summary>
-    private string _audioCaptureName;
+    private Dictionary<VideoProcAmpProperty, VideoQuality> _videoProcAmpValues;
 
     #endregion
 

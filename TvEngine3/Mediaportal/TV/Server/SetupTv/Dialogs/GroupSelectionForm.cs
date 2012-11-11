@@ -31,13 +31,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 {
   public partial class GroupSelectionForm : Form
   {
-
-
-
-    private string _preselectedGroupName = string.Empty;
-    private List<object> _groups = new List<object>();
-
-    private SelectionType _SelectionType = SelectionType.ForDeleting;
+    #region SelectionType enum
 
     public enum SelectionType
     {
@@ -45,11 +39,11 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       ForRenaming
     }
 
-    public SelectionType Selection
-    {
-      get { return _SelectionType; }
-      set { _SelectionType = value; }
-    }
+    #endregion
+
+    private SelectionType _SelectionType = SelectionType.ForDeleting;
+    private List<object> _groups = new List<object>();
+    private string _preselectedGroupName = string.Empty;
 
     public GroupSelectionForm()
     {
@@ -61,6 +55,25 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       InitializeComponent();
 
       _preselectedGroupName = preselectedGroupName;
+    }
+
+    public SelectionType Selection
+    {
+      get { return _SelectionType; }
+      set { _SelectionType = value; }
+    }
+
+    public object Group
+    {
+      get
+      {
+        if (_groups == null || listBox1.SelectedIndex <= -1)
+        {
+          return null;
+        }
+
+        return _groups[listBox1.SelectedIndex];
+      }
     }
 
     private void mpButton1_Click(object sender, EventArgs e)
@@ -166,19 +179,6 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       if (listBox1.SelectedIndex <= -1 && listBox1.Items.Count > 0)
       {
         listBox1.SelectedIndex = 0;
-      }
-    }
-
-    public object Group
-    {
-      get
-      {
-        if (_groups == null || listBox1.SelectedIndex <= -1)
-        {
-          return null;
-        }
-
-        return _groups[listBox1.SelectedIndex];
       }
     }
   }

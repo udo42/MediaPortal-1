@@ -9,14 +9,14 @@ namespace Mediaportal.Common.Utils
   /// </summary>
   public static class ThreadHelper
   {
-    private static ParallelOptions _parallelismOptions;
-
     /// <summary>
     /// use the SERVER_PARALLELISM_ENBABLED to enable or disable parallelism (threads) on the server to aid in debugging.
     /// default: true
     /// disabling it will only work when running in debug mode.
     /// </summary>
     private const bool PARALLELISM_ENABLED = true;
+
+    private static ParallelOptions _parallelismOptions;
 
     static ThreadHelper()
     {

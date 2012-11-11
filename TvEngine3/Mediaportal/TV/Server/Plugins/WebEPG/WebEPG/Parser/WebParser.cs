@@ -33,12 +33,12 @@ namespace WebEPG.Parser
     #region Variables
 
     private HtmlParser _listingParser;
-    private HtmlParser _sublinkParser;
+    private DataPreference _listingPreference;
     private string _sublinkMatch;
+    private HtmlParser _sublinkParser;
+    private DataPreference _sublinkPreference;
     private HTTPRequest _sublinkRequest;
     private WebParserTemplate _template;
-    private DataPreference _listingPreference;
-    private DataPreference _sublinkPreference;
 
     #endregion
 

@@ -7,7 +7,9 @@ using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 namespace Mediaportal.TV.Server.TVLibrary.Services
 {  
   public class ChannelGroupService : IChannelGroupService
-  {    
+  {
+    #region IChannelGroupService Members
+
     public IList<ChannelGroup> ListAllChannelGroups()
     {
       var listAllChannelGroups = ChannelGroupManagement.ListAllChannelGroups();
@@ -69,5 +71,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       var orCreateGroup = ChannelGroupManagement.GetOrCreateGroup(groupName, mediaType);
       return orCreateGroup;
     }
+
+    #endregion
   }
 }

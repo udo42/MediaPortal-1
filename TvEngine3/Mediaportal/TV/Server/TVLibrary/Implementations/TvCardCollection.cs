@@ -80,6 +80,40 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       DetectCards();
     }
 
+    /// <summary>
+    /// returns the list of cards present...
+    /// </summary>
+    public List<ITVCard> Cards
+    {
+      get { return _cards; }
+    }
+
+    #region Hardware specific functions
+
+    private bool CheckHDHomerunCablePrefered(String cardName)
+    {
+      try
+      {
+        // tuner name is referenced in registry: silicondust hdhomerun tuner 1210551e-0
+        //          HKEY_LOCAL_MACHINE\SOFTWARE\Silicondust\HDHomeRun\Tuners\1210551E-0
+        String tunerName = cardName.Replace("silicondust hdhomerun tuner ", "");
+        using (
+          RegistryKey registryKey =
+            Registry.LocalMachine.OpenSubKey(String.Format(@"SOFTWARE\Silicondust\HDHomeRun\Tuners\{0}", tunerName)))
+        {
+          if (registryKey != null)
+          {
+            String source = registryKey.GetValue("Source").ToString();
+            return source == "Digital Cable";
+          }
+        }
+      }
+      catch { }
+      return false;
+    }
+
+    #endregion
+
     private static bool ConnectFilter(IFilterGraph2 graphBuilder, IBaseFilter networkFilter, IBaseFilter tunerFilter)
     {
       IPin pinOut = DsFindPin.ByDirection(networkFilter, PinDirection.Output, 0);
@@ -512,39 +546,5 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       }
       return hash;
     }
-
-    /// <summary>
-    /// returns the list of cards present...
-    /// </summary>
-    public List<ITVCard> Cards
-    {
-      get { return _cards; }
-    }
-
-    #region Hardware specific functions
-
-    private bool CheckHDHomerunCablePrefered(String cardName)
-    {
-      try
-      {
-        // tuner name is referenced in registry: silicondust hdhomerun tuner 1210551e-0
-        //          HKEY_LOCAL_MACHINE\SOFTWARE\Silicondust\HDHomeRun\Tuners\1210551E-0
-        String tunerName = cardName.Replace("silicondust hdhomerun tuner ", "");
-        using (
-          RegistryKey registryKey =
-            Registry.LocalMachine.OpenSubKey(String.Format(@"SOFTWARE\Silicondust\HDHomeRun\Tuners\{0}", tunerName)))
-        {
-          if (registryKey != null)
-          {
-            String source = registryKey.GetValue("Source").ToString();
-            return source == "Digital Cable";
-          }
-        }
-      }
-      catch { }
-      return false;
-    }
-
-    #endregion
   }
 }

@@ -44,8 +44,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
   /// </summary>
   public class TvCardAnalog : TvCardBase, ITVCard
   {
-
-
     #region imports
 
     [ComImport, Guid("DB35F5ED-26B2-4A2A-92D3-852E145BF32D")]
@@ -55,20 +53,19 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
 
     #region variables
 
+    private ICaptureGraphBuilder2 _capBuilder;
+    private Capture _capture;
+    private Configuration _configuration;
+    private Crossbar _crossbar;
+    private Encoder _encoder;
+    private int _maxChannel = -1;
+    private int _minChannel = -1;
+    private IQuality _qualityControl;
+    private DsROTEntry _rotEntry;
+    private TeletextComponent _teletext;
+    private IBaseFilter _tsFileSink;
     private Tuner _tuner;
     private TvAudio _tvAudio;
-    private Crossbar _crossbar;
-    private Capture _capture;
-    private Encoder _encoder;
-    private TeletextComponent _teletext;
-    private DsROTEntry _rotEntry;
-    private ICaptureGraphBuilder2 _capBuilder;
-    private IBaseFilter _tsFileSink;
-    private IQuality _qualityControl;
-    private Configuration _configuration;
-    // Maximum and minimum channel numbers that the tuner is physically capable of tuning to.
-    private int _minChannel = -1;
-    private int _maxChannel = -1;
 
     #endregion
 
@@ -218,6 +215,20 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
     #region properties
 
     /// <summary>
+    /// Gets or sets the unique id of this card
+    /// </summary>
+    public override int CardId
+    {
+      get { return _cardId; }
+      set
+      {
+        _cardId = value;
+        _configuration = Configuration.readConfiguration(_cardId, _name, _devicePath);
+        Configuration.writeConfiguration(_configuration);
+      }
+    }
+
+    /// <summary>
     /// Update the tuner signal status statistics.
     /// </summary>
     /// <param name="force"><c>True</c> to force the status to be updated (status information may be cached).</param>
@@ -245,20 +256,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
       _signalPresent = _tunerLocked;
       _signalLevel = _tuner.SignalLevel;
       _signalQuality = _tuner.SignalQuality;
-    }
-
-    /// <summary>
-    /// Gets or sets the unique id of this card
-    /// </summary>
-    public override int CardId
-    {
-      get { return _cardId; }
-      set
-      {
-        _cardId = value;
-        _configuration = Configuration.readConfiguration(_cardId, _name, _devicePath);
-        Configuration.writeConfiguration(_configuration);
-      }
     }
 
     #endregion
@@ -520,20 +517,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
 
     #region scanning interface
 
-    ///<summary>
-    /// Returns the channel scanner interface
-    ///</summary>
-    ///<returns></returns>
-    public IAnalogChanelScan GetChannelScanner()
-    {
-      IAnalogChanelScan channelScanner = null;
-      if (_tsFileSink != null)
-      {
-        channelScanner = (IAnalogChanelScan)_tsFileSink;
-      }
-      return channelScanner;
-    }
-
     /// <summary>
     /// Gets the video frequency.
     /// </summary>
@@ -550,6 +533,20 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
     public int AudioFrequency
     {
       get { return _tuner.AudioFrequency; }
+    }
+
+    ///<summary>
+    /// Returns the channel scanner interface
+    ///</summary>
+    ///<returns></returns>
+    public IAnalogChanelScan GetChannelScanner()
+    {
+      IAnalogChanelScan channelScanner = null;
+      if (_tsFileSink != null)
+      {
+        channelScanner = (IAnalogChanelScan)_tsFileSink;
+      }
+      return channelScanner;
     }
 
     #endregion

@@ -26,15 +26,21 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 {
   public class MPListViewStringColumnSorter : IComparer
   {
+    #region OrderTypes enum
+
     public enum OrderTypes
     {
       AsString,
       AsValue
     } ;
 
-    public int SortColumn;
+    #endregion
+
     public SortOrder Order = SortOrder.Ascending;
     public OrderTypes OrderType = OrderTypes.AsString;
+    public int SortColumn;
+
+    #region IComparer Members
 
     public int Compare(object x, object y)
     {
@@ -95,5 +101,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       // Return '0' to indicate they are equal
       return 0;
     }
+
+    #endregion
   }
 }

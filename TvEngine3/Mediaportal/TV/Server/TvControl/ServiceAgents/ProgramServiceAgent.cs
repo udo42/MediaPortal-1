@@ -12,6 +12,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {
     }
 
+    #region IProgramService Members
+
     public IList<Program> GetProgramsForSchedule(Schedule schedule)
     {
       return _channel.GetProgramsForSchedule(schedule);
@@ -172,5 +174,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {
       _channel.InitiateInsertPrograms();
     }
+
+    #endregion
   }
 }

@@ -311,6 +311,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Countries
     }
 
     /// <summary>
+    /// Returns an array of all countries
+    /// </summary>
+    public Country[] Countries
+    {
+      get { return _countryList; }
+    }
+
+    /// <summary>
     /// Returns a country specified by name
     /// </summary>
     /// <param name="countryName">name of country</param>
@@ -359,15 +367,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Countries
         }
       }
       return null;
-    }
-
-
-    /// <summary>
-    /// Returns an array of all countries
-    /// </summary>
-    public Country[] Countries
-    {
-      get { return _countryList; }
     }
   }
 }

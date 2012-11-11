@@ -6,6 +6,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
 {
   class PathManager: IPathManager
   {
+    #region IPathManager Members
+
     /// <summary>
     /// Checks if a path with the specified label is registered.
     /// </summary>
@@ -15,11 +17,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     {
       // TODO: Check if folder exist
       return true;
-    }
-
-    protected string GetRootPath()
-    {
-      return String.Format(@"{0}\Team MediaPortal\MediaPortal TV Server", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
     }
 
     /// <summary>
@@ -67,6 +64,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     public bool LoadPaths (string pathsFile)
     {
       throw new NotImplementedException();
+    }
+
+    #endregion
+
+    protected string GetRootPath()
+    {
+      return String.Format(@"{0}\Team MediaPortal\MediaPortal TV Server", Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
     }
   }
 }

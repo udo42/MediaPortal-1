@@ -41,15 +41,16 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 
 
     private readonly ITvCardHandler _cardHandler;
+    private readonly object _cardReservationsLock = new object();
 
-    private readonly List<ICardTuneReservationTicket> _reservationsForTune = new List<ICardTuneReservationTicket>();
     private readonly List<ICardStopReservationTicket> _reservationsForStop = new List<ICardStopReservationTicket>();
+    private readonly List<ICardTuneReservationTicket> _reservationsForTune = new List<ICardTuneReservationTicket>();
+    private readonly IDictionary<int,ManualResetEvent> _tuneEvents = new Dictionary<int, ManualResetEvent>();
+    private readonly object _tuneEvtLock = new object();
 
     private ICardTuneReservationTicket _activeCardTuneReservationTicket = null;
-    private readonly object _cardReservationsLock = new object();    
-    
+    private CardStopState _cardStopState = CardStopState.Idle;
     private CardTuneState _cardTuneState = CardTuneState.Idle;
-    private CardStopState _cardStopState = CardStopState.Idle;    
 
 
     /// <summary>
@@ -62,14 +63,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       _cardHandler.Card.OnNewSubChannelEvent = new OnNewSubChannelDelegate(Card_OnNewSubChannelEvent);
     }
 
-    private void Card_OnNewSubChannelEvent(int id)
-    {
-      if (_cardHandler.Tuner.HasActiveCardTuneReservationTicket)
-      {
-        _cardHandler.Tuner.ActiveCardTuneReservationTicket.PendingSubchannel = id;
-      }
-      AddTuneEvent();
-    }
+    #region ICardTuner Members
 
     public bool HasActiveCardTuneReservationTicket
     {
@@ -199,9 +193,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
     }
 
-    private readonly IDictionary<int,ManualResetEvent> _tuneEvents = new Dictionary<int, ManualResetEvent>();
-    private readonly object _tuneEvtLock = new object();
-
     public void CancelTune(int subchannel)
     {
       if (_cardHandler.DataBaseCard.Enabled == false || subchannel < 0)
@@ -212,83 +203,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       _cardHandler.Card.CancelTune(subchannel);
       RaiseOnAfterCancelTuneEvent(subchannel);
       WaitForCancelledTuneToFinish(subchannel);
-    }
-
-    private void RaiseOnAfterCancelTuneEvent(int subchannel)
-    {
-      if (OnAfterCancelTuneEvent != null)
-      {
-        OnAfterCancelTuneEvent(subchannel);
-      }
-    }
-
-    private void RemoveTuneEvent(ManualResetEvent tuneEvt, int subchannel)
-    {
-      if (tuneEvt != null)
-      {
-        lock (_tuneEvtLock)
-        {
-          this.LogInfo("card: RemoveTuneEvent subch: {0}", subchannel);
-          tuneEvt.Close();
-          _tuneEvents.Remove(subchannel);
-        }
-      }
-    }
-
-    private int GetPendingSubchannel()
-    {
-      int pendingSubchannel = -1;
-      if (_cardHandler.Tuner.HasActiveCardTuneReservationTicket)
-      {
-        pendingSubchannel = _cardHandler.Tuner.ActiveCardTuneReservationTicket.PendingSubchannel;
-      }
-      return pendingSubchannel;
-    }
-
-    private void AddTuneEvent()
-    {
-      int subchannel = GetPendingSubchannel();
-      if (subchannel > -1)
-      {
-        lock (_tuneEvtLock)
-        {
-          this.LogInfo("card: AddTuneEvent card: {0} / subch: {1}", _cardHandler.DataBaseCard.IdCard, subchannel);
-          _tuneEvents[subchannel] = new ManualResetEvent(false);
-        }
-      }
-    }
-
-    private void SignalTuneEvent(int subchannel)
-    {     
-      if (subchannel > -1)
-      {
-        lock (_tuneEvtLock)
-        {
-          ManualResetEvent tuneEvt;
-          bool hasTuneEvt = _tuneEvents.TryGetValue(subchannel, out tuneEvt);
-          if (hasTuneEvt && tuneEvt != null)
-          {
-            this.LogInfo("card: SignalTuneEvent card: {0} / subch: {1}", _cardHandler.DataBaseCard.IdCard, subchannel);            
-            tuneEvt.Set();
-          }
-        }
-      }
-    }
-
-    private void WaitForCancelledTuneToFinish(int subchannel)
-    {
-      ManualResetEvent tuneEvt;
-      bool hasTuneEvt;
-      lock (_tuneEvtLock)
-      {
-        hasTuneEvt = _tuneEvents.TryGetValue(subchannel, out tuneEvt);
-      }
-      if (hasTuneEvt && tuneEvt != null)
-      {
-        this.LogInfo("card: WaitForCancelledTuneToFinish card: {0} / subch: {1}", _cardHandler.DataBaseCard.IdCard, subchannel);                    
-        tuneEvt.WaitOne();
-        RemoveTuneEvent(tuneEvt, subchannel);
-      }
     }
 
     /// <summary>
@@ -388,100 +302,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       SignalTuneEvent(pendingSubchannel);      
     }
 
-    private TvResult AfterTune(IUser user, int idChannel, ITvSubChannel result)
-    {
-      bool isLocked = _cardHandler.Card.IsTunerLocked;
-      this.LogDebug("card: Tuner locked: {0}", isLocked);
-
-      this.LogInfo("**************************************************");
-      this.LogInfo("***** SIGNAL LEVEL: {0}, SIGNAL QUALITY: {1} *****", _cardHandler.Card.SignalLevel,
-               _cardHandler.Card.SignalQuality);
-      this.LogInfo("**************************************************");
-
-      if (result != null)
-      {
-        this.LogDebug("card: tuned user: {0} subchannel: {1}", user.Name, result.SubChannelId);
-        _cardHandler.UserManagement.AddSubChannelOrUser(user, idChannel, result.SubChannelId);
-      }
-      else
-      {
-        return TvResult.AllCardsBusy;
-      }
-
-      if (result.IsTimeShifting || result.IsRecording)
-      {
-        _cardHandler.UserManagement.OnZap(user, idChannel);
-      }
-      return TvResult.Succeeded;
-    }
-
-    private bool BeforeTune(IChannel channel, ref IUser user, out TvResult result, int idChannel)
-    {
-      result = TvResult.UnknownError;
-      //@FIX this fails for back-2-back recordings
-      //if (CurrentDbChannel(ref user) == idChannel && idChannel >= 0)
-      //{
-      //  return true;
-      //}
-      this.LogDebug("card: user: {0}:{1}:{2} tune {3}", user.Name, user.CardId, _cardHandler.UserManagement.GetSubChannelIdByChannelId(user.Name, idChannel), channel.ToString());
-      _cardHandler.Card.CamType = (CamType)_cardHandler.DataBaseCard.CamType;
-      _cardHandler.SetParameters();
-
-      //check if transponder differs
-      if (_cardHandler.Card.SubChannels.Length > 0)
-      {
-        if (!IsTunedToTransponder(channel))
-        {          
-          if (_cardHandler.UserManagement.HasUserHighestPriority(user) || _cardHandler.UserManagement.IsOwner(user.Name) && _cardHandler.UserManagement.HasUserEqualOrHigherPriority(user))
-          {
-            this.LogDebug("card: to different transponder");
-
-            //remove all subchannels, except for this user...
-            int i = 0;
-            IEnumerable<IUser> usersRec = _cardHandler.UserManagement.GetUsersCopy(UserType.Scheduler);
-
-            foreach (IUser recUser in usersRec)
-            {
-              if (recUser.Name != user.Name)
-              {
-                this.LogDebug("  stop subchannel: {0} user: {1}", i, recUser.Name);
-                //fix for b2b mantis; http://mantis.team-mediaportal.com/view.php?id=1112
-                
-                // if we are stopping an on-going recording/schedule (=admin), we have to make sure that we remove the schedule also.                
-                this.LogDebug("user is scheduler: {0}", recUser.Name);
-                int recScheduleId = ServiceManager.Instance.InternalControllerService.GetRecordingSchedule(recUser.CardId, recUser.Name);
-
-                if (recScheduleId > 0)
-                {
-                  Schedule schedule = ScheduleManagement.GetSchedule(recScheduleId);
-                  this.LogInfo("removing schedule with id: {0}", schedule.IdSchedule);
-                  ServiceManager.Instance.InternalControllerService.StopRecordingSchedule(schedule.IdSchedule);
-                  ScheduleManagement.DeleteSchedule(schedule.IdSchedule);
-                }
-                i++;
-              }
-            }
-            //iterate all timesh. subchannels, and remove those.                            
-            FreeAllTimeshiftingSubChannels(ref user);              
-          }
-        }
-        else // same transponder, free previous subchannel before tuning..
-        {          
-          FreeAllTimeshiftingSubChannels(ref user);
-        }
-      }
-
-      if (OnBeforeTuneEvent != null)
-      {
-        OnBeforeTuneEvent(_cardHandler);
-      }
-
-      _cardHandler.Card.OnAfterTuneEvent = new Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.OnAfterTuneDelegate(CardTuner_OnAfterTuneEvent);
-
-      result = TvResult.Succeeded;
-      return true;
-    }
-
     public void FreeAllTimeshiftingSubChannels(ref IUser user)
     {
       foreach (ISubChannel subch in user.SubChannels.Values)
@@ -499,14 +319,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     public event OnAfterTuneDelegate OnAfterTuneEvent;
     public event OnBeforeTuneDelegate OnBeforeTuneEvent;
 
-
-    private void CardTuner_OnAfterTuneEvent()
-    {
-      if (OnAfterTuneEvent != null)
-      {
-        OnAfterTuneEvent(_cardHandler);
-      }
-    }
 
     /// <summary>
     /// Tune the card to the specified channel
@@ -597,6 +409,196 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       {
         this.LogError(ex);
         return false;
+      }
+    }
+
+    #endregion
+
+    private void Card_OnNewSubChannelEvent(int id)
+    {
+      if (_cardHandler.Tuner.HasActiveCardTuneReservationTicket)
+      {
+        _cardHandler.Tuner.ActiveCardTuneReservationTicket.PendingSubchannel = id;
+      }
+      AddTuneEvent();
+    }
+
+    private void RaiseOnAfterCancelTuneEvent(int subchannel)
+    {
+      if (OnAfterCancelTuneEvent != null)
+      {
+        OnAfterCancelTuneEvent(subchannel);
+      }
+    }
+
+    private void RemoveTuneEvent(ManualResetEvent tuneEvt, int subchannel)
+    {
+      if (tuneEvt != null)
+      {
+        lock (_tuneEvtLock)
+        {
+          this.LogInfo("card: RemoveTuneEvent subch: {0}", subchannel);
+          tuneEvt.Close();
+          _tuneEvents.Remove(subchannel);
+        }
+      }
+    }
+
+    private int GetPendingSubchannel()
+    {
+      int pendingSubchannel = -1;
+      if (_cardHandler.Tuner.HasActiveCardTuneReservationTicket)
+      {
+        pendingSubchannel = _cardHandler.Tuner.ActiveCardTuneReservationTicket.PendingSubchannel;
+      }
+      return pendingSubchannel;
+    }
+
+    private void AddTuneEvent()
+    {
+      int subchannel = GetPendingSubchannel();
+      if (subchannel > -1)
+      {
+        lock (_tuneEvtLock)
+        {
+          this.LogInfo("card: AddTuneEvent card: {0} / subch: {1}", _cardHandler.DataBaseCard.IdCard, subchannel);
+          _tuneEvents[subchannel] = new ManualResetEvent(false);
+        }
+      }
+    }
+
+    private void SignalTuneEvent(int subchannel)
+    {     
+      if (subchannel > -1)
+      {
+        lock (_tuneEvtLock)
+        {
+          ManualResetEvent tuneEvt;
+          bool hasTuneEvt = _tuneEvents.TryGetValue(subchannel, out tuneEvt);
+          if (hasTuneEvt && tuneEvt != null)
+          {
+            this.LogInfo("card: SignalTuneEvent card: {0} / subch: {1}", _cardHandler.DataBaseCard.IdCard, subchannel);            
+            tuneEvt.Set();
+          }
+        }
+      }
+    }
+
+    private void WaitForCancelledTuneToFinish(int subchannel)
+    {
+      ManualResetEvent tuneEvt;
+      bool hasTuneEvt;
+      lock (_tuneEvtLock)
+      {
+        hasTuneEvt = _tuneEvents.TryGetValue(subchannel, out tuneEvt);
+      }
+      if (hasTuneEvt && tuneEvt != null)
+      {
+        this.LogInfo("card: WaitForCancelledTuneToFinish card: {0} / subch: {1}", _cardHandler.DataBaseCard.IdCard, subchannel);                    
+        tuneEvt.WaitOne();
+        RemoveTuneEvent(tuneEvt, subchannel);
+      }
+    }
+
+    private TvResult AfterTune(IUser user, int idChannel, ITvSubChannel result)
+    {
+      bool isLocked = _cardHandler.Card.IsTunerLocked;
+      this.LogDebug("card: Tuner locked: {0}", isLocked);
+
+      this.LogInfo("**************************************************");
+      this.LogInfo("***** SIGNAL LEVEL: {0}, SIGNAL QUALITY: {1} *****", _cardHandler.Card.SignalLevel,
+                   _cardHandler.Card.SignalQuality);
+      this.LogInfo("**************************************************");
+
+      if (result != null)
+      {
+        this.LogDebug("card: tuned user: {0} subchannel: {1}", user.Name, result.SubChannelId);
+        _cardHandler.UserManagement.AddSubChannelOrUser(user, idChannel, result.SubChannelId);
+      }
+      else
+      {
+        return TvResult.AllCardsBusy;
+      }
+
+      if (result.IsTimeShifting || result.IsRecording)
+      {
+        _cardHandler.UserManagement.OnZap(user, idChannel);
+      }
+      return TvResult.Succeeded;
+    }
+
+    private bool BeforeTune(IChannel channel, ref IUser user, out TvResult result, int idChannel)
+    {
+      result = TvResult.UnknownError;
+      //@FIX this fails for back-2-back recordings
+      //if (CurrentDbChannel(ref user) == idChannel && idChannel >= 0)
+      //{
+      //  return true;
+      //}
+      this.LogDebug("card: user: {0}:{1}:{2} tune {3}", user.Name, user.CardId, _cardHandler.UserManagement.GetSubChannelIdByChannelId(user.Name, idChannel), channel.ToString());
+      _cardHandler.Card.CamType = (CamType)_cardHandler.DataBaseCard.CamType;
+      _cardHandler.SetParameters();
+
+      //check if transponder differs
+      if (_cardHandler.Card.SubChannels.Length > 0)
+      {
+        if (!IsTunedToTransponder(channel))
+        {          
+          if (_cardHandler.UserManagement.HasUserHighestPriority(user) || _cardHandler.UserManagement.IsOwner(user.Name) && _cardHandler.UserManagement.HasUserEqualOrHigherPriority(user))
+          {
+            this.LogDebug("card: to different transponder");
+
+            //remove all subchannels, except for this user...
+            int i = 0;
+            IEnumerable<IUser> usersRec = _cardHandler.UserManagement.GetUsersCopy(UserType.Scheduler);
+
+            foreach (IUser recUser in usersRec)
+            {
+              if (recUser.Name != user.Name)
+              {
+                this.LogDebug("  stop subchannel: {0} user: {1}", i, recUser.Name);
+                //fix for b2b mantis; http://mantis.team-mediaportal.com/view.php?id=1112
+                
+                // if we are stopping an on-going recording/schedule (=admin), we have to make sure that we remove the schedule also.                
+                this.LogDebug("user is scheduler: {0}", recUser.Name);
+                int recScheduleId = ServiceManager.Instance.InternalControllerService.GetRecordingSchedule(recUser.CardId, recUser.Name);
+
+                if (recScheduleId > 0)
+                {
+                  Schedule schedule = ScheduleManagement.GetSchedule(recScheduleId);
+                  this.LogInfo("removing schedule with id: {0}", schedule.IdSchedule);
+                  ServiceManager.Instance.InternalControllerService.StopRecordingSchedule(schedule.IdSchedule);
+                  ScheduleManagement.DeleteSchedule(schedule.IdSchedule);
+                }
+                i++;
+              }
+            }
+            //iterate all timesh. subchannels, and remove those.                            
+            FreeAllTimeshiftingSubChannels(ref user);              
+          }
+        }
+        else // same transponder, free previous subchannel before tuning..
+        {          
+          FreeAllTimeshiftingSubChannels(ref user);
+        }
+      }
+
+      if (OnBeforeTuneEvent != null)
+      {
+        OnBeforeTuneEvent(_cardHandler);
+      }
+
+      _cardHandler.Card.OnAfterTuneEvent = new Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.OnAfterTuneDelegate(CardTuner_OnAfterTuneEvent);
+
+      result = TvResult.Succeeded;
+      return true;
+    }
+
+    private void CardTuner_OnAfterTuneEvent()
+    {
+      if (OnAfterTuneEvent != null)
+      {
+        OnAfterTuneEvent(_cardHandler);
       }
     }
   }

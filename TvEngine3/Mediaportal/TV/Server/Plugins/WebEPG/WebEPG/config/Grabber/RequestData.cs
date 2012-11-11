@@ -29,16 +29,16 @@ namespace WebEPG.config.Grabber
   {
     #region Variables
 
-    [XmlIgnore()] public string ChannelId;
-    [XmlAttribute("startOffset")] public int OffsetStart;
-    [XmlAttribute("weekday")] public string WeekDay = "dddd";
-    [XmlAttribute("maxlistings")] public int MaxListingCount = 0;
-    [XmlAttribute("listStart")] public int ListStart = 0;
-    [XmlAttribute("startPage")] public int PageStart;
-    [XmlAttribute("endPage")] public int PageEnd;
-    [XmlAttribute("language")] public string SearchLang = "en-US";
     [XmlAttribute("baseDate")] public string BaseDate;
+    [XmlIgnore()] public string ChannelId;
     [XmlArray("DayNames")] [XmlArrayItem("Day")] public string[] DayNames;
+    [XmlAttribute("listStart")] public int ListStart = 0;
+    [XmlAttribute("maxlistings")] public int MaxListingCount = 0;
+    [XmlAttribute("startOffset")] public int OffsetStart;
+    [XmlAttribute("endPage")] public int PageEnd;
+    [XmlAttribute("startPage")] public int PageStart;
+    [XmlAttribute("language")] public string SearchLang = "en-US";
+    [XmlAttribute("weekday")] public string WeekDay = "dddd";
     [XmlArray("WeekDayNames")] [XmlArrayItem("WeekDay")] public string[] WeekDayNames;
 
     #endregion

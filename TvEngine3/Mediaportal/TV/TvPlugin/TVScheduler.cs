@@ -46,26 +46,17 @@ namespace Mediaportal.TV.TvPlugin
   /// </summary>
   public class TvScheduler : GUIInternalWindow, IComparer<GUIListItem>
   {
- 
-
     #region variables, ctor/dtor
 
-    private enum SortMethod
-    {
-      Channel = 0,
-      Date = 1,
-      Name = 2,
-    }
-
-    [SkinControl(2)] protected GUISortButtonControl btnSortBy = null;
-    [SkinControl(6)] protected GUIButtonControl btnNew = null;
     [SkinControl(7)] protected GUIButtonControl btnCleanup = null;
-    [SkinControl(8)] protected GUIButtonControl btnPriorities = null;
     [SkinControl(9)] protected GUIButtonControl btnConflicts = null;
-    [SkinControl(10)] protected GUIListControl listSchedules = null;
+    [SkinControl(6)] protected GUIButtonControl btnNew = null;
+    [SkinControl(8)] protected GUIButtonControl btnPriorities = null;
     [SkinControl(11)] protected GUIToggleButtonControl btnSeries = null;
+    [SkinControl(2)] protected GUISortButtonControl btnSortBy = null;
 
     private SortMethod currentSortMethod = SortMethod.Date;
+    [SkinControl(10)] protected GUIListControl listSchedules = null;
     private bool m_bSortAscending = true;
     private int m_iSelectedItem = 0;
     private bool needUpdate = false;
@@ -77,11 +68,18 @@ namespace Mediaportal.TV.TvPlugin
       GetID = (int)Window.WINDOW_SCHEDULER;
     }
 
-    ~TvScheduler() {}
-
     public override bool IsTv
     {
       get { return true; }
+    }
+
+    ~TvScheduler() {}
+
+    private enum SortMethod
+    {
+      Channel = 0,
+      Date = 1,
+      Name = 2,
     }
 
     #endregion
@@ -302,14 +300,7 @@ namespace Mediaportal.TV.TvPlugin
 
     #endregion
 
-    #region Sort Members
-
-    private void OnSort()
-    {
-      SetLabels();
-      listSchedules.Sort(this);
-      UpdateButtonStates();
-    }
+    #region IComparer<GUIListItem> Members
 
     public int Compare(GUIListItem item1, GUIListItem item2)
     {
@@ -497,7 +488,7 @@ namespace Mediaportal.TV.TvPlugin
       }
       bool conflicting = (schedule.Conflicts.Count > 0);
       ProgramBLL program = new ProgramBLL(ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByTitleTimesAndChannel(schedule.ProgramName, schedule.StartTime,
-                                                               schedule.EndTime, schedule.IdChannel));
+                                                                                                                       schedule.EndTime, schedule.IdChannel));
       bool isPartialRecording = (program != null) ? program.IsPartialRecordingSeriesPending : false;
 
       if (schedule.ScheduleType != (int)(ScheduleRecordingType.Once))
@@ -764,46 +755,46 @@ namespace Mediaportal.TV.TvPlugin
             case (int)ScheduleRecordingType.EveryTimeOnEveryChannel:
               item.Label2 = GUILocalizeStrings.Get(651);
               break;
-           case (int) ScheduleRecordingType.WeeklyEveryTimeOnThisChannel:
-             switch (rec.StartTime.DayOfWeek)
-             {
-                 case DayOfWeek.Monday:
-                     day = GUILocalizeStrings.Get(11);
-                     break;
-                 case DayOfWeek.Tuesday:
-                     day = GUILocalizeStrings.Get(12);
-                     break;
-                 case DayOfWeek.Wednesday:
-                     day = GUILocalizeStrings.Get(13);
-                     break;
-                 case DayOfWeek.Thursday:
-                     day = GUILocalizeStrings.Get(14);
-                     break;
-                 case DayOfWeek.Friday:
-                     day = GUILocalizeStrings.Get(15);
-                     break;
-                 case DayOfWeek.Saturday:
-                     day = GUILocalizeStrings.Get(16);
-                     break;
-                 default:
-                     day = GUILocalizeStrings.Get(17);
-                     break;
+            case (int) ScheduleRecordingType.WeeklyEveryTimeOnThisChannel:
+              switch (rec.StartTime.DayOfWeek)
+              {
+                case DayOfWeek.Monday:
+                  day = GUILocalizeStrings.Get(11);
+                  break;
+                case DayOfWeek.Tuesday:
+                  day = GUILocalizeStrings.Get(12);
+                  break;
+                case DayOfWeek.Wednesday:
+                  day = GUILocalizeStrings.Get(13);
+                  break;
+                case DayOfWeek.Thursday:
+                  day = GUILocalizeStrings.Get(14);
+                  break;
+                case DayOfWeek.Friday:
+                  day = GUILocalizeStrings.Get(15);
+                  break;
+                case DayOfWeek.Saturday:
+                  day = GUILocalizeStrings.Get(16);
+                  break;
+                default:
+                  day = GUILocalizeStrings.Get(17);
+                  break;
+              }
+              item.Label2 = GUILocalizeStrings.Get(990001, new object[] { day, rec.Channel.DisplayName });
+              break;              
           }
-             item.Label2 = GUILocalizeStrings.Get(990001, new object[] { day, rec.Channel.DisplayName });
-             break;              
-        }
         }
         else
         {
           Program program = ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByTitleTimesAndChannel(rec.ProgramName, rec.StartTime,
-                                                      rec.EndTime, rec.IdChannel);
+                                                                                                         rec.EndTime, rec.IdChannel);
           if (program != null)
           {
             item.Label2 = Utils.GetNamedDateStartEnd(rec.StartTime, rec.EndTime);
           }
           else
           {
-              item.Label2 = String.Empty;
+            item.Label2 = String.Empty;
           }
         }
       }
@@ -1224,6 +1215,13 @@ namespace Mediaportal.TV.TvPlugin
     }
 
     #endregion
+
+    private void OnSort()
+    {
+      SetLabels();
+      listSchedules.Sort(this);
+      UpdateButtonStates();
+    }
 
     public override void Process()
     {

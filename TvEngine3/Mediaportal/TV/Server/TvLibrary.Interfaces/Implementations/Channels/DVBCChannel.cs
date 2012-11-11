@@ -32,19 +32,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
   public struct DVBCTuning
   {
     /// <summary>
-    /// CTOR
-    /// </summary>
-    /// <param name="p_Frequency">Frequency</param>
-    /// <param name="p_ModulationType">ModulationType</param>
-    /// <param name="p_SymbolRate">SymbolRate</param>
-    public DVBCTuning(long p_Frequency, ModulationType p_ModulationType, int p_SymbolRate)
-    {
-      Frequency = p_Frequency;
-      ModulationType = p_ModulationType;
-      SymbolRate = p_SymbolRate;
-    }
-
-    /// <summary>
     /// Frequency
     /// </summary>
     public long Frequency;
@@ -58,6 +45,19 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     /// SymbolRate
     /// </summary>
     public int SymbolRate;
+
+    /// <summary>
+    /// CTOR
+    /// </summary>
+    /// <param name="p_Frequency">Frequency</param>
+    /// <param name="p_ModulationType">ModulationType</param>
+    /// <param name="p_SymbolRate">SymbolRate</param>
+    public DVBCTuning(long p_Frequency, ModulationType p_ModulationType, int p_SymbolRate)
+    {
+      Frequency = p_Frequency;
+      ModulationType = p_ModulationType;
+      SymbolRate = p_SymbolRate;
+    }
 
     /// <summary>
     /// ToString
@@ -77,6 +77,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
   {
     #region variables
 
+    [DataMember]
+    private ModulationType _modulation;
+
+    [DataMember]
+    private int _symbolRate;
+
     /// <summary>
     /// returns basic tuning info for current channel
     /// </summary>
@@ -90,12 +96,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
         SymbolRate = value.SymbolRate;
       }
     }
-
-    [DataMember]
-    private ModulationType _modulation;
-
-    [DataMember]
-    private int _symbolRate;
 
     #endregion
 

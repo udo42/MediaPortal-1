@@ -72,8 +72,6 @@ namespace Mediaportal.TV.TvPlugin
   [PluginIcons("Resources\\TvPlugin.TVPlugin.gif", "Resources\\TvPlugin.TVPluginDisabled.gif")]
   public class TVHome : GUIInternalWindow, ISetupForm, IShowPlugin, IPluginReceiver, ITvServerEventCallbackClient
   {
-
-
     #region constants
 
     private const int MAX_WAIT_FOR_SERVER_CONNECTION = 10; //seconds
@@ -98,13 +96,6 @@ namespace Mediaportal.TV.TvPlugin
 
     #region variables
 
-    private enum Controls
-    {
-      IMG_REC_CHANNEL = 21,
-      LABEL_REC_INFO = 22,
-      IMG_REC_RECTANGLE = 23,
-    }
-
     [Flags]
     public enum LiveTvStatus
     {
@@ -114,7 +105,6 @@ namespace Mediaportal.TV.TvPlugin
       SeekToEndAfterPlayback = 8
     }
 
-    private Channel _resumeChannel = null;
     private static DateTime _updateProgressTimer = DateTime.MinValue;
     private static ChannelNavigator m_navigator;
     private static TVUtil _util;
@@ -123,7 +113,6 @@ namespace Mediaportal.TV.TvPlugin
     private static bool _autoTurnOnTv = false;
     private static int _waitonresume = 0;
     public static bool settingsLoaded = false;
-    private TvNotifyManager _notifyManager;
     private static List<string> _preferredLanguages;
     private static bool _usertsp;
     private static string _recordingpath = "";
@@ -152,33 +141,6 @@ namespace Mediaportal.TV.TvPlugin
     private static int FramesBeforeStopRenderBlackImage = 0;
     private static BitHelper<LiveTvStatus> _status = new BitHelper<LiveTvStatus>();
 
-    [SkinControl(2)]
-    protected GUIButtonControl btnTvGuide = null;
-    [SkinControl(3)]
-    protected GUIButtonControl btnRecord = null;
-    [SkinControl(7)]
-    protected GUIButtonControl btnChannel = null;
-    [SkinControl(8)]
-    protected GUIToggleButtonControl btnTvOnOff = null;
-    [SkinControl(13)]
-    protected GUIButtonControl btnTeletext = null;
-    [SkinControl(24)]
-    protected GUIImage imgRecordingIcon = null;
-    [SkinControl(99)]
-    protected GUIVideoControl videoWindow = null;
-    [SkinControl(9)]
-    protected GUIButtonControl btnActiveStreams = null;
-    [SkinControl(14)]
-    protected GUIButtonControl btnActiveRecordings = null;
-
-    // error handling
-    public class ChannelErrorInfo
-    {
-      public Channel FailingChannel;
-      public TvResult Result;
-      public List<String> Messages = new List<string>();
-    }
-
     public static ChannelErrorInfo _lastError = new ChannelErrorInfo();
     private static HeartbeatEventHandler _heartbeatEventHandler;
 
@@ -202,6 +164,56 @@ namespace Mediaportal.TV.TvPlugin
     protected static int _preNotifyConfig = 60;
 
     private static readonly ServerMonitor _serverMonitor = new ServerMonitor();
+    private TvNotifyManager _notifyManager;
+    private Channel _resumeChannel = null;
+
+    [SkinControl(14)]
+    protected GUIButtonControl btnActiveRecordings = null;
+
+    [SkinControl(9)]
+    protected GUIButtonControl btnActiveStreams = null;
+
+    [SkinControl(7)]
+    protected GUIButtonControl btnChannel = null;
+
+    [SkinControl(3)]
+    protected GUIButtonControl btnRecord = null;
+
+    [SkinControl(13)]
+    protected GUIButtonControl btnTeletext = null;
+
+    [SkinControl(2)]
+    protected GUIButtonControl btnTvGuide = null;
+
+    [SkinControl(8)]
+    protected GUIToggleButtonControl btnTvOnOff = null;
+
+    [SkinControl(24)]
+    protected GUIImage imgRecordingIcon = null;
+    [SkinControl(99)]
+    protected GUIVideoControl videoWindow = null;
+
+    #region Nested type: ChannelErrorInfo
+
+    public class ChannelErrorInfo
+    {
+      public Channel FailingChannel;
+      public List<String> Messages = new List<string>();
+      public TvResult Result;
+    }
+
+    #endregion
+
+    #region Nested type: Controls
+
+    private enum Controls
+    {
+      IMG_REC_CHANNEL = 21,
+      LABEL_REC_INFO = 22,
+      IMG_REC_RECTANGLE = 23,
+    }
+
+    #endregion
 
     #endregion
 
@@ -218,67 +230,6 @@ namespace Mediaportal.TV.TvPlugin
 
     #endregion
 
-    #region ISetupForm Members
-
-    public bool CanEnable()
-    {
-      return true;
-    }
-
-    public string PluginName()
-    {
-      return "TV";
-    }
-
-    public bool DefaultEnabled()
-    {
-      return true;
-    }
-
-    public int GetWindowId()
-    {
-      return (int)Window.WINDOW_TV;
-    }
-
-    public bool GetHome(out string strButtonText, out string strButtonImage, out string strButtonImageFocus,
-                        out string strPictureImage)
-    {
-      // TODO:  Add TVHome.GetHome implementation
-      strButtonText = GUILocalizeStrings.Get(605);
-      strButtonImage = "";
-      strButtonImageFocus = "";
-      strPictureImage = @"hover_my tv.png";
-      return true;
-    }
-
-    public string Author()
-    {
-      return "Frodo, gemx";
-    }
-
-    public string Description()
-    {
-      return "Connect to TV service to watch, record and timeshift analog and digital TV";
-    }
-
-    public bool HasSetup()
-    {
-      return false;
-    }
-
-    public void ShowPlugin() { }
-
-    #endregion
-
-    #region IShowPlugin Members
-
-    public bool ShowDefaultHome()
-    {
-      return true;
-    }
-
-    #endregion
-
     public TVHome()
     {
       TVUtil.SetGentleConfigFile();
@@ -287,6 +238,19 @@ namespace Mediaportal.TV.TvPlugin
     }
 
     #region Overrides
+
+    private static IDictionary<int, ChannelState> _tvChannelStatesList = new Dictionary<int, ChannelState>();
+    private readonly static object _channelStatesLock = new object();
+
+    public override bool SupportsDelayedLoad
+    {
+      get { return false; }
+    }
+
+    public override bool IsTv
+    {
+      get { return true; }
+    }
 
     public override bool Init()
     {
@@ -443,9 +407,6 @@ namespace Mediaportal.TV.TvPlugin
       UpdateStateOfRecButton();
     }
 
-    private static IDictionary<int, ChannelState> _tvChannelStatesList = new Dictionary<int, ChannelState>();
-    private readonly static object _channelStatesLock = new object();
-
 
     private void OnChannelStatesChanged(IDictionary<int, ChannelState> channelStates)
     {
@@ -483,11 +444,6 @@ namespace Mediaportal.TV.TvPlugin
       g_Player.AudioTracksReady -= new g_Player.AudioTracksReadyHandler(OnAudioTracksReady);
 
       GUIWindowManager.Receivers -= new SendMessageHandler(OnGlobalMessage);
-    }
-
-    public override bool SupportsDelayedLoad
-    {
-      get { return false; }
     }
 
     public override void OnAction(Action action)
@@ -776,7 +732,7 @@ namespace Mediaportal.TV.TvPlugin
           ViewChannelAndCheck(Navigator.Channel.Entity, 0);
         }
         else
-        // current channel seems to be non-tv (radio ?), get latest known tv channel from xml config and use this instead
+          // current channel seems to be non-tv (radio ?), get latest known tv channel from xml config and use this instead
         {
           Settings xmlreader = new MPSettings();
           string currentchannelName = xmlreader.GetValueAsString("mytv", "channel", String.Empty);
@@ -873,15 +829,75 @@ namespace Mediaportal.TV.TvPlugin
       }
     }
 
-
-    public override bool IsTv
-    {
-      get { return true; }
-    }
-
     #endregion
 
     #region Public static methods
+
+    public static List<string> PreferredLanguages
+    {
+      set { _preferredLanguages = value; }
+    }
+
+    public static bool PreferAC3
+    {
+      set { _preferAC3 = value; }
+    }
+
+    public static bool PreferAudioTypeOverLang
+    {
+      set { _preferAudioTypeOverLang = value; }
+    }
+
+    public static bool UserChannelChanged
+    {
+      set { _userChannelChanged = value; }
+      get { return _userChannelChanged; }
+    }
+
+    public static TVUtil Util
+    {
+      get
+      {
+        if (_util == null)
+        {
+          _util = new TVUtil();
+        }
+        return _util;
+      }
+    }
+
+
+
+    public static bool IsAnyCardRecording
+    {
+      get { return _isAnyCardRecording; }
+    }
+
+    public static bool Connected
+    {
+      get { return _connected; }
+      set { _connected = value; }
+    }
+
+    public static IVirtualCard Card
+    {
+      get
+      {
+        if (_card == null)
+        {
+          IUser user = new User();
+          _card = new VirtualCard(user);
+        }
+        return _card;
+      }
+      set
+      {
+        if (_card != null)
+        {          
+          _card = value;
+        }
+      }
+    }
 
     public static void StartRecordingSchedule(ChannelBLL channel, bool manual)
     {
@@ -901,8 +917,8 @@ namespace Mediaportal.TV.TvPlugin
       {
         // lets find any canceled episodes that match this one we want to create, if found uncancel it.
         Schedule existingParentSchedule = ServiceAgents.Instance.ScheduleServiceAgent.RetrieveSeriesByStartEndTimes(channel.Entity.IdChannel, channel.CurrentProgram.Title,
-                                                          channel.CurrentProgram.StartTime,
-                                                          channel.CurrentProgram.EndTime);
+                                                                                                                    channel.CurrentProgram.StartTime,
+                                                                                                                    channel.CurrentProgram.EndTime);
         if (existingParentSchedule != null)
         {
           foreach (CanceledSchedule cancelSched in existingParentSchedule.CanceledSchedules)
@@ -918,7 +934,7 @@ namespace Mediaportal.TV.TvPlugin
 
         // ok, no existing schedule found with matching canceled schedules found. proceeding to add the schedule normally
         Schedule newSchedule = ScheduleFactory.CreateSchedule(channel.Entity.IdChannel, channel.CurrentProgram.Title,
-                                            channel.CurrentProgram.StartTime, channel.CurrentProgram.EndTime);
+                                                              channel.CurrentProgram.StartTime, channel.CurrentProgram.EndTime);
         newSchedule.PreRecordInterval = Int32.Parse(ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("preRecordInterval", "5").Value);
         newSchedule.PostRecordInterval = Int32.Parse(ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("postRecordInterval", "5").Value);
         ServiceAgents.Instance.ScheduleServiceAgent.SaveSchedule(newSchedule);
@@ -967,10 +983,6 @@ namespace Mediaportal.TV.TvPlugin
 
       g_Player.Stop();
     }
-
-    private delegate void ShowDlgAsynchDelegate();
-
-    private delegate void ShowDlgMessageAsynchDelegate(String Message);
 
     private static void ShowDlgAsynch()
     {
@@ -1115,73 +1127,17 @@ namespace Mediaportal.TV.TvPlugin
       return success;
     }
 
-    
+    #region Nested type: ShowDlgAsynchDelegate
 
-    public static List<string> PreferredLanguages
-    {
-      set { _preferredLanguages = value; }
-    }
+    private delegate void ShowDlgAsynchDelegate();
 
-    public static bool PreferAC3
-    {
-      set { _preferAC3 = value; }
-    }
+    #endregion
 
-    public static bool PreferAudioTypeOverLang
-    {
-      set { _preferAudioTypeOverLang = value; }
-    }
+    #region Nested type: ShowDlgMessageAsynchDelegate
 
-    public static bool UserChannelChanged
-    {
-      set { _userChannelChanged = value; }
-      get { return _userChannelChanged; }
-    }
+    private delegate void ShowDlgMessageAsynchDelegate(String Message);
 
-    public static TVUtil Util
-    {
-      get
-      {
-        if (_util == null)
-        {
-          _util = new TVUtil();
-        }
-        return _util;
-      }
-    }
-
-
-
-    public static bool IsAnyCardRecording
-    {
-      get { return _isAnyCardRecording; }
-    }
-
-    public static bool Connected
-    {
-      get { return _connected; }
-      set { _connected = value; }
-    }
-
-    public static IVirtualCard Card
-    {
-      get
-      {
-        if (_card == null)
-        {
-          IUser user = new User();
-          _card = new VirtualCard(user);
-        }
-        return _card;
-      }
-      set
-      {
-        if (_card != null)
-        {          
-          _card = value;
-        }
-      }
-    }
+    #endregion
 
     #endregion
 
@@ -1536,6 +1492,138 @@ namespace Mediaportal.TV.TvPlugin
 
     #endregion
 
+    /// <summary>
+    /// Gets the channel navigator that can be used for channel zapping.
+    /// </summary>
+    public static ChannelNavigator Navigator
+    {
+      get { return m_navigator; }
+    }
+
+    public static Dictionary<int, ChannelState> TvChannelStatesList
+    {
+      get
+      {
+        lock (_channelStatesLock)
+        {
+          //return copy, as it is threadsafe.
+          if (_tvChannelStatesList != null)
+          {
+            return new Dictionary<int, ChannelState>(_tvChannelStatesList);
+          }
+
+          return new Dictionary<int, ChannelState>();
+        }
+      }
+    }
+
+    #region IPluginReceiver Members
+
+    public void Start()
+    {
+      this.LogDebug("TVHome.Start()");
+    }
+
+    public void Stop()
+    {
+      this.LogDebug("TVHome.Stop()");
+    }
+
+    public bool WndProc(ref Message msg)
+    {
+      if (msg.Msg == WM_POWERBROADCAST)
+      {
+        switch (msg.WParam.ToInt32())
+        {
+          case PBT_APMSTANDBY:
+            this.LogInfo("TVHome.WndProc(): Windows is going to standby");
+            OnSuspend();
+            break;
+          case PBT_APMSUSPEND:
+            this.LogInfo("TVHome.WndProc(): Windows is suspending");
+            OnSuspend();
+            break;
+          case PBT_APMQUERYSUSPEND:
+          case PBT_APMQUERYSTANDBY:
+            this.LogInfo("TVHome.WndProc(): Windows is going into powerstate (hibernation/standby)");
+
+            break;
+          case PBT_APMRESUMESUSPEND:
+            this.LogInfo("TVHome.WndProc(): Windows has resumed from hibernate mode");
+            OnResume();
+            break;
+          case PBT_APMRESUMESTANDBY:
+            this.LogInfo("TVHome.WndProc(): Windows has resumed from standby mode");
+            OnResume();
+            break;
+        }
+      }
+      return false; // false = all other processes will handle the msg
+    }
+
+    #endregion
+
+    #region ISetupForm Members
+
+    public bool CanEnable()
+    {
+      return true;
+    }
+
+    public string PluginName()
+    {
+      return "TV";
+    }
+
+    public bool DefaultEnabled()
+    {
+      return true;
+    }
+
+    public int GetWindowId()
+    {
+      return (int)Window.WINDOW_TV;
+    }
+
+    public bool GetHome(out string strButtonText, out string strButtonImage, out string strButtonImageFocus,
+                        out string strPictureImage)
+    {
+      // TODO:  Add TVHome.GetHome implementation
+      strButtonText = GUILocalizeStrings.Get(605);
+      strButtonImage = "";
+      strButtonImageFocus = "";
+      strPictureImage = @"hover_my tv.png";
+      return true;
+    }
+
+    public string Author()
+    {
+      return "Frodo, gemx";
+    }
+
+    public string Description()
+    {
+      return "Connect to TV service to watch, record and timeshift analog and digital TV";
+    }
+
+    public bool HasSetup()
+    {
+      return false;
+    }
+
+    public void ShowPlugin() { }
+
+    #endregion
+
+    #region IShowPlugin Members
+
+    public bool ShowDefaultHome()
+    {
+      return true;
+    }
+
+    #endregion
+
     public static void OnSelectGroup()
     {
       GUIDialogMenu dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
@@ -1707,48 +1795,6 @@ namespace Mediaportal.TV.TvPlugin
         }        
       }
 #endif
-    }
-
-    public void Start()
-    {
-      this.LogDebug("TVHome.Start()");
-    }
-
-    public void Stop()
-    {
-      this.LogDebug("TVHome.Stop()");
-    }
-
-    public bool WndProc(ref Message msg)
-    {
-      if (msg.Msg == WM_POWERBROADCAST)
-      {
-        switch (msg.WParam.ToInt32())
-        {
-          case PBT_APMSTANDBY:
-            this.LogInfo("TVHome.WndProc(): Windows is going to standby");
-            OnSuspend();
-            break;
-          case PBT_APMSUSPEND:
-            this.LogInfo("TVHome.WndProc(): Windows is suspending");
-            OnSuspend();
-            break;
-          case PBT_APMQUERYSUSPEND:
-          case PBT_APMQUERYSTANDBY:
-            this.LogInfo("TVHome.WndProc(): Windows is going into powerstate (hibernation/standby)");
-
-            break;
-          case PBT_APMRESUMESUSPEND:
-            this.LogInfo("TVHome.WndProc(): Windows has resumed from hibernate mode");
-            OnResume();
-            break;
-          case PBT_APMRESUMESTANDBY:
-            this.LogInfo("TVHome.WndProc(): Windows has resumed from standby mode");
-            OnResume();
-            break;
-        }
-      }
-      return false; // false = all other processes will handle the msg
     }
 
     private static bool wasPrevWinTVplugin()
@@ -2909,113 +2955,6 @@ namespace Mediaportal.TV.TvPlugin
       Navigator.ZapToPreviousChannel(false);
     }
 
-    #region audio selection section
-
-    /// <summary>
-    /// Choose the preferred audio stream based on audio-related preferences.
-    /// </summary>
-    /// <remarks>
-    /// This method has unit tests. Any changes require the unit tests to be re-run and/or updated.
-    /// </remarks>
-    public static int GetPreferedAudioStreamIndex(out eAudioDualMonoMode dualMonoMode)
-    {
-      int currentPreferredIndex = -1; // Not set.
-      bool isCurrentPreferredAc3 = false;
-      int currentPreferredLangPriority = AUDIO_STREAM_PRIORITY_NOT_DEFINED;  // The lower the priority, the more it is preferred.
-      string currentPreferredLang = "";
-      eAudioDualMonoMode currentPreferredDualMonoMode = eAudioDualMonoMode.UNSUPPORTED;
-
-      bool haveLangPreferences = (_preferredLanguages != null && _preferredLanguages.Count > 0);
-      bool isDualMonoModeEnabled = (g_Player.GetAudioDualMonoMode() != eAudioDualMonoMode.UNSUPPORTED);
-
-      Log.Debug("TvHome: GetPreferedAudioStreamIndex(), preferred languages = {0}, prefer AC3 = {1}, prefer audio type over language = {2}, dual mono switching enabled = {3}",
-                  (haveLangPreferences ? String.Join(";", _preferredLanguages.ToArray()) : "N/A"), _preferAC3, _preferAudioTypeOverLang, isDualMonoModeEnabled);
-
-      for (int i = 0; i < g_Player.AudioStreams; i++)
-      {
-        bool isAc3 = false;
-        string lang = "";
-        int langPriority = AUDIO_STREAM_PRIORITY_NOT_DEFINED;
-        eAudioDualMonoMode dmMode = eAudioDualMonoMode.UNSUPPORTED;
-
-        // Is the stream an AC3 stream, or not?
-        string streamType = g_Player.AudioType(i);
-        if (streamType.Equals("AC3") || streamType.Equals("AC3plus"))
-        {
-          isAc3 = true;
-        }
-        // else: "Mpeg1", "Mpeg2", "AAC", "LATMAAC"
-
-        // Determine the stream language.
-        lang = g_Player.AudioLanguage(i);
-        string[] langParts = lang.Split('(');
-        if (langParts.Length > 1)
-        {
-          lang = langParts[1].Substring(0, langParts[1].Length - 1);
-        }
-
-        // Handle dual-mono streams by choosing the preferred of the two channels
-        // by language (channel encoding format should be the same).
-        if (isDualMonoModeEnabled && lang.Length == 6)
-        {
-          // Use left channel by default.
-          dmMode = eAudioDualMonoMode.LEFT_MONO;
-          string rightChannelLang = lang.Substring(3, 3);
-          lang = lang.Substring(0, 3);
-          langPriority = _preferredLanguages.IndexOf(lang);
-          int rightChannelLangPriority = _preferredLanguages.IndexOf(rightChannelLang);
-
-          // Do we actually prefer the right channel?
-          if ((langPriority == -1 && rightChannelLangPriority >= 0) || (rightChannelLangPriority >= 0 && rightChannelLangPriority < langPriority))
-          {
-            dmMode = eAudioDualMonoMode.RIGHT_MONO;
-            lang = rightChannelLang;
-            langPriority = rightChannelLangPriority;
-          }
-        }
-        else
-        {
-          langPriority = _preferredLanguages.IndexOf(lang);
-        }
-        if (langPriority == -1)
-        {
-          langPriority = AUDIO_STREAM_PRIORITY_NOT_DEFINED;
-        }
-
-        // Do we prefer this stream over the previously seen streams?
-        bool isPreferred = false;
-        if (currentPreferredIndex == -1)
-        {
-          isPreferred = true;
-        }
-        // Choice by language...
-        else if (langPriority < currentPreferredLangPriority && (!_preferAudioTypeOverLang || !_preferAC3 || isAc3 || !isCurrentPreferredAc3))
-        {
-          Log.Debug("TvHome: choosing stream {0} (is AC3 {1}, lang = {2}, lang priority = {3}) over {4} (is AC3 = {5}, lang = {6}, lang priority = {7})", i, isAc3, lang, langPriority, currentPreferredIndex, isCurrentPreferredAc3, currentPreferredLang, currentPreferredLangPriority);
-          isPreferred = true;
-        }
-        // Choice by AC3...
-        else if (isAc3 && _preferAC3 && !isCurrentPreferredAc3 && (currentPreferredLangPriority == AUDIO_STREAM_PRIORITY_NOT_DEFINED || langPriority <= currentPreferredLangPriority || (_preferAudioTypeOverLang && langPriority != AUDIO_STREAM_PRIORITY_NOT_DEFINED)))
-        {
-          Log.Debug("TvHome: choosing AC3 stream {0} (lang = {1}, lang priority = {2}) over {3} (is AC3 = {4}, lang = {5}, lang priority = {6})", i, lang, langPriority, currentPreferredIndex, isCurrentPreferredAc3, currentPreferredLang, currentPreferredLangPriority);
-          isPreferred = true;
-        }
-        if (isPreferred)
-        {
-          currentPreferredIndex = i;
-          isCurrentPreferredAc3 = isAc3;
-          currentPreferredLangPriority = langPriority;
-          currentPreferredLang = lang;
-          currentPreferredDualMonoMode = dmMode;
-        }
-      }
-
-      dualMonoMode = currentPreferredDualMonoMode;
-      return currentPreferredIndex;
-    }
-
-    #endregion
-
     private static void ChannelTuneFailedNotifyUser(TvResult succeeded, bool wasPlaying, Channel channel)
     {
       GUIGraphicsContext.RenderBlackImage = false;
@@ -3583,31 +3522,6 @@ namespace Mediaportal.TV.TvPlugin
       return false;
     }
 
-    /// <summary>
-    /// Gets the channel navigator that can be used for channel zapping.
-    /// </summary>
-    public static ChannelNavigator Navigator
-    {
-      get { return m_navigator; }
-    }
-
-    public static Dictionary<int, ChannelState> TvChannelStatesList
-    {
-      get
-      {
-        lock (_channelStatesLock)
-        {
-          //return copy, as it is threadsafe.
-          if (_tvChannelStatesList != null)
-          {
-            return new Dictionary<int, ChannelState>(_tvChannelStatesList);
-          }
-
-          return new Dictionary<int, ChannelState>();
-        }
-      }
-    }
-
     private static void StartPlay()
     {
       Stopwatch benchClock = null;
@@ -3811,7 +3725,7 @@ namespace Mediaportal.TV.TvPlugin
 
       switch (currentCiMenu.State)
       {
-        // choices available, so show them
+          // choices available, so show them
         case CiMenuState.Ready:
           dlgCiMenu.Reset();
           dlgCiMenu.SetHeading(currentCiMenu.Title, currentCiMenu.Subtitle, currentCiMenu.BottomText); // CI Menu
@@ -3839,7 +3753,7 @@ namespace Mediaportal.TV.TvPlugin
           }
           break;
 
-        // errors and menu options with no choices
+          // errors and menu options with no choices
         case CiMenuState.Error:
         case CiMenuState.NoChoices:
 
@@ -3858,7 +3772,7 @@ namespace Mediaportal.TV.TvPlugin
           }
           break;
 
-        // requests require users input so open keyboard
+          // requests require users input so open keyboard
         case CiMenuState.Request:
           String result = "";
           if (
@@ -3958,6 +3872,113 @@ namespace Mediaportal.TV.TvPlugin
       //todo : gibman, maybe handle scrambled state as well ?
       //TVHome.Card.IsScrambled
 
+    }
+
+    #endregion
+
+    #region audio selection section
+
+    /// <summary>
+    /// Choose the preferred audio stream based on audio-related preferences.
+    /// </summary>
+    /// <remarks>
+    /// This method has unit tests. Any changes require the unit tests to be re-run and/or updated.
+    /// </remarks>
+    public static int GetPreferedAudioStreamIndex(out eAudioDualMonoMode dualMonoMode)
+    {
+      int currentPreferredIndex = -1; // Not set.
+      bool isCurrentPreferredAc3 = false;
+      int currentPreferredLangPriority = AUDIO_STREAM_PRIORITY_NOT_DEFINED;  // The lower the priority, the more it is preferred.
+      string currentPreferredLang = "";
+      eAudioDualMonoMode currentPreferredDualMonoMode = eAudioDualMonoMode.UNSUPPORTED;
+
+      bool haveLangPreferences = (_preferredLanguages != null && _preferredLanguages.Count > 0);
+      bool isDualMonoModeEnabled = (g_Player.GetAudioDualMonoMode() != eAudioDualMonoMode.UNSUPPORTED);
+
+      Log.Debug("TvHome: GetPreferedAudioStreamIndex(), preferred languages = {0}, prefer AC3 = {1}, prefer audio type over language = {2}, dual mono switching enabled = {3}",
+                (haveLangPreferences ? String.Join(";", _preferredLanguages.ToArray()) : "N/A"), _preferAC3, _preferAudioTypeOverLang, isDualMonoModeEnabled);
+
+      for (int i = 0; i < g_Player.AudioStreams; i++)
+      {
+        bool isAc3 = false;
+        string lang = "";
+        int langPriority = AUDIO_STREAM_PRIORITY_NOT_DEFINED;
+        eAudioDualMonoMode dmMode = eAudioDualMonoMode.UNSUPPORTED;
+
+        // Is the stream an AC3 stream, or not?
+        string streamType = g_Player.AudioType(i);
+        if (streamType.Equals("AC3") || streamType.Equals("AC3plus"))
+        {
+          isAc3 = true;
+        }
+        // else: "Mpeg1", "Mpeg2", "AAC", "LATMAAC"
+
+        // Determine the stream language.
+        lang = g_Player.AudioLanguage(i);
+        string[] langParts = lang.Split('(');
+        if (langParts.Length > 1)
+        {
+          lang = langParts[1].Substring(0, langParts[1].Length - 1);
+        }
+
+        // Handle dual-mono streams by choosing the preferred of the two channels
+        // by language (channel encoding format should be the same).
+        if (isDualMonoModeEnabled && lang.Length == 6)
+        {
+          // Use left channel by default.
+          dmMode = eAudioDualMonoMode.LEFT_MONO;
+          string rightChannelLang = lang.Substring(3, 3);
+          lang = lang.Substring(0, 3);
+          langPriority = _preferredLanguages.IndexOf(lang);
+          int rightChannelLangPriority = _preferredLanguages.IndexOf(rightChannelLang);
+
+          // Do we actually prefer the right channel?
+          if ((langPriority == -1 && rightChannelLangPriority >= 0) || (rightChannelLangPriority >= 0 && rightChannelLangPriority < langPriority))
+          {
+            dmMode = eAudioDualMonoMode.RIGHT_MONO;
+            lang = rightChannelLang;
+            langPriority = rightChannelLangPriority;
+          }
+        }
+        else
+        {
+          langPriority = _preferredLanguages.IndexOf(lang);
+        }
+        if (langPriority == -1)
+        {
+          langPriority = AUDIO_STREAM_PRIORITY_NOT_DEFINED;
+        }
+
+        // Do we prefer this stream over the previously seen streams?
+        bool isPreferred = false;
+        if (currentPreferredIndex == -1)
+        {
+          isPreferred = true;
+        }
+          // Choice by language...
+        else if (langPriority < currentPreferredLangPriority && (!_preferAudioTypeOverLang || !_preferAC3 || isAc3 || !isCurrentPreferredAc3))
+        {
+          Log.Debug("TvHome: choosing stream {0} (is AC3 {1}, lang = {2}, lang priority = {3}) over {4} (is AC3 = {5}, lang = {6}, lang priority = {7})", i, isAc3, lang, langPriority, currentPreferredIndex, isCurrentPreferredAc3, currentPreferredLang, currentPreferredLangPriority);
+          isPreferred = true;
+        }
+          // Choice by AC3...
+        else if (isAc3 && _preferAC3 && !isCurrentPreferredAc3 && (currentPreferredLangPriority == AUDIO_STREAM_PRIORITY_NOT_DEFINED || langPriority <= currentPreferredLangPriority || (_preferAudioTypeOverLang && langPriority != AUDIO_STREAM_PRIORITY_NOT_DEFINED)))
+        {
+          Log.Debug("TvHome: choosing AC3 stream {0} (lang = {1}, lang priority = {2}) over {3} (is AC3 = {4}, lang = {5}, lang priority = {6})", i, lang, langPriority, currentPreferredIndex, isCurrentPreferredAc3, currentPreferredLang, currentPreferredLangPriority);
+          isPreferred = true;
+        }
+        if (isPreferred)
+        {
+          currentPreferredIndex = i;
+          isCurrentPreferredAc3 = isAc3;
+          currentPreferredLangPriority = langPriority;
+          currentPreferredLang = lang;
+          currentPreferredDualMonoMode = dmMode;
+        }
+      }
+
+      dualMonoMode = currentPreferredDualMonoMode;
+      return currentPreferredIndex;
     }
 
     #endregion

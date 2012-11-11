@@ -20,6 +20,9 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
       : base(context)
     {
     }
+
+    #region IScheduleRepository Members
+
     public IQueryable<Schedule> IncludeAllRelations(IQueryable<Schedule> query)
     {
       IQueryable<Schedule> includeRelations = query.Include(s => s.Channel)
@@ -34,6 +37,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
        
       return includeRelations;
     }
-  
+
+    #endregion
   }  
 }

@@ -75,6 +75,62 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
     #region public method
 
+    /// <summary>
+    /// Returns the value of the first weekend day.
+    /// </summary>
+    /// <value>the first weekend day</value>
+    public static DayOfWeek FirstWeekendDay
+    {
+      get { return GetDayByIndex(5); }
+    }
+
+    /// <summary>
+    /// Returns the value of the second weekend day.
+    /// </summary>
+    /// <value>the second weekend day</value>
+    public static DayOfWeek SecondWeekendDay
+    {
+      get { return GetDayByIndex(6); }
+    }
+
+    /// <summary>
+    /// Returns a comma separated list of the weekend days as 
+    /// numbers suitable for use in SQL queries
+    /// </summary>
+    /// <value>the weekend days list</value>
+    public static string SqlWeekendDays
+    {
+      get
+      {
+        int firstWeekend = (int)FirstWeekendDay + 1;
+        int secondWeekend = (int)SecondWeekendDay + 1;
+        return "" + firstWeekend + "," + secondWeekend;
+      }
+    }
+
+    /// <summary>
+    /// Returns a comma separated list of the working days as 
+    /// numbers suitable for use in SQL queries
+    /// </summary>
+    /// <value>the working days list</value>
+    public static string SqlWorkingDays
+    {
+      get
+      {
+        string result = "";
+        for (int i = 0; i < 5; i++)
+        {
+          int sqlDayNumber = (int)GetDayByIndex(i) + 1;
+          if (i != 0)
+          {
+            result += ",";
+          }
+          result += sqlDayNumber;
+        }
+        return result;
+      }
+    }
+
     private static int GetDayIndex(DayOfWeek day)
     {
       return ((int)day + 7 - (int)GetFirstWorkingDay()) % 7;
@@ -186,62 +242,6 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     public static bool IsFirstWeekendDay(DayOfWeek today)
     {
       return today == FirstWeekendDay;
-    }
-
-    /// <summary>
-    /// Returns the value of the first weekend day.
-    /// </summary>
-    /// <value>the first weekend day</value>
-    public static DayOfWeek FirstWeekendDay
-    {
-      get { return GetDayByIndex(5); }
-    }
-
-    /// <summary>
-    /// Returns the value of the second weekend day.
-    /// </summary>
-    /// <value>the second weekend day</value>
-    public static DayOfWeek SecondWeekendDay
-    {
-      get { return GetDayByIndex(6); }
-    }
-
-    /// <summary>
-    /// Returns a comma separated list of the weekend days as 
-    /// numbers suitable for use in SQL queries
-    /// </summary>
-    /// <value>the weekend days list</value>
-    public static string SqlWeekendDays
-    {
-      get
-      {
-        int firstWeekend = (int)FirstWeekendDay + 1;
-        int secondWeekend = (int)SecondWeekendDay + 1;
-        return "" + firstWeekend + "," + secondWeekend;
-      }
-    }
-
-    /// <summary>
-    /// Returns a comma separated list of the working days as 
-    /// numbers suitable for use in SQL queries
-    /// </summary>
-    /// <value>the working days list</value>
-    public static string SqlWorkingDays
-    {
-      get
-      {
-        string result = "";
-        for (int i = 0; i < 5; i++)
-        {
-          int sqlDayNumber = (int)GetDayByIndex(i) + 1;
-          if (i != 0)
-          {
-            result += ",";
-          }
-          result += sqlDayNumber;
-        }
-        return result;
-      }
     }
 
     #endregion

@@ -21,12 +21,19 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
   public class ProgramManagement
   {
- 
-
     #region delegates
 
+    #region Nested type: DeleteProgramsDelegate
+
     private delegate void DeleteProgramsDelegate();
+
+    #endregion
+
+    #region Nested type: InsertProgramsDelegate
+
     private delegate void InsertProgramsDelegate(ImportParams aImportParam);
+
+    #endregion
 
     #endregion
 
@@ -560,36 +567,6 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
     // TODO workaround/hack for Entity Framework not currently (as of 21-11-2011) supporting DayOfWeek and other similar date functions.
     // once this gets sorted, if ever, this code should be refactored. The db helper fields should be deleted as they have no purpose.
-    #region hack
-    private static IQueryable<Program> AddTimeRangeConstraint(IQueryable<Program> query, DateTime startTime, DateTime endTime)
-    {
-      TimeSpan startOffset = startTime.TimeOfDay;
-      TimeSpan endOffset = endTime - startTime.Date;
-      if (startOffset > endOffset)
-      {
-        endOffset = endOffset.Add(new TimeSpan(1, 0, 0, 0));
-      }
-
-      DateTime endDateTimeOffset1 = CreateDateTimeFromTimeSpan(endOffset.Add(new TimeSpan(-1, 0, 0, 0)));
-      DateTime endDateTimeOffset2 = CreateDateTimeFromTimeSpan(endOffset.Add(new TimeSpan(1, 0, 0, 0)));
-      DateTime endDateTimeOffset = CreateDateTimeFromTimeSpan(endOffset);
-      DateTime startDateTimeOffset1 = CreateDateTimeFromTimeSpan(startOffset.Add(new TimeSpan(-1, 0, 0, 0)));
-      DateTime startDateTimeOffset2 = CreateDateTimeFromTimeSpan(startOffset.Add(new TimeSpan(1, 0, 0, 0)));
-      DateTime startDateTimeOffset = CreateDateTimeFromTimeSpan(startOffset);
-
-      query = query.Where(p =>
-           p.StartTimeOffset < endDateTimeOffset
-           && p.EndTimeOffset > startDateTimeOffset
-         ||
-           p.StartTimeOffset < endDateTimeOffset1
-           && p.EndTimeOffset > startDateTimeOffset1
-         ||
-           p.StartTimeOffset < endDateTimeOffset2
-           && p.EndTimeOffset > startDateTimeOffset2
-          );
-      return query;
-    }
-    #endregion
 
     public static IList<Program> RetrieveEveryTimeOnEveryChannel(string title)
     {
@@ -1257,5 +1234,36 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         return query.ToList();
       }
     }
+
+    #region hack
+    private static IQueryable<Program> AddTimeRangeConstraint(IQueryable<Program> query, DateTime startTime, DateTime endTime)
+    {
+      TimeSpan startOffset = startTime.TimeOfDay;
+      TimeSpan endOffset = endTime - startTime.Date;
+      if (startOffset > endOffset)
+      {
+        endOffset = endOffset.Add(new TimeSpan(1, 0, 0, 0));
+      }
+
+      DateTime endDateTimeOffset1 = CreateDateTimeFromTimeSpan(endOffset.Add(new TimeSpan(-1, 0, 0, 0)));
+      DateTime endDateTimeOffset2 = CreateDateTimeFromTimeSpan(endOffset.Add(new TimeSpan(1, 0, 0, 0)));
+      DateTime endDateTimeOffset = CreateDateTimeFromTimeSpan(endOffset);
+      DateTime startDateTimeOffset1 = CreateDateTimeFromTimeSpan(startOffset.Add(new TimeSpan(-1, 0, 0, 0)));
+      DateTime startDateTimeOffset2 = CreateDateTimeFromTimeSpan(startOffset.Add(new TimeSpan(1, 0, 0, 0)));
+      DateTime startDateTimeOffset = CreateDateTimeFromTimeSpan(startOffset);
+
+      query = query.Where(p =>
+                          p.StartTimeOffset < endDateTimeOffset
+                          && p.EndTimeOffset > startDateTimeOffset
+                          ||
+                          p.StartTimeOffset < endDateTimeOffset1
+                          && p.EndTimeOffset > startDateTimeOffset1
+                          ||
+                          p.StartTimeOffset < endDateTimeOffset2
+                          && p.EndTimeOffset > startDateTimeOffset2
+        );
+      return query;
+    }
+    #endregion
   }
 }

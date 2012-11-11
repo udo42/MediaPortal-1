@@ -37,8 +37,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 
 
     private readonly TvCardHandler _cardHandler;
-    private readonly object _parkedUsersLock = new object();
     private readonly int _parkedStreamTimeout;
+    private readonly object _parkedUsersLock = new object();
 
     public ParkedUserManagement(TvCardHandler tvCardHandler)
     {
@@ -51,16 +51,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       get { return _cardHandler.Card.Context as ITvCardContext; }
     }
 
-
-    public ParkedUser GetUser(string name)
-    {
-      ParkedUser existingUser;
-      lock (_parkedUsersLock)
-      {
-        Context.ParkedUsers.TryGetValue(name, out existingUser);
-      }
-      return existingUser;
-    }
+    #region IParkedUserManagement Members
 
     public void ParkUser(ref IUser user, double duration, int idChannel)
     {
@@ -125,46 +116,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
     }
 
-    private void SetSubChannelStatusParked(IUser user, int idChannel)
-    {
-      ISubChannel subch = _cardHandler.UserManagement.GetSubChannelByChannelId(user.Name, idChannel);
-      if (subch != null)
-      {
-        subch.TvUsage = TvUsage.Parked;
-      }
-    }
-
-
-    private void HandleParkedUserTimeOutThread(ParkedUser parkedUser, int channelId)
-    {
-      ManualResetEvent evt;
-      bool hasEvent;
-      lock (_parkedUsersLock)
-      {
-        hasEvent =
-          parkedUser.Events.TryGetValue(
-            _cardHandler.UserManagement.GetSubChannelIdByChannelId(parkedUser.Name, channelId), out evt);
-      }
-      if (hasEvent)
-      {
-        if (!evt.WaitOne(_parkedStreamTimeout))
-        {
-          this.LogDebug("HandleParkedUserTimeOutThread: removing idle parked channel '{0}' for user '{1}'", channelId,
-                    parkedUser.Name);
-          var user = parkedUser as IUser;
-          ServiceManager.Instance.InternalControllerService.StopTimeShifting(ref user, channelId);
-        }
-        else
-        {
-          this.LogDebug("HandleParkedUserTimeOutThread: stopping timeout event for channel '{0}' for user '{1}'", channelId,
-                    parkedUser.Name);
-        }
-        this.LogDebug("HandleParkedUserTimeOutThread: dispose event");        
-        RemoveChannelOrParkedUser(parkedUser, channelId);
-        evt.Dispose();
-      }
-    }
-
     public void UnParkUser(ref IUser user, double duration, int idChannel)
     {
       if (_cardHandler.DataBaseCard.Enabled)
@@ -217,76 +168,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
             }
           }
         }
-      }
-    }
-
-    private void SetTimeShiftingStatusToIdenticalUser(int idChannel, IUser user)
-    {
-      ISubChannel subch = GetParkedSubChannelByChannelId(GetSubChannels(user), idChannel);
-      if (subch != null)
-      {
-        subch.TvUsage = TvUsage.Timeshifting;
-      }
-    }
-
-    private static void CancelParkedTimeoutEvent(int subchannelId, ParkedUser parkedUser)
-    {
-      ManualResetEvent evt;
-      bool hasEvent = parkedUser.Events.TryGetValue(subchannelId, out evt);
-      if (hasEvent)
-      {
-        Log.Debug("CancelParkedTimeoutEvent on subch={0} - parkeduser={}", subchannelId, parkedUser.Name);
-        evt.Set();
-      }
-      else
-      {
-        throw new Exception("could not find associated event for parked user's subchannel");
-      }
-    }
-
-    private void HandleUserOwnerShip(IUser user, ISubChannel subchannel, ParkedUser parkedUser)
-    {
-      bool wasCurrentUserOwner = WasCurrentUserOwner(parkedUser, subchannel);
-      if (wasCurrentUserOwner) //inherit ownership
-      {
-        Context.OwnerSubChannel.OwnerName = user.Name;
-      }
-    }
-
-    private void RemoveExistingParksOnUser(string userName, int idChannel, ISubChannel subchannel, IUser userUpdated)
-    {
-      ISubChannel subch;
-      bool foundsubch = userUpdated.SubChannels.TryGetValue(subchannel.Id, out subch);
-      if (foundsubch && subch.IdChannel == idChannel && subch.TvUsage == TvUsage.Parked)
-      {
-        userUpdated.SubChannels.Remove(subchannel.Id);
-        CancelParkedUserByChannelId(userName, idChannel);
-      }
-    }
-
-    private bool WasCurrentUserOwner(ParkedUser parkedUser, ISubChannel subchannel)
-    {
-      return (Context.OwnerSubChannel.OwnerSubChannelId == subchannel.Id &&
-              Context.OwnerSubChannel.OwnerName == parkedUser.Name);
-    }
-
-
-    private void RemoveChannelFromParkedUser(int idChannel, ParkedUser parkedUser)
-    {
-      var origParkedUserUpdate = parkedUser as IUser;
-      _cardHandler.UserManagement.RefreshUser(ref origParkedUserUpdate);
-      if (origParkedUserUpdate != null)
-      {
-        ISubChannel subch = GetParkedSubChannelByChannelId(origParkedUserUpdate, idChannel);
-        if (subch != null)
-        {
-          int subChannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(origParkedUserUpdate.Name, idChannel);
-          _cardHandler.UserManagement.RemoveChannelFromUser(origParkedUserUpdate, subChannelId);
-          if (subChannelId == -1)
-          {
-            throw new Exception("UnParkUser - could not find subChannelId from idChannel.");
-          }
-        }     
       }
     }
 
@@ -365,6 +246,188 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
     }
 
+    public bool HasAnyParkedUsers()
+    {
+      lock (_parkedUsersLock)
+      {
+        return (Context.ParkedUsers.Count > 0);
+      }
+    }
+
+    public bool IsAnyUserParkedOnChannel(int idChannel)
+    {
+      lock (_parkedUsersLock)
+      {
+        foreach (ParkedUser parkedUser in Context.ParkedUsers.Values)
+        {
+          int subChannelId = GetParkedSubChannelIdByChannelId(parkedUser, idChannel);
+          if (subChannelId > -1)
+          {
+            return true;
+          }                      
+        }
+      }
+      return false;
+    }
+
+    public void Dispose()
+    {
+      CancelAllParkedUsers();
+    }
+
+    public bool HasParkedUserWithDuration(int channelId, double duration)
+    {
+      bool hasParkedUserWithDuration = false;
+      IEnumerable<int>  subchannelIds =_cardHandler.UserManagement.GetAllSubChannelForChannel(channelId, TvUsage.Parked);
+      foreach (int subchannelId in subchannelIds)
+      {
+        lock (_parkedUsersLock)
+        {
+          foreach (ParkedUser parkedUser in Context.ParkedUsers.Values)
+          {
+            double durationFound;
+            bool hasDuration = parkedUser.ParkedDurations.TryGetValue(subchannelId, out durationFound);
+            if (hasDuration && durationFound.Equals(duration))
+            {
+              ISubChannel parkedSubchannel;
+              if (parkedUser.SubChannels.TryGetValue(subchannelId, out parkedSubchannel))
+              {
+                if (parkedSubchannel.TvUsage == TvUsage.Parked)
+                {
+                  hasParkedUserWithDuration = true;
+                  break;
+                }
+              }
+            }
+          }
+        }
+      }
+      
+      return hasParkedUserWithDuration;
+    }
+
+    #endregion
+
+    public ParkedUser GetUser(string name)
+    {
+      ParkedUser existingUser;
+      lock (_parkedUsersLock)
+      {
+        Context.ParkedUsers.TryGetValue(name, out existingUser);
+      }
+      return existingUser;
+    }
+
+    private void SetSubChannelStatusParked(IUser user, int idChannel)
+    {
+      ISubChannel subch = _cardHandler.UserManagement.GetSubChannelByChannelId(user.Name, idChannel);
+      if (subch != null)
+      {
+        subch.TvUsage = TvUsage.Parked;
+      }
+    }
+
+
+    private void HandleParkedUserTimeOutThread(ParkedUser parkedUser, int channelId)
+    {
+      ManualResetEvent evt;
+      bool hasEvent;
+      lock (_parkedUsersLock)
+      {
+        hasEvent =
+          parkedUser.Events.TryGetValue(
+            _cardHandler.UserManagement.GetSubChannelIdByChannelId(parkedUser.Name, channelId), out evt);
+      }
+      if (hasEvent)
+      {
+        if (!evt.WaitOne(_parkedStreamTimeout))
+        {
+          this.LogDebug("HandleParkedUserTimeOutThread: removing idle parked channel '{0}' for user '{1}'", channelId,
+                    parkedUser.Name);
+          var user = parkedUser as IUser;
+          ServiceManager.Instance.InternalControllerService.StopTimeShifting(ref user, channelId);
+        }
+        else
+        {
+          this.LogDebug("HandleParkedUserTimeOutThread: stopping timeout event for channel '{0}' for user '{1}'", channelId,
+                    parkedUser.Name);
+        }
+        this.LogDebug("HandleParkedUserTimeOutThread: dispose event");        
+        RemoveChannelOrParkedUser(parkedUser, channelId);
+        evt.Dispose();
+      }
+    }
+
+    private void SetTimeShiftingStatusToIdenticalUser(int idChannel, IUser user)
+    {
+      ISubChannel subch = GetParkedSubChannelByChannelId(GetSubChannels(user), idChannel);
+      if (subch != null)
+      {
+        subch.TvUsage = TvUsage.Timeshifting;
+      }
+    }
+
+    private static void CancelParkedTimeoutEvent(int subchannelId, ParkedUser parkedUser)
+    {
+      ManualResetEvent evt;
+      bool hasEvent = parkedUser.Events.TryGetValue(subchannelId, out evt);
+      if (hasEvent)
+      {
+        Log.Debug("CancelParkedTimeoutEvent on subch={0} - parkeduser={}", subchannelId, parkedUser.Name);
+        evt.Set();
+      }
+      else
+      {
+        throw new Exception("could not find associated event for parked user's subchannel");
+      }
+    }
+
+    private void HandleUserOwnerShip(IUser user, ISubChannel subchannel, ParkedUser parkedUser)
+    {
+      bool wasCurrentUserOwner = WasCurrentUserOwner(parkedUser, subchannel);
+      if (wasCurrentUserOwner) //inherit ownership
+      {
+        Context.OwnerSubChannel.OwnerName = user.Name;
+      }
+    }
+
+    private void RemoveExistingParksOnUser(string userName, int idChannel, ISubChannel subchannel, IUser userUpdated)
+    {
+      ISubChannel subch;
+      bool foundsubch = userUpdated.SubChannels.TryGetValue(subchannel.Id, out subch);
+      if (foundsubch && subch.IdChannel == idChannel && subch.TvUsage == TvUsage.Parked)
+      {
+        userUpdated.SubChannels.Remove(subchannel.Id);
+        CancelParkedUserByChannelId(userName, idChannel);
+      }
+    }
+
+    private bool WasCurrentUserOwner(ParkedUser parkedUser, ISubChannel subchannel)
+    {
+      return (Context.OwnerSubChannel.OwnerSubChannelId == subchannel.Id &&
+              Context.OwnerSubChannel.OwnerName == parkedUser.Name);
+    }
+
+
+    private void RemoveChannelFromParkedUser(int idChannel, ParkedUser parkedUser)
+    {
+      var origParkedUserUpdate = parkedUser as IUser;
+      _cardHandler.UserManagement.RefreshUser(ref origParkedUserUpdate);
+      if (origParkedUserUpdate != null)
+      {
+        ISubChannel subch = GetParkedSubChannelByChannelId(origParkedUserUpdate, idChannel);
+        if (subch != null)
+        {
+          int subChannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(origParkedUserUpdate.Name, idChannel);
+          _cardHandler.UserManagement.RemoveChannelFromUser(origParkedUserUpdate, subChannelId);
+          if (subChannelId == -1)
+          {
+            throw new Exception("UnParkUser - could not find subChannelId from idChannel.");
+          }
+        }     
+      }
+    }
+
     private void StopTimeShiftingAllParkedSubChannels(IUser user)
     {
       foreach (ISubChannel subch in GetSubChannels(user))
@@ -379,14 +442,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     private static IEnumerable<ISubChannel> GetSubChannels(IUser user)
     {
       return user.SubChannels.Values;
-    }
-
-    public bool HasAnyParkedUsers()
-    {
-      lock (_parkedUsersLock)
-      {
-        return (Context.ParkedUsers.Count > 0);
-      }
     }
 
     private void CancelAllParkedChannelsForUser(string userName)
@@ -451,58 +506,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           CancelParkedTimeoutEvent(subChannelId, parkedUser);          
         }        
       }
-    }
-
-    public bool IsAnyUserParkedOnChannel(int idChannel)
-    {
-      lock (_parkedUsersLock)
-      {
-        foreach (ParkedUser parkedUser in Context.ParkedUsers.Values)
-        {
-          int subChannelId = GetParkedSubChannelIdByChannelId(parkedUser, idChannel);
-          if (subChannelId > -1)
-          {
-            return true;
-          }                      
-        }
-      }
-      return false;
-    }
-
-    public void Dispose()
-    {
-      CancelAllParkedUsers();
-    }
-
-    public bool HasParkedUserWithDuration(int channelId, double duration)
-    {
-      bool hasParkedUserWithDuration = false;
-      IEnumerable<int>  subchannelIds =_cardHandler.UserManagement.GetAllSubChannelForChannel(channelId, TvUsage.Parked);
-      foreach (int subchannelId in subchannelIds)
-      {
-        lock (_parkedUsersLock)
-        {
-          foreach (ParkedUser parkedUser in Context.ParkedUsers.Values)
-          {
-            double durationFound;
-            bool hasDuration = parkedUser.ParkedDurations.TryGetValue(subchannelId, out durationFound);
-            if (hasDuration && durationFound.Equals(duration))
-            {
-              ISubChannel parkedSubchannel;
-              if (parkedUser.SubChannels.TryGetValue(subchannelId, out parkedSubchannel))
-              {
-                if (parkedSubchannel.TvUsage == TvUsage.Parked)
-                {
-                  hasParkedUserWithDuration = true;
-                  break;
-                }
-              }
-            }
-          }
-        }
-      }
-      
-      return hasParkedUserWithDuration;
     }
 
     private void AddParkedUser(ParkedUser parkedUser)

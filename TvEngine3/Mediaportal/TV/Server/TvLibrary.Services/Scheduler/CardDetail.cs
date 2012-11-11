@@ -36,27 +36,35 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       list.AddRange(listStableOrdered);
     }
 
+    #region Nested type: ComparableComparer
+
     private class ComparableComparer<T> : IComparer<T> where T : IComparable<T>
     {
+      #region IComparer<T> Members
+
       public int Compare(T x, T y)
       {
         return x.CompareTo(y);
       }
+
+      #endregion
     }
+
+    #endregion
   }
   /// <summary>
   /// Class which can be used to sort Cards bases on priority
   /// </summary>
   public class CardDetail : IComparable<CardDetail>
   {
-    private readonly int _cardId;
     private readonly Card _card;
+    private readonly int _cardId;
     private readonly IChannel _detail;
-    private readonly int _priority;
-    private bool _sameTransponder;
-    private int _numberOfOtherUsers;
-    private long? _channelTimeshiftingOnOtherMux;
     private readonly long _frequency = -1;
+    private readonly int _priority;
+    private long? _channelTimeshiftingOnOtherMux;
+    private int _numberOfOtherUsers;
+    private bool _sameTransponder;
 
     /// <summary>
     /// ctor
@@ -155,9 +163,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       get { return _frequency; }
     }
 
-    #region IComparable<CardInfo> Members
-
     // higher priority means that this one should be more to the front of the list
+
+    #region IComparable<CardDetail> Members
+
     public int CompareTo(CardDetail other)
     {
       if (SameTransponder == other.SameTransponder)

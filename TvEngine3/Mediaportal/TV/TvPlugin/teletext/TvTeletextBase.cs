@@ -48,39 +48,37 @@ namespace Mediaportal.TV.TvPlugin.Teletext
   /// </summary>
   public class TvTeletextBase : GUIInternalWindow
   {
-   
-
     #region gui controls
 
-    [SkinControl(27)] protected GUILabelControl lblMessage = null;
-    [SkinControl(500)] protected GUIImage imgTeletextForeground = null;
     [SkinControl(501)] protected GUIImage imgTeletextBackground = null;
+    [SkinControl(500)] protected GUIImage imgTeletextForeground = null;
+    [SkinControl(27)] protected GUILabelControl lblMessage = null;
 
     #endregion
 
     #region variables
 
-    protected string inputLine = String.Empty;
-    protected int currentPageNumber = 0x100;
-    protected int currentSubPageNumber;
-    protected int receivedPageNumber = 0x100;
-    protected int receivedSubPageNumber;
-    protected byte[] receivedPage;
-    protected bool _updatingForegroundImage;
-    protected bool _updatingBackgroundImage;
-    protected bool _waiting;
-    protected DateTime _startTime = DateTime.MinValue;
-    protected TeletextPageRenderer _renderer = new TeletextPageRenderer();
     protected bool _hiddenMode;
-    protected bool _transparentMode;
-    protected Thread _updateThread;
-    protected bool _updateThreadStop;
     protected int _numberOfRequestedUpdates;
-    protected bool _rememberLastValues;
     protected int _percentageOfMaximumHeight;
     protected bool _redrawForeground = true;
+    protected bool _rememberLastValues;
+    protected TeletextPageRenderer _renderer = new TeletextPageRenderer();
     protected bool _showFirstAvailableSubPage = false;
+    protected DateTime _startTime = DateTime.MinValue;
+    protected bool _transparentMode;
     protected DateTime _trottling = DateTime.MinValue;
+    protected Thread _updateThread;
+    protected bool _updateThreadStop;
+    protected bool _updatingBackgroundImage;
+    protected bool _updatingForegroundImage;
+    protected bool _waiting;
+    protected int currentPageNumber = 0x100;
+    protected int currentSubPageNumber;
+    protected string inputLine = String.Empty;
+    protected byte[] receivedPage;
+    protected int receivedPageNumber = 0x100;
+    protected int receivedSubPageNumber;
 
     #endregion
 
@@ -505,7 +503,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
       }
 
       this.LogInfo("dvb-teletext page updated. {0:X}/{1:X} total:{2} rotspeed:{3}", currentPageNumber, currentSubPageNumber,
-               NumberOfSubpages, tsRotation.TotalMilliseconds);
+                   NumberOfSubpages, tsRotation.TotalMilliseconds);
       // Request the update
       RequestUpdate(false);
     }

@@ -71,30 +71,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
                                         "yes");
     }
 
-    private static string SetDefaultRecordingFolder(ITvCardHandler cardHandler)
-    {
-      string recordingFolder = TVDatabase.TVBusinessLayer.Common.GetDefaultRecordingFolder();
-      cardHandler.DataBaseCard.RecordingFolder = recordingFolder;
-      TVDatabase.TVBusinessLayer.CardManagement.SaveCard(cardHandler.DataBaseCard);
-      return recordingFolder;
-    }
-
-
-    protected override void AudioVideoEventHandler(PidType pidType)
-    {
-      this.LogDebug("Recorder audioVideoEventHandler {0}", pidType);
-
-      // we are only interested in video and audio PIDs
-      if (pidType == PidType.Audio)
-      {
-        _eventAudio.Set();
-      }
-
-      if (pidType == PidType.Video)
-      {
-        _eventVideo.Set();
-      }
-    }
+    #region IRecorder Members
 
     /// <summary>
     /// Starts recording.
@@ -196,25 +173,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       return result;
     }
 
-    private void HandleFailedRecording(ref IUser user, string fileName)
-    {
-      this.LogDebug("card: Recording failed! {0} {1}", _cardHandler.DataBaseCard.IdCard, fileName);
-      string cardRecordingFolderName = _cardHandler.DataBaseCard.RecordingFolder;
-      Stop(ref user);
-      _cardHandler.UserManagement.RemoveUser(user, _cardHandler.UserManagement.GetTimeshiftingChannelId(user.Name));
-
-      string recordingfolderName = System.IO.Path.GetDirectoryName(fileName);
-      if (recordingfolderName == cardRecordingFolderName)
-      {
-        Utils.FileDelete(fileName);
-      }
-      else
-      {
-        // delete 0-byte file in case of error
-        Utils.DeleteFileAndEmptyDirectory(fileName);
-      }
-    }
-
     /// <summary>
     /// Stops recording.
     /// </summary>
@@ -243,49 +201,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         this.LogError(ex);
       }
       return stop;
-    }
-
-    private bool StopRecording(ref IUser user)
-    {
-      bool stop = false;
-      var recentSubChannelId = _cardHandler.UserManagement.GetRecentSubChannelId(user.Name);
-      user = _cardHandler.UserManagement.GetUserCopy(recentSubChannelId);
-      ITvSubChannel subchannel = GetSubChannel(recentSubChannelId);
-      if (subchannel != null)
-      {
-        subchannel.StopRecording();
-        _cardHandler.Card.FreeSubChannel(recentSubChannelId);
-        if (subchannel.IsTimeShifting == false || _cardHandler.UserManagement.UsersCount() <= 1)
-        {
-          _cardHandler.UserManagement.RemoveUser(user, _cardHandler.UserManagement.GetTimeshiftingChannelId(user.Name));
-        }
-        stop = true;
-      }
-      else
-      {
-        this.LogDebug("card: StopRecording subchannel null, skipping");
-      }
-      return stop;
-    }
-
-    private void SetContextOwnerToNextRecUser(ITvCardContext context)
-    {
-      //todo gibman - is this even needed, as its taken care of in usermanagement ?
-      /*
-      IDictionary<string, IUser> users = context.Users;
-      foreach (IUser user in users.Values)
-      {
-        ITvSubChannel subchannel = GetSubChannel(_cardHandler.UserManagement.GetSubChannelIdByChannelId(user.Name, idChannel));
-        if (subchannel != null)
-        {
-          if (subchannel.IsRecording)
-          {
-            this.LogDebug("card: StopRecording setting new context owner on user '{0}'", user.Name);
-            context.Owner = user;
-            break;
-          }
-        }
-      }*/
     }
 
     /// <summary>
@@ -374,6 +289,95 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         this.LogError(ex);
       }
       return recordingStarted;
+    }
+
+    #endregion
+
+    private static string SetDefaultRecordingFolder(ITvCardHandler cardHandler)
+    {
+      string recordingFolder = TVDatabase.TVBusinessLayer.Common.GetDefaultRecordingFolder();
+      cardHandler.DataBaseCard.RecordingFolder = recordingFolder;
+      TVDatabase.TVBusinessLayer.CardManagement.SaveCard(cardHandler.DataBaseCard);
+      return recordingFolder;
+    }
+
+
+    protected override void AudioVideoEventHandler(PidType pidType)
+    {
+      this.LogDebug("Recorder audioVideoEventHandler {0}", pidType);
+
+      // we are only interested in video and audio PIDs
+      if (pidType == PidType.Audio)
+      {
+        _eventAudio.Set();
+      }
+
+      if (pidType == PidType.Video)
+      {
+        _eventVideo.Set();
+      }
+    }
+
+    private void HandleFailedRecording(ref IUser user, string fileName)
+    {
+      this.LogDebug("card: Recording failed! {0} {1}", _cardHandler.DataBaseCard.IdCard, fileName);
+      string cardRecordingFolderName = _cardHandler.DataBaseCard.RecordingFolder;
+      Stop(ref user);
+      _cardHandler.UserManagement.RemoveUser(user, _cardHandler.UserManagement.GetTimeshiftingChannelId(user.Name));
+
+      string recordingfolderName = System.IO.Path.GetDirectoryName(fileName);
+      if (recordingfolderName == cardRecordingFolderName)
+      {
+        Utils.FileDelete(fileName);
+      }
+      else
+      {
+        // delete 0-byte file in case of error
+        Utils.DeleteFileAndEmptyDirectory(fileName);
+      }
+    }
+
+    private bool StopRecording(ref IUser user)
+    {
+      bool stop = false;
+      var recentSubChannelId = _cardHandler.UserManagement.GetRecentSubChannelId(user.Name);
+      user = _cardHandler.UserManagement.GetUserCopy(recentSubChannelId);
+      ITvSubChannel subchannel = GetSubChannel(recentSubChannelId);
+      if (subchannel != null)
+      {
+        subchannel.StopRecording();
+        _cardHandler.Card.FreeSubChannel(recentSubChannelId);
+        if (subchannel.IsTimeShifting == false || _cardHandler.UserManagement.UsersCount() <= 1)
+        {
+          _cardHandler.UserManagement.RemoveUser(user, _cardHandler.UserManagement.GetTimeshiftingChannelId(user.Name));
+        }
+        stop = true;
+      }
+      else
+      {
+        this.LogDebug("card: StopRecording subchannel null, skipping");
+      }
+      return stop;
+    }
+
+    private void SetContextOwnerToNextRecUser(ITvCardContext context)
+    {
+      //todo gibman - is this even needed, as its taken care of in usermanagement ?
+      /*
+      IDictionary<string, IUser> users = context.Users;
+      foreach (IUser user in users.Values)
+      {
+        ITvSubChannel subchannel = GetSubChannel(_cardHandler.UserManagement.GetSubChannelIdByChannelId(user.Name, idChannel));
+        if (subchannel != null)
+        {
+          if (subchannel.IsRecording)
+          {
+            this.LogDebug("card: StopRecording setting new context owner on user '{0}'", user.Name);
+            context.Owner = user;
+            break;
+          }
+        }
+      }*/
     }
   }
 }

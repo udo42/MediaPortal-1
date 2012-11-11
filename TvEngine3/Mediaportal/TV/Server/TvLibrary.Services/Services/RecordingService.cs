@@ -8,7 +8,8 @@ using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 namespace Mediaportal.TV.Server.TVLibrary.Services
 { 
   public class RecordingService : IRecordingService
-  {    
+  {
+    #region IRecordingService Members
 
     public Recording GetRecording(int idRecording)
     {
@@ -55,5 +56,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     {
       RecordingManagement.DeleteRecording(idRecording);
     }
+
+    #endregion
   }
 }

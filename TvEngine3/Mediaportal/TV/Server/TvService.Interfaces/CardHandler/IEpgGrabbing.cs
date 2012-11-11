@@ -8,17 +8,6 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.CardHandler
   public interface IEpgGrabbing
   {
     /// <summary>
-    /// grabs the epg.
-    /// </summary>
-    /// <returns></returns>
-    bool Start(BaseEpgGrabber grabber);
-
-    /// <summary>
-    /// Aborts grabbing the epg. This also triggers the OnEpgReceived callback.
-    /// </summary>
-    void Abort();
-
-    /// <summary>
     /// Gets the epg.
     /// </summary>
     /// <value>The epg.</value>
@@ -29,6 +18,17 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.CardHandler
     /// </summary>
     /// <returns>true when card is grabbing the epg  otherwise false</returns>
     bool IsGrabbing { get; }
+
+    /// <summary>
+    /// grabs the epg.
+    /// </summary>
+    /// <returns></returns>
+    bool Start(BaseEpgGrabber grabber);
+
+    /// <summary>
+    /// Aborts grabbing the epg. This also triggers the OnEpgReceived callback.
+    /// </summary>
+    void Abort();
 
     /// <summary>
     /// Stops the grabbing epg.

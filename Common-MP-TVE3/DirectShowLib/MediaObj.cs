@@ -195,11 +195,6 @@ namespace DirectShowLib.DMO
 
   public sealed class DMOCategory
   {
-    private DMOCategory()
-    {
-      // Prevent people from trying to instantiate this class
-    }
-
     /// <summary> DMOCATEGORY_AUDIO_DECODER </summary>
     public static readonly Guid AudioDecoder = new Guid(0x57f2db8b, 0xe6bb, 0x4513, 0x9d, 0x43, 0xdc, 0xd2, 0xa6, 0x59,
                                                         0x31, 0x25);
@@ -227,6 +222,11 @@ namespace DirectShowLib.DMO
     /// <summary> DMOCATEGORY_AUDIO_CAPTURE_EFFECT </summary>
     public static readonly Guid AudioCaptureEffect = new Guid(0xf665aaba, 0x3e09, 0x4920, 0xaa, 0x5f, 0x21, 0x98, 0x11,
                                                               0x14, 0x8f, 0x09);
+
+    private DMOCategory()
+    {
+      // Prevent people from trying to instantiate this class
+    }
   }
 
   #endregion
@@ -235,6 +235,10 @@ namespace DirectShowLib.DMO
 
   public sealed class DMOUtils
   {
+    private DMOUtils()
+    {
+    }
+
     [DllImport("msdmo.dll", ExactSpelling = true), SuppressUnmanagedCodeSecurity]
     public static extern int DMOEnum(
       [MarshalAs(UnmanagedType.LPStruct)] Guid DMOCategory,
@@ -292,10 +296,6 @@ namespace DirectShowLib.DMO
       out int pulOutputTypesSupplied,
       [Out] DMOPartialMediatype[] pOutTypes
       );
-
-    private DMOUtils()
-    {
-    }
   }
 
   #endregion
@@ -304,17 +304,17 @@ namespace DirectShowLib.DMO
 
   public sealed class DMOResults
   {
-    private DMOResults()
-    {
-      // Prevent people from trying to instantiate this class
-    }
-
     public const int E_InvalidStreamIndex = unchecked((int) 0x80040201);
     public const int E_InvalidType = unchecked((int) 0x80040202);
     public const int E_TypeNotSet = unchecked((int) 0x80040203);
     public const int E_NotAccepting = unchecked((int) 0x80040204);
     public const int E_TypeNotAccepted = unchecked((int) 0x80040205);
     public const int E_NoMoreItems = unchecked((int) 0x80040206);
+
+    private DMOResults()
+    {
+      // Prevent people from trying to instantiate this class
+    }
   }
 
   public sealed class DMOError

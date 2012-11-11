@@ -23,6 +23,8 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
     {
     }
 
+    #region IChannelRepository Members
+
     public IQueryable<Channel> GetAllChannelsByGroupIdAndMediaType(int groupId, MediaTypeEnum mediaType)
     {     
       IQueryable<Channel> channels = GetQuery<GroupMap>().Where(gm => gm.IdGroup == groupId && gm.Channel.VisibleInGuide && gm.Channel.MediaType == (int)mediaType).OrderBy(gm => gm.SortOrder).Select(gm => gm.Channel);
@@ -118,5 +120,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 
       return includeRelations;
     }
+
+    #endregion
   }  
 }

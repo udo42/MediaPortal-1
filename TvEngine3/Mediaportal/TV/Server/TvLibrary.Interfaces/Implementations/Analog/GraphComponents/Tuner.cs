@@ -56,24 +56,24 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     #region variables
 
     /// <summary>
-    /// Name of the tuner device
-    /// </summary>
-    private string _name;
-
-    /// <summary>
-    /// Index of the video output pin
-    /// </summary>
-    private int _videoPin;
-
-    /// <summary>
     /// Index of the audio output pin
     /// </summary>
     private int _audioPin;
 
     /// <summary>
+    /// Name of the tuner device
+    /// </summary>
+    private string _name;
+
+    /// <summary>
     /// The supported radio mode
     /// </summary>
     private RadioMode _radioMode;
+
+    /// <summary>
+    /// Index of the video output pin
+    /// </summary>
+    private int _videoPin;
 
     #endregion
 

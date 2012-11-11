@@ -31,15 +31,34 @@ namespace Mediaportal.TV.TvPlugin
     [SkinControl(24)] protected GUIButtonControl btnTvGroup = null;
     [SkinControl(10)] protected GUIUpDownListControl listChannels = null;
 
+    public ChannelSettings()
+    {
+      GetID = (int)Window.WINDOW_SETTINGS_SORT_CHANNELS;
+    }
+
     private ChannelGroup _currentGroup
     {
       get { return TVHome.Navigator.CurrentGroup; }
     }
 
-    public ChannelSettings()
+    #region IComparer<Channel> Members
+
+    public int Compare(Channel x, Channel y)
     {
-      GetID = (int)Window.WINDOW_SETTINGS_SORT_CHANNELS;
+      Channel ch1 = x;
+      Channel ch2 = y;
+      if (ch1.SortOrder < ch2.SortOrder)
+      {
+        return -1;
+      }
+      if (ch1.SortOrder > ch2.SortOrder)
+      {
+        return 1;
+      }
+      return 0;
     }
+
+    #endregion
 
     public override bool Init()
     {
@@ -204,24 +223,5 @@ namespace Mediaportal.TV.TvPlugin
       channelsInGroup.Sort(this);
       MappingHelper.AddChannelsToGroup(channelsInGroup, _currentGroup);      
     }
-
-    #region IComparer Members
-
-    public int Compare(Channel x, Channel y)
-    {
-      Channel ch1 = x;
-      Channel ch2 = y;
-      if (ch1.SortOrder < ch2.SortOrder)
-      {
-        return -1;
-      }
-      if (ch1.SortOrder > ch2.SortOrder)
-      {
-        return 1;
-      }
-      return 0;
-    }
-
-    #endregion
   }
 }

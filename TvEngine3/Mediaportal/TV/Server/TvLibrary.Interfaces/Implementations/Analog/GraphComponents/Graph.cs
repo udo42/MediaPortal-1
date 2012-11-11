@@ -30,6 +30,21 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     #region variables
 
     /// <summary>
+    /// The Capture component
+    /// </summary>
+    private Capture _capture;
+
+    /// <summary>
+    /// The Crossbar component
+    /// </summary>
+    private Crossbar _crossbar;
+
+    /// <summary>
+    /// The Teletext component
+    /// </summary>
+    private Teletext _teletext;
+
+    /// <summary>
     /// The Tuner component
     /// </summary>
     private Tuner _tuner;
@@ -38,21 +53,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     /// The TvAudio component
     /// </summary>
     private TvAudio _tvAudio;
-
-    /// <summary>
-    /// The Crossbar component
-    /// </summary>
-    private Crossbar _crossbar;
-
-    /// <summary>
-    /// The Capture component
-    /// </summary>
-    private Capture _capture;
-
-    /// <summary>
-    /// The Teletext component
-    /// </summary>
-    private Teletext _teletext;
 
     #endregion
 

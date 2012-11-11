@@ -20,353 +20,368 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
     [KnownType(typeof(History))]
     public partial class ProgramCategory: IObjectWithChangeTracker, INotifyPropertyChanged
     {
-        #region Primitive Properties
-    
-        [DataMember]
-        public int IdProgramCategory
-        {
-            get { return _idProgramCategory; }
-            set
-            {
-                if (_idProgramCategory != value)
-                {
-                    if (ChangeTracker.ChangeTrackingEnabled && ChangeTracker.State != ObjectState.Added)
-                    {
-                        throw new InvalidOperationException("The property 'IdProgramCategory' is part of the object's key and cannot be changed. Changes to key properties can only be made when the object is not being tracked or is in the Added state.");
-                    }
-                    _idProgramCategory = value;
-                    OnPropertyChanged("IdProgramCategory");
-                }
-            }
-        }
-        private int _idProgramCategory;
-    
-        [DataMember]
-        public string Category
-        {
-            get { return _category; }
-            set
-            {
-                if (_category != value)
-                {
-                    _category = value;
-                    OnPropertyChanged("Category");
-                }
-            }
-        }
-        private string _category;
+      #region Primitive Properties
 
-        #endregion
-        #region Navigation Properties
-    
-        [DataMember]
-        public TrackableCollection<Program> Programs
-        {
-            get
-            {
-                if (_programs == null)
-                {
-                    _programs = new TrackableCollection<Program>();
-                    _programs.CollectionChanged += FixupPrograms;
-                }
-                return _programs;
-            }
-            set
-            {
-                if (!ReferenceEquals(_programs, value))
-                {
-                    if (ChangeTracker.ChangeTrackingEnabled)
-                    {
-                        throw new InvalidOperationException("Cannot set the FixupChangeTrackingCollection when ChangeTracking is enabled");
-                    }
-                    if (_programs != null)
-                    {
-                        _programs.CollectionChanged -= FixupPrograms;
-                    }
-                    _programs = value;
-                    if (_programs != null)
-                    {
-                        _programs.CollectionChanged += FixupPrograms;
-                    }
-                    OnNavigationPropertyChanged("Programs");
-                }
-            }
-        }
-        private TrackableCollection<Program> _programs;
-    
-        [DataMember]
-        public TrackableCollection<Recording> Recordings
-        {
-            get
-            {
-                if (_recordings == null)
-                {
-                    _recordings = new TrackableCollection<Recording>();
-                    _recordings.CollectionChanged += FixupRecordings;
-                }
-                return _recordings;
-            }
-            set
-            {
-                if (!ReferenceEquals(_recordings, value))
-                {
-                    if (ChangeTracker.ChangeTrackingEnabled)
-                    {
-                        throw new InvalidOperationException("Cannot set the FixupChangeTrackingCollection when ChangeTracking is enabled");
-                    }
-                    if (_recordings != null)
-                    {
-                        _recordings.CollectionChanged -= FixupRecordings;
-                    }
-                    _recordings = value;
-                    if (_recordings != null)
-                    {
-                        _recordings.CollectionChanged += FixupRecordings;
-                    }
-                    OnNavigationPropertyChanged("Recordings");
-                }
-            }
-        }
-        private TrackableCollection<Recording> _recordings;
-    
-        [DataMember]
-        public TrackableCollection<History> Histories
-        {
-            get
-            {
-                if (_histories == null)
-                {
-                    _histories = new TrackableCollection<History>();
-                    _histories.CollectionChanged += FixupHistories;
-                }
-                return _histories;
-            }
-            set
-            {
-                if (!ReferenceEquals(_histories, value))
-                {
-                    if (ChangeTracker.ChangeTrackingEnabled)
-                    {
-                        throw new InvalidOperationException("Cannot set the FixupChangeTrackingCollection when ChangeTracking is enabled");
-                    }
-                    if (_histories != null)
-                    {
-                        _histories.CollectionChanged -= FixupHistories;
-                    }
-                    _histories = value;
-                    if (_histories != null)
-                    {
-                        _histories.CollectionChanged += FixupHistories;
-                    }
-                    OnNavigationPropertyChanged("Histories");
-                }
-            }
-        }
-        private TrackableCollection<History> _histories;
+      private string _category;
+      private int _idProgramCategory;
 
-        #endregion
-        #region ChangeTracking
-    
-        protected virtual void OnPropertyChanged(String propertyName)
+      [DataMember]
+      public int IdProgramCategory
+      {
+        get { return _idProgramCategory; }
+        set
         {
-            if (ChangeTracker.State != ObjectState.Added && ChangeTracker.State != ObjectState.Deleted)
+          if (_idProgramCategory != value)
+          {
+            if (ChangeTracker.ChangeTrackingEnabled && ChangeTracker.State != ObjectState.Added)
             {
-                ChangeTracker.State = ObjectState.Modified;
+              throw new InvalidOperationException("The property 'IdProgramCategory' is part of the object's key and cannot be changed. Changes to key properties can only be made when the object is not being tracked or is in the Added state.");
             }
-            if (_propertyChanged != null)
-            {
-                _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            _idProgramCategory = value;
+            OnPropertyChanged("IdProgramCategory");
+          }
         }
-    
-        protected virtual void OnNavigationPropertyChanged(String propertyName)
-        {
-            if (_propertyChanged != null)
-            {
-                _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-    
-        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged{ add { _propertyChanged += value; } remove { _propertyChanged -= value; } }
-        private event PropertyChangedEventHandler _propertyChanged;
-        private ObjectChangeTracker _changeTracker;
-    
-        [DataMember]
-        public ObjectChangeTracker ChangeTracker
-        {
-            get
-            {
-                if (_changeTracker == null)
-                {
-                    _changeTracker = new ObjectChangeTracker();
-                    _changeTracker.ObjectStateChanging += HandleObjectStateChanging;
-                }
-                return _changeTracker;
-            }
-            set
-            {
-                if(_changeTracker != null)
-                {
-                    _changeTracker.ObjectStateChanging -= HandleObjectStateChanging;
-                }
-                _changeTracker = value;
-                if(_changeTracker != null)
-                {
-                    _changeTracker.ObjectStateChanging += HandleObjectStateChanging;
-                }
-            }
-        }
-    
-        private void HandleObjectStateChanging(object sender, ObjectStateChangingEventArgs e)
-        {
-            if (e.NewState == ObjectState.Deleted)
-            {
-                ClearNavigationProperties();
-            }
-        }
-    
-        protected bool IsDeserializing { get; private set; }
-    
-        [OnDeserializing]
-        public void OnDeserializingMethod(StreamingContext context)
-        {
-            IsDeserializing = true;
-        }
-    
-        [OnDeserialized]
-        public void OnDeserializedMethod(StreamingContext context)
-        {
-            IsDeserializing = false;
-            ChangeTracker.ChangeTrackingEnabled = true;
-        }
-    
-        protected virtual void ClearNavigationProperties()
-        {
-            Programs.Clear();
-            Recordings.Clear();
-            Histories.Clear();
-        }
+      }
 
-        #endregion
-        #region Association Fixup
-    
-        private void FixupPrograms(object sender, NotifyCollectionChangedEventArgs e)
+      [DataMember]
+      public string Category
+      {
+        get { return _category; }
+        set
         {
-            if (IsDeserializing)
-            {
-                return;
-            }
-    
-            if (e.NewItems != null)
-            {
-                foreach (Program item in e.NewItems)
-                {
-                    item.ProgramCategory = this;
-                    if (ChangeTracker.ChangeTrackingEnabled)
-                    {
-                        if (!item.ChangeTracker.ChangeTrackingEnabled)
-                        {
-                            item.StartTracking();
-                        }
-                        ChangeTracker.RecordAdditionToCollectionProperties("Programs", item);
-                    }
-                }
-            }
-    
-            if (e.OldItems != null)
-            {
-                foreach (Program item in e.OldItems)
-                {
-                    if (ReferenceEquals(item.ProgramCategory, this))
-                    {
-                        item.ProgramCategory = null;
-                    }
-                    if (ChangeTracker.ChangeTrackingEnabled)
-                    {
-                        ChangeTracker.RecordRemovalFromCollectionProperties("Programs", item);
-                    }
-                }
-            }
+          if (_category != value)
+          {
+            _category = value;
+            OnPropertyChanged("Category");
+          }
         }
-    
-        private void FixupRecordings(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (IsDeserializing)
-            {
-                return;
-            }
-    
-            if (e.NewItems != null)
-            {
-                foreach (Recording item in e.NewItems)
-                {
-                    item.ProgramCategory = this;
-                    if (ChangeTracker.ChangeTrackingEnabled)
-                    {
-                        if (!item.ChangeTracker.ChangeTrackingEnabled)
-                        {
-                            item.StartTracking();
-                        }
-                        ChangeTracker.RecordAdditionToCollectionProperties("Recordings", item);
-                    }
-                }
-            }
-    
-            if (e.OldItems != null)
-            {
-                foreach (Recording item in e.OldItems)
-                {
-                    if (ReferenceEquals(item.ProgramCategory, this))
-                    {
-                        item.ProgramCategory = null;
-                    }
-                    if (ChangeTracker.ChangeTrackingEnabled)
-                    {
-                        ChangeTracker.RecordRemovalFromCollectionProperties("Recordings", item);
-                    }
-                }
-            }
-        }
-    
-        private void FixupHistories(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (IsDeserializing)
-            {
-                return;
-            }
-    
-            if (e.NewItems != null)
-            {
-                foreach (History item in e.NewItems)
-                {
-                    item.ProgramCategory = this;
-                    if (ChangeTracker.ChangeTrackingEnabled)
-                    {
-                        if (!item.ChangeTracker.ChangeTrackingEnabled)
-                        {
-                            item.StartTracking();
-                        }
-                        ChangeTracker.RecordAdditionToCollectionProperties("Histories", item);
-                    }
-                }
-            }
-    
-            if (e.OldItems != null)
-            {
-                foreach (History item in e.OldItems)
-                {
-                    if (ReferenceEquals(item.ProgramCategory, this))
-                    {
-                        item.ProgramCategory = null;
-                    }
-                    if (ChangeTracker.ChangeTrackingEnabled)
-                    {
-                        ChangeTracker.RecordRemovalFromCollectionProperties("Histories", item);
-                    }
-                }
-            }
-        }
+      }
 
-        #endregion
+      #endregion
+
+      #region Navigation Properties
+
+      private TrackableCollection<History> _histories;
+      private TrackableCollection<Program> _programs;
+
+      private TrackableCollection<Recording> _recordings;
+
+      [DataMember]
+      public TrackableCollection<Program> Programs
+      {
+        get
+        {
+          if (_programs == null)
+          {
+            _programs = new TrackableCollection<Program>();
+            _programs.CollectionChanged += FixupPrograms;
+          }
+          return _programs;
+        }
+        set
+        {
+          if (!ReferenceEquals(_programs, value))
+          {
+            if (ChangeTracker.ChangeTrackingEnabled)
+            {
+              throw new InvalidOperationException("Cannot set the FixupChangeTrackingCollection when ChangeTracking is enabled");
+            }
+            if (_programs != null)
+            {
+              _programs.CollectionChanged -= FixupPrograms;
+            }
+            _programs = value;
+            if (_programs != null)
+            {
+              _programs.CollectionChanged += FixupPrograms;
+            }
+            OnNavigationPropertyChanged("Programs");
+          }
+        }
+      }
+
+      [DataMember]
+      public TrackableCollection<Recording> Recordings
+      {
+        get
+        {
+          if (_recordings == null)
+          {
+            _recordings = new TrackableCollection<Recording>();
+            _recordings.CollectionChanged += FixupRecordings;
+          }
+          return _recordings;
+        }
+        set
+        {
+          if (!ReferenceEquals(_recordings, value))
+          {
+            if (ChangeTracker.ChangeTrackingEnabled)
+            {
+              throw new InvalidOperationException("Cannot set the FixupChangeTrackingCollection when ChangeTracking is enabled");
+            }
+            if (_recordings != null)
+            {
+              _recordings.CollectionChanged -= FixupRecordings;
+            }
+            _recordings = value;
+            if (_recordings != null)
+            {
+              _recordings.CollectionChanged += FixupRecordings;
+            }
+            OnNavigationPropertyChanged("Recordings");
+          }
+        }
+      }
+
+      [DataMember]
+      public TrackableCollection<History> Histories
+      {
+        get
+        {
+          if (_histories == null)
+          {
+            _histories = new TrackableCollection<History>();
+            _histories.CollectionChanged += FixupHistories;
+          }
+          return _histories;
+        }
+        set
+        {
+          if (!ReferenceEquals(_histories, value))
+          {
+            if (ChangeTracker.ChangeTrackingEnabled)
+            {
+              throw new InvalidOperationException("Cannot set the FixupChangeTrackingCollection when ChangeTracking is enabled");
+            }
+            if (_histories != null)
+            {
+              _histories.CollectionChanged -= FixupHistories;
+            }
+            _histories = value;
+            if (_histories != null)
+            {
+              _histories.CollectionChanged += FixupHistories;
+            }
+            OnNavigationPropertyChanged("Histories");
+          }
+        }
+      }
+
+      #endregion
+
+      #region ChangeTracking
+
+      private ObjectChangeTracker _changeTracker;
+      protected bool IsDeserializing { get; private set; }
+
+      #region INotifyPropertyChanged Members
+
+      event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged{ add { _propertyChanged += value; } remove { _propertyChanged -= value; } }
+
+      #endregion
+
+      #region IObjectWithChangeTracker Members
+
+      [DataMember]
+      public ObjectChangeTracker ChangeTracker
+      {
+        get
+        {
+          if (_changeTracker == null)
+          {
+            _changeTracker = new ObjectChangeTracker();
+            _changeTracker.ObjectStateChanging += HandleObjectStateChanging;
+          }
+          return _changeTracker;
+        }
+        set
+        {
+          if(_changeTracker != null)
+          {
+            _changeTracker.ObjectStateChanging -= HandleObjectStateChanging;
+          }
+          _changeTracker = value;
+          if(_changeTracker != null)
+          {
+            _changeTracker.ObjectStateChanging += HandleObjectStateChanging;
+          }
+        }
+      }
+
+      #endregion
+
+      protected virtual void OnPropertyChanged(String propertyName)
+      {
+        if (ChangeTracker.State != ObjectState.Added && ChangeTracker.State != ObjectState.Deleted)
+        {
+          ChangeTracker.State = ObjectState.Modified;
+        }
+        if (_propertyChanged != null)
+        {
+          _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+      }
+    
+      protected virtual void OnNavigationPropertyChanged(String propertyName)
+      {
+        if (_propertyChanged != null)
+        {
+          _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+      }
+
+      private event PropertyChangedEventHandler _propertyChanged;
+
+      private void HandleObjectStateChanging(object sender, ObjectStateChangingEventArgs e)
+      {
+        if (e.NewState == ObjectState.Deleted)
+        {
+          ClearNavigationProperties();
+        }
+      }
+
+      [OnDeserializing]
+      public void OnDeserializingMethod(StreamingContext context)
+      {
+        IsDeserializing = true;
+      }
+    
+      [OnDeserialized]
+      public void OnDeserializedMethod(StreamingContext context)
+      {
+        IsDeserializing = false;
+        ChangeTracker.ChangeTrackingEnabled = true;
+      }
+    
+      protected virtual void ClearNavigationProperties()
+      {
+        Programs.Clear();
+        Recordings.Clear();
+        Histories.Clear();
+      }
+
+      #endregion
+
+      #region Association Fixup
+    
+      private void FixupPrograms(object sender, NotifyCollectionChangedEventArgs e)
+      {
+        if (IsDeserializing)
+        {
+          return;
+        }
+    
+        if (e.NewItems != null)
+        {
+          foreach (Program item in e.NewItems)
+          {
+            item.ProgramCategory = this;
+            if (ChangeTracker.ChangeTrackingEnabled)
+            {
+              if (!item.ChangeTracker.ChangeTrackingEnabled)
+              {
+                item.StartTracking();
+              }
+              ChangeTracker.RecordAdditionToCollectionProperties("Programs", item);
+            }
+          }
+        }
+    
+        if (e.OldItems != null)
+        {
+          foreach (Program item in e.OldItems)
+          {
+            if (ReferenceEquals(item.ProgramCategory, this))
+            {
+              item.ProgramCategory = null;
+            }
+            if (ChangeTracker.ChangeTrackingEnabled)
+            {
+              ChangeTracker.RecordRemovalFromCollectionProperties("Programs", item);
+            }
+          }
+        }
+      }
+    
+      private void FixupRecordings(object sender, NotifyCollectionChangedEventArgs e)
+      {
+        if (IsDeserializing)
+        {
+          return;
+        }
+    
+        if (e.NewItems != null)
+        {
+          foreach (Recording item in e.NewItems)
+          {
+            item.ProgramCategory = this;
+            if (ChangeTracker.ChangeTrackingEnabled)
+            {
+              if (!item.ChangeTracker.ChangeTrackingEnabled)
+              {
+                item.StartTracking();
+              }
+              ChangeTracker.RecordAdditionToCollectionProperties("Recordings", item);
+            }
+          }
+        }
+    
+        if (e.OldItems != null)
+        {
+          foreach (Recording item in e.OldItems)
+          {
+            if (ReferenceEquals(item.ProgramCategory, this))
+            {
+              item.ProgramCategory = null;
+            }
+            if (ChangeTracker.ChangeTrackingEnabled)
+            {
+              ChangeTracker.RecordRemovalFromCollectionProperties("Recordings", item);
+            }
+          }
+        }
+      }
+    
+      private void FixupHistories(object sender, NotifyCollectionChangedEventArgs e)
+      {
+        if (IsDeserializing)
+        {
+          return;
+        }
+    
+        if (e.NewItems != null)
+        {
+          foreach (History item in e.NewItems)
+          {
+            item.ProgramCategory = this;
+            if (ChangeTracker.ChangeTrackingEnabled)
+            {
+              if (!item.ChangeTracker.ChangeTrackingEnabled)
+              {
+                item.StartTracking();
+              }
+              ChangeTracker.RecordAdditionToCollectionProperties("Histories", item);
+            }
+          }
+        }
+    
+        if (e.OldItems != null)
+        {
+          foreach (History item in e.OldItems)
+          {
+            if (ReferenceEquals(item.ProgramCategory, this))
+            {
+              item.ProgramCategory = null;
+            }
+            if (ChangeTracker.ChangeTrackingEnabled)
+            {
+              ChangeTracker.RecordRemovalFromCollectionProperties("Histories", item);
+            }
+          }
+        }
+      }
+
+      #endregion
     }
 }

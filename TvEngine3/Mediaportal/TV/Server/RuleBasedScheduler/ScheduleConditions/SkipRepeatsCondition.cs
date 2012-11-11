@@ -6,10 +6,14 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
 {
   [Serializable]
   public class SkipRepeatsCondition : IScheduleCondition
-  {    
+  {
+    #region IScheduleCondition Members
+
     public IQueryable<Program> ApplyCondition(IQueryable<Program> baseQuery)
     {
        return baseQuery.Where(program => !program.PreviouslyShown);
     }
+
+    #endregion
   }
 }

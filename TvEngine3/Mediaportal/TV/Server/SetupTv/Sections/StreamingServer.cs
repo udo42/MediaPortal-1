@@ -36,29 +36,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class StreamingServer : SectionSettings
   {
-
-
-    private int _rtspPort = Convert.ToInt32(ServiceAgents.Instance.SettingServiceAgent.GetSetting("rtspport").Value);
     private string _hostname = ServiceAgents.Instance.SettingServiceAgent.GetSetting("hostname").Value;
+    private int _rtspPort = Convert.ToInt32(ServiceAgents.Instance.SettingServiceAgent.GetSetting("rtspport").Value);
 
-    private class IpAddressOption
-    {
-   
-      public string DisplayString;
-      public string HostName;
-
-      public IpAddressOption(string displayString, string hostName)
-      {
-        DisplayString = displayString;
-        HostName = hostName;
-      }
-
-      public override string ToString()
-      {
-        return DisplayString;
-      }
-    }
-    
 
     public StreamingServer()
       : this("Streaming Server") {}
@@ -248,5 +228,27 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       ApplyStreamingSettings();
     }
+
+    #region Nested type: IpAddressOption
+
+    private class IpAddressOption
+    {
+   
+      public string DisplayString;
+      public string HostName;
+
+      public IpAddressOption(string displayString, string hostName)
+      {
+        DisplayString = displayString;
+        HostName = hostName;
+      }
+
+      public override string ToString()
+      {
+        return DisplayString;
+      }
+    }
+
+    #endregion
   }
 }

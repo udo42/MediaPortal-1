@@ -39,24 +39,23 @@ namespace WebEPG.Parser
   /// </summary>
   public class ProgramData : IParserData
   {
-
     #region Variables
 
-    private string _channelId = string.Empty;
-    private string _title = string.Empty;
-    private string _subTitle = string.Empty;
-    private string _description = string.Empty;
-    private string _genre = string.Empty;
     private List<string> _actors;
-    private DataPreference _preference;
-    private HTTPRequest _sublink;
-    private Dictionary<string, int> _months;
-    private WorldDateTime _startTime;
+    private string _channelId = string.Empty;
+    private string _description = string.Empty;
     private WorldDateTime _endTime;
     private int _episode = 0;
-    private int _season = 0;
+    private string _genre = string.Empty;
+    private Dictionary<string, int> _months;
+    private DataPreference _preference;
     private bool _repeat = false;
+    private int _season = 0;
+    private WorldDateTime _startTime;
+    private string _subTitle = string.Empty;
+    private HTTPRequest _sublink;
     private bool _subtitles = false;
+    private string _title = string.Empty;
 
     #endregion
 
@@ -323,10 +322,10 @@ namespace WebEPG.Parser
 
       WorldDateTime endTime = _endTime ?? _startTime;
       Program program = ProgramFactory.CreateProgram(dbIdChannel, _startTime.ToLocalTime(), endTime.ToLocalTime(), _title, _description,
-                                    category,
-                                    ProgramState.None, System.Data.SqlTypes.SqlDateTime.MinValue.Value,
-                                    String.Empty, String.Empty,
-                                    _subTitle, String.Empty, -1, String.Empty, 0);
+                                                     category,
+                                                     ProgramState.None, System.Data.SqlTypes.SqlDateTime.MinValue.Value,
+                                                     String.Empty, String.Empty,
+                                                     _subTitle, String.Empty, -1, String.Empty, 0);
       if (_episode > 0)
       {
         program.EpisodeNum = _episode.ToString();

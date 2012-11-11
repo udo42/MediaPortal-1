@@ -35,33 +35,11 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class ChannelCombinations : SectionSettings
   {
- 
-
-    public class CardInfo
-    {
-      protected Card _card;
-
-      public Card Card
-      {
-        get { return _card; }
-      }
-
-      public CardInfo(Card card)
-      {
-        _card = card;
-      }
-
-      public override string ToString()
-      {
-        return _card.Name;
-      }
-    }
-
     private readonly MPListViewStringColumnSorter lvwColumnSorter2;
     private readonly MPListViewStringColumnSorter lvwColumnSorter3;
 
-    private Dictionary<int, CardType> cards;
     private MediaTypeEnum _mediaTypeEnum;
+    private Dictionary<int, CardType> cards;
 
     public ChannelCombinations(string name, MediaTypeEnum mediaType)
       : base(name)
@@ -420,5 +398,29 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
       return imageIndex;
     }
+
+    #region Nested type: CardInfo
+
+    public class CardInfo
+    {
+      protected Card _card;
+
+      public CardInfo(Card card)
+      {
+        _card = card;
+      }
+
+      public Card Card
+      {
+        get { return _card; }
+      }
+
+      public override string ToString()
+      {
+        return _card.Name;
+      }
+    }
+
+    #endregion
   }
 }

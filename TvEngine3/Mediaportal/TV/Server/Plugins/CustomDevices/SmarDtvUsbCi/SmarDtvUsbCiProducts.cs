@@ -31,6 +31,21 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
   public struct SmarDtvUsbCiProduct
   {
     /// <summary>
+    /// The name of the device registered by the product's BDA driver (for example: WinTVCIUSBBDA Source).
+    /// </summary>
+    public readonly String BdaDeviceName;
+
+    /// <summary>
+    /// The COM interface used to interact with the CI.
+    /// </summary>
+    public readonly Type ComInterface;
+
+    /// <summary>
+    /// The name of the TV Server database setting that holds the product tuner association.
+    /// </summary>
+    public readonly String DbSettingName;
+
+    /// <summary>
     /// The official name of the product.
     /// </summary>
     public readonly String ProductName;
@@ -39,21 +54,6 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     /// The name of the device registered by the product's WDM driver (for example: WinTVCIUSB).
     /// </summary>
     public readonly String WdmDeviceName;
-
-    /// <summary>
-    /// The name of the device registered by the product's BDA driver (for example: WinTVCIUSBBDA Source).
-    /// </summary>
-    public readonly String BdaDeviceName;
-
-    /// <summary>
-    /// The name of the TV Server database setting that holds the product tuner association.
-    /// </summary>
-    public readonly String DbSettingName;
-
-    /// <summary>
-    /// The COM interface used to interact with the CI.
-    /// </summary>
-    public readonly Type ComInterface;
 
     /// <summary>
     /// Constructor.
@@ -84,9 +84,36 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     // if property sets were used, however the properties are not documented and don't appear to be a one-to-one
     // mapping to functions.
 
+    #region Nested type: IHauppaugeWinTvCi
+
     [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
-      Guid("a934e61e-2e24-4145-b45b-3e71830048f7"),
-      InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+     Guid("dd5a9b44-348a-4607-bf72-cfd8239e4432"),
+     InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    private interface IHauppaugeWinTvCi
+    {
+      [PreserveSig]
+      Int32 USB2CI_Init([In] IntPtr callbacks);
+
+      [PreserveSig]
+      Int32 USB2CI_OpenMMI();
+
+      [PreserveSig]
+      Int32 USB2CI_APDUToCAM([In] Int32 apduLength, [In, MarshalAs(UnmanagedType.LPArray)] byte[] apdu);
+
+      [PreserveSig]
+      Int32 USB2CI_GuiSendPMT([In, MarshalAs(UnmanagedType.LPArray)] byte[] pmt, [In] Int16 pmtLength);
+
+      [PreserveSig]
+      Int32 USB2CI_GetVersion([In] IntPtr version);
+    }
+
+    #endregion
+
+    #region Nested type: ITerraTecCinergyCiUsb
+
+    [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+     Guid("a934e61e-2e24-4145-b45b-3e71830048f7"),
+     InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     private interface ITerraTecCinergyCiUsb
     {
       /// <summary>
@@ -137,26 +164,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
       Int32 USB2CI_GetVersion([In] IntPtr versionInfo);
     }
 
-    [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
-      Guid("dd5a9b44-348a-4607-bf72-cfd8239e4432"),
-      InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    private interface IHauppaugeWinTvCi
-    {
-      [PreserveSig]
-      Int32 USB2CI_Init([In] IntPtr callbacks);
-
-      [PreserveSig]
-      Int32 USB2CI_OpenMMI();
-
-      [PreserveSig]
-      Int32 USB2CI_APDUToCAM([In] Int32 apduLength, [In, MarshalAs(UnmanagedType.LPArray)] byte[] apdu);
-
-      [PreserveSig]
-      Int32 USB2CI_GuiSendPMT([In, MarshalAs(UnmanagedType.LPArray)] byte[] pmt, [In] Int16 pmtLength);
-
-      [PreserveSig]
-      Int32 USB2CI_GetVersion([In] IntPtr version);
-    }
+    #endregion
 
     #endregion
 

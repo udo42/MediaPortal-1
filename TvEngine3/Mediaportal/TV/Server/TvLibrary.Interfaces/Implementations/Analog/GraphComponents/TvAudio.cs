@@ -60,6 +60,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     #region variables
 
     /// <summary>
+    /// The bitmask of the supported audio mode
+    /// </summary>
+    private TVAudioMode _audioModes;
+
+    /// <summary>
     /// The current TvAudio variant of the found filter
     /// </summary>
     private TvAudioVariant _mode;
@@ -68,11 +73,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     /// The name of the TvAudio device
     /// </summary>
     private string _name;
-
-    /// <summary>
-    /// The bitmask of the supported audio mode
-    /// </summary>
-    private TVAudioMode _audioModes;
 
     #endregion
 

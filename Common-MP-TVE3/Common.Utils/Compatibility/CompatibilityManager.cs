@@ -28,24 +28,17 @@ namespace MediaPortal.Common.Utils
 {
   public class CompatibilityManager
   {
-    protected class UsesSubsystemAttributeComparer : IEqualityComparer<UsesSubsystemAttribute>
-    {
-      public bool Equals(UsesSubsystemAttribute x, UsesSubsystemAttribute y)
-      {
-        return x.Subsystem == y.Subsystem;
-      }
-
-      public int GetHashCode(UsesSubsystemAttribute obj)
-      {
-        return obj.Subsystem.GetHashCode();
-      }
-    }
-
     private static readonly HashSet<Assembly> AppAssemblies = new HashSet<Assembly>();
     private static readonly Dictionary<string, Version> SubSystemVersions = new Dictionary<string, Version>();
     private static readonly Version AppVersion;
     public static readonly Version SkinVersion = new Version(1, 3, 0, 0);
     private static readonly string MinRequiredVersionDefault = "1.1.8.0"; // 1.2.0 RC1
+
+    static readonly Dictionary<Version, string> MpReleaseApi = new Dictionary<Version, string>()
+                                                                 {
+                                                                   { new Version("1.1.6.27644"), "1.2.0 Beta" },
+                                                                   { new Version("1.2.100.0"), "1.3.0 Alpha" }
+                                                                 };
 
     static CompatibilityManager()
     {
@@ -375,15 +368,30 @@ namespace MediaPortal.Common.Utils
       return subsystemsUsed.All(attr => SubSystemVersions.TryGetValue(attr, out ver) && CompareVersions(ver, designedForVersion) <= 0);
     }
 
-    static readonly Dictionary<Version, string> MpReleaseApi = new Dictionary<Version, string>()
-    {
-      { new Version("1.1.6.27644"), "1.2.0 Beta" },
-      { new Version("1.2.100.0"), "1.3.0 Alpha" }
-    };
-
     public static string MediaPortalReleaseForApiVersion(Version apiVersion)
     {
       return MpReleaseApi.First(v => v.Key >= apiVersion).Value;
     }
+
+    #region Nested type: UsesSubsystemAttributeComparer
+
+    protected class UsesSubsystemAttributeComparer : IEqualityComparer<UsesSubsystemAttribute>
+    {
+      #region IEqualityComparer<UsesSubsystemAttribute> Members
+
+      public bool Equals(UsesSubsystemAttribute x, UsesSubsystemAttribute y)
+      {
+        return x.Subsystem == y.Subsystem;
+      }
+
+      public int GetHashCode(UsesSubsystemAttribute obj)
+      {
+        return obj.Subsystem.GetHashCode();
+      }
+
+      #endregion
+    }
+
+    #endregion
   }
 }

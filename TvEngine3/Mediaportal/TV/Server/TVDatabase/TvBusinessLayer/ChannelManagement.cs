@@ -18,11 +18,16 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 {
   public static class ChannelManagement
   {
-
-    public delegate void OnStateChangedTuningDetailDelegate(TuningDetail tuningDetail, ObjectState state);
-    public static event OnStateChangedTuningDetailDelegate OnStateChangedTuningDetailEvent;
+    #region Delegates
 
     public delegate void OnStateChangedChannelMapDelegate(ChannelMap map, ObjectState state);
+
+    public delegate void OnStateChangedTuningDetailDelegate(TuningDetail tuningDetail, ObjectState state);
+
+    #endregion
+
+    public static event OnStateChangedTuningDetailDelegate OnStateChangedTuningDetailEvent;
+
     public static event OnStateChangedChannelMapDelegate OnStateChangedChannelMapEvent;
 
     /*public delegate void OnAddTuningDetailDelegate(TuningDetail tuningDetail);

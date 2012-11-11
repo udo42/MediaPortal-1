@@ -31,14 +31,21 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   /// </summary>
   public class MPListView : ListView
   {
-    [DllImport("user32")]
-    private static extern int GetDoubleClickTime();
-
     private const string REORDER = "Reorder";
     private bool allowRowReorder;
     private bool isChannelListView;
     private DateTime lastClick = DateTime.MinValue;
     private ListViewItem lastItem = null;
+
+    public MPListView()
+    {
+      //  Activate double buffering
+      SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
+
+      // Allows for catching the WM_ERASEBKGND message
+      SetStyle(ControlStyles.EnableNotifyMessage, true);
+      AllowRowReorder = true;
+    }
 
     public bool AllowRowReorder
     {
@@ -62,15 +69,8 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       set { base.Sorting = SortOrder.None; }
     }
 
-    public MPListView()
-    {
-      //  Activate double buffering
-      SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.OptimizedDoubleBuffer, true);
-
-      // Allows for catching the WM_ERASEBKGND message
-      SetStyle(ControlStyles.EnableNotifyMessage, true);
-      AllowRowReorder = true;
-    }
+    [DllImport("user32")]
+    private static extern int GetDoubleClickTime();
 
     //protected override void WndProc(ref System.Windows.Forms.Message m)
     //{

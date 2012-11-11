@@ -35,10 +35,10 @@ namespace WebEPG.Utils
   {
     #region Variables
 
-    private XmlTextWriter _writer;
-    private string _xmltvTempFile;
-    private string _xmltvFile;
     private string _currentChannelName;
+    private XmlTextWriter _writer;
+    private string _xmltvFile;
+    private string _xmltvTempFile;
 
     #endregion
 

@@ -31,8 +31,8 @@ namespace WebEPG.config.WebEPG
     #region Variables
 
     [XmlAttribute("id")] public string id;
-    [XmlAttribute("username")] public string username;
     [XmlAttribute("password")] public string password;
+    [XmlAttribute("username")] public string username;
 
     #endregion
 

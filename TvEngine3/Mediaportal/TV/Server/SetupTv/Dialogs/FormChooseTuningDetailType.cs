@@ -29,6 +29,11 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
     private MediaTypeEnum _mediaType = MediaTypeEnum.TV;
     private int _tuningType;
 
+    public FormChooseTuningDetailType()
+    {
+      InitializeComponent();
+    }
+
     public int TuningType
     {
       get { return _tuningType; }
@@ -40,11 +45,6 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       set { _mediaType = value; }
     }
 
-
-    public FormChooseTuningDetailType()
-    {
-      InitializeComponent();
-    }
 
     private void mpButtonOk_Click(object sender, EventArgs e)
     {

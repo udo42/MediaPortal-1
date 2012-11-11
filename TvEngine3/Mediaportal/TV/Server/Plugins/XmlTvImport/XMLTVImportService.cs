@@ -4,7 +4,9 @@ using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 {  
   public class XMLTVImportService : IXMLTVImportService
-  {    
+  {
+    #region IXMLTVImportService Members
+
     public void ImportNow()
     {
       ThreadPool.QueueUserWorkItem(
@@ -23,5 +25,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
           }
         );
     }
+
+    #endregion
   }
 }

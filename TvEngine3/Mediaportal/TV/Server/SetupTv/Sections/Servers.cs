@@ -28,12 +28,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class Servers : SectionSettings
   {
-    private class Server
-    {
-      public string Hostname { get; set; }
-      public int RtspPort { get; set; }
-    }
-
     public Servers()
       : this("TV Servers") {}
 
@@ -128,5 +122,15 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       buttonChooseIp_Click(null, null);
     }
+
+    #region Nested type: Server
+
+    private class Server
+    {
+      public string Hostname { get; set; }
+      public int RtspPort { get; set; }
+    }
+
+    #endregion
   }
 }

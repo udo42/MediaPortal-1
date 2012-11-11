@@ -10,6 +10,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {
     }
 
+    #region IConflictService Members
+
     public IList<Conflict> ListAllConflicts()
     {
       return _channel.ListAllConflicts();
@@ -25,5 +27,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {
       return _channel.GetConflict(idConflict);
     }
+
+    #endregion
   }
 }

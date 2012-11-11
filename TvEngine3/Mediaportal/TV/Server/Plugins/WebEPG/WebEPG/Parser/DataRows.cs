@@ -29,9 +29,9 @@ namespace WebEPG.Parser
   {
     #region Variables
 
+    private string _rowDelimiter;
     private MatchCollection _rows;
     private string _source;
-    private string _rowDelimiter;
 
     #endregion
 

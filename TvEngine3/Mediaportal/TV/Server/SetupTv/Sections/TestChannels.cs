@@ -45,9 +45,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 {
   public partial class TestChannels : SectionSettings
   {
- 
-
-    private DateTime _lastTune;
+    private readonly object _listViewLock = new object();
+    private readonly object _lock = new object();
     private readonly Dictionary<string, bool> _users = new Dictionary<string, bool>();
     private double _avg;
     private IList<Card> _cards;
@@ -55,18 +54,17 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private int _concurrentTunes;
     private int _failed;
     private int _firstFail;
-    private readonly object _lock = new object();
+    private int _ignored;
+    private DateTime _lastTune;
     private bool _repeat = true;
     private int _rndFrom;
+    private bool _rndPrio;
     private int _rndTo;
     private bool _running;
     private int _succeeded;
-    private int _ignored;
     private int _total;
     private int _tunedelay;
     private bool _usersShareChannels;
-    private readonly object _listViewLock = new object();
-    private bool _rndPrio;
 
     public TestChannels()
       : this("TestChannels") {}
@@ -805,15 +803,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       listView.Sort();
     }
 
-    #region Nested type: Add2LogDelegate
-
-    private delegate int Add2LogDelegate(
-      string state, string channel, double msec, string name, string card, string details);
-
-    private delegate void UpdateDiscontinuityCounterDelegate(User user, int nextRowIndexForDiscUpdate);
-
-    #endregion
-
     private void chkRndPrio_CheckedChanged(object sender, EventArgs e)
     {
       _rndPrio = chkRndPrio.Checked;
@@ -859,6 +848,19 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
       //StartTimeshifting(tv3_plus, high, 0, out mSecsElapsed, out result, out card);
     }
+
+    #region Nested type: Add2LogDelegate
+
+    private delegate int Add2LogDelegate(
+      string state, string channel, double msec, string name, string card, string details);
+
+    #endregion
+
+    #region Nested type: UpdateDiscontinuityCounterDelegate
+
+    private delegate void UpdateDiscontinuityCounterDelegate(User user, int nextRowIndexForDiscUpdate);
+
+    #endregion
   }
 
   public class ListViewSorter : IComparer

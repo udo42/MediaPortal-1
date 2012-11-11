@@ -31,19 +31,18 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
   /// </summary>
   public class DiseqcController : IDiseqcController
   {
-
     #region variables
 
-    private IDiseqcDevice _device = null;
-    private DVBSChannel _previousChannel = null;
     // My experiments with a wide variety of tuners suggest that only TeVii tuners require this setting to be
     // enabled.
     private bool _alwaysSendCommands = false;
-    private ushort _repeatCount = 0;
     private ushort _commandDelay = 100;
     private int _currentPosition = -1;  // Ensure that we always send motor commands on first tune.
     private int _currentStepsAzimuth;
     private int _currentStepsElevation;
+    private IDiseqcDevice _device = null;
+    private DVBSChannel _previousChannel = null;
+    private ushort _repeatCount = 0;
 
     #endregion
 
@@ -64,6 +63,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
       _alwaysSendCommands = alwaysSendCommands;
       _repeatCount = repeatCount;
     }
+
+    #region IDiseqcController Members
 
     /// <summary>
     /// Reset a device's microcontroller.
@@ -247,6 +248,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
 
       _previousChannel = channel;
     }
+
+    #endregion
 
     /// <summary>
     /// Get the switch port number (or LNB number) for a given DiSEqC switch command.

@@ -35,6 +35,63 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
   {
     #region enums
 
+    #region AudioInputType enum
+
+    /// <summary>
+    /// Audio input type.
+    /// </summary>
+    public enum AudioInputType
+    {
+      /// <summary>
+      /// Automatic detection based on related pin index
+      /// </summary>
+      Automatic,
+      /// <summary>
+      /// Tuner input
+      /// </summary>
+      Tuner,
+      /// <summary>
+      /// AUX input #1
+      /// </summary>
+      AUXInput1,
+      /// <summary>
+      /// AUX input #2
+      /// </summary>
+      AUXInput2,
+      /// <summary>
+      /// AUX input #3
+      /// </summary>
+      AUXInput3,
+      /// <summary>
+      /// Line input #1
+      /// </summary>
+      LineInput1,
+      /// <summary>
+      /// Line input #2
+      /// </summary>
+      LineInput2,
+      /// <summary>
+      /// Line input #3
+      /// </summary>
+      LineInput3,
+      /// <summary>
+      /// SPDIF input #1
+      /// </summary>
+      SPDIFInput1,
+      /// <summary>
+      /// SPDIF input #2
+      /// </summary>
+      SPDIFInput2,
+      /// <summary>
+      /// SPDIF input #3
+      /// </summary>
+      SPDIFInput3
+    }
+
+    #endregion
+
+    #region VideoInputType enum
+
     /// <summary>
     /// Video input type.
     /// </summary>
@@ -106,66 +163,20 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       HdmiInput3
     }
 
-    /// <summary>
-    /// Audio input type.
-    /// </summary>
-    public enum AudioInputType
-    {
-      /// <summary>
-      /// Automatic detection based on related pin index
-      /// </summary>
-      Automatic,
-      /// <summary>
-      /// Tuner input
-      /// </summary>
-      Tuner,
-      /// <summary>
-      /// AUX input #1
-      /// </summary>
-      AUXInput1,
-      /// <summary>
-      /// AUX input #2
-      /// </summary>
-      AUXInput2,
-      /// <summary>
-      /// AUX input #3
-      /// </summary>
-      AUXInput3,
-      /// <summary>
-      /// Line input #1
-      /// </summary>
-      LineInput1,
-      /// <summary>
-      /// Line input #2
-      /// </summary>
-      LineInput2,
-      /// <summary>
-      /// Line input #3
-      /// </summary>
-      LineInput3,
-      /// <summary>
-      /// SPDIF input #1
-      /// </summary>
-      SPDIFInput1,
-      /// <summary>
-      /// SPDIF input #2
-      /// </summary>
-      SPDIFInput2,
-      /// <summary>
-      /// SPDIF input #3
-      /// </summary>
-      SPDIFInput3
-    }
+    #endregion
 
     #endregion
 
     #region variables
 
     [DataMember]
-    private string _channelName = String.Empty;
+    private AudioInputType _audioInputType = AudioInputType.Tuner;
 
     [DataMember]
     private long _channelFrequency = -1;  // Used for FM radio; analog TV is usually tuned by channel number.
+
+    [DataMember]
+    private string _channelName = String.Empty;
 
     [DataMember]
     private int _channelNumber = -1;
@@ -174,22 +185,19 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     private Country _country;
 
     [DataMember]
+    private bool _freeToAir = true;
+
+    [DataMember]
+    private bool _isVcrSignal;
+
+    [DataMember]
+    private MediaTypeEnum _mediaType;
+
+    [DataMember]
     private TunerInputType _tunerSource = TunerInputType.Cable;
 
     [DataMember]
     private VideoInputType _videoInputType = VideoInputType.Tuner;
-
-    [DataMember]
-    private AudioInputType _audioInputType = AudioInputType.Tuner;
-
-    [DataMember]
-    private bool _isVcrSignal;
-    
-    [DataMember]
-    private bool _freeToAir = true;
-
-    [DataMember]
-    private MediaTypeEnum _mediaType;
 
     #endregion
 
@@ -234,15 +242,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     #endregion
 
     #region properties
-
-    /// <summary>
-    /// Get/set the channel's name.
-    /// </summary>
-    public string Name
-    {
-      get { return _channelName; }
-      set { _channelName = value; }
-    }
 
     /// <summary>
     /// Get/set the carrier frequency for the channel. The frequency unit is kHz.
@@ -311,7 +310,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       set { _isVcrSignal = value; }
     }
 
-   
+    /// <summary>
+    /// Get/set the channel's name.
+    /// </summary>
+    public string Name
+    {
+      get { return _channelName; }
+      set { _channelName = value; }
+    }
+
 
     /// <summary>
     /// Get/set whether the channel is a free-to-air or encrypted channel.
@@ -374,8 +381,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
         return false;
       }
       if ((ch.Country == null && _country != null) ||
-        (ch.Country != null && _country == null) ||
-        (ch.Country != null && _country != null && ch.Country.Id != _country.Id))
+          (ch.Country != null && _country == null) ||
+          (ch.Country != null && _country != null && ch.Country.Id != _country.Id))
       {
         return false;
       }
@@ -436,6 +443,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
 
     #endregion
 
+    #region IChannel Members
+
     /// <summary>
     /// Check if the given channel and this instance are on different transponders.
     /// </summary>
@@ -465,5 +474,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       // No adjustments required.
       return (IChannel)Clone();
     }
+
+    #endregion
   }
 }

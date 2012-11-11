@@ -34,8 +34,6 @@ namespace Mediaportal.TV.TvPlugin
 {
   public class WakeOnLanManager
   {
-
-
     #region Constants
 
     // Maximum length of a physical address
@@ -105,8 +103,8 @@ namespace Mediaportal.TV.TvPlugin
         for (int i = 0; i < entries; i++)
         {
           table[i] = (MIB_IPNETROW)Marshal.PtrToStructure(
-                                     new IntPtr(currentBuffer.ToInt64() + (i * Marshal.SizeOf(typeof (MIB_IPNETROW)))),
-                                     typeof (MIB_IPNETROW)
+            new IntPtr(currentBuffer.ToInt64() + (i * Marshal.SizeOf(typeof (MIB_IPNETROW)))),
+            typeof (MIB_IPNETROW)
                                      );
         }
       }

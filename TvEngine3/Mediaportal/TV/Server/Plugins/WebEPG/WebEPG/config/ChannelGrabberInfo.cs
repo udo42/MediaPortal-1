@@ -28,8 +28,8 @@ namespace WebEPG.config
   /// </summary>
   public class ChannelGrabberInfo
   {
-    public string FullName;
     public string ChannelID;
+    public string FullName;
     public List<GrabberInfo> GrabberList;
   }
 }

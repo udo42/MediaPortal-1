@@ -38,30 +38,26 @@ namespace WebEPG
   /// </summary>
   public class WebListingGrabber
   {
-
-
-
     #region Variables
 
-    private WorldTimeZone _siteTimeZone = null;
-    private ListingTimeControl _timeControl;
-    private RequestData _reqData;
-    private RequestBuilder _reqBuilder;
-    private GrabberConfigFile _grabber;
-    private DateTime _grabStart;
-    private string _strID = string.Empty;
-    private string _strBaseDir = string.Empty;
-    private bool _grabLinked;
+    private int _dbLastProg;
+    private IList<Program> _dbPrograms;
     private bool _dblookup = true;
+    private int _discarded;
+    private bool _grabLinked;
+    private DateTime _grabStart;
+    private GrabberConfigFile _grabber;
     private TimeRange _linkTimeRange;
+    private int _maxGrabDays;
 
     private IParser _parser;
     private List<ProgramData> _programs;
-    private IList<Program> _dbPrograms;
-
-    private int _dbLastProg;
-    private int _maxGrabDays;
-    private int _discarded;
+    private RequestBuilder _reqBuilder;
+    private RequestData _reqData;
+    private WorldTimeZone _siteTimeZone = null;
+    private string _strBaseDir = string.Empty;
+    private string _strID = string.Empty;
+    private ListingTimeControl _timeControl;
 
     #endregion
 
@@ -179,7 +175,7 @@ namespace WebEPG
           if (_grabber.Info.GrabDays < _maxGrabDays)
           {
             this.LogInfo("WebEPG: Grab days ({0}) more than Guide days ({1}), limiting grab to {1} days",
-                     _maxGrabDays, _grabber.Info.GrabDays);
+                         _maxGrabDays, _grabber.Info.GrabDays);
             _maxGrabDays = _grabber.Info.GrabDays;
           }
 
@@ -247,7 +243,7 @@ namespace WebEPG
       _grabStart = startDateTime;
 
       this.LogDebug("WebEPG: Grab Start {0} {1}", startDateTime.ToShortTimeString(),
-                startDateTime.ToShortDateString());
+                    startDateTime.ToShortDateString());
       int requestedStartDay = startDateTime.Subtract(DateTime.Now).Days;
       if (requestedStartDay > 0)
       {
@@ -414,12 +410,12 @@ namespace WebEPG
       {
         guideData.EndTime.TimeZone = _siteTimeZone;
         this.LogInfo("WebEPG: Guide, Program Info: {0} / {1} - {2}",
-                 guideData.StartTime.ToLocalLongDateTime(), guideData.EndTime.ToLocalLongDateTime(), guideData.Title);
+                     guideData.StartTime.ToLocalLongDateTime(), guideData.EndTime.ToLocalLongDateTime(), guideData.Title);
       }
       else
       {
         this.LogInfo("WebEPG: Guide, Program Info: {0} - {1}", guideData.StartTime.ToLocalLongDateTime(),
-                 guideData.Title);
+                     guideData.Title);
       }
 
       if (guideData.StartTime.ToLocalTime() < _grabStart.AddHours(-2))
@@ -454,7 +450,7 @@ namespace WebEPG
         {
           // added: delay info
           this.LogInfo("WebEPG: SubLink Request {0} - Delay: {1}ms", guideData.SublinkRequest.ToString(),
-                   guideData.SublinkRequest.Delay);
+                       guideData.SublinkRequest.Delay);
 
           WebParser webParser = (WebParser)_parser;
 
@@ -533,11 +529,11 @@ namespace WebEPG
         }
 
         this.LogDebug("WebEPG: Program Count ({0}), Listing Count ({1}), Discard Count ({2})", programCount,
-                  listingCount, _discarded);
+                      listingCount, _discarded);
         if (programCount < (listingCount - _discarded))
         {
           this.LogInfo("WebEPG: Program Count ({0}) < Listing Count ({1}) - Discard Count ({2}), possible template error",
-                   programCount, listingCount, _discarded);
+                       programCount, listingCount, _discarded);
         }
 
         if (_timeControl.GrabDay > _maxGrabDays)

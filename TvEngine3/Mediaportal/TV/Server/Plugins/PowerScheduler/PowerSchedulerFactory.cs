@@ -36,9 +36,12 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
   /// </summary>
   public class PowerSchedulerFactory
   {
-
-
     #region Variables
+
+    /// <summary>
+    /// Controls standby/wakeup of system for EPG grabbing
+    /// </summary>
+    private EpgGrabbingHandler _epgHandler;
 
     /// <summary>
     /// List of all standby handlers
@@ -49,11 +52,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     /// List of all wakeup handlers
     /// </summary>
     private List<IWakeupHandler> _wakeupHandlers;
-
-    /// <summary>
-    /// Controls standby/wakeup of system for EPG grabbing
-    /// </summary>
-    private EpgGrabbingHandler _epgHandler;
 
     #endregion
 

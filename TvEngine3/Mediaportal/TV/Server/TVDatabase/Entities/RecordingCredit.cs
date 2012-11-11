@@ -17,233 +17,247 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
     [KnownType(typeof(Recording))]
     public partial class RecordingCredit: IObjectWithChangeTracker, INotifyPropertyChanged
     {
-        #region Primitive Properties
-    
-        [DataMember]
-        public int IdRecordingCredit
-        {
-            get { return _idRecordingCredit; }
-            set
-            {
-                if (_idRecordingCredit != value)
-                {
-                    if (ChangeTracker.ChangeTrackingEnabled && ChangeTracker.State != ObjectState.Added)
-                    {
-                        throw new InvalidOperationException("The property 'IdRecordingCredit' is part of the object's key and cannot be changed. Changes to key properties can only be made when the object is not being tracked or is in the Added state.");
-                    }
-                    _idRecordingCredit = value;
-                    OnPropertyChanged("IdRecordingCredit");
-                }
-            }
-        }
-        private int _idRecordingCredit;
-    
-        [DataMember]
-        public int IdRecording
-        {
-            get { return _idRecording; }
-            set
-            {
-                if (_idRecording != value)
-                {
-                    ChangeTracker.RecordOriginalValue("IdRecording", _idRecording);
-                    if (!IsDeserializing)
-                    {
-                        if (Recording != null && Recording.IdRecording != value)
-                        {
-                            Recording = null;
-                        }
-                    }
-                    _idRecording = value;
-                    OnPropertyChanged("IdRecording");
-                }
-            }
-        }
-        private int _idRecording;
-    
-        [DataMember]
-        public string Person
-        {
-            get { return _person; }
-            set
-            {
-                if (_person != value)
-                {
-                    _person = value;
-                    OnPropertyChanged("Person");
-                }
-            }
-        }
-        private string _person;
-    
-        [DataMember]
-        public string Role
-        {
-            get { return _role; }
-            set
-            {
-                if (_role != value)
-                {
-                    _role = value;
-                    OnPropertyChanged("Role");
-                }
-            }
-        }
-        private string _role;
+      #region Primitive Properties
 
-        #endregion
-        #region Navigation Properties
-    
-        [DataMember]
-        public Recording Recording
-        {
-            get { return _recording; }
-            set
-            {
-                if (!ReferenceEquals(_recording, value))
-                {
-                    var previousValue = _recording;
-                    _recording = value;
-                    FixupRecording(previousValue);
-                    OnNavigationPropertyChanged("Recording");
-                }
-            }
-        }
-        private Recording _recording;
+      private int _idRecording;
+      private int _idRecordingCredit;
+      private string _person;
+      private string _role;
 
-        #endregion
-        #region ChangeTracking
-    
-        protected virtual void OnPropertyChanged(String propertyName)
+      [DataMember]
+      public int IdRecordingCredit
+      {
+        get { return _idRecordingCredit; }
+        set
         {
-            if (ChangeTracker.State != ObjectState.Added && ChangeTracker.State != ObjectState.Deleted)
+          if (_idRecordingCredit != value)
+          {
+            if (ChangeTracker.ChangeTrackingEnabled && ChangeTracker.State != ObjectState.Added)
             {
-                ChangeTracker.State = ObjectState.Modified;
+              throw new InvalidOperationException("The property 'IdRecordingCredit' is part of the object's key and cannot be changed. Changes to key properties can only be made when the object is not being tracked or is in the Added state.");
             }
-            if (_propertyChanged != null)
-            {
-                _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            _idRecordingCredit = value;
+            OnPropertyChanged("IdRecordingCredit");
+          }
         }
-    
-        protected virtual void OnNavigationPropertyChanged(String propertyName)
-        {
-            if (_propertyChanged != null)
-            {
-                _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
-    
-        event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged{ add { _propertyChanged += value; } remove { _propertyChanged -= value; } }
-        private event PropertyChangedEventHandler _propertyChanged;
-        private ObjectChangeTracker _changeTracker;
-    
-        [DataMember]
-        public ObjectChangeTracker ChangeTracker
-        {
-            get
-            {
-                if (_changeTracker == null)
-                {
-                    _changeTracker = new ObjectChangeTracker();
-                    _changeTracker.ObjectStateChanging += HandleObjectStateChanging;
-                }
-                return _changeTracker;
-            }
-            set
-            {
-                if(_changeTracker != null)
-                {
-                    _changeTracker.ObjectStateChanging -= HandleObjectStateChanging;
-                }
-                _changeTracker = value;
-                if(_changeTracker != null)
-                {
-                    _changeTracker.ObjectStateChanging += HandleObjectStateChanging;
-                }
-            }
-        }
-    
-        private void HandleObjectStateChanging(object sender, ObjectStateChangingEventArgs e)
-        {
-            if (e.NewState == ObjectState.Deleted)
-            {
-                ClearNavigationProperties();
-            }
-        }
-    
-        // This entity type is the dependent end in at least one association that performs cascade deletes.
-        // This event handler will process notifications that occur when the principal end is deleted.
-        internal void HandleCascadeDelete(object sender, ObjectStateChangingEventArgs e)
-        {
-            if (e.NewState == ObjectState.Deleted)
-            {
-                this.MarkAsDeleted();
-            }
-        }
-    
-        protected bool IsDeserializing { get; private set; }
-    
-        [OnDeserializing]
-        public void OnDeserializingMethod(StreamingContext context)
-        {
-            IsDeserializing = true;
-        }
-    
-        [OnDeserialized]
-        public void OnDeserializedMethod(StreamingContext context)
-        {
-            IsDeserializing = false;
-            ChangeTracker.ChangeTrackingEnabled = true;
-        }
-    
-        protected virtual void ClearNavigationProperties()
-        {
-            Recording = null;
-        }
+      }
 
-        #endregion
-        #region Association Fixup
-    
-        private void FixupRecording(Recording previousValue)
+      [DataMember]
+      public int IdRecording
+      {
+        get { return _idRecording; }
+        set
         {
-            if (IsDeserializing)
+          if (_idRecording != value)
+          {
+            ChangeTracker.RecordOriginalValue("IdRecording", _idRecording);
+            if (!IsDeserializing)
             {
-                return;
+              if (Recording != null && Recording.IdRecording != value)
+              {
+                Recording = null;
+              }
             }
-    
-            if (previousValue != null && previousValue.RecordingCredits.Contains(this))
-            {
-                previousValue.RecordingCredits.Remove(this);
-            }
-    
-            if (Recording != null)
-            {
-                if (!Recording.RecordingCredits.Contains(this))
-                {
-                    Recording.RecordingCredits.Add(this);
-                }
-    
-                IdRecording = Recording.IdRecording;
-            }
-            if (ChangeTracker.ChangeTrackingEnabled)
-            {
-                if (ChangeTracker.OriginalValues.ContainsKey("Recording")
-                    && (ChangeTracker.OriginalValues["Recording"] == Recording))
-                {
-                    ChangeTracker.OriginalValues.Remove("Recording");
-                }
-                else
-                {
-                    ChangeTracker.RecordOriginalValue("Recording", previousValue);
-                }
-                if (Recording != null && !Recording.ChangeTracker.ChangeTrackingEnabled)
-                {
-                    Recording.StartTracking();
-                }
-            }
+            _idRecording = value;
+            OnPropertyChanged("IdRecording");
+          }
         }
+      }
 
-        #endregion
+      [DataMember]
+      public string Person
+      {
+        get { return _person; }
+        set
+        {
+          if (_person != value)
+          {
+            _person = value;
+            OnPropertyChanged("Person");
+          }
+        }
+      }
+
+      [DataMember]
+      public string Role
+      {
+        get { return _role; }
+        set
+        {
+          if (_role != value)
+          {
+            _role = value;
+            OnPropertyChanged("Role");
+          }
+        }
+      }
+
+      #endregion
+
+      #region Navigation Properties
+
+      private Recording _recording;
+
+      [DataMember]
+      public Recording Recording
+      {
+        get { return _recording; }
+        set
+        {
+          if (!ReferenceEquals(_recording, value))
+          {
+            var previousValue = _recording;
+            _recording = value;
+            FixupRecording(previousValue);
+            OnNavigationPropertyChanged("Recording");
+          }
+        }
+      }
+
+      #endregion
+
+      #region ChangeTracking
+
+      private ObjectChangeTracker _changeTracker;
+      protected bool IsDeserializing { get; private set; }
+
+      #region INotifyPropertyChanged Members
+
+      event PropertyChangedEventHandler INotifyPropertyChanged.PropertyChanged{ add { _propertyChanged += value; } remove { _propertyChanged -= value; } }
+
+      #endregion
+
+      #region IObjectWithChangeTracker Members
+
+      [DataMember]
+      public ObjectChangeTracker ChangeTracker
+      {
+        get
+        {
+          if (_changeTracker == null)
+          {
+            _changeTracker = new ObjectChangeTracker();
+            _changeTracker.ObjectStateChanging += HandleObjectStateChanging;
+          }
+          return _changeTracker;
+        }
+        set
+        {
+          if(_changeTracker != null)
+          {
+            _changeTracker.ObjectStateChanging -= HandleObjectStateChanging;
+          }
+          _changeTracker = value;
+          if(_changeTracker != null)
+          {
+            _changeTracker.ObjectStateChanging += HandleObjectStateChanging;
+          }
+        }
+      }
+
+      #endregion
+
+      protected virtual void OnPropertyChanged(String propertyName)
+      {
+        if (ChangeTracker.State != ObjectState.Added && ChangeTracker.State != ObjectState.Deleted)
+        {
+          ChangeTracker.State = ObjectState.Modified;
+        }
+        if (_propertyChanged != null)
+        {
+          _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+      }
+    
+      protected virtual void OnNavigationPropertyChanged(String propertyName)
+      {
+        if (_propertyChanged != null)
+        {
+          _propertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+      }
+
+      private event PropertyChangedEventHandler _propertyChanged;
+
+      private void HandleObjectStateChanging(object sender, ObjectStateChangingEventArgs e)
+      {
+        if (e.NewState == ObjectState.Deleted)
+        {
+          ClearNavigationProperties();
+        }
+      }
+    
+      // This entity type is the dependent end in at least one association that performs cascade deletes.
+      // This event handler will process notifications that occur when the principal end is deleted.
+      internal void HandleCascadeDelete(object sender, ObjectStateChangingEventArgs e)
+      {
+        if (e.NewState == ObjectState.Deleted)
+        {
+          this.MarkAsDeleted();
+        }
+      }
+
+      [OnDeserializing]
+      public void OnDeserializingMethod(StreamingContext context)
+      {
+        IsDeserializing = true;
+      }
+    
+      [OnDeserialized]
+      public void OnDeserializedMethod(StreamingContext context)
+      {
+        IsDeserializing = false;
+        ChangeTracker.ChangeTrackingEnabled = true;
+      }
+    
+      protected virtual void ClearNavigationProperties()
+      {
+        Recording = null;
+      }
+
+      #endregion
+
+      #region Association Fixup
+    
+      private void FixupRecording(Recording previousValue)
+      {
+        if (IsDeserializing)
+        {
+          return;
+        }
+    
+        if (previousValue != null && previousValue.RecordingCredits.Contains(this))
+        {
+          previousValue.RecordingCredits.Remove(this);
+        }
+    
+        if (Recording != null)
+        {
+          if (!Recording.RecordingCredits.Contains(this))
+          {
+            Recording.RecordingCredits.Add(this);
+          }
+    
+          IdRecording = Recording.IdRecording;
+        }
+        if (ChangeTracker.ChangeTrackingEnabled)
+        {
+          if (ChangeTracker.OriginalValues.ContainsKey("Recording")
+              && (ChangeTracker.OriginalValues["Recording"] == Recording))
+          {
+            ChangeTracker.OriginalValues.Remove("Recording");
+          }
+          else
+          {
+            ChangeTracker.RecordOriginalValue("Recording", previousValue);
+          }
+          if (Recording != null && !Recording.ChangeTracker.ChangeTrackingEnabled)
+          {
+            Recording.StartTracking();
+          }
+        }
+      }
+
+      #endregion
     }
 }

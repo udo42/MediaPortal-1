@@ -27,12 +27,10 @@ namespace Mediaportal.TV.Server.TVLibrary
 {
   internal class TsCopier
   {
-
-
-    private Int64 _posStart;
+    private string _fileEnd;
     private string _fileStart;
     private Int64 _posEnd;
-    private string _fileEnd;
+    private Int64 _posStart;
     private string _recording;
 
     

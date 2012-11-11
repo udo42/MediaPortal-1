@@ -6,6 +6,13 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
   public class ProgramAttribute : Attribute 
   {
     private string _displayName;
+
+    public ProgramAttribute(string displayName, int languageId)
+    {
+      DisplayName = displayName;
+      LanguageId = languageId;
+    }
+
     public string DisplayName
     {
       get
@@ -17,11 +24,5 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
     }
 
     public int LanguageId { get; private set; }
-
-   public ProgramAttribute(string displayName, int languageId)
-   {
-      DisplayName = displayName;
-      LanguageId = languageId;
-   }
   }
 }

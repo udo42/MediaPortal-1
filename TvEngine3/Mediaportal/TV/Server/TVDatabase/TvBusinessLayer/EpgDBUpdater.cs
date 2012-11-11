@@ -35,8 +35,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 {
   public class EpgHole
   {
-    public DateTime start;
     public DateTime end;
+    public DateTime start;
 
     public EpgHole(DateTime start, DateTime end)
     {
@@ -67,20 +67,19 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
   public class EpgDBUpdater //: LogProvider
   {
-   
     #region Variables
 
-    private readonly IEpgEvents _epgEvents;
-    private string _titleTemplate;
-    private string _descriptionTemplate;
-    private string _epgLanguages;
-    private readonly string _grabberName;
-    private bool _storeOnlySelectedChannels;
-    private bool _storeOnlySelectedChannelsRadio;
     private readonly bool _checkForLastUpdate;
-    private int _epgReGrabAfter = 240; //4 hours
+    private readonly IEpgEvents _epgEvents;
+    private readonly string _grabberName;
     private bool _alwaysFillHoles;
     private bool _alwaysReplace;
+    private string _descriptionTemplate;
+    private string _epgLanguages;
+    private int _epgReGrabAfter = 240; //4 hours
+    private bool _storeOnlySelectedChannels;
+    private bool _storeOnlySelectedChannelsRadio;
+    private string _titleTemplate;
 
     #endregion
 
@@ -146,7 +145,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       EpgHoleCollection holes = new EpgHoleCollection();
       if ((dbChannel.EpgHasGaps || _alwaysFillHoles) && !_alwaysReplace)
       {
-          this.LogDebug("{0}: {1} is marked to have epg gaps. Calculating them...", _grabberName, dbChannel.DisplayName);
+        this.LogDebug("{0}: {1} is marked to have epg gaps. Calculating them...", _grabberName, dbChannel.DisplayName);
 
         IList<Program> infos = ProgramManagement.GetPrograms(dbChannel.IdChannel, DateTime.Now);
         if (infos.Count > 1)
@@ -193,8 +192,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
             continue;
           }
           this.LogDebug("{0}: Great we stuffed an epg hole {1}-{2} :-)", _grabberName,
-                  epgProgram.StartTime.ToShortDateString() + " " + epgProgram.StartTime.ToShortTimeString(),
-                  epgProgram.EndTime.ToShortDateString() + " " + epgProgram.EndTime.ToShortTimeString());
+                        epgProgram.StartTime.ToShortDateString() + " " + epgProgram.StartTime.ToShortTimeString(),
+                        epgProgram.EndTime.ToShortDateString() + " " + epgProgram.EndTime.ToShortTimeString());
         }
         Program prog = null;
         if (_alwaysReplace)
@@ -209,7 +208,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
               if (epgs.Count > 1)
               {
                 this.LogDebug("- {0} entries are obsolete for {1} from {2} to {3}", epgs.Count - 1, dbChannel.DisplayName,
-                        epgProgram.StartTime, epgProgram.EndTime);
+                              epgProgram.StartTime, epgProgram.EndTime);
               }
               for (int idx = 1; idx < epgs.Count; idx++)
               {
@@ -217,7 +216,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
                 {                  
                   ProgramManagement.DeleteProgram(epgs[idx].IdProgram);
                   this.LogDebug("- Deleted the epg entry {0} ({1} - {2})", epgs[idx].Title, epgs[idx].StartTime,
-                          epgs[idx].EndTime);
+                                epgs[idx].EndTime);
                 }
                 catch (Exception ex)
                 {
@@ -256,7 +255,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       if (epgChannel.Programs.Count == 0)
       {
         this.LogInfo("{0}: no epg infos found for channel networkid:0x{1:X} transportid:0x{2:X} serviceid:0x{3:X}",
-                _grabberName, dvbChannel.NetworkId, dvbChannel.TransportId, dvbChannel.ServiceId);
+                     _grabberName, dvbChannel.NetworkId, dvbChannel.TransportId, dvbChannel.ServiceId);
         return null;
       }
       //do we know a channel with these tuning details?
@@ -270,7 +269,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       if (dbChannel == null)
       {
         this.LogInfo("{0}: no channel found for networkid:0x{1:X} transportid:0x{2:X} serviceid:0x{3:X}", _grabberName,
-                dvbChannel.NetworkId, dvbChannel.TransportId, dvbChannel.ServiceId);
+                     dvbChannel.NetworkId, dvbChannel.TransportId, dvbChannel.ServiceId);
         /*foreach (EpgProgram ei in epgChannel.Programs)
         {
           string title = "";
@@ -440,10 +439,10 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       if (dbProg == null)
       {
         dbProg = ProgramFactory.CreateProgram(dbChannel.IdChannel, ep.StartTime, ep.EndTime, title, description, ProgramManagement.GetProgramCategoryByName(genre),
-                                     ProgramState.None,
-                                     SqlDateTime.MinValue.Value, string.Empty, string.Empty, string.Empty, string.Empty,
-                                     starRating, classification,
-                                     parentRating);
+                                              ProgramState.None,
+                                              SqlDateTime.MinValue.Value, string.Empty, string.Empty, string.Empty, string.Empty,
+                                              starRating, classification,
+                                              parentRating);
         ProgramManagement.SaveProgram(dbProg);
       }
       else

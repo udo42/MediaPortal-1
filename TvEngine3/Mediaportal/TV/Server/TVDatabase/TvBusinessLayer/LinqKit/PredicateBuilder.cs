@@ -67,6 +67,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.LinqKit
       return Expression.Lambda<T>(merge(first.Body, secondBody), first.Parameters);
     }
 
+    #region Nested type: ParameterRebinder
+
     class ParameterRebinder : ExpressionVisitor
     {
       readonly Dictionary<ParameterExpression, ParameterExpression> map;
@@ -93,6 +95,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.LinqKit
         return base.VisitParameter(p);
       }
     }
+
+    #endregion
   }
 
 

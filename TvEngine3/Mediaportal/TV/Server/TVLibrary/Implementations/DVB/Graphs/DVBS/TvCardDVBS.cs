@@ -37,19 +37,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
   /// </summary>
   public class TvCardDVBS : TvCardDvbBase
   {
-
-
     #region variables
-
-    /// <summary>
-    /// A pre-configured tuning space, used to speed up the tuning process. 
-    /// </summary>
-    private IDVBSTuningSpace _tuningSpace = null;
-
-    /// <summary>
-    /// The DiSEqC control interface for the tuner.
-    /// </summary>
-    private IDiseqcController _diseqcController = null;
 
     /// <summary>
     /// Enable or disable always sending DiSEqC commands.
@@ -68,6 +56,16 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
     /// When set to zero, commands are sent once; when set to one, commands are sent twice... etc.
     /// </remarks>
     private ushort _diseqcCommandRepeatCount = 0;
+
+    /// <summary>
+    /// The DiSEqC control interface for the tuner.
+    /// </summary>
+    private IDiseqcController _diseqcController = null;
+
+    /// <summary>
+    /// A pre-configured tuning space, used to speed up the tuning process. 
+    /// </summary>
+    private IDVBSTuningSpace _tuningSpace = null;
 
     #endregion
 

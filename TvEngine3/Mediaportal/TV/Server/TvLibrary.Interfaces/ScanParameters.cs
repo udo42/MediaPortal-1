@@ -27,20 +27,19 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
   /// </summary>
   public class ScanParameters
   {
-    private int _timeoutTune = 2;
-    private int _timeoutPAT = 5;
+    private int _lnbHighFrequency = -1;
+    private int _lnbLowFrequency = -1;
+    private int _lnbSwitchFrequency = -1;
+    private UInt32 _maxFileSize = (256 * 1000 * 1000);
+    private int _maxFiles = 20;
+    private int _minFiles = 6;
+    private int _timeoutAnalog = 20;
     private int _timeoutCAT = 5;
+    private int _timeoutPAT = 5;
     private int _timeoutPMT = 10;
     private int _timeoutSDT = 20;
-    private int _timeoutAnalog = 20;
-
-    private int _lnbLowFrequency = -1;
-    private int _lnbHighFrequency = -1;
-    private int _lnbSwitchFrequency = -1;
+    private int _timeoutTune = 2;
     private bool _useDefaultLnbFrequencies = true;
-    private int _minFiles = 6;
-    private int _maxFiles = 20;
-    private UInt32 _maxFileSize = (256 * 1000 * 1000);
 
     /// <summary>
     /// Gets or sets the minimium number of timeshifting files.

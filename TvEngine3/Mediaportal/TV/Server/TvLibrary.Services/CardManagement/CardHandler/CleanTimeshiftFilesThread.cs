@@ -29,17 +29,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
   /// </summary>
   internal class CleanTimeshiftFilesThread
   {
-
-    /// <summary>
-    /// The folder
-    /// </summary>
-    private readonly string _folder;
-
-    /// <summary>
-    /// Name of the file
-    /// </summary>
-    private readonly string _fileName;
-
     /// <summary>
     /// Sleep intervall
     /// </summary>
@@ -49,6 +38,16 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     /// Number of retries
     /// </summary>
     private const int _numOfRetries = 5;
+
+    /// <summary>
+    /// Name of the file
+    /// </summary>
+    private readonly string _fileName;
+
+    /// <summary>
+    /// The folder
+    /// </summary>
+    private readonly string _folder;
 
     /// <summary>
     /// Constructor

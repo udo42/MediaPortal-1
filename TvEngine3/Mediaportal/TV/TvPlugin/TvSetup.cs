@@ -37,12 +37,11 @@ namespace Mediaportal.TV.TvPlugin
 {
   public class TvSetup : GUIInternalWindow
   {
-
     #region Variables
 
     private string _hostName;
-    [SkinControl(24)] protected GUIButtonControl btnChange = null;
     [SkinControl(25)] protected GUIButtonControl btnBack = null;
+    [SkinControl(24)] protected GUIButtonControl btnChange = null;
     [SkinControl(30)] protected GUILabelControl lblHostName = null;
 
     #endregion
@@ -259,7 +258,7 @@ namespace Mediaportal.TV.TvPlugin
           else
           {
             this.LogInfo("TvSetup: TvService seems to be in an unusual state. Please check. Current state={0}",
-                     ctrl.Status.ToString());
+                         ctrl.Status.ToString());
           }
         }
       }

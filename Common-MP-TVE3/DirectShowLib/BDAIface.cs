@@ -184,9 +184,9 @@ namespace DirectShowLib.BDA
   /// </summary>
   public class BDA_MUX_PIDLISTITEM
   {
+    public MUX_PID_TYPE ePIDType;
     public short usPIDNumber;
     public short usProgramNumber;
-    public MUX_PID_TYPE ePIDType;
   }
 
   /// <summary>

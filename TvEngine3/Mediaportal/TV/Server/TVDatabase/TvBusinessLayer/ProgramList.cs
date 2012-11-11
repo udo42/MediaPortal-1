@@ -24,6 +24,7 @@ using System;
 using System.Collections.Generic;
 using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.Entities.Factories;
+
 //
 
 #endregion
@@ -35,9 +36,9 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
   /// </summary>
   public struct ProgramListPartition
   {
+    public DateTime End;
     public int IdChannel;
     public DateTime Start;
-    public DateTime End;
 
     public ProgramListPartition(int idChannel, DateTime start, DateTime end)
     {

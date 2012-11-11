@@ -38,12 +38,10 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
   /// </summary>
   public class ProcessActiveHandler : IStandbyHandler
   {
- 
-
     #region Variables
 
-    private List<string> _processes = new List<string>();
     private List<string> _preventers = new List<string>();
+    private List<string> _processes = new List<string>();
 
     #endregion
 

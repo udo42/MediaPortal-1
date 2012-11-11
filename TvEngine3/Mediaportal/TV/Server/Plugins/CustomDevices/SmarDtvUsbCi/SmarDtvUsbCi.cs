@@ -110,25 +110,30 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     private struct VersionInfo
     {
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)]
-      public String PluginVersion;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)]
       public String BdaVersion;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)]
-      public String UsbVersion;
+
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)]
       public String FirmwareVersion;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)]
       public String FpgaVersion;
+
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)]
+      public String PluginVersion;
+
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)]
+      public String UsbVersion;
     }
 
     private struct ApplicationInfo
     {
       public MmiApplicationType ApplicationType;
-      private byte Padding;
-      public UInt16 Manufacturer;
       public UInt16 Code;
+      public UInt16 Manufacturer;
+
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 352)]
       public String MenuTitle;
+
+      private byte Padding;
     }
     #pragma warning restore 0649, 0169
 

@@ -28,9 +28,11 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
   {
     private const string M3U_START_MARKER = "#EXTM3U";
     private const string M3U_INFO_MARKER = "#EXTINF";
-    private PlayList playlist;
-    private StreamReader file;
     private string basePath;
+    private StreamReader file;
+    private PlayList playlist;
+
+    #region IPlayListIO Members
 
     public bool Load(PlayList incomingPlaylist, string playlistFileName)
     {
@@ -98,6 +100,26 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
       return true;
     }
 
+    public void Save(PlayList playListParam, string fileName)
+    {
+      try
+      {
+        using (StreamWriter writer = new StreamWriter(fileName, false, Encoding.UTF8))
+        {
+          writer.WriteLine(M3U_START_MARKER);
+
+          foreach (PlayListItem item in playListParam)
+          {
+            writer.WriteLine("{0}:{1},{2}", M3U_INFO_MARKER, item.Duration, item.Description);
+            writer.WriteLine("{0}", item.FileName);
+          }
+        }
+      }
+      catch (Exception) {}
+    }
+
+    #endregion
+
     private static bool ExtractM3uInfo(string trimmedLine, ref string songName, ref int lDuration)
     {
       //bool successfull;
@@ -139,24 +161,6 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
       }
       playlist.Add(newItem);
       return true;
-    }
-
-    public void Save(PlayList playListParam, string fileName)
-    {
-      try
-      {
-        using (StreamWriter writer = new StreamWriter(fileName, false, Encoding.UTF8))
-        {
-          writer.WriteLine(M3U_START_MARKER);
-
-          foreach (PlayListItem item in playListParam)
-          {
-            writer.WriteLine("{0}:{1},{2}", M3U_INFO_MARKER, item.Duration, item.Description);
-            writer.WriteLine("{0}", item.FileName);
-          }
-        }
-      }
-      catch (Exception) {}
     }
   }
 }

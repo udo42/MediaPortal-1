@@ -15,16 +15,14 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 {
   public abstract class TimeShifterBase
   {
-
-
-    protected ITvCardHandler _cardHandler;
-    protected bool _timeshiftingEpgGrabberEnabled;
-    private readonly int _waitForTimeshifting = 15;
     protected readonly ManualResetEvent _eventAudio = new ManualResetEvent(false); // gets signaled when audio PID is seen
-    protected readonly ManualResetEvent _eventVideo = new ManualResetEvent(false); // gets signaled when video PID is seen
-    protected bool _cancelled;
     protected readonly ManualResetEvent _eventTimeshift = new ManualResetEvent(true);
+    protected readonly ManualResetEvent _eventVideo = new ManualResetEvent(false); // gets signaled when video PID is seen
+    private readonly int _waitForTimeshifting = 15;
+    protected bool _cancelled;
+    protected ITvCardHandler _cardHandler;
     protected ITvSubChannel _subchannel; // the active sub channel to record        
+    protected bool _timeshiftingEpgGrabberEnabled;
 
     protected TimeShifterBase()
     {

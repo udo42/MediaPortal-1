@@ -47,8 +47,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     private const string _shortTimePattern12Hrs = "hh:mm";
 
     private readonly IChannelGroupService _channelGroupServiceAgent = ServiceAgents.Instance.ChannelGroupServiceAgent;
-    private readonly ISettingService _settingServiceAgent = ServiceAgents.Instance.SettingServiceAgent;
     private readonly IChannelService _channelServiceAgent = ServiceAgents.Instance.ChannelServiceAgent;
+    private readonly ISettingService _settingServiceAgent = ServiceAgents.Instance.SettingServiceAgent;
 
     public XmlTvSetup()
       : this("XmlTv")
@@ -81,23 +81,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       _settingServiceAgent.SaveSetting("xmlTvRemoteSchedulerDownloadOnWakeUpEnabled", radioDownloadOnWakeUp.Checked ? "true" : "false");            
 
       base.OnSectionDeActivated();
-    }
-
-    private class CBChannelGroup
-    {
-      public string groupName;
-      public int idGroup;
-
-      public CBChannelGroup(string groupName, int idGroup)
-      {
-        this.groupName = groupName;
-        this.idGroup = idGroup;
-      }
-
-      public override string ToString()
-      {
-        return groupName;
-      }
     }
 
     public override void OnSectionActivated()
@@ -804,5 +787,26 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       radioDownloadOnSchedule.Enabled = chkScheduler.Checked;
       radioDownloadOnWakeUp.Enabled = chkScheduler.Checked;
     }
+
+    #region Nested type: CBChannelGroup
+
+    private class CBChannelGroup
+    {
+      public string groupName;
+      public int idGroup;
+
+      public CBChannelGroup(string groupName, int idGroup)
+      {
+        this.groupName = groupName;
+        this.idGroup = idGroup;
+      }
+
+      public override string ToString()
+      {
+        return groupName;
+      }
+    }
+
+    #endregion
   }
 }

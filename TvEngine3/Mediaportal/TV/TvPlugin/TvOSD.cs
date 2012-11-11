@@ -42,83 +42,30 @@ namespace Mediaportal.TV.TvPlugin
   /// 
   public class TvOsd : GUIInternalWindow
   {
-  
-
-    private enum Controls
-    {
-      OSD_VIDEOPROGRESS = 1,
-      OSD_TIMEINFO = 100,
-      Panel1 = 101,
-      Panel2 = 150,
-      OSD_PAUSE = 209,
-      OSD_SKIPBWD = 210,
-      OSD_REWIND = 211,
-      OSD_STOP = 212,
-      OSD_PLAY = 213,
-      OSD_FFWD = 214,
-      OSD_SKIPFWD = 215,
-      OSD_MUTE = 216,
-      // OSD_SYNC =217 - not used
-      OSD_SUBTITLES = 218,
-      OSD_BOOKMARKS = 219,
-      OSD_VIDEO = 220,
-      OSD_AUDIO = 221,
-      OSD_SUBMENU_BG_VOL = 300,
-      // OSD_SUBMENU_BG_SYNC 301	- not used
-      OSD_SUBMENU_BG_SUBTITLES = 302,
-      OSD_SUBMENU_BG_BOOKMARKS = 303,
-      OSD_SUBMENU_BG_VIDEO = 304,
-      OSD_SUBMENU_BG_AUDIO = 305,
-      OSD_SUBMENU_NIB = 350,
-      OSD_VOLUMESLIDER = 400,
-      OSD_AVDELAY = 500,
-      OSD_AVDELAY_LABEL = 550,
-      OSD_CREATEBOOKMARK = 600,
-      OSD_BOOKMARKS_LIST = 601,
-      OSD_CLEARBOOKMARKS = 602,
-      OSD_BOOKMARKS_LIST_LABEL = 650,
-      OSD_VIDEOPOS = 700,
-      OSD_SHARPNESS = 701,
-      OSD_SATURATIONLABEL = 702,
-      OSD_SATURATION = 703,
-      OSD_BRIGHTNESS = 704,
-      OSD_CONTRAST = 705,
-      OSD_GAMMA = 706,
-      OSD_SHARPNESSLABEL = 710,
-      OSD_VIDEOPOS_LABEL = 750,
-      OSD_BRIGHTNESSLABEL = 752,
-      OSD_CONTRASTLABEL = 753,
-      OSD_GAMMALABEL = 754,
-      OSD_SUBTITLE_DELAY = 800,
-      OSD_SUBTITLE_ONOFF = 801,
-      OSD_SUBTITLE_LIST = 802,
-      OSD_SUBTITLE_DELAY_LABEL = 850,
-    } ;
-
-    [SkinControl(10)] protected GUIImage imgTvChannelLogo = null;
-    [SkinControl(31)] protected GUIButtonControl btnChannelUp = null;
+    private bool _immediateSeekIsRelative = true;
+    private int _immediateSeekValue = 10;
+    private DateTime _recIconLastCheck = DateTime.Now;
     [SkinControl(32)] protected GUIButtonControl btnChannelDown = null;
-    [SkinControl(33)] protected GUIButtonControl btnPreviousProgram = null;
+    [SkinControl(31)] protected GUIButtonControl btnChannelUp = null;
     [SkinControl(34)] protected GUIButtonControl btnNextProgram = null;
-    [SkinControl(35)] protected GUILabelControl lblCurrentChannel = null;
-    [SkinControl(36)] protected GUITextControl tbOnTvNow = null;
-    [SkinControl(37)] protected GUITextControl tbOnTvNext = null;
-    [SkinControl(38)] protected GUITextScrollUpControl tbProgramDescription = null;
+    [SkinControl(33)] protected GUIButtonControl btnPreviousProgram = null;
     [SkinControl(39)] protected GUIImage imgRecIcon = null;
+    [SkinControl(10)] protected GUIImage imgTvChannelLogo = null;
+    private bool isSubMenuVisible = false;
+    [SkinControl(35)] protected GUILabelControl lblCurrentChannel = null;
     [SkinControl(100)] protected GUILabelControl lblCurrentTime = null;
     [SkinControl(501)] protected GUIListControl lstAudioStreamList = null;
 
-    private bool isSubMenuVisible = false;
-    private int m_iActiveMenu = 0;
-    private int m_iActiveMenuButtonID = 0;
     private bool m_bNeedRefresh = false;
     private DateTime m_dateTime = DateTime.Now;
-    private DateTime _recIconLastCheck = DateTime.Now;
-    private Program previousProgram = null;
-    private bool _immediateSeekIsRelative = true;
-    private int _immediateSeekValue = 10;
+    private int m_delayInterval = 0;
+    private int m_iActiveMenu = 0;
+    private int m_iActiveMenuButtonID = 0;
     private int m_subtitleDelay = 0;
-    private int m_delayInterval = 0;    
+    private Program previousProgram = null;
+    [SkinControl(37)] protected GUITextControl tbOnTvNext = null;
+    [SkinControl(36)] protected GUITextControl tbOnTvNow = null;
+    [SkinControl(38)] protected GUITextScrollUpControl tbProgramDescription = null;
 
     public TvOsd()
     {
@@ -130,6 +77,16 @@ namespace Mediaportal.TV.TvPlugin
       get { return true; }
     }
 
+    public bool SubMenuVisible
+    {
+      get { return isSubMenuVisible; }
+    }
+
+    public override bool SupportsDelayedLoad
+    {
+      get { return false; }
+    }
+
     public override bool Init()
     {
       using (Settings xmlreader = new MPSettings())
@@ -139,16 +96,6 @@ namespace Mediaportal.TV.TvPlugin
       }
       bool bResult = Load(GUIGraphicsContext.Skin + @"\tvOSD.xml");
       return bResult;
-    }
-
-    public bool SubMenuVisible
-    {
-      get { return isSubMenuVisible; }
-    }
-
-    public override bool SupportsDelayedLoad
-    {
-      get { return false; }
     }
 
     public override void Render(float timePassed)
@@ -1789,5 +1736,60 @@ namespace Mediaportal.TV.TvPlugin
         }
       }
     }
+
+    #region Nested type: Controls
+
+    private enum Controls
+    {
+      OSD_VIDEOPROGRESS = 1,
+      OSD_TIMEINFO = 100,
+      Panel1 = 101,
+      Panel2 = 150,
+      OSD_PAUSE = 209,
+      OSD_SKIPBWD = 210,
+      OSD_REWIND = 211,
+      OSD_STOP = 212,
+      OSD_PLAY = 213,
+      OSD_FFWD = 214,
+      OSD_SKIPFWD = 215,
+      OSD_MUTE = 216,
+      // OSD_SYNC =217 - not used
+      OSD_SUBTITLES = 218,
+      OSD_BOOKMARKS = 219,
+      OSD_VIDEO = 220,
+      OSD_AUDIO = 221,
+      OSD_SUBMENU_BG_VOL = 300,
+      // OSD_SUBMENU_BG_SYNC 301	- not used
+      OSD_SUBMENU_BG_SUBTITLES = 302,
+      OSD_SUBMENU_BG_BOOKMARKS = 303,
+      OSD_SUBMENU_BG_VIDEO = 304,
+      OSD_SUBMENU_BG_AUDIO = 305,
+      OSD_SUBMENU_NIB = 350,
+      OSD_VOLUMESLIDER = 400,
+      OSD_AVDELAY = 500,
+      OSD_AVDELAY_LABEL = 550,
+      OSD_CREATEBOOKMARK = 600,
+      OSD_BOOKMARKS_LIST = 601,
+      OSD_CLEARBOOKMARKS = 602,
+      OSD_BOOKMARKS_LIST_LABEL = 650,
+      OSD_VIDEOPOS = 700,
+      OSD_SHARPNESS = 701,
+      OSD_SATURATIONLABEL = 702,
+      OSD_SATURATION = 703,
+      OSD_BRIGHTNESS = 704,
+      OSD_CONTRAST = 705,
+      OSD_GAMMA = 706,
+      OSD_SHARPNESSLABEL = 710,
+      OSD_VIDEOPOS_LABEL = 750,
+      OSD_BRIGHTNESSLABEL = 752,
+      OSD_CONTRASTLABEL = 753,
+      OSD_GAMMALABEL = 754,
+      OSD_SUBTITLE_DELAY = 800,
+      OSD_SUBTITLE_ONOFF = 801,
+      OSD_SUBTITLE_LIST = 802,
+      OSD_SUBTITLE_DELAY_LABEL = 850,
+    } ;
+
+    #endregion
   }
 }

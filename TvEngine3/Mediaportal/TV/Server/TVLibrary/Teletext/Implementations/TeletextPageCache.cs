@@ -71,6 +71,19 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       set { _channelName = value; }
     }
 
+    #region IDisposable Members
+
+    /// <summary>
+    /// Disposes the teletextpagecache
+    /// </summary>    
+    public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
+
+    #endregion
+
     /// <summary>
     /// Clear the cache
     /// </summary>
@@ -283,9 +296,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       _checkTimer = DateTime.Now;
     }
 
-    #region IDisposable Members
-		
-		protected virtual void Dispose(bool disposing)
+    protected virtual void Dispose(bool disposing)
 		{
 		  if (disposing)
 		  {
@@ -294,23 +305,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
 		  }
 		  // get rid of unmanaged resources
 		}
-		
-		
-		/// <summary>
-		/// Disposes the teletextpagecache
-		/// </summary>    
-		public void Dispose()
-		{
-		  Dispose(true);
-		  GC.SuppressFinalize(this);
-		}
-		
-		~TeletextPageCache()
+
+
+    ~TeletextPageCache()
 		{
 		  Dispose(false);
 		}
-		
-
-    #endregion
   }
 }

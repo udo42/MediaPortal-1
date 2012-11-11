@@ -34,14 +34,12 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
   internal class DatabaseEPGDataSink
     : IEpgDataSink
   {
-
-
     #region Types
 
     private struct DateTimeRange
     {
-      public DateTime Start;
       public DateTime End;
+      public DateTime Start;
 
       public DateTimeRange(DateTime start, DateTime end)
       {
@@ -54,13 +52,13 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
 
     #region Variables
 
-    private bool _deleteExisting;
+    private ProgramList _channelPrograms;
     private Dictionary<string, IList<Channel>> _channels;
     private IList<Channel> _currentChannels;
-    private ProgramList _channelPrograms;
-    private TimeRange _timeWindow;
+    private bool _deleteExisting;
 
     private ProgramManagement _programManagement = new ProgramManagement();
+    private TimeRange _timeWindow;
 
     #endregion
 

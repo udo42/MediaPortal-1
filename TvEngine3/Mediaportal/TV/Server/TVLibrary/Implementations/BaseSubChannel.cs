@@ -34,11 +34,20 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
   {
     #region events
 
+    #region Delegates
+
     /// <summary>
     /// Delegate for the audio/video oberserver events.
     /// </summary>
     /// <param name="pidType">Type of the pid</param>
     public delegate void AudioVideoObserverEvent(PidType pidType);
+
+    /// <summary>
+    /// Delegate for the after tune event.
+    /// </summary>
+    public delegate void OnAfterTuneDelegate();
+
+    #endregion
 
     /// <summary>
     /// Audio/video observer event.
@@ -58,11 +67,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     }
 
     /// <summary>
-    /// Delegate for the after tune event.
-    /// </summary>
-    public delegate void OnAfterTuneDelegate();
-
-    /// <summary>
     /// After tune observer event.
     /// </summary>
     public event OnAfterTuneDelegate AfterTuneEvent;
@@ -80,23 +84,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
 
     #endregion
 
-
     #region variables
 
     /// <summary>
-    /// Indicates, if the channel has teletext
+    /// A flag used by the TV service as a signal to abort the tuning process before it is completed.
     /// </summary>
-    protected bool _hasTeletext;
-
-    /// <summary>
-    /// Indicates, if teletext grabbing is activated
-    /// </summary>
-    protected bool _grabTeletext;
-
-    /// <summary>
-    /// Instance of the teletext decoder
-    /// </summary>
-    protected DVBTeletext _teletextDecoder;
+    protected bool _cancelTune;
 
     /// <summary>
     /// Instance of the current channel
@@ -104,14 +97,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     protected IChannel _currentChannel;
 
     /// <summary>
-    /// Name of the timeshift file
+    /// Date  and time when recording started
     /// </summary>
-    protected string _timeshiftFileName;
-
-    /// <summary>
-    /// Name of the recording file
-    /// </summary>
-    protected string _recordingFileName;
+    protected DateTime _dateRecordingStarted;
 
     /// <summary>
     /// Date and time when timeshifting started
@@ -119,14 +107,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     protected DateTime _dateTimeShiftStarted;
 
     /// <summary>
-    /// Date  and time when recording started
+    /// Indicates, if teletext grabbing is activated
     /// </summary>
-    protected DateTime _dateRecordingStarted;
+    protected bool _grabTeletext;
 
     /// <summary>
-    /// ID of this subchannel
+    /// Indicates, if the channel has teletext
     /// </summary>
-    protected int _subChannelId;
+    protected bool _hasTeletext;
 
     /// <summary>
     /// Scanning parameters
@@ -134,9 +122,24 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     protected ScanParameters _parameters;
 
     /// <summary>
-    /// A flag used by the TV service as a signal to abort the tuning process before it is completed.
+    /// Name of the recording file
     /// </summary>
-    protected bool _cancelTune;
+    protected string _recordingFileName;
+
+    /// <summary>
+    /// ID of this subchannel
+    /// </summary>
+    protected int _subChannelId;
+
+    /// <summary>
+    /// Instance of the teletext decoder
+    /// </summary>
+    protected DVBTeletext _teletextDecoder;
+
+    /// <summary>
+    /// Name of the timeshift file
+    /// </summary>
+    protected string _timeshiftFileName;
 
     #endregion
 
@@ -159,6 +162,16 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     #endregion
 
     #region properties
+
+    /// <summary>
+    /// Gets or sets the parameters.
+    /// </summary>
+    /// <value>The parameters.</value>
+    public ScanParameters Parameters
+    {
+      get { return _parameters; }
+      set { _parameters = value; }
+    }
 
     /// <summary>
     /// Gets the sub channel id.
@@ -226,16 +239,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     {
       get { return _currentChannel; }
       set { _currentChannel = value; }
-    }
-
-    /// <summary>
-    /// Gets or sets the parameters.
-    /// </summary>
-    /// <value>The parameters.</value>
-    public ScanParameters Parameters
-    {
-      get { return _parameters; }
-      set { _parameters = value; }
     }
 
     #endregion
@@ -386,8 +389,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
 
     #endregion
 
-    #region IAnalogTeletextCallBack and ITeletextCallBack Members
-
     /// <summary>
     /// callback from the TsWriter filter when it received a new teletext packets
     /// </summary>
@@ -423,8 +424,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         _teletextDecoder.SaveData(ptr);
       }
     }
-
-    #endregion
 
     #region IAnalogVideoAudioObserver
 

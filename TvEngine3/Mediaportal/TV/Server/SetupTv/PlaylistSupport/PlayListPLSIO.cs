@@ -27,6 +27,8 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
   {
     private const string START_PLAYLIST_MARKER = "[playlist]";
 
+    #region IPlayListIO Members
+
     public bool Load(PlayList playlist, string fileName)
     {
       string extension = Path.GetExtension(fileName);
@@ -164,5 +166,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
         writer.WriteLine("Version=2");
       }
     }
+
+    #endregion
   }
 }

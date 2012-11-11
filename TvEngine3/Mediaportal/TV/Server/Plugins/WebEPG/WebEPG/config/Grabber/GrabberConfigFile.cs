@@ -31,10 +31,10 @@ namespace WebEPG.config.Grabber
   {
     #region Variables
 
-    [XmlElement("Info")] public GrabberInfo Info;
-    [XmlArray("Channels")] [XmlArrayItem("Channel")] public List<ChannelInfo> Channels;
-    [XmlElement("Listing")] public ListingInfo Listing;
     [XmlArray("Actions")] [XmlArrayItem("Modify")] public List<ModifyInfo> Actions;
+    [XmlArray("Channels")] [XmlArrayItem("Channel")] public List<ChannelInfo> Channels;
+    [XmlElement("Info")] public GrabberInfo Info;
+    [XmlElement("Listing")] public ListingInfo Listing;
 
     #endregion
 

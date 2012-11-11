@@ -30,15 +30,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
   /// </summary>
   public class HDPVRChannel : TvDvbChannel
   {
-
     #region constants
 
-    private readonly TvCardHDPVR _card;
-
-    // The Hauppauge HD PVR and Colossus deliver a DVB stream with a single service on a fixed
-    // service ID with a fixed PMT PID.
-    private readonly int ServiceId = 1;
     private readonly int PmtPid = 0x100;
+    private readonly int ServiceId = 1;
+    private readonly TvCardHDPVR _card;
 
     #endregion
 

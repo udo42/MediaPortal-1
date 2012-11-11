@@ -33,19 +33,18 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog
   /// </summary>
   public class Configuration
   {
-
     #region variables
 
-    private string _name;
-    private string _devicePath;
-    private int _customQualityValue;
-    private int _customPeakQualityValue;
-    private QualityType _playbackQualityType;
-    private QualityType _recordQualityType;
-    private VIDEOENCODER_BITRATE_MODE _playbackQualityMode;
-    private VIDEOENCODER_BITRATE_MODE _recordQualityMode;
     private int _cardId;
+    private int _customPeakQualityValue;
+    private int _customQualityValue;
+    private string _devicePath;
     private Graph _graph;
+    private string _name;
+    private VIDEOENCODER_BITRATE_MODE _playbackQualityMode;
+    private QualityType _playbackQualityType;
+    private VIDEOENCODER_BITRATE_MODE _recordQualityMode;
+    private QualityType _recordQualityType;
 
     #endregion
 

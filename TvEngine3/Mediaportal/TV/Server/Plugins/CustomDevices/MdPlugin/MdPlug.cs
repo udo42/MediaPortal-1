@@ -40,16 +40,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
   /// </summary>
   public class MdPlugin : BaseCustomDevice, IAddOnDevice, IConditionalAccessProvider
   {
-
-
     #region COM interface imports
 
-    [ComImport, Guid("72e6dB8f-9f33-4d1c-a37c-de8148c0be74")]
-    private class MDAPIFilter { };
+    #region Nested type: IChangeChannel
 
     [ComVisible(true), ComImport,
-      Guid("c3f5aa0d-c475-401b-8fc9-e33fb749cd85"),
-      InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+     Guid("c3f5aa0d-c475-401b-8fc9-e33fb749cd85"),
+     InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     private interface IChangeChannel
     {
       /// <summary>
@@ -69,21 +66,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       int SetPluginsDirectory([MarshalAs(UnmanagedType.LPWStr)] String directory);
     }
 
-    [ComVisible(true), ComImport,
-      Guid("e98b70ee-f5a1-4f46-b8b8-a1324ba92f5f"),
-      InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    private interface IChangeChannel_Ex
-    {
-      /// <summary>
-      /// Instruct the softCAM plugin filter to decode a different service using Program82 and PidsToDecode structures.
-      /// </summary>
-      [PreserveSig]
-      int ChangeChannelTP82_Ex(IntPtr program82, IntPtr pidsToDecode);
-    }
+    #endregion
+
+    #region Nested type: IChangeChannel_Clear
 
     [ComVisible(true), ComImport,
-      Guid("D0EACAB1-3211-414B-B58B-E1157AC4D93A"),
-      InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+     Guid("D0EACAB1-3211-414B-B58B-E1157AC4D93A"),
+     InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     private interface IChangeChannel_Clear
     {
       /// <summary>
@@ -95,7 +84,34 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
 
     #endregion
 
+    #region Nested type: IChangeChannel_Ex
+
+    [ComVisible(true), ComImport,
+     Guid("e98b70ee-f5a1-4f46-b8b8-a1324ba92f5f"),
+     InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+    private interface IChangeChannel_Ex
+    {
+      /// <summary>
+      /// Instruct the softCAM plugin filter to decode a different service using Program82 and PidsToDecode structures.
+      /// </summary>
+      [PreserveSig]
+      int ChangeChannelTP82_Ex(IntPtr program82, IntPtr pidsToDecode);
+    }
+
+    #endregion
+
+    #region Nested type: MDAPIFilter
+
+    [ComImport, Guid("72e6dB8f-9f33-4d1c-a37c-de8148c0be74")]
+    private class MDAPIFilter { };
+
+    #endregion
+
+    #endregion
+
     #region structs
+
+    #region Nested type: CaSystem82
 
     [StructLayout(LayoutKind.Sequential)]
     public struct CaSystem82
@@ -107,6 +123,20 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       public UInt32 ProviderId;
     }
 
+    #endregion
+
+    #region Nested type: DecodeSlot
+
+    private class DecodeSlot
+    {
+      public IChannel CurrentChannel;
+      public IBaseFilter Filter;
+    }
+
+    #endregion
+
+    #region Nested type: PidFilter
+
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct PidFilter
     {
@@ -116,7 +146,24 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       public UInt16 Pid;
     }
 
+    #endregion
+
     // Note: many of the struct members aren't documented or used.
+
+    #region Nested type: PidsToDecode
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct PidsToDecode  // TPids2Dec
+    {
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPidCount)]
+      public UInt16[] Pids;
+      public UInt16 PidCount;
+    }
+
+    #endregion
+
+    #region Nested type: Program82
+
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct Program82
     {
@@ -179,19 +226,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       private byte Padding4;
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    private struct PidsToDecode  // TPids2Dec
-    {
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPidCount)]
-      public UInt16[] Pids;
-      public UInt16 PidCount;
-    }
-
-    private class DecodeSlot
-    {
-      public IBaseFilter Filter;
-      public IChannel CurrentChannel;
-    }
+    #endregion
 
     #endregion
 
@@ -206,14 +241,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
 
     #region variables
 
-    private bool _isMdPlugin = false;
-    private HashSet<String> _providers = new HashSet<String>();
     private String _configurationFolderPrefix = String.Empty;
     private IFilterGraph2 _graph = null;
     private IBaseFilter _infTee = null;
-    private List<DecodeSlot> _slots = null;
-    private IntPtr _programmeBuffer = IntPtr.Zero;
+    private bool _isMdPlugin = false;
     private IntPtr _pidBuffer = IntPtr.Zero;
+    private IntPtr _programmeBuffer = IntPtr.Zero;
+    private HashSet<String> _providers = new HashSet<String>();
+    private List<DecodeSlot> _slots = null;
 
     #endregion
 
@@ -1317,8 +1352,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
               }
               return true;
             }
-            // "Ok descrambling" means start or continue decrypting the service. If we're already decrypting
-            // the service that is fine - this is an update.
+              // "Ok descrambling" means start or continue decrypting the service. If we're already decrypting
+              // the service that is fine - this is an update.
             else if (command == CaPmtCommand.OkDescrambling)
             {
               this.LogDebug("MD Plugin: found existing slot decrypting channel \"{0}\", sending update", currentService.Name);
@@ -1382,22 +1417,22 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       programToDecode.ServiceType = (byte)DvbServiceType.DigitalTelevision;
 
       this.LogDebug("MD Plugin: TSID = {0} (0x{0:x}), SID = {1} (0x{1:x}), PMT PID = {2} (0x{2:x}), PCR PID = {3} (0x{3:x}), service type = {4}, " +
-                        "video PID = {5} (0x{5:x}), audio PID = {6} (0x{6:x}), AC3 PID = {7} (0x{7:x}), teletext PID = {8} (0x{8:x})",
-          programToDecode.TransportStreamId, programToDecode.ServiceId, programToDecode.PmtPid, programToDecode.PcrPid,
-          programToDecode.ServiceType, programToDecode.VideoPid, programToDecode.AudioPid, programToDecode.Ac3AudioPid, programToDecode.TeletextPid
-      );
+                    "video PID = {5} (0x{5:x}), audio PID = {6} (0x{6:x}), AC3 PID = {7} (0x{7:x}), teletext PID = {8} (0x{8:x})",
+                    programToDecode.TransportStreamId, programToDecode.ServiceId, programToDecode.PmtPid, programToDecode.PcrPid,
+                    programToDecode.ServiceType, programToDecode.VideoPid, programToDecode.AudioPid, programToDecode.Ac3AudioPid, programToDecode.TeletextPid
+        );
 
       programToDecode.CaSystemCount = RegisterEcmAndEmmPids(pmt, cat, ref programToDecode);
       SetPreferredCaSystemIndex(ref programToDecode);
 
       this.LogDebug("MD Plugin: ECM PID = {0} (0x{0:x}), CA system count = {1}, CA index = {2}",
                     programToDecode.EcmPid, programToDecode.CaSystemCount, programToDecode.CaId
-      );
+        );
       for (byte i = 0; i < programToDecode.CaSystemCount; i++)
       {
         this.LogDebug("MD Plugin: #{0} CA type = {1} (0x{1:x}), ECM PID = {2} (0x{2:x}), EMM PID = {3} (0x{3:x}), provider = {4} (0x{4:x})",
                       i + 1, programToDecode.CaSystems[i].CaType, programToDecode.CaSystems[i].EcmPid, programToDecode.CaSystems[i].EmmPid, programToDecode.CaSystems[i].ProviderId
-        );
+          );
       }
 
       // Instruct the MD filter to decrypt the service.

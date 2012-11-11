@@ -41,9 +41,6 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
   {
     #region Members
 
-    private TvMovieDatabase _database;
-    private System.Timers.Timer _stateTimer;
-    private bool _isImporting = false;
     private const long _timerIntervall = 1800000;
     private const string _localMachineRegSubKey = @"Software\Ewe\TVGhost\Gemeinsames";
 
@@ -53,50 +50,13 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     private const string _virtualStoreRegSubKey64b =
       @"Software\Classes\VirtualStore\MACHINE\SOFTWARE\Wow6432Node\Ewe\TVGhost\Gemeinsames";
 
+    private TvMovieDatabase _database;
+    private bool _isImporting = false;
+    private System.Timers.Timer _stateTimer;
+
     #endregion
 
     #region Static properties
-
-    private static string GetRegistryValueFromValueName(string valueName)
-    {
-      string value = string.Empty;
-
-      try
-      {
-        //Try to get value from HKLM first
-        using (RegistryKey rkey = Registry.LocalMachine.OpenSubKey(_localMachineRegSubKey))
-          if (rkey != null)
-            value = string.Format("{0}", rkey.GetValue(valueName));
-
-        //Otherwise try to get it from VirtualStore
-        if (string.IsNullOrEmpty(value))
-        {
-          string virtualStoreSubKey = Check64bit() ? _virtualStoreRegSubKey64b : _virtualStoreRegSubKey32b;
-
-          foreach (String userKeyName in Registry.Users.GetSubKeyNames())
-          {
-            using (
-              RegistryKey rkey = Registry.Users.OpenSubKey(String.Format(@"{0}\{1}", userKeyName, virtualStoreSubKey)))
-              if (rkey != null)
-                value = string.Format("{0}", rkey.GetValue(valueName));
-
-            if (!String.IsNullOrEmpty(value))
-              break;
-          }
-        }
-      }
-      catch (Exception ex)
-      {
-        this.LogError(ex, "TVMovie: Registry lookup for {0} failed", valueName);
-      }
-
-      if (string.IsNullOrEmpty(value))
-      {
-        Log.Info("TVMovie: Registry setting {1} has no value", valueName);
-      }
-
-      return value;
-    }
 
     public static string TVMovieProgramPath
     {
@@ -139,6 +99,47 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
         }
         SettingsManagement.SaveSetting("TvMoviedatabasepath", path);
       }
+    }
+
+    private static string GetRegistryValueFromValueName(string valueName)
+    {
+      string value = string.Empty;
+
+      try
+      {
+        //Try to get value from HKLM first
+        using (RegistryKey rkey = Registry.LocalMachine.OpenSubKey(_localMachineRegSubKey))
+          if (rkey != null)
+            value = string.Format("{0}", rkey.GetValue(valueName));
+
+        //Otherwise try to get it from VirtualStore
+        if (string.IsNullOrEmpty(value))
+        {
+          string virtualStoreSubKey = Check64bit() ? _virtualStoreRegSubKey64b : _virtualStoreRegSubKey32b;
+
+          foreach (String userKeyName in Registry.Users.GetSubKeyNames())
+          {
+            using (
+              RegistryKey rkey = Registry.Users.OpenSubKey(String.Format(@"{0}\{1}", userKeyName, virtualStoreSubKey)))
+              if (rkey != null)
+                value = string.Format("{0}", rkey.GetValue(valueName));
+
+            if (!String.IsNullOrEmpty(value))
+              break;
+          }
+        }
+      }
+      catch (Exception ex)
+      {
+        this.LogError(ex, "TVMovie: Registry lookup for {0} failed", valueName);
+      }
+
+      if (string.IsNullOrEmpty(value))
+      {
+        Log.Info("TVMovie: Registry setting {1} has no value", valueName);
+      }
+
+      return value;
     }
 
     #endregion
@@ -325,6 +326,11 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
     #endregion
 
+    public bool MasterOnly
+    {
+      get { return false; }
+    }
+
     #region ITvServerPlugin Members
 
     public string Name
@@ -342,19 +348,9 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       get { return "rtv"; }
     }
 
-    public bool MasterOnly
-    {
-      get { return false; }
-    }
-
     public void Start(IInternalControllerService controllerService)
     {
       StartStopTimer(true);
-    }
-
-    public void StartedAll()
-    {
-      RegisterForEPGSchedule();
     }
 
     public void Stop()
@@ -371,6 +367,15 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     public SectionSettings Setup
     {
       get { return new TvMovieSetup(); }
+    }
+
+    #endregion
+
+    #region ITvServerPluginStartedAll Members
+
+    public void StartedAll()
+    {
+      RegisterForEPGSchedule();
     }
 
     #endregion

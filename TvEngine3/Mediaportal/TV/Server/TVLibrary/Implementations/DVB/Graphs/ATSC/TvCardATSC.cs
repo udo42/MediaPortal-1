@@ -34,18 +34,17 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
   /// </summary>
   public class TvCardATSC : TvCardDvbBase, IDisposable, ITVCard
   {
-
     #region variables
-
-    /// <summary>
-    /// A pre-configured tuning space, used to speed up the tuning process. 
-    /// </summary>
-    private IATSCTuningSpace _tuningSpace = null;
 
     /// <summary>
     /// A tune request template, used to speed up the tuning process.
     /// </summary>
     private IATSCChannelTuneRequest _tuneRequest = null;
+
+    /// <summary>
+    /// A pre-configured tuning space, used to speed up the tuning process. 
+    /// </summary>
+    private IATSCTuningSpace _tuningSpace = null;
 
     #endregion
 
@@ -165,6 +164,28 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
     #region tuning & scanning
 
     /// <summary>
+    /// Get the device's channel scanning interface.
+    /// </summary>
+    public override ITVScanning ScanningInterface
+    {
+      get { return new ATSCScanning(this); }
+    }
+
+    /// <summary>
+    /// Check if the tuner can tune to a specific channel.
+    /// </summary>
+    /// <param name="channel">The channel to check.</param>
+    /// <returns><c>true</c> if the tuner can tune to the channel, otherwise <c>false</c></returns>
+    public override bool CanTune(IChannel channel)
+    {
+      if (channel is ATSCChannel)
+      {
+        return true;
+      }
+      return false;
+    }
+
+    /// <summary>
     /// Assemble a BDA tune request for a given channel.
     /// </summary>
     /// <param name="channel">The channel that will be tuned.</param>
@@ -190,28 +211,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
       _tuneRequest.put_Locator(locator);
 
       return _tuneRequest;
-    }
-
-    /// <summary>
-    /// Get the device's channel scanning interface.
-    /// </summary>
-    public override ITVScanning ScanningInterface
-    {
-      get { return new ATSCScanning(this); }
-    }
-
-    /// <summary>
-    /// Check if the tuner can tune to a specific channel.
-    /// </summary>
-    /// <param name="channel">The channel to check.</param>
-    /// <returns><c>true</c> if the tuner can tune to the channel, otherwise <c>false</c></returns>
-    public override bool CanTune(IChannel channel)
-    {
-      if (channel is ATSCChannel)
-      {
-        return true;
-      }
-      return false;
     }
 
     #endregion

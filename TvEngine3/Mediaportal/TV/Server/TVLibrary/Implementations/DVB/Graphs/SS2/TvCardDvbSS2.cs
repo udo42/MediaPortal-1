@@ -1243,22 +1243,25 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     // Some of these structs are used when marshaling from unmanaged to managed memory, like in ReadDeviceInfo().
     private struct TunerCapabilities
     {
-      public B2c2TunerType TunerType;
+      public B2c2AcquisionCapability AcquisitionCapabilities;
+      private UInt32 AutoSymbolRate;              // Obsolete		
+
       [MarshalAs(UnmanagedType.Bool)]
       public bool ConstellationSupported;         // Is SetModulation() supported?
       [MarshalAs(UnmanagedType.Bool)]
       public bool FecSupported;                   // Is SetFec() suppoted?
-      public UInt32 MinTransponderFrequency;      // unit = kHz
+
+      public UInt32 KernelLockTime;               // unit = ms
+      public UInt32 LockTime;                     // unit = ms
+      public UInt32 MaxSymbolRate;                // unit = Baud
+
       public UInt32 MaxTransponderFrequency;      // unit = kHz
-      public UInt32 MinTunerFrequency;            // unit = kHz
       public UInt32 MaxTunerFrequency;            // unit = kHz
       public UInt32 MinSymbolRate;                // unit = Baud
-      public UInt32 MaxSymbolRate;                // unit = Baud
-      private UInt32 AutoSymbolRate;              // Obsolete		
+      public UInt32 MinTransponderFrequency;      // unit = kHz
+      public UInt32 MinTunerFrequency;            // unit = kHz
       public B2c2PerformanceMonitoringCapability PerformanceMonitoringCapabilities;
-      public UInt32 LockTime;                     // unit = ms
-      public UInt32 KernelLockTime;               // unit = ms
-      public B2c2AcquisionCapability AcquisitionCapabilities;
+      public B2c2TunerType TunerType;
     }
 
     private struct MacAddress
@@ -1269,17 +1272,18 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
 
     private struct MacAddressList
     {
-      public Int32 AddressCount;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxMacAddressCount)]
       public MacAddress[] Address;
+
+      public Int32 AddressCount;
     }
 
     private struct VideoInfo
     {
-      public UInt16 HorizontalResolution;
-      public UInt16 VerticalResolution;
       public B2c2VideoAspectRatio AspectRatio;
       public B2c2VideoFrameRate FrameRate;
+      public UInt16 HorizontalResolution;
+      public UInt16 VerticalResolution;
     }
 #pragma warning restore 0649, 0169
 

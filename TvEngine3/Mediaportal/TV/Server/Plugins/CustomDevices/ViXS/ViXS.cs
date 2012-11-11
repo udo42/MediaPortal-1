@@ -31,8 +31,6 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ViXS
   /// </summary>
   public class ViXS : Microsoft.Microsoft
   {
-  
-
     #region constants
 
     private static readonly Guid BdaExtensionPropertySet = new Guid(0x02779308, 0x77d8, 0x4914, 0x9f, 0x15, 0x7f, 0xa6, 0xe1, 0x55, 0x84, 0xc7);

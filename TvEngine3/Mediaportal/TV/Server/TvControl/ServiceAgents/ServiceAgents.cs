@@ -12,118 +12,17 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
 
   public class ServiceAgents : Singleton<ServiceAgents>, IDisposable
   {
- 
-    public delegate void ServiceAgentRemovedDelegate(Type service);    
+    #region Delegates
+
+    public delegate void ServiceAgentRemovedDelegate(Type service);
+
+    #endregion
+
     private static string _hostname = Dns.GetHostName();
 
     private ServiceAgents()
     {
       AddServices();
-    }
-
-    ~ServiceAgents()
-    {
-      Dispose();
-    }
-
-    private void ReconnectServices()
-    {
-      GetOrCreateServiceAgent<ISettingService>();
-      GetOrCreateServiceAgent<IControllerService>();
-      GetOrCreateServiceAgent<IProgramCategoryService>();
-
-      // most WCF agents have a specific agent that does additional stuff like stripping away unneeded data before sending it over the wire.
-      // this is often done on save related methods.
-
-      GetOrCreateCustomServiceAgent<ICardService, CardServiceAgent>();
-      GetOrCreateCustomServiceAgent<IProgramService, ProgramServiceAgent>();
-      GetOrCreateCustomServiceAgent<IRecordingService, RecordingServiceAgent>();
-      GetOrCreateCustomServiceAgent<IChannelGroupService, ChannelGroupServiceAgent>();
-      GetOrCreateCustomServiceAgent<IChannelService, ChannelServiceAgent>();
-      GetOrCreateCustomServiceAgent<IScheduleService, ScheduleServiceAgent>();
-      GetOrCreateCustomServiceAgent<ICanceledScheduleService, CanceledScheduleServiceAgent>();
-      GetOrCreateCustomServiceAgent<IConflictService, ConflictServiceAgent>();
-
-      GetOrCreateEventServiceAgent();
-      GetOrCreateDiscovererServiceAgent();      
-      
-    }
-
-    private void AddServices()
-    {     
-      AddGenericService<ISettingService>();
-      AddGenericService<IControllerService>();
-      AddGenericService<IProgramCategoryService>();
-
-      // most WCF agents have a specific agent that does additional stuff like stripping away unneeded data before sending it over the wire.
-      // this is often done on save related methods.
-
-      AddCustomService<ICardService,CardServiceAgent>();
-      AddCustomService<IProgramService,ProgramServiceAgent>();
-      AddCustomService<IRecordingService,RecordingServiceAgent>();
-      AddCustomService<IChannelGroupService, ChannelGroupServiceAgent>();      
-      AddCustomService<IChannelService, ChannelServiceAgent>();
-      AddCustomService<IScheduleService,ScheduleServiceAgent>();
-      AddCustomService<ICanceledScheduleService,CanceledScheduleServiceAgent>();
-      AddCustomService<IConflictService,ConflictServiceAgent>();
-      
-      AddEventService();
-      AddDiscoveryService();
-    }
-
-    private void AddCustomService<TServiceInterface, TServiceImpl>()
-      where TServiceImpl : ServiceAgent<TServiceInterface>, TServiceInterface
-      where TServiceInterface : class
-    {
-      bool found = GlobalServiceProvider.IsRegistered<TServiceInterface>();
-
-      TServiceInterface service = Activator.CreateInstance(typeof(TServiceImpl), new object[] { _hostname }) as TServiceImpl;
-
-      if (service != null)
-      {
-        var serviceAgent = service as ServiceAgent<TServiceInterface>;
-        if (serviceAgent != null)
-        {
-          serviceAgent.ServiceAgentFaulted += new EventHandler(ServiceAgents_Faulted);
-          serviceAgent.ServiceAgentClosed += new EventHandler(ServiceAgents_Closed);
-
-          if (found)
-          {
-            GlobalServiceProvider.Replace(service);
-          }
-          else
-          {
-            GlobalServiceProvider.Add(service);
-          } 
-        }        
-      }
-    }
-
-
-    private TServiceInterface GetOrCreateCustomServiceAgent<TServiceInterface, TServiceImpl>()
-      where TServiceImpl : ServiceAgent<TServiceInterface>, TServiceInterface
-      where TServiceInterface : class
-    {
-      var customServiceAgent = GlobalServiceProvider.Get<TServiceInterface>();
-      if (customServiceAgent == null)
-      {
-        AddCustomService<TServiceInterface, TServiceImpl>();
-        customServiceAgent = GlobalServiceProvider.Get<TServiceInterface>();
-      }
-      return customServiceAgent;
-    }
-
-
-
-    private T GetOrCreateServiceAgent<T>() where T : class
-    {
-      var serviceAgent = GlobalServiceProvider.Get<T>();
-      if (serviceAgent == null)
-      {
-        AddGenericService<T>();
-        serviceAgent = GlobalServiceProvider.Get<T>();
-      }
-      return serviceAgent;
     }
 
     public IEventServiceAgent EventServiceAgent
@@ -134,35 +33,12 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       }
     }
 
-    private IEventServiceAgent GetOrCreateEventServiceAgent ()
-    {
-      var eventServiceAgent = GlobalServiceProvider.Get<IEventServiceAgent>();
-      if (eventServiceAgent == null)
-      {
-        AddEventService();
-        eventServiceAgent = GlobalServiceProvider.Get<IEventServiceAgent>();
-      }
-      return eventServiceAgent;
-    }
-
     public IDiscoverServiceAgent DiscoverServiceAgent
     {
       get 
       {
         return GetOrCreateDiscovererServiceAgent();
       }
-    }
-
-    private IDiscoverServiceAgent GetOrCreateDiscovererServiceAgent()
-    {
-      var discoverServiceAgent = GlobalServiceProvider.Get<IDiscoverServiceAgent>();
-      if (discoverServiceAgent == null)
-      {
-        AddDiscoveryService();
-        discoverServiceAgent = GlobalServiceProvider.Get<IDiscoverServiceAgent>();
-      }
-
-      return discoverServiceAgent;
     }
 
     public IControllerService ControllerServiceAgent
@@ -271,6 +147,134 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
           AddServices();
         }
       }
+    }
+
+    ~ServiceAgents()
+    {
+      Dispose();
+    }
+
+    private void ReconnectServices()
+    {
+      GetOrCreateServiceAgent<ISettingService>();
+      GetOrCreateServiceAgent<IControllerService>();
+      GetOrCreateServiceAgent<IProgramCategoryService>();
+
+      // most WCF agents have a specific agent that does additional stuff like stripping away unneeded data before sending it over the wire.
+      // this is often done on save related methods.
+
+      GetOrCreateCustomServiceAgent<ICardService, CardServiceAgent>();
+      GetOrCreateCustomServiceAgent<IProgramService, ProgramServiceAgent>();
+      GetOrCreateCustomServiceAgent<IRecordingService, RecordingServiceAgent>();
+      GetOrCreateCustomServiceAgent<IChannelGroupService, ChannelGroupServiceAgent>();
+      GetOrCreateCustomServiceAgent<IChannelService, ChannelServiceAgent>();
+      GetOrCreateCustomServiceAgent<IScheduleService, ScheduleServiceAgent>();
+      GetOrCreateCustomServiceAgent<ICanceledScheduleService, CanceledScheduleServiceAgent>();
+      GetOrCreateCustomServiceAgent<IConflictService, ConflictServiceAgent>();
+
+      GetOrCreateEventServiceAgent();
+      GetOrCreateDiscovererServiceAgent();      
+      
+    }
+
+    private void AddServices()
+    {     
+      AddGenericService<ISettingService>();
+      AddGenericService<IControllerService>();
+      AddGenericService<IProgramCategoryService>();
+
+      // most WCF agents have a specific agent that does additional stuff like stripping away unneeded data before sending it over the wire.
+      // this is often done on save related methods.
+
+      AddCustomService<ICardService,CardServiceAgent>();
+      AddCustomService<IProgramService,ProgramServiceAgent>();
+      AddCustomService<IRecordingService,RecordingServiceAgent>();
+      AddCustomService<IChannelGroupService, ChannelGroupServiceAgent>();      
+      AddCustomService<IChannelService, ChannelServiceAgent>();
+      AddCustomService<IScheduleService,ScheduleServiceAgent>();
+      AddCustomService<ICanceledScheduleService,CanceledScheduleServiceAgent>();
+      AddCustomService<IConflictService,ConflictServiceAgent>();
+      
+      AddEventService();
+      AddDiscoveryService();
+    }
+
+    private void AddCustomService<TServiceInterface, TServiceImpl>()
+      where TServiceImpl : ServiceAgent<TServiceInterface>, TServiceInterface
+      where TServiceInterface : class
+    {
+      bool found = GlobalServiceProvider.IsRegistered<TServiceInterface>();
+
+      TServiceInterface service = Activator.CreateInstance(typeof(TServiceImpl), new object[] { _hostname }) as TServiceImpl;
+
+      if (service != null)
+      {
+        var serviceAgent = service as ServiceAgent<TServiceInterface>;
+        if (serviceAgent != null)
+        {
+          serviceAgent.ServiceAgentFaulted += new EventHandler(ServiceAgents_Faulted);
+          serviceAgent.ServiceAgentClosed += new EventHandler(ServiceAgents_Closed);
+
+          if (found)
+          {
+            GlobalServiceProvider.Replace(service);
+          }
+          else
+          {
+            GlobalServiceProvider.Add(service);
+          } 
+        }        
+      }
+    }
+
+
+    private TServiceInterface GetOrCreateCustomServiceAgent<TServiceInterface, TServiceImpl>()
+      where TServiceImpl : ServiceAgent<TServiceInterface>, TServiceInterface
+      where TServiceInterface : class
+    {
+      var customServiceAgent = GlobalServiceProvider.Get<TServiceInterface>();
+      if (customServiceAgent == null)
+      {
+        AddCustomService<TServiceInterface, TServiceImpl>();
+        customServiceAgent = GlobalServiceProvider.Get<TServiceInterface>();
+      }
+      return customServiceAgent;
+    }
+
+
+
+    private T GetOrCreateServiceAgent<T>() where T : class
+    {
+      var serviceAgent = GlobalServiceProvider.Get<T>();
+      if (serviceAgent == null)
+      {
+        AddGenericService<T>();
+        serviceAgent = GlobalServiceProvider.Get<T>();
+      }
+      return serviceAgent;
+    }
+
+    private IEventServiceAgent GetOrCreateEventServiceAgent ()
+    {
+      var eventServiceAgent = GlobalServiceProvider.Get<IEventServiceAgent>();
+      if (eventServiceAgent == null)
+      {
+        AddEventService();
+        eventServiceAgent = GlobalServiceProvider.Get<IEventServiceAgent>();
+      }
+      return eventServiceAgent;
+    }
+
+    private IDiscoverServiceAgent GetOrCreateDiscovererServiceAgent()
+    {
+      var discoverServiceAgent = GlobalServiceProvider.Get<IDiscoverServiceAgent>();
+      if (discoverServiceAgent == null)
+      {
+        AddDiscoveryService();
+        discoverServiceAgent = GlobalServiceProvider.Get<IDiscoverServiceAgent>();
+      }
+
+      return discoverServiceAgent;
     }
 
 

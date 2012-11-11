@@ -40,13 +40,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 
 
     private readonly ITvCardHandler _cardHandler;
-    private readonly object _usersLock = new object();
     private readonly object _ownerLock = new object();
-
-    private ITvCardContext Context
-    {
-      get { return _cardHandler.Card.Context as ITvCardContext; }
-    }
+    private readonly object _usersLock = new object();
 
     /// <summary>
     /// Initializes a new instance of the <see cref="UserManagement"/> class.
@@ -56,6 +51,29 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     {
       _cardHandler = cardHandler;      
     }
+
+    private ITvCardContext Context
+    {
+      get { return _cardHandler.Card.Context as ITvCardContext; }
+    }
+
+    /// <summary>
+    /// Gets the users for this card.
+    /// </summary>
+    /// <returns></returns>
+    private IDictionary<string,IUser> Users
+    {
+      get
+      {        
+        if (Context == null)
+        {
+          return new Dictionary<string, IUser>();
+        }
+        return Context.Users; 
+      }      
+    }
+
+    #region IUserManagement Members
 
     public IUser GetUserCopy(string name)
     {
@@ -71,19 +89,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       return user;
     }
 
-    
-
-
-    private IUser GetUser(string name)
-    {
-      IUser user;
-      lock (_usersLock)
-      {        
-        Context.Users.TryGetValue(name, out user);        
-      }
-      return user;
-    }
-   
 
     /// <summary>
     /// Removes the user from this card
@@ -157,22 +162,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
     }
 
-
-    /// <summary>
-    /// Gets the users for this card.
-    /// </summary>
-    /// <returns></returns>
-    private IDictionary<string,IUser> Users
-    {
-      get
-      {        
-        if (Context == null)
-        {
-          return new Dictionary<string, IUser>();
-        }
-        return Context.Users; 
-      }      
-    }
 
     public bool HasEqualOrHigherPriority(IUser user)
     {
@@ -360,25 +349,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         }
       }
       return usersRec;
-    }
-
-    public bool IsAnyUserExceptThisTimeShifting(string userName)
-    {
-      IEnumerable<IUser> safeUsers = GetUsersCopy();
-
-      bool isAnyUserExceptThisTimeShifting = false;
-      foreach (IUser user in safeUsers)
-      {
-        if (user.Name != userName)
-        {
-          isAnyUserExceptThisTimeShifting = _cardHandler.TimeShifter.IsTimeShifting(user);
-          if (isAnyUserExceptThisTimeShifting)
-          {
-            break; 
-          }                      
-        }
-      }
-      return isAnyUserExceptThisTimeShifting;
     }
 
     public bool IsAnyUserTimeShifting()
@@ -640,6 +610,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       return subChannelId;
     }
 
+    #endregion
+
     #region moved from context
 
     /// <summary>
@@ -872,60 +844,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
     }
 
-    private OwnerSubChannel GetNextAvailableSubchannelOwner()
-    {
-      //find new owner id 
-      OwnerSubChannel nextAvailableSubchannelOwner = null;
-
-      lock (_usersLock)
-      {
-        IUser existingScheduler = Context.Users.Values.FirstOrDefault(t => t.UserType == UserType.Scheduler);
-        if (existingScheduler != null)
-        {
-          if (existingScheduler.SubChannels.Count > 0)
-          {
-            int subChannelId = existingScheduler.SubChannels.FirstOrDefault().Value.Id;
-            string name = existingScheduler.Name;
-            nextAvailableSubchannelOwner = new OwnerSubChannel(subChannelId, name);
-          }
-        }
-        else
-        {
-          ICollection<IUser> users = Users.Values;
-          int nextSubchannel = -1;
-          IUser nextUser = null;
-          foreach (IUser u in users)
-          {
-            if (u.SubChannels.Count > 0)
-            {
-              int maxSubchannelForUser = u.SubChannels.Values.Max(s => s.Id);
-              if (maxSubchannelForUser > nextSubchannel)
-              {
-                nextSubchannel = maxSubchannelForUser;
-                nextUser = u;
-              }
-              else if (maxSubchannelForUser == nextSubchannel) //a match
-              {
-                if (nextUser != null)
-                {
-                  if (u.Priority > nextUser.Priority)
-                  {
-                    nextSubchannel = maxSubchannelForUser;
-                    nextUser = u;
-                  }
-                }
-              }
-            }
-          }
-          if (nextUser != null)
-          {
-            nextAvailableSubchannelOwner = new OwnerSubChannel(nextSubchannel, nextUser.Name);
-          }
-        }
-      }
-      return nextAvailableSubchannelOwner;
-    }
-    
 
     /// <summary>
     ///   Gets the user.
@@ -997,17 +915,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
       return user;
     }
-
-    private IUser GetUser(int subChannelId)
-    {
-      IUser userFound = null;
-      lock (_usersLock)
-      {
-        userFound = Context.Users.Values.FirstOrDefault(t => t.SubChannels.ContainsKey(subChannelId));        
-      }
-      return userFound;
-    }
-
 
 
     /// <summary>
@@ -1214,8 +1121,99 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       }
     }
 
+    private OwnerSubChannel GetNextAvailableSubchannelOwner()
+    {
+      //find new owner id 
+      OwnerSubChannel nextAvailableSubchannelOwner = null;
+
+      lock (_usersLock)
+      {
+        IUser existingScheduler = Context.Users.Values.FirstOrDefault(t => t.UserType == UserType.Scheduler);
+        if (existingScheduler != null)
+        {
+          if (existingScheduler.SubChannels.Count > 0)
+          {
+            int subChannelId = existingScheduler.SubChannels.FirstOrDefault().Value.Id;
+            string name = existingScheduler.Name;
+            nextAvailableSubchannelOwner = new OwnerSubChannel(subChannelId, name);
+          }
+        }
+        else
+        {
+          ICollection<IUser> users = Users.Values;
+          int nextSubchannel = -1;
+          IUser nextUser = null;
+          foreach (IUser u in users)
+          {
+            if (u.SubChannels.Count > 0)
+            {
+              int maxSubchannelForUser = u.SubChannels.Values.Max(s => s.Id);
+              if (maxSubchannelForUser > nextSubchannel)
+              {
+                nextSubchannel = maxSubchannelForUser;
+                nextUser = u;
+              }
+              else if (maxSubchannelForUser == nextSubchannel) //a match
+              {
+                if (nextUser != null)
+                {
+                  if (u.Priority > nextUser.Priority)
+                  {
+                    nextSubchannel = maxSubchannelForUser;
+                    nextUser = u;
+                  }
+                }
+              }
+            }
+          }
+          if (nextUser != null)
+          {
+            nextAvailableSubchannelOwner = new OwnerSubChannel(nextSubchannel, nextUser.Name);
+          }
+        }
+      }
+      return nextAvailableSubchannelOwner;
+    }
+
+    private IUser GetUser(int subChannelId)
+    {
+      IUser userFound = null;
+      lock (_usersLock)
+      {
+        userFound = Context.Users.Values.FirstOrDefault(t => t.SubChannels.ContainsKey(subChannelId));        
+      }
+      return userFound;
+    }
+
     #endregion
 
+    private IUser GetUser(string name)
+    {
+      IUser user;
+      lock (_usersLock)
+      {        
+        Context.Users.TryGetValue(name, out user);        
+      }
+      return user;
+    }
 
+    public bool IsAnyUserExceptThisTimeShifting(string userName)
+    {
+      IEnumerable<IUser> safeUsers = GetUsersCopy();
+
+      bool isAnyUserExceptThisTimeShifting = false;
+      foreach (IUser user in safeUsers)
+      {
+        if (user.Name != userName)
+        {
+          isAnyUserExceptThisTimeShifting = _cardHandler.TimeShifter.IsTimeShifting(user);
+          if (isAnyUserExceptThisTimeShifting)
+          {
+            break; 
+          }                      
+        }
+      }
+      return isAnyUserExceptThisTimeShifting;
+    }
   }
 }

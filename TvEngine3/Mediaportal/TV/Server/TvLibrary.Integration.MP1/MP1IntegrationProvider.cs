@@ -34,6 +34,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Integration.MP1
       _pathManager = pathManager;
     }
 
+    #region IIntegrationProvider Members
 
     public IPathManager PathManager
     {
@@ -44,5 +45,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Integration.MP1
     {
       get { return _logger; }
     }
+
+    #endregion
   }
 }

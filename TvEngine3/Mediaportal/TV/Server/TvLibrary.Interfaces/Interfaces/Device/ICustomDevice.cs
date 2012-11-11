@@ -122,6 +122,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.Device
   /// </summary>
   public abstract class BaseCustomDevice : ICustomDevice
   {
+    #region ICustomDevice Members
+
     /// <summary>
     /// The loading priority for this device type.
     /// </summary>
@@ -158,6 +160,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.Device
       // This base class is not intended to be instantiated.
       return false;
     }
+
+    #endregion
 
     #region device state change callbacks
 
