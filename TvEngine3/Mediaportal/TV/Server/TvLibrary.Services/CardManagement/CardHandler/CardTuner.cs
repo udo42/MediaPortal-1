@@ -536,8 +536,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       //  return true;
       //}
       this.LogDebug("card: user: {0}:{1}:{2} tune {3}", user.Name, user.CardId, _cardHandler.UserManagement.GetSubChannelIdByChannelId(user.Name, idChannel), channel.ToString());
-      _cardHandler.Card.CamType = (CamType)_cardHandler.DataBaseCard.CamType;
-      _cardHandler.SetParameters();
+      _cardHandler.Card.CamType = (CamType)_cardHandler.DataBaseCard.CamType;      
 
       //check if transponder differs
       if (_cardHandler.Card.SubChannels.Length > 0)
