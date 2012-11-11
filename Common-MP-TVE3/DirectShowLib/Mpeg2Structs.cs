@@ -194,7 +194,7 @@ namespace DirectShowLib.BDA
 
     public DateTime ToDateTime()
     {
-      return new DateTime(this.Year, this.Month, this.Date);
+      return new DateTime(Year, Month, Date);
     }
   }
 
@@ -247,7 +247,7 @@ namespace DirectShowLib.BDA
 
     public TimeSpan ToTimeSpan()
     {
-      return new TimeSpan(this.Hours, this.Minutes, this.Seconds);
+      return new TimeSpan(Hours, Minutes, Seconds);
     }
   }
 
@@ -269,7 +269,7 @@ namespace DirectShowLib.BDA
 
     public DateTime ToDateTime()
     {
-      return new DateTime(this.Year, this.Month, this.Date, this.Hours, this.Minutes, this.Seconds);
+      return new DateTime(Year, Month, Date, Hours, Minutes, Seconds);
     }
   }
 

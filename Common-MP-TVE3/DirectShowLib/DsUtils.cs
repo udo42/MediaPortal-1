@@ -127,11 +127,11 @@ namespace DirectShowLib
     /// <returns>A managed representation of pElems (cElems items)</returns>
     public Guid[] ToGuidArray()
     {
-      Guid[] retval = new Guid[this.cElems];
+      Guid[] retval = new Guid[cElems];
 
-      for (int i = 0; i < this.cElems; i++)
+      for (int i = 0; i < cElems; i++)
       {
-        IntPtr ptr = new IntPtr(this.pElems.ToInt64() + (Marshal.SizeOf(typeof(Guid))*i));
+        IntPtr ptr = new IntPtr(pElems.ToInt64() + (Marshal.SizeOf(typeof(Guid))*i));
         retval[i] = (Guid)Marshal.PtrToStructure(ptr, typeof(Guid));
       }
 
@@ -166,12 +166,12 @@ namespace DirectShowLib
     /// <returns>A string representing this instance</returns>
     public override string ToString()
     {
-      return this.Value.ToString();
+      return Value.ToString();
     }
 
     public override int GetHashCode()
     {
-      return this.Value.GetHashCode();
+      return Value.GetHashCode();
     }
 
     /// <summary>
@@ -218,7 +218,7 @@ namespace DirectShowLib
     /// <returns>A System.Int64</returns>
     public long ToInt64()
     {
-      return this.Value;
+      return Value;
     }
 
     /// <summary>
@@ -251,7 +251,7 @@ namespace DirectShowLib
     /// </summary>
     public DsGuid()
     {
-      this.guid = Guid.Empty;
+      guid = Guid.Empty;
     }
 
     /// <summary>
@@ -261,7 +261,7 @@ namespace DirectShowLib
     /// <param name="g">A valid System.Guid as string</param>
     public DsGuid(string g)
     {
-      this.guid = new Guid(g);
+      guid = new Guid(g);
     }
 
     /// <summary>
@@ -271,7 +271,7 @@ namespace DirectShowLib
     /// <param name="g">A System.Guid value type</param>
     public DsGuid(Guid g)
     {
-      this.guid = g;
+      guid = g;
     }
 
     /// <summary>
@@ -280,7 +280,7 @@ namespace DirectShowLib
     /// <returns>A string representing this instance</returns>
     public override string ToString()
     {
-      return this.guid.ToString();
+      return guid.ToString();
     }
 
     /// <summary>
@@ -290,12 +290,12 @@ namespace DirectShowLib
     /// <returns>A string representing this instance according to the format parameter</returns>
     public string ToString(string format)
     {
-      return this.guid.ToString(format);
+      return guid.ToString(format);
     }
 
     public override int GetHashCode()
     {
-      return this.guid.GetHashCode();
+      return guid.GetHashCode();
     }
 
     /// <summary>
@@ -342,7 +342,7 @@ namespace DirectShowLib
     /// <returns>A System.Guid</returns>
     public Guid ToGuid()
     {
-      return this.guid;
+      return guid;
     }
 
     /// <summary>
@@ -383,12 +383,12 @@ namespace DirectShowLib
     /// <returns>A string representing this instance</returns>
     public override string ToString()
     {
-      return this.Value.ToString();
+      return Value.ToString();
     }
 
     public override int GetHashCode()
     {
-      return this.Value.GetHashCode();
+      return Value.GetHashCode();
     }
 
     /// <summary>
@@ -435,7 +435,7 @@ namespace DirectShowLib
     /// <returns>A System.Int32</returns>
     public int ToInt32()
     {
-      return this.Value;
+      return Value;
     }
 
     /// <summary>
@@ -476,12 +476,12 @@ namespace DirectShowLib
     /// <returns>A string representing this instance</returns>
     public override string ToString()
     {
-      return this.Value.ToString();
+      return Value.ToString();
     }
 
     public override int GetHashCode()
     {
-      return this.Value.GetHashCode();
+      return Value.GetHashCode();
     }
 
     /// <summary>
@@ -528,7 +528,7 @@ namespace DirectShowLib
     /// <returns>A System.Int16</returns>
     public short ToInt16()
     {
-      return this.Value;
+      return Value;
     }
 
     /// <summary>
@@ -558,10 +558,10 @@ namespace DirectShowLib
     /// </summary>
     public DsRect()
     {
-      this.left = 0;
-      this.top = 0;
-      this.right = 0;
-      this.bottom = 0;
+      left = 0;
+      top = 0;
+      right = 0;
+      bottom = 0;
     }
 
     /// <summary>
@@ -588,10 +588,10 @@ namespace DirectShowLib
     /// </remarks>
     public DsRect(Rectangle rectangle)
     {
-      this.left = rectangle.Left;
-      this.top = rectangle.Top;
-      this.right = rectangle.Right;
-      this.bottom = rectangle.Bottom;
+      left = rectangle.Left;
+      top = rectangle.Top;
+      right = rectangle.Right;
+      bottom = rectangle.Bottom;
     }
 
     /// <summary>
@@ -600,15 +600,15 @@ namespace DirectShowLib
     /// <returns>A string formated like this : [left, top - right, bottom]</returns>
     public override string ToString()
     {
-      return string.Format("[{0}, {1} - {2}, {3}]", this.left, this.top, this.right, this.bottom);
+      return string.Format("[{0}, {1} - {2}, {3}]", left, top, right, bottom);
     }
 
     public override int GetHashCode()
     {
-      return this.left.GetHashCode() |
-             this.top.GetHashCode() |
-             this.right.GetHashCode() |
-             this.bottom.GetHashCode();
+      return left.GetHashCode() |
+             top.GetHashCode() |
+             right.GetHashCode() |
+             bottom.GetHashCode();
     }
 
     public override bool Equals(object obj)
@@ -674,7 +674,7 @@ namespace DirectShowLib
     /// <returns>A System.Drawing.Rectangle</returns>
     public Rectangle ToRectangle()
     {
-      return new Rectangle(this.left, this.top, (this.right - this.left), (this.bottom - this.top));
+      return new Rectangle(left, top, (right - left), (bottom - top));
     }
 
     /// <summary>
@@ -698,31 +698,31 @@ namespace DirectShowLib
 
     public NormalizedRect(float l, float t, float r, float b)
     {
-      this.left = l;
-      this.top = t;
-      this.right = r;
-      this.bottom = b;
+      left = l;
+      top = t;
+      right = r;
+      bottom = b;
     }
 
     public NormalizedRect(RectangleF r)
     {
-      this.left = r.Left;
-      this.top = r.Top;
-      this.right = r.Right;
-      this.bottom = r.Bottom;
+      left = r.Left;
+      top = r.Top;
+      right = r.Right;
+      bottom = r.Bottom;
     }
 
     public override string ToString()
     {
-      return string.Format("[{0}, {1} - {2}, {3}]", this.left, this.top, this.right, this.bottom);
+      return string.Format("[{0}, {1} - {2}, {3}]", left, top, right, bottom);
     }
 
     public override int GetHashCode()
     {
-      return this.left.GetHashCode() |
-             this.top.GetHashCode() |
-             this.right.GetHashCode() |
-             this.bottom.GetHashCode();
+      return left.GetHashCode() |
+             top.GetHashCode() |
+             right.GetHashCode() |
+             bottom.GetHashCode();
     }
 
     public static implicit operator RectangleF(NormalizedRect r)
@@ -759,7 +759,7 @@ namespace DirectShowLib
 
     public RectangleF ToRectangleF()
     {
-      return new RectangleF(this.left, this.top, (this.right - this.left), (this.bottom - this.top));
+      return new RectangleF(left, top, (right - left), (bottom - top));
     }
 
     public static NormalizedRect FromRectangle(RectangleF r)
