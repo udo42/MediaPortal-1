@@ -41,8 +41,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     public override void OnSectionActivated()
     {
-      string hostname = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("hostname", Dns.GetHostName()).Value;
-      string rtspPort = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("rtspport", "554").Value;
+      var hostname = ServiceAgents.Instance.SettingServiceAgent.GetValue("hostname", Dns.GetHostName());
+      var rtspPort = ServiceAgents.Instance.SettingServiceAgent.GetValue("rtspport", "554");
       mpListView1.Items.Clear();
       var server = new Server {Hostname = hostname, RtspPort = Convert.ToInt32(rtspPort)};
 
@@ -73,8 +73,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         {
           item.Text = dlg.HostName;
           item.SubItems[2].Text = dlg.PortNo.ToString();
-          ServiceAgents.Instance.SettingServiceAgent.SaveSetting("hostname", dlg.HostName);
-          ServiceAgents.Instance.SettingServiceAgent.SaveSetting("rtspport", dlg.PortNo.ToString());                    
+          ServiceAgents.Instance.SettingServiceAgent.SaveValue("hostname", dlg.HostName);
+          ServiceAgents.Instance.SettingServiceAgent.SaveValue("rtspport", dlg.PortNo);                    
           ServiceNeedsToRestart();
         }
       }

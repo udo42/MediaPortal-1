@@ -92,7 +92,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         if (setting.Value == "")
         {
           setting.Value = values;
-          ServiceAgents.Instance.SettingServiceAgent.SaveSetting(setting.Tag, setting.Value);
+          ServiceAgents.Instance.SettingServiceAgent.SaveValue(setting.Tag, setting.Value);
           //DatabaseManager.Instance.SaveChanges();
         }
       }
@@ -104,7 +104,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     public override void OnSectionDeActivated()
     {
-      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("epgStoreOnlySelected", mpCheckBoxStoreOnlySelected.Checked ? "yes" : "no");
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("epgStoreOnlySelected", mpCheckBoxStoreOnlySelected.Checked);
       base.OnSectionDeActivated();
       SaveSettings();
     }
@@ -269,7 +269,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         }
       }
       
-      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("epgLanguages", value);
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("epgLanguages", value);
       base.SaveSettings();
     }
 
@@ -430,7 +430,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           value += ",";
         }
         //this.LogDebug("tvsetup:epggrabber:all: epglang={0}", setting.value);
-        Setting setting = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("epgLanguages", value);
       }
       finally
       {
@@ -447,8 +446,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         {
           mpListView2.Items[i].Checked = false;
         }
-        Setting setting = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("epgLanguages", ",");
-        this.LogDebug("tvsetup:epggrabber:none: epglang={0}", setting.Value);
+        string setting = ServiceAgents.Instance.SettingServiceAgent.GetValue("epgLanguages", ",");
+        this.LogDebug("tvsetup:epggrabber:none: epglang={0}", setting);
       }
       finally
       {

@@ -139,7 +139,7 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
           tvEvent.EventType == TvServerEventType.ScheduleDeleted)
       {
         UpdateConflicts();
-        SettingsManagement.SaveSetting("CMLastUpdateTime", DateTime.Now.ToString());        
+        SettingsManagement.SaveValue("CMLastUpdateTime", DateTime.Now);        
 
       }
     }

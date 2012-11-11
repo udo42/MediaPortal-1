@@ -164,7 +164,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         CardType cardType = ServiceAgents.Instance.ControllerServiceAgent.Type(card.IdCard);
         //Card card = ServiceAgents.Instance.CardServiceAgent.GetCard(card.idCard);
         
-        bool enableDVBS2 = (ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("dvbs" + card.IdCard + "enabledvbs2", "false").Value == "true");
+        bool enableDVBS2 = ServiceAgents.Instance.SettingServiceAgent.GetValue("dvbs" + card.IdCard + "enabledvbs2", false);
 
 
         var items = new List<ListViewItem>();
