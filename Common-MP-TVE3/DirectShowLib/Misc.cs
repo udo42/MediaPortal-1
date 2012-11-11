@@ -26,7 +26,8 @@ using System;
 using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.ComTypes;
 using System.Security;
-using EXCEPINFO=System.Runtime.InteropServices.ComTypes.EXCEPINFO;
+using EXCEPINFO = System.Runtime.InteropServices.ComTypes.EXCEPINFO;
+
 #if !USING_NET11
 
 #endif

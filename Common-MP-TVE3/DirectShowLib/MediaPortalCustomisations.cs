@@ -24,8 +24,6 @@ using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
-using DirectShowLib.BDA;
-using DirectShowLib.Dvd;
 
 /// <summary>
 /// This file holds the MediaPortal and TV Server interface customisations
