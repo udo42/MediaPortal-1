@@ -46,7 +46,7 @@ namespace Mediaportal.TV.Server.SetupTV
     private TvCards cardPage;
     private Sections.Plugins pluginsRoot;
     private Servers servers;
-    private bool showAdvancedSettings;
+    private readonly bool showAdvancedSettings;
 
     public SetupTvSettingsForm()
       : this(false)

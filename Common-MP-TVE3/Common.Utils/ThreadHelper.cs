@@ -16,7 +16,7 @@ namespace Mediaportal.Common.Utils
     /// </summary>
     private const bool PARALLELISM_ENABLED = true;
 
-    private static ParallelOptions _parallelismOptions;
+    private static readonly ParallelOptions _parallelismOptions;
 
     static ThreadHelper()
     {

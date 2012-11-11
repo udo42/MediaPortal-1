@@ -40,7 +40,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
   {
     #region Variables
 
-    private List<string> _preventers = new List<string>();
+    private readonly List<string> _preventers = new List<string>();
     private List<string> _processes = new List<string>();
 
     #endregion

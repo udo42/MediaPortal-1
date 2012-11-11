@@ -43,7 +43,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
     private Hashtable _hChannelConfigInfo;
     //private MergedChannelDetails _mergeConfig;
     private bool _isTvMapping;
-    private ListViewColumnSorter lvwColumnSorter;
+    private readonly ListViewColumnSorter lvwColumnSorter;
 
     public WebEPGMappingControl()
     {
@@ -695,8 +695,8 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
 
     private class CBChannelGroup
     {
-      public string groupName;
-      public int idGroup;
+      public readonly string groupName;
+      public readonly int idGroup;
 
       public CBChannelGroup(string groupName, int idGroup)
       {

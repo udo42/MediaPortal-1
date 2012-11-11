@@ -82,7 +82,7 @@ namespace TvEngine.PowerScheduler.Interfaces
 
     private object _data;
     private Type _dataType;
-    private PowerSchedulerEventType _eventType;
+    private readonly PowerSchedulerEventType _eventType;
 
     #endregion
 

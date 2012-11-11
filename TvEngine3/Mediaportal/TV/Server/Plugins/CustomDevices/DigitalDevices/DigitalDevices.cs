@@ -78,7 +78,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       public String CamMenuTitle;
       public DsDevice Device;
       public IBaseFilter Filter;
-      public String FilterName;
+      public readonly String FilterName;
 
       public CiContext(IBaseFilter filter, DsDevice device)
       {
@@ -114,12 +114,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     private struct MenuAnswer   // DD_CAM_TEXT_DATA
     {
 #pragma warning disable 0649
-      public Int32 Id;
-      public Int32 Length;
+      public readonly Int32 Id;
+      public readonly Int32 Length;
       // The following string is passed back as an inline variable
       // length NULL terminated string. This makes it impossible to
       // unmarshal the struct automatically.
-      public String Answer;
+      public readonly String Answer;
 #pragma warning restore 0649
     }
 
@@ -165,7 +165,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       // length NULL terminated string. This makes it impossible to
       // unmarshal the struct automatically.
 #pragma warning disable 0649
-      public String Title;
+      public readonly String Title;
 #pragma warning restore 0649
     }
 

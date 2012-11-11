@@ -31,8 +31,8 @@ namespace WebEPG.Parser
   {
     #region Variables
 
-    private string _fieldDelimiter;
-    private ArrayList _templateData;
+    private readonly string _fieldDelimiter;
+    private readonly ArrayList _templateData;
 
     #endregion
 

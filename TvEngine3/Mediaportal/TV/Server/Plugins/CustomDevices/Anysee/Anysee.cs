@@ -391,134 +391,134 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
     private struct IrData
     {
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = KsPropertySize)]
-      public byte[] KsProperty;
+      public readonly byte[] KsProperty;
 
       [MarshalAs(UnmanagedType.Bool)]
-      public bool Enable;
-      public Int32 Key;         // bit 8 = repeat flag (0 = repeat), bits 7-0 = key code
+      public readonly bool Enable;
+      public readonly Int32 Key;         // bit 8 = repeat flag (0 = repeat), bits 7-0 = key code
     }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct PlatformInfo
     {
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = KsPropertySize)]
-      public byte[] KsProperty;
+      public readonly byte[] KsProperty;
 
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 2)]
-      public byte[] FirmwareVersion;    // [0x04, 0x00] -> 0.4
-      public AnyseePlatform Platform;
-      private Int32 Padding;
+      public readonly byte[] FirmwareVersion;    // [0x04, 0x00] -> 0.4
+      public readonly AnyseePlatform Platform;
+      private readonly Int32 Padding;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct StatusInfo
     {
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = KsPropertySize)]
-      public byte[] KsProperty;
+      public readonly byte[] KsProperty;
 
-      public AnyseeBroadcastSystem CurrentBroadcastSystem;
-      public AnyseeNimMode CurrentNimMode;
+      public readonly AnyseeBroadcastSystem CurrentBroadcastSystem;
+      public readonly AnyseeNimMode CurrentNimMode;
 
-      public Int32 CurrentFrequency;    // unit = kHz
-      public Int32 Unknown1;
+      public readonly Int32 CurrentFrequency;    // unit = kHz
+      public readonly Int32 Unknown1;
 
-      public AnyseeNim NimType;
-      private Int32 Padding;
+      public readonly AnyseeNim NimType;
+      private readonly Int32 Padding;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct DriverVersion
     {
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = KsPropertySize)]
-      public byte[] KsProperty;
+      public readonly byte[] KsProperty;
 
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-      public byte[] Version;            // [0x58, 0x20, 0x06, 0x01] -> 1.6.20.58
-      private Int32 Padding;
+      public readonly byte[] Version;            // [0x58, 0x20, 0x06, 0x01] -> 1.6.20.58
+      private readonly Int32 Padding;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct NimConfig
     {
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = KsPropertySize)]
-      public byte[] KsProperty;
+      public readonly byte[] KsProperty;
 
-	    public Int32 SymbolRate;      // unit = s/s (Baud)
-      public Int32 SweepRate;       // unit = Hz/s
+	    public readonly Int32 SymbolRate;      // unit = s/s (Baud)
+      public readonly Int32 SweepRate;       // unit = Hz/s
 
-      public Int32 Frequency;       // unit = kHz
-      public Int32 CarrierOffset;   // unit = kHz
+      public readonly Int32 Frequency;       // unit = kHz
+      public readonly Int32 CarrierOffset;   // unit = kHz
 
-      public byte Bandwidth;        // unit = Mhz
+      public readonly byte Bandwidth;        // unit = Mhz
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-      private byte[] Padding;
-      public AnyseeNim NimType;
+      private readonly byte[] Padding;
+      public readonly AnyseeNim NimType;
 
-      public AnyseeNimMode AnalogNimMode;
-      public AnyseeNimMode DigitalNimMode;
+      public readonly AnyseeNimMode AnalogNimMode;
+      public readonly AnyseeNimMode DigitalNimMode;
 
-      public AnyseeInversionMode SignalInversion;
-      public AnyseeScanDirection ScanDirection;
+      public readonly AnyseeInversionMode SignalInversion;
+      public readonly AnyseeScanDirection ScanDirection;
 	  }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct LnbInfo
     {
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = KsPropertySize)]
-      public byte[] KsProperty;
+      public readonly byte[] KsProperty;
 
-      public Int32 UnknownFlags;
-      public Int32 SwitchFrequency; // unit = MHz
+      public readonly Int32 UnknownFlags;
+      public readonly Int32 SwitchFrequency; // unit = MHz
 
-      public Int32 HighLof;         // unit = MHz
-      public Int32 LowLof;          // unit = MHz
+      public readonly Int32 HighLof;         // unit = MHz
+      public readonly Int32 LowLof;          // unit = MHz
 
-      public Int32 EffectiveLof;    // unit = MHz
+      public readonly Int32 EffectiveLof;    // unit = MHz
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 20)]
-      private byte[] Reserved;
+      private readonly byte[] Reserved;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct Capabilities
     {
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = KsPropertySize)]
-      public byte[] KsProperty;
+      public readonly byte[] KsProperty;
 
-      public Int32 MinFrequency;    // unit = kHz
-      public Int32 MaxFrequency;    // unit = kHz
+      public readonly Int32 MinFrequency;    // unit = kHz
+      public readonly Int32 MaxFrequency;    // unit = kHz
 
-      public Int32 MinSymbolRate;   // unit = s/s (Baud)
-      public Int32 MaxSymbolRate;   // unit = s/s (Baud)
+      public readonly Int32 MinSymbolRate;   // unit = s/s (Baud)
+      public readonly Int32 MaxSymbolRate;   // unit = s/s (Baud)
 
-      public Int32 MinSearchStep;   // unit = Hz
-      public Int32 MaxSearchStep;   // unit = Hz
+      public readonly Int32 MinSearchStep;   // unit = Hz
+      public readonly Int32 MaxSearchStep;   // unit = Hz
 
-      public AnyseeNimCapability NimCapabilities;
-      public AnyseeBroadcastSystem PrimaryBroadcastSystem;
+      public readonly AnyseeNimCapability NimCapabilities;
+      public readonly AnyseeBroadcastSystem PrimaryBroadcastSystem;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct BoardInfo
     {
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = KsPropertySize)]
-      public byte[] KsProperty;
+      public readonly byte[] KsProperty;
 
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 4)]
-      public byte[] FirmwareVersion;    // [0x04, 0x00, 0x00, 0x00] -> 0.4
-      public AnyseeBusType BusType;
+      public readonly byte[] FirmwareVersion;    // [0x04, 0x00, 0x00, 0x00] -> 0.4
+      public readonly AnyseeBusType BusType;
 
-      public AnyseeBoardType BoardType;
-      public AnyseeBoardProperty BoardProperties;
+      public readonly AnyseeBoardType BoardType;
+      public readonly AnyseeBoardProperty BoardProperties;
 
-      public AnyseeBoardMode BoardMode;
-      private Int32 Padding;
+      public readonly AnyseeBoardMode BoardMode;
+      private readonly Int32 Padding;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct DiseqcMessage
     {
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = KsPropertySize)]
-      public byte[] KsProperty;
+      public readonly byte[] KsProperty;
 
       public Int32 MessageLength;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcMessageLength)]
@@ -526,7 +526,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
 
       public AnyseeToneBurst ToneBurst;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-      public byte[] Padding;
+      public readonly byte[] Padding;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
@@ -534,43 +534,43 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
     {
       #pragma warning disable 0649
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxApiStringLength)]
-      public String Text;
+      public readonly String Text;
       #pragma warning restore 0649
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct CiStateInfo    // tagCIStatus
     {
-      public Int32 Size;
-      public Int32 DeviceIndex;
+      public readonly Int32 Size;
+      public readonly Int32 DeviceIndex;
 
-      public ApiString Message;
+      public readonly ApiString Message;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct MmiMenu  // MMIStrsBlock
     {
-      public Int32 StringCount;
-      public Int32 MenuIndex;
-      public IntPtr Entries;                // This is a pointer to an array of pointers.
+      public readonly Int32 StringCount;
+      public readonly Int32 MenuIndex;
+      public readonly IntPtr Entries;                // This is a pointer to an array of pointers.
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct MmiMessage   // tagCIMsgs
     {
-      public Int32 DeviceIndex;
-      public Int32 SlotIndex;
+      public readonly Int32 DeviceIndex;
+      public readonly Int32 SlotIndex;
 
-      public Int32 HeaderCount;
-      public Int32 EntryCount;
+      public readonly Int32 HeaderCount;
+      public readonly Int32 EntryCount;
 
-      public AnyseeMmiMessageType Type;
-      public Int32 ExpectedAnswerLength;
+      public readonly AnyseeMmiMessageType Type;
+      public readonly Int32 ExpectedAnswerLength;
 
-      public Int32 KeyCount;
+      public readonly Int32 KeyCount;
       public ApiString RootMenuTitle;
 
-      public IntPtr Menu;
+      public readonly IntPtr Menu;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
@@ -586,12 +586,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
     private struct PmtData    // DTVCIPMT
     {
       public byte PmtByte6;                     // Byte 6 from the PMT section (PMT version, current next indicator). 
-      private byte Padding1;
+      private readonly byte Padding1;
       public UInt16 PcrPid;
       public UInt16 ServiceId;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDescriptorDataLength)]
       public byte[] ProgramCaDescriptorData;    // The first two bytes should specify the length of the descriptor data.
-      private UInt16 Padding2;
+      private readonly UInt16 Padding2;
 
       public UInt32 EsCount;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPmtElementaryStreams)]
@@ -624,13 +624,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
       private struct CiDeviceInfo   // ANYSEECIDEVICESINFO
       {
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDeviceCount)]
-        public ApiString[] DevicePaths;      // A list of the capture device paths for all Anysee devices connected to the system.
+        public readonly ApiString[] DevicePaths;      // A list of the capture device paths for all Anysee devices connected to the system.
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDeviceCount)]
-        public Int32[] DevicePathLengths;     // The length of the corresponding device path in DevicePaths.
+        public readonly Int32[] DevicePathLengths;     // The length of the corresponding device path in DevicePaths.
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDeviceCount)]
-        public Int32[] DevicePathIndices;     // The index of the corresponding capture device in the set of KSCATEGORY_BDA_RECEIVER_COMPONENT devices returned by the system enumerator.
+        public readonly Int32[] DevicePathIndices;     // The index of the corresponding capture device in the set of KSCATEGORY_BDA_RECEIVER_COMPONENT devices returned by the system enumerator.
         [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDeviceCount)]
-        public Int32[] DeviceIndices;         // The Anysee device index for the corresponding device.
+        public readonly Int32[] DeviceIndices;         // The Anysee device index for the corresponding device.
       }
 
       #endregion
@@ -727,19 +727,19 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
       // This variable tracks the number of open API instances which corresponds with used DLL indices.
       private static int _apiCount;
       private Thread _apiAccessThread;
-      private int _apiIndex;
+      private readonly int _apiIndex;
       private IntPtr _ciApiInstance = IntPtr.Zero;
-      private CI_Control _ciControl;
+      private readonly CI_Control _ciControl;
 
       // Delegate instances for each API DLL function.
-      private CreateDtvCIAPI _createApi;
-      private DestroyDtvCIAPI _destroyApi;
+      private readonly CreateDtvCIAPI _createApi;
+      private readonly DestroyDtvCIAPI _destroyApi;
       private String _devicePath = String.Empty;
-      private bool _dllLoaded;
-      private GetanyseeNumberofDevicesEx _getAnyseeDeviceCount;
+      private readonly bool _dllLoaded;
+      private readonly GetanyseeNumberofDevicesEx _getAnyseeDeviceCount;
 
       private IntPtr _libHandle = IntPtr.Zero;
-      private OpenCILib _openApi;
+      private readonly OpenCILib _openApi;
 
       private bool _stopApiAccessThread;
       private IntPtr _windowHandle = IntPtr.Zero;

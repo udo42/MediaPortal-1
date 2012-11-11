@@ -7,7 +7,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
     /// </summary>
     public class SimpleObjectContextStorage : IObjectContextStorage
     {
-        private Dictionary<string, System.Data.Objects.ObjectContext> storage = new Dictionary<string, System.Data.Objects.ObjectContext>();
+        private readonly Dictionary<string, System.Data.Objects.ObjectContext> storage = new Dictionary<string, System.Data.Objects.ObjectContext>();
 
       #region IObjectContextStorage Members
 

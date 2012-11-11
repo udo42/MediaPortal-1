@@ -28,7 +28,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
   /// </summary>
   public class TstSynchronizedDictionary : TstDictionary
   {
-    private TstDictionary wrapped;
+    private readonly TstDictionary wrapped;
 
     /// <summary>
     /// Creates a synchronized wrapper around the 

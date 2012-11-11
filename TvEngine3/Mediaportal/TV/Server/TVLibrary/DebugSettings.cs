@@ -34,7 +34,7 @@ namespace Mediaportal.TV.Server.TVLibrary
   {
 
 
-    private static string SettingsPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +
+    private static readonly string SettingsPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +
                                          @"\Team MediaPortal\MediaPortal TV Server\debug\";
 
     /// <summary>

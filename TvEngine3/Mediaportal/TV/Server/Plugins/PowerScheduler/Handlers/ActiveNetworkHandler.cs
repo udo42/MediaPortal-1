@@ -38,7 +38,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
   /// </summary>
   internal class NetworkAdapter
   {
-    private PerformanceCounter dlCounter; // Performance counters to monitor download and upload speed.
+    private readonly PerformanceCounter dlCounter; // Performance counters to monitor download and upload speed.
     internal long dlSpeedPeak; // Download Upload peak values in KB/s
     //private long dlSpeed, ulSpeed;			  	          // Download Upload speed in bytes per second.
     //private long dlValue, ulValue;				            // Download Upload counter value in bytes.
@@ -46,7 +46,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     private DateTime lastSampleTime;
 
     internal string name; // The name of the adapter.
-    private PerformanceCounter ulCounter; // Performance counters to monitor download and upload speed.
+    private readonly PerformanceCounter ulCounter; // Performance counters to monitor download and upload speed.
     internal long ulSpeedPeak; // Download Upload peak values in KB/s
     private long ulValueOld; // Download Upload counter value one second earlier, in bytes.
 
@@ -114,10 +114,10 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
     #region Variables
 
-    private List<string> _preventers = new List<string>(); // The list of standby preventers.
+    private readonly List<string> _preventers = new List<string>(); // The list of standby preventers.
     private Int32 idleLimit; // Minimum transferrate considered as network activity in KB/s.
 
-    private ArrayList monitoredAdapters = new ArrayList(); // The list of monitored adapters on the computer.
+    private readonly ArrayList monitoredAdapters = new ArrayList(); // The list of monitored adapters on the computer.
     private System.Timers.Timer timer; // The timer event executes every second to refresh the values in adapters.
 
     #endregion

@@ -34,8 +34,8 @@ namespace WebEPG.Parser
     #region Variables
 
     private string _channelName;
-    private XmlParserTemplate _data;
-    private Type _dataType;
+    private readonly XmlParserTemplate _data;
+    private readonly Type _dataType;
     //XmlDocument _xmlDoc;
     private XmlNodeList _nodeList;
     private HTTPRequest _page;

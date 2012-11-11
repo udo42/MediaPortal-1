@@ -49,7 +49,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
     #region variables
 
     private List<byte[]> _commands = new List<byte[]>();        // A cache of commands.
-    private HashSet<UInt16> _currentPids = new HashSet<UInt16>();
+    private readonly HashSet<UInt16> _currentPids = new HashSet<UInt16>();
     private IBDA_DeviceControl _deviceControl;
     private IKsPropertySet _diseqcPropertySet;           // IBDA_DiseqCommand
 

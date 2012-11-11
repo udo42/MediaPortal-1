@@ -168,7 +168,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private int _tvChannelsUpdated;
     private IUser _user;
 
-    private CI_Menu_Dialog ciMenuDialog; // ci menu dialog object
+    private readonly CI_Menu_Dialog ciMenuDialog; // ci menu dialog object
 
     private ScanState scanState; // scan state
 

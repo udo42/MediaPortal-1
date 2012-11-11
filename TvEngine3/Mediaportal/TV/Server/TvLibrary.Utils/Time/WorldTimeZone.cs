@@ -42,7 +42,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
     private const int LENGTH_WORD = 2;
     private const int LENGTH_SYSTEMTIME = 16;
 
-    private static string[] REG_KEYS_TIME_ZONES = {
+    private static readonly string[] REG_KEYS_TIME_ZONES = {
                                                     "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time Zones",
                                                     "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Time Zones"
                                                   };
@@ -52,7 +52,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
 
     private TimeZoneInfo _TimeZone;
 
-    private bool _bHasDlt;
+    private readonly bool _bHasDlt;
 
     #endregion
 

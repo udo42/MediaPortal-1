@@ -694,16 +694,16 @@ namespace OSInfo
     private struct OSVERSIONINFOEX
     {
       public int dwOSVersionInfoSize;
-      public int dwMajorVersion;
-      public int dwMinorVersion;
-      public int dwBuildNumber;
-      public int dwPlatformId;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)] public string szCSDVersion;
-      public short wServicePackMajor;
-      public short wServicePackMinor;
-      public short wSuiteMask;
-      public byte wProductType;
-      public byte wReserved;
+      public readonly int dwMajorVersion;
+      public readonly int dwMinorVersion;
+      public readonly int dwBuildNumber;
+      public readonly int dwPlatformId;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)] public readonly string szCSDVersion;
+      public readonly short wServicePackMajor;
+      public readonly short wServicePackMinor;
+      public readonly short wSuiteMask;
+      public readonly byte wProductType;
+      public readonly byte wReserved;
     }
 
     #endregion

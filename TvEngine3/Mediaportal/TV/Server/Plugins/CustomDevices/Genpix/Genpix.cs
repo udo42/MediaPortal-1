@@ -133,9 +133,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
       public byte[] DiseqcMessage;
       public bool DiseqcForceHighVoltage;
 
-      public UInt32 SignalStrength;         // range = 0 - 100%
-      public UInt32 SignalQuality;          // range = 0 - 100%
-      public bool SignalIsLocked;
+      public readonly UInt32 SignalStrength;         // range = 0 - 100%
+      public readonly UInt32 SignalQuality;          // range = 0 - 100%
+      public readonly bool SignalIsLocked;
     }
 
     #endregion

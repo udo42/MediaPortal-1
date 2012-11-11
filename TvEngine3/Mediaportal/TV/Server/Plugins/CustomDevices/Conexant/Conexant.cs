@@ -88,7 +88,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Conexant
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcTxMessageLength)]
       public byte[] DiseqcTransmitMessage;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcRxMessageLength)]
-      public byte[] DiseqcReceiveMessage;
+      public readonly byte[] DiseqcReceiveMessage;
       public UInt32 DiseqcTransmitMessageLength;
       public UInt32 DiseqcReceiveMessageLength;
       public UInt32 AmplitudeAttenuation;       // range = 3 (max amplitude) - 63 (min amplitude)
@@ -135,7 +135,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Conexant
     /// </summary>
     protected IKsPropertySet _propertySet;
 
-    private Guid _propertySetGuid = Guid.Empty;
+    private readonly Guid _propertySetGuid = Guid.Empty;
 
     #endregion
 

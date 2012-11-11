@@ -109,14 +109,14 @@ namespace WebEPG
 
     #region Variables
 
-    private string _baseDirectory;
+    private readonly string _baseDirectory;
     private WebepgConfigFile _config;
-    private string _configFile;
+    private readonly string _configFile;
     //private string _xmltvDirectory;
-    private IEpgDataSink _epgDataSink;
+    private readonly IEpgDataSink _epgDataSink;
     private WebListingGrabber _epgGrabber;
     private Dictionary<string, List<grabInfo>> _grabList;
-    private Stats _status = new Stats();
+    private readonly Stats _status = new Stats();
 
     #endregion
 

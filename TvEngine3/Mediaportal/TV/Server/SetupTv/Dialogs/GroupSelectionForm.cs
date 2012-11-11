@@ -42,8 +42,8 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
     #endregion
 
     private SelectionType _SelectionType = SelectionType.ForDeleting;
-    private List<object> _groups = new List<object>();
-    private string _preselectedGroupName = string.Empty;
+    private readonly List<object> _groups = new List<object>();
+    private readonly string _preselectedGroupName = string.Empty;
 
     public GroupSelectionForm()
     {

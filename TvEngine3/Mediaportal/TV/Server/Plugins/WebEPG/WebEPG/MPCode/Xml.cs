@@ -38,9 +38,9 @@ namespace WebEPG.MPCode
 
     private bool _bChanged;
     private XmlDocument _doc;
-    private Encoding _encoding = Encoding.UTF8;
+    private readonly Encoding _encoding = Encoding.UTF8;
     private string _rootName = "profile";
-    private string _strFileName = "";
+    private readonly string _strFileName = "";
 
     /// <summary>
     ///   Initializes a new instance of the Xml class by setting the <see cref="Profile.Name" /> to <see cref="Profile.DefaultName" />. </summary>

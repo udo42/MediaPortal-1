@@ -35,14 +35,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
 
     // My experiments with a wide variety of tuners suggest that only TeVii tuners require this setting to be
     // enabled.
-    private bool _alwaysSendCommands;
+    private readonly bool _alwaysSendCommands;
     private ushort _commandDelay = 100;
     private int _currentPosition = -1;  // Ensure that we always send motor commands on first tune.
     private int _currentStepsAzimuth;
     private int _currentStepsElevation;
-    private IDiseqcDevice _device;
+    private readonly IDiseqcDevice _device;
     private DVBSChannel _previousChannel;
-    private ushort _repeatCount;
+    private readonly ushort _repeatCount;
 
     #endregion
 

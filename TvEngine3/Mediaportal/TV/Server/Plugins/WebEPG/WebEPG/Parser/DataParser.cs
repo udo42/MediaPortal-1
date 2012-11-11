@@ -32,9 +32,9 @@ namespace WebEPG.Parser
   {
     #region Variables
 
-    private Type _dataType;
-    private DataRowParser _parser;
-    private DataRows _rows;
+    private readonly Type _dataType;
+    private readonly DataRowParser _parser;
+    private readonly DataRows _rows;
 
     #endregion
 

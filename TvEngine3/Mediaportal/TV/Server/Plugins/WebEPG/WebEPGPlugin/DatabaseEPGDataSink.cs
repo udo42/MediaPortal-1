@@ -55,7 +55,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
     private ProgramList _channelPrograms;
     private Dictionary<string, IList<Channel>> _channels;
     private IList<Channel> _currentChannels;
-    private bool _deleteExisting;
+    private readonly bool _deleteExisting;
 
     private ProgramManagement _programManagement = new ProgramManagement();
     private TimeRange _timeWindow;

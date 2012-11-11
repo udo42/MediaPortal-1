@@ -270,53 +270,53 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct CiSlotInfo   // TYP_SLOT_INFO
     {
-      public TtCiState Status;
+      public readonly TtCiState Status;
       [MarshalAs(UnmanagedType.LPStr)]
-      public String CamMenuTitle;
-      public IntPtr CaSystemIds;        // array of UInt16
-      public UInt16 NumberOfCaSystemIds;
+      public readonly String CamMenuTitle;
+      public readonly IntPtr CaSystemIds;        // array of UInt16
+      public readonly UInt16 NumberOfCaSystemIds;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
     private struct ConnectionDescription  // TYPE_CONNECT_DESCR
     {
-      public TtConnectionType ConnectionType;
+      public readonly TtConnectionType ConnectionType;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxWindowsPathLength)]
-      public String DialIn;
+      public readonly String DialIn;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxWindowsPathLength)]
-      public String ClientIpAddress;
+      public readonly String ClientIpAddress;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxWindowsPathLength)]
-      public String ServerIpAddress;
+      public readonly String ServerIpAddress;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxWindowsPathLength)]
-      public String TcpPort;
+      public readonly String TcpPort;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxWindowsPathLength)]
-      public String ConnectionAuthenticationId;
+      public readonly String ConnectionAuthenticationId;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxWindowsPathLength)]
-      public String LoginUserName;
+      public readonly String LoginUserName;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxWindowsPathLength)]
-      public String LoginPassword;
-      public byte RetryCount;
-      public byte Timeout;      // unit = 10 ms
+      public readonly String LoginPassword;
+      public readonly byte RetryCount;
+      public readonly byte Timeout;      // unit = 10 ms
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1, CharSet = CharSet.Ansi)]
     private struct FilterNames // TS_FilterNames
     {
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxWindowsPathLength)]
-      public String TunerFilterName;
+      public readonly String TunerFilterName;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxWindowsPathLength)]
-      public String TunerFilter2Name;
+      public readonly String TunerFilter2Name;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxWindowsPathLength)]
-      public String CaptureFilterName;
+      public readonly String CaptureFilterName;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxWindowsPathLength)]
-      public String AnalogTunerFilterName;
+      public readonly String AnalogTunerFilterName;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxWindowsPathLength)]
-      public String AnalogCaptureFilterName;
+      public readonly String AnalogCaptureFilterName;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxWindowsPathLength)]
-      public String StbCaptureFilterName;
+      public readonly String StbCaptureFilterName;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxWindowsPathLength)]
-      public String ProductName;
-      public TtFrontEndType FrontEndType;
+      public readonly String ProductName;
+      public readonly TtFrontEndType FrontEndType;
     }
 
     /// <summary>
@@ -374,10 +374,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct TtSlimCiCallbacks
     {
-      public OnTtSlotStatus OnSlotStatus;
-      public IntPtr OnSlotStatusContext;
-      public OnTtCaStatus OnCaStatus;
-      public IntPtr OnCAStatusContext;
+      public readonly OnTtSlotStatus OnSlotStatus;
+      public readonly IntPtr OnSlotStatusContext;
+      public readonly OnTtCaStatus OnCaStatus;
+      public readonly IntPtr OnCAStatusContext;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -387,17 +387,17 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
       public UInt32 Frequency;                // unit = kHz
 
       public ModulationType Modulation;       // expected to be QAM 16, 32, 64, 128, or 256
-      private FECMethod InnerFecMethod;
+      private readonly FECMethod InnerFecMethod;
 
-      private BinaryConvolutionCodeRate InnerFecRate;
-      private FECMethod OuterFecMethod;
+      private readonly BinaryConvolutionCodeRate InnerFecRate;
+      private readonly FECMethod OuterFecMethod;
 
-      private BinaryConvolutionCodeRate OuterFecRate;
+      private readonly BinaryConvolutionCodeRate OuterFecRate;
       public UInt32 SymbolRate;               // unit = ks/s
 
       public SpectralInversion SpectralInversion;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 64)]
-      private byte[] Padding;
+      private readonly byte[] Padding;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -409,17 +409,17 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
       public UInt32 FrequencyMultiplier;
       public Polarisation Polarisation;
 
-      private UInt32 Bandwidth;
+      private readonly UInt32 Bandwidth;
       public TtDiseqcPort Diseqc;
 
-      private UInt32 Transponder;
+      private readonly UInt32 Transponder;
       public ModulationType Modulation;       // expected to be QPSK for DVB-S, 8 VSB for DVB-S2
 
-      private FECMethod InnerFecMethod;
-      private BinaryConvolutionCodeRate InnerFecRate;
+      private readonly FECMethod InnerFecMethod;
+      private readonly BinaryConvolutionCodeRate InnerFecRate;
 
-      private FECMethod OuterFecMethod;
-      private BinaryConvolutionCodeRate OuterFecRate;
+      private readonly FECMethod OuterFecMethod;
+      private readonly BinaryConvolutionCodeRate OuterFecRate;
 
       public UInt32 SymbolRate;               // unit = ks/s
       public SpectralInversion SpectralInversion;
@@ -431,12 +431,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
       [MarshalAs(UnmanagedType.Bool)]
       public bool UseToneBurst;               // This field turns tone burst on/off; use the Diseqc field to specify the tone state.
 
-      private UInt32 Command;
-      private UInt32 CommandCount;
+      private readonly UInt32 Command;
+      private readonly UInt32 CommandCount;
 
-      private UInt32 LnbSource;
+      private readonly UInt32 LnbSource;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-      private byte[] RawDiseqc;
+      private readonly byte[] RawDiseqc;
     }
 
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
@@ -449,19 +449,19 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
       public UInt32 Bandwidth;                // unit = kHz
 
       public ModulationType Modulation;       // expected to be QAM 16, QAM 64, QAM 256, or QPSK
-      private FECMethod InnerFecMethod;
+      private readonly FECMethod InnerFecMethod;
 
-      private BinaryConvolutionCodeRate InnerFecRate;
-      private FECMethod OuterFecMethod;
+      private readonly BinaryConvolutionCodeRate InnerFecRate;
+      private readonly FECMethod OuterFecMethod;
 
-      private BinaryConvolutionCodeRate OuterFecRate;
+      private readonly BinaryConvolutionCodeRate OuterFecRate;
       public SpectralInversion SpectralInversion;
 
-      private GuardInterval GuardInterval;
-      private TransmissionMode TransmissionMode;
+      private readonly GuardInterval GuardInterval;
+      private readonly TransmissionMode TransmissionMode;
 
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 52)]
-      private byte[] Padding;
+      private readonly byte[] Padding;
     }
 
     #endregion

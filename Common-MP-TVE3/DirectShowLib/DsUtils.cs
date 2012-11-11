@@ -149,7 +149,7 @@ namespace DirectShowLib
   [StructLayout(LayoutKind.Sequential)]
   public class DsLong
   {
-    private long Value;
+    private readonly long Value;
 
     /// <summary>
     /// Constructor
@@ -366,7 +366,7 @@ namespace DirectShowLib
   [StructLayout(LayoutKind.Sequential)]
   public class DsInt
   {
-    private int Value;
+    private readonly int Value;
 
     /// <summary>
     /// Constructor
@@ -459,7 +459,7 @@ namespace DirectShowLib
   [StructLayout(LayoutKind.Sequential)]
   public class DsShort
   {
-    private short Value;
+    private readonly short Value;
 
     /// <summary>
     /// Constructor

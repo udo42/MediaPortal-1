@@ -36,7 +36,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Epg
     // There were 22 B codes; scc and scr are now deprecated but still used by some EPG providers :(
     //
 
-    private string[] LanguageCodeExceptions = {
+    private readonly string[] LanguageCodeExceptions = {
                                                 "alb", "arm",
                                                 "baq", "bur",
                                                 "chi", "cze",
@@ -53,7 +53,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Epg
                                                 "scr"
                                               };
 
-    private string[] LanguageNameExceptions = {
+    private readonly string[] LanguageNameExceptions = {
                                                 "Albanian", "Armenian",
                                                 "Basque", "Burmese",
                                                 "Chinese", "Czech",

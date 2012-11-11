@@ -37,8 +37,8 @@ namespace WebEPG.Utils
 
     private string _currentChannelName;
     private XmlTextWriter _writer;
-    private string _xmltvFile;
-    private string _xmltvTempFile;
+    private readonly string _xmltvFile;
+    private readonly string _xmltvTempFile;
 
     #endregion
 

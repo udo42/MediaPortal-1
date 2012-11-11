@@ -67,12 +67,12 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     /// <summary>
     /// IStandbyHandler for the client in singleseat setups
     /// </summary>
-    private GenericStandbyHandler _clientStandbyHandler;
+    private readonly GenericStandbyHandler _clientStandbyHandler;
 
     /// <summary>
     /// IWakeupHandler for the client in singleseat setups
     /// </summary>
-    private GenericWakeupHandler _clientWakeupHandler;
+    private readonly GenericWakeupHandler _clientWakeupHandler;
 
     /// <summary>
     /// Reference to tvservice's TVController
@@ -134,7 +134,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     /// <summary>
     /// List of registered standby handlers ("disable standby" plugins)
     /// </summary>
-    private List<IStandbyHandler> _standbyHandlers;
+    private readonly List<IStandbyHandler> _standbyHandlers;
 
     /// <summary>
     ///  Stop poll thread 
@@ -144,7 +144,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     /// <summary>
     /// List of registered wakeup handlers ("enable wakeup" plugins)
     /// </summary>
-    private List<IWakeupHandler> _wakeupHandlers;
+    private readonly List<IWakeupHandler> _wakeupHandlers;
 
     /// <summary>
     /// Timer with support for waking up the system
@@ -597,11 +597,11 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
 
     #region IPowerController implementation
 
-    private Dictionary<string, int> _remoteStandbyHandlerURIs = new Dictionary<string, int>();
-    private Hashtable _remoteStandbyHandlers = new Hashtable();
+    private readonly Dictionary<string, int> _remoteStandbyHandlerURIs = new Dictionary<string, int>();
+    private readonly Hashtable _remoteStandbyHandlers = new Hashtable();
     private int _remoteTags;
-    private Dictionary<string, int> _remoteWakeupHandlerURIs = new Dictionary<string, int>();
-    private Hashtable _remoteWakeupHandlers = new Hashtable();
+    private readonly Dictionary<string, int> _remoteWakeupHandlerURIs = new Dictionary<string, int>();
+    private readonly Hashtable _remoteWakeupHandlers = new Hashtable();
 
     #region IPowerController Members
 

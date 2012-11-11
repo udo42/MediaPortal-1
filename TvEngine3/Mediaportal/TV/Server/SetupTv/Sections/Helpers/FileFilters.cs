@@ -37,8 +37,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
   /// </summary>
   internal class CustomFileName
   {
-    private String m_fileName;
-    private String m_filter;
+    private readonly String m_fileName;
+    private readonly String m_filter;
 
     public CustomFileName(String fileName, String filter)
     {
@@ -73,7 +73,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
   /// </summary>
   internal class SimpleFileName
   {
-    private String m_fileName;
+    private readonly String m_fileName;
 
     public SimpleFileName(String fileName)
     {
@@ -112,9 +112,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
   internal class FileFilters
   {
  
-    private String[] files;
-    private MPComboBox m_cbxCountries;
-    private MPComboBox m_cbxRegions;
+    private readonly String[] files;
+    private readonly MPComboBox m_cbxCountries;
+    private readonly MPComboBox m_cbxRegions;
 
     /// <summary>
     /// CTOR

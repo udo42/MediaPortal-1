@@ -44,7 +44,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
     private MatchCollection _matches;
     private Profile _page;
     private string _pageSource;
-    private HtmlSectionTemplate _sectionTemplate;
+    private readonly HtmlSectionTemplate _sectionTemplate;
     private Profile _template;
 
     #endregion

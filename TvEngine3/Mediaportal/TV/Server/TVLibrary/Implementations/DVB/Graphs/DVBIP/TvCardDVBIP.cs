@@ -54,7 +54,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
     /// <summary>
     /// The instance number of this DVB-IP tuner.
     /// </summary>
-    private int _sequenceNumber = -1;
+    private readonly int _sequenceNumber = -1;
 
     /// <summary>
     /// The CLSID/UUID for the source filter.

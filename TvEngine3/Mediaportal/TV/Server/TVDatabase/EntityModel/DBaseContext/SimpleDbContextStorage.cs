@@ -4,7 +4,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.DBaseContext
 {
     public class SimpleDbContextStorage : IDbContextStorage
     {
-        private Dictionary<string, System.Data.Entity.DbContext> _storage = new Dictionary<string, System.Data.Entity.DbContext>();
+        private readonly Dictionary<string, System.Data.Entity.DbContext> _storage = new Dictionary<string, System.Data.Entity.DbContext>();
 
       #region IDbContextStorage Members
 

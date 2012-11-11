@@ -254,13 +254,13 @@ namespace Mediaportal.TV.Server.TVLibrary
     [StructLayout(LayoutKind.Sequential)]
     private struct MSG
     {
-      public IntPtr hwnd;
-      public int message;
-      public IntPtr wParam;
-      public IntPtr lParam;
-      public int time;
-      public int pt_x;
-      public int pt_y;
+      public readonly IntPtr hwnd;
+      public readonly int message;
+      public readonly IntPtr wParam;
+      public readonly IntPtr lParam;
+      public readonly int time;
+      public readonly int pt_x;
+      public readonly int pt_y;
     }
 
     #endregion

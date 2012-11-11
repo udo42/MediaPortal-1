@@ -37,8 +37,8 @@ namespace WebEPG.config
 
     private const float MIN_SIMILARITY = 0.5f;
     private Dictionary<string, ChannelGrabberInfo> _ChannelList;
-    private string _strChannelsFile;
-    private string _strGrabberDir;
+    private readonly string _strChannelsFile;
+    private readonly string _strGrabberDir;
     //string _Country;
 
     #endregion

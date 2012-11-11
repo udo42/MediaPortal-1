@@ -250,8 +250,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct IrCommand
     {
-      public UInt32 Address;
-      public UInt32 Command;
+      public readonly UInt32 Address;
+      public readonly UInt32 Command;
     }
 
     #endregion
@@ -264,9 +264,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
 
     private struct MmiMessage
     {
-      public Int32 Length;
-      public byte[] Message;
-      public TbsMmiMessageType Type;
+      public readonly Int32 Length;
+      public readonly byte[] Message;
+      public readonly TbsMmiMessageType Type;
 
       public MmiMessage(TbsMmiMessageType type, Int32 length)
       {
@@ -306,18 +306,18 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
     {
       public TbsAccessMode AccessMode;
       public TbsTone Tone;
-      private UInt32 Reserved1;
+      private readonly UInt32 Reserved1;
       public TbsLnbPower LnbPower;
 
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcMessageLength)]
       public byte[] DiseqcTransmitMessage;
       public UInt32 DiseqcTransmitMessageLength;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcMessageLength)]
-      public byte[] DiseqcReceiveMessage;
-      public UInt32 DiseqcReceiveMessageLength;
+      public readonly byte[] DiseqcReceiveMessage;
+      public readonly UInt32 DiseqcReceiveMessageLength;
 
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-      private byte[] Reserved2;
+      private readonly byte[] Reserved2;
     }
 
     #endregion
@@ -328,11 +328,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
     private struct UsbIrCommand
     {
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
-      private byte[] Reserved1;
+      private readonly byte[] Reserved1;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 12)]
-      public byte[] Codes;
+      public readonly byte[] Codes;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 244)]
-      private byte[] Reserved2;
+      private readonly byte[] Reserved2;
     }
 
     #endregion

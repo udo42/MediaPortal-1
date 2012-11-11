@@ -149,14 +149,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       public ProfDiseqcPort DiseqcPort;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcMessageLength)]
       public byte[] DiseqcRawCommand;         // BdaExtensionProperty.Motor
-      public ProfIrCode IrCode;               // BdaExtensionProperty.Ir
-      public byte LockState;                  // BdaExtensionProperty.TunerLock
-      public byte SignalStrength;             // BdaExtensionProperty.TunerLock
-      public byte SignalQuality;              // BdaExtensionProperty.TunerLock
+      public readonly ProfIrCode IrCode;               // BdaExtensionProperty.Ir
+      public readonly byte LockState;                  // BdaExtensionProperty.TunerLock
+      public readonly byte SignalStrength;             // BdaExtensionProperty.TunerLock
+      public readonly byte SignalQuality;              // BdaExtensionProperty.TunerLock
       public byte InnerFecRate;               // (BinaryConvolutionCodeRate)
       public byte Modulation;                 // (ModulationType)
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-      private byte[] Reserved;
+      private readonly byte[] Reserved;
     }
 
     #endregion

@@ -34,8 +34,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.CIMenu
   public partial class CI_Menu_Dialog : SectionSettings
   {
     private bool InitSuccess;
-    private CiMenuEventHandler _ciMenuEventHandler;
-    private int cardNumber;
+    private readonly CiMenuEventHandler _ciMenuEventHandler;
+    private readonly int cardNumber;
     private int ciMenuChoices;
     private CiMenuState ciMenuState = CiMenuState.Closed;
 

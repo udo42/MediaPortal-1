@@ -62,7 +62,7 @@ namespace Mediaportal.TV.TvPlugin
     private string filterEpisode = String.Empty;
     private string filterLetter = "A";
     private string filterShow = String.Empty;
-    private DirectoryHistory history = new DirectoryHistory();
+    private readonly DirectoryHistory history = new DirectoryHistory();
     [SkinControl(18)] protected GUIImage imgChannelLogo;
     [SkinControl(16)] protected GUILabelControl lblChannel;
     [SkinControl(12)] protected GUILabelControl lblNumberOfItems;
@@ -1407,9 +1407,9 @@ namespace Mediaportal.TV.TvPlugin
 
     private class Comparer : IComparer<GUIListItem>
     {
-      private Dictionary<int, Channel> channelMap;
-      private SortMethod currentSortMethod;
-      private bool sortAscending;
+      private readonly Dictionary<int, Channel> channelMap;
+      private readonly SortMethod currentSortMethod;
+      private readonly bool sortAscending;
       public Comparer(SortMethod currentSortMethod, bool sortAscending)
       {
         channelMap = new Dictionary<int, Channel>();

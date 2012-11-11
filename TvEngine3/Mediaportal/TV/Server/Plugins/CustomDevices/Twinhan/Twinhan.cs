@@ -177,52 +177,52 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     private struct DeviceInfo   // DEVICE_INFO
     {
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-      public String Name;                                     // Example: VP1020, VP3020C, VP7045...
+      public readonly String Name;                                     // Example: VP1020, VP3020C, VP7045...
 
-      public TwinhanDeviceType Type;                          // Values are bitwise AND'ed together to produce the final device type.
-      public TwinhanDeviceSpeed Speed;
+      public readonly TwinhanDeviceType Type;                          // Values are bitwise AND'ed together to produce the final device type.
+      public readonly TwinhanDeviceSpeed Speed;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
-      public byte[] MacAddress;
-      public TwinhanCiSupport CiSupport;
+      public readonly byte[] MacAddress;
+      public readonly TwinhanCiSupport CiSupport;
 
-      public Int32 TsPacketLength;                            // 188 or 204
+      public readonly Int32 TsPacketLength;                            // 188 or 204
 
       // mm1352000: The following two bytes don't appear to always be set correctly.
       // Maybe these fields are only present for certain devices or driver versions.
-      public byte IsPidFilterPresent;
-      public byte IsPidFilterBypassSupported;
+      public readonly byte IsPidFilterPresent;
+      public readonly byte IsPidFilterBypassSupported;
 
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 190)]
-      private byte[] Reserved;
+      private readonly byte[] Reserved;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct DriverInfo   // DriverInfo
     {
-      public byte DriverMajorVersion;                         // BCD encoding eg. 0x32 -> 3.2
-      public byte DriverMinorVersion;                         // BCD encoding eg. 0x21 -> 2.1
-      public byte FirmwareMajorVersion;                       // BCD encoding eg. 0x10 -> 1.0
-      public byte FirmwareMinorVersion;                       // BCD encoding eg. 0x05 -> 0.5  ==> 1.0b05
+      public readonly byte DriverMajorVersion;                         // BCD encoding eg. 0x32 -> 3.2
+      public readonly byte DriverMinorVersion;                         // BCD encoding eg. 0x21 -> 2.1
+      public readonly byte FirmwareMajorVersion;                       // BCD encoding eg. 0x10 -> 1.0
+      public readonly byte FirmwareMinorVersion;                       // BCD encoding eg. 0x05 -> 0.5  ==> 1.0b05
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 22)]
-      public String Date;                                     // Example: "2004-12-20 18:30:00" or  "DEC 20 2004 10:22:10"  with compiler __DATE__ and __TIME__  definition s
+      public readonly String Date;                                     // Example: "2004-12-20 18:30:00" or  "DEC 20 2004 10:22:10"  with compiler __DATE__ and __TIME__  definition s
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)]
-      public String Company;                                  // Example: "TWINHAN" 
+      public readonly String Company;                                  // Example: "TWINHAN" 
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-      public String HardwareInfo;                             // Example: "PCI DVB CX-878 with MCU series", "PCI ATSC CX-878 with MCU series", "7020/7021 USB-Sat", "7045/7046 USB-Ter" etc.
-      public byte CiMmiFlags;                                 // Bit 0 = event mode support (0 => not supported, 1 => supported)
-      private byte Reserved;
-      public TwinhanSimulatorType SimType;
+      public readonly String HardwareInfo;                             // Example: "PCI DVB CX-878 with MCU series", "PCI ATSC CX-878 with MCU series", "7020/7021 USB-Sat", "7045/7046 USB-Ter" etc.
+      public readonly byte CiMmiFlags;                                 // Bit 0 = event mode support (0 => not supported, 1 => supported)
+      private readonly byte Reserved;
+      public readonly TwinhanSimulatorType SimType;
 
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 184)]
-      private byte[] Reserved2;
+      private readonly byte[] Reserved2;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct PidFilterParams    // PID_FILTER_INFO
     {
       public TwinhanPidFilterMode FilterMode;
-      public byte MaxPids;                                    // Max number of PIDs supported by the PID filter (HW/FW limit, always <= MaxPidFilterPids).
-      private UInt16 Padding;
+      public readonly byte MaxPids;                                    // Max number of PIDs supported by the PID filter (HW/FW limit, always <= MaxPidFilterPids).
+      private readonly UInt16 Padding;
       public UInt32 ValidPidMask;                             // A bit mask specifying the current valid PIDs. If the bit is 0 then the PID is ignored. Example: if ValidPidMask = 0x00000005 then there are 2 valid PIDs at indexes 0 and 2.
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPidFilterPids)]
       public UInt16[] FilterPids;                             // Filter PID list.
@@ -234,14 +234,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       [MarshalAs(UnmanagedType.I1)]
       public bool PowerOn;
       public TwinhanToneBurst ToneBurst;
-      private UInt16 Padding;
+      private readonly UInt16 Padding;
 
       public UInt32 LowBandLof;                               // unit = kHz
       public UInt32 HighBandLof;                              // unit = kHz
       public UInt32 SwitchFrequency;                          // unit = kHz
       public Twinhan22k Tone22k;
       public TwinhanDiseqcPort DiseqcPort;
-      private UInt16 Padding2;
+      private readonly UInt16 Padding2;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -256,21 +256,21 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     [StructLayout(LayoutKind.Sequential)]
     private struct CiStateInfo    // THCIState
     {
-      public TwinhanCiState CiState;
-      public TwinhanMmiState MmiState;
-      public UInt32 PmtState;
-      public UInt32 EventMessage;                             // Current event status.
-      public TwinhanRawCommandState RawCmdState;
+      public readonly TwinhanCiState CiState;
+      public readonly TwinhanMmiState MmiState;
+      public readonly UInt32 PmtState;
+      public readonly UInt32 EventMessage;                             // Current event status.
+      public readonly TwinhanRawCommandState RawCmdState;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 7)]
-      private UInt32[] Reserved;
+      private readonly UInt32[] Reserved;
     }
 
     // Old CI/MMI state info structure - CI API v1.
     [StructLayout(LayoutKind.Sequential)]
     private struct CiStateInfoOld   // THCIStateOld
     {
-      public TwinhanCiState CiState;
-      public TwinhanMmiState MmiState;
+      public readonly TwinhanCiState CiState;
+      public readonly TwinhanMmiState MmiState;
     }
 
     #region MMI data class
@@ -281,7 +281,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       public String Answer = String.Empty;
       public Int32 AnswerLength;
       public Int32 ChoiceIndex;
-      public List<String> Entries = new List<string>();
+      public readonly List<String> Entries = new List<string>();
       public Int32 EntryCount;
       public String Footer = String.Empty;
       public bool IsBlindAnswer;
@@ -369,7 +369,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     {
       #pragma warning disable 0649
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 42)]
-      public String Text;
+      public readonly String Text;
       #pragma warning restore 0649
     }
 
@@ -377,24 +377,24 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     private struct DefaultMmiData
     {
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public String Title;
+      public readonly String Title;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public String SubTitle;
+      public readonly String SubTitle;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public String Footer;
+      public readonly String Footer;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = DefaultMaxCamMenuEntries)]
-      public DefaultMmiMenuEntry[] Entries;
-      private UInt16 Padding1;
-      public Int32 EntryCount;
+      public readonly DefaultMmiMenuEntry[] Entries;
+      private readonly UInt16 Padding1;
+      public readonly Int32 EntryCount;
 
       [MarshalAs(UnmanagedType.Bool)]
-      public bool IsEnquiry;
+      public readonly bool IsEnquiry;
 
       [MarshalAs(UnmanagedType.Bool)]
-      public bool IsBlindAnswer;
+      public readonly bool IsBlindAnswer;
       public Int32 AnswerLength;    // enquiry: expected answer length, enquiry answer: actual answer length
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public String Prompt;
+      public readonly String Prompt;
 
       public Int32 ChoiceIndex;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
@@ -408,7 +408,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     {
       #pragma warning disable 0649
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
-      public String Text;
+      public readonly String Text;
       #pragma warning restore 0649
     }
 
@@ -416,23 +416,23 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     private struct TerraTecMmiData
     {
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public String Title;
+      public readonly String Title;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public String SubTitle;
+      public readonly String SubTitle;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public String Footer;
+      public readonly String Footer;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = TerraTecMaxCamMenuEntries)]
-      public TerraTecMmiMenuEntry[] Entries;
-      public Int32 EntryCount;
+      public readonly TerraTecMmiMenuEntry[] Entries;
+      public readonly Int32 EntryCount;
 
       [MarshalAs(UnmanagedType.Bool)]
-      public bool IsEnquiry;
+      public readonly bool IsEnquiry;
 
       [MarshalAs(UnmanagedType.Bool)]
-      public bool IsBlindAnswer;
+      public readonly bool IsBlindAnswer;
       public Int32 AnswerLength;    // enquiry: expected answer length, enquiry answer: actual answer length
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public String Prompt;
+      public readonly String Prompt;
 
       public Int32 ChoiceIndex;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
@@ -446,11 +446,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct ApplicationInfo    // THAppInfo
     {
-      public UInt32 ApplicationType;
-      public UInt32 Manufacturer;
-      public UInt32 ManufacturerCode;
+      public readonly UInt32 ApplicationType;
+      public readonly UInt32 Manufacturer;
+      public readonly UInt32 ManufacturerCode;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
-      public String RootMenuTitle;
+      public readonly String RootMenuTitle;
     }
 
     [StructLayout(LayoutKind.Explicit)]
@@ -471,9 +471,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       [FieldOffset(12), MarshalAs(UnmanagedType.I1)]
       public bool LockWaitForResult;
       [FieldOffset(13)]
-      private byte Padding1;
+      private readonly byte Padding1;
       [FieldOffset(14)]
-      private UInt16 Padding2;
+      private readonly UInt16 Padding2;
     }
 
     #endregion
@@ -483,11 +483,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     // Initialise a buffer with a new command, ready to pass to the tuner filter.
     private class TwinhanCommand
     {
-      private UInt32 _controlCode;
+      private readonly UInt32 _controlCode;
       private IntPtr _inBuffer;
-      private Int32 _inBufferSize;
+      private readonly Int32 _inBufferSize;
       private IntPtr _outBuffer;
-      private Int32 _outBufferSize;
+      private readonly Int32 _outBufferSize;
 
       public TwinhanCommand(UInt32 controlCode, IntPtr inBuffer, Int32 inBufferSize, IntPtr outBuffer, Int32 outBufferSize)
       {

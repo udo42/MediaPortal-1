@@ -32,8 +32,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
     private bool isKey;
     private string key;
     private TstDictionaryEntry lowChild;
-    private TstDictionaryEntry parent;
-    private char splitChar;
+    private readonly TstDictionaryEntry parent;
+    private readonly char splitChar;
     private Object value;
 
     /// <summary>

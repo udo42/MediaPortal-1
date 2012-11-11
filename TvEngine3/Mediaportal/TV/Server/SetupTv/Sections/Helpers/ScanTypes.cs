@@ -38,7 +38,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
   /// </summary>
   internal class suminfo
   {
-    private List<IChannel> _allNewChannels = new List<IChannel>();
+    private readonly List<IChannel> _allNewChannels = new List<IChannel>();
 
     public int newChannel;
     public int updChannel;

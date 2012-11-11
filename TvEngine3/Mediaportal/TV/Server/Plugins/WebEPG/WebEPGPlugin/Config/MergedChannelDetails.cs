@@ -27,7 +27,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
   public partial class MergedChannelDetails : Form
   {
     //private fSelection _selection;
-    private GetGrabberSelectorCallback _getGrabberSelector;
+    private readonly GetGrabberSelectorCallback _getGrabberSelector;
     //private TreeNode _tGrabbers;
 
 

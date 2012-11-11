@@ -36,7 +36,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     #region Variables
 
     private InternetExplorer _IE;
-    private IHtmlCache _cache;
+    private readonly IHtmlCache _cache;
     private string _defaultEncode = "iso-8859-1";
     private string _encoding = string.Empty;
     private string _error;

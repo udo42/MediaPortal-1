@@ -50,7 +50,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
 
     //regional stuff
     private readonly bool _isRegionalDKorNO;
-    private Color Transparent;
+    private readonly Color Transparent;
 
     private Font _fontTeletext;
 

@@ -85,7 +85,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
     #region Variables
 
     private string _matchField;
-    private HtmlSectionTemplate _template;
+    private readonly HtmlSectionTemplate _template;
     private Sections _templateData;
 
     #endregion

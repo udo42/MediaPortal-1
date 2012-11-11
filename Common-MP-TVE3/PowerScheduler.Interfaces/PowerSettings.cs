@@ -61,7 +61,7 @@ namespace TvEngine.PowerScheduler.Interfaces
     /// <summary>
     /// Placeholder for additional PowerScheduler settings
     /// </summary>
-    [NonSerialized] private Dictionary<string, PowerSetting> _settings;
+    [NonSerialized] private readonly Dictionary<string, PowerSetting> _settings;
 
     private bool _shutdownEnabled;
     private ShutdownMode _shutdownMode = ShutdownMode.StayOn;

@@ -262,31 +262,31 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
       public DeFecRate InnerFecRate;
       public DePolarisation Polarisation;
       public byte Lnb;                    // index (0..3) of the LNB parameters set with SetLnbParams
-      private byte Padding;
+      private readonly byte Padding;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct DvbsServiceParams
     {
       [MarshalAs(UnmanagedType.Bool)]
-      public bool CurrentTransponder;
-      public UInt32 Lnb;                  // index (0..3) of the LNB parameters set with SetLnbParams
+      public readonly bool CurrentTransponder;
+      public readonly UInt32 Lnb;                  // index (0..3) of the LNB parameters set with SetLnbParams
 
-      public UInt32 Frequency;            // unit = kHz, range = 9750000 - 12750000
-      public UInt32 SymbolRate;           // unit = ks/s, range = 1000 - 40000
+      public readonly UInt32 Frequency;            // unit = kHz, range = 9750000 - 12750000
+      public readonly UInt32 SymbolRate;           // unit = ks/s, range = 1000 - 40000
 
-      public DeFecRate InnerFecRate;
-      public DePolarisation Polarisation;
-      private UInt16 Padding;
+      public readonly DeFecRate InnerFecRate;
+      public readonly DePolarisation Polarisation;
+      private readonly UInt16 Padding;
 
-      public UInt16 OriginalNetworkId;
-      public UInt16 TransportStreamId;
-      public UInt16 ServiceId;
-      public UInt16 VideoPid;
-      public UInt16 AudioPid;
-      public UInt16 PcrPid;
-      public UInt16 TeletextPid;
-      public UInt16 PmtPid;
+      public readonly UInt16 OriginalNetworkId;
+      public readonly UInt16 TransportStreamId;
+      public readonly UInt16 ServiceId;
+      public readonly UInt16 VideoPid;
+      public readonly UInt16 AudioPid;
+      public readonly UInt16 PcrPid;
+      public readonly UInt16 TeletextPid;
+      public readonly UInt16 PmtPid;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -297,22 +297,22 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
       [MarshalAs(UnmanagedType.Bool)]
       public bool FullTransponder;
 
-      public byte Lnb;                    // index (0..3) of the LNB parameters set with SetLnbParams
+      public readonly byte Lnb;                    // index (0..3) of the LNB parameters set with SetLnbParams
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-      private byte[] Padding1;
+      private readonly byte[] Padding1;
 
-      public UInt32 Frequency;            // unit = kHz, range = 9750000 - 12750000
-      public UInt32 SymbolRate;           // unit = ks/s, range = 1000 - 40000
+      public readonly UInt32 Frequency;            // unit = kHz, range = 9750000 - 12750000
+      public readonly UInt32 SymbolRate;           // unit = ks/s, range = 1000 - 40000
 
-      public DeFecRate InnerFecRate;
-      public DePolarisation Polarisation;
-      private UInt16 Padding2;
+      public readonly DeFecRate InnerFecRate;
+      public readonly DePolarisation Polarisation;
+      private readonly UInt16 Padding2;
 
       public byte NumberOfValidPids;
-      private byte Padding3;
+      private readonly byte Padding3;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPidFilterPids)]
       public UInt16[] FilterPids;
-      private UInt16 Padding4;
+      private readonly UInt16 Padding4;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -326,7 +326,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
       public DeOfdmGuardInterval GuardInterval;
       public DeOfdmTransmissionMode TransmissionMode;
       public DeOfdmHierarchy Hierarchy;
-      private byte Padding;
+      private readonly byte Padding;
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -337,64 +337,64 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
       [MarshalAs(UnmanagedType.Bool)]
       public bool FullTransponder;
 
-      public DvbtMultiplexParams MultiplexParams;
+      public readonly DvbtMultiplexParams MultiplexParams;
 
       public byte NumberOfValidPids;
-      private byte Padding1;
+      private readonly byte Padding1;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPidFilterPids)]
       public UInt16[] FilterPids;
-      private UInt16 Padding2;
+      private readonly UInt16 Padding2;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct FirmwareVersionInfo
     {
-      public byte HardwareMajor;
-      public byte HardwareMiddle;
-      public byte HardwareMinor;
-      public byte SoftwareMajor;
-      public byte SoftwareMiddle;
-      public byte SoftwareMinor;
-      public byte BuildNumberMsb;
-      public byte BuildNumberLsb;
+      public readonly byte HardwareMajor;
+      public readonly byte HardwareMiddle;
+      public readonly byte HardwareMinor;
+      public readonly byte SoftwareMajor;
+      public readonly byte SoftwareMiddle;
+      public readonly byte SoftwareMinor;
+      public readonly byte BuildNumberMsb;
+      public readonly byte BuildNumberLsb;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct FrontEndStatusInfo
     {
-      public UInt32 Frequency;            // unit = kHz, intermediate frequency for DVB-S/2
-      public UInt32 BitErrorRate;
+      public readonly UInt32 Frequency;            // unit = kHz, intermediate frequency for DVB-S/2
+      public readonly UInt32 BitErrorRate;
 
-      public byte SignalStrength;         // range = 0 - 100%
+      public readonly byte SignalStrength;         // range = 0 - 100%
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 3)]
-      private byte[] Padding1;
+      private readonly byte[] Padding1;
       [MarshalAs(UnmanagedType.Bool)]
-      public bool IsLocked;
+      public readonly bool IsLocked;
 
-      public UInt16 CarrierToNoiseRatio;
-      public byte AutomaticGainControl;
-      private byte Value;                 // ???
+      public readonly UInt16 CarrierToNoiseRatio;
+      public readonly byte AutomaticGainControl;
+      private readonly byte Value;                 // ???
 
-      public DeFrontEndState FrontEndState;
-      private byte Padding2;
-      public DeCiState CiState;
+      public readonly DeFrontEndState FrontEndState;
+      private readonly byte Padding2;
+      public readonly DeCiState CiState;
 
-      public byte SupplyVoltage;
-      public byte AntennaVoltage;
-      public byte BusVoltage;
-      private byte Padding3;
+      public readonly byte SupplyVoltage;
+      public readonly byte AntennaVoltage;
+      public readonly byte BusVoltage;
+      private readonly byte Padding3;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct SystemInfo
     {
-      public byte NumberOfAntennas;       // range = 0 - 3
-      public DeAntennaType AntennaType;
-      public DeBroadcastSystem BroadcastSystem;
-      public DeTransportType TransportType;
+      public readonly byte NumberOfAntennas;       // range = 0 - 3
+      public readonly DeAntennaType AntennaType;
+      public readonly DeBroadcastSystem BroadcastSystem;
+      public readonly DeTransportType TransportType;
 
       [MarshalAs(UnmanagedType.Bool)]
-      public bool Lists;                  // ???
+      public readonly bool Lists;                  // ???
     }
 
     [StructLayout(LayoutKind.Sequential)]
@@ -441,39 +441,39 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
     [StructLayout(LayoutKind.Sequential)]
     private struct QpskTuneParams
     {
-      public UInt32 Frequency;            // unit = kHz, range = 950000 - 2150000
+      public readonly UInt32 Frequency;            // unit = kHz, range = 950000 - 2150000
 
-      public UInt16 SymbolRate;           // unit = ks/s, range = 1000 - 40000
-      public DeFecRate InnerFecRate;
-      public DePolarisation Polarisation;
+      public readonly UInt16 SymbolRate;           // unit = ks/s, range = 1000 - 40000
+      public readonly DeFecRate InnerFecRate;
+      public readonly DePolarisation Polarisation;
 
       [MarshalAs(UnmanagedType.Bool)]
-      public bool IsHighBand;
+      public readonly bool IsHighBand;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct CiErrorDebugMessage
     {
-      public byte MessageType;
-      public byte MessageLength;
+      public readonly byte MessageType;
+      public readonly byte MessageLength;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxCiErrorDebugMessageLength)]
-      public String Message;
+      public readonly String Message;
     }
 
     [StructLayout(LayoutKind.Sequential)]
     private struct CaData
     {
-      public byte Slot;
-      public DeCiMessageTag Tag;
-      private UInt16 Padding1;
+      public readonly byte Slot;
+      public readonly DeCiMessageTag Tag;
+      private readonly UInt16 Padding1;
 
       [MarshalAs(UnmanagedType.Bool)]
-      public bool More;
+      public readonly bool More;
 
       public UInt16 DataLength;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPmtLength)]
-      public byte[] Data;
-      private UInt16 Padding2;
+      public readonly byte[] Data;
+      private readonly UInt16 Padding2;
 
       public CaData(DeCiMessageTag tag)
       {

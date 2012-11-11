@@ -29,7 +29,7 @@ namespace WebEPG.Parser
   {
     #region Variables
 
-    private string _rowDelimiter;
+    private readonly string _rowDelimiter;
     private MatchCollection _rows;
     private string _source;
 

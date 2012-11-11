@@ -31,7 +31,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
   {
     public readonly string Url;
     private IStandbyHandler remote;
-    private int tag;
+    private readonly int tag;
 
     public RemoteStandbyHandler(String URL, int tag)
     {

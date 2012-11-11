@@ -33,8 +33,8 @@ namespace WebEPG
   {
     #region Variables
 
-    private HTTPRequest _baseRequest;
-    private RequestData _data;
+    private readonly HTTPRequest _baseRequest;
+    private readonly RequestData _data;
     private int _dayOffset;
     private int _offset;
     private WorldDateTime _requestTime;

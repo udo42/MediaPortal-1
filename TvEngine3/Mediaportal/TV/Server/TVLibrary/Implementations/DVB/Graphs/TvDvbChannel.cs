@@ -47,7 +47,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     #region local variables
 
     /// set to true to enable PAT lookup of PMT
-    private bool _alwaysLookupPmtPidInPat = DebugSettings.UsePATLookup;
+    private readonly bool _alwaysLookupPmtPidInPat = DebugSettings.UsePATLookup;
 
     private Cat _cat;
 
@@ -73,9 +73,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     /// <summary>
     /// Ts filter instance
     /// </summary>
-    private ITsFilter _tsFilterInterface;
+    private readonly ITsFilter _tsFilterInterface;
 
-    private ITVCard _tuner;
+    private readonly ITVCard _tuner;
 
     #endregion
 
@@ -84,7 +84,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     /// <summary>
     /// Event that gets signaled when a new CAT section is seen.
     /// </summary>
-    private ManualResetEvent _eventCa;
+    private readonly ManualResetEvent _eventCa;
 
     /// <summary>
     /// Event that gets signaled when a new PMT section is seen.

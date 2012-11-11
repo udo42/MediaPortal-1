@@ -39,10 +39,10 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
     private IntPtr _apiRetVal;
     private bool _autoGroup;
     private ColumnHeader _autoGroupCol;
-    private ArrayList _autoGroupList = new ArrayList();
+    private readonly ArrayList _autoGroupList = new ArrayList();
     private string _emptyAutoGroupText = "";
-    private XPListViewGroupCollection _groups;
-    private XPListViewItemCollection _items;
+    private readonly XPListViewGroupCollection _groups;
+    private readonly XPListViewItemCollection _items;
     private bool _showInGroups;
 
     public XPListView()
@@ -532,7 +532,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
   /// </summary>
   public class XPListViewItemComparer : IComparer
   {
-    private int col;
+    private readonly int col;
 
     public XPListViewItemComparer()
     {

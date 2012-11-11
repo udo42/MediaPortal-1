@@ -46,7 +46,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private IList<Card> _cards;
     private Dictionary<int, string> _channelNames;
 
-    private ServerMonitor _serverMonitor = new ServerMonitor();
+    private readonly ServerMonitor _serverMonitor = new ServerMonitor();
 
     //Player _player;
     public TestService()

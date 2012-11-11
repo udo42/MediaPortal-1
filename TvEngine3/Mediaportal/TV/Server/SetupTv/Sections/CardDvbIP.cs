@@ -44,7 +44,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
 
 
-    private int _cardNumber;
+    private readonly int _cardNumber;
     private bool _isScanning;
     private bool _stopScanning;
 

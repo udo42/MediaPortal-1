@@ -234,8 +234,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private class IpAddressOption
     {
    
-      public string DisplayString;
-      public string HostName;
+      public readonly string DisplayString;
+      public readonly string HostName;
 
       public IpAddressOption(string displayString, string hostName)
       {

@@ -47,7 +47,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
     /// different positioner location. Enabling this option will cause DiSEqC commands to be sent on each
     /// channel change.
     /// </remarks>
-    private bool _alwaysSendDiseqcCommands;
+    private readonly bool _alwaysSendDiseqcCommands;
 
     /// <summary>
     /// The number of times to repeat DiSEqC commands.
@@ -55,7 +55,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
     /// <remarks>
     /// When set to zero, commands are sent once; when set to one, commands are sent twice... etc.
     /// </remarks>
-    private ushort _diseqcCommandRepeatCount;
+    private readonly ushort _diseqcCommandRepeatCount;
 
     /// <summary>
     /// The DiSEqC control interface for the tuner.

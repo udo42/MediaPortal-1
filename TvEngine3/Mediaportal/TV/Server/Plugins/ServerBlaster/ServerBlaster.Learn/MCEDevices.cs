@@ -218,7 +218,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
     #region Members
 
-    private static Remote _deviceSingleton;
+    private static readonly Remote _deviceSingleton;
     private RemoteButton _doubleClickButton;
     private int _doubleClickTick;
     private int _doubleClickTime = -1;
@@ -500,7 +500,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
     #region Members
 
-    private static Blaster _deviceSingleton;
+    private static readonly Blaster _deviceSingleton;
     private static int _currentSpeed;
     private int _learnStartTick;
     private ArrayList _packetArray;
@@ -802,12 +802,12 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     {
       public int Size;
       public int DeviceType;
-      public int Reserved;
+      public readonly int Reserved;
       public IntPtr Handle;
-      public IntPtr HandleNotify;
-      public Guid EventGuid;
-      public int NameOffset;
-      public byte Data;
+      public readonly IntPtr HandleNotify;
+      public readonly Guid EventGuid;
+      public readonly int NameOffset;
+      public readonly byte Data;
     }
 
     #endregion
@@ -817,9 +817,9 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     [StructLayout(LayoutKind.Sequential)]
     private struct DeviceBroadcastHeader
     {
-      public int Size;
-      public int DeviceType;
-      public int Reserved;
+      public readonly int Size;
+      public readonly int DeviceType;
+      public readonly int Reserved;
     }
 
     #endregion
@@ -831,10 +831,10 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     {
       public int Size;
       public int DeviceType;
-      public int Reserved;
+      public readonly int Reserved;
       public Guid ClassGuid;
 
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public string Name;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public readonly string Name;
     }
 
     #endregion

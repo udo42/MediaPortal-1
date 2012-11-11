@@ -44,10 +44,10 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
     private SortedList CountryList;
     private ChannelsList _channelInfo;
     private WebepgConfigFile _configFile;
-    private string _configFileDir;
+    private readonly string _configFileDir;
     private Dictionary<string, string> _countryList;
     private bool _initialized;
-    private string _webepgFilesDir;
+    private readonly string _webepgFilesDir;
     private Hashtable hChannelConfigInfo;
     private Hashtable hGrabberConfigInfo;
     private fSelection selection;
@@ -778,7 +778,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
 
     private class CBChannelGroup
     {
-      public string groupName;
+      public readonly string groupName;
       public int idGroup;
 
       public CBChannelGroup(string groupName, int idGroup)

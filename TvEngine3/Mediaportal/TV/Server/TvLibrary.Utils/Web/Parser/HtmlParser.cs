@@ -32,12 +32,12 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
   {
     #region Variables
 
-    private object[] _dataArgs;
-    private Type _dataType;
-    private HtmlProfiler _profiler;
-    private HtmlSectionParser _sectionParser;
+    private readonly object[] _dataArgs;
+    private readonly Type _dataType;
+    private readonly HtmlProfiler _profiler;
+    private readonly HtmlSectionParser _sectionParser;
     private string _sectionSource;
-    private HtmlParserTemplate _template;
+    private readonly HtmlParserTemplate _template;
 
     #endregion
 

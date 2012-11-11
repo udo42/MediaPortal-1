@@ -767,12 +767,12 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
     {
       public int Size;
       public int DeviceType;
-      public int Reserved;
+      public readonly int Reserved;
       public IntPtr Handle;
-      public IntPtr HandleNotify;
-      public Guid EventGuid;
-      public int NameOffset;
-      public byte Data;
+      public readonly IntPtr HandleNotify;
+      public readonly Guid EventGuid;
+      public readonly int NameOffset;
+      public readonly byte Data;
     }
 
     #endregion
@@ -782,9 +782,9 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
     [StructLayout(LayoutKind.Sequential)]
     private struct DeviceBroadcastHeader
     {
-      public int Size;
-      public int DeviceType;
-      public int Reserved;
+      public readonly int Size;
+      public readonly int DeviceType;
+      public readonly int Reserved;
     }
 
     #endregion
@@ -796,10 +796,10 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
     {
       public int Size;
       public int DeviceType;
-      public int Reserved;
+      public readonly int Reserved;
       public Guid ClassGuid;
 
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public string Name;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public readonly string Name;
     }
 
     #endregion

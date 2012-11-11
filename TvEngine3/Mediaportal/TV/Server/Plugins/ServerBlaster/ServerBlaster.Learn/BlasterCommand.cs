@@ -196,7 +196,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
     #region Members
 
-    private string _displayName;
+    private readonly string _displayName;
 
     #endregion Members
   }

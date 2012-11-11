@@ -27,7 +27,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
   /// </summary>
   public class TstDictionaryEntryEventArgs : EventArgs
   {
-    private TstDictionaryEntry entry;
+    private readonly TstDictionaryEntry entry;
 
     /// <summary>Create a <see cref="TstDictionaryEntry"/> event argument.</summary>
     /// <param name="entry">A <see cref="TstDictionaryEntry"/> entry to pass as argument.</param>

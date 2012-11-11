@@ -45,8 +45,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
     internal TextBox _currentText; //the textbox that contains the text for filtering
     private Thread _fillListViewThread; //the currently active thread
     internal ListView _listView; //the listview control that displays the items
-    private Dictionary<int, ListViewItem> _listViewCache; //A list of allready created listviewitems
-    private MediaTypeEnum _type; //the type of the texbox, currently that's tv or radio
+    private readonly Dictionary<int, ListViewItem> _listViewCache; //A list of allready created listviewitems
+    private readonly MediaTypeEnum _type; //the type of the texbox, currently that's tv or radio
 
     /// <summary>
     /// Creates a new ChannelListView Handler

@@ -51,7 +51,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private List<DVBCTuning> _dvbcChannels = new List<DVBCTuning>();
     private String buttonText;
 
-    private CI_Menu_Dialog ciMenuDialog; // ci menu dialog object
+    private readonly CI_Menu_Dialog ciMenuDialog; // ci menu dialog object
     private FileFilters fileFilters;
 
     private ScanState scanState; // scan state

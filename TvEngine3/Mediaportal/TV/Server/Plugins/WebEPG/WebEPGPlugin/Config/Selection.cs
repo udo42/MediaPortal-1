@@ -86,8 +86,8 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
     private Container components;
 
     private MPGroupBox gbSelection;
-    private EventHandler handler;
-    private TreeNode tGrabbers;
+    private readonly EventHandler handler;
+    private readonly TreeNode tGrabbers;
     private TreeView treeView1;
 
     public fSelection(TreeNode grabbers) //, bool bChanGrab, EventHandler select_click)

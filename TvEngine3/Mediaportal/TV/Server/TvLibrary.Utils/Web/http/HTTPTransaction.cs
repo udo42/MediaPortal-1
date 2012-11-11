@@ -46,13 +46,13 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     #region Variables
 
     private string _agent = "Mozilla/4.0 (compatible; MSIE 7.0; WindowsNT 5.0; .NET CLR 1 .1.4322)";
-    private IHttpAuthentication _auth;
+    private readonly IHttpAuthentication _auth;
     private CookieCollection _cookies;
     private byte[] _data;
     private string _error = string.Empty;
     private string _postType = "application/x-www-form-urlencoded";
     private HttpWebResponse _response;
-    private IHttpStatistics _stats;
+    private readonly IHttpStatistics _stats;
     private int blockSize = 8196;
 
     #endregion

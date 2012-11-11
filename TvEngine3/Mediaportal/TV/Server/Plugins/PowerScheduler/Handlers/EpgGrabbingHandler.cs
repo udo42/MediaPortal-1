@@ -46,7 +46,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
     private class GrabberSource // don't use struct! they are value types and mess when used in a dictionary!
     {
-      private string _name;
+      private readonly string _name;
       private DateTime _nextWakeupTime;
       private bool _standbyAllowed;
       private DateTime _timeout;
@@ -98,7 +98,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     #region Variables
 
     private readonly IInternalControllerService _controllerService;
-    private Dictionary<object, GrabberSource> _extGrabbers;
+    private readonly Dictionary<object, GrabberSource> _extGrabbers;
 
     #endregion
 

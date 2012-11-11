@@ -34,7 +34,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     #endregion
 
-    private XPListView _owner;
+    private readonly XPListView _owner;
 
     public XPListViewGroupCollection(XPListView owner)
     {

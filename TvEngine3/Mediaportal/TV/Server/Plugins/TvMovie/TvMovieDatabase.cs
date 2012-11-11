@@ -41,12 +41,12 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
   public struct TVMChannel
   {
-    private string fBezeichnung;
-    private string fID;
-    private string fSenderKennung;
-    private string fSortNrTVMovie;
-    private string fWebseite;
-    private string fZeichen;
+    private readonly string fBezeichnung;
+    private readonly string fID;
+    private readonly string fSenderKennung;
+    private readonly string fSortNrTVMovie;
+    private readonly string fWebseite;
+    private readonly string fZeichen;
 
     public TVMChannel(string aID, string aSenderKennung, string aBezeichnung, string aWebseite, string aSortNrTVMovie,
                       string aZeichen)
@@ -120,7 +120,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     private bool _showRepeat;
     private bool _slowImport = true;
     private List<TVMChannel> _tvmEpgChannels;
-    private List<Program> _tvmEpgProgs = new List<Program>(500);
+    private readonly List<Program> _tvmEpgProgs = new List<Program>(500);
     private bool _useShortProgramDesc;
 
     #endregion
@@ -144,11 +144,11 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
     private struct Mapping
     {
-      private TimeSpan _end;
-      private string _mpChannel;
-      private int _mpIdChannel;
-      private TimeSpan _start;
-      private string _tvmEpgChannel;
+      private readonly TimeSpan _end;
+      private readonly string _mpChannel;
+      private readonly int _mpIdChannel;
+      private readonly TimeSpan _start;
+      private readonly string _tvmEpgChannel;
 
       public Mapping(string mpChannel, int mpIdChannel, string tvmChannel, string start, string end)
       {

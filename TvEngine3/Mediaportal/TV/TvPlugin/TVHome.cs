@@ -139,7 +139,7 @@ namespace Mediaportal.TV.TvPlugin
     private static ManualResetEvent _waitForVideoReceived;
 
     private static int FramesBeforeStopRenderBlackImage;
-    private static BitHelper<LiveTvStatus> _status = new BitHelper<LiveTvStatus>();
+    private static readonly BitHelper<LiveTvStatus> _status = new BitHelper<LiveTvStatus>();
 
     public static ChannelErrorInfo _lastError = new ChannelErrorInfo();
     private static HeartbeatEventHandler _heartbeatEventHandler;
@@ -150,10 +150,10 @@ namespace Mediaportal.TV.TvPlugin
     public static GUIDialogNotify _dialogNotify;
 
     private static CiMenu currentCiMenu;
-    private static object CiMenuLock = new object();
+    private static readonly object CiMenuLock = new object();
     private static bool CiMenuActive;
 
-    private static List<CiMenu> CiMenuList = new List<CiMenu>();
+    private static readonly List<CiMenu> CiMenuList = new List<CiMenu>();
 
     // EPG Channel
     private static Channel _lastTvChannel;
@@ -164,7 +164,7 @@ namespace Mediaportal.TV.TvPlugin
     protected static int _preNotifyConfig = 60;
 
     private static readonly ServerMonitor _serverMonitor = new ServerMonitor();
-    private TvNotifyManager _notifyManager;
+    private readonly TvNotifyManager _notifyManager;
     private Channel _resumeChannel;
 
     [SkinControl(14)]

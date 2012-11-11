@@ -98,7 +98,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct SmarDtvUsbCiCallbacks
     {
-      public IntPtr Context;  // Optional context that the interface will pass back as a parameter when the delegates are executed.
+      public readonly IntPtr Context;  // Optional context that the interface will pass back as a parameter when the delegates are executed.
       public OnSmarDtvUsbCiState OnCiState;
       public OnSmarDtvUsbCiApplicationInfo OnApplicationInfo;
       public OnSmarDtvUsbCiCloseMmi OnCloseMmi;
@@ -150,7 +150,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
 
     // We use this hash to keep track of the devices that are in use. Each CI device can only be used with one
     // tuner at any given time, and only one CI device of each brand may be connected to a single system.
-    private static HashSet<String> _devicesInUse = new HashSet<string>();
+    private static readonly HashSet<String> _devicesInUse = new HashSet<string>();
 
     private bool _isSmarDtvUsbCi;
     #pragma warning disable 0414

@@ -46,13 +46,13 @@ namespace Mediaportal.TV.TvPlugin
 
   public class ScheduleInfo
   {
-    private string description;
-    private DateTime endTime;
-    private string genre;
-    private int idChannel;
-    private DateTime startTime;
+    private readonly string description;
+    private readonly DateTime endTime;
+    private readonly string genre;
+    private readonly int idChannel;
+    private readonly DateTime startTime;
 
-    private string title;
+    private readonly string title;
 
     public ScheduleInfo(int aIdChannel, string aTitle, string aDescription, string aGenre, DateTime aStartTime,
                         DateTime aEndTime)
@@ -115,7 +115,7 @@ namespace Mediaportal.TV.TvPlugin
     private static Program initialProgram;
     private static Schedule currentSchedule;
     private static bool anyUpcomingEpisodesRecording = true;
-    private static object fieldLock = new object();
+    private static readonly object fieldLock = new object();
 
     private readonly List<int> RecordingIntervalValues = new List<int>();
     private int _postRec;
@@ -136,7 +136,7 @@ namespace Mediaportal.TV.TvPlugin
     [SkinControl(11)]
     protected GUILabelControl lblUpcomingEpsiodes;
     [SkinControl(10)] protected GUIListControl lstUpcomingEpsiodes;
-    private object updateLock;
+    private readonly object updateLock;
 
     #endregion
 

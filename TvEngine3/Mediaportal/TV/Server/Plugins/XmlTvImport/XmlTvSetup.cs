@@ -792,8 +792,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
     private class CBChannelGroup
     {
-      public string groupName;
-      public int idGroup;
+      public readonly string groupName;
+      public readonly int idGroup;
 
       public CBChannelGroup(string groupName, int idGroup)
       {

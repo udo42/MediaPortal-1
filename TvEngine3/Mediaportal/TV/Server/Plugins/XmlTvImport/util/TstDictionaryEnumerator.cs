@@ -29,9 +29,9 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
   public sealed class TstDictionaryEnumerator : IDictionaryEnumerator
   {
     private TstDictionaryEntry currentNode;
-    private TstDictionary dictionary;
+    private readonly TstDictionary dictionary;
     private Stack stack;
-    private long version;
+    private readonly long version;
 
     /// <summary>Constructs an enumerator over <paramref name="tst"/></summary>
     /// <param name="tst">dictionary to enumerate.</param>

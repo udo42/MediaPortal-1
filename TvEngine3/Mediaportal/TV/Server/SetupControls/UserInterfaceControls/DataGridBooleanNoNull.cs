@@ -329,7 +329,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 
   public class BoolValueChangedEventArgs : EventArgs
   {
-    private bool boolVal;
+    private readonly bool boolVal;
     private int columnVal;
     private int rowVal;
 

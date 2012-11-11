@@ -26,9 +26,9 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
   {
     #region Variables
 
-    private BasicTime _end;
-    private bool _overMidnight;
-    private BasicTime _start;
+    private readonly BasicTime _end;
+    private readonly bool _overMidnight;
+    private readonly BasicTime _start;
 
     #endregion
 

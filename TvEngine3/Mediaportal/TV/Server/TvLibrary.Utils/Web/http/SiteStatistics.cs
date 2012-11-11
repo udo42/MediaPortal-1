@@ -31,7 +31,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
 
     private int _bytes;
     private int _pages;
-    private string _site;
+    private readonly string _site;
     private TimeSpan _totalTime;
 
     #endregion

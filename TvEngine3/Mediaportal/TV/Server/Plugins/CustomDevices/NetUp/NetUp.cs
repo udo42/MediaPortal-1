@@ -84,11 +84,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct ApplicationInfo    // NETUP_CAM_APPLICATION_INFO
     {
-      public MmiApplicationType ApplicationType;
-      public UInt16 Manufacturer;
-      public UInt16 ManufacturerCode;
+      public readonly MmiApplicationType ApplicationType;
+      public readonly UInt16 Manufacturer;
+      public readonly UInt16 ManufacturerCode;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxStringLength)]
-      public String RootMenuTitle;
+      public readonly String RootMenuTitle;
     }
 
     #endregion
@@ -98,9 +98,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
     [StructLayout(LayoutKind.Sequential)]
     private struct CaInfo   // TYP_SLOT_INFO
     {
-      public UInt32 NumberOfCaSystemIds;
+      public readonly UInt32 NumberOfCaSystemIds;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxCaSystemIds)]
-      public UInt16[] CaSystemIds;
+      public readonly UInt16[] CaSystemIds;
     }
 
     #endregion
@@ -110,14 +110,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct CiStateInfo    // NETUP_CAM_STATUS
     {
-      public NetUpCiState CiState;
+      public readonly NetUpCiState CiState;
 
       // These fields don't ever seem to be filled, but that is okay since
       // we can query for application info directly.
-      public UInt16 Manufacturer;
-      public UInt16 ManufacturerCode;
+      public readonly UInt16 Manufacturer;
+      public readonly UInt16 ManufacturerCode;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxStringLength)]
-      public String RootMenuTitle;
+      public readonly String RootMenuTitle;
     }
 
     #endregion
@@ -139,10 +139,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct MmiEnquiry   // NETUP_CAM_MMI_ENQUIRY
     {
-      public bool IsBlindAnswer;
-      public byte ExpectedAnswerLength;
+      public readonly bool IsBlindAnswer;
+      public readonly byte ExpectedAnswerLength;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxStringLength)]
-      public String Prompt;
+      public readonly String Prompt;
     }
 
     #endregion
@@ -152,16 +152,16 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct MmiMenu    // NETUP_CAM_MENU
     {
-      public bool IsMenu;
+      public readonly bool IsMenu;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxStringLength)]
-      public String Title;
+      public readonly String Title;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxStringLength)]
-      public String SubTitle;
+      public readonly String SubTitle;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxStringLength)]
-      public String Footer;
+      public readonly String Footer;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxCamMenuEntries)]
-      public MmiMenuEntry[] Entries;
-      public UInt32 EntryCount;
+      public readonly MmiMenuEntry[] Entries;
+      public readonly UInt32 EntryCount;
     }
 
     #endregion
@@ -173,7 +173,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
     {
 #pragma warning disable 0649
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = MaxStringLength)]
-      public String Text;
+      public readonly String Text;
 #pragma warning restore 0649
     }
 
@@ -1163,11 +1163,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
       #region variables
 
       private static int _operatingSystemIntSize;
-      private UInt32 _controlCode;
+      private readonly UInt32 _controlCode;
       private IntPtr _inBuffer;
-      private Int32 _inBufferSize;
+      private readonly Int32 _inBufferSize;
       private IntPtr _outBuffer;
-      private Int32 _outBufferSize;
+      private readonly Int32 _outBufferSize;
 
       #endregion
 

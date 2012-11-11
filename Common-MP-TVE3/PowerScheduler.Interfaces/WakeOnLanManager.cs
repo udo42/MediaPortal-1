@@ -49,11 +49,11 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
     [StructLayout(LayoutKind.Sequential)]
     private struct MIB_IPNETROW
     {
-      [MarshalAs(UnmanagedType.U4)] public int dwIndex;
-      [MarshalAs(UnmanagedType.U4)] public int dwPhysAddrLen;
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = PHYSADDR_MAXLEN)] public byte[] bPhysAddr;
-      [MarshalAs(UnmanagedType.U4)] public int dwAddr;
-      [MarshalAs(UnmanagedType.U4)] public int dwType;
+      [MarshalAs(UnmanagedType.U4)] public readonly int dwIndex;
+      [MarshalAs(UnmanagedType.U4)] public readonly int dwPhysAddrLen;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = PHYSADDR_MAXLEN)] public readonly byte[] bPhysAddr;
+      [MarshalAs(UnmanagedType.U4)] public readonly int dwAddr;
+      [MarshalAs(UnmanagedType.U4)] public readonly int dwType;
     }
 
     #endregion

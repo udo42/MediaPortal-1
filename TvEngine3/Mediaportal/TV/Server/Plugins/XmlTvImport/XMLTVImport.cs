@@ -50,7 +50,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     private int _backgroundDelay;
 
     private string _errorMessage = "";
-    private Stats _status = new Stats();
+    private readonly Stats _status = new Stats();
 
     public XMLTVImport()
       : this(0) {}

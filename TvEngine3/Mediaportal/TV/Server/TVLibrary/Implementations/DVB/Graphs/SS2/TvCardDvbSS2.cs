@@ -1290,23 +1290,23 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Unicode), ComVisible(true)]
     private struct DeviceInfo
     {
-      public UInt32 DeviceId;
+      public readonly UInt32 DeviceId;
       public MacAddress MacAddress;
-      private UInt16 Padding1;
-      public B2c2TunerType TunerType;
-      public B2c2BusType BusInterface;
+      private readonly UInt16 Padding1;
+      public readonly B2c2TunerType TunerType;
+      public readonly B2c2BusType BusInterface;
       [MarshalAs(UnmanagedType.I1)]
-      public bool IsInUse;
-      private byte Padding2;
-      public UInt32 ProductId;
+      public readonly bool IsInUse;
+      private readonly byte Padding2;
+      public readonly UInt32 ProductId;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 31)]
-      public String ProductName;
+      public readonly String ProductName;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 81)]
-      public String ProductDescription;
+      public readonly String ProductDescription;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 21)]
-      public String ProductRevision;
+      public readonly String ProductRevision;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 61)]
-      public String ProductFrontEnd;
+      public readonly String ProductFrontEnd;
     }
 
     #endregion
@@ -1390,7 +1390,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     /// different positioner location. Enabling this option will cause DiSEqC commands to be sent on each
     /// channel change.
     /// </remarks>
-    private bool _alwaysSendDiseqcCommands;
+    private readonly bool _alwaysSendDiseqcCommands;
 
     /// <summary>
     /// The number of times to repeat DiSEqC commands.
@@ -1398,7 +1398,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     /// <remarks>
     /// When set to zero, commands are sent once; when set to one, commands are sent twice... etc.
     /// </remarks>
-    private ushort _diseqcCommandRepeatCount;
+    private readonly ushort _diseqcCommandRepeatCount;
 
     #endregion
 

@@ -46,12 +46,12 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     /// <summary>
     /// List of all standby handlers
     /// </summary>
-    private List<IStandbyHandler> _standbyHandlers;
+    private readonly List<IStandbyHandler> _standbyHandlers;
 
     /// <summary>
     /// List of all wakeup handlers
     /// </summary>
-    private List<IWakeupHandler> _wakeupHandlers;
+    private readonly List<IWakeupHandler> _wakeupHandlers;
 
     #endregion
 

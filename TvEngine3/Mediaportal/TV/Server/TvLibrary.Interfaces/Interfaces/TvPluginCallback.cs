@@ -60,8 +60,8 @@ namespace TvLibrary.Interfaces
   [Serializable]
   public class CiMenuEntry
   {
-    private Int32 m_Index;
-    private String m_Message;
+    private readonly Int32 m_Index;
+    private readonly String m_Message;
 
     /// <summary>
     /// CTOR
@@ -111,14 +111,14 @@ namespace TvLibrary.Interfaces
 
     private int _answerLength;
     private bool _bPassword;
-    private string _bottomText;
-    private List<CiMenuEntry> _ciMenuEntries = new List<CiMenuEntry>();
+    private readonly string _bottomText;
+    private readonly List<CiMenuEntry> _ciMenuEntries = new List<CiMenuEntry>();
     private CiMenuState _menuState;
     private int _numChoices;
 
     private string _requestText;
-    private string _subtitle;
-    private string _title;
+    private readonly string _subtitle;
+    private readonly string _title;
 
     #endregion
 

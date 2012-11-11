@@ -66,9 +66,9 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     internal class ShareMonitor
     {
       internal readonly ShareType MonitoringType;
-      private string _host;
-      private string _share;
-      private string _user;
+      private readonly string _host;
+      private readonly string _share;
+      private readonly string _user;
 
       internal ShareMonitor(string shareName, string hostName, string userName)
       {
@@ -207,10 +207,10 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
     private bool _enabled;
 
-    private ManagementObjectSearcher _searcher = new ManagementObjectSearcher(
+    private readonly ManagementObjectSearcher _searcher = new ManagementObjectSearcher(
       "SELECT ShareName, UserName, ComputerName, NumberOfFiles  FROM Win32_ServerConnection WHERE NumberOfFiles > 0");
 
-    private List<ShareMonitor> _sharesToMonitor = new List<ShareMonitor>();
+    private readonly List<ShareMonitor> _sharesToMonitor = new List<ShareMonitor>();
 
     #endregion
 

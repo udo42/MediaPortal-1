@@ -68,8 +68,8 @@ namespace Mediaportal.TV.TvPlugin
     private List<ChannelGroup> _channelGroupList;
     private List<Channel> _channelList = new List<Channel>();
     private int _channelNumberMaxLength = 3;
-    private IDictionary<int, IDictionary<int, NowAndNext>> _listNowNext = new Dictionary<int, IDictionary<int, NowAndNext>>();
-    private Dictionary<int, DateTime> _nextEPGupdate = new Dictionary<int, DateTime>();
+    private readonly IDictionary<int, IDictionary<int, NowAndNext>> _listNowNext = new Dictionary<int, IDictionary<int, NowAndNext>>();
+    private readonly Dictionary<int, DateTime> _nextEPGupdate = new Dictionary<int, DateTime>();
     private Channel _selectedChannel;
     private bool _showChannelNumber;
     private Dictionary<int, List<Channel>> _tvGroupChannelListCache;
@@ -87,8 +87,8 @@ namespace Mediaportal.TV.TvPlugin
     [SkinControl(37)]
     protected GUIListControl lstChannelsWithStateIcons;
 
-    private StringBuilder sb = new StringBuilder();
-    private StringBuilder sbTmp = new StringBuilder();
+    private readonly StringBuilder sb = new StringBuilder();
+    private readonly StringBuilder sbTmp = new StringBuilder();
 
     [SkinControl(36)]
     protected GUISpinControl spinGroup;

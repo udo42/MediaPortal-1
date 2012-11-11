@@ -34,7 +34,7 @@ namespace WebEPG.config
 
     private ArrayList _ConfigList;
     private int _MaxGrab;
-    private string _strPath = "";
+    private readonly string _strPath = "";
 
     #endregion
 

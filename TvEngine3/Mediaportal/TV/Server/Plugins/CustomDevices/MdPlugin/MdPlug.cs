@@ -119,7 +119,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       public UInt16 CaType;
       public UInt16 EcmPid;
       public UInt16 EmmPid;
-      private UInt16 Padding;
+      private readonly UInt16 Padding;
       public UInt32 ProviderId;
     }
 
@@ -141,9 +141,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
     private struct PidFilter
     {
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 5)]
-      public String Name;
-      public byte Id;
-      public UInt16 Pid;
+      public readonly String Name;
+      public readonly byte Id;
+      public readonly UInt16 Pid;
     }
 
     #endregion
@@ -172,19 +172,19 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 30)]
       public String Provider;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 30)]
-      public String Country;
-      private UInt16 Padding1;
+      public readonly String Country;
+      private readonly UInt16 Padding1;
 
-      public UInt32 Frequency;  // unit = kHz
-      public byte PType;
-      public byte Voltage;      // polarisation ???
-      public byte Afc;
-      public byte Diseqc;
-      public UInt16 SymbolRate; // unit = ks/s
-      public UInt16 Qam;        // modulation ???
-      public UInt16 FecRate;
-      public byte Norm;
-      private byte Padding2;
+      public readonly UInt32 Frequency;  // unit = kHz
+      public readonly byte PType;
+      public readonly byte Voltage;      // polarisation ???
+      public readonly byte Afc;
+      public readonly byte Diseqc;
+      public readonly UInt16 SymbolRate; // unit = ks/s
+      public readonly UInt16 Qam;        // modulation ???
+      public readonly UInt16 FecRate;
+      public readonly byte Norm;
+      private readonly byte Padding2;
 
       public UInt16 TransportStreamId;
       public UInt16 VideoPid;
@@ -196,34 +196,34 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       public UInt16 ServiceId;
       public UInt16 Ac3AudioPid;
 
-      public byte AnalogTvStandard; // 0x00 = PAL, 0x11 = NTSC
+      public readonly byte AnalogTvStandard; // 0x00 = PAL, 0x11 = NTSC
 
       public byte ServiceType;
       public byte CaId;
-      private byte Padding3;
+      private readonly byte Padding3;
 
-      public UInt16 TempAudioPid;
+      public readonly UInt16 TempAudioPid;
 
-      public UInt16 FilterCount;
+      public readonly UInt16 FilterCount;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
-      public PidFilter[] Filters;
+      public readonly PidFilter[] Filters;
 
       public UInt16 CaSystemCount;
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxCaSystemCount)]
       public CaSystem82[] CaSystems;
       [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 5)]
-      public String CaCountry;
+      public readonly String CaCountry;
 
-      public byte Marker;
+      public readonly byte Marker;
 
-      public UInt16 LinkTransponder;
-      public UInt16 LinkServiceid;
+      public readonly UInt16 LinkTransponder;
+      public readonly UInt16 LinkServiceid;
 
-      public byte Dynamic;
+      public readonly byte Dynamic;
 
       [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-      public byte[] ExternBuffer;
-      private byte Padding4;
+      public readonly byte[] ExternBuffer;
+      private readonly byte Padding4;
     }
 
     #endregion

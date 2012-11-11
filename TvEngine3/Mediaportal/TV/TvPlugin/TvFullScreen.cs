@@ -82,7 +82,7 @@ namespace Mediaportal.TV.TvPlugin
     #region variables
 
     private bool _IsClosingDialog;
-    private List<Geometry.Type> _allowedArModes = new List<Geometry.Type>();
+    private readonly List<Geometry.Type> _allowedArModes = new List<Geometry.Type>();
     private bool _autoZapMode;
     private Timer _autoZapTimer = new Timer();
     private bool _bottomDialogMenuVisible;
@@ -121,7 +121,7 @@ namespace Mediaportal.TV.TvPlugin
 
     ///@
     ///VMR9OSD _vmr9OSD = null;
-    private FullScreenState _screenState = new FullScreenState();
+    private readonly FullScreenState _screenState = new FullScreenState();
 
     private bool _settingsLoaded;
     private DateTime _statusTimeOutTimer = DateTime.Now;

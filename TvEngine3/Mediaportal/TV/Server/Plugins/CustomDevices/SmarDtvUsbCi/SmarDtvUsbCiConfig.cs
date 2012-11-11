@@ -38,9 +38,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     private readonly ICardService _cardServiceAgent = ServiceAgents.Instance.CardServiceAgent;
     private readonly IControllerService _controllerServiceAgent = ServiceAgents.Instance.ControllerServiceAgent;
     private readonly ISettingService _settingServiceAgent = ServiceAgents.Instance.SettingServiceAgent;
-    private Label[] _installStateLabels;
-    private ReadOnlyCollection<SmarDtvUsbCiProduct> _products;
-    private MPComboBox[] _tunerSelections;
+    private readonly Label[] _installStateLabels;
+    private readonly ReadOnlyCollection<SmarDtvUsbCiProduct> _products;
+    private readonly MPComboBox[] _tunerSelections;
 
     public SmarDtvUsbCiConfig()
       : this("SmarDTV USB CI")

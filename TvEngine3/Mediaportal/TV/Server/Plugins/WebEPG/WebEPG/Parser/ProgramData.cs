@@ -47,7 +47,7 @@ namespace WebEPG.Parser
     private WorldDateTime _endTime;
     private int _episode;
     private string _genre = string.Empty;
-    private Dictionary<string, int> _months;
+    private readonly Dictionary<string, int> _months;
     private DataPreference _preference;
     private bool _repeat;
     private int _season;

@@ -55,7 +55,7 @@ namespace WebEPG
     private RequestBuilder _reqBuilder;
     private RequestData _reqData;
     private WorldTimeZone _siteTimeZone;
-    private string _strBaseDir = string.Empty;
+    private readonly string _strBaseDir = string.Empty;
     private string _strID = string.Empty;
     private ListingTimeControl _timeControl;
 

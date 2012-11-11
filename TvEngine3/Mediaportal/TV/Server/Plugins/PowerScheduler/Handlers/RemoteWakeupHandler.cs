@@ -31,7 +31,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
   {
     public readonly string Url;
     private IWakeupHandler remote;
-    private int tag;
+    private readonly int tag;
 
     public RemoteWakeupHandler(String URL, int tag)
     {

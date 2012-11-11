@@ -29,7 +29,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
   {
     #region Variables
 
-    private Dictionary<string, string> _data;
+    private readonly Dictionary<string, string> _data;
 
     #endregion
 

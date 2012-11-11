@@ -84,7 +84,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
 
     private readonly bool _initialized;
     private readonly Dictionary<string, RtspStream> _streams;
-    private int _port;
+    private readonly int _port;
     private bool _running;
 
     #endregion

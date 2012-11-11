@@ -37,7 +37,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private class DisplaySoftwareEncoder
     {
-      private SoftwareEncoder _encoder;
+      private readonly SoftwareEncoder _encoder;
       private String _installed;
 
       public DisplaySoftwareEncoder(SoftwareEncoder encoder)

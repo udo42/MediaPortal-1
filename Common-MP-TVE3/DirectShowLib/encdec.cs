@@ -113,8 +113,7 @@ namespace DirectShowLib.BDA
   [StructLayout(LayoutKind.Sequential)]
   public struct WMDRMProtectionInfo
   {
-    [MarshalAs(UnmanagedType.LPWStr, SizeConst = 25)]
-    string wszKID;
+    [MarshalAs(UnmanagedType.LPWStr, SizeConst = 25)] readonly string wszKID;
     public long qwCounter;
     public long qwIndex;
     public byte bOffset;

@@ -59,7 +59,7 @@ namespace Mediaportal.TV.TvPlugin
     {
   
 
-      private Work work;
+      private readonly Work work;
 
       public RecordingThumbCacher()
       {
