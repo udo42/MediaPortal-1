@@ -1274,8 +1274,6 @@ namespace DirectShowLib
     /// <param name="cat">Any one of FilterCategory</param>
     public static DsDevice[] GetDevicesOfCat(Guid FilterCategory)
     {
-      int hr;
-
       // Use arrayList to build the retun list since it is easily resizable
       DsDevice[] devret;
       ArrayList devs = new ArrayList();
@@ -1286,7 +1284,7 @@ namespace DirectShowLib
 #endif
 
       ICreateDevEnum enumDev = (ICreateDevEnum) new CreateDevEnum();
-      hr = enumDev.CreateClassEnumerator(FilterCategory, out enumMon, 0);
+      int hr = enumDev.CreateClassEnumerator(FilterCategory, out enumMon, 0);
       DsError.ThrowExceptionForHR(hr);
 
       // CreateClassEnumerator returns null for enumMon if there are no entries
@@ -1413,7 +1411,6 @@ namespace DirectShowLib
     /// <returns>The matching pin, or null if not found</returns>
     public static IPin ByDirection(IBaseFilter vSource, PinDirection vDir, int iIndex)
     {
-      int hr;
       int lFetched;
       IEnumPins ppEnum;
       PinDirection ppindir;
@@ -1426,7 +1423,7 @@ namespace DirectShowLib
       }
 
       // Get the pin enumerator
-      hr = vSource.EnumPins(out ppEnum);
+      int hr = vSource.EnumPins(out ppEnum);
       DsError.ThrowExceptionForHR(hr);
 
       try
@@ -1468,7 +1465,6 @@ namespace DirectShowLib
     /// <returns>The matching pin, or null if not found</returns>
     public static IPin ByName(IBaseFilter vSource, string vPinName)
     {
-      int hr;
       int lFetched;
       IEnumPins ppEnum;
       PinInfo ppinfo;
@@ -1481,7 +1477,7 @@ namespace DirectShowLib
       }
 
       // Get the pin enumerator
-      hr = vSource.EnumPins(out ppEnum);
+      int hr = vSource.EnumPins(out ppEnum);
       DsError.ThrowExceptionForHR(hr);
 
       try
@@ -1521,7 +1517,6 @@ namespace DirectShowLib
     /// <returns>The matching pin, or null if not found</returns>
     public static IPin ByCategory(IBaseFilter vSource, Guid PinCategory, int iIndex)
     {
-      int hr;
       int lFetched;
       IEnumPins ppEnum;
       IPin pRet = null;
@@ -1533,7 +1528,7 @@ namespace DirectShowLib
       }
 
       // Get the pin enumerator
-      hr = vSource.EnumPins(out ppEnum);
+      int hr = vSource.EnumPins(out ppEnum);
       DsError.ThrowExceptionForHR(hr);
 
       try
@@ -1572,7 +1567,6 @@ namespace DirectShowLib
     /// <returns>The matching pin, or null if not found</returns>
     public static IPin ByConnectionStatus(IBaseFilter vSource, PinConnectedStatus vStat, int iIndex)
     {
-      int hr;
       int lFetched;
       IEnumPins ppEnum;
       IPin pRet = null;
@@ -1585,7 +1579,7 @@ namespace DirectShowLib
       }
 
       // Get the pin enumerator
-      hr = vSource.EnumPins(out ppEnum);
+      int hr = vSource.EnumPins(out ppEnum);
       DsError.ThrowExceptionForHR(hr);
 
       try

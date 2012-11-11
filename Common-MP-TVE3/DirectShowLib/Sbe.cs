@@ -1028,13 +1028,11 @@ namespace DirectShowLib.SBE
 
     public IntPtr MarshalManagedToNative(object managedObj)
     {
-      IntPtr ip;
-
       m_sd = managedObj as SBE2_StreamDesc [];
 
       int iSize = m_sd.Length * Marshal.SizeOf(typeof(SBE2_StreamDesc));
 
-      ip = Marshal.AllocCoTaskMem(iSize);
+      IntPtr ip = Marshal.AllocCoTaskMem(iSize);
 
 #if DEBUG
       for (int x = 0; x < iSize / 8; x++)
