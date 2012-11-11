@@ -43,13 +43,12 @@ namespace Mediaportal.TV.Server.SetupControls
       ea.DrawBackground();
       ea.DrawFocusRectangle();
 
-      ComboBoxExItem item;
       Size imageSize = imageList.ImageSize;
       Rectangle bounds = ea.Bounds;
 
       try
       {
-        item = (ComboBoxExItem)Items[ea.Index];
+        ComboBoxExItem item = (ComboBoxExItem)Items[ea.Index];
 
         if (item.ImageIndex != -1)
         {

@@ -388,10 +388,9 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
       // adding key
       TstDictionaryEntry p = Root;
       int i = 0;
-      char c;
       while (i < key.Length)
       {
-        c = key[i];
+        char c = key[i];
         if (c < p.SplitChar)
         {
           if (p.LowChild == null)
@@ -558,10 +557,9 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
 
       TstDictionaryEntry p = Root;
       int index = 0;
-      char c;
       while (index < n && p != null)
       {
-        c = key[index];
+        char c = key[index];
         if (c < p.SplitChar)
           p = p.LowChild;
         else if (c > p.SplitChar)

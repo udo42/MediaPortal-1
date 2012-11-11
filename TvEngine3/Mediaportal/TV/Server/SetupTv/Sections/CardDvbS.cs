@@ -277,11 +277,11 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
             Application.DoEvents();
             using (Stream resStream = response.GetResponseStream())
             {
-              String line;
               using (TextReader tin = new StreamReader(resStream))
               {
                 #region Parse and fill transponder list
 
+                String line;
                 do
                 {
                   line = tin.ReadLine();
@@ -564,8 +564,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
       _enableEvents = false;
 
-      int idx = 0;
-
       mpComboBoxPolarisation.Items.AddRange(new object[]
                                               {
                                                 "Not Set",
@@ -668,12 +666,10 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       var mpComboDiseqc = new[] {mpComboDiseqc1, mpComboDiseqc2, mpComboDiseqc3, mpComboDiseqc4};
       var mpComboLnbType = new[] {mpComboLnbType1, mpComboLnbType2, mpComboLnbType3, mpComboLnbType4};
       var mpLNBs = new[] {mpLNB1, mpLNB2, mpLNB3, mpLNB4};
-      MPComboBox curBox;
-      MPCheckBox curCheck;
       for (int ctlIndex = 0; ctlIndex < 4; ctlIndex++)
       {
-        idx = ctlIndex + 1;
-        curBox = mpTrans[ctlIndex];
+        int idx = ctlIndex + 1;
+        MPComboBox curBox = mpTrans[ctlIndex];
         curBox.Items.Clear();
         foreach (SatelliteContext ts in satellites)
         {
@@ -727,7 +723,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           curBox.SelectedIndex = ServiceAgents.Instance.SettingServiceAgent.GetValue(String.Format("dvbs{0}band{1}", _cardNumber, idx), 0);
         }
 
-        curCheck = mpLNBs[ctlIndex];        
+        MPCheckBox curCheck = mpLNBs[ctlIndex];        
         curCheck.Checked = ServiceAgents.Instance.SettingServiceAgent.GetValue(String.Format("dvbs{0}LNB{1}", _cardNumber, idx), false);
       }
 

@@ -323,7 +323,6 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
     private void MmiHandler()
     {
       this.LogDebug("NetUP: MMI handler thread start polling");
-      NetUpCiState ciState = NetUpCiState.Empty;
       NetUpCiState prevCiState = NetUpCiState.Empty;
       try
       {
@@ -340,7 +339,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
           }
 
           // Handle CI slot state changes.
-          ciState = info.CiState;
+          NetUpCiState ciState = info.CiState;
           if (ciState != prevCiState)
           {
             this.LogDebug("NetUP: CI state change");
@@ -1212,9 +1211,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.NetUp
         }
         functionHandle = IntPtr.Zero;
 
-        bool is64bitOs = false;
         try
         {
+          bool is64bitOs = false;
           if (NativeMethods.IsWow64Process(Process.GetCurrentProcess().Handle, out is64bitOs))
           {
             if (is64bitOs)

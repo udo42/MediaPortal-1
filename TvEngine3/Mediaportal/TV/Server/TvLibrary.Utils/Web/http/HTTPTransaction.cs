@@ -140,10 +140,6 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     private bool Transaction(HTTPRequest pageRequest)
     {
       var Blocks = new ArrayList();
-      byte[] Block;
-      byte[] readBlock;
-      int size;
-      int totalSize;
       DateTime startTime = DateTime.Now;
 
       if (pageRequest.Delay > 0)
@@ -268,13 +264,14 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
 
         Stream ReceiveStream = _response.GetResponseStream();
 
-        Block = new byte[blockSize];
-        totalSize = 0;
+        byte[] block = new byte[blockSize];
+        int totalSize = 0;
 
-        while ((size = ReceiveStream.Read(Block, 0, blockSize)) > 0)
+        int size;
+        while ((size = ReceiveStream.Read(block, 0, blockSize)) > 0)
         {
-          readBlock = new byte[size];
-          Array.Copy(Block, readBlock, size);
+          byte[] readBlock = new byte[size];
+          Array.Copy(block, readBlock, size);
           Blocks.Add(readBlock);
           totalSize += size;
         }
@@ -287,9 +284,9 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
 
         for (int i = 0; i < Blocks.Count; i++)
         {
-          Block = (byte[])Blocks[i];
-          Block.CopyTo(_data, pos);
-          pos += Block.Length;
+          block = (byte[])Blocks[i];
+          block.CopyTo(_data, pos);
+          pos += block.Length;
         }
       }
       catch (WebException ex)

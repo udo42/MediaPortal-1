@@ -1190,7 +1190,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
           this.LogDebug("TvCardBase: sending command(s)");
           bool success = false;
           // The default action is "more" - this will be changed below if necessary.
-          CaPmtListManagementAction action = CaPmtListManagementAction.More;
 
           // The command is "start/continue descrambling" unless we're removing services.
           CaPmtCommand command = CaPmtCommand.OkDescrambling;
@@ -1201,6 +1200,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
           for (int i = 0; i < distinctServices.Count; i++)
           {
             ThrowExceptionIfTuneCancelled();
+            CaPmtListManagementAction action = CaPmtListManagementAction.More;
             if (i == 0)
             {
               if (distinctServices.Count == 1)

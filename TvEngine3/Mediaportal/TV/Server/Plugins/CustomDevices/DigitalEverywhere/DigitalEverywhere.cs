@@ -820,7 +820,6 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
     private void MmiHandler()
     {
       this.LogDebug("Digital Everywhere: MMI handler thread start polling");
-      DeCiState ciState = DeCiState.Empty;
       DeCiState prevCiState = DeCiState.Empty;
 
       try
@@ -829,6 +828,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
         {
           Thread.Sleep(MmiHandlerThreadSleepTime);
 
+          DeCiState ciState = DeCiState.Empty;
           int hr = GetCiStatus(out ciState);
           if (hr != 0)
           {

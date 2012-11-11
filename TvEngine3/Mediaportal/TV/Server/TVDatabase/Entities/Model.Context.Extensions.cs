@@ -740,21 +740,21 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
         private static EntityType GetCSpaceEntityType(this MetadataWorkspace workspace, Type type)
         {
             EntityType ospaceEntityType = null;
-            StructuralType cspaceEntityType = null;
-            EntityType entityType = null;
+          EntityType entityType = null;
             if (workspace.TryGetItem<EntityType>(
                 type.FullName,
                 DataSpace.OSpace,
                 out ospaceEntityType))
             {
-                if (workspace.TryGetEdmSpaceType(
+              StructuralType cspaceEntityType = null;
+              if (workspace.TryGetEdmSpaceType(
                     ospaceEntityType,
                     out cspaceEntityType))
                 {
                     entityType = cspaceEntityType as EntityType;
                 }
             }
-            if(entityType == null)
+          if(entityType == null)
             {
                 throw new ArgumentException(String.Format(CultureInfo.CurrentCulture, "Unable to find a CSpace type for type {0}", type.FullName));
             }

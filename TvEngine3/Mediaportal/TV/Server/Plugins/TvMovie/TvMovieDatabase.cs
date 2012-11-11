@@ -989,13 +989,12 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     private string BuildDetailedRatingDescription(string dbDetailedRating)
     {
       // "Spaß=1;Action=3;Erotik=1;Spannung=3;Anspruch=0"
-      int posidx = 0;
       string detailedRating = String.Empty;
       var strb = new StringBuilder();
 
       if (dbDetailedRating != String.Empty)
       {
-        posidx = dbDetailedRating.IndexOf(@"Spaß=");
+        int posidx = dbDetailedRating.IndexOf(@"Spaß=");
         if (posidx > 0)
         {
           if (dbDetailedRating[posidx + 5] != '0')

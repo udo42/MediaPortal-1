@@ -575,11 +575,10 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       if (prgField != null)
       {
         var op = (ConditionOperator)mpComboBoxOperators.SelectedItem;
-        object prgCond = null;
         int index = groupBox1.Controls.IndexOfKey("mpTextBoxProgramValue");
         if (index > -1)
         {
-          prgCond = CreateSelectedProgramCondition(groupBox1.Controls[index], op, prgField);
+          object prgCond = CreateSelectedProgramCondition(groupBox1.Controls[index], op, prgField);
           AddToListBox(prgCond, prgField.Name, listBoxPrograms);
         }
       }

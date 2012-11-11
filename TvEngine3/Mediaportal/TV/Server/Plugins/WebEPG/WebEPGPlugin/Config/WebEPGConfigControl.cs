@@ -573,10 +573,9 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
     {
       var dir = new DirectoryInfo(Location);
       this.LogDebug("WebEPG Config: Directory: {0}", Location);
-      GrabberConfigInfo gInfo;
       foreach (FileInfo file in dir.GetFiles("*.xml"))
       {
-        gInfo = new GrabberConfigInfo();
+        GrabberConfigInfo gInfo = new GrabberConfigInfo();
         //XmlDocument xml = new XmlDocument();
         GrabberConfigFile grabberXml;
         try

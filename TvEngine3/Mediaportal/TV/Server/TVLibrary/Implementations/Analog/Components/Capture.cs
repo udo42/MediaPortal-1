@@ -913,10 +913,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       try
       {
         IntPtr pmt = IntPtr.Zero;
-        AMMediaType mediaType;
         try
         {
           // Get the current format info
+          AMMediaType mediaType;
           int hr = _streamConfig.GetFormat(out mediaType);
           if (hr != 0)
           {
@@ -997,10 +997,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       try
       {
         IntPtr pmt = IntPtr.Zero;
-        AMMediaType mediaType;
         try
         {
           // Get the current format info
+          AMMediaType mediaType;
           int hr = _streamConfig.GetFormat(out mediaType);
           if (hr != 0)
           {

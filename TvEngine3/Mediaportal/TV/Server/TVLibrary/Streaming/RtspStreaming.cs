@@ -106,7 +106,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
     /// <param name="port">port no to use for streaming</param>
     public RtspStreaming(string hostName, int port)
     {
-      int result;
       try
       {
         IList<IPAddress> preferedAddresses = GetDefGatewayNetAddresses();
@@ -131,7 +130,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
 
         if (selectedAddress != null)
         {
-          result = StreamSetupEx(selectedAddress.ToString(), port);
+          int result = StreamSetupEx(selectedAddress.ToString(), port);
           if (result == 1)
           {
             throw new Exception("Error initializing streaming server");

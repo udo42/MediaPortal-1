@@ -166,9 +166,9 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
               {
                 var element = (ElementData)templateField.dataElements[i];
 
-                int startPos;
                 if (index < sourceField.source.Length)
                 {
+                  int startPos;
                   if (element.start == string.Empty ||
                       (startPos = sourceField.source.IndexOf(element.start, index, StringComparison.OrdinalIgnoreCase)) ==
                       -1)
@@ -296,14 +296,13 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
       MatchTagCollection tags = HtmlString.TagList(source);
 
       bool isOptionalTag = false;
-      bool zTag = false;
 
 
       for (int i = 0; i < tags.Count; i++)
       {
         MatchTag tag = tags[i];
         // check if tag + data is optional / regex
-        zTag = false;
+        bool zTag = false;
         if (char.ToUpper(tag.TagName[0]) == 'Z')
         {
           zTag = true;

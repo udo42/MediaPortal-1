@@ -153,16 +153,13 @@ namespace WebEPG.config
         return retChan;
       }
 
-      ChannelGrabberInfo ch;
-
       var comparer = new Levenstein();
-      float similarity;
       int mostSimilarChan = -1;
 
       float bestSimilarity = MIN_SIMILARITY;
       for (int i = 0; i < channels.Count; i++)
       {
-        ch = channels[i];
+        ChannelGrabberInfo ch = channels[i];
         if (ch.GrabberList == null)
           continue;
         if (Name.Equals(ch.FullName, StringComparison.OrdinalIgnoreCase))
@@ -176,7 +173,7 @@ namespace WebEPG.config
           retChan = i;
         }
 
-        similarity = comparer.getSimilarity(Name, ch.FullName);
+        float similarity = comparer.getSimilarity(Name, ch.FullName);
 
         if (similarity > bestSimilarity)
         {
@@ -202,18 +199,14 @@ namespace WebEPG.config
         return retList;
       }
 
-      ChannelGrabberInfo ch;
-
       var comparer = new Levenstein();
-      float bestSimilarity;
-      float similarity;
 
       for (int k = 0; k < NameList.Length; k++)
       {
-        bestSimilarity = MIN_SIMILARITY;
+        float bestSimilarity = MIN_SIMILARITY;
         for (int i = 0; i < channels.Count; i++)
         {
-          ch = channels[i];
+          ChannelGrabberInfo ch = channels[i];
           if (NameList[k] == ch.FullName)
           {
             retList[k] = ch;
@@ -226,7 +219,7 @@ namespace WebEPG.config
             break;
           }
 
-          similarity = comparer.getSimilarity(NameList[k], ch.FullName);
+          float similarity = comparer.getSimilarity(NameList[k], ch.FullName);
 
           if (similarity > bestSimilarity)
           {

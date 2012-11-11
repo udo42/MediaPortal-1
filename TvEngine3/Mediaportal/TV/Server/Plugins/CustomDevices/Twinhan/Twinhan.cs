@@ -1334,14 +1334,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     private void MmiHandler()
     {
       this.LogDebug("Twinhan: MMI handler thread start polling");
-      TwinhanCiState ciState = TwinhanCiState.Empty_Old;
-      TwinhanMmiState mmiState = TwinhanMmiState.Idle;
       TwinhanCiState prevCiState = TwinhanCiState.Empty_Old;
       TwinhanMmiState prevMmiState = TwinhanMmiState.Idle;
       try
       {
         while (!_stopMmiHandlerThread)
         {
+          TwinhanCiState ciState = TwinhanCiState.Empty_Old;
+          TwinhanMmiState mmiState = TwinhanMmiState.Idle;
           int hr = GetCiStatus(out ciState, out mmiState);
           if (hr != 0)
           {

@@ -80,10 +80,10 @@ namespace MediaPortal.Common.Utils
     {
       // Make sure service implements type
       Type t = typeof(T);
-      object o = null;
 
       lock (_servicesLock)
       {
+        object o = null;
         if (_services.TryGetValue(t, out o))
         {
           if (!(o is ServiceCreatorCallback<T>))
@@ -98,10 +98,10 @@ namespace MediaPortal.Common.Utils
     }
 
     public void Add<T>(Type serviceInterface, T service)
-    {      
-      object o = null;
+    {
       lock (_servicesLock)
       {
+        object o = null;
         if (_services.TryGetValue(serviceInterface, out o))
         {
           /*if (!(o is ServiceCreatorCallback<T>))
@@ -141,9 +141,9 @@ namespace MediaPortal.Common.Utils
     public T Get<T>()
     {
       Type t = typeof(T);
-      object o = null;
       lock (_servicesLock)
       {
+        object o = null;
         if (_services.TryGetValue(t, out o))
         {
           var s = o as ServiceCreatorCallback<T>;

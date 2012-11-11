@@ -2771,7 +2771,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       Buffer.BlockCopy(d._data, 4, d._privateData, 0, d._length - 4);
 
       // Build a dictionary of PID info.
-      UInt32 providerId;
       d._pids = new Dictionary<UInt16, HashSet<UInt32>>(); // PID -> provider ID(s)
       d._pids.Add(d._caPid, new HashSet<UInt32>());
 
@@ -2799,8 +2798,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
         {
           if (tagInd == 0x14 && tagLen >= 2)  // Tag 0x14 is the Via Access provider ID.
           {
-            providerId = (UInt32)((d._privateData[offset] << 16) + (d._privateData[offset + 1] << 8) +
-                              d._privateData[offset + 2]);
+            uint providerId = (UInt32)((d._privateData[offset] << 16) + (d._privateData[offset + 1] << 8) +
+                                       d._privateData[offset + 2]);
             // Some providers (eg. Boxer) send wrong information in the lower 4 bits of the provider ID,
             // so reset the lower 4 bits for Via Access.
             if (d._caSystemId == 0x500)

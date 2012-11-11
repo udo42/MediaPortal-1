@@ -293,7 +293,6 @@ namespace Mediaportal.TV.TvPlugin.Teletext
     private void Render(ref Graphics graph, ref Bitmap pageBitmap, byte chr, int attrib, ref int x, ref int y, int w,
                         int h, int txtLanguage)
     {
-      bool charReady;
       char chr2 = '?';
 
       // Skip the character if 0xFF
@@ -381,7 +380,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
 
         int factor = (attrib & 1 << 10) > 0 ? 2 : 1;
 
-        charReady = false;
+        bool charReady = false;
         // If character is still not drawn, then we analyse it again
         switch (chr)
         {
@@ -648,9 +647,6 @@ namespace Mediaportal.TV.TvPlugin.Teletext
     public void RenderPage(ref Bitmap pageBitmap, byte[] byPage, int mPage, int sPage, bool waiting)
     {
       int col;
-      int hold;
-      int foreground, background, doubleheight, charset, mosaictype;
-      byte held_mosaic;
       bool flag = false;
       bool isBoxed = false;
       var pageChars = new byte[31 * 40];
@@ -781,7 +777,8 @@ namespace Mediaportal.TV.TvPlugin.Teletext
           // Otherwise, analyse the information. First set the forground to white and the background to:
           // - Transparent, if transparent mode or boxed and fullscreen and not display the header and toptext line
           // - Black otherwise
-          foreground = (int)TextColors.White;
+          int foreground = (int)TextColors.White;
+          int background;
           if ((isBoxed || _transparentMode) && _fullscreenMode && !displayHeaderAndTopText)
           {
             background = (int)TextColors.Trans1;
@@ -792,11 +789,11 @@ namespace Mediaportal.TV.TvPlugin.Teletext
           }
 
           // Reset the attributes
-          doubleheight = 0;
-          charset = 0;
-          mosaictype = 0;
-          hold = 0;
-          held_mosaic = 32;
+          int doubleheight = 0;
+          int charset = 0;
+          int mosaictype = 0;
+          int hold = 0;
+          byte held_mosaic = 32;
           // Iterate over all columns in the row and check if a box starts
           for (int loop1 = 0; loop1 < 40; loop1++)
           {
@@ -1125,7 +1122,6 @@ namespace Mediaportal.TV.TvPlugin.Teletext
 
       // Now we generate the bitmap
       int y = 0;
-      int x;
       int width = _pageRenderWidth / 40;
       int height = _pageRenderHeight / 25;
       float fntSize = height; //Math.Min(width, height);
@@ -1161,7 +1157,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
           {
             break;
           }
-          x = 0;
+          int x = 0;
           // Draw a single point
           for (col = 0; col < 40; col++)
           {

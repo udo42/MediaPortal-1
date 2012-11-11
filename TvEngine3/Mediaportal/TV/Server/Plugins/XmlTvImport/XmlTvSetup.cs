@@ -716,13 +716,12 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
         foreach (DataGridViewRow row in dataGridChannelMappings.Rows)
         {
           var guideChannelAndexternalId = (string)row.Cells["guideChannel"].Value;
-          string externalId = null;
 
           if (guideChannelAndexternalId != null)
           {
             int startIdx = guideChannelAndexternalId.LastIndexOf("(") + 1;
             // the length is the same as the length - startingidex -1 (-1 -> remove trailing )) 
-            externalId = guideChannelAndexternalId.Substring(startIdx, guideChannelAndexternalId.Length - startIdx - 1);
+            string externalId = guideChannelAndexternalId.Substring(startIdx, guideChannelAndexternalId.Length - startIdx - 1);
             fileOut.WriteLine("channel=" + externalId);
           }
         }

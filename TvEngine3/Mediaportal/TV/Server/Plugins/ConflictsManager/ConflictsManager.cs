@@ -455,10 +455,9 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
         }
 
         // generate the daily schedules for the next 30 days
-        DateTime tempDate;
         for (int i = 0; i <= 30; i++)
         {
-          tempDate = DateTime.Now.AddDays(i);
+          DateTime tempDate = DateTime.Now.AddDays(i);
           if (tempDate.Date >= schedule.StartTime.Date)
           {
             Schedule incomingSchedule = ScheduleFactory.Clone(baseSchedule);
@@ -484,11 +483,10 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
         var scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
         if (schedule.Canceled != Schedule.MinSchedule) continue;
         if (scheduleType != ScheduleRecordingType.Weekly) continue;
-        DateTime tempDate;
         //  generate the weekly schedules for the next 30 days
         for (int i = 0; i <= 30; i++)
         {
-          tempDate = DateTime.Now.AddDays(i);
+          DateTime tempDate = DateTime.Now.AddDays(i);
           if ((tempDate.DayOfWeek == schedule.StartTime.DayOfWeek) && (tempDate.Date >= schedule.StartTime.Date))
           {
             Schedule tempSchedule = ScheduleFactory.Clone(schedule);
@@ -536,11 +534,10 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
         var scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
         if (schedule.Canceled != Schedule.MinSchedule) continue;
         if (scheduleType != ScheduleRecordingType.Weekends) continue;
-        DateTime tempDate;
         //  generate the weekly schedules for the next 30 days
         for (int i = 0; i <= 30; i++)
         {
-          tempDate = DateTime.Now.AddDays(i);
+          DateTime tempDate = DateTime.Now.AddDays(i);
           if (WeekEndTool.IsWeekend(tempDate.DayOfWeek) && (tempDate.Date >= schedule.StartTime.Date))
           {
             Schedule tempSchedule = ScheduleFactory.Clone(schedule);
@@ -588,11 +585,10 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
         var scheduleType = (ScheduleRecordingType)schedule.ScheduleType;
         if (schedule.Canceled != Schedule.MinSchedule) continue;
         if (scheduleType != ScheduleRecordingType.WorkingDays) continue;
-        DateTime tempDate;
         //  generate the weekly schedules for the next 30 days
         for (int i = 0; i <= 30; i++)
         {
-          tempDate = DateTime.Now.AddDays(i);
+          DateTime tempDate = DateTime.Now.AddDays(i);
           if ((WeekEndTool.IsWorkingDay(tempDate.DayOfWeek)) && (tempDate.Date >= schedule.StartTime.Date))
           {
             Schedule tempSchedule = ScheduleFactory.Clone(schedule);

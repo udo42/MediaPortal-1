@@ -161,8 +161,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     public void ShowTiles(int[] columns)
     {
-      ListViewAPI.LVTILEINFO apiTile;
-
       IntPtr lpcol = Marshal.AllocHGlobal(columns.Length * 4);
       Marshal.Copy(columns, 0, lpcol, columns.Length);
 
@@ -180,7 +178,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
       foreach (XPListViewItem itm in Items)
       {
-        apiTile = new ListViewAPI.LVTILEINFO();
+        ListViewAPI.LVTILEINFO apiTile = new ListViewAPI.LVTILEINFO();
         apiTile.cbSize = Marshal.SizeOf(typeof (ListViewAPI.LVTILEINFO));
         apiTile.iItem = itm.Index;
         apiTile.cColumns = columns.Length;
@@ -423,10 +421,9 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     private void _items_ItemAdded(object sender, ListViewItemEventArgs e)
     {
-      string text;
       if (_autoGroup)
       {
-        text = e.Item.SubItems[_autoGroupCol.Index].Text;
+        string text = e.Item.SubItems[_autoGroupCol.Index].Text;
         if (!_autoGroupList.Contains(text))
         {
           _autoGroupList.Add(text);

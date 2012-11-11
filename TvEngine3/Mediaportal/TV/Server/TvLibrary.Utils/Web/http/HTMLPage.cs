@@ -224,14 +224,13 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     {
       // Use internal code to get HTML page
       var Page = new HTTPTransaction();
-      Encoding encode;
       string strEncode = _defaultEncode;
 
       if (Page.HTTPGet(page))
       {
         byte[] pageData = Page.GetData();
-        int i;
 
+        Encoding encode;
         if (_encoding != "")
         {
           strEncode = _encoding;
@@ -244,6 +243,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
           int headEnd;
           if ((headEnd = _strPageSource.ToLower().IndexOf("</head")) != -1)
           {
+            int i;
             if ((i = _strPageSource.ToLower().IndexOf("charset", 0, headEnd)) != -1)
             {
               strEncode = "";

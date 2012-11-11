@@ -1240,8 +1240,6 @@ namespace Mediaportal.TV.TvPlugin
       bool isWakeOnLanEnabled;
       bool isAutoMacAddressEnabled;
       int intTimeOut;
-      String macAddress;
-      byte[] hwAddress;
 
       using (Settings xmlreader = new MPSettings())
       {
@@ -1256,6 +1254,8 @@ namespace Mediaportal.TV.TvPlugin
         {
           var wakeOnLanManager = new WakeOnLanManager();
 
+          byte[] hwAddress;
+          String macAddress;
           if (isAutoMacAddressEnabled)
           {
             IPAddress ipAddress = null;

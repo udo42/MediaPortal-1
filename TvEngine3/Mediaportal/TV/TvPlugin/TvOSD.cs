@@ -1531,17 +1531,13 @@ namespace Mediaportal.TV.TvPlugin
       else if (g_Player.IsTVRecording)
       {
         Recording rec = null;
-        string description = "";
-        string title = "";
-        string startTime = ""; // DateTime.MinValue;
-        string endTime = ""; //  DateTime.MaxValue;
         //string remaining = "";
 
         rec = TvRecorded.ActiveRecording();
         if (rec != null)
         {
-          description = rec.Description;
-          title = rec.Title;
+          string description = rec.Description;
+          string title = rec.Title;
           Channel ch = null;
           if (rec.IdChannel.HasValue)
           {
@@ -1558,10 +1554,10 @@ namespace Mediaportal.TV.TvPlugin
           }
 
           var currentPosition = (long)(g_Player.CurrentPosition);
-          startTime = Utils.SecondsToHMSString((int)currentPosition);
+          string startTime = Utils.SecondsToHMSString((int)currentPosition); // DateTime.MinValue;
 
           var duration = (long)(g_Player.Duration);
-          endTime = Utils.SecondsToHMSString((int)duration);
+          string endTime = Utils.SecondsToHMSString((int)duration); //  DateTime.MaxValue;
 
           //remaining = "0";                    
           if (tbOnTvNow != null)
@@ -1616,10 +1612,10 @@ namespace Mediaportal.TV.TvPlugin
         if (ts.TotalSeconds > 15 || forced)
         {
           bool isRecording = false;
-          IVirtualCard card;
           ChannelBLL channelBll = GetChannel();
           if (channelBll != null && channelBll.Entity != null)
           {
+            IVirtualCard card;
             if (ServiceAgents.Instance.ControllerServiceAgent.IsRecording(channelBll.Entity.IdChannel, out card))
             {
               if (g_Player.IsTVRecording)
@@ -1634,8 +1630,8 @@ namespace Mediaportal.TV.TvPlugin
               {
                 isRecording = true;
               }
-            } 
-          }          
+            }
+          }
 
           imgRecIcon.Visible = isRecording;
           _recIconLastCheck = DateTime.Now;
@@ -1703,21 +1699,18 @@ namespace Mediaportal.TV.TvPlugin
       else
       {
         Recording rec = null;
-        string startTime = "";
-        string endTime = "";
-        string channelDisplayName = "";
 
         rec = TvRecorded.ActiveRecording();
         if (rec != null)
         {
           var currentPosition = (long)(g_Player.CurrentPosition);
-          startTime = Utils.SecondsToHMSString((int)currentPosition);
+          string startTime = Utils.SecondsToHMSString((int)currentPosition);
 
           var duration = (long)(g_Player.Duration);
-          endTime = Utils.SecondsToHMSString((int)duration);
+          string endTime = Utils.SecondsToHMSString((int)duration);
 
 
-          channelDisplayName = TvRecorded.GetRecordingDisplayName(rec) + " (" + GUILocalizeStrings.Get(604) + ")";
+          string channelDisplayName = TvRecorded.GetRecordingDisplayName(rec) + " (" + GUILocalizeStrings.Get(604) + ")";
 
           double fPercent = (currentPosition) / ((double)duration);
           fPercent *= 100.0d;

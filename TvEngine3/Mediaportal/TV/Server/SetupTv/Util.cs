@@ -924,7 +924,6 @@ namespace Mediaportal.TV.Server.SetupTV
     {
       bool AppFound = false;
       const string componentsKeyName = @"SOFTWARE\Microsoft\Active Setup\Installed Components";
-      string friendlyName;
       try
       {
         using (RegistryKey componentsKey = Registry.LocalMachine.OpenSubKey(componentsKeyName))
@@ -937,7 +936,7 @@ namespace Mediaportal.TV.Server.SetupTV
               RegistryKey key = componentsKey.OpenSubKey(instComp);
               if (key != null)
               {
-                friendlyName = (string)key.GetValue(null); // Gets the (Default) value from this key            
+                string friendlyName = (string)key.GetValue(null);
                 if (friendlyName != null && friendlyName.IndexOf(aSoftwareName) >= 0)
                 {
                   AppFound = true;

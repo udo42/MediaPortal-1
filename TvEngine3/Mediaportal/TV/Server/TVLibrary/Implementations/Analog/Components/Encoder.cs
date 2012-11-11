@@ -1159,20 +1159,18 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
                                   Crossbar _crossbar, Capture _capture)
     {
       //Log.this.LogDebug("analog: AddTvMultiPlexer");
-      DsDevice[] devicesHW;
-      DsDevice[] devicesSW;
       DsDevice[] devices;
       //get a list of all multiplexers available on this system
       try
       {
-        devicesHW = DsDevice.GetDevicesOfCat(FilterCategory.WDMStreamingMultiplexerDevices);
+        DsDevice[] devicesHW = DsDevice.GetDevicesOfCat(FilterCategory.WDMStreamingMultiplexerDevices);
         devicesHW = DeviceSorter.Sort(devicesHW, _tuner.TunerName, _tvAudio.TvAudioName, _crossbar.CrossBarName,
                                       _capture.VideoCaptureName, _capture.AudioCaptureName, _videoEncoderDevice,
                                       _audioEncoderDevice, _multiplexerDevice);
         // also add the SoftWare Multiplexers in case no compatible HardWare multiplexer is found (NVTV cards)
-        devicesSW = _tuner.IsNvidiaCard()
-                      ? DsDevice.GetDevicesOfCat(FilterCategory.MediaMultiplexerCategory)
-                      : new DsDevice[0];
+        DsDevice[] devicesSW = _tuner.IsNvidiaCard()
+                                 ? DsDevice.GetDevicesOfCat(FilterCategory.MediaMultiplexerCategory)
+                                 : new DsDevice[0];
 
         devices = new DsDevice[devicesHW.Length + devicesSW.Length];
         int nr = 0;

@@ -1393,10 +1393,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
         // Construct menu/list strings for callback.
         var strings = new StringBuilder[numEntries];
         int idx = 0;
-        byte charChode;
         for (int i = 0; i < totalMenuLength - 1; i++)   // There is an extra NULL character to indicate the end of the menu.
         {
-          charChode = Marshal.ReadByte((IntPtr)(entries.ToInt64() + i));
+          byte charChode = Marshal.ReadByte((IntPtr)(entries.ToInt64() + i));
           // Start of a new entry?
           if (strings[idx] == null)
           {

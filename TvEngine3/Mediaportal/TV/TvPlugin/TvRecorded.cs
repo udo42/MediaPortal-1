@@ -1460,7 +1460,6 @@ namespace Mediaportal.TV.TvPlugin
         }
 
         int iComp = 0;
-        TimeSpan ts;
         var rec1 = (Recording)item1.TVTag;
         var rec2 = (Recording)item2.TVTag;
 
@@ -1617,6 +1616,7 @@ namespace Mediaportal.TV.TvPlugin
             }
             if (rec1.StartTime != rec2.StartTime)
             {
+              TimeSpan ts;
               if (m_bSortAscending)
               {
                 ts = rec1.StartTime - rec2.StartTime;

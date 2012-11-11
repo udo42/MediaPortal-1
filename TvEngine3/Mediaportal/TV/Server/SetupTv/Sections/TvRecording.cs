@@ -835,13 +835,12 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       try
       {
-        Channel lookupChannel;
         string channelName = "unknown";
         string startTime = SqlDateTime.MinValue.Value == aRec.StartTime ? "unknown" : aRec.StartTime.ToString();
         string endTime = SqlDateTime.MinValue.Value == aRec.EndTime ? "unknown" : aRec.EndTime.ToString();
         try
         {
-          lookupChannel = aRec.Channel;
+          Channel lookupChannel = aRec.Channel;
           if (lookupChannel != null)
           {
             channelName = lookupChannel.DisplayName;

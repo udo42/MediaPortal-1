@@ -481,7 +481,6 @@ namespace WebEPG
     private bool GetListing(out bool error)
     {
       int listingCount = 0;
-      int programCount = 0;
       bool bMore = false;
       error = false;
 
@@ -516,7 +515,7 @@ namespace WebEPG
         }
 
         _discarded = 0;
-        programCount = 0;
+        int programCount = 0;
         _timeControl.SetProgramCount(listingCount);
         for (int i = 0; i < listingCount; i++)
         {

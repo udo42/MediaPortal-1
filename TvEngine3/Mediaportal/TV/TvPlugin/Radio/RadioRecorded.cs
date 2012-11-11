@@ -667,9 +667,9 @@ namespace Mediaportal.TV.TvPlugin.Radio
               // combine recordings with the same name to a folder located on top
               foreach (GUIListItem item in itemlist)
               {
+                bool merge = false;
                 if (item.TVTag != null)
                 {
-                  bool merge = false;
                   var listRec = item.TVTag as Recording;
                   if (listRec != null)
                   {
@@ -1415,7 +1415,6 @@ namespace Mediaportal.TV.TvPlugin.Radio
         }
 
         int iComp = 0;
-        TimeSpan ts;
         var rec1 = (Recording)item1.TVTag;
         var rec2 = (Recording)item2.TVTag;
 
@@ -1559,6 +1558,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
             }
             if (rec1.StartTime != rec2.StartTime)
             {
+              TimeSpan ts;
               if (m_bSortAscending)
               {
                 ts = rec1.StartTime - rec2.StartTime;

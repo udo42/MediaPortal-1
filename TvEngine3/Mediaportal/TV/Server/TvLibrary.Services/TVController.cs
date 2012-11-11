@@ -4399,11 +4399,11 @@ namespace Mediaportal.TV.Server.TVLibrary
           else
           {
             Channel dbchannel = ChannelManagement.GetChannel(idChannel, ChannelIncludeRelationEnum.TuningDetails);
-            TvResult viewResult;
 
             IUser user = GetUserFromContext(userName);
             if (user != null)
             {
+              TvResult viewResult;
               _cardAllocation.GetFreeCardsForChannel(_cards, dbchannel, user, out viewResult);
               chanState = viewResult == TvResult.Succeeded ? ChannelState.tunable : ChannelState.nottunable;
             }

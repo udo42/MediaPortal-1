@@ -410,9 +410,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     public static int AddItemToGroup(XPListView lst, int index, int groupID)
     {
-      LVITEM apiItem;
-      int ptrRetVal;
-
       try
       {
         if (lst == null)
@@ -420,12 +417,12 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
           return 0;
         }
 
-        apiItem = new LVITEM();
+        LVITEM apiItem = new LVITEM();
         apiItem.mask = LVIF_GROUPID;
         apiItem.iItem = index;
         apiItem.iGroupId = groupID;
 
-        ptrRetVal = (int)SendMessage(lst.Handle, LVM_SETITEM, 0, ref apiItem);
+        int ptrRetVal = (int)SendMessage(lst.Handle, LVM_SETITEM, 0, ref apiItem);
 
         return ptrRetVal;
       }
@@ -438,9 +435,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     public static int AddListViewGroup(XPListView lst, string text, int index)
     {
-      LVGROUP apiGroup;
-      int ptrRetVal;
-
       try
       {
         if (lst == null)
@@ -448,7 +442,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
           return -1;
         }
 
-        apiGroup = new LVGROUP();
+        LVGROUP apiGroup = new LVGROUP();
         apiGroup.mask = LVGF_GROUPID | LVGF_HEADER | LVGF_STATE;
         apiGroup.pszHeader = text;
         apiGroup.cchHeader = apiGroup.pszHeader.Length;
@@ -457,7 +451,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
         apiGroup.state = LVGS_NORMAL;
         apiGroup.cbSize = Marshal.SizeOf(typeof (LVGROUP));
 
-        ptrRetVal = (int)SendMessage(lst.Handle, LVM_INSERTGROUP, -1, ref apiGroup);
+        int ptrRetVal = (int)SendMessage(lst.Handle, LVM_INSERTGROUP, -1, ref apiGroup);
         return ptrRetVal;
       }
       catch (Exception ex)
@@ -469,8 +463,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     public static int RemoveListViewGroup(XPListView lst, int index)
     {
-      int ptrRetVal;
-
       try
       {
         if (lst != null)
@@ -479,7 +471,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
         }
 
         int param = 0;
-        ptrRetVal = (int)SendMessage(lst.Handle, LVM_REMOVEGROUP, index, ref param);
+        int ptrRetVal = (int)SendMessage(lst.Handle, LVM_REMOVEGROUP, index, ref param);
 
         return ptrRetVal;
       }

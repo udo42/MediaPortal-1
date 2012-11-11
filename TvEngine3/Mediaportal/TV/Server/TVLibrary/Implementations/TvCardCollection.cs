@@ -127,7 +127,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// </summary>
     private void DetectCards()
     {
-      ITunerCap _providerType;
       bool genericNP = false;
       //SkyStar 2 & IP Streaming
       DsDevice[] devices = DsDevice.GetDevicesOfCat(FilterCategory.LegacyAmFilterCategory);
@@ -339,7 +338,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
               {
                 this.LogDebug("Detected DVB card:{0}", name);
                 // determine the DVB card supported GUIDs here!
-                _providerType = networkDVB as ITunerCap;
+                ITunerCap _providerType = networkDVB as ITunerCap;
                 const int ulcNetworkTypesMax = 5;
                 int pulcNetworkTypes;
                 var pguidNetworkTypes = new Guid[ulcNetworkTypesMax];
@@ -452,8 +451,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     private void handleInternalNetworkProviderFilter(DsDevice[] devices, IFilterGraph2 graphBuilder,
                                                      Guid networkProviderClsId, DsROTEntry rotEntry)
     {
-      IDvbNetworkProvider interfaceNetworkProvider;
-      TuningType tuningTypes;
       for (int i = 0; i < devices.Length; i++)
       {
         bool isCablePreferred = false;
@@ -471,12 +468,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         //Use the Microsoft Network Provider method first but only if available
         IBaseFilter networkDVB = FilterGraphTools.AddFilterFromClsid(graphBuilder, networkProviderClsId,
                                                                      "MediaPortal Network Provider");
-        interfaceNetworkProvider = (IDvbNetworkProvider)networkDVB;
+        IDvbNetworkProvider interfaceNetworkProvider = (IDvbNetworkProvider)networkDVB;
         string hash = GetHash(devices[i].DevicePath);
         interfaceNetworkProvider.ConfigureLogging(GetFileName(devices[i].DevicePath), hash, LogLevelOption.Debug);
         if (ConnectFilter(graphBuilder, networkDVB, tmp))
         {
           this.LogDebug("Detected DVB card:{0}- Hash: {1}", name, hash);
+          TuningType tuningTypes;
           interfaceNetworkProvider.GetAvailableTuningTypes(out tuningTypes);
           this.LogDebug("TuningTypes: " + tuningTypes);
           // determine the DVB card supported GUIDs here!

@@ -966,11 +966,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
         var deviceInfo = (CiDeviceInfo)Marshal.PtrToStructure(infoBuffer, typeof(CiDeviceInfo));
         Marshal.FreeCoTaskMem(infoBuffer);
 
-        String captureDevicePath;
         int index = -1;
         for (int i = 0; i < numDevices; i++)
         {
-          captureDevicePath = deviceInfo.DevicePaths[i].Text.Substring(0, deviceInfo.DevicePathLengths[i]);
+          string captureDevicePath = deviceInfo.DevicePaths[i].Text.Substring(0, deviceInfo.DevicePathLengths[i]);
           this.LogDebug("Anysee: device {0}", i + 1);
           this.LogDebug("  device path  = {0}", captureDevicePath);
           this.LogDebug("  index        = {0}", deviceInfo.DevicePathIndices[i]);
@@ -1522,11 +1521,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Anysee
         }
       }
 
-      String entry;
       int offset = 4 * msg.HeaderCount;
       for (int i = 0; i < msg.EntryCount; i++)
       {
-        entry = Marshal.PtrToStringAnsi((IntPtr)Marshal.ReadInt32(menu.Entries, offset + (i * 4)));
+        string entry = Marshal.PtrToStringAnsi((IntPtr)Marshal.ReadInt32(menu.Entries, offset + (i * 4)));
         this.LogDebug("  entry {0,-2}  = {1}", i + 1, entry);
         if (_ciMenuCallbacks != null)
         {

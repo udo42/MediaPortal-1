@@ -435,9 +435,9 @@ namespace Mediaportal.TV.TvPlugin
     {
       Channel newChannel = null;
       //if current card is watching tv then use that channel
-      int id;
       if (TVHome.Connected)
       {
+        int id;
         if (TVHome.Card.IsTimeShifting || TVHome.Card.IsRecording)
         {
           id = TVHome.Card.IdChannel;
@@ -525,10 +525,9 @@ namespace Mediaportal.TV.TvPlugin
 
         bool found = false;
         int iCounter = 0;
-        Channel chan;
         while (iCounter < channels.Count && found == false)
         {
-          chan = (channels[iCounter]).Channel;
+          Channel chan = (channels[iCounter]).Channel;
 
           this.LogDebug("chan {0}", chan.DisplayName);
           if (chan.VisibleInGuide)
@@ -656,7 +655,6 @@ namespace Mediaportal.TV.TvPlugin
         currentChan = m_zapchannel.Entity;
         currindex = GetChannelIndex(m_zapchannel.Entity); // Zap from last zap channel 
       }
-      GroupMap gm;
       Channel chan;
       //check if channel is visible 
       //if not find next visible 
@@ -668,7 +666,7 @@ namespace Mediaportal.TV.TvPlugin
         {
           currindex = CurrentGroup.GroupMaps.Count - 1;
         }
-        gm = CurrentGroup.GroupMaps[currindex];
+        GroupMap gm = CurrentGroup.GroupMaps[currindex];
         chan = gm.Channel;
       } while (!chan.VisibleInGuide);
 

@@ -647,12 +647,11 @@ namespace Mediaportal.TV.Server.TVService
       if (strPattern == null) return;
       if (strPattern.Length == 0) return;
 
-      string[] strFiles;
       try
       {
         if (!Directory.Exists(strDir))
           return;
-        strFiles = Directory.GetFiles(strDir, strPattern);
+        string[] strFiles = Directory.GetFiles(strDir, strPattern);
         foreach (string strFile in strFiles)
         {
           try

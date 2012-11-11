@@ -573,7 +573,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     public static IPin GetPinByName(IBaseFilter vSource, string vPinName, PinDirection vDir, out int pinIndex)
     {
       IEnumPins ppEnum;
-      PinInfo ppinfo;
       IPin pRet = null;
       var pPins = new IPin[1];
       pinIndex = -1;
@@ -594,6 +593,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         {
           PinDirection ppindir;
           // Read the info
+          PinInfo ppinfo;
           hr = pPins[0].QueryPinInfo(out ppinfo);
           DsError.ThrowExceptionForHR(hr);
 
@@ -636,7 +636,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     {
       IList<IBaseFilter> nextFilters = new List<IBaseFilter>();
       IEnumPins ppEnum;
-      PinInfo ppinfo;
       var pPins = new IPin[1];
       if (vSource == null)
         return null;
@@ -667,6 +666,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
               hr = pPins[0].ConnectedTo(out connectedPin);
               DsError.ThrowExceptionForHR(hr);
 
+              PinInfo ppinfo;
               connectedPin.QueryPinInfo(out ppinfo);
               DsError.ThrowExceptionForHR(hr);
 
@@ -1042,27 +1042,25 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     [SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
     public static void ShowFilterPropertyPage(IBaseFilter filter, IntPtr parent)
     {
-      FilterInfo filterInfo;
-      DsCAUUID caGuid;
-      object[] objs;
-
       if (filter == null)
         throw new ArgumentNullException("filter");
 
       if (HasPropertyPages(filter))
       {
+        FilterInfo filterInfo;
         int hr = filter.QueryFilterInfo(out filterInfo);
         DsError.ThrowExceptionForHR(hr);
 
         if (filterInfo.pGraph != null)
           Release.ComObject(filterInfo.pGraph);
 
+        DsCAUUID caGuid;
         hr = ((ISpecifyPropertyPages)filter).GetPages(out caGuid);
         DsError.ThrowExceptionForHR(hr);
 
         try
         {
-          objs = new object[1];
+          object[] objs = new object[1];
           objs[0] = filter;
 
           NativeMethods.OleCreatePropertyFrame(

@@ -863,10 +863,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       _mmiBuffer = Marshal.AllocCoTaskMem(MenuDataSize);
 
       // Fill in the menu title for each CI context if possible.
-      String menuTitle;
       for (byte i = 0; i < _ciContexts.Count; i++)
       {
         this.LogDebug("Digital Devices: slot {0} read CAM menu title", i);
+        String menuTitle;
         int hr = DigitalDevicesCiSlots.GetMenuTitle(_ciContexts[i].Filter, out menuTitle);
         if (hr == 0)
         {

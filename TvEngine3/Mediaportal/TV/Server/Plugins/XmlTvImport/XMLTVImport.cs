@@ -475,7 +475,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                   
                   string description = "";
                   string category = "-";
-                  string serEpNum = "";
                   string date = "";
                   string seriesNum = "";
                   string episodeNum = "";
@@ -592,6 +591,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
                   if (nodeEpisodeNum != null)
                   {
+                    string serEpNum = "";
                     if (nodeEpisodeNumSystem != null)
                     {
                       // http://xml.coverpages.org/XMLTV-DTD-20021210.html
@@ -649,12 +649,11 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
                   #region create a program for every mapped channel
 
-                  List<Channel> mappedChannels;
                   //var programs = new List<TVDatabase.Entities.Program>();
 
                   if (allChannelMappingsByexternalId.ContainsKey(nodeChannel))
                   {
-                    mappedChannels = allChannelMappingsByexternalId[nodeChannel];
+                    List<Channel> mappedChannels = allChannelMappingsByexternalId[nodeChannel];
                     if (mappedChannels != null && mappedChannels.Count > 0)
                     {
                       foreach (Channel chan in mappedChannels)

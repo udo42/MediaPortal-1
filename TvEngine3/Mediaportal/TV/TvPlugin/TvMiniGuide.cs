@@ -343,7 +343,6 @@ namespace Mediaportal.TV.TvPlugin
     {
       benchClock = Stopwatch.StartNew();
 
-      ChannelGroup current = null;
       _channelGroupList = TVHome.Navigator.Groups;
       // empty list of channels currently in the 
       // spin control
@@ -351,7 +350,7 @@ namespace Mediaportal.TV.TvPlugin
       // start to fill them up again
       for (int i = 0; i < _channelGroupList.Count; i++)
       {
-        current = _channelGroupList[i];
+        ChannelGroup current = _channelGroupList[i];
         spinGroup.AddLabel(current.GroupName, i);
         // set selected
         if (current.GroupName.CompareTo(TVHome.Navigator.CurrentGroup.GroupName) == 0)
@@ -422,12 +421,9 @@ namespace Mediaportal.TV.TvPlugin
       this.LogDebug("TvMiniGuide: FillChannelList retrieved {0} programs for {1} channels in {2} ms", listNowNext.Count,
                 tvChannelList.Count, benchClock.ElapsedMilliseconds.ToString());
 
-      GUIListItem item = null;
-      string ChannelLogo = "";
       //List<int> RecChannels = null;
       //List<int> TSChannels = null;
       int SelectedID = 0;
-      int channelID = 0;
       const bool DisplayStatusInfo = true;
 
 
@@ -455,7 +451,7 @@ namespace Mediaportal.TV.TvPlugin
         if (currentChan.VisibleInGuide)
         {
           ChannelState currentChanState = ChannelState.tunable;
-          channelID = currentChan.IdChannel;
+          int channelID = currentChan.IdChannel;
           if (TVHome.ShowChannelStateIcons())
           {
             if (!tvChannelStatesList.TryGetValue(channelID, out currentChanState))
@@ -466,12 +462,12 @@ namespace Mediaportal.TV.TvPlugin
 
           //StringBuilder sb = new StringBuilder();
           sb.Length = 0;
-          item = new GUIListItem("");
+          GUIListItem item = new GUIListItem("");
           // store here as it is not needed right now - please beat me later..
           item.TVTag = currentChan;
 
           sb.Append(currentChan.DisplayName);
-          ChannelLogo = Utils.GetCoverArt(Thumbs.TVChannel, currentChan.DisplayName);
+          string channelLogo = Utils.GetCoverArt(Thumbs.TVChannel, currentChan.DisplayName);
 
           // if we are watching this channel mark it
           if (TVHome.Navigator != null && TVHome.Navigator.Channel.Entity != null &&
@@ -481,10 +477,10 @@ namespace Mediaportal.TV.TvPlugin
             SelectedID = lstChannels.Count;
           }
 
-          if (!string.IsNullOrEmpty(ChannelLogo))
+          if (!string.IsNullOrEmpty(channelLogo))
           {
-            item.IconImageBig = ChannelLogo;
-            item.IconImage = ChannelLogo;
+            item.IconImageBig = channelLogo;
+            item.IconImage = channelLogo;
           }
           else
           {

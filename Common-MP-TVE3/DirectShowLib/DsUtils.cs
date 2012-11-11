@@ -995,8 +995,6 @@ namespace DirectShowLib
 
       try
       {
-        int hr;
-        int cbBytes;
         Guid g = PropSetID.Pin;
 
         // Get an IKsPropertySet from the pin
@@ -1005,7 +1003,8 @@ namespace DirectShowLib
         if (pKs != null)
         {
           // Query for the Category
-          hr = pKs.Get(g, (int)AMPropertyPin.Category, IntPtr.Zero, 0, ipOut, iSize, out cbBytes);
+          int cbBytes;
+          int hr = pKs.Get(g, (int)AMPropertyPin.Category, IntPtr.Zero, 0, ipOut, iSize, out cbBytes);
           DsError.ThrowExceptionForHR(hr);
 
           // Marshal it to the return variable
@@ -1101,7 +1100,6 @@ namespace DirectShowLib
 
     public DsROTEntry(IFilterGraph graph)
     {
-      int hr = 0;
 #if USING_NET11
             UCOMIRunningObjectTable rot = null;
             UCOMIMoniker mk = null;
@@ -1112,7 +1110,7 @@ namespace DirectShowLib
       try
       {
         // First, get a pointer to the running object table
-        hr = GetRunningObjectTable(0, out rot);
+        int hr = GetRunningObjectTable(0, out rot);
         DsError.ThrowExceptionForHR(hr);
 
         // Build up the object to add to the table
@@ -1358,7 +1356,6 @@ namespace DirectShowLib
       IPropertyBag bag = null;
       string ret = null;
       object bagObj = null;
-      object val = null;
 
       try
       {
@@ -1367,6 +1364,7 @@ namespace DirectShowLib
 
         bag = (IPropertyBag)bagObj;
 
+        object val = null;
         int hr = bag.Read(sPropName, out val, null);
         DsError.ThrowExceptionForHR(hr);
 
@@ -1412,9 +1410,7 @@ namespace DirectShowLib
     /// <returns>The matching pin, or null if not found</returns>
     public static IPin ByDirection(IBaseFilter vSource, PinDirection vDir, int iIndex)
     {
-      int lFetched;
       IEnumPins ppEnum;
-      PinDirection ppindir;
       IPin pRet = null;
       var pPins = new IPin[1];
 
@@ -1430,9 +1426,11 @@ namespace DirectShowLib
       try
       {
         // Walk the pins looking for a match
+        int lFetched;
         while ((ppEnum.Next(1, pPins, out lFetched) >= 0) && (lFetched == 1))
         {
           // Read the direction
+          PinDirection ppindir;
           hr = pPins[0].QueryDirection(out ppindir);
           DsError.ThrowExceptionForHR(hr);
 
@@ -1466,9 +1464,7 @@ namespace DirectShowLib
     /// <returns>The matching pin, or null if not found</returns>
     public static IPin ByName(IBaseFilter vSource, string vPinName)
     {
-      int lFetched;
       IEnumPins ppEnum;
-      PinInfo ppinfo;
       IPin pRet = null;
       var pPins = new IPin[1];
 
@@ -1484,9 +1480,11 @@ namespace DirectShowLib
       try
       {
         // Walk the pins looking for a match
+        int lFetched;
         while ((ppEnum.Next(1, pPins, out lFetched) >= 0) && (lFetched == 1))
         {
           // Read the info
+          PinInfo ppinfo;
           hr = pPins[0].QueryPinInfo(out ppinfo);
           DsError.ThrowExceptionForHR(hr);
 
@@ -1518,7 +1516,6 @@ namespace DirectShowLib
     /// <returns>The matching pin, or null if not found</returns>
     public static IPin ByCategory(IBaseFilter vSource, Guid PinCategory, int iIndex)
     {
-      int lFetched;
       IEnumPins ppEnum;
       IPin pRet = null;
       var pPins = new IPin[1];
@@ -1535,6 +1532,7 @@ namespace DirectShowLib
       try
       {
         // Walk the pins looking for a match
+        int lFetched;
         while ((ppEnum.Next(1, pPins, out lFetched) >= 0) && (lFetched == 1))
         {
           // Is it the right category?
@@ -1568,10 +1566,8 @@ namespace DirectShowLib
     /// <returns>The matching pin, or null if not found</returns>
     public static IPin ByConnectionStatus(IBaseFilter vSource, PinConnectedStatus vStat, int iIndex)
     {
-      int lFetched;
       IEnumPins ppEnum;
       IPin pRet = null;
-      IPin pOutPin;
       var pPins = new IPin[1];
 
       if (vSource == null)
@@ -1586,9 +1582,11 @@ namespace DirectShowLib
       try
       {
         // Walk the pins looking for a match
+        int lFetched;
         while ((ppEnum.Next(1, pPins, out lFetched) >= 0) && (lFetched == 1))
         {
           // Read the connected status
+          IPin pOutPin;
           hr = pPins[0].ConnectedTo(out pOutPin);
 
           // Check for VFW_E_NOT_CONNECTED.  Anything else is bad.

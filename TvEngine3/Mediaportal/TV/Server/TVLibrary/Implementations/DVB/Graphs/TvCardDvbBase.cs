@@ -1678,7 +1678,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
               for (uint i = 0; i < eventCount; ++i)
               {
                 uint start_time_MJD, start_time_UTC, duration, languageCount;
-                string title, description;
                 IntPtr ptrGenre;
                 int starRating;
                 IntPtr ptrClassification;
@@ -1752,6 +1751,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
                     language += (char)((languageId >> 8) & 0xff);
                     language += (char)((languageId) & 0xff);
                     //allows czech epg
+                    string title;
+                    string description;
                     if (language.ToUpperInvariant() == "CZE" || language.ToUpperInvariant() == "CES")
                     {
                       title = Iso6937ToUnicode.Convert(ptrTitle);
