@@ -15,8 +15,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         if (_epgKeepDuration == 0)
         {
           // first time query settings, caching
-          Setting duration = GetSetting("epgKeepDuration", "24");          
-          _epgKeepDuration = Convert.ToInt32(duration.Value);
+          _epgKeepDuration = GetValue("epgKeepDuration", 24);
         }
         return _epgKeepDuration;
       }
@@ -44,6 +43,36 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       {
         return settingsRepository.GetOrSaveSetting(tagName, defaultValue);
       }
+    }
+
+    public static int GetValue(string tagName, int defaultValue)
+    {
+      Setting setting = GetSetting(tagName, defaultValue.ToString());
+      return int.Parse(setting.Value);
+    }
+
+    public static double GetValue(string tagName, double defaultValue)
+    {
+      Setting setting = GetSetting(tagName, defaultValue.ToString());
+      return double.Parse(setting.Value);
+    }
+
+    public static bool GetValue(string tagName, bool defaultValue)
+    {
+      Setting setting = GetSetting(tagName, defaultValue.ToString());
+      return setting.Value == "true";
+    }
+
+    public static string GetValue(string tagName, string defaultValue)
+    {
+      Setting setting = GetSetting(tagName, defaultValue);
+      return setting.Value;
+    }
+
+    public static DateTime GetValue(string tagName, DateTime defaultValue)
+    {
+      Setting setting = GetSetting(tagName, defaultValue.ToString());
+      return string.IsNullOrEmpty(setting.Value) ? DateTime.MinValue : DateTime.Parse(setting.Value);
     }
 
     // maximum hours to keep old program info

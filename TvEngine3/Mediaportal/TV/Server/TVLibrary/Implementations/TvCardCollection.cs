@@ -69,8 +69,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       // Logic here to delay detection of cards
       // Ideally this should occur after standby event.
 
-      Setting setting = SettingsManagement.GetSetting("delayCardDetect", "0");
-      int delayDetect = Convert.ToInt32(setting.Value);
+      int delayDetect = SettingsManagement.GetValue("delayCardDetect", 0);
       if (delayDetect >= 1)
       {
         this.LogDebug("Detecting Cards in {0} seconds", delayDetect);
@@ -148,8 +147,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         }
         else if (String.Compare(devices[i].Name, "Elecard NWSource-Plus", true) == 0)
         {
-          Setting setting = SettingsManagement.GetSetting("iptvCardCount", "1");
-          int iptvCardCount = Convert.ToInt32(setting.Value);
+          int iptvCardCount = SettingsManagement.GetValue("iptvCardCount", 1);
           for (int cardNum = 0; cardNum < iptvCardCount; cardNum++)
           {
             this.LogDebug("Detected Elecard IP TV Card " + cardNum);
@@ -159,9 +157,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         }
         else if (String.Compare(devices[i].Name, "MediaPortal IPTV Source Filter", true) == 0)
         {
-          Setting setting = SettingsManagement.GetSetting("iptvCardCount", "1");
-
-          int iptvCardCount = Convert.ToInt32(setting.Value);
+          int iptvCardCount = SettingsManagement.GetValue("iptvCardCount", 1);
           for (int cardNum = 0; cardNum < iptvCardCount; cardNum++)
           {
             this.LogDebug("Detected MediaPortal IP TV Card " + cardNum);
