@@ -146,7 +146,7 @@ namespace Mediaportal.TV.Server.TVLibrary
           {
             return true;
           }
-          TvCardBase baseCard = card as TvCardBase;
+          var baseCard = card as TvCardBase;
           if (baseCard == null)
           {
             // Non-initialised HybridCard instances exit here.
@@ -561,7 +561,7 @@ namespace Mediaportal.TV.Server.TVLibrary
 
                   if (unknownCard is TvCardBase)
                   {
-                    TvCardBase card = (TvCardBase)unknownCard;
+                    var card = (TvCardBase)unknownCard;
                     if (card.PreloadCard)
                     {
                       try
@@ -612,7 +612,7 @@ namespace Mediaportal.TV.Server.TVLibrary
           }
         }
 
-        Dictionary<int, ITVCard> localcards = new Dictionary<int, ITVCard>();
+        var localcards = new Dictionary<int, ITVCard>();
 
 
         //allCards = TVDatabase.TVBusinessLayer.CardManagement.ListAllCards();
@@ -842,7 +842,7 @@ namespace Mediaportal.TV.Server.TVLibrary
       try
       {
         // System.Diagnostics.Debugger.Launch();
-        List<int> pendingDelitionRemove = new List<int>();
+        var pendingDelitionRemove = new List<int>();
         IList<PendingDeletion> pendingDeletions = RecordingManagement.ListAllPendingRecordingDeletions();
 
         this.LogDebug("ExecutePendingDeletions: number of pending deletions : " + Convert.ToString(pendingDeletions.Count));
@@ -1282,7 +1282,7 @@ namespace Mediaportal.TV.Server.TVLibrary
             }
             else
             {
-              HashSet<int> subchannelsInUse = new HashSet<int>();
+              var subchannelsInUse = new HashSet<int>();
               ICollection<IUser> usersCopy = new List<IUser>(users.Values); //avoid threading issues, make a copy.
               foreach (IUser user in usersCopy)
               {
@@ -1380,7 +1380,7 @@ namespace Mediaportal.TV.Server.TVLibrary
       if (string.IsNullOrWhiteSpace(userName))
       {
 #if DEBUG
-        StackTrace st = new StackTrace(true);
+        var st = new StackTrace(true);
         StackFrame sf = st.GetFrame(0);
         this.LogError(
           "TVController:" + sf.GetMethod().Name +
@@ -1397,7 +1397,7 @@ namespace Mediaportal.TV.Server.TVLibrary
       if (cardId < 0 || !_cards.ContainsKey(cardId) || (checkCardPresent && !IsCardPresent(cardId)))
       {
 #if DEBUG
-        StackTrace st = new StackTrace(true);
+        var st = new StackTrace(true);
         StackFrame sf = st.GetFrame(0);
         this.LogError(
           "TVController:" + sf.GetMethod().Name +
@@ -1442,7 +1442,7 @@ namespace Mediaportal.TV.Server.TVLibrary
       if (user == null || user.CardId < 0 || !_cards.ContainsKey(user.CardId) || (!IsCardPresent(user.CardId)))
       {
 #if DEBUG
-        StackTrace st = new StackTrace(true);
+        var st = new StackTrace(true);
         StackFrame sf = st.GetFrame(0);
 
         if (user != null)
@@ -1467,7 +1467,7 @@ namespace Mediaportal.TV.Server.TVLibrary
     {
       if (channel == null)
       {
-        StackTrace st = new StackTrace(true);
+        var st = new StackTrace(true);
         StackFrame sf = st.GetFrame(0);
 
         Log.Error("TVController:" + sf.GetMethod().Name + " - incorrect parameters used! channel NULL");
@@ -2329,8 +2329,8 @@ namespace Mediaportal.TV.Server.TVLibrary
     {
       try
       {
-        TsCopier copier = new TsCopier(position1, bufferFile1, position2, bufferFile2, recordingFile);
-        Thread worker = new Thread(copier.DoCopy);
+        var copier = new TsCopier(position1, bufferFile1, position2, bufferFile2, recordingFile);
+        var worker = new Thread(copier.DoCopy);
         worker.Start();
       }
       catch (Exception e)
@@ -3123,7 +3123,7 @@ namespace Mediaportal.TV.Server.TVLibrary
         if (ValidateTvControllerParams(cardId))
         {
           StopEPGgrabber();
-          ScanParameters settings = new ScanParameters();
+          var settings = new ScanParameters();
 
           settings.TimeOutTune = SettingsManagement.GetValue("timeoutTune", 2);
           settings.TimeOutPAT = SettingsManagement.GetValue("timeoutPAT", 5);
@@ -3153,7 +3153,7 @@ namespace Mediaportal.TV.Server.TVLibrary
         if (ValidateTvControllerParams(cardId))
         {
           StopEPGgrabber();
-          ScanParameters settings = new ScanParameters();
+          var settings = new ScanParameters();
           settings.TimeOutTune = SettingsManagement.GetValue("timeoutTune", 2);          
           scanNit = _cards[cardId].Scanner.ScanNIT(channel, settings);
         }
@@ -3396,7 +3396,7 @@ namespace Mediaportal.TV.Server.TVLibrary
           {            
             _streamer.Start();
             string streamName = String.Format("{0:X}", recording.FileName.GetHashCode());
-            RtspStream stream = new RtspStream(streamName, recording.FileName, recording.Title);
+            var stream = new RtspStream(streamName, recording.FileName, recording.Title);
             _streamer.AddStream(stream);
             string url = String.Format("rtsp://{0}:{1}/{2}", _hostName, _streamer.Port, streamName);
             this.LogInfo("Controller: streaming url:{0} file:{1}", url, recording.FileName);
@@ -3468,7 +3468,7 @@ namespace Mediaportal.TV.Server.TVLibrary
         {
           _streamer.Start();
           string streamName = String.Format("{0:X}", fileName.GetHashCode());
-          RtspStream stream = new RtspStream(streamName, fileName, streamName);
+          var stream = new RtspStream(streamName, fileName, streamName);
           _streamer.AddStream(stream);
           string url = String.Format("rtsp://{0}:{1}/{2}", _hostName, _streamer.Port, streamName);
           this.LogInfo("Controller: streaming url:{0} file:{1}", url, fileName);
@@ -4146,7 +4146,7 @@ namespace Mediaportal.TV.Server.TVLibrary
     {
       try
       {
-        TvServerEventArgs eventArgs = new TvServerEventArgs(TvServerEventType.ImportEpgPrograms, epgChannel);
+        var eventArgs = new TvServerEventArgs(TvServerEventType.ImportEpgPrograms, epgChannel);
         Fire(this, eventArgs);
       }
       catch (Exception ex)
@@ -4259,7 +4259,7 @@ namespace Mediaportal.TV.Server.TVLibrary
     {
       get
       {
-        List<string> ipadresses = new List<string>();
+        var ipadresses = new List<string>();
         try
         {          
           string localHostName = Dns.GetHostName();
@@ -4822,7 +4822,7 @@ namespace Mediaportal.TV.Server.TVLibrary
         {
           break;
         }
-        var newCardId = cardInfo.Id;
+        int newCardId = cardInfo.Id;
         IUser userNow = UserFactory.CreateBasicUser(userBefore.Name, newCardId, userBefore.Priority, userBefore.UserType);
         SetupTimeShiftingFolders(cardInfo);
         ITvCardHandler tvcard = _cards[newCardId];
@@ -5194,7 +5194,7 @@ namespace Mediaportal.TV.Server.TVLibrary
       for (int i = 0; i < ticket.InactiveUsers.Count; i++)
       {
         IUser inactiveUser = ticket.InactiveUsers[i];
-        foreach (var subchannel in inactiveUser.SubChannels.Values)
+        foreach (ISubChannel subchannel in inactiveUser.SubChannels.Values)
         {
           this.LogDebug("controller: RemoveInactiveUsers {0}", inactiveUser.Name);
           StopTimeShifting(ref inactiveUser, subchannel.IdChannel);
@@ -5328,7 +5328,7 @@ namespace Mediaportal.TV.Server.TVLibrary
       provider = "";
       try
       {
-        XmlDocument doc = new XmlDocument();
+        var doc = new XmlDocument();
         doc.Load(String.Format(@"{0}\gentle.config", PathManager.GetDataPath));
         XmlNode nodeKey = doc.SelectSingleNode("/Gentle.Framework/DefaultProvider");
         XmlNode nodeConnection = nodeKey.Attributes.GetNamedItem("connectionString");

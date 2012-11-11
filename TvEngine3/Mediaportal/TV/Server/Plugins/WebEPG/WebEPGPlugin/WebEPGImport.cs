@@ -163,9 +163,9 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
 
 
       _workerThreadRunning = true;
-      ThreadParams param = new ThreadParams();
+      var param = new ThreadParams();
       param.showProgress = showProgress;
-      Thread workerThread = new Thread(ThreadFunctionImportTVGuide);
+      var workerThread = new Thread(ThreadFunctionImportTVGuide);
       workerThread.Name = "WebEPGImporter";
       workerThread.IsBackground = true;
       workerThread.Priority = ThreadPriority.Lowest;
@@ -178,7 +178,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
 
       try
       {
-        ThreadParams param = (ThreadParams)aparam;
+        var param = (ThreadParams)aparam;
 
         string destination = SettingsManagement.GetValue("webepgDestination", "db");
         string webepgDirectory = PathManager.GetDataPath;
@@ -231,7 +231,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
             epgSink = new XMLTVExport(xmltvDirectory);
           }
 
-          WebEPG.WebEPG epg = new WebEPG.WebEPG(configFile, epgSink, webepgDirectory);
+          var epg = new WebEPG.WebEPG(configFile, epgSink, webepgDirectory);
           if (param.showProgress != null)
           {
             epg.ShowProgress += param.showProgress;
@@ -272,7 +272,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
       if (scheduleEnabled)
       {
         string configSetting = SettingsManagement.GetValue("webepgSchedule", String.Empty);
-        EPGWakeupConfig config = new EPGWakeupConfig(configSetting);
+        var config = new EPGWakeupConfig(configSetting);
         if (ShouldRunNow())
         {
           this.LogInfo("WebEPGImporter: WebEPG schedule {0}:{1} is due: {2}:{3}",
@@ -295,7 +295,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
       // the EPG wakeup schedule is due.
       if (GlobalServiceProvider.Instance.IsRegistered<IEpgHandler>())
       {
-        IEpgHandler handler = GlobalServiceProvider.Instance.Get<IEpgHandler>();
+        var handler = GlobalServiceProvider.Instance.Get<IEpgHandler>();
         if (handler != null)
         {
           handler.EPGScheduleDue += EPGScheduleDue;
@@ -342,7 +342,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
     private bool ShouldRunNow()
     {
       
-      EPGWakeupConfig config = new EPGWakeupConfig(SettingsManagement.GetValue("webepgSchedule", String.Empty));
+      var config = new EPGWakeupConfig(SettingsManagement.GetValue("webepgSchedule", String.Empty));
 
       // check if schedule is due
       // check if we've already run today
@@ -389,10 +389,10 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
     {
 
 
-      EPGWakeupConfig cfg = new EPGWakeupConfig(SettingsManagement.GetValue("webepgSchedule", String.Empty));
+      var cfg = new EPGWakeupConfig(SettingsManagement.GetValue("webepgSchedule", String.Empty));
 
       // Start by thinking we should run today
-      DateTime nextRun = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, cfg.Hour, cfg.Minutes, 0);
+      var nextRun = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, cfg.Hour, cfg.Minutes, 0);
       // check if we should run today or some other day in the future
       if (cfg.LastRun.Day == DateTime.Now.Day || nextRun < earliestWakeupTime)
       {

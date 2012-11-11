@@ -277,14 +277,14 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
               return;
             }
 
-            Uri uri = new Uri(_remoteURL);
+            var uri = new Uri(_remoteURL);
             string filename = uri.GetComponents(UriComponents.Path, UriFormat.SafeUnescaped);
             filename = filename.ToLower().Trim();
 
             bool isZip = (filename.IndexOf(".zip") > -1);
             bool isTvGuide = (filename.IndexOf("tvguide.xml") > -1);
 
-            FileInfo fI = new FileInfo(filename);
+            var fI = new FileInfo(filename);
             filename = fI.Name;
 
             //check if file can be opened for writing....																		
@@ -334,7 +334,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                 {
                   string newLoc = SettingsManagement.GetValue("xmlTv", "") + @"\";
                   this.LogInfo("extracting zip file {0} to location {1}", path, newLoc);
-                  ZipFile zip = new ZipFile(path);
+                  var zip = new ZipFile(path);
                   zip.ExtractAll(newLoc, true);
                 }
                 catch (Exception ex2)
@@ -444,7 +444,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
         }
 
         this.LogInfo("initiating download of remote file from " + URL);
-        Uri uri = new Uri(URL);
+        var uri = new Uri(URL);
         webClient.DownloadDataCompleted += DownloadFileCallback;
 
         try
@@ -563,7 +563,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
       DateTime now = DateTime.Now;
 
-      DateTime defaultRemoteScheduleTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 6, 30, 0);
+      var defaultRemoteScheduleTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 6, 30, 0);
       DateTime remoteScheduleTime = SettingsManagement.GetValue("xmlTvRemoteScheduleTime", defaultRemoteScheduleTime);
 
       DateTime lastTransfer = remoteScheduleTime.AddDays(-1);
@@ -753,11 +753,11 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       }
 
       _workerThreadRunning = true;
-      ThreadParams param = new ThreadParams();
+      var param = new ThreadParams();
       param._importXML = importXML;
       param._importLST = importLST;
       param._importDate = importDate;
-      Thread workerThread = new Thread(ThreadFunctionImportTVGuide);
+      var workerThread = new Thread(ThreadFunctionImportTVGuide);
       workerThread.Name = "XmlTvImporter";
       workerThread.IsBackground = true;
       workerThread.Priority = ThreadPriority.Lowest;
@@ -797,7 +797,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
             string fileName = folder + @"\tvguide.xml";
             this.LogDebug("plugin:xmltv importing " + fileName);
 
-            XMLTVImport import = new XMLTVImport(10); // add 10 msec delay to the background thread
+            var import = new XMLTVImport(10); // add 10 msec delay to the background thread
             import.Import(fileName, deleteBeforeImport, false);
 
             numChannels += import.ImportStats.Channels;
@@ -829,7 +829,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
               this.LogDebug(@"plugin:xmltv importing " + tvguideFileName);
 
-              XMLTVImport import = new XMLTVImport(10); // add 10 msec dely to the background thread
+              var import = new XMLTVImport(10); // add 10 msec dely to the background thread
 
               import.Import(tvguideFileName, deleteBeforeImport, false);
 
@@ -885,7 +885,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       // the EPG wakeup schedule is due.
       if (GlobalServiceProvider.Instance.IsRegistered<IEpgHandler>())
       {
-        IEpgHandler handler = GlobalServiceProvider.Instance.Get<IEpgHandler>();
+        var handler = GlobalServiceProvider.Instance.Get<IEpgHandler>();
         if (handler != null)
         {
           handler.EPGScheduleDue += EPGScheduleDue;

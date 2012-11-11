@@ -116,7 +116,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <returns>the CI list</returns>
     public static Dictionary<String, DigitalDevicesCiSlot> GetDatabaseSettings()
     {
-      Dictionary<String, DigitalDevicesCiSlot> slotSettings = new Dictionary<String, DigitalDevicesCiSlot>();
+      var slotSettings = new Dictionary<String, DigitalDevicesCiSlot>();
       byte i = 0;
       while (true)  // Loop until we don't find any more settings.
       {
@@ -126,7 +126,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
           break;
         }
 
-        DigitalDevicesCiSlot slot = new DigitalDevicesCiSlot(devicePath);
+        var slot = new DigitalDevicesCiSlot(devicePath);
         slot.DeviceName = SettingsManagement.GetValue("digitalDevicesCiDeviceName" + i, String.Empty);
         slot.DecryptLimit = SettingsManagement.GetValue("digitalDevicesCiDecryptLimit" + i, 0);
         string providers = SettingsManagement.GetValue("digitalDevicesCiProviderList" + i, String.Empty);

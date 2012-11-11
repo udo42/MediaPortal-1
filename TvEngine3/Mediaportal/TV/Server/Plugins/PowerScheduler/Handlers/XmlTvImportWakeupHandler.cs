@@ -71,7 +71,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       }
 
       DateTime now = DateTime.Now;
-      DateTime defaultRemoteScheduleTime = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
+      var defaultRemoteScheduleTime = new DateTime(now.Year, now.Month, now.Day, 0, 0, 0);
 
       DateTime remoteScheduleTime = SettingsManagement.GetValue("xmlTvRemoteScheduleTime", defaultRemoteScheduleTime);
       if (remoteScheduleTime == DateTime.MinValue)

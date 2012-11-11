@@ -124,7 +124,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
         case PowerSchedulerEventType.Started:
         case PowerSchedulerEventType.Elapsed:
 
-          IPowerScheduler ps = GlobalServiceProvider.Instance.Get<IPowerScheduler>();
+          var ps = GlobalServiceProvider.Instance.Get<IPowerScheduler>();
 
           // Check if standby should be prevented when grabbing EPG
           PowerSetting setting = ps.Settings.GetSetting("PreventStandbyWhenGrabbingEPG");
@@ -166,7 +166,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
           // Check if a wakeup time is set
           setting = ps.Settings.GetSetting("EPGWakeupConfig");
-          EPGWakeupConfig config = new EPGWakeupConfig(SettingsManagement.GetValue("EPGWakeupConfig", String.Empty));
+          var config = new EPGWakeupConfig(SettingsManagement.GetValue("EPGWakeupConfig", String.Empty));
 
           if (!config.Equals(setting.Get<EPGWakeupConfig>()))
           {
@@ -186,7 +186,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
           {
             // kick off EPG thread
             _epgThreadRunning = true;
-            Thread workerThread = new Thread(EPGThreadFunction);
+            var workerThread = new Thread(EPGThreadFunction);
             workerThread.Name = "EPG Grabbing Handler";
             workerThread.IsBackground = true;
             workerThread.Priority = ThreadPriority.Lowest;
@@ -196,7 +196,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
           // Cleanup of expired grabber sources
           // A grabber is said to be expired, when its timeout has passed and there is no valid wakeup time
           // However, when the timeout has passed, the alow-standby flag is set true
-          List<object> expired = new List<object>();
+          var expired = new List<object>();
           foreach (object o in _extGrabbers.Keys)
           {
             GrabberSource s = _extGrabbers[o];
@@ -230,9 +230,9 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       String cmd = SettingsManagement.GetValue("PowerSchedulerEpgCommand", String.Empty);
       if (string.IsNullOrEmpty(cmd))
         return;
-      using (Process p = new Process())
+      using (var p = new Process())
       {
-        ProcessStartInfo psi = new ProcessStartInfo();
+        var psi = new ProcessStartInfo();
         psi.FileName = cmd;
         psi.UseShellExecute = true;
         psi.WindowStyle = ProcessWindowStyle.Minimized;
@@ -265,7 +265,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       // shutdown is disallowed until then
 
       
-      EPGWakeupConfig config = new EPGWakeupConfig((SettingsManagement.GetValue("EPGWakeupConfig", String.Empty)));
+      var config = new EPGWakeupConfig((SettingsManagement.GetValue("EPGWakeupConfig", String.Empty)));
 
       this.LogInfo("PowerScheduler: EPG schedule {0}:{1} is due: {2}:{3}",
                    config.Hour, config.Minutes, DateTime.Now.Hour, DateTime.Now.Minute);
@@ -305,7 +305,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     private bool ShouldRunNow()
     {
       
-      EPGWakeupConfig config = new EPGWakeupConfig((SettingsManagement.GetValue("EPGWakeupConfig", String.Empty)));
+      var config = new EPGWakeupConfig((SettingsManagement.GetValue("EPGWakeupConfig", String.Empty)));
 
       // check if schedule is due
       // check if we've already run today
@@ -352,10 +352,10 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
     private DateTime GetNextWakeupSchedule(DateTime earliestWakeupTime)
     {
-      IPowerScheduler ps = GlobalServiceProvider.Instance.Get<IPowerScheduler>();
-      EPGWakeupConfig cfg = ps.Settings.GetSetting("EPGWakeupConfig").Get<EPGWakeupConfig>();
+      var ps = GlobalServiceProvider.Instance.Get<IPowerScheduler>();
+      var cfg = ps.Settings.GetSetting("EPGWakeupConfig").Get<EPGWakeupConfig>();
       // Start by thinking we should run today
-      DateTime nextRun = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, cfg.Hour, cfg.Minutes, 0);
+      var nextRun = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, cfg.Hour, cfg.Minutes, 0);
       // check if we should run today or some other day in the future
       if (cfg.LastRun.Day == DateTime.Now.Day || nextRun < earliestWakeupTime)
       {
@@ -485,7 +485,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     {
       if (!_extGrabbers.ContainsKey(source))
       {
-        GrabberSource gSource = new GrabberSource(source.ToString(), true, 0);
+        var gSource = new GrabberSource(source.ToString(), true, 0);
         gSource.NextWakeupTime = time;
         _extGrabbers.Add(source, gSource);
       }

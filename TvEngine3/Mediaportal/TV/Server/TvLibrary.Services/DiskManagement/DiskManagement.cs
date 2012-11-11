@@ -106,7 +106,7 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
 
     private static bool OutOfDiskSpace(string drive)
     {
-      ulong minimiumFreeDiskSpace = (ulong) SettingsManagement.GetValue("freediskspace" + drive[0], 51200);
+      var minimiumFreeDiskSpace = (ulong) SettingsManagement.GetValue("freediskspace" + drive[0], 51200);
 
       if (minimiumFreeDiskSpace <= 51200) // 50MB
       {
