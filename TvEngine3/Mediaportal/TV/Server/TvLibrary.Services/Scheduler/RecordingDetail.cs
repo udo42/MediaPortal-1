@@ -19,6 +19,8 @@
 #endregion
 
 using System;
+using System.Data.SqlTypes;
+using System.IO;
 using System.Text.RegularExpressions;
 using Mediaportal.TV.Server.TVControl;
 using Mediaportal.TV.Server.TVDatabase.Entities;
@@ -91,7 +93,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       {
         program = ProgramFactory.CreateProgram(0, DateTime.Now, endTime, "manual", "", null,
                                                ProgramState.None,
-                                               System.Data.SqlTypes.SqlDateTime.MinValue.Value, string.Empty, string.Empty,
+                                               SqlDateTime.MinValue.Value, string.Empty, string.Empty,
                                                string.Empty, string.Empty, -1, string.Empty, 0);        
       }
       _program = new ProgramBLL(program);
@@ -324,8 +326,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
         subDirectory = new Regex(@"\s+\\\s*|\\\s+").Replace(subDirectory, "\\");
 
         fullPath = recordingPath + "\\" + subDirectory.Trim();
-        if (!System.IO.Directory.Exists(fullPath))
-          System.IO.Directory.CreateDirectory(fullPath);
+        if (!Directory.Exists(fullPath))
+          Directory.CreateDirectory(fullPath);
       }
       if (fileName == string.Empty)
       {
@@ -356,9 +358,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     /// <returns>true if file exists, otherwise false</returns>
     private static bool DoesFileExist(string fileName)
     {
-      if (System.IO.File.Exists(fileName + ".mpg"))
+      if (File.Exists(fileName + ".mpg"))
         return true;
-      if (System.IO.File.Exists(fileName + ".ts"))
+      if (File.Exists(fileName + ".ts"))
         return true;
       return false;
     }

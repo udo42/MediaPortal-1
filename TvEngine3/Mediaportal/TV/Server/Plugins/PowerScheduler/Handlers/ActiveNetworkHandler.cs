@@ -29,6 +29,7 @@ using Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces.Interfaces;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using TvEngine.PowerScheduler.Interfaces;
+using Timer = System.Timers.Timer;
 
 namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 {
@@ -118,7 +119,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     private Int32 idleLimit; // Minimum transferrate considered as network activity in KB/s.
 
     private readonly ArrayList monitoredAdapters = new ArrayList(); // The list of monitored adapters on the computer.
-    private System.Timers.Timer timer; // The timer event executes every second to refresh the values in adapters.
+    private Timer timer; // The timer event executes every second to refresh the values in adapters.
 
     #endregion
 
@@ -199,7 +200,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
         }
 
         // Create and enable the timer 
-        timer = new System.Timers.Timer(MonitorInteval * 1000);
+        timer = new Timer(MonitorInteval * 1000);
         timer.Elapsed += timer_Elapsed;
         timer.Enabled = true;
       }

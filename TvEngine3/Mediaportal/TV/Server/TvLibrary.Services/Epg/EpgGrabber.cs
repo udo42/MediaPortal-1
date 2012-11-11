@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Timers;
 using MediaPortal.Common.Utils.ExtensionMethods;
 using Mediaportal.TV.Server.TVControl;
 using Mediaportal.TV.Server.TVDatabase.Entities;
@@ -29,6 +30,7 @@ using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Mediaportal.TV.Server.TVLibrary.Services;
+using Timer = System.Timers.Timer;
 
 namespace Mediaportal.TV.Server.TVLibrary.Epg
 {
@@ -61,7 +63,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
   {
     #region variables    
 
-    private readonly System.Timers.Timer _epgTimer = new System.Timers.Timer();
+    private readonly Timer _epgTimer = new Timer();
 
     private bool _disposed;
     private List<EpgCard> _epgCards;
@@ -228,7 +230,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void _epgTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+    private void _epgTimer_Elapsed(object sender, ElapsedEventArgs e)
     {
       //security check, dont allow re-entrancy here
       if (_reEntrant)

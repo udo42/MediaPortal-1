@@ -20,6 +20,7 @@
 
 using System;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
@@ -167,7 +168,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     public event BoolValueChangedEventHandler BoolValueChanged;
 
     //needed to get the space bar changing of the bool value
-    [System.Runtime.InteropServices.DllImport("user32.dll")]
+    [DllImport("user32.dll")]
     private static extern short GetKeyState(int nVirtKey);
 
     //set variables to start tracking bool changes

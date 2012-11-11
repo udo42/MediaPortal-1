@@ -61,7 +61,7 @@ namespace Mediaportal.TV.TvPlugin
         {
           GUIPropertyManager.SetProperty("#TV.TuningDetails.HasCiMenuSupport", TVHome.Card.CiMenuSupported().ToString(CultureInfo.InvariantCulture));
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
           this.LogError("Error loading TuningDetails /  HasCiMenuSupport:" + ex.StackTrace);
         }

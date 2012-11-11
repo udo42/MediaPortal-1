@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using Mediaportal.TV.Server.SetupControls;
@@ -108,7 +109,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         page.SuspendLayout();
 
         ChannelsInGroupControl channelsInRadioGroupControl = new ChannelsInGroupControl(_mediaTypeEnum);        
-        channelsInRadioGroupControl.Location = new System.Drawing.Point(9, 9);
+        channelsInRadioGroupControl.Location = new Point(9, 9);
         channelsInRadioGroupControl.Anchor = ((AnchorStyles.Top | AnchorStyles.Bottom)
                                               | AnchorStyles.Left)
                                              | AnchorStyles.Right;
@@ -116,9 +117,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         page.Controls.Add(channelsInRadioGroupControl);
 
         page.Tag = group;
-        page.Location = new System.Drawing.Point(4, 22);
+        page.Location = new Point(4, 22);
         page.Padding = new Padding(3);
-        page.Size = new System.Drawing.Size(457, 374);
+        page.Size = new Size(457, 374);
         page.UseVisualStyleBackColor = true;
         page.PerformLayout();
         page.ResumeLayout(false);
@@ -890,7 +891,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
             continue;
           }
 
-          if (tabControl1.GetTabRect(i).Contains(PointToClient(new System.Drawing.Point(e.X, e.Y))))
+          if (tabControl1.GetTabRect(i).Contains(PointToClient(new Point(e.X, e.Y))))
           {
             tabControl1.SelectedIndex = i;
             break;
@@ -909,7 +910,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
       int targetIndex = -1;
 
-      System.Drawing.Point pt = new System.Drawing.Point(e.X, e.Y);
+      Point pt = new Point(e.X, e.Y);
 
       pt = PointToClient(pt);
 
@@ -959,7 +960,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
 
       int targetIndex = -1;
-      System.Drawing.Point pt = new System.Drawing.Point(e.X, e.Y);
+      Point pt = new Point(e.X, e.Y);
 
       for (int i = 0; i < tabControl1.TabPages.Count; i++)
       {

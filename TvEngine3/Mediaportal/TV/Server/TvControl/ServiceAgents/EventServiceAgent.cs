@@ -1,4 +1,5 @@
 using System;
+using System.Runtime.Remoting.Messaging;
 using System.ServiceModel;
 using Mediaportal.TV.Server.TVControl.Events;
 using Mediaportal.TV.Server.TVControl.Interfaces.Events;
@@ -138,7 +139,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {
       try
       {
-        var act = (Action<TvServerEventArgs>)((System.Runtime.Remoting.Messaging.AsyncResult)result).AsyncDelegate;
+        var act = (Action<TvServerEventArgs>)((AsyncResult)result).AsyncDelegate;
         act.EndInvoke(result);        
       }
       catch (Exception ex)
@@ -170,7 +171,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {
       try
       {
-        var act = (Action<CiMenu>)((System.Runtime.Remoting.Messaging.AsyncResult)result).AsyncDelegate;
+        var act = (Action<CiMenu>)((AsyncResult)result).AsyncDelegate;
         act.EndInvoke(result);
       }
       catch (Exception ex)
@@ -202,7 +203,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     {
       try
       {
-        var act = (Action)((System.Runtime.Remoting.Messaging.AsyncResult)result).AsyncDelegate;
+        var act = (Action)((AsyncResult)result).AsyncDelegate;
         act.EndInvoke(result);
       }
       catch (Exception ex)

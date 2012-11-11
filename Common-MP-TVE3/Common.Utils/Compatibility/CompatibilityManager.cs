@@ -306,7 +306,7 @@ namespace MediaPortal.Common.Utils
       return (CompatibleVersionAttribute[])asm.GetCustomAttributes(typeof(CompatibleVersionAttribute), true);
     }
 
-    public static bool IsPluginCompatible(System.Xml.XmlElement rootNode)
+    public static bool IsPluginCompatible(XmlElement rootNode)
     {
       XmlNode versionNode = rootNode.SelectSingleNode("CompatibleVersion/Items");
       if(versionNode == null)

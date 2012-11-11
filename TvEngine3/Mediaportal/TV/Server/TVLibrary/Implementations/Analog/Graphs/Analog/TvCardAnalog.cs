@@ -358,7 +358,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
         _capBuilder = (ICaptureGraphBuilder2)new CaptureGraphBuilder2();
         _capBuilder.SetFiltergraph(_graphBuilder);
         Graph graph = _configuration.Graph;
-        _tuner = new Components.Tuner(_device);
+        _tuner = new Tuner(_device);
         if (!_tuner.CreateFilterInstance(graph, _graphBuilder))
         {
           this.LogError("analog: unable to add tv tuner filter");
@@ -367,7 +367,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
         _minChannel = _tuner.MinChannel;
         _maxChannel = _tuner.MaxChannel;
         //add the wdm crossbar device and connect tvtuner->crossbar
-        _crossbar = new Components.Crossbar();
+        _crossbar = new Crossbar();
         if (!_crossbar.CreateFilterInstance(graph, _graphBuilder, _tuner))
         {
           this.LogError("analog: unable to add tv crossbar filter");

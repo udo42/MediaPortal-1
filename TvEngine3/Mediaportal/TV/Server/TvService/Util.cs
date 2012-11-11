@@ -209,7 +209,7 @@ namespace Mediaportal.TV.Server.TVService
       if (strFileName == null) return;
       if (strFileName.Length <= 2) return;
       if (strFileName[1] == ':') return;
-      strBasePath = Utils.RemoveTrailingSlash(strBasePath);
+      strBasePath = RemoveTrailingSlash(strBasePath);
       while (strFileName.StartsWith(@"..\") || strFileName.StartsWith("../"))
       {
         strFileName = strFileName.Substring(3);
@@ -229,7 +229,7 @@ namespace Mediaportal.TV.Server.TVService
       }
       if (strBasePath.Length == 2 && strBasePath[1] == ':')
         strBasePath += @"\";
-      strFileName = System.IO.Path.Combine(strBasePath, strFileName);
+      strFileName = Path.Combine(strBasePath, strFileName);
     }
 
     public static string stripHTMLtags(string strHTML)
@@ -311,8 +311,8 @@ namespace Mediaportal.TV.Server.TVService
                            };
 
         // Strip the extensions and make everything lowercase
-        string strFileName1 = System.IO.Path.GetFileNameWithoutExtension(strFile1).ToLowerInvariant();
-        string strFileName2 = System.IO.Path.GetFileNameWithoutExtension(strFile2).ToLowerInvariant();
+        string strFileName1 = Path.GetFileNameWithoutExtension(strFile1).ToLowerInvariant();
+        string strFileName2 = Path.GetFileNameWithoutExtension(strFile2).ToLowerInvariant();
 
         // Check all the patterns
         for (int i = 0; i < pattern.Length; i++)
@@ -397,8 +397,8 @@ namespace Mediaportal.TV.Server.TVService
 
       try
       {
-        IntPtr fHandle = CreateFile(strDrive, System.IO.FileAccess.Read, System.IO.FileShare.ReadWrite, 0,
-                                    System.IO.FileMode.Open, 0x80, IntPtr.Zero);
+        IntPtr fHandle = CreateFile(strDrive, FileAccess.Read, FileShare.ReadWrite, 0,
+                                    FileMode.Open, 0x80, IntPtr.Zero);
         if (fHandle.ToInt64() != -1) //INVALID_HANDLE_VALUE)
         {
           uint Result;
@@ -502,8 +502,8 @@ namespace Mediaportal.TV.Server.TVService
       if (strFile.Length == 0) return true;
       try
       {
-        if (!System.IO.File.Exists(strFile)) return true;
-        System.IO.File.Delete(strFile);
+        if (!File.Exists(strFile)) return true;
+        File.Delete(strFile);
         return true;
       }
       catch (Exception) {}
@@ -520,11 +520,11 @@ namespace Mediaportal.TV.Server.TVService
       if (String.IsNullOrEmpty(strFile)) return true;
       try
       {
-        if (System.IO.File.Exists(strFile))
+        if (File.Exists(strFile))
         {
-          System.IO.File.Delete(strFile);
+          File.Delete(strFile);
         }
-        String FolderName = System.IO.Path.GetDirectoryName(strFile);
+        String FolderName = Path.GetDirectoryName(strFile);
         DirectoryInfo ContainingFolder = new DirectoryInfo(FolderName);
         if (ContainingFolder != null)
         {
@@ -532,7 +532,7 @@ namespace Mediaportal.TV.Server.TVService
           FileInfo[] files = ContainingFolder.GetFiles();
           if (files.Length == 0 && subfolders.Length == 0)
           {
-            System.IO.Directory.Delete(FolderName);
+            Directory.Delete(FolderName);
           }
         }
         return true;
@@ -547,7 +547,7 @@ namespace Mediaportal.TV.Server.TVService
       if (strDir.Length == 0) return false;
       try
       {
-        System.IO.Directory.Delete(strDir);
+        Directory.Delete(strDir);
         return true;
       }
       catch (Exception) {}
@@ -650,14 +650,14 @@ namespace Mediaportal.TV.Server.TVService
       string[] strFiles;
       try
       {
-        if (!System.IO.Directory.Exists(strDir))
+        if (!Directory.Exists(strDir))
           return;
-        strFiles = System.IO.Directory.GetFiles(strDir, strPattern);
+        strFiles = Directory.GetFiles(strDir, strPattern);
         foreach (string strFile in strFiles)
         {
           try
           {
-            System.IO.File.Delete(strFile);
+            File.Delete(strFile);
           }
           catch (Exception) {}
         }
@@ -755,7 +755,7 @@ namespace Mediaportal.TV.Server.TVService
       ulong totalNumberOfFreeBytes = 0;
 
       GetDiskFreeSpaceEx(
-        System.IO.Path.GetPathRoot(UNCPath),
+        Path.GetPathRoot(UNCPath),
         out freeBytesAvailable,
         out totalNumberOfBytes,
         out totalNumberOfFreeBytes);

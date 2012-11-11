@@ -20,6 +20,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Net;
 using System.Net.Sockets;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
@@ -41,7 +42,7 @@ namespace Mediaportal.TV.Server.TVControl
     #region private members
 
     private static bool _isRemotingConnected;    
-    private static string _hostName = System.Net.Dns.GetHostName();
+    private static string _hostName = Dns.GetHostName();
     private static bool _useIncreasedTimeoutForInitialConnection = true;
 
     #endregion
@@ -96,7 +97,7 @@ namespace Mediaportal.TV.Server.TVControl
 
     
 
-    private static void ConnectCallback(System.IAsyncResult ar)
+    private static void ConnectCallback(IAsyncResult ar)
     {
       TcpClient tcpClient = (TcpClient)ar.AsyncState;
       try

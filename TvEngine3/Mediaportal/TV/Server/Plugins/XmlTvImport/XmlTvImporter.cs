@@ -19,11 +19,13 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
+using System.Timers;
 using Castle.Core;
 using Ionic.Zip;
 using MediaPortal.Common.Utils;
@@ -36,6 +38,7 @@ using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
+using Timer = System.Timers.Timer;
 
 namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 {
@@ -53,7 +56,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     private DateTime _remoteFileDonwloadInProgressAt = DateTime.MinValue;
     private bool _remoteFileDownloadInProgress;
     private string _remoteURL = "";
-    private System.Timers.Timer _timer1;
+    private Timer _timer1;
     private bool _workerThreadRunning;
 
     #endregion
@@ -117,7 +120,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       RegisterPowerEventHandler();
       RetrieveRemoteTvGuideOnStartUp();
       CheckNewTVGuide();
-      _timer1 = new System.Timers.Timer();
+      _timer1 = new Timer();
       _timer1.Interval = 60000;
       _timer1.Enabled = true;
       _timer1.Elapsed += _timer1_Elapsed;
@@ -487,16 +490,16 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     {     
       string fileName = folder + @"\tvguide.xml";
 
-      if (System.IO.File.Exists(fileName) && importXML)
+      if (File.Exists(fileName) && importXML)
       {
         importXML = true;
       }
 
       fileName = folder + @"\tvguide.lst";
 
-      if (importLST && System.IO.File.Exists(fileName))
+      if (importLST && File.Exists(fileName))
       {
-        DateTime fileTime = DateTime.Parse(System.IO.File.GetLastWriteTime(fileName).ToString());
+        DateTime fileTime = DateTime.Parse(File.GetLastWriteTime(fileName).ToString());
         // for rounding errors!!!
         importLST = true;
       }
@@ -512,7 +515,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
     #region private members
 
-    private void _timer1_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+    private void _timer1_Elapsed(object sender, ElapsedEventArgs e)
     {
       RetrieveRemoteTvGuide();
 
@@ -571,7 +574,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       try
       {
         remoteScheduleTime = (DateTime)
-                             (System.ComponentModel.TypeDescriptor.GetConverter(new DateTime(now.Year, now.Month,
+                             (TypeDescriptor.GetConverter(new DateTime(now.Year, now.Month,
                                                                                              now.Day)).ConvertFrom(
                                                                                                remoteScheduleTimeStr));
       }
@@ -622,9 +625,9 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
       string fileName = folder + @"\tvguide.xml";
 
-      if (importXML && System.IO.File.Exists(fileName))
+      if (importXML && File.Exists(fileName))
       {
-        DateTime fileTime = System.IO.File.GetLastWriteTime(fileName);
+        DateTime fileTime = File.GetLastWriteTime(fileName);
         if (importDate < fileTime)
         {
           importDate = fileTime;
@@ -633,12 +636,12 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
       fileName = folder + @"\tvguide.lst";
 
-      if (importLST && System.IO.File.Exists(fileName))
+      if (importLST && File.Exists(fileName))
         // check if any files contained in tvguide.lst are newer than time of last import
       {
         try
         {
-          DateTime fileTime = System.IO.File.GetLastWriteTime(fileName);
+          DateTime fileTime = File.GetLastWriteTime(fileName);
           if (importDate < fileTime)
           {
             importDate = fileTime;
@@ -650,14 +653,14 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
           {
             string tvguideFileName = fileIn.ReadLine();
             if (tvguideFileName.Length == 0) continue;
-            if (!System.IO.Path.IsPathRooted(tvguideFileName))
+            if (!Path.IsPathRooted(tvguideFileName))
             {
               // extend by directory
-              tvguideFileName = System.IO.Path.Combine(folder, tvguideFileName);
+              tvguideFileName = Path.Combine(folder, tvguideFileName);
             }
-            if (System.IO.File.Exists(tvguideFileName))
+            if (File.Exists(tvguideFileName))
             {
-              DateTime tvfileTime = System.IO.File.GetLastWriteTime(tvguideFileName);
+              DateTime tvfileTime = File.GetLastWriteTime(tvguideFileName);
 
               if (tvfileTime > lastTime)
               {
@@ -741,10 +744,10 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
             string tvguideFileName = fileIn.ReadLine();
             if (tvguideFileName.Length == 0) continue;
 
-            if (!System.IO.Path.IsPathRooted(tvguideFileName))
+            if (!Path.IsPathRooted(tvguideFileName))
             {
               // extend by directory
-              tvguideFileName = System.IO.Path.Combine(folder, tvguideFileName);
+              tvguideFileName = Path.Combine(folder, tvguideFileName);
             }
             try
             {
@@ -843,10 +846,10 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
               string tvguideFileName = fileIn.ReadLine();
               if (tvguideFileName.Length == 0) continue;
 
-              if (!System.IO.Path.IsPathRooted(tvguideFileName))
+              if (!Path.IsPathRooted(tvguideFileName))
               {
                 // extend by directory
-                tvguideFileName = System.IO.Path.Combine(folder, tvguideFileName);
+                tvguideFileName = Path.Combine(folder, tvguideFileName);
               }
 
               this.LogDebug(@"plugin:xmltv importing " + tvguideFileName);

@@ -20,6 +20,7 @@
 
 using System;
 using System.Runtime.InteropServices;
+using DirectShowLib;
 
 namespace Mediaportal.TV.Server.TestApp
 {
@@ -226,7 +227,7 @@ namespace Mediaportal.TV.Server.TestApp
     int SetCreateTxtPinOnDemux(ushort bCreatePin);
 
     [PreserveSig]
-    int Load(string pszFileName, ref DirectShowLib.MediaType pmt);
+    int Load(string pszFileName, ref MediaType pmt);
 
     [PreserveSig]
     int GetPCRPosition(ref long pos);

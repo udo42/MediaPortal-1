@@ -19,10 +19,11 @@
 #endregion
 
 using System;
+using System.Windows.Forms;
 
 namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 {
-  public class XPListViewItemCollection : System.Windows.Forms.ListView.ListViewItemCollection
+  public class XPListViewItemCollection : ListView.ListViewItemCollection
   {
     #region Delegates
 

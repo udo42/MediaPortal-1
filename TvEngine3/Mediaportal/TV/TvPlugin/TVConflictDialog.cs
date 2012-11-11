@@ -77,8 +77,8 @@ namespace Mediaportal.TV.TvPlugin
 
     public void AddConflictRecording(GUIListItem item)
     {
-      string logo = MediaPortal.Util.Utils.GetCoverArt(Thumbs.TVChannel, item.Label3);
-      if (!MediaPortal.Util.Utils.FileExistsInCache(logo))      
+      string logo = Utils.GetCoverArt(Thumbs.TVChannel, item.Label3);
+      if (!Utils.FileExistsInCache(logo))      
       {
         logo = "defaultVideoBig.png";
       }

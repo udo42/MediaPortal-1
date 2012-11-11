@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
 
 namespace Mediaportal.TV.Server.TVDatabase.EntityModel.DBaseContext
 {
@@ -12,19 +13,19 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.DBaseContext
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        System.Data.Entity.DbContext GetDbContextForKey(string key);
+        DbContext GetDbContextForKey(string key);
 
         /// <summary>
         /// Sets the db context for key.
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="objectContext">The object context.</param>
-        void SetDbContextForKey(string key, System.Data.Entity.DbContext objectContext);
+        void SetDbContextForKey(string key, DbContext objectContext);
 
         /// <summary>
         /// Gets all db contexts.
         /// </summary>
         /// <returns></returns>
-        IEnumerable<System.Data.Entity.DbContext> GetAllDbContexts();
+        IEnumerable<DbContext> GetAllDbContexts();
     }
 }

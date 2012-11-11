@@ -18,6 +18,7 @@
 
 #endregion
 
+using System;
 using System.Collections;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -65,11 +66,11 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     {
       // in case x,y are strings and actually number,
       // convert them to int and use the base.Compare for comparison
-      if ((x is System.String) && IsWholeNumber((string)x)
-          && (y is System.String) && IsWholeNumber((string)y))
+      if ((x is String) && IsWholeNumber((string)x)
+          && (y is String) && IsWholeNumber((string)y))
       {
-        return base.Compare(System.Convert.ToInt32(x),
-                            System.Convert.ToInt32(y));
+        return base.Compare(Convert.ToInt32(x),
+                            Convert.ToInt32(y));
       }
       return base.Compare(x, y);
     }

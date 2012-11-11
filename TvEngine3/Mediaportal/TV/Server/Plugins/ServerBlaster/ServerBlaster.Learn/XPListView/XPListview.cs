@@ -21,7 +21,9 @@
 using System;
 using System.Collections;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.Drawing;
+using System.Drawing.Design;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -34,7 +36,7 @@ using System.Windows.Forms;
 
 namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 {
-  public class XPListView : System.Windows.Forms.ListView
+  public class XPListView : ListView
   {
     private IntPtr _apiRetVal;
     private bool _autoGroup;
@@ -55,7 +57,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Content),
      Description("the items collection of this view"),
-     Editor(typeof (XPListViewItemCollectionEditor), typeof (System.Drawing.Design.UITypeEditor)),
+     Editor(typeof (XPListViewItemCollectionEditor), typeof (UITypeEditor)),
      Category("Behavior")]
     public new XPListViewItemCollection Items
     {
@@ -64,7 +66,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     [DesignerSerializationVisibility(DesignerSerializationVisibility.Content),
      Description("collection of available groups (manually added)"),
-     Editor(typeof (System.ComponentModel.Design.CollectionEditor), typeof (System.Drawing.Design.UITypeEditor)),
+     Editor(typeof (CollectionEditor), typeof (UITypeEditor)),
      Category("Grouping")]
     public XPListViewGroupCollection Groups
     {
@@ -90,7 +92,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
           }
 
           int param = 0;
-          int wParam = System.Convert.ToInt32(value);
+          int wParam = Convert.ToInt32(value);
           ListViewAPI.SendMessage(Handle, ListViewAPI.LVM_ENABLEGROUPVIEW, wParam, ref param);
         }
       }
@@ -435,7 +437,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
     }
 
 
-    protected override void OnColumnClick(System.Windows.Forms.ColumnClickEventArgs e)
+    protected override void OnColumnClick(ColumnClickEventArgs e)
     {
       base.OnColumnClick(e);
       SuspendLayout();

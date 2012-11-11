@@ -20,20 +20,23 @@
 
 using System;
 using System.ComponentModel;
+using System.ComponentModel.Design;
 using System.ComponentModel.Design.Serialization;
+using System.Globalization;
+using System.Windows.Forms;
 
 namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 {
-  internal class XPListViewItemCollectionEditor : System.ComponentModel.Design.CollectionEditor
+  internal class XPListViewItemCollectionEditor : CollectionEditor
   {
     public XPListViewItemCollectionEditor() : base(typeof (XPListViewItemCollection)) {}
 
-    protected override object CreateInstance(System.Type itemType)
+    protected override object CreateInstance(Type itemType)
     {
       return new XPListViewItem();
     }
 
-    protected override System.Type CreateCollectionItemType()
+    protected override Type CreateCollectionItemType()
     {
       return typeof (XPListViewItem);
     }
@@ -41,7 +44,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
   internal class XPListViewItemConverter : ExpandableObjectConverter
   {
-    public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Type destinationType)
+    public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
     {
       if (destinationType == typeof (InstanceDescriptor))
       {
@@ -50,12 +53,12 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       return base.CanConvertTo(context, destinationType);
     }
 
-    public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context,
-                                     System.Globalization.CultureInfo culture, object value, System.Type destinationType)
+    public override object ConvertTo(ITypeDescriptorContext context,
+                                     CultureInfo culture, object value, Type destinationType)
     {
       if (destinationType == typeof (InstanceDescriptor))
       {
-        Type[] signature = {typeof (XPListViewItem.ListViewSubItem[]), typeof (int), typeof (int)};
+        Type[] signature = {typeof (ListViewItem.ListViewSubItem[]), typeof (int), typeof (int)};
         XPListViewItem itm = ((XPListViewItem)value);
         object[] args = {itm.SubItemsArray, itm.ImageIndex, itm.GroupIndex};
         return new InstanceDescriptor(typeof (XPListViewItem).GetConstructor(signature), args, false);
@@ -66,7 +69,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
   internal class XPListViewGroupConverter : ExpandableObjectConverter
   {
-    public override bool CanConvertTo(System.ComponentModel.ITypeDescriptorContext context, System.Type destinationType)
+    public override bool CanConvertTo(ITypeDescriptorContext context, Type destinationType)
     {
       if (destinationType == typeof (InstanceDescriptor))
       {
@@ -75,8 +78,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       return base.CanConvertTo(context, destinationType);
     }
 
-    public override object ConvertTo(System.ComponentModel.ITypeDescriptorContext context,
-                                     System.Globalization.CultureInfo culture, object value, System.Type destinationType)
+    public override object ConvertTo(ITypeDescriptorContext context,
+                                     CultureInfo culture, object value, Type destinationType)
     {
       if (destinationType == typeof (InstanceDescriptor))
       {

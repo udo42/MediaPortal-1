@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Windows.Forms;
 using Mediaportal.TV.Server.TVControl.ServiceAgents;
 using Mediaportal.TV.Server.TVDatabase.Entities;
@@ -160,7 +161,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
         foreach (object group in _groups)
         {
           string name =
-            group.GetType().InvokeMember("GroupName", System.Reflection.BindingFlags.GetProperty, null, group, null).
+            group.GetType().InvokeMember("GroupName", BindingFlags.GetProperty, null, group, null).
               ToString();
 
           listBox1.Items.Add(name);

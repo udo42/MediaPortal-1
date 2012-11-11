@@ -21,6 +21,7 @@
 #region Usings
 
 using System;
+using System.Globalization;
 using System.Text;
 using System.Windows.Forms;
 using Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces;
@@ -183,7 +184,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
       var cfg = new EPGWakeupConfig(setting.Value);
       var newcfg = new EPGWakeupConfig {Hour = cfg.Hour, Minutes = cfg.Minutes, LastRun = cfg.LastRun};
       // newcfg.Days = cfg.Days;
-      string[] time = maskedTextBox1.Text.Split(System.Globalization.DateTimeFormatInfo.CurrentInfo.TimeSeparator[0]);
+      string[] time = maskedTextBox1.Text.Split(DateTimeFormatInfo.CurrentInfo.TimeSeparator[0]);
       newcfg.Hour = Convert.ToInt32(time[0]);
       newcfg.Minutes = Convert.ToInt32(time[1]);
       CheckDay(newcfg, EPGGrabDays.Monday, checkBox8.Checked);

@@ -9,12 +9,12 @@ using System.Reflection;
 
 namespace Mediaportal.TV.Server.TVDatabase.EntityModel.DBaseContext
 {
-    public interface IDbContextBuilder<T> where T : System.Data.Entity.DbContext
+    public interface IDbContextBuilder<T> where T : DbContext
     {
         T BuildDbContext();
     }
 
-    public class DbContextBuilder<T> : DbModelBuilder, IDbContextBuilder<T> where T : System.Data.Entity.DbContext
+    public class DbContextBuilder<T> : DbModelBuilder, IDbContextBuilder<T> where T : DbContext
     {
       private readonly ConnectionStringSettings _cnStringSettings;
       private readonly DbProviderFactory _factory;
@@ -48,7 +48,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.DBaseContext
 
             var dbModel = Build(cn);
 
-            System.Data.Objects.ObjectContext ctx = dbModel.Compile().CreateObjectContext<System.Data.Objects.ObjectContext>(cn);
+            ObjectContext ctx = dbModel.Compile().CreateObjectContext<ObjectContext>(cn);
             ctx.ContextOptions.LazyLoadingEnabled = _lazyLoadingEnabled;
 
             if (!ctx.DatabaseExists())
@@ -61,7 +61,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.DBaseContext
                 ctx.CreateDatabase();
             }
 
-            return (T)new System.Data.Entity.DbContext(ctx, false);
+            return (T)new DbContext(ctx, false);
         }
 
       #endregion

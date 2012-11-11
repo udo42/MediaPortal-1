@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
 {
@@ -344,7 +345,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       }
       catch (Exception)
       {
-        System.Diagnostics.Trace.WriteLine("EXCEPTION");
+        Trace.WriteLine("EXCEPTION");
         //        this.LogDebug(Log.LogType.Error,true,"Exception while decoding teletext");
         //        this.LogError(ex, "");
       }

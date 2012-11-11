@@ -448,27 +448,27 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
               SynchProgramStatesForAllSchedules(programRepository.GetAll<Schedule>());
             }
             // and exit
-            lock (ProgramManagement._programInsertsQueue)
+            lock (_programInsertsQueue)
             {
               //  Has new work been queued in the meantime?
-              if (ProgramManagement._programInsertsQueue.Count == 0)
+              if (_programInsertsQueue.Count == 0)
               {
                 this.LogDebug("BusinessLayer: InsertProgramsThread exiting");
-                ProgramManagement._insertProgramsThread = null;
+                _insertProgramsThread = null;
                 break;
               }
             }
           }
 
-          ProgramManagement._pendingProgramInserts.WaitOne(10000); // Check every 10 secs
-          while (ProgramManagement._programInsertsQueue.Count > 0)
+          _pendingProgramInserts.WaitOne(10000); // Check every 10 secs
+          while (_programInsertsQueue.Count > 0)
           {
             try
             {
               ImportParams importParams;
-              lock (ProgramManagement._programInsertsQueue)
+              lock (_programInsertsQueue)
               {
-                importParams = ProgramManagement._programInsertsQueue.Dequeue();
+                importParams = _programInsertsQueue.Dequeue();
               }
               Thread.CurrentThread.Priority = importParams.Priority;
               InsertPrograms(importParams);
@@ -496,7 +496,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
       if (schedules != null)
       {
-        foreach (TVDatabase.Entities.Schedule schedule in schedules)
+        foreach (Schedule schedule in schedules)
         {
           SynchProgramStates(new ScheduleBLL(schedule));
         }
@@ -505,7 +505,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
     public void InitiateInsertPrograms(int millisecondsTimeout)
     {
-      Thread currentInsertThread = ProgramManagement._insertProgramsThread;
+      Thread currentInsertThread = _insertProgramsThread;
       if (currentInsertThread != null &&
           (currentInsertThread.ThreadState & ThreadState.Unstarted) != ThreadState.Unstarted)
         currentInsertThread.Join(millisecondsTimeout);
@@ -1028,7 +1028,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         SaveProgram(prog.Entity);
       }
     }
-    public static IList<Program> GetProgramsForSchedule(TVDatabase.Entities.Schedule schedule)
+    public static IList<Program> GetProgramsForSchedule(Schedule schedule)
     {
       IList<Program> progsEntities = new List<Program>();
       switch (schedule.ScheduleType)

@@ -22,14 +22,14 @@ namespace Mediaportal.TV.TvPlugin.EventHandlers
         this.LogDebug("Callback from tvserver {0}", menu.Title);
 
         // pass menu to calling dialog
-        TvPlugin.TVHome.ProcessCiMenu(menu);
+        TVHome.ProcessCiMenu(menu);
       }
       catch
       {
         menu = new CiMenu("Remoting Exception", "Communication with server failed", null,
                           CiMenuState.Error);
         // pass menu to calling dialog
-        TvPlugin.TVHome.ProcessCiMenu(menu);
+        TVHome.ProcessCiMenu(menu);
       }
     }
   }

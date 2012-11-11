@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows.Forms;
 using DirectShowLib;
@@ -173,10 +174,10 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private void mpComboBoxPrio_SelectedIndexChanged(object sender, EventArgs e)
     {
-      System.Diagnostics.Process process;
+      Process process;
       try
       {
-        process = System.Diagnostics.Process.GetProcessesByName("TVService")[0];
+        process = Process.GetProcessesByName("TVService")[0];
       }
       catch (Exception ex)
       {
@@ -189,25 +190,25 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         switch (mpComboBoxPrio.SelectedIndex)
         {
           case 0:
-            process.PriorityClass = System.Diagnostics.ProcessPriorityClass.RealTime;
+            process.PriorityClass = ProcessPriorityClass.RealTime;
             break;
           case 1:
-            process.PriorityClass = System.Diagnostics.ProcessPriorityClass.High;
+            process.PriorityClass = ProcessPriorityClass.High;
             break;
           case 2:
-            process.PriorityClass = System.Diagnostics.ProcessPriorityClass.AboveNormal;
+            process.PriorityClass = ProcessPriorityClass.AboveNormal;
             break;
           case 3:
-            process.PriorityClass = System.Diagnostics.ProcessPriorityClass.Normal;
+            process.PriorityClass = ProcessPriorityClass.Normal;
             break;
           case 4:
-            process.PriorityClass = System.Diagnostics.ProcessPriorityClass.BelowNormal;
+            process.PriorityClass = ProcessPriorityClass.BelowNormal;
             break;
           case 5:
-            process.PriorityClass = System.Diagnostics.ProcessPriorityClass.Idle;
+            process.PriorityClass = ProcessPriorityClass.Idle;
             break;
           default:
-            process.PriorityClass = System.Diagnostics.ProcessPriorityClass.Normal;
+            process.PriorityClass = ProcessPriorityClass.Normal;
             break;
         }
       }

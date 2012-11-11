@@ -18,6 +18,7 @@
 
 #endregion
 
+using System;
 using System.IO;
 using System.Text;
 
@@ -121,7 +122,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
 
           if (durationLine.Length > 0 && infoLine.Length > 0 && fileName.Length > 0)
           {
-            int duration = System.Int32.Parse(durationLine);
+            int duration = Int32.Parse(durationLine);
             duration *= 1000;
 
             string tmp = fileName.ToLowerInvariant();

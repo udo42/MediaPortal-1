@@ -18,6 +18,7 @@
 
 #endregion
 
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -31,7 +32,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.Container components;
+    private Container components;
 
     public MPBeveledLine()
     {

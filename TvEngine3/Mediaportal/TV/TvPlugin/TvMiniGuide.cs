@@ -203,12 +203,12 @@ namespace Mediaportal.TV.TvPlugin
                 // switching logic
                 SelectedChannel = (Channel)lstChannels.SelectedListItem.TVTag;
 
-                Server.TVDatabase.Entities.Channel changeChannel = null;
+                Channel changeChannel = null;
                 if (AutoZap)
                 {
                   if ((TVHome.Navigator.Channel.Entity.IdChannel != SelectedChannel.IdChannel) || g_Player.IsTVRecording)
                   {
-                    List<Server.TVDatabase.Entities.Channel> tvChannelList = GetChannelListByGroup();
+                    List<Channel> tvChannelList = GetChannelListByGroup();
                     if (tvChannelList != null)
                     {
                       changeChannel = tvChannelList[lstChannels.SelectedListItemIndex];
@@ -374,16 +374,16 @@ namespace Mediaportal.TV.TvPlugin
       this.LogDebug("TvMiniGuide: FillGroupList finished after {0} ms", benchClock.ElapsedMilliseconds.ToString());
     }
 
-    private List<Server.TVDatabase.Entities.Channel> GetChannelListByGroup()
+    private List<Channel> GetChannelListByGroup()
     {
       int idGroup = TVHome.Navigator.CurrentGroup.IdGroup;
 
       if (_tvGroupChannelListCache == null)
       {
-        _tvGroupChannelListCache = new Dictionary<int, List<Server.TVDatabase.Entities.Channel>>();
+        _tvGroupChannelListCache = new Dictionary<int, List<Channel>>();
       }
 
-      List<Server.TVDatabase.Entities.Channel> channels = null;
+      List<Channel> channels = null;
       if (_tvGroupChannelListCache.TryGetValue(idGroup, out channels))  //already in cache ? then return it.      
       {
         this.LogDebug("TvMiniGuide: GetChannelListByGroup returning cached version of channels.");
@@ -391,7 +391,7 @@ namespace Mediaportal.TV.TvPlugin
       }
       else //not in cache, fetch it and update cache, then return.
       {
-        List<Server.TVDatabase.Entities.Channel> tvChannelList =
+        List<Channel> tvChannelList =
           ServiceAgents.Instance.ChannelServiceAgent.GetAllChannelsByGroupIdAndMediaType(
             TVHome.Navigator.CurrentGroup.IdGroup, MediaTypeEnum.TV, ChannelIncludeRelationEnum.TuningDetails).ToList();
 
@@ -403,7 +403,7 @@ namespace Mediaportal.TV.TvPlugin
         }
         else
         {
-          return new List<Server.TVDatabase.Entities.Channel>();
+          return new List<Channel>();
         }
       }
     }

@@ -18,10 +18,12 @@
 
 #endregion
 
+using System.Windows.Forms;
+
 namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 {
   /// <summary>
   /// Summary description for MPContextMenuStrip.
   /// </summary>
-  public class MPContextMenuStrip : System.Windows.Forms.ContextMenuStrip {}
+  public class MPContextMenuStrip : ContextMenuStrip {}
 }

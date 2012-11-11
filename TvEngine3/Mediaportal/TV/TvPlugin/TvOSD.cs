@@ -23,6 +23,7 @@ using System.Globalization;
 using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
 using MediaPortal.Player;
+using MediaPortal.Player.Subtitles;
 using MediaPortal.Profile;
 using MediaPortal.Util;
 using Mediaportal.TV.Server.TVControl.ServiceAgents;
@@ -342,9 +343,9 @@ namespace Mediaportal.TV.TvPlugin
             {
               ShowControl(GetID, i);
             }
-            m_delayInterval = MediaPortal.Player.Subtitles.SubEngine.GetInstance().DelayInterval;
+            m_delayInterval = SubEngine.GetInstance().DelayInterval;
             if (m_delayInterval > 0)
-              m_subtitleDelay = MediaPortal.Player.Subtitles.SubEngine.GetInstance().Delay / m_delayInterval;
+              m_subtitleDelay = SubEngine.GetInstance().Delay / m_delayInterval;
             return true;
           }
 
@@ -1102,11 +1103,11 @@ namespace Mediaportal.TV.TvPlugin
             {
               if (pControl.FloatValue < m_subtitleDelay)
               {
-                MediaPortal.Player.Subtitles.SubEngine.GetInstance().DelayMinus();
+                SubEngine.GetInstance().DelayMinus();
               }
               else
               {
-                MediaPortal.Player.Subtitles.SubEngine.GetInstance().DelayPlus();
+                SubEngine.GetInstance().DelayPlus();
               }
               m_subtitleDelay = (int)pControl.FloatValue;
             }

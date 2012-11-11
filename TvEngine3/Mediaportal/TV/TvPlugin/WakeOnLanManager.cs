@@ -21,10 +21,12 @@
 #region Usings
 
 using System;
+using System.Globalization;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Net.Sockets;
 using System.Runtime.InteropServices;
+using System.Threading;
 using Mediaportal.TV.Server.TVControl;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
@@ -298,7 +300,7 @@ namespace Mediaportal.TV.TvPlugin
           return true;
         }
         this.LogDebug("WOLMgr: System {0} still not reachable, waiting...", wakeupTarget);
-        System.Threading.Thread.Sleep(1000);
+        Thread.Sleep(1000);
         waited += 2000;
       }
       return false;
@@ -321,7 +323,7 @@ namespace Mediaportal.TV.TvPlugin
       {
         for (int i = 0; i < addr.Length; i++)
         {
-          addrn[i] = byte.Parse(addr[i], System.Globalization.NumberStyles.HexNumber);
+          addrn[i] = byte.Parse(addr[i], NumberStyles.HexNumber);
         }
 
         return addrn;

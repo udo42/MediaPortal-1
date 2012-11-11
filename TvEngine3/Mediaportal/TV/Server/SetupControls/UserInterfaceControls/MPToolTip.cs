@@ -18,10 +18,12 @@
 
 #endregion
 
+using System.Windows.Forms;
+
 namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 {
   /// <summary>
   /// Summary description for MPToolTip.
   /// </summary>
-  public class MPToolTip : System.Windows.Forms.ToolTip {}
+  public class MPToolTip : ToolTip {}
 }

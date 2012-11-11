@@ -20,6 +20,8 @@
 
 using System;
 using System.Collections;
+using System.Diagnostics;
+using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using Mediaportal.TV.Server.SetupControls;
@@ -57,7 +59,7 @@ namespace Mediaportal.TV.Server.SetupTV
       // Check if we got a sections file to read from, or if we should specify
       // the default sections
       //
-      if (sectionConfiguration != String.Empty && System.IO.File.Exists(sectionConfiguration))
+      if (sectionConfiguration != String.Empty && File.Exists(sectionConfiguration))
       {
         LoadSections(sectionConfiguration);
       }
@@ -174,7 +176,7 @@ namespace Mediaportal.TV.Server.SetupTV
       }
       catch (Exception e)
       {
-        System.Diagnostics.Debug.WriteLine(e.Message);
+        Debug.WriteLine(e.Message);
       }
     }
 

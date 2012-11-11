@@ -21,7 +21,7 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler
 
     public static T Deserialize<T>(string xmlData)
     {
-      var encoding = new System.Text.UTF8Encoding();
+      var encoding = new UTF8Encoding();
       byte[] dataAsbytes = encoding.GetBytes(xmlData);
       using (var writer = new MemoryStream(dataAsbytes))
       {

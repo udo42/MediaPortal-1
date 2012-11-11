@@ -22,10 +22,12 @@ using System;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Web;
 using System.Xml;
 using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
@@ -690,7 +692,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                         prg.Title = title;
                         prg.Description = description;                        
                         prg.State = (int)ProgramState.None;
-                        prg.OriginalAirDate = System.Data.SqlTypes.SqlDateTime.MinValue.Value;
+                        prg.OriginalAirDate = SqlDateTime.MinValue.Value;
                         prg.SeriesNum = seriesNum;
                         prg.EpisodeNum = episodeNum;
                         prg.EpisodeName = episodeName;
@@ -770,12 +772,12 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                     i--;
                     continue;
                   }
-                  DateTime airDate = System.Data.SqlTypes.SqlDateTime.MinValue.Value;
+                  DateTime airDate = SqlDateTime.MinValue.Value;
                   try
                   {
                     airDate = prog.OriginalAirDate.GetValueOrDefault(DateTime.MinValue);
-                    if (airDate > System.Data.SqlTypes.SqlDateTime.MinValue.Value &&
-                        airDate < System.Data.SqlTypes.SqlDateTime.MaxValue.Value)
+                    if (airDate > SqlDateTime.MinValue.Value &&
+                        airDate < SqlDateTime.MaxValue.Value)
                       prog.OriginalAirDate = airDate;
                   }
                   catch (Exception)
@@ -1151,7 +1153,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       using (var writer = new StringWriter())
       {
 
-        System.Web.HttpUtility.HtmlDecode(html, writer);
+        HttpUtility.HtmlDecode(html, writer);
         String DecodedString = writer.ToString();
         strippedHtml = DecodedString.Replace("<br>", "\n");
       }            

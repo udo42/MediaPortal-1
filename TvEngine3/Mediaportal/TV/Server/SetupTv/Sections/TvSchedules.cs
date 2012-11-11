@@ -494,7 +494,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       dlg.ShowDialog();
     }
 
-    private void editScheduleTemplateToolStripMenuItem_Click(object sender, System.EventArgs e)
+    private void editScheduleTemplateToolStripMenuItem_Click(object sender, EventArgs e)
     {
       foreach (ListViewItem item in listViewTemplates.SelectedItems)
       {

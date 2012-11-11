@@ -65,7 +65,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       set { _scheduleRulesTemplate = value; }
     }
 
-    private void FormEditSchedule_Load(object sender, System.EventArgs e)
+    private void FormEditSchedule_Load(object sender, EventArgs e)
     {
       Init();
       PreFillInProgramData();
@@ -151,7 +151,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       }
       if (category != null)
       {
-        TVDatabase.Entities.ProgramCategory programCategoryDto = category;
+        ProgramCategory programCategoryDto = category;
         AddToCheckedListBox(programCategoryDto, programCategoryDto.ToString(), listBoxCategories, false);
       }
     }
@@ -208,7 +208,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
     private void PopulateCategoriesComboBox()
     {
       IList<ProgramCategory> categories = ServiceAgents.Instance.ProgramServiceAgent.ListAllCategories();
-      IList<TVDatabase.Entities.ProgramCategory> categoriesDtos = categories;
+      IList<ProgramCategory> categoriesDtos = categories;
       foreach (var programCategory in categoriesDtos)
       {
         mpComboBoxCategories.Items.Add(programCategory);
@@ -254,7 +254,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
         prop => Attribute.IsDefined(prop, typeof(MetadataTypeAttribute)));
       return props;*/
 
-      MetadataTypeAttribute[] metadataTypes = typeof(TVDatabase.Entities.Program).GetCustomAttributes(typeof(MetadataTypeAttribute), true).OfType<MetadataTypeAttribute>().ToArray();
+      MetadataTypeAttribute[] metadataTypes = typeof(Program).GetCustomAttributes(typeof(MetadataTypeAttribute), true).OfType<MetadataTypeAttribute>().ToArray();
       MetadataTypeAttribute metadata = metadataTypes.FirstOrDefault();
       IList<PropertyInfo> props = new List<PropertyInfo>();
       if (metadata != null)
@@ -310,8 +310,8 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 
       if (radioOnChannels.Checked)
       {
-        var channelList = new ObservableCollection<TVDatabase.Entities.Channel>();
-        foreach (TVDatabase.Entities.Channel channel in listBoxChannels.Items)
+        var channelList = new ObservableCollection<Channel>();
+        foreach (Channel channel in listBoxChannels.Items)
         {
           channelList.Add(channel);          
         }
@@ -323,8 +323,8 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       }
       else if (radioNotOnChannels.Checked)
       {
-        var channelList = new ObservableCollection<TVDatabase.Entities.Channel>();
-        foreach (TVDatabase.Entities.Channel channel in listBoxChannels.Items)
+        var channelList = new ObservableCollection<Channel>();
+        foreach (Channel channel in listBoxChannels.Items)
         {
           channelList.Add(channel);
         }
@@ -339,8 +339,8 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 
       if (mpRadioButtonInCategory.Checked)
       {
-        IList<TVDatabase.Entities.ProgramCategory> categoryList = new ObservableCollection<TVDatabase.Entities.ProgramCategory>();
-        foreach (TVDatabase.Entities.ProgramCategory categoryDto in listBoxCategories.CheckedItems)
+        IList<ProgramCategory> categoryList = new ObservableCollection<ProgramCategory>();
+        foreach (ProgramCategory categoryDto in listBoxCategories.CheckedItems)
         {
           categoryList.Add(categoryDto);
         }
@@ -352,8 +352,8 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       }
       else if (mpRadioButtonNotInCategory.Checked)
       {
-        IList<TVDatabase.Entities.ProgramCategory> categoryList = new ObservableCollection<TVDatabase.Entities.ProgramCategory>();
-        foreach (TVDatabase.Entities.ProgramCategory categoryDto in listBoxCategories.CheckedItems)
+        IList<ProgramCategory> categoryList = new ObservableCollection<ProgramCategory>();
+        foreach (ProgramCategory categoryDto in listBoxCategories.CheckedItems)
         {
           categoryList.Add(categoryDto);
         }
@@ -365,8 +365,8 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       }
 
 
-      IList<TVDatabase.Entities.ProgramCredit> creditsList = new ObservableCollection<TVDatabase.Entities.ProgramCredit>();
-      foreach (TVDatabase.Entities.ProgramCredit creditDto in listBoxCredits.CheckedItems)
+      IList<ProgramCredit> creditsList = new ObservableCollection<ProgramCredit>();
+      foreach (ProgramCredit creditDto in listBoxCredits.CheckedItems)
       {
         creditsList.Add(creditDto);
       }
@@ -647,7 +647,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 
     private void mpButtonAddChannelCondition_Click(object sender, EventArgs e)
     {
-      var channel = mpComboBoxChannels.SelectedItem as TVDatabase.Entities.Channel;
+      var channel = mpComboBoxChannels.SelectedItem as Channel;
       if (channel != null)
       {
         AddToListBox(channel, channel.DisplayName, listBoxChannels);
@@ -666,7 +666,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 
     private void mpButtonAddCategoryCondition_Click(object sender, EventArgs e)
     {
-      var categoryDto = mpComboBoxCategories.SelectedItem as TVDatabase.Entities.ProgramCategory;
+      var categoryDto = mpComboBoxCategories.SelectedItem as ProgramCategory;
       if (categoryDto != null)
       {
         AddToCheckedListBox(categoryDto, categoryDto.Category, listBoxCategories, true);        
@@ -703,7 +703,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 
     private void mpButtonCreditAdd_Click(object sender, EventArgs e)
     {
-      TVDatabase.Entities.ProgramCredit credit = new TVDatabase.Entities.ProgramCredit
+      ProgramCredit credit = new ProgramCredit
                                   {Role = mpComboBoxRoles.SelectedItem as string, Person = mpTextBoxPerson.Text};
 
       AddToCheckedListBox(credit, credit.ToString(), listBoxCredits, true);

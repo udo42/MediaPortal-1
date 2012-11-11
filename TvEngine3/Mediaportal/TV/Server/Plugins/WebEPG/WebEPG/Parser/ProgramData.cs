@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Globalization;
 using System.Text.RegularExpressions;
 using Mediaportal.TV.Server.TVDatabase.Entities;
@@ -323,7 +324,7 @@ namespace WebEPG.Parser
       WorldDateTime endTime = _endTime ?? _startTime;
       Program program = ProgramFactory.CreateProgram(dbIdChannel, _startTime.ToLocalTime(), endTime.ToLocalTime(), _title, _description,
                                                      category,
-                                                     ProgramState.None, System.Data.SqlTypes.SqlDateTime.MinValue.Value,
+                                                     ProgramState.None, SqlDateTime.MinValue.Value,
                                                      String.Empty, String.Empty,
                                                      _subTitle, String.Empty, -1, String.Empty, 0);
       if (_episode > 0)

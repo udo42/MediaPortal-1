@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using Mediaportal.TV.Server.SetupControls.UserInterfaceControls;
 using Mediaportal.TV.Server.SetupTV.Dialogs;
+using Mediaportal.TV.Server.SetupTV.Properties;
 using Mediaportal.TV.Server.TVControl.ServiceAgents;
 using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
@@ -508,18 +509,18 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         switch (lvwColumnSorter.Order)
         {
           case SortOrder.Ascending:
-            buttonSort.Image = global::Mediaportal.TV.Server.SetupTV.Properties.Resources.icon_sort_asc;
+            buttonSort.Image = Resources.icon_sort_asc;
             break;
           case SortOrder.Descending:
-            buttonSort.Image = global::Mediaportal.TV.Server.SetupTV.Properties.Resources.icon_sort_dsc;
+            buttonSort.Image = Resources.icon_sort_dsc;
             break;
           case SortOrder.None:
-            buttonSort.Image = global::Mediaportal.TV.Server.SetupTV.Properties.Resources.icon_sort_none;
+            buttonSort.Image = Resources.icon_sort_none;
             break;
         }
       }
 
-      buttonOther.Image = global::Mediaportal.TV.Server.SetupTV.Properties.Resources.icon_sort_none;
+      buttonOther.Image = Resources.icon_sort_none;
 
       //Reset the SortOrder again. Otherwise manual re-order won't be possible anymore
       lvwColumnSorter.Order = SortOrder.None;

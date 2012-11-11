@@ -380,7 +380,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
         // Helper method to determine if two byte arrays are the same value even if they are different object references
         public static bool BinaryEquals(object binaryValue1, object binaryValue2)
         {
-            if (Object.ReferenceEquals(binaryValue1, binaryValue2))
+            if (ReferenceEquals(binaryValue1, binaryValue2))
             {
                 return true;
             }

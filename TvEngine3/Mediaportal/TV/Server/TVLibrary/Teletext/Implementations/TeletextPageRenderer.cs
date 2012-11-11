@@ -20,6 +20,8 @@
 
 using System;
 using System.Drawing;
+using System.Globalization;
+using System.Text;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
@@ -36,7 +38,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
     ///</summary>
     public TeletextPageRenderer()
     {
-      _isRegionalDK = (System.Globalization.RegionInfo.CurrentRegion.Equals("DK"));
+      _isRegionalDK = (RegionInfo.CurrentRegion.Equals("DK"));
     }
 
     #endregion
@@ -1112,7 +1114,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
         }
         string headline = "MediaPortal P." + pageNumber;
         headline += new string((char)32, 32 - headline.Length);
-        byte[] mpText = System.Text.Encoding.ASCII.GetBytes(headline);
+        byte[] mpText = Encoding.ASCII.GetBytes(headline);
         Array.Copy(mpText, 0, pageChars, 0, mpText.Length);
         for (i = 0; i < 11; i++)
           pageAttribs[i] = ((int)TextColors.Black << 4) | lineColor;

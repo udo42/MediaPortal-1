@@ -20,7 +20,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
 
       private string _directory;
       private int _idRuleBasedSchedule;
-      private Nullable<System.DateTime> _keepDate;
+      private Nullable<DateTime> _keepDate;
       private int _keepMethod;
       private int _maxAirings;
       private int _postRecordInterval;
@@ -134,7 +134,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       }
 
       [DataMember]
-      public Nullable<System.DateTime> KeepDate
+      public Nullable<DateTime> KeepDate
       {
         get { return _keepDate; }
         set

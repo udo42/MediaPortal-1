@@ -19,6 +19,7 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -33,6 +34,7 @@ using Mediaportal.TV.Server.TVControl.Interfaces.Services;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Microsoft.Win32;
+using Timer = System.Timers.Timer;
 
 namespace Mediaportal.TV.Server.Plugins.TvMovie
 {
@@ -52,7 +54,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
     private TvMovieDatabase _database;
     private bool _isImporting;
-    private System.Timers.Timer _stateTimer;
+    private Timer _stateTimer;
 
     #endregion
 
@@ -167,7 +169,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       bool success = IsWow64Process(handle, out isWow64);
       if (!success)
       {
-        throw new System.ComponentModel.Win32Exception();
+        throw new Win32Exception();
       }
       return isWow64;
     }
@@ -306,7 +308,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       {
         if (_stateTimer == null)
         {
-          _stateTimer = new System.Timers.Timer();
+          _stateTimer = new Timer();
           _stateTimer.Elapsed += StartImportThread;
           _stateTimer.Interval = _timerIntervall;
           _stateTimer.AutoReset = true;

@@ -140,17 +140,17 @@ namespace Mediaportal.TV.TvPlugin
       
       if (control == btnSearchTitle)
       {
-        SearchFor = TvNewScheduleSearch.SearchType.Title;
+        SearchFor = SearchType.Title;
         searchButtonClicked = true;
       }
       if (control == btnSearchGenre)
       {
-        SearchFor = TvNewScheduleSearch.SearchType.Genres;
+        SearchFor = SearchType.Genres;
         searchButtonClicked = true;
       }
       if (control == btnSearchKeyword)
       {
-        SearchFor = TvNewScheduleSearch.SearchType.KeyWord;
+        SearchFor = SearchType.KeyWord;
         searchButtonClicked = true;
       }
 

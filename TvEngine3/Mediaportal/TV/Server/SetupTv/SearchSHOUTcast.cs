@@ -20,11 +20,13 @@
 
 using System;
 using System.Collections;
+using System.ComponentModel;
 using System.IO;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
+using Mediaportal.TV.Server.SetupControls;
 using Mediaportal.TV.Server.SetupControls.UserInterfaceControls;
 using Microsoft.Win32;
 
@@ -40,7 +42,7 @@ namespace Mediaportal.TV.Server.SetupTV
   /// <summary>
   /// Summary description for SearchSHOUTcast.
   /// </summary>
-  public class SearchSHOUTcast : SetupControls.MPForm
+  public class SearchSHOUTcast : MPForm
   {
     private MPButton AddButton;
     private MPListView ResultsBox;
@@ -55,7 +57,7 @@ namespace Mediaportal.TV.Server.SetupTV
     /// <summary>
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.Container components;
+    private Container components;
 
     public SearchSHOUTcast()
     {

@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
+using System.Threading;
 using DirectShowLib;
 using DirectShowLib.BDA;
 using Mediaportal.TV.Server.TVDatabase.Entities;
@@ -1114,7 +1115,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       hr = ((IMediaControl)_graphBuilder).Stop();
       while (state != FilterState.Stopped)
       {
-        System.Threading.Thread.Sleep(100);
+        Thread.Sleep(100);
         hr = ((IMediaControl)_graphBuilder).GetState(10, out state);
         counter++;
         if (counter >= 30)

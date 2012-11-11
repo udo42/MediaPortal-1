@@ -95,7 +95,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
     protected int _channelCount = 5;
     protected IList<GuideChannel> _channelList = new List<GuideChannel>();
-    protected Server.TVDatabase.Entities.Channel _currentChannel;
+    protected Channel _currentChannel;
     protected ProgramBLL _currentProgram;
     protected bool _currentRecOrNotify;
     protected string _currentTitle = String.Empty;

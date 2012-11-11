@@ -19,6 +19,7 @@
 #endregion
 
 using System;
+using System.Threading;
 using DirectShowLib.BDA;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.Device;
@@ -80,28 +81,28 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
       cmd[1] = (byte)DiseqcAddress.AnySwitch;
       cmd[2] = (byte)DiseqcCommand.ClearReset;
       _device.SendCommand(cmd);
-      System.Threading.Thread.Sleep(_commandDelay);
+      Thread.Sleep(_commandDelay);
 
       this.LogDebug("DiSEqC Controller: power on");
       cmd[0] = (byte)DiseqcFrame.CommandFirstTransmissionNoReply;
       cmd[1] = (byte)DiseqcAddress.AnySwitch;
       cmd[2] = (byte)DiseqcCommand.PowerOn;
       _device.SendCommand(cmd);
-      System.Threading.Thread.Sleep(_commandDelay);
+      Thread.Sleep(_commandDelay);
 
       this.LogDebug("DiSEqC Controller: reset");
       cmd[0] = (byte)DiseqcFrame.CommandFirstTransmissionNoReply;
       cmd[1] = (byte)DiseqcAddress.AnySwitch;
       cmd[2] = (byte)DiseqcCommand.Reset;
       _device.SendCommand(cmd);
-      System.Threading.Thread.Sleep(_commandDelay);
+      Thread.Sleep(_commandDelay);
 
       this.LogDebug("DiSEqC Controller: clear reset");
       cmd[0] = (byte)DiseqcFrame.CommandFirstTransmissionNoReply;
       cmd[1] = (byte)DiseqcAddress.AnySwitch;
       cmd[2] = (byte)DiseqcCommand.ClearReset;
       _device.SendCommand(cmd);
-      System.Threading.Thread.Sleep(_commandDelay);
+      Thread.Sleep(_commandDelay);
 
       this.LogDebug("DiSEqC Controller: power on");
       cmd[0] = (byte)DiseqcFrame.CommandFirstTransmissionNoReply;
@@ -139,7 +140,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
         command[2] = (byte)DiseqcCommand.PowerOn;
         _device.SendCommand(command);
         // Give DiSEqC devices time to boot up.
-        System.Threading.Thread.Sleep(_commandDelay);
+        Thread.Sleep(_commandDelay);
       }
 
       bool isHighBand = channel.Frequency > channel.LnbType.SwitchFrequency && channel.LnbType.SwitchFrequency > 0;
@@ -288,7 +289,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB
       command[0] = (byte)DiseqcFrame.CommandRepeatTransmissionNoReply;
       for (int i = 0; i < _repeatCount; i++)
       {
-        System.Threading.Thread.Sleep(_commandDelay);
+        Thread.Sleep(_commandDelay);
         this.LogDebug("  repeat {0}...", i + 1);
         _device.SendCommand(command);
       }

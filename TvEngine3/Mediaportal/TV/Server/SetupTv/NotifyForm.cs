@@ -19,11 +19,13 @@
 #endregion
 
 using System;
+using System.Threading;
 using System.Windows.Forms;
+using Mediaportal.TV.Server.SetupControls;
 
 namespace Mediaportal.TV.Server.SetupTV
 {
-  public partial class NotifyForm : SetupControls.MPForm
+  public partial class NotifyForm : MPForm
   {
     public NotifyForm(string caption, string message)
     {
@@ -50,7 +52,7 @@ namespace Mediaportal.TV.Server.SetupTV
       do
       {
         Application.DoEvents();
-        System.Threading.Thread.Sleep(10);
+        Thread.Sleep(10);
       } while (DateTime.Now.Ticks < (ticks + 1500));
     }
   }

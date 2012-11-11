@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
@@ -532,8 +533,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private void linkLabelHybridCard_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
     {
       const string Url = "http://www.team-mediaportal.com/manual/TV-Server/Configuration/TVServers/HybridCards";
-      System.Diagnostics.ProcessStartInfo sInfo = new System.Diagnostics.ProcessStartInfo(Url);
-      System.Diagnostics.Process.Start(sInfo);
+      ProcessStartInfo sInfo = new ProcessStartInfo(Url);
+      Process.Start(sInfo);
     }
 
     //Pass on the information for the plugin that was changed

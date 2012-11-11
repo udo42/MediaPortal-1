@@ -29,6 +29,9 @@
 ///	Feel free to donate any amount of money if this code makes you happy ;)
 ///	Use this code at your own risk. If your machine blows up while using it - don't blame me.
 /// </summary>
+using System;
+using System.ComponentModel;
+
 namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 {
 
@@ -42,7 +45,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   /// <summary>
   /// ShadowDirectionEventArgs class.
   /// </summary>
-  public class TextDirEventArgs : System.EventArgs
+  public class TextDirEventArgs : EventArgs
   {
     private readonly TextDir tdNewTextDir = TextDir.Normal;
     private readonly TextDir tdOldTextDir = TextDir.Normal;
@@ -87,7 +90,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   /// <summary>
   /// ShadowDirectionEventArgs class.
   /// </summary>
-  public class StringFormatEnumEventArgs : System.EventArgs
+  public class StringFormatEnumEventArgs : EventArgs
   {
     private readonly StringFormatEnum sfeNewStringFormatEnum = StringFormatEnum.GenericDefault;
     private readonly StringFormatEnum sfeOldStringFormatEnum = StringFormatEnum.GenericDefault;
@@ -136,7 +139,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   ///		and proposed values are.
   ///	Note that the MWCancelEventArgs should be used in an OnBeforePROPERTYChanged property - BEFORE the value of the property is changed.
   /// </summary>
-  public class MWCancelEventArgs : System.ComponentModel.CancelEventArgs
+  public class MWCancelEventArgs : CancelEventArgs
   {
     #region Variables
 

@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
+using System.IO;
 using System.Reflection;
 using System.Threading;
 using System.Windows.Forms;
@@ -103,9 +104,9 @@ namespace Mediaportal.TV.Server.SetupTV
       // Initialize hosting environment      
       IntegrationProviderHelper.Register();      
 
-      if (System.IO.File.Exists("c:\\debug_setuptv.txt"))
+      if (File.Exists("c:\\debug_setuptv.txt"))
       {
-        System.Diagnostics.Debugger.Launch();
+        Debugger.Launch();
       }      
 
       Thread.CurrentThread.Name = "SetupTv";
@@ -201,9 +202,9 @@ namespace Mediaportal.TV.Server.SetupTV
 
       // set working dir from application.exe
       string applicationPath = Application.ExecutablePath;
-      applicationPath = System.IO.Path.GetFullPath(applicationPath);
-      applicationPath = System.IO.Path.GetDirectoryName(applicationPath);
-      System.IO.Directory.SetCurrentDirectory(applicationPath);
+      applicationPath = Path.GetFullPath(applicationPath);
+      applicationPath = Path.GetDirectoryName(applicationPath);
+      Directory.SetCurrentDirectory(applicationPath);
 
       FileVersionInfo versionInfo = FileVersionInfo.GetVersionInfo(Application.ExecutablePath);
 

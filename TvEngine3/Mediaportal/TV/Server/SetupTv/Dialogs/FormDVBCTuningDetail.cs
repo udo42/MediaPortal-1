@@ -21,17 +21,18 @@
 using System;
 using System.Windows.Forms;
 using DirectShowLib.BDA;
+using Mediaportal.TV.Server.SetupControls;
 
 namespace Mediaportal.TV.Server.SetupTV.Dialogs
 {
-  public partial class FormDVBCTuningDetail : SetupControls.FormTuningDetailCommon
+  public partial class FormDVBCTuningDetail : FormTuningDetailCommon
   {
     public FormDVBCTuningDetail()
     {
       InitializeComponent();
     }
 
-    private void FormDVBCTuningDetail_Load(object sender, System.EventArgs e)
+    private void FormDVBCTuningDetail_Load(object sender, EventArgs e)
     {
       comboBoxDvbCModulation.Items.Clear();
       comboBoxDvbCModulation.Items.AddRange(new object[]

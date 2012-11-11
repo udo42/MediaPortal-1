@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Xml.Serialization;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Epg;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
 using Mediaportal.TV.Server.TVService.Interfaces;
@@ -255,7 +256,7 @@ namespace Mediaportal.TV.Server.TVControl.Events
     /// <summary>
     /// The received epgChannel
     /// </summary>
-    [System.Xml.Serialization.XmlIgnore]
+    [XmlIgnore]
     public EpgChannel EpgChannel
     {
       get { return _epgChannel; }

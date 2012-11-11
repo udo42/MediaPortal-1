@@ -23,12 +23,13 @@ using System.Collections.Generic;
 using Castle.Core.Logging;
 using Castle.Windsor;
 using MediaPortal.Common.Utils;
+using ILogger = Mediaportal.TV.Server.TVLibrary.IntegrationProvider.Interfaces.ILogger;
 
 namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
 {
-  public class Logger : IntegrationProvider.Interfaces.ILogger
+  public class Logger : ILogger
   {
-    private static readonly IDictionary<Type, ILogger> _logCache = new Dictionary<Type, ILogger>();
+    private static readonly IDictionary<Type, Castle.Core.Logging.ILogger> _logCache = new Dictionary<Type, Castle.Core.Logging.ILogger>();
     private static readonly object _logCacheLock = new object();
     private readonly Type _runtimeType;
 
@@ -47,7 +48,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     /// <param name="args">An array of objects to write using format.</param>
     public void Debug(Type caller, string format, params object[] args)
     {
-      ILogger logger = GetLogger(caller);
+      Castle.Core.Logging.ILogger logger = GetLogger(caller);
       if (logger.IsDebugEnabled)
       {
         logger.DebugFormat(format, args);
@@ -68,7 +69,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     /// <param name="args">An array of objects to write using format.</param>
     public void Debug(Type caller, string format, Exception ex, params object[] args)
     {
-      ILogger logger = GetLogger(caller);
+      Castle.Core.Logging.ILogger logger = GetLogger(caller);
       if (logger.IsDebugEnabled)
       {
         logger.Debug(string.Format(format, args), ex);
@@ -88,7 +89,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     /// <param name="args">An array of objects to write using format.</param>
     public void Info(Type caller, string format, params object[] args)
     {
-      ILogger logger = GetLogger(caller);
+      Castle.Core.Logging.ILogger logger = GetLogger(caller);
       if (logger.IsInfoEnabled)
       {
         GetLogger(caller).InfoFormat(format, args);
@@ -109,7 +110,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     /// <param name="args">An array of objects to write using format.</param>
     public void Info(Type caller, string format, Exception ex, params object[] args)
     {
-      ILogger logger = GetLogger(caller);
+      Castle.Core.Logging.ILogger logger = GetLogger(caller);
       if (logger.IsInfoEnabled)
       {
         logger.Info(string.Format(format, args), ex);
@@ -129,7 +130,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     /// <param name="args">An array of objects to write using format.</param>
     public void Warn(Type caller, string format, params object[] args)
     {
-      ILogger logger = GetLogger(caller);
+      Castle.Core.Logging.ILogger logger = GetLogger(caller);
       if (logger.IsWarnEnabled)
       {
         logger.WarnFormat(format, args);
@@ -150,7 +151,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     /// <param name="args">An array of objects to write using format.</param>
     public void Warn(Type caller, string format, Exception ex, params object[] args)
     {
-      ILogger logger = GetLogger(caller);
+      Castle.Core.Logging.ILogger logger = GetLogger(caller);
       if (logger.IsWarnEnabled)
       {
         logger.Warn(string.Format(format, args), ex);
@@ -170,7 +171,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     /// <param name="args">An array of objects to write using format.</param>
     public void Error(Type caller, string format, params object[] args)
     {
-      ILogger logger = GetLogger(caller);
+      Castle.Core.Logging.ILogger logger = GetLogger(caller);
       if (logger.IsErrorEnabled)
       {
         GetLogger(caller).ErrorFormat(format, args);
@@ -191,7 +192,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     /// <param name="args">An array of objects to write using format.</param>
     public void Error(Type caller, string format, Exception ex, params object[] args)
     {
-      ILogger logger = GetLogger(caller);
+      Castle.Core.Logging.ILogger logger = GetLogger(caller);
       if (logger.IsErrorEnabled)
       {
         logger.Error(string.Format(format, args), ex);
@@ -210,7 +211,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     /// <param name="ex">The <see cref="Exception"/> to write.</param>
     public void Error(Type caller, Exception ex)
     {
-      ILogger logger = GetLogger(caller);
+      Castle.Core.Logging.ILogger logger = GetLogger(caller);
       if (logger.IsErrorEnabled)
       {
         logger.Error(string.Empty, ex);
@@ -230,7 +231,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     /// <param name="args">An array of objects to write using format.</param>
     public void Critical(Type caller, string format, params object[] args)
     {
-      ILogger logger = GetLogger(caller);
+      Castle.Core.Logging.ILogger logger = GetLogger(caller);
       if (logger.IsFatalEnabled)
       {
         logger.FatalFormat(format, args);
@@ -251,7 +252,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     /// <param name="args">An array of objects to write using format.</param>
     public void Critical(Type caller, string format, Exception ex, params object[] args)
     {
-       ILogger logger = GetLogger(caller);
+       Castle.Core.Logging.ILogger logger = GetLogger(caller);
        if (logger.IsFatalEnabled)
        {
          logger.Fatal(string.Format(format, args), ex);
@@ -270,7 +271,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     /// <param name="ex">The <see cref="Exception"/> to write.</param>
     public void Critical(Type caller, Exception ex)
     {
-      ILogger logger = GetLogger(caller);
+      Castle.Core.Logging.ILogger logger = GetLogger(caller);
       if (logger.IsFatalEnabled)
       {
         logger.Fatal("", ex);
@@ -284,9 +285,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
 
     #endregion
 
-    private static ILogger GetLogger(Type type)
+    private static Castle.Core.Logging.ILogger GetLogger(Type type)
     {
-      ILogger logger;
+      Castle.Core.Logging.ILogger logger;
       lock (_logCacheLock)
       {
         bool hasLogger = _logCache.TryGetValue(type, out logger);

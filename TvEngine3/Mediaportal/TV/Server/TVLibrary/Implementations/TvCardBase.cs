@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using DirectShowLib;
 using DirectShowLib.BDA;
 using MediaPortal.Common.Utils;
@@ -1175,7 +1176,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
             while (waitTime.TotalMilliseconds < 15000)
             {
               ThrowExceptionIfTuneCancelled();
-              System.Threading.Thread.Sleep(200);
+              Thread.Sleep(200);
               waitTime = DateTime.Now - startWait;
               if (caProvider.IsInterfaceReady())
               {
@@ -1424,7 +1425,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         {
           ts = DateTime.Now - timeStart;
           this.LogDebug("  waiting 20ms");
-          System.Threading.Thread.Sleep(20);
+          Thread.Sleep(20);
         }
       }
 

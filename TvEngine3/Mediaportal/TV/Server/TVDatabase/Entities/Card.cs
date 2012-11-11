@@ -32,7 +32,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       private bool _grabEPG;
       private int _idCard;
       private int _idleMode;
-      private Nullable<System.DateTime> _lastEpgGrab;
+      private Nullable<DateTime> _lastEpgGrab;
       private int _multiChannelDecryptMode;
       private string _name;
       private int _netProvider;
@@ -119,7 +119,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       }
 
       [DataMember]
-      public Nullable<System.DateTime> LastEpgGrab
+      public Nullable<DateTime> LastEpgGrab
       {
         get { return _lastEpgGrab; }
         set

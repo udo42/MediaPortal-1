@@ -420,7 +420,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       {
         fileName = folder + @"\tvguide.xml";
 
-        if (System.IO.File.Exists(fileName))
+        if (File.Exists(fileName))
         {
           importXML = true;
         }
@@ -435,7 +435,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
       if (cbImportLST.Checked)
       {
-        if (System.IO.File.Exists(fileName))
+        if (File.Exists(fileName))
         {
           importLST = true;
         }
@@ -505,10 +505,10 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
               string tvguideFileName = fileIn.ReadLine();
               if (tvguideFileName.Length == 0) continue;
 
-              if (!System.IO.Path.IsPathRooted(tvguideFileName))
+              if (!Path.IsPathRooted(tvguideFileName))
               {
                 // extend by directory
-                tvguideFileName = System.IO.Path.Combine(folder, tvguideFileName);
+                tvguideFileName = Path.Combine(folder, tvguideFileName);
               }
 
               this.LogDebug(@"plugin:xmltv loading " + tvguideFileName);
@@ -699,7 +699,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
         folder = selFolder.Trim();
       }
 
-      if (System.IO.Directory.Exists(folder))
+      if (Directory.Exists(folder))
         saveFileExport.InitialDirectory = folder;
 
       saveFileExport.ShowDialog();

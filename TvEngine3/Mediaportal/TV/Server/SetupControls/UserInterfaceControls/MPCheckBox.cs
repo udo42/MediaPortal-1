@@ -18,12 +18,14 @@
 
 #endregion
 
+using System.Windows.Forms;
+
 namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 {
   /// <summary>
   /// Summary description for MPCheckBox.
   /// </summary>
-  public class MPCheckBox : System.Windows.Forms.CheckBox
+  public class MPCheckBox : CheckBox
   {
     public MPCheckBox()
     {
@@ -32,7 +34,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 
     private void Init()
     {
-      FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      FlatStyle = FlatStyle.Popup;
       AutoSize = true;
       UseVisualStyleBackColor = true;
     }

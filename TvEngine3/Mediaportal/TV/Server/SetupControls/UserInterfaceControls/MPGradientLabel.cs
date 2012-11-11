@@ -189,7 +189,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 
     private void workingLabel_Paint(object sender, PaintEventArgs e)
     {
-      e.Graphics.Clear(System.Drawing.SystemColors.Control);
+      e.Graphics.Clear(SystemColors.Control);
 
       DrawBackground(e.Graphics);
       DrawForeground(e.Graphics);

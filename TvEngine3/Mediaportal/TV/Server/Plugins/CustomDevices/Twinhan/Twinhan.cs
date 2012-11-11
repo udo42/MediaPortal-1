@@ -2097,7 +2097,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
         if (pidFilterParams.FilterMode != TwinhanPidFilterMode.Disabled)
         {
           this.LogDebug("Twinhan: enabling PID filter");
-          HashSet<UInt16>.Enumerator en = pids.GetEnumerator();
+          HashSet<ushort>.Enumerator en = pids.GetEnumerator();
           byte pidCount = 0;
           while (en.MoveNext() && pidCount < _maxPidFilterPids)
           {

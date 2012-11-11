@@ -540,7 +540,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
         this.LogInfo("PowerScheduler: _querySuspendFailed {0}", _querySuspendFailed);
         do
         {
-          System.Threading.Thread.Sleep(1000);
+          Thread.Sleep(1000);
         } while (_querySuspendFailed > 0);
       }
       // activate standby

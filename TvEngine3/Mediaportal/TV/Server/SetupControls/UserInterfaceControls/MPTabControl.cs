@@ -19,6 +19,7 @@
 #endregion
 
 using System;
+using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -27,14 +28,14 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   /// <summary>
   /// Summary description for MPTabControl.
   /// </summary>
-  public class MPTabControl : System.Windows.Forms.TabControl
+  public class MPTabControl : TabControl
   {
     private bool allowReorderTabs;
 
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.Container components;
+    private Container components;
 
     private int dragMoveCounter;
     private int lastHoverTabIndex = -1;
@@ -73,7 +74,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       base.Dispose(disposing);
     }
 
-    protected override void OnDragOver(System.Windows.Forms.DragEventArgs e)
+    protected override void OnDragOver(DragEventArgs e)
     {
       base.OnDragOver(e);
 

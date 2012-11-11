@@ -19,6 +19,8 @@
 #endregion
 
 using System;
+using System.ComponentModel;
+using System.Net;
 using System.Windows.Forms;
 using Mediaportal.TV.Server.SetupControls;
 using Mediaportal.TV.Server.SetupTV.Dialogs;
@@ -39,7 +41,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     public override void OnSectionActivated()
     {
-      var hostname = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("hostname", System.Net.Dns.GetHostName()).Value;
+      var hostname = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("hostname", Dns.GetHostName()).Value;
       var rtspPort = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("rtspport", "554").Value;
       mpListView1.Items.Clear();
       var server = new Server {Hostname = hostname, RtspPort = Convert.ToInt32(rtspPort)};
@@ -106,7 +108,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
     }
 
-    private void contextMenuStrip1_Opening(object sender, System.ComponentModel.CancelEventArgs e)
+    private void contextMenuStrip1_Opening(object sender, CancelEventArgs e)
     {
       if (mpListView1.SelectedItems.Count == 0)
       {

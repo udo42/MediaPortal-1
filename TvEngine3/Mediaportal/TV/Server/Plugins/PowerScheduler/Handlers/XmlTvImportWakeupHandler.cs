@@ -21,6 +21,7 @@
 #region Usings
 
 using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces.Interfaces;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
@@ -76,7 +77,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
       DateTime remoteScheduleTime =
         (DateTime)
-        (System.ComponentModel.TypeDescriptor.GetConverter(new DateTime(now.Year, now.Month, now.Day)).ConvertFrom(
+        (TypeDescriptor.GetConverter(new DateTime(now.Year, now.Month, now.Day)).ConvertFrom(
           remoteScheduleTimeStr));
 
       if (remoteScheduleTime == DateTime.MinValue)

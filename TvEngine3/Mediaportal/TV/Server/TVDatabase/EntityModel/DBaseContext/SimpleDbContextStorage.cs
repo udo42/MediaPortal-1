@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Data.Entity;
 
 namespace Mediaportal.TV.Server.TVDatabase.EntityModel.DBaseContext
 {
     public class SimpleDbContextStorage : IDbContextStorage
     {
-        private readonly Dictionary<string, System.Data.Entity.DbContext> _storage = new Dictionary<string, System.Data.Entity.DbContext>();
+        private readonly Dictionary<string, DbContext> _storage = new Dictionary<string, DbContext>();
 
       #region IDbContextStorage Members
 
@@ -14,9 +15,9 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.DBaseContext
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        public System.Data.Entity.DbContext GetDbContextForKey(string key)
+        public DbContext GetDbContextForKey(string key)
         {
-            System.Data.Entity.DbContext context;
+            DbContext context;
             if (!_storage.TryGetValue(key, out context))
                 return null;
             return context;
@@ -30,7 +31,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.DBaseContext
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="objectContext">The object context.</param>
-        public void SetDbContextForKey(string key, System.Data.Entity.DbContext context)
+        public void SetDbContextForKey(string key, DbContext context)
         {
             _storage.Add(key, context);           
         }
@@ -39,7 +40,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.DBaseContext
         /// Returns all the values of the internal dictionary of db contexts.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<System.Data.Entity.DbContext> GetAllDbContexts()
+        public IEnumerable<DbContext> GetAllDbContexts()
         {
             return _storage.Values;
         }

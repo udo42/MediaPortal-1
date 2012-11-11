@@ -18,6 +18,7 @@
 
 #endregion
 
+using System;
 using System.Diagnostics;
 using System.Windows.Forms;
 using Mediaportal.TV.Server.SetupControls;
@@ -50,8 +51,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       if (linkLabelHomepage.Text.Length > 0)
       {
-        System.Diagnostics.ProcessStartInfo sInfo = new System.Diagnostics.ProcessStartInfo(linkLabelHomepage.Text);
-        System.Diagnostics.Process.Start(sInfo);
+        ProcessStartInfo sInfo = new ProcessStartInfo(linkLabelHomepage.Text);
+        Process.Start(sInfo);
       }
     }
 
@@ -61,8 +62,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       if (linkLabelForums.Text.Length > 0)
       {
-        System.Diagnostics.ProcessStartInfo sInfo = new System.Diagnostics.ProcessStartInfo(linkLabelForums.Text);
-        System.Diagnostics.Process.Start(sInfo);
+        ProcessStartInfo sInfo = new ProcessStartInfo(linkLabelForums.Text);
+        Process.Start(sInfo);
       }
     }
 
@@ -72,9 +73,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       if (linkLabelOnlineDocumentation.Text.Length > 0)
       {
-        System.Diagnostics.ProcessStartInfo sInfo =
-          new System.Diagnostics.ProcessStartInfo(linkLabelOnlineDocumentation.Text);
-        System.Diagnostics.Process.Start(sInfo);
+        ProcessStartInfo sInfo =
+          new ProcessStartInfo(linkLabelOnlineDocumentation.Text);
+        Process.Start(sInfo);
       }
     }
 
@@ -84,12 +85,12 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       if (linkLabelSourceforge.Text.Length > 0)
       {
-        System.Diagnostics.ProcessStartInfo sInfo = new System.Diagnostics.ProcessStartInfo(linkLabelSourceforge.Text);
-        System.Diagnostics.Process.Start(sInfo);
+        ProcessStartInfo sInfo = new ProcessStartInfo(linkLabelSourceforge.Text);
+        Process.Start(sInfo);
       }
     }
 
-    private void paypalPictureBox_Click(object sender, System.EventArgs e)
+    private void paypalPictureBox_Click(object sender, EventArgs e)
     {
       try
       {

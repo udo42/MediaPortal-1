@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Management;
 using System.Net;
 using System.Net.Sockets;
@@ -279,7 +280,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
       {
         return;
       }
-      if (System.IO.File.Exists(stream.FileName))
+      if (File.Exists(stream.FileName))
       {
         this.LogDebug("RTSP: add stream {0} file:{1}", stream.Name, stream.FileName);
         if (stream.Card != null)

@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Timers;
 using Mediaportal.TV.Server.TVControl;
 using Mediaportal.TV.Server.TVControl.Events;
 using Mediaportal.TV.Server.TVControl.Interfaces.Services;
@@ -38,6 +39,7 @@ using Mediaportal.TV.Server.TVService.Interfaces.CardHandler;
 using Mediaportal.TV.Server.TVService.Interfaces.CardReservation;
 using Mediaportal.TV.Server.TVService.Interfaces.Enums;
 using Mediaportal.TV.Server.TVService.Interfaces.Services;
+using Timer = System.Timers.Timer;
 
 namespace Mediaportal.TV.Server.TVLibrary.Epg
 {
@@ -66,7 +68,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
 
     private readonly Card _card;
     private readonly EpgDBUpdater _dbUpdater;
-    private readonly System.Timers.Timer _epgTimer = new System.Timers.Timer();
+    private readonly Timer _epgTimer = new Timer();
     private readonly TvServerEventHandler _eventHandler;
     private Transponder _currentTransponder;
     private bool _disposed;
@@ -295,7 +297,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
     /// </summary>
     /// <param name="sender"></param>
     /// <param name="e"></param>
-    private void _epgTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+    private void _epgTimer_Elapsed(object sender, ElapsedEventArgs e)
     {
       //security check, dont allow re-entrancy here
       if (_reEntrant)

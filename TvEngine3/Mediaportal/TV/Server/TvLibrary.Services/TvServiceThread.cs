@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
@@ -41,9 +42,9 @@ namespace Mediaportal.TV.Server.TVLibrary
 
       // set working dir from application.exe
       _applicationPath = applicationPath;
-      applicationPath = System.IO.Path.GetFullPath(applicationPath);
-      applicationPath = System.IO.Path.GetDirectoryName(applicationPath);
-      System.IO.Directory.SetCurrentDirectory(applicationPath);
+      applicationPath = Path.GetFullPath(applicationPath);
+      applicationPath = Path.GetDirectoryName(applicationPath);
+      Directory.SetCurrentDirectory(applicationPath);
       
       _powerEventHandlers = new List<PowerEventHandler>();
       GlobalServiceProvider.Instance.Add<IPowerEventHandler>(this);      

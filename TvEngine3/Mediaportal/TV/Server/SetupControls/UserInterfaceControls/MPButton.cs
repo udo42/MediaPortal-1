@@ -18,16 +18,18 @@
 
 #endregion
 
+using System.Windows.Forms;
+
 namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 {
   /// <summary>
   /// Summary description for MPButton.
   /// </summary>
-  public class MPButton : System.Windows.Forms.Button
+  public class MPButton : Button
   {
     public MPButton()
     {
-      FlatStyle = System.Windows.Forms.FlatStyle.Standard;
+      FlatStyle = FlatStyle.Standard;
       UseVisualStyleBackColor = true;
     }
   }

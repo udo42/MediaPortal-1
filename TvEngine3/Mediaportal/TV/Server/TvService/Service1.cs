@@ -21,7 +21,9 @@
 using System;
 using System.Collections;
 using System.Configuration.Install;
+using System.Diagnostics;
 using System.IO;
+using System.Reflection;
 using System.ServiceProcess;
 using System.Threading;
 using System.Windows.Forms;
@@ -100,7 +102,7 @@ namespace Mediaportal.TV.Server.TVService
         ProjectInstaller mi = new ProjectInstaller();
         ti.Installers.Add(mi);
         String path = String.Format("/assemblypath={0}",
-                                    System.Reflection.Assembly.GetExecutingAssembly().Location);
+                                    Assembly.GetExecutingAssembly().Location);
         String[] cmdline = { path };
         InstallContext ctx = new InstallContext("", cmdline);
         ti.Context = ctx;
@@ -114,7 +116,7 @@ namespace Mediaportal.TV.Server.TVService
           ProjectInstaller mi = new ProjectInstaller();
           ti.Installers.Add(mi);
           String path = String.Format("/assemblypath={0}",
-                                      System.Reflection.Assembly.GetExecutingAssembly().Location);
+                                      Assembly.GetExecutingAssembly().Location);
           String[] cmdline = { path };
           InstallContext ctx = new InstallContext("", cmdline);
           ti.Context = ctx;
@@ -141,7 +143,7 @@ namespace Mediaportal.TV.Server.TVService
       //   ServicesToRun = new ServiceBase[] {new Service1(), new MySecondUserService()};
       //
       ServiceBase[] ServicesToRun = new ServiceBase[] { new Service1() };
-      ServiceBase.Run(ServicesToRun);
+      Run(ServicesToRun);
     }
 
     public void DoStart(string[] args)
@@ -166,7 +168,7 @@ namespace Mediaportal.TV.Server.TVService
 #if DEBUG
         if (File.Exists(@"c:\debug_tvservice.txt"))
         {
-          System.Diagnostics.Debugger.Launch();        
+          Debugger.Launch();        
         }
 #endif
         

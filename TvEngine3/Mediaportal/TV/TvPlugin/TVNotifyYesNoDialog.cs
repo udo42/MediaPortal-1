@@ -21,6 +21,7 @@
 using System.Drawing;
 using MediaPortal.Dialogs;
 using MediaPortal.GUI.Library;
+using MediaPortal.Util;
 
 namespace Mediaportal.TV.TvPlugin
 {
@@ -77,7 +78,7 @@ namespace Mediaportal.TV.TvPlugin
     public void SetImage(string filename)
     {
       logoUrl = filename;
-      if (MediaPortal.Util.Utils.FileExistsInCache(filename))            
+      if (Utils.FileExistsInCache(filename))            
       {
         if (imgLogo != null)
         {

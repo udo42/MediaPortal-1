@@ -20,11 +20,12 @@
 
 using System;
 using System.Collections;
+using System.Windows.Forms;
 using System.Xml;
 
 namespace Mediaportal.TV.Server.SetupControls
 {
-  public partial class SectionSettings : System.Windows.Forms.UserControl
+  public partial class SectionSettings : UserControl
   {
     public SectionSettings()
     {

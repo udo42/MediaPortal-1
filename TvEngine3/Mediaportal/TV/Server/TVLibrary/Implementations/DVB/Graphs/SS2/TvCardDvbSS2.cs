@@ -2392,7 +2392,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
         if (pids != null)
         {
           HashSet<Int32> currentPidsAsHash = new HashSet<Int32>(currentPids);
-          HashSet<UInt16>.Enumerator en = pids.GetEnumerator();
+          HashSet<ushort>.Enumerator en = pids.GetEnumerator();
           while (en.MoveNext() && availablePidCount > 0)
           {
             if (currentPidsAsHash != null && !currentPidsAsHash.Contains(en.Current))

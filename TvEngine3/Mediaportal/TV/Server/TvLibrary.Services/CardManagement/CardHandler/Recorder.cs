@@ -325,7 +325,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       Stop(ref user);
       _cardHandler.UserManagement.RemoveUser(user, _cardHandler.UserManagement.GetTimeshiftingChannelId(user.Name));
 
-      string recordingfolderName = System.IO.Path.GetDirectoryName(fileName);
+      string recordingfolderName = Path.GetDirectoryName(fileName);
       if (recordingfolderName == cardRecordingFolderName)
       {
         Utils.FileDelete(fileName);

@@ -93,7 +93,7 @@ namespace Mediaportal.TV.TvPlugin
     private GUIDialogMenuBottomRight _dialogBottomMenu;
     private bool _dialogYesNoVisible;
     private GUIDialogYesNo _dlgYesNo;
-    private TvPlugin.TVHome.ChannelErrorInfo _gotTvErrorMessage;
+    private TVHome.ChannelErrorInfo _gotTvErrorMessage;
     private DateTime _groupTimeOutTimer;
     private bool _groupVisible;
     private bool _immediateSeekIsRelative = true;
@@ -1171,7 +1171,7 @@ namespace Mediaportal.TV.TvPlugin
       // TEST for TV error handling
       if (message.Message == GUIMessage.MessageType.GUI_MSG_TV_ERROR_NOTIFY)
       {
-        UpdateOSD((TvPlugin.TVHome.ChannelErrorInfo)message.Object);
+        UpdateOSD((TVHome.ChannelErrorInfo)message.Object);
         return true;
       }
 
@@ -1687,7 +1687,7 @@ namespace Mediaportal.TV.TvPlugin
         if (chaptersname == null)
         {
           item.Label = (String.Format("{0} #{1}", GUILocalizeStrings.Get(200091), (i + 1)));
-          item.Label2 = MediaPortal.Util.Utils.SecondsToHMSString((int)chaptersList[i]);
+          item.Label2 = Utils.SecondsToHMSString((int)chaptersList[i]);
           dlg.Add(item);
         }
         else
@@ -1695,13 +1695,13 @@ namespace Mediaportal.TV.TvPlugin
           if (string.IsNullOrEmpty(chaptersname[i]))
           {
             item.Label = (String.Format("{0} #{1}", GUILocalizeStrings.Get(200091), (i + 1)));
-            item.Label2 = MediaPortal.Util.Utils.SecondsToHMSString((int)chaptersList[i]);
+            item.Label2 = Utils.SecondsToHMSString((int)chaptersList[i]);
             dlg.Add(item);
           }
           else
           {
             item.Label = (String.Format("{0} #{1}: {2}", GUILocalizeStrings.Get(200091), (i + 1), chaptersname[i]));
-            item.Label2 = MediaPortal.Util.Utils.SecondsToHMSString((int)chaptersList[i]);
+            item.Label2 = Utils.SecondsToHMSString((int)chaptersList[i]);
             dlg.Add(item);
           }
         }
@@ -2688,7 +2688,7 @@ namespace Mediaportal.TV.TvPlugin
       UpdateOSD(null);
     }
 
-    public void UpdateOSD(TvPlugin.TVHome.ChannelErrorInfo message)
+    public void UpdateOSD(TVHome.ChannelErrorInfo message)
     {
       if (GUIWindowManager.ActiveWindow != GetID)
       {

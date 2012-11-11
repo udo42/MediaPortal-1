@@ -34,13 +34,13 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       private string _externalId;
       private bool _grabEpg;
       private int _idChannel;
-      private Nullable<System.DateTime> _lastGrabTime;
+      private Nullable<DateTime> _lastGrabTime;
       private int _mediaType;
       private int _sortOrder;
 
       private int _timesWatched;
 
-      private Nullable<System.DateTime> _totalTimeWatched;
+      private Nullable<DateTime> _totalTimeWatched;
       private bool _visibleInGuide;
 
       [DataMember]
@@ -76,7 +76,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       }
 
       [DataMember]
-      public Nullable<System.DateTime> TotalTimeWatched
+      public Nullable<DateTime> TotalTimeWatched
       {
         get { return _totalTimeWatched; }
         set
@@ -104,7 +104,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       }
 
       [DataMember]
-      public Nullable<System.DateTime> LastGrabTime
+      public Nullable<DateTime> LastGrabTime
       {
         get { return _lastGrabTime; }
         set

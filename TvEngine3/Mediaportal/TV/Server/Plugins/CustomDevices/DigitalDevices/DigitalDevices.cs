@@ -25,6 +25,7 @@ using System.Threading;
 using DirectShowLib;
 using DirectShowLib.BDA;
 using Mediaportal.TV.Server.Plugins.Base.Interfaces;
+using Mediaportal.TV.Server.SetupControls;
 using Mediaportal.TV.Server.TVControl.Interfaces.Services;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels;
@@ -806,7 +807,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <summary>
     /// Get an instance of the configuration section for use in TV Server configuration (SetupTv).
     /// </summary>
-    public Mediaportal.TV.Server.SetupControls.SectionSettings Setup
+    public SectionSettings Setup
     {
       get { return new DigitalDevicesConfig(); }
     }

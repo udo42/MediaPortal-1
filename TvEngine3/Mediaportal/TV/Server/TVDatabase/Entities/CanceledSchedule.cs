@@ -19,7 +19,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
     {
       #region Primitive Properties
 
-      private System.DateTime _cancelDateTime;
+      private DateTime _cancelDateTime;
       private int _idCanceledSchedule;
       private int _idChannel;
 
@@ -80,7 +80,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       }
 
       [DataMember]
-      public System.DateTime CancelDateTime
+      public DateTime CancelDateTime
       {
         get { return _cancelDateTime; }
         set

@@ -9,12 +9,12 @@ using System.Reflection;
 
 namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
 {
-    public interface IObjectContextBuilder<T> where T : System.Data.Objects.ObjectContext
+    public interface IObjectContextBuilder<T> where T : ObjectContext
     {
         T BuildObjectContext();
     }
 
-    public class ObjectContextBuilder<T> : DbModelBuilder, IObjectContextBuilder<T> where T : System.Data.Objects.ObjectContext
+    public class ObjectContextBuilder<T> : DbModelBuilder, IObjectContextBuilder<T> where T : ObjectContext
     {
       private readonly ConnectionStringSettings _cnStringSettings;
       private readonly DbProviderFactory _factory;
@@ -48,7 +48,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
 
             var dbModel = Build(cn);
 
-            System.Data.Objects.ObjectContext ctx = dbModel.Compile().CreateObjectContext<System.Data.Objects.ObjectContext>(cn);
+            ObjectContext ctx = dbModel.Compile().CreateObjectContext<ObjectContext>(cn);
             ctx.ContextOptions.LazyLoadingEnabled = _lazyLoadingEnabled;
 
             if (!ctx.DatabaseExists())

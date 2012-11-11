@@ -18,16 +18,18 @@
 
 #endregion
 
+using System.Windows.Forms;
+
 namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 {
   /// <summary>
   /// Summary description for MPGroupBox.
   /// </summary>
-  public class MPGroupBox : System.Windows.Forms.GroupBox
+  public class MPGroupBox : GroupBox
   {
     public MPGroupBox()
     {
-      FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+      FlatStyle = FlatStyle.Popup;
     }
   }
 }

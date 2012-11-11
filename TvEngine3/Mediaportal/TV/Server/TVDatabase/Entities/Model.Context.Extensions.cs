@@ -8,6 +8,7 @@
 //------------------------------------------------------------------------------
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -760,7 +761,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
             return entityType;
         }
     
-        private static object GetValue(this System.Data.Objects.DataClasses.EntityReference entityReference)
+        private static object GetValue(this EntityReference entityReference)
         {
             foreach (object value in entityReference)
             {
@@ -769,7 +770,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
             return null;
         }
     
-        private static EntityKey GetCurrentEntityKey(this System.Data.Objects.DataClasses.EntityReference entityReference, ObjectContext context)
+        private static EntityKey GetCurrentEntityKey(this EntityReference entityReference, ObjectContext context)
         {
             EntityKey currentKey = null;
             object currentValue = entityReference.GetValue();
@@ -1141,7 +1142,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
           return _relationships.GetEnumerator();
         }
     
-        System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator()
+        IEnumerator IEnumerable.GetEnumerator()
         {
           return _relationships.GetEnumerator();
         }
@@ -1202,11 +1203,11 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
 
         public bool Equals(RelationshipWrapper wrapper)
         {
-          return (Object.ReferenceEquals(this, wrapper) ||
+          return (ReferenceEquals(this, wrapper) ||
                   ((null != wrapper) &&
-                   Object.ReferenceEquals(AssociationSet, wrapper.AssociationSet) &&
-                   Object.ReferenceEquals(End0, wrapper.End0) &&
-                   Object.ReferenceEquals(End1, wrapper.End1)));
+                   ReferenceEquals(AssociationSet, wrapper.AssociationSet) &&
+                   ReferenceEquals(End0, wrapper.End0) &&
+                   ReferenceEquals(End1, wrapper.End1)));
         }
 
         #endregion

@@ -121,7 +121,7 @@ namespace Mediaportal.TV.Server.TVLibrary
           File.Delete(settingPath);
         }
       }
-      catch (System.IO.IOException ex)
+      catch (IOException ex)
       {
         Log.Error(ex, "Failed to write debug setting '{0}'", setting);
       }

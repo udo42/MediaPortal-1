@@ -340,7 +340,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     /// <summary> 
     /// Required designer variable.
     /// </summary>
-    private System.ComponentModel.Container components;
+    private Container components;
 
     #endregion Component Designer generated Variables
 

@@ -18,12 +18,14 @@
 
 #endregion
 
+using System.Windows.Forms;
+
 namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 {
   /// <summary>
   /// Summary description for MPTabPage.
   /// </summary>
-  public class MPTabPage : System.Windows.Forms.TabPage
+  public class MPTabPage : TabPage
   {
     public MPTabPage()
     {

@@ -19,6 +19,7 @@
 #endregion
 
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Mediaportal.TV.Server.Plugins.PowerScheduler
@@ -41,7 +42,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     private void LoadProcesses()
     {
       comboBox1.Items.Clear();
-      foreach (System.Diagnostics.Process p in System.Diagnostics.Process.GetProcesses())
+      foreach (Process p in Process.GetProcesses())
       {
         comboBox1.Items.Add(p.ProcessName);
       }

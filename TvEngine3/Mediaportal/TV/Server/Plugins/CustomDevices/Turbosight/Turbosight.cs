@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using DirectShowLib;
 using DirectShowLib.BDA;
@@ -866,7 +867,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
         return;
       }
       MmiApplicationType type = (MmiApplicationType)content[0];
-      String title = System.Text.Encoding.ASCII.GetString(content, 5, length - 5);
+      String title = Encoding.ASCII.GetString(content, 5, length - 5);
       this.LogDebug("  type         = {0}", type);
       this.LogDebug("  manufacturer = 0x{0:x}{1:x}", content[1], content[2]);
       this.LogDebug("  code         = 0x{0:x}{1:x}", content[3], content[4]);
@@ -995,7 +996,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Turbosight
       }
       bool blind = (content[0] != 0);
       uint answerLength = content[1];
-      String text = System.Text.Encoding.ASCII.GetString(content, 2, length - 2);
+      String text = Encoding.ASCII.GetString(content, 2, length - 2);
       this.LogDebug("  text   = {0}", text);
       this.LogDebug("  length = {0}", answerLength);
       this.LogDebug("  blind  = {0}", blind);

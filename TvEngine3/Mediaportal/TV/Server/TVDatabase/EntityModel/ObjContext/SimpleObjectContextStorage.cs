@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Data.Objects;
 
 namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
 {
@@ -7,7 +8,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
     /// </summary>
     public class SimpleObjectContextStorage : IObjectContextStorage
     {
-        private readonly Dictionary<string, System.Data.Objects.ObjectContext> storage = new Dictionary<string, System.Data.Objects.ObjectContext>();
+        private readonly Dictionary<string, ObjectContext> storage = new Dictionary<string, ObjectContext>();
 
       #region IObjectContextStorage Members
 
@@ -17,9 +18,9 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         /// </summary>
         /// <param name="key">The key.</param>
         /// <returns></returns>
-        public System.Data.Objects.ObjectContext GetObjectContextForKey(string key)
+        public ObjectContext GetObjectContextForKey(string key)
         {
-            System.Data.Objects.ObjectContext context;
+            ObjectContext context;
             if (!storage.TryGetValue(key, out context))
                 return null;
             return context;
@@ -33,7 +34,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         /// </summary>
         /// <param name="key">The key.</param>
         /// <param name="objectContext">The object context.</param>
-        public void SetObjectContextForKey(string key, System.Data.Objects.ObjectContext objectContext)
+        public void SetObjectContextForKey(string key, ObjectContext objectContext)
         {           
             storage.Add(key, objectContext);           
         }
@@ -42,7 +43,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         /// Returns all the values of the internal dictionary of object contexts.
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<System.Data.Objects.ObjectContext> GetAllObjectContexts()
+        public IEnumerable<ObjectContext> GetAllObjectContexts()
         {
             return storage.Values;
         }

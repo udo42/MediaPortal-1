@@ -24,7 +24,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       #region Primitive Properties
 
       private string _description;
-      private System.DateTime _endTime;
+      private DateTime _endTime;
       private string _episodeName;
       private string _episodeNum;
       private string _episodePart;
@@ -35,10 +35,10 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       private Nullable<int> _idSchedule;
       private bool _isRecording;
       private int _keepUntil;
-      private Nullable<System.DateTime> _keepUntilDate;
+      private Nullable<DateTime> _keepUntilDate;
       private int _mediaType;
       private string _seriesNum;
-      private System.DateTime _startTime;
+      private DateTime _startTime;
       private int _stopTime;
       private int _timesWatched;
       private string _title;
@@ -84,7 +84,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       }
 
       [DataMember]
-      public System.DateTime StartTime
+      public DateTime StartTime
       {
         get { return _startTime; }
         set
@@ -98,7 +98,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       }
 
       [DataMember]
-      public System.DateTime EndTime
+      public DateTime EndTime
       {
         get { return _endTime; }
         set
@@ -168,7 +168,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       }
 
       [DataMember]
-      public Nullable<System.DateTime> KeepUntilDate
+      public Nullable<DateTime> KeepUntilDate
       {
         get { return _keepUntilDate; }
         set

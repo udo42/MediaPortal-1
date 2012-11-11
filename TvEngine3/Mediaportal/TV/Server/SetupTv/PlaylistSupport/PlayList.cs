@@ -21,6 +21,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
 {
@@ -186,7 +187,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
 
       try
       {
-        System.Threading.Monitor.Enter(this);
+        Monitor.Enter(this);
         _listPlayListItems[iItem] = playListItem2;
         _listPlayListItems[iPreviousItem] = playListItem1;
         selectedItemIndex = iPreviousItem;
@@ -199,7 +200,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
 
       finally
       {
-        System.Threading.Monitor.Exit(this);
+        Monitor.Exit(this);
       }
 
       return selectedItemIndex;
@@ -225,7 +226,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
 
       try
       {
-        System.Threading.Monitor.Enter(this);
+        Monitor.Enter(this);
         _listPlayListItems[iItem] = playListItem2;
         _listPlayListItems[iNextItem] = playListItem1;
         selectedItemIndex = iNextItem;
@@ -238,7 +239,7 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
 
       finally
       {
-        System.Threading.Monitor.Exit(this);
+        Monitor.Exit(this);
       }
 
       return selectedItemIndex;

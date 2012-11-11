@@ -425,13 +425,13 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
         apiItem.iItem = index;
         apiItem.iGroupId = groupID;
 
-        ptrRetVal = (int)SendMessage(lst.Handle, ListViewAPI.LVM_SETITEM, 0, ref apiItem);
+        ptrRetVal = (int)SendMessage(lst.Handle, LVM_SETITEM, 0, ref apiItem);
 
         return ptrRetVal;
       }
       catch (Exception ex)
       {
-        throw new System.Exception("An exception in ListViewAPI.AddItemToGroup occured: " + ex.Message);
+        throw new Exception("An exception in ListViewAPI.AddItemToGroup occured: " + ex.Message);
       }
     }
 
@@ -457,12 +457,12 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
         apiGroup.state = LVGS_NORMAL;
         apiGroup.cbSize = Marshal.SizeOf(typeof (LVGROUP));
 
-        ptrRetVal = (int)SendMessage(lst.Handle, ListViewAPI.LVM_INSERTGROUP, -1, ref apiGroup);
+        ptrRetVal = (int)SendMessage(lst.Handle, LVM_INSERTGROUP, -1, ref apiGroup);
         return ptrRetVal;
       }
       catch (Exception ex)
       {
-        throw new System.Exception("An exception in ListViewAPI.AddListViewGroup occured: " + ex.Message);
+        throw new Exception("An exception in ListViewAPI.AddListViewGroup occured: " + ex.Message);
       }
     }
 
@@ -485,7 +485,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       }
       catch (Exception ex)
       {
-        throw new System.Exception("An exception in ListViewAPI.RemoveListViewGroup occured: " + ex.Message);
+        throw new Exception("An exception in ListViewAPI.RemoveListViewGroup occured: " + ex.Message);
       }
     }
 
@@ -506,7 +506,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       }
       catch (Exception ex)
       {
-        throw new System.Exception("An exception in ListViewAPI.ClearListViewGroup occured: " + ex.Message);
+        throw new Exception("An exception in ListViewAPI.ClearListViewGroup occured: " + ex.Message);
       }
     }
 
@@ -534,7 +534,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       }
       catch (Exception ex)
       {
-        throw new System.Exception("An exception in ListViewAPI.RedrawItems occured: " + ex.Message);
+        throw new Exception("An exception in ListViewAPI.RedrawItems occured: " + ex.Message);
       }
     }
 
@@ -558,7 +558,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       }
       catch (Exception ex)
       {
-        throw new System.Exception("An exception in ListViewAPI.UpdateItems occured: " + ex.Message);
+        throw new Exception("An exception in ListViewAPI.UpdateItems occured: " + ex.Message);
       }
     }
 
@@ -587,7 +587,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       }
       catch (Exception ex)
       {
-        throw new System.Exception("An exception in ListViewAPI.SetListViewImage occured: " + ex.Message);
+        throw new Exception("An exception in ListViewAPI.SetListViewImage occured: " + ex.Message);
       }
     }
 
@@ -610,7 +610,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       }
       catch (Exception ex)
       {
-        throw new System.Exception("An exception in ListViewAPI.SetListViewImage occured: " + ex.Message);
+        throw new Exception("An exception in ListViewAPI.SetListViewImage occured: " + ex.Message);
       }
     }
 

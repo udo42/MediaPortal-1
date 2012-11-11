@@ -18,10 +18,12 @@
 
 #endregion
 
+using System.Windows.Forms;
+
 namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 {
   /// <summary>
   /// Summary description for MPLabel.
   /// </summary>
-  public class MPLabel : System.Windows.Forms.Label {}
+  public class MPLabel : Label {}
 }

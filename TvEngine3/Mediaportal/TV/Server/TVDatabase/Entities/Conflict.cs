@@ -21,7 +21,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
     {
       #region Primitive Properties
 
-      private System.DateTime _conflictDate;
+      private DateTime _conflictDate;
       private Nullable<int> _idCard;
       private int _idChannel;
       private int _idConflict;
@@ -114,7 +114,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       }
 
       [DataMember]
-      public System.DateTime ConflictDate
+      public DateTime ConflictDate
       {
         get { return _conflictDate; }
         set

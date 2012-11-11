@@ -21,6 +21,7 @@
 using System;
 using System.Collections;
 using System.Drawing;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
@@ -393,11 +394,11 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
               //we can have Channel and ChannelMap here, thats why we use late-binding here to be able to compare them without need for referencing the classes
               idChannelThis =
                 (int)
-                Items[j].Tag.GetType().InvokeMember("IdChannel", System.Reflection.BindingFlags.GetProperty, null,
+                Items[j].Tag.GetType().InvokeMember("IdChannel", BindingFlags.GetProperty, null,
                                                     Items[j].Tag, null);
               idChannelTarget =
                 (int)
-                insertItem.Tag.GetType().InvokeMember("IdChannel", System.Reflection.BindingFlags.GetProperty, null,
+                insertItem.Tag.GetType().InvokeMember("IdChannel", BindingFlags.GetProperty, null,
                                                       insertItem.Tag, null);
             }
             catch

@@ -82,7 +82,7 @@ namespace Mediaportal.TV.Server.TVControl
         ThreadPool.QueueUserWorkItem(watcher, Thread.CurrentThread);
         return function();
       }
-      catch (System.Threading.ThreadAbortException)
+      catch (ThreadAbortException)
       {
         // This is our own exception.
         Thread.ResetAbort();

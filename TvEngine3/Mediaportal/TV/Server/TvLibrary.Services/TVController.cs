@@ -705,7 +705,7 @@ namespace Mediaportal.TV.Server.TVLibrary
         }
 
         this.LogInfo("Controller: setup streaming");
-        _hostName = System.Net.Dns.GetHostName();
+        _hostName = Dns.GetHostName();
         SettingsManagement.SaveSetting("hostname", _hostName);
         _streamer = new RtspStreaming(_hostName, _rtspStreamingPort);
 
@@ -3231,7 +3231,7 @@ namespace Mediaportal.TV.Server.TVLibrary
     {
       try
       {
-        Recording rec = TVDatabase.TVBusinessLayer.RecordingManagement.GetRecording(idRecording);
+        Recording rec = RecordingManagement.GetRecording(idRecording);
         if (rec == null)
         {
           return false;
@@ -3293,7 +3293,7 @@ namespace Mediaportal.TV.Server.TVLibrary
       bool foundWatchedRecordings = false;
       try
       {
-        IList<Recording> itemlist = TVDatabase.TVBusinessLayer.RecordingManagement.ListAllRecordingsByMediaType(MediaTypeEnum.TV);        
+        IList<Recording> itemlist = RecordingManagement.ListAllRecordingsByMediaType(MediaTypeEnum.TV);        
         foreach (Recording rec in itemlist)
         {
           if (rec.TimesWatched > 0)
@@ -3383,7 +3383,7 @@ namespace Mediaportal.TV.Server.TVLibrary
     {
       try
       {
-        Recording recording = TVDatabase.TVBusinessLayer.RecordingManagement.GetRecording(idRecording);
+        Recording recording = RecordingManagement.GetRecording(idRecording);
         if (recording == null)
           return "";
         if (recording.FileName == null)
@@ -3425,7 +3425,7 @@ namespace Mediaportal.TV.Server.TVLibrary
     {
       try
       {
-        Recording recording = TVDatabase.TVBusinessLayer.RecordingManagement.GetRecording(idRecording);
+        Recording recording = RecordingManagement.GetRecording(idRecording);
         if (recording == null)
           return "";
         if (recording.FileName == null)

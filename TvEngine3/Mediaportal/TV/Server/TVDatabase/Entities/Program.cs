@@ -25,23 +25,23 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
 
       private string _classification;
       private string _description;
-      private System.DateTime _endTime;
+      private DateTime _endTime;
       private short _endTimeDayOfWeek;
-      private System.DateTime _endTimeOffset;
+      private DateTime _endTimeOffset;
       private string _episodeName;
       private string _episodeNum;
       private string _episodePart;
       private int _idChannel;
       private int _idProgram;
       private Nullable<int> _idProgramCategory;
-      private Nullable<System.DateTime> _originalAirDate;
+      private Nullable<DateTime> _originalAirDate;
       private int _parentalRating;
       private bool _previouslyShown;
       private string _seriesNum;
       private int _starRating;
-      private System.DateTime _startTime;
+      private DateTime _startTime;
       private short _startTimeDayOfWeek;
-      private System.DateTime _startTimeOffset;
+      private DateTime _startTimeOffset;
       private int _state;
       private string _title;
 
@@ -86,7 +86,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       }
 
       [DataMember]
-      public System.DateTime StartTime
+      public DateTime StartTime
       {
         get { return _startTime; }
         set
@@ -100,7 +100,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       }
 
       [DataMember]
-      public System.DateTime EndTime
+      public DateTime EndTime
       {
         get { return _endTime; }
         set
@@ -170,7 +170,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       }
 
       [DataMember]
-      public Nullable<System.DateTime> OriginalAirDate
+      public Nullable<DateTime> OriginalAirDate
       {
         get { return _originalAirDate; }
         set
@@ -332,7 +332,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       }
 
       [DataMember]
-      public System.DateTime EndTimeOffset
+      public DateTime EndTimeOffset
       {
         get { return _endTimeOffset; }
         set
@@ -346,7 +346,7 @@ namespace Mediaportal.TV.Server.TVDatabase.Entities
       }
 
       [DataMember]
-      public System.DateTime StartTimeOffset
+      public DateTime StartTimeOffset
       {
         get { return _startTimeOffset; }
         set

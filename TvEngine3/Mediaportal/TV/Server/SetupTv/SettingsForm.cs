@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.NetworkInformation;
 using System.Windows.Forms;
 using Mediaportal.TV.Server.Plugins.Base.Interfaces;
 using Mediaportal.TV.Server.SetupControls;
@@ -217,7 +218,7 @@ namespace Mediaportal.TV.Server.SetupTV
         bool isLocal = (hostName.ToLowerInvariant() == Dns.GetHostName().ToLowerInvariant() ||
                         hostName.ToLowerInvariant() == Dns.GetHostName().ToLowerInvariant() + "."
                         +
-                        System.Net.NetworkInformation.IPGlobalProperties.GetIPGlobalProperties().DomainName.
+                        IPGlobalProperties.GetIPGlobalProperties().DomainName.
                           ToLowerInvariant());
         cardPage = new TvCards(hostName);
         cardPage.TvCardsChanged += OnTvCardsChanged;

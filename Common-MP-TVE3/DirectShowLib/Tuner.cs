@@ -269,7 +269,7 @@ namespace DirectShowLib.BDA
 
   #region Interfaces
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("BAD7753B-6B37-4810-AE57-3CE0C4A9E6CB"),
    InterfaceType(ComInterfaceType.InterfaceIsDual)]
   public interface IDigitalCableTuneRequest : IATSCChannelTuneRequest
@@ -326,7 +326,7 @@ namespace DirectShowLib.BDA
     int put_SourceID([In] int SourceID);
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("04BBD195-0E2D-4593-9BD5-4F908BC33CF5"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IScanningTunerEx : IScanningTuner
@@ -430,7 +430,7 @@ namespace DirectShowLib.BDA
       );
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("359B3901-572C-4854-BB49-CDEF66606A25"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IRegisterTuner
@@ -443,7 +443,7 @@ namespace DirectShowLib.BDA
     int Unregister();
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("1DFD0A5C-0284-11d3-9D8E-00C04F72D980"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IScanningTuner : ITuner
@@ -498,7 +498,7 @@ namespace DirectShowLib.BDA
     int AutoProgram();
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("6044634A-1733-4F99-B982-5FB12AFCE4F0"),
    InterfaceType(ComInterfaceType.InterfaceIsDual)]
   public interface IDVBSLocator2 : IDVBSLocator
@@ -698,7 +698,7 @@ namespace DirectShowLib.BDA
     }
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("6B80E96F-55E2-45AA-B754-0C23C8E7D5C1"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IESCloseMmiEvent : IESEvent
@@ -728,7 +728,7 @@ namespace DirectShowLib.BDA
     int GetDialogNumber();
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("1F0E5357-AF43-44E6-8547-654C645145D2"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IESEvent
@@ -751,7 +751,7 @@ namespace DirectShowLib.BDA
     string GetStringData();
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("506A09B8-7F86-4E04-AC05-3303BFE8FC49"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IESEventFactory
@@ -761,7 +761,7 @@ namespace DirectShowLib.BDA
     IESEvent CreateESEvent([In, MarshalAs(UnmanagedType.IUnknown)] object pServiceProvider, [In] int dwEventId, [In] Guid guidEventType, [In] int dwEventDataLength, [In] ref byte pEventData, [In, MarshalAs(UnmanagedType.BStr)] string bstrBaseUrl, [In, MarshalAs(UnmanagedType.IUnknown)] object pInitContext);
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("ABD414BF-CFE5-4E5E-AF5B-4B4E49C5BFEB"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IESEvents
@@ -770,7 +770,7 @@ namespace DirectShowLib.BDA
     int OnESEventReceived([In] Guid guidEventType, [In, MarshalAs(UnmanagedType.Interface)] IESEvent pESEvent);
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("ED89A619-4C06-4B2F-99EB-C7669B13047C"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IESEventService
@@ -779,7 +779,7 @@ namespace DirectShowLib.BDA
     int FireESEvent([MarshalAs(UnmanagedType.Interface)] IESEvent pESEvent);
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("33B9DAAE-9309-491D-A051-BCAD2A70CD66"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown), TypeLibType((short)0x90)]
   public interface IESEventServiceConfiguration
@@ -803,7 +803,7 @@ namespace DirectShowLib.BDA
     int RemoveGraph([MarshalAs(UnmanagedType.Interface)] IFilterGraph pGraph);
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("BA9EDCB6-4D36-4CFE-8C56-87A6B0CA48E1"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IESFileExpiryDateEvent : IESEvent
@@ -848,7 +848,7 @@ namespace DirectShowLib.BDA
     int DoesExpireAfterFirstUse();
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("2017CB03-DC0F-4C24-83CA-36307B2CD19F"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IESIsdbCasResponseEvent : IESEvent
@@ -888,7 +888,7 @@ namespace DirectShowLib.BDA
     byte[] GetResponseData();
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("D5A48EF5-A81B-4DF0-ACAA-5E35E7EA45D4"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IESLicenseRenewalResultEvent : IESEvent
@@ -951,7 +951,7 @@ namespace DirectShowLib.BDA
     long GetExpiryDate();
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("BA4B6526-1A35-4635-8B56-3EC612746A8C"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IESOpenMmiEvent : IESEvent
@@ -992,7 +992,7 @@ namespace DirectShowLib.BDA
     string GetDialogStringData([MarshalAs(UnmanagedType.BStr)] out string pbstrBaseUrl);
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("54C7A5E8-C3BB-4F51-AF14-E0E2C0E34C6D"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IESRequestTunerEvent : IESEvent
@@ -1031,7 +1031,7 @@ namespace DirectShowLib.BDA
     int GetEstimatedTime();
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("8A24C46E-BB63-4664-8602-5D9C718C146D"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IESValueUpdatedEvent : IESEvent
@@ -1062,7 +1062,7 @@ namespace DirectShowLib.BDA
     string[] GetValueNames();
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("907E0B5C-E42D-4F04-91F0-26F401F36907"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IGpnvsCommonBase
@@ -1072,7 +1072,7 @@ namespace DirectShowLib.BDA
     string GetValueUpdateName();
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("C9897087-E29C-473F-9E4B-7072123DEA14"),
    InterfaceType(ComInterfaceType.InterfaceIsDual)]
   public interface IISDBSLocator : IDVBSLocator
@@ -1202,7 +1202,7 @@ namespace DirectShowLib.BDA
     }
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("ED3E0C66-18C8-4EA6-9300-F6841FDD35DC"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface ITunerCapEx
@@ -1215,7 +1215,7 @@ namespace DirectShowLib.BDA
     }
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("448A2EDF-AE95-4b43-A3CC-747843C453D4"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IDVBTLocator2 : IDVBTLocator
@@ -3758,7 +3758,7 @@ namespace DirectShowLib.BDA
       );
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("990237AE-AC11-4614-BE8F-DD217A4CB4CB"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IPersistTuneXmlUtility
@@ -3770,7 +3770,7 @@ namespace DirectShowLib.BDA
       );
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("992E165F-EA24-4b2f-9A1D-009D92120451"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IPersistTuneXmlUtility2 : IPersistTuneXmlUtility
@@ -3792,7 +3792,7 @@ namespace DirectShowLib.BDA
       );
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("0754CD31-8D15-47A9-8215-D20064157244"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IPersistTuneXml : IPersist
@@ -3820,7 +3820,7 @@ namespace DirectShowLib.BDA
       );
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("C0A4A1D4-2B3C-491A-BA22-499FBADD4D12"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IBDACreateTuneRequestEx
@@ -3832,7 +3832,7 @@ namespace DirectShowLib.BDA
         );
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("48F66A11-171A-419A-9525-BEEECD51584C"),
    InterfaceType(ComInterfaceType.InterfaceIsDual)]
   public interface IDigitalCableLocator : IATSCLocator2
@@ -3913,7 +3913,7 @@ namespace DirectShowLib.BDA
     #endregion
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("156EFF60-86F4-4E28-89FC-109799FD57EE"),
    InterfaceType(ComInterfaceType.InterfaceIsDual)]
   public interface IChannelIDTuneRequest : ITuneRequest
@@ -3944,7 +3944,7 @@ namespace DirectShowLib.BDA
     int put_ChannelID([In, MarshalAs(UnmanagedType.BStr)] string ChannelID);
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("34D1F26B-E339-430D-ABCE-738CB48984DC"),
    InterfaceType(ComInterfaceType.InterfaceIsDual)]
   public interface IAnalogLocator : ILocator
@@ -4005,7 +4005,7 @@ namespace DirectShowLib.BDA
     int put_VideoStandard([In] AnalogVideoStandard AVS);
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("013F9F9C-B449-4ec7-A6D2-9D4F2FC70AE5"),
    InterfaceType(ComInterfaceType.InterfaceIsDual)]
   public interface IDigitalCableTuningSpace : IATSCTuningSpace
@@ -4156,7 +4156,7 @@ namespace DirectShowLib.BDA
     int put_MaxSourceID([In] int NewMaxSourceIDVal);
   }
 
-  [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+  [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("2CFEB2A8-1787-4A24-A941-C6EAEC39C842"),
    InterfaceType(ComInterfaceType.InterfaceIsDual)]
   public interface IAnalogAudioComponentType : IComponentType

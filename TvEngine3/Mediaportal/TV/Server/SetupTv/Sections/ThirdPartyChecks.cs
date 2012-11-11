@@ -21,8 +21,10 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.ServiceProcess;
+using System.Windows.Forms;
 using Mediaportal.TV.Server.SetupControls;
 using Mediaportal.TV.Server.TVControl.ServiceAgents;
 using Microsoft.Win32;
@@ -66,27 +68,27 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       {
         case McsPolicyStatus.PolicyInPlace:
           mpLabelStatusMCS.Text = "services disabled by policy";
-          mpLabelStatusMCS.ForeColor = System.Drawing.Color.Green;
+          mpLabelStatusMCS.ForeColor = Color.Green;
           mpButtonMCS.Text = "Re-enable services";
           mpButtonMCS.Visible = true;
           mpButtonMCS.Enabled = true;
           break;
         case McsPolicyStatus.ServicesStopped:
           mpLabelStatusMCS.Text = "services stopped";
-          mpLabelStatusMCS.ForeColor = System.Drawing.Color.Green;
+          mpLabelStatusMCS.ForeColor = Color.Green;
           mpButtonMCS.Text = "Enable policy to prevent services startup";
           mpButtonMCS.Visible = true;
           mpButtonMCS.Enabled = true;
           break;
         case McsPolicyStatus.NotAMceSystem:
           mpLabelStatusMCS.Text = "services not installed";
-          mpLabelStatusMCS.ForeColor = System.Drawing.Color.Green;
+          mpLabelStatusMCS.ForeColor = Color.Green;
           mpButtonMCS.Visible = false;
           mpButtonMCS.Enabled = false;
           break;
         default:
           mpLabelStatusMCS.Text = "services running";
-          mpLabelStatusMCS.ForeColor = System.Drawing.Color.Red;
+          mpLabelStatusMCS.ForeColor = Color.Red;
           mpButtonMCS.Text = "Enable policy to prevent services startup";
           mpButtonMCS.Visible = true;
           mpButtonMCS.Enabled = true;
@@ -96,14 +98,14 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       if (_dvbVersion < new Version(6, 5, 2710, 2732))
       {
         mpLabelStatusDVBHotfix.Text = "not installed";
-        mpLabelStatusDVBHotfix.ForeColor = System.Drawing.Color.Red;
+        mpLabelStatusDVBHotfix.ForeColor = Color.Red;
         linkLabelDVBHotfix.Enabled = true;
         linkLabelDVBHotfix.Visible = true;
       }
       else
       {
         mpLabelStatusDVBHotfix.Text = OSInfo.OSInfo.VistaOrLater() ? "not needed on Vista and up" : "installed";
-        mpLabelStatusDVBHotfix.ForeColor = System.Drawing.Color.Green;
+        mpLabelStatusDVBHotfix.ForeColor = Color.Green;
         linkLabelDVBHotfix.Enabled = false;
         linkLabelDVBHotfix.Visible = false;
       }
@@ -111,7 +113,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       if (_isStreamingOk)
       {
         mpLabelStatusStreamingPort.Text = "port " + STREAMING_PORT + " is available";
-        mpLabelStatusStreamingPort.ForeColor = System.Drawing.Color.Green;
+        mpLabelStatusStreamingPort.ForeColor = Color.Green;
         linkLabelStreamingPort.Enabled = false;
         linkLabelStreamingPort.Visible = false;
         mpLabelWindowsMediaSharingServiceStatus.Visible = false;
@@ -120,7 +122,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       else
       {
         mpLabelStatusStreamingPort.Text = "port " + STREAMING_PORT + " is already bound";
-        mpLabelStatusStreamingPort.ForeColor = System.Drawing.Color.Red;
+        mpLabelStatusStreamingPort.ForeColor = Color.Red;
         linkLabelStreamingPort.Enabled = true;
         linkLabelStreamingPort.Visible = true;
         mpLabelWindowsMediaSharingServiceStatus.Visible = true;
@@ -129,19 +131,19 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         {
           case WmpServiceStatus.StartupAutomatic:
             mpLabelWindowsMediaSharingServiceStatus.Text = "automatic";
-            mpLabelWindowsMediaSharingServiceStatus.ForeColor = System.Drawing.Color.Red;
+            mpLabelWindowsMediaSharingServiceStatus.ForeColor = Color.Red;
             break;
           case WmpServiceStatus.StartupManual:
             mpLabelWindowsMediaSharingServiceStatus.Text = "manual";
-            mpLabelWindowsMediaSharingServiceStatus.ForeColor = System.Drawing.Color.Red;
+            mpLabelWindowsMediaSharingServiceStatus.ForeColor = Color.Red;
             break;
           case WmpServiceStatus.StartupDisabled:
             mpLabelWindowsMediaSharingServiceStatus.Text = "disabled";
-            mpLabelWindowsMediaSharingServiceStatus.ForeColor = System.Drawing.Color.Green;
+            mpLabelWindowsMediaSharingServiceStatus.ForeColor = Color.Green;
             break;
           case WmpServiceStatus.NotInstalled:
             mpLabelWindowsMediaSharingServiceStatus.Text = "not installed";
-            mpLabelWindowsMediaSharingServiceStatus.ForeColor = System.Drawing.Color.Green;
+            mpLabelWindowsMediaSharingServiceStatus.ForeColor = Color.Green;
             break;
         }
       }
@@ -312,13 +314,13 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     #region Link labels
 
-    private void linkLabelDVBHotfix_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
+    private void linkLabelDVBHotfix_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
     {
       // DVB hotfix download link
       Process.Start(@"http://wiki.team-mediaportal.com/GeneralRequirements");
     }
 
-    private void linkLabelStreamingPort_LinkClicked(object sender, System.Windows.Forms.LinkLabelLinkClickedEventArgs e)
+    private void linkLabelStreamingPort_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
     {
       // TCPView download link
       Process.Start(@"http://technet.microsoft.com/en-us/sysinternals/bb897437.aspx");

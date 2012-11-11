@@ -1662,7 +1662,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
             */
     }
 
-    private void OnPlayRecordingBackChanged(MediaPortal.Player.g_Player.MediaType type, int stoptime, string filename)
+    private void OnPlayRecordingBackChanged(g_Player.MediaType type, int stoptime, string filename)
     {
       doOnPlayBackStoppedOrChanged(type, stoptime, filename, "OnPlayRecordingBackChanged");
     }

@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Timers;
 using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
@@ -30,17 +31,17 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
   public class RecordingManagement
   {
  
-    private readonly System.Timers.Timer _timer;    
+    private readonly Timer _timer;    
 
     public RecordingManagement()
     {
-      _timer = new System.Timers.Timer();
+      _timer = new Timer();
       _timer.Interval = 4 * 60 * 60 * 1000;
       _timer.Enabled = false;
       _timer.Elapsed += _timer_Elapsed;
     }
 
-    private static void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+    private static void _timer_Elapsed(object sender, ElapsedEventArgs e)
     {
       DeleteOldRecordings();
     }

@@ -20,10 +20,11 @@
 
 using System;
 using System.Windows.Forms;
+using Mediaportal.TV.Server.SetupControls;
 
 namespace Mediaportal.TV.Server.SetupTV.Dialogs
 {
-  public partial class FormDVBIPTuningDetail : SetupControls.FormTuningDetailCommon
+  public partial class FormDVBIPTuningDetail : FormTuningDetailCommon
   {
     public FormDVBIPTuningDetail()
     {

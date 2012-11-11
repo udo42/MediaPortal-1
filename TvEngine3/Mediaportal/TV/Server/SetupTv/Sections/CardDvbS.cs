@@ -69,7 +69,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
       public String DisplayName
       {
-        get { return System.IO.Path.GetFileNameWithoutExtension(FileName); }
+        get { return Path.GetFileNameWithoutExtension(FileName); }
       }
 
       #region IComparable<SatelliteContext> Members
@@ -443,7 +443,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         }
         if (transponders.Count > 0)
         {
-          System.IO.TextWriter parFileXML = System.IO.File.CreateText(newPath);
+          TextWriter parFileXML = File.CreateText(newPath);
           XmlSerializer xmlSerializer = new XmlSerializer(typeof (List<Transponder>));
           xmlSerializer.Serialize(parFileXML, transponders);
           parFileXML.Close();
@@ -504,7 +504,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           satellites.Add(ts);
         }
       }
-      String[] files = System.IO.Directory.GetFiles(String.Format(@"{0}\TuningParameters\dvbs\", PathManager.GetDataPath),
+      String[] files = Directory.GetFiles(String.Format(@"{0}\TuningParameters\dvbs\", PathManager.GetDataPath),
                                                     "*.xml");
       foreach (String file in files)
       {
@@ -1713,7 +1713,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       _transponders.Sort();
       String filePath = String.Format(@"{0}\TuningParameters\dvbs\Manual_Scans.{1}.xml", PathManager.GetDataPath,
                                       DateTime.Now.ToString("yyyy-MM-dd"));
-      System.IO.TextWriter parFileXML = System.IO.File.CreateText(filePath);
+      TextWriter parFileXML = File.CreateText(filePath);
       XmlSerializer xmlSerializer = new XmlSerializer(typeof (List<Transponder>));
       xmlSerializer.Serialize(parFileXML, _transponders);
       parFileXML.Close();

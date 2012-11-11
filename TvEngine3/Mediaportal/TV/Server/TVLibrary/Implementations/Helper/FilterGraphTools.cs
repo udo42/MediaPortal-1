@@ -19,6 +19,7 @@
 #endregion
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
@@ -28,6 +29,8 @@ using DirectShowLib;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using Mediaportal.TV.Server.TvLibrary.Utils.Util;
+using FILETIME = System.Runtime.InteropServices.ComTypes.FILETIME;
+using STATSTG = System.Runtime.InteropServices.ComTypes.STATSTG;
 
 #if !USING_NET11
 
@@ -845,7 +848,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         throw new ArgumentNullException("graphBuilder");
 
       IEnumFilters enumFilters = null;
-      System.Collections.ArrayList filtersArray = new System.Collections.ArrayList();
+      ArrayList filtersArray = new ArrayList();
 
       try
       {
@@ -1898,9 +1901,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 			[In] FILETIME patime,
 			[In] FILETIME pmtime
 #else
- [In] System.Runtime.InteropServices.ComTypes.FILETIME pctime,
- [In] System.Runtime.InteropServices.ComTypes.FILETIME patime,
- [In] System.Runtime.InteropServices.ComTypes.FILETIME pmtime
+ [In] FILETIME pctime,
+ [In] FILETIME patime,
+ [In] FILETIME pmtime
 #endif
 );
 
@@ -1918,7 +1921,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 #if USING_NET11
 			[Out] out STATSTG pStatStg,
 #else
-[Out] out System.Runtime.InteropServices.ComTypes.STATSTG pStatStg,
+[Out] out STATSTG pStatStg,
 #endif
  [In] int grfStatFlag
  );

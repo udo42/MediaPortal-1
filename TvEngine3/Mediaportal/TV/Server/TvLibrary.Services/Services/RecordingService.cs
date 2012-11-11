@@ -13,7 +13,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public Recording GetRecording(int idRecording)
     {
-      Recording recording = TVDatabase.TVBusinessLayer.RecordingManagement.GetRecording(idRecording);
+      Recording recording = RecordingManagement.GetRecording(idRecording);
       return recording;
     }
 

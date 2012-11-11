@@ -24,6 +24,7 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading;
 using DirectShowLib;
 using DirectShowLib.BDA;
 using Mediaportal.TV.Server.TVDatabase.Entities;
@@ -73,7 +74,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       if (delayDetect >= 1)
       {
         this.LogDebug("Detecting Cards in {0} seconds", delayDetect);
-        System.Threading.Thread.Sleep(delayDetect * 1000);
+        Thread.Sleep(delayDetect * 1000);
       }
       this.LogDebug("Detecting Cards");
       _cards = new List<ITVCard>();

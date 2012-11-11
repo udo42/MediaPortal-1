@@ -90,10 +90,10 @@ namespace Mediaportal.TV.TvPlugin
     private void OnRecordingStarted(int idRecording)
     {
 
-      Server.TVDatabase.Entities.Recording startedRec = _recordingServiceAgent.GetRecording(idRecording);
+      Recording startedRec = _recordingServiceAgent.GetRecording(idRecording);
       if (startedRec != null)
       {
-        Server.TVDatabase.Entities.Schedule parentSchedule = startedRec.Schedule;
+        Schedule parentSchedule = startedRec.Schedule;
         if (parentSchedule != null && parentSchedule.IdSchedule > 0)
         {
           string endTime = string.Empty;

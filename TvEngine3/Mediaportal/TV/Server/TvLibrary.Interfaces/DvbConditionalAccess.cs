@@ -2999,7 +2999,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       //DVB_MMI.DumpBinary(mmi, 0, mmi.Length);
 
       // The first 3 bytes contains an MMI tag to tell us which APDUs we should expect to encounter.
-      MmiTag tag = DvbMmiHandler.ReadMmiTag(mmi, 0);
+      MmiTag tag = ReadMmiTag(mmi, 0);
       int countLengthBytes;
       int apduLength = ReadLength(mmi, 3, out countLengthBytes);
       Log.Debug("DvbMmiHandler: data length = {0}, first APDU tag = {1}, length = {2}", mmi.Length, tag, apduLength);
@@ -3089,7 +3089,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       bool passwordMode = (apdu[offset++] & 0x01) != 0;
       byte expectedAnswerLength = apdu[offset++];
       // Note: there are 2 other bytes before text starts.
-      String prompt = System.Text.Encoding.ASCII.GetString(apdu, offset + 2, apdu.Length - offset - 2);
+      String prompt = Encoding.ASCII.GetString(apdu, offset + 2, apdu.Length - offset - 2);
 
       Log.Debug("  text   = {0}", prompt);
       Log.Debug("  length = {0}", expectedAnswerLength);
@@ -3356,7 +3356,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       if (length > 0)
       {
         bytesRead += length;
-        return System.Text.Encoding.ASCII.GetString(sourceData, offset + 3 + lengthByteCount, length);
+        return Encoding.ASCII.GetString(sourceData, offset + 3 + lengthByteCount, length);
       }
       else
       {

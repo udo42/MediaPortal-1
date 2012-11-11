@@ -20,32 +20,34 @@
 
 using System;
 using System.Collections;
+using System.ComponentModel;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Threading;
 using System.Windows.Forms;
 using Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 {
   /// <summary>
   /// Summary description for Form1.
   /// </summary>
-  public class Form1 : System.Windows.Forms.Form
+  public class Form1 : Form
   {
     #region Form members
 
     #endregion Form members
 
-    private System.Windows.Forms.Button buttonStart;
-    private System.Windows.Forms.Button buttonTest;
-    private System.Windows.Forms.ColumnHeader columnButton;
-    private System.ComponentModel.IContainer components;
-    private System.Windows.Forms.ImageList imageList;
+    private Button buttonStart;
+    private Button buttonTest;
+    private ColumnHeader columnButton;
+    private IContainer components;
+    private ImageList imageList;
     private XPListView.XPListView listButtons;
-    private System.Windows.Forms.PropertyGrid propertyGrid;
-    private System.Windows.Forms.Timer timerLearn;
+    private PropertyGrid propertyGrid;
+    private Timer timerLearn;
 
     public Form1()
     {
@@ -105,7 +107,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       Application.Run(form);
     }
 
-    private void Form1_Load(object sender, System.EventArgs e)
+    private void Form1_Load(object sender, EventArgs e)
     {
       Device.DeviceArrival += OnDeviceArrival;
       Device.DeviceRemoval += OnDeviceRemoval;
@@ -425,7 +427,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 //			ListView1.Groups.Add(New ListViewGroup("Group 1", _ HorizontalAlignment.Left))
     }
 
-    private void listButtons_SelectedIndexChanged(object sender, System.EventArgs e)
+    private void listButtons_SelectedIndexChanged(object sender, EventArgs e)
     {
       if (listButtons.SelectedItems.Count == 0) return;
 
@@ -439,7 +441,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       propertyGrid.SelectedObject = _selectedItem.Tag;
     }
 
-    private void buttonStart_Click(object sender, System.EventArgs e)
+    private void buttonStart_Click(object sender, EventArgs e)
     {
       if (_selectedItem == null) return;
 
@@ -454,24 +456,24 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       Blaster.BeginLearn(OnLearnComplete);
     }
 
-    private void buttonStop_Click(object sender, System.EventArgs e)
+    private void buttonStop_Click(object sender, EventArgs e)
     {
 //			Blaster.Cancel();
     }
 
-    private void listButtons_DoubleClick(object sender, System.EventArgs e)
+    private void listButtons_DoubleClick(object sender, EventArgs e)
     {
       Test();
     }
 
-    private void buttonTest_Click(object sender, System.EventArgs e)
+    private void buttonTest_Click(object sender, EventArgs e)
     {
       Test();
 
       listButtons.Focus();
     }
 
-    private void timerLearn_Tick(object sender, System.EventArgs e)
+    private void timerLearn_Tick(object sender, EventArgs e)
     {
       if (sender != timerLearn) return;
       if (_selectedItem == null) return;
@@ -581,7 +583,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       Save2();
     }
 
-    private void propertyGrid_PropertyValueChanged(object s, System.Windows.Forms.PropertyValueChangedEventArgs e)
+    private void propertyGrid_PropertyValueChanged(object s, PropertyValueChangedEventArgs e)
     {
       if (_selectedItem == null) return;
 

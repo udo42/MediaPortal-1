@@ -21,10 +21,12 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Timers;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Epg;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
+using Timer = System.Timers.Timer;
 
 namespace Mediaportal.TV.Server.TVLibrary
 {
@@ -34,7 +36,7 @@ namespace Mediaportal.TV.Server.TVLibrary
 
     private readonly ITVCard _card;
     private readonly EpgDBUpdater _dbUpdater;
-    private readonly System.Timers.Timer _epgTimer = new System.Timers.Timer();
+    private readonly Timer _epgTimer = new Timer();
     private List<EpgChannel> _epg;
     private DateTime _grabStartTime;
     private bool _updateThreadRunning;
@@ -72,7 +74,7 @@ namespace Mediaportal.TV.Server.TVLibrary
       return true;
     }
 
-    private void _epgTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+    private void _epgTimer_Elapsed(object sender, ElapsedEventArgs e)
     {
       TimeSpan ts = DateTime.Now - _grabStartTime;
       this.LogInfo("TimeshiftingEpgGrabber: timeout after {1} mins", ts.TotalMinutes);

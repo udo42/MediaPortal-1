@@ -220,7 +220,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
       newcfg.Minutes = cfg.Minutes;
       // newcfg.Days = cfg.Days;
       newcfg.LastRun = cfg.LastRun;
-      string[] time = grabTimeTextBox.Text.Split(System.Globalization.DateTimeFormatInfo.CurrentInfo.TimeSeparator[0]);
+      string[] time = grabTimeTextBox.Text.Split(DateTimeFormatInfo.CurrentInfo.TimeSeparator[0]);
       newcfg.Hour = Convert.ToInt32(time[0]);
       newcfg.Minutes = Convert.ToInt32(time[1]);
       CheckDay(newcfg, EPGGrabDays.Monday, MondayCheckBox.Checked);

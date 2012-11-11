@@ -24,6 +24,7 @@ using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 using DirectShowLib;
 using Mediaportal.TV.Server.Plugins.Base.Interfaces;
+using Mediaportal.TV.Server.SetupControls;
 using Mediaportal.TV.Server.TVControl.Interfaces.Services;
 using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
@@ -501,7 +502,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     /// <summary>
     /// Get an instance of the configuration section for use in TV Server configuration (SetupTv).
     /// </summary>
-    public Mediaportal.TV.Server.SetupControls.SectionSettings Setup
+    public SectionSettings Setup
     {
       get { return new SmarDtvUsbCiConfig(); }
     }

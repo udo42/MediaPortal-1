@@ -20,13 +20,14 @@
 
 using System.ComponentModel;
 using System.Drawing;
+using System.Windows.Forms;
 
 //using mdobler.XPCommonControls.ListViewAPI; 
 
 namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 {
   [TypeConverter(typeof (XPListViewItemConverter))]
-  public class XPListViewItem : System.Windows.Forms.ListViewItem
+  public class XPListViewItem : ListViewItem
   {
     private int _groupIndex;
 
@@ -41,7 +42,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     public XPListViewItem(string[] items, int imageIndex) : base(items, imageIndex) {}
 
-    public XPListViewItem(XPListViewItem.ListViewSubItem[] subItems, int imageIndex) : base(subItems, imageIndex) {}
+    public XPListViewItem(ListViewSubItem[] subItems, int imageIndex) : base(subItems, imageIndex) {}
 
     public XPListViewItem(string[] items, int imageIndex, Color foreColor, Color backColor, Font font)
       : base(items, imageIndex, foreColor, backColor, font) {}
@@ -56,7 +57,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       GroupIndex = groupIndex;
     }
 
-    public XPListViewItem(XPListViewItem.ListViewSubItem[] subItems, int imageIndex, int groupIndex)
+    public XPListViewItem(ListViewSubItem[] subItems, int imageIndex, int groupIndex)
       : base(subItems, imageIndex)
     {
       GroupIndex = groupIndex;

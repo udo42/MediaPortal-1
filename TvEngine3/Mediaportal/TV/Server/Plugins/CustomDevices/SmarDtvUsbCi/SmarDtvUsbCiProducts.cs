@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
+using System.Security;
 
 namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
 {
@@ -86,7 +87,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
 
     #region Nested type: IHauppaugeWinTvCi
 
-    [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+    [ComImport, SuppressUnmanagedCodeSecurity,
      Guid("dd5a9b44-348a-4607-bf72-cfd8239e4432"),
      InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     private interface IHauppaugeWinTvCi
@@ -111,7 +112,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
 
     #region Nested type: ITerraTecCinergyCiUsb
 
-    [ComImport, System.Security.SuppressUnmanagedCodeSecurity,
+    [ComImport, SuppressUnmanagedCodeSecurity,
      Guid("a934e61e-2e24-4145-b45b-3e71830048f7"),
      InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     private interface ITerraTecCinergyCiUsb

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reflection;
 
 namespace MediaPortal.Common.Utils
@@ -16,7 +17,7 @@ namespace MediaPortal.Common.Utils
         catch (Exception)
         {
 #if DEBUG
-          System.Diagnostics.Debugger.Launch();
+          Debugger.Launch();
 #endif
           //TODO gibman: log here once log4net is introduced                    
         }

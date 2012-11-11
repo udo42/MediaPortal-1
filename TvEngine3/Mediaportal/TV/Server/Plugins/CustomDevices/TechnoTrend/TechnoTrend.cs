@@ -2032,7 +2032,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TechnoTrend
       // Send the updated list to the CAM.
       this.LogDebug("TechnoTrend: service list");
       int i = 0;
-      HashSet<UInt16>.Enumerator en = _descrambledServices.GetEnumerator();
+      HashSet<ushort>.Enumerator en = _descrambledServices.GetEnumerator();
       while (en.MoveNext())
       {
         this.LogDebug("  {0} = {1} (0x{1:x4})", i + 1, en.Current);

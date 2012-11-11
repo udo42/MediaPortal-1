@@ -178,7 +178,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         RtspClient client = (RtspClient)item.Tag;
 
         IUser user = new User();
-        user.Name = System.Net.Dns.GetHostEntry(client.IpAdress).HostName;
+        user.Name = Dns.GetHostEntry(client.IpAdress).HostName;
 
         IList<Card> dbsCards = ServiceAgents.Instance.CardServiceAgent.ListAllCards(CardIncludeRelationEnum.None);
 

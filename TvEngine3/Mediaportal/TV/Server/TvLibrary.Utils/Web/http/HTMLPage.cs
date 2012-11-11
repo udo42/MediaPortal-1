@@ -18,6 +18,7 @@
 
 #endregion
 
+using System;
 using System.Reflection;
 using System.Text;
 using System.Threading;
@@ -275,7 +276,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
             encode = System.Text.Encoding.GetEncoding(strEncode);
             _strPageSource = encode.GetString(pageData);
           }
-          catch (System.ArgumentException e)
+          catch (ArgumentException e)
           {
             Log.Error(e);
           }

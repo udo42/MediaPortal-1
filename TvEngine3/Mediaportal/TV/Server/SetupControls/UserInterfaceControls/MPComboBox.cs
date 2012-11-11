@@ -18,10 +18,12 @@
 
 #endregion
 
+using System.Windows.Forms;
+
 namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 {
   /// <summary>
   /// Summary description for MPComboBox.
   /// </summary>
-  public class MPComboBox : System.Windows.Forms.ComboBox {}
+  public class MPComboBox : ComboBox {}
 }

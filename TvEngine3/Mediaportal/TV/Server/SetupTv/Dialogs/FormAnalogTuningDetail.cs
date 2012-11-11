@@ -21,11 +21,12 @@
 using System;
 using System.Windows.Forms;
 using DirectShowLib;
+using Mediaportal.TV.Server.SetupControls;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Countries;
 
 namespace Mediaportal.TV.Server.SetupTV.Dialogs
 {
-  public partial class FormAnalogTuningDetail : SetupControls.FormTuningDetailCommon
+  public partial class FormAnalogTuningDetail : FormTuningDetailCommon
   {
     public FormAnalogTuningDetail()
     {

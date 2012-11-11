@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Threading;
+using System.Timers;
 using Castle.Core;
 using MediaPortal.Common.Utils;
 using Mediaportal.TV.Server.Plugins.Base.Interfaces;
@@ -36,6 +37,7 @@ using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 using WebEPG.Utils;
+using Timer = System.Timers.Timer;
 
 namespace Mediaportal.TV.Server.Plugins.WebEPGImport
 {
@@ -50,7 +52,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
 
     #region variables
 
-    private System.Timers.Timer _scheduleTimer;
+    private Timer _scheduleTimer;
     private bool _workerThreadRunning;
 
     #endregion
@@ -106,7 +108,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
       this.LogDebug("plugin: webepg started");
 
       //CheckNewTVGuide();
-      _scheduleTimer = new System.Timers.Timer {Interval = 60000, Enabled = true};
+      _scheduleTimer = new Timer {Interval = 60000, Enabled = true};
       _scheduleTimer.Elapsed += _scheduleTimer_Elapsed;
     }
 
@@ -266,7 +268,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
       }
     }
 
-    private void _scheduleTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+    private void _scheduleTimer_Elapsed(object sender, ElapsedEventArgs e)
     {
       
       bool scheduleEnabled = Convert.ToBoolean(SettingsManagement.GetSetting("webepgScheduleEnabled", "true").Value);

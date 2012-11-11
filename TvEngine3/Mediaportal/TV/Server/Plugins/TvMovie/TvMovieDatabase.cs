@@ -23,6 +23,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.OleDb;
+using System.Data.SqlTypes;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
@@ -328,7 +329,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
             }
           }
         }
-        catch (System.Data.OleDb.OleDbException ex)
+        catch (OleDbException ex)
         {
           this.LogError(ex, "TVMovie: Error accessing TV Movie Clickfinder database while reading stations");          
           _canceled = true;
@@ -620,8 +621,8 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
                                          string Live, string Dauer, string Herstellungsland, string Wiederholung)
     {
       string channel = SenderKennung;
-      DateTime end = System.Data.SqlTypes.SqlDateTime.MinValue.Value;
-      DateTime start = System.Data.SqlTypes.SqlDateTime.MinValue.Value;
+      DateTime end = SqlDateTime.MinValue.Value;
+      DateTime start = SqlDateTime.MinValue.Value;
       string classification = String.Empty;
       int parentalRating = 0;
       string date = String.Empty;
@@ -728,7 +729,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
               break;
             }
           }
-          DateTime OnAirDate = System.Data.SqlTypes.SqlDateTime.MinValue.Value;
+          DateTime OnAirDate = SqlDateTime.MinValue.Value;
           if (date.Length > 0 && date != @"-")
           {
             try

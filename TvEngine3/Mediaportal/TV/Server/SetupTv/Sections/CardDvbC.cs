@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
@@ -203,7 +204,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       try
       {
-        System.IO.TextWriter parFileXML = System.IO.File.CreateText(fileName);
+        TextWriter parFileXML = File.CreateText(fileName);
         XmlSerializer xmlSerializer = new XmlSerializer(typeof (List<DVBCTuning>));
         xmlSerializer.Serialize(parFileXML, _dvbcChannels);
         parFileXML.Close();

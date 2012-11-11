@@ -18,6 +18,7 @@
 
 #endregion
 
+using System;
 using DirectShowLib;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
@@ -70,17 +71,17 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         // check if object is disposable
         try
         {
-          if (o is System.IDisposable)
+          if (o is IDisposable)
           {
-            (o as System.IDisposable).Dispose();
+            (o as IDisposable).Dispose();
           }
         }
-        catch (System.Exception ex)
+        catch (Exception ex)
         {
           Log.Error(ex, "  Error in Dispose of {0}", line);
         }
 
-        int remainingReferences = Release.ComObject(o);
+        int remainingReferences = ComObject(o);
         //if (remainingReferences > 0)
         Log.Debug("  Release {0} leaves {1} references", line, remainingReferences);
 

@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace Mediaportal.TV.Server.SetupControls
@@ -131,7 +132,7 @@ namespace Mediaportal.TV.Server.SetupControls
 
     private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
     {
-      System.Diagnostics.Process.Start((string)e.Link.LinkData);
+      Process.Start((string)e.Link.LinkData);
     }
 
     public virtual void helpToolStripSplitButton_ButtonClick(object sender, EventArgs e) {}

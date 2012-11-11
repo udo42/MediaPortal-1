@@ -20,6 +20,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
@@ -62,7 +63,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
     /// <returns>String</returns>
     public override String ToString()
     {
-      return System.IO.Path.GetFileNameWithoutExtension(m_fileName).Replace(m_filter + ".", "");
+      return Path.GetFileNameWithoutExtension(m_fileName).Replace(m_filter + ".", "");
     }
   }
 
@@ -87,7 +88,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
 
     public String DisplayName
     {
-      get { return System.IO.Path.GetFileNameWithoutExtension(m_fileName); }
+      get { return Path.GetFileNameWithoutExtension(m_fileName); }
     }
 
     /// <summary>
@@ -127,7 +128,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
       m_cbxCountries = cbxCountries;
       m_cbxRegions = cbxRegions;
 
-      files = System.IO.Directory.GetFiles(String.Format(@"{0}\TuningParameters\{1}", PathManager.GetDataPath, TuningType),
+      files = Directory.GetFiles(String.Format(@"{0}\TuningParameters\{1}", PathManager.GetDataPath, TuningType),
                                            "*.xml");
       List<String> countries = CountryList(files);
       for (int i = 0; i < countries.Count; ++i)
@@ -145,7 +146,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
     /// <param name="TuningType">Tuning type (subfolder name)</param>
     public FileFilters(String TuningType)
     {
-      files = System.IO.Directory.GetFiles(String.Format(@"{0}\TuningParameters\{1}", PathManager.GetDataPath, TuningType),
+      files = Directory.GetFiles(String.Format(@"{0}\TuningParameters\{1}", PathManager.GetDataPath, TuningType),
                                            "*.xml");
     }
 
@@ -198,7 +199,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
       List<CustomFileName> filtered = new List<CustomFileName>();
       foreach (String SingleFile in FullList)
       {
-        if (System.IO.Path.GetFileName(SingleFile).StartsWith(CountryFilter))
+        if (Path.GetFileName(SingleFile).StartsWith(CountryFilter))
         {
           filtered.Add(new CustomFileName(SingleFile, CountryFilter));
         }
@@ -219,7 +220,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
       List<String> filtered = new List<String>();
       foreach (String SingleFile in FullList)
       {
-        String country = System.IO.Path.GetFileName(SingleFile).Split('.')[0];
+        String country = Path.GetFileName(SingleFile).Split('.')[0];
         if (!filtered.Contains(country))
         {
           filtered.Add(country);

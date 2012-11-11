@@ -21,6 +21,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Timers;
 using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
@@ -35,12 +36,12 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
   {
  
     
-    private readonly System.Timers.Timer _timer;
+    private readonly Timer _timer;
     
 
     public DiskManagement()
     {
-      _timer = new System.Timers.Timer();
+      _timer = new Timer();
       _timer.Interval = 15 * 60 * 1000;
       _timer.Enabled = true;
       _timer.Elapsed += _timer_Elapsed;
@@ -69,7 +70,7 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
       return drives;
     }
 
-    private static void _timer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+    private static void _timer_Elapsed(object sender, ElapsedEventArgs e)
     {
       CheckFreeDiskSpace();
     }

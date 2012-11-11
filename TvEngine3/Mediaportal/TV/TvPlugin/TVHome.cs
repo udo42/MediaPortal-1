@@ -263,7 +263,7 @@ namespace Mediaportal.TV.TvPlugin
 #if DEBUG
       if (File.Exists(@"c:\debug_tvplugin.txt"))
       {
-        System.Diagnostics.Debugger.Launch();
+        Debugger.Launch();
       }
 #endif      
       IntegrationProviderHelper.Register();
@@ -288,8 +288,8 @@ namespace Mediaportal.TV.TvPlugin
 
       try
       {
-        TVHome.OnChannelChanged -= ForceUpdates;
-        TVHome.OnChannelChanged += ForceUpdates;
+        OnChannelChanged -= ForceUpdates;
+        OnChannelChanged += ForceUpdates;
 
         m_navigator = new ChannelNavigator();
         m_navigator.OnZapChannel -= ForceUpdates;
@@ -353,7 +353,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private void OnTimeShiftingForcefullyStopped(string username, TvStoppedReason tvStoppedReason)
     {
-      if (username.Equals(TVHome.Card.User.Name))
+      if (username.Equals(Card.User.Name))
       {
         Action keyAction = new Action(Action.ActionType.ACTION_STOP, 0, 0);
         GUIGraphicsContext.OnAction(keyAction);
@@ -1066,7 +1066,7 @@ namespace Mediaportal.TV.TvPlugin
           if (g_Player.Playing)
           {
             if (g_Player.IsTimeShifting) // live TV or radio must be stopped
-              TVHome.StopPlayerMainThread();
+              StopPlayerMainThread();
             else // playing something else so do not disturb
               return true;
           }
@@ -1307,8 +1307,8 @@ namespace Mediaportal.TV.TvPlugin
                 Log.Debug("TVHome: WOL - Store MAC address: {0}", macAddress);
 
                 using (
-                  MediaPortal.Profile.Settings xmlwriter =
-                    new MediaPortal.Profile.MPSettings())
+                  Settings xmlwriter =
+                    new MPSettings())
                 {
                   xmlwriter.SetValue("tvservice", "macAddress", macAddress);
                 }
@@ -1853,7 +1853,7 @@ namespace Mediaportal.TV.TvPlugin
           Channel ch = message.Object as Channel;
           //this.LogDebug("Received rec notify message: {0}, {1}, {2}", heading, text, (ch != null).ToString()); //remove later
           string logo = TVUtil.GetChannelLogo(ch);
-          GUIDialogNotify pDlgNotify = (GUIDialogNotify)GUIWindowManager.GetWindow((int)GUIWindow.Window.WINDOW_DIALOG_NOTIFY);
+          GUIDialogNotify pDlgNotify = (GUIDialogNotify)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_NOTIFY);
           if (pDlgNotify != null)
           {
             pDlgNotify.Reset();
@@ -1871,7 +1871,7 @@ namespace Mediaportal.TV.TvPlugin
           break;
         case GUIMessage.MessageType.GUI_MSG_NOTIFY_TV_PROGRAM:
           {
-            TVNotifyYesNoDialog tvNotifyDlg = (TVNotifyYesNoDialog)GUIWindowManager.GetWindow((int)GUIWindow.Window.WINDOW_DIALOG_TVNOTIFYYESNO);
+            TVNotifyYesNoDialog tvNotifyDlg = (TVNotifyYesNoDialog)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_TVNOTIFYYESNO);
 
             TVProgramDescription notify = message.Object as TVProgramDescription;
             if (tvNotifyDlg == null || notify == null)
@@ -1901,18 +1901,18 @@ namespace Mediaportal.TV.TvPlugin
             string strLogo = string.Empty;
             if (c.MediaType == (int)MediaTypeEnum.TV)
             {
-              strLogo = MediaPortal.Util.Utils.GetCoverArt(Thumbs.TVChannel, c.DisplayName);
+              strLogo = Utils.GetCoverArt(Thumbs.TVChannel, c.DisplayName);
             }
             else if (c.MediaType == (int)MediaTypeEnum.Radio)
             {
-              strLogo = MediaPortal.Util.Utils.GetCoverArt(Thumbs.Radio, c.DisplayName);
+              strLogo = Utils.GetCoverArt(Thumbs.Radio, c.DisplayName);
             }
 
             tvNotifyDlg.SetImage(strLogo);
             tvNotifyDlg.TimeOut = _notifyTVTimeout;
             if (_playNotifyBeep)
             {
-              MediaPortal.Util.Utils.PlaySound("notify.wav", false, true);
+              Utils.PlaySound("notify.wav", false, true);
             }
             tvNotifyDlg.SetDefaultToYes(false);
             tvNotifyDlg.DoModal(GUIWindowManager.ActiveWindow);
@@ -1921,20 +1921,20 @@ namespace Mediaportal.TV.TvPlugin
             {
               try
               {
-                MediaPortal.Player.g_Player.Stop();
+                g_Player.Stop();
 
                 if (c.MediaType == (int)MediaTypeEnum.TV)
                 {
-                  MediaPortal.GUI.Library.GUIWindowManager.ActivateWindow((int)MediaPortal.GUI.Library.GUIWindow.Window.WINDOW_TV);
-                  TVHome.ViewChannelAndCheck(c, 0);
-                  if (TVHome.Card.IsTimeShifting && TVHome.Card.IdChannel == c.IdChannel)
+                  GUIWindowManager.ActivateWindow((int)Window.WINDOW_TV);
+                  ViewChannelAndCheck(c, 0);
+                  if (Card.IsTimeShifting && Card.IdChannel == c.IdChannel)
                   {
                     g_Player.ShowFullScreenWindow();
                   }
                 }
                 else if (c.MediaType == (int)MediaTypeEnum.Radio)
                 {
-                  MediaPortal.GUI.Library.GUIWindowManager.ActivateWindow((int)MediaPortal.GUI.Library.GUIWindow.Window.WINDOW_RADIO);
+                  GUIWindowManager.ActivateWindow((int)Window.WINDOW_RADIO);
                   Radio.Radio.CurrentChannel = c;
                   Radio.Radio.Play();
                 }
@@ -2370,7 +2370,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private static bool ShowUnParkDialogue(string userName)
     {
-      var dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)GUIWindow.Window.WINDOW_DIALOG_YES_NO);
+      var dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_YES_NO);
       if (dlgYesNo != null)
       {
         dlgYesNo.SetHeading(GUILocalizeStrings.Get(2555, new[] { userName }));
@@ -3720,7 +3720,7 @@ namespace Mediaportal.TV.TvPlugin
       {
         dlgCiMenu =
           (GUIDialogCIMenu)
-          GUIWindowManager.GetWindow((int)MediaPortal.GUI.Library.GUIWindow.Window.WINDOW_DIALOG_CIMENU);
+          GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_CIMENU);
       }
 
       switch (currentCiMenu.State)
@@ -3739,17 +3739,17 @@ namespace Mediaportal.TV.TvPlugin
           {
             if (dlgCiMenu.SelectedId != -1)
             {
-              TVHome.Card.SelectCiMenu(Convert.ToByte(dlgCiMenu.SelectedId));
+              Card.SelectCiMenu(Convert.ToByte(dlgCiMenu.SelectedId));
             }
             else
             {
               if (CiMenuList.Count == 0)      // Another menu is pending, do not answer...
-                TVHome.Card.SelectCiMenu(0); // 0 means "back"
+                Card.SelectCiMenu(0); // 0 means "back"
             }
           }
           else
           {
-            TVHome.Card.CloseMenu(); // in case of error close the menu
+            Card.CloseMenu(); // in case of error close the menu
           }
           break;
 
@@ -3778,11 +3778,11 @@ namespace Mediaportal.TV.TvPlugin
           if (
             GetKeyboard(currentCiMenu.RequestText, currentCiMenu.AnswerLength, currentCiMenu.Password, ref result))
           {
-            TVHome.Card.SendMenuAnswer(false, result); // send answer, cancel=false
+            Card.SendMenuAnswer(false, result); // send answer, cancel=false
           }
           else
           {
-            TVHome.Card.SendMenuAnswer(true, null); // cancel request 
+            Card.SendMenuAnswer(true, null); // cancel request 
           }
           break;
         case CiMenuState.Close:

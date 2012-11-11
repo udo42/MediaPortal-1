@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using DirectShowLib;
 using DirectShowLib.BDA;
@@ -776,7 +777,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
       data = (CaData)Marshal.PtrToStructure(_generalBuffer, typeof(CaData));
       this.LogDebug("  manufacturer = 0x{0:x}{1:x}", data.Data[0], data.Data[1]);
       this.LogDebug("  code         = 0x{0:x}{1:x}", data.Data[2], data.Data[3]);
-      this.LogDebug("  menu title   = {0}", System.Text.Encoding.ASCII.GetString(data.Data, 5, data.Data[4]));
+      this.LogDebug("  menu title   = {0}", Encoding.ASCII.GetString(data.Data, 5, data.Data[4]));
     }
 
     #endregion
@@ -1191,7 +1192,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalEverywhere
           this.LogDebug("Digital Everywhere: enabling PID filter");
 
           fullTransponder = false;
-          HashSet<UInt16>.Enumerator en = pids.GetEnumerator();
+          HashSet<ushort>.Enumerator en = pids.GetEnumerator();
           while (en.MoveNext() && validPidCount < MaxPidFilterPids)
           {
             filterPids[validPidCount++] = en.Current;
