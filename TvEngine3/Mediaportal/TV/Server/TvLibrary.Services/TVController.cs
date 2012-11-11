@@ -3912,7 +3912,7 @@ namespace Mediaportal.TV.Server.TVLibrary
         if (userName == null)
           return -1;
 
-        Channel channel = ChannelManagement.GetChannel(idChannel);
+        Channel channel = ChannelManagement.GetChannel(idChannel, ChannelIncludeRelationEnum.TuningDetails);
         this.LogDebug("Controller: TimeShiftingWouldUseCard {0} {1}", channel.DisplayName, channel.IdChannel);
 
 
@@ -4399,7 +4399,7 @@ namespace Mediaportal.TV.Server.TVLibrary
           }
           else
           {
-            Channel dbchannel = ChannelManagement.GetChannel(idChannel);
+            Channel dbchannel = ChannelManagement.GetChannel(idChannel, ChannelIncludeRelationEnum.TuningDetails);
             TvResult viewResult;
 
             IUser user = GetUserFromContext(userName);
@@ -4636,7 +4636,7 @@ namespace Mediaportal.TV.Server.TVLibrary
         }
         
         user.Priority = UserFactory.GetDefaultPriority(user.Name, user.Priority);
-        Channel channel = ChannelManagement.GetChannel(idChannel);
+        Channel channel = ChannelManagement.GetChannel(idChannel, ChannelIncludeRelationEnum.TuningDetails);
         this.LogDebug("Controller: StartTimeShifting {0} {1}", channel.DisplayName, channel.IdChannel);
         StopEPGgrabber();
 
@@ -5125,7 +5125,7 @@ namespace Mediaportal.TV.Server.TVLibrary
             string channelInfo = Convert.ToString(subchannel.IdChannel);
             if (subchannel.IdChannel > 0)
             {
-              Channel ch = ChannelManagement.GetChannel(subchannel.IdChannel);
+              Channel ch = ChannelManagement.GetChannel(subchannel.IdChannel, ChannelIncludeRelationEnum.None);
               if (ch != null)
               {
                 channelInfo = ch.DisplayName;
