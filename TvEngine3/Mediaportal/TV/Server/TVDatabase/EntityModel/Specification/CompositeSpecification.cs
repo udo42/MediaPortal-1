@@ -11,7 +11,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Specification
         protected readonly Specification<TEntity> _leftSide;
         protected readonly Specification<TEntity> _rightSide;
 
-        public CompositeSpecification(Specification<TEntity> leftSide, Specification<TEntity> rightSide)
+        protected CompositeSpecification(Specification<TEntity> leftSide, Specification<TEntity> rightSide)
         {
             _leftSide = leftSide;
             _rightSide = rightSide;

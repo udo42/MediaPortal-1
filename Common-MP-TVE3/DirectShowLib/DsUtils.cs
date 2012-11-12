@@ -1734,7 +1734,7 @@ namespace DirectShowLib
     protected object m_obj;
 
     // The constructor.  This is called from GetInstance (below)
-    public DsMarshaler(string cookie)
+    protected DsMarshaler(string cookie)
     {
       // If we get a cookie, save it.
       m_cookie = cookie;

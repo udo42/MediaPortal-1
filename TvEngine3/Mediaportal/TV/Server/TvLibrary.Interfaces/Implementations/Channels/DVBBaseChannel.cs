@@ -75,7 +75,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     ///<summary>
     /// Base <see cref="DVBBaseChannel"/> constructor.
     ///</summary>
-    public DVBBaseChannel()
+    protected DVBBaseChannel()
     {
       _channelName = String.Empty;
       _providerName = String.Empty;
@@ -94,7 +94,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     /// existing instance.
     /// </summary>
     /// <param name="channel">The existing channel instance.</param>
-    public DVBBaseChannel(DVBBaseChannel channel)
+    protected DVBBaseChannel(DVBBaseChannel channel)
     {
       _channelName = channel.Name;
       _providerName = channel.Provider;

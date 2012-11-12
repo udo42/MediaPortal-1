@@ -667,12 +667,12 @@ namespace Mediaportal.TV.TvPlugin.Radio
               // combine recordings with the same name to a folder located on top
               foreach (GUIListItem item in itemlist)
               {
-                bool merge = false;
                 if (item.TVTag != null)
                 {
                   var listRec = item.TVTag as Recording;
                   if (listRec != null)
                   {
+                    bool merge = false;
                     switch (_currentDbView)
                     {
                       case DBView.History:

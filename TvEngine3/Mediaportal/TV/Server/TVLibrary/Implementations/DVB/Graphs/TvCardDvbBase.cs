@@ -147,7 +147,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     /// <summary>
     /// Initializes a new instance of the <see cref="TvCardDvbBase"/> class.
     /// </summary>
-    public TvCardDvbBase(IEpgEvents epgEvents, DsDevice device)
+    protected TvCardDvbBase(IEpgEvents epgEvents, DsDevice device)
       : base(device)
     {
       _timeshiftingEPGGrabber = new TimeShiftingEPGGrabber(epgEvents, this);
