@@ -28,7 +28,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 {
   public class TeletextManagement : ITeletextManagement
   {
- 
     private readonly ITvCardHandler _cardHandler;
 
     /// <summary>
@@ -55,15 +54,16 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         if (_cardHandler.DataBaseCard.Enabled == false)
         {
           return false;
-        }        
-        
+        }
+
         _cardHandler.UserManagement.RefreshUser(ref user);
 
 
-        ITvSubChannel subchannel = _cardHandler.Card.GetSubChannel(_cardHandler.UserManagement.GetTimeshiftingChannelId(user.Name));
+        ITvSubChannel subchannel =
+          _cardHandler.Card.GetSubChannel(_cardHandler.UserManagement.GetTimeshiftingChannelId(user.Name));
         if (subchannel != null)
         {
-          grabTeletext = subchannel.GrabTeletext;              
+          grabTeletext = subchannel.GrabTeletext;
         }
 
         return grabTeletext;
@@ -88,12 +88,13 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       {
         return false;
       }
-      
-      ITvSubChannel subchannel = _cardHandler.Card.GetSubChannel(_cardHandler.UserManagement.GetTimeshiftingSubChannel(userName));
+
+      ITvSubChannel subchannel =
+        _cardHandler.Card.GetSubChannel(_cardHandler.UserManagement.GetTimeshiftingSubChannel(userName));
       if (subchannel != null)
       {
         hasTeletext = subchannel.HasTeletext;
-      }          
+      }
 
       return hasTeletext;
     }
@@ -111,9 +112,11 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         if (_cardHandler.DataBaseCard.Enabled == false)
         {
           return new TimeSpan(0, 0, 0, 15);
-        }                       
+        }
 
-        int subchannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(userName, _cardHandler.UserManagement.GetTimeshiftingSubChannel(userName));
+        int subchannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(userName,
+                                                                                  _cardHandler.UserManagement.
+                                                                                    GetTimeshiftingSubChannel(userName));
         ITvSubChannel subchannel = _cardHandler.Card.GetSubChannel(subchannelId);
         if (subchannel == null)
           return new TimeSpan(0, 0, 0, 15);
@@ -138,9 +141,11 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         if (_cardHandler.DataBaseCard.Enabled == false)
         {
           return;
-        }       
-                
-        int subchannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(userName, _cardHandler.UserManagement.GetTimeshiftingSubChannel(userName));
+        }
+
+        int subchannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(userName,
+                                                                                  _cardHandler.UserManagement.
+                                                                                    GetTimeshiftingSubChannel(userName));
         ITvSubChannel subchannel = _cardHandler.Card.GetSubChannel(subchannelId);
         if (subchannel == null)
           return;
@@ -167,9 +172,11 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         if (_cardHandler.DataBaseCard.Enabled == false)
         {
           return new byte[] {1};
-        }      
-        
-        int subchannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(userName, _cardHandler.UserManagement.GetTimeshiftingSubChannel(userName));
+        }
+
+        int subchannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(userName,
+                                                                                  _cardHandler.UserManagement.
+                                                                                    GetTimeshiftingSubChannel(userName));
         ITvSubChannel subchannel = _cardHandler.Card.GetSubChannel(subchannelId);
         if (subchannel == null)
           return new byte[] {1};
@@ -198,8 +205,10 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         {
           return -1;
         }
-                
-        int subchannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(userName, _cardHandler.UserManagement.GetTimeshiftingSubChannel(userName));
+
+        int subchannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(userName,
+                                                                                  _cardHandler.UserManagement.
+                                                                                    GetTimeshiftingSubChannel(userName));
         ITvSubChannel subchannel = _cardHandler.Card.GetSubChannel(subchannelId);
         if (subchannel == null)
           return -1;
@@ -227,9 +236,11 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         {
           return -1;
         }
-               
 
-        int subchannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(userName, _cardHandler.UserManagement.GetTimeshiftingSubChannel(userName));
+
+        int subchannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(userName,
+                                                                                  _cardHandler.UserManagement.
+                                                                                    GetTimeshiftingSubChannel(userName));
         ITvSubChannel subchannel = _cardHandler.Card.GetSubChannel(subchannelId);
         if (subchannel == null)
           return -1;
@@ -257,7 +268,9 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         {
           return -1;
         }
-        int subchannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(userName, _cardHandler.UserManagement.GetTimeshiftingSubChannel(userName));
+        int subchannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(userName,
+                                                                                  _cardHandler.UserManagement.
+                                                                                    GetTimeshiftingSubChannel(userName));
         ITvSubChannel subchannel = _cardHandler.Card.GetSubChannel(subchannelId);
         if (subchannel == null)
           return -1;
@@ -285,8 +298,10 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         {
           return -1;
         }
-        
-        int subchannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(userName, _cardHandler.UserManagement.GetTimeshiftingSubChannel(userName));
+
+        int subchannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(userName,
+                                                                                  _cardHandler.UserManagement.
+                                                                                    GetTimeshiftingSubChannel(userName));
         ITvSubChannel subchannel = _cardHandler.Card.GetSubChannel(subchannelId);
         if (subchannel == null)
           return -1;
@@ -314,8 +329,10 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         {
           return -1;
         }
-                      
-        int subchannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(userName, _cardHandler.UserManagement.GetTimeshiftingSubChannel(userName));
+
+        int subchannelId = _cardHandler.UserManagement.GetSubChannelIdByChannelId(userName,
+                                                                                  _cardHandler.UserManagement.
+                                                                                    GetTimeshiftingSubChannel(userName));
         ITvSubChannel subchannel = _cardHandler.Card.GetSubChannel(subchannelId);
         if (subchannel == null)
           return -1;

@@ -88,7 +88,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     }
 
 
-    private void TvCombinations_Load(object sender, EventArgs e) {}
+    private void TvCombinations_Load(object sender, EventArgs e)
+    {
+    }
 
     private void mpComboBoxCard_SelectedIndexChanged(object sender, EventArgs e)
     {
@@ -98,8 +100,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         mpListViewChannels.Items.Clear();
         mpListViewMapped.Items.Clear();
 
-       
-        var cardInfo = (CardInfo)mpComboBoxCard.SelectedItem;
+
+        var cardInfo = (CardInfo) mpComboBoxCard.SelectedItem;
 
         Card card = cardInfo.Card;
         CardType cardType = cards[card.IdCard];
@@ -114,12 +116,15 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           {
             channel = map.Channel;
           }
-          catch (Exception) {}
+          catch (Exception)
+          {
+          }
           if (channel == null)
             continue;
           if (channel.MediaType != (decimal) _mediaTypeEnum)
-            continue;          
-          bool enableDVBS2 = ServiceAgents.Instance.SettingServiceAgent.GetValue("dvbs" + card.IdCard + "enabledvbs2", false);
+            continue;
+          bool enableDVBS2 = ServiceAgents.Instance.SettingServiceAgent.GetValue("dvbs" + card.IdCard + "enabledvbs2",
+                                                                                 false);
           List<TuningDetail> tuningDetails = GetTuningDetailsByCardType(channel, cardType, enableDVBS2);
           int imageIndex = GetImageIndex(tuningDetails);
           var item = new ListViewItem(channel.DisplayName, imageIndex);
@@ -145,18 +150,18 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           return;
         if (mpListViewChannels.SelectedIndices.Count != 1)
           return;
-        Card card = ((CardInfo)mpComboBoxCard.SelectedItem).Card;
+        Card card = ((CardInfo) mpComboBoxCard.SelectedItem).Card;
         ListViewItem selectedItem = mpListViewChannels.Items[mpListViewChannels.SelectedIndices[0]];
-        var selectedChannel = (Channel)selectedItem.Tag;
+        var selectedChannel = (Channel) selectedItem.Tag;
         IList<Channel> allChannels = ServiceAgents.Instance.ChannelServiceAgent.ListAllChannels();
         var items = new List<ListViewItem>();
         var dlg = new NotifyForm("Searching for Similar Channels...",
-                                        "This can take some time\n\nPlease be patient...");
+                                 "This can take some time\n\nPlease be patient...");
         dlg.Show(this);
         dlg.WaitForDisplay();
         foreach (Channel channel in allChannels)
         {
-          if (channel.MediaType != (decimal)_mediaTypeEnum)
+          if (channel.MediaType != (decimal) _mediaTypeEnum)
             continue;
 
           IList<ChannelMap> list = channel.ChannelMaps;
@@ -169,7 +174,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
           IList<TuningDetail> details = channel.TuningDetails;
           int imageIndex = GetImageIndex(details);
-          var item = new ListViewItem((result * 100f).ToString("f2") + "%", imageIndex);
+          var item = new ListViewItem((result*100f).ToString("f2") + "%", imageIndex);
           item.Tag = channel;
           item.SubItems.Add(channel.DisplayName);
           items.Add(item);
@@ -194,13 +199,13 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
 
       ListViewItem selectedItem = mpListViewChannels.Items[mpListViewChannels.SelectedIndices[0]];
-      var selectedChannel = (Channel)selectedItem.Tag;
+      var selectedChannel = (Channel) selectedItem.Tag;
 
       ListView.SelectedListViewItemCollection selectedItemsToCombine = mpListViewMapped.SelectedItems;
 
       foreach (ListViewItem listViewItem in selectedItemsToCombine)
       {
-        var selectedChannel2 = (Channel)listViewItem.Tag;
+        var selectedChannel2 = (Channel) listViewItem.Tag;
         var dlg = new NotifyForm("Combining Channels...", "Updating TuningDetail Table\n\nPlease be patient...");
         dlg.Show(this);
         dlg.WaitForDisplay();
@@ -229,7 +234,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           {
             if (groupMapMaster.IdGroup == groupMap.IdGroup)
             {
-              ServiceAgents.Instance.CardServiceAgent.DeleteGroupMap(groupMap.IdMap);              
+              ServiceAgents.Instance.CardServiceAgent.DeleteGroupMap(groupMap.IdMap);
               alreadyExistsInGroup = true;
               continue;
             }
@@ -238,7 +243,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           {
             groupMap.IdChannel = selectedChannel.IdChannel;
             ServiceAgents.Instance.ChannelServiceAgent.SaveChannelGroupMap(groupMap);
-
           }
         }
         dlg.Close();
@@ -265,7 +269,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         dlg.WaitForDisplay();
         foreach (Schedule schedule in selectedChannel2.Schedules)
         {
-          schedule.IdChannel = selectedChannel.IdChannel;          
+          schedule.IdChannel = selectedChannel.IdChannel;
           ServiceAgents.Instance.ScheduleServiceAgent.SaveSchedule(schedule);
         }
         dlg.Close();

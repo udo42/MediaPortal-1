@@ -308,16 +308,11 @@ namespace DirectShowLib
   [StructLayout(LayoutKind.Explicit, Pack = 1)]
   public class WaveFormatExtensible : WaveFormatEx
   {
-    [FieldOffset(0)]
-    public short wValidBitsPerSample;
-    [FieldOffset(0)]
-    public short wSamplesPerBlock;
-    [FieldOffset(0)]
-    public short wReserved;
-    [FieldOffset(2)]
-    public WaveMask dwChannelMask;
-    [FieldOffset(6)]
-    public Guid SubFormat;
+    [FieldOffset(0)] public short wValidBitsPerSample;
+    [FieldOffset(0)] public short wSamplesPerBlock;
+    [FieldOffset(0)] public short wReserved;
+    [FieldOffset(2)] public WaveMask dwChannelMask;
+    [FieldOffset(6)] public Guid SubFormat;
   }
 
   /// <summary>
@@ -365,7 +360,9 @@ namespace DirectShowLib
     [PreserveSig]
     int GetCreateVideoAcceleratorData([In, MarshalAs(UnmanagedType.LPStruct)] Guid pGuid,
                                       [Out] out int pdwSizeMiscData,
-                                      [Out] IntPtr ppMiscData); // LPVOID
+                                      [Out] IntPtr ppMiscData);
+
+    // LPVOID
   }
 
   [ComImport, SuppressUnmanagedCodeSecurity,
@@ -465,7 +462,9 @@ namespace DirectShowLib
   {
     [PreserveSig]
     int GetDirectDraw(
-      [MarshalAs(UnmanagedType.IUnknown)] out object ppDirectDraw); // IDirectDraw
+      [MarshalAs(UnmanagedType.IUnknown)] out object ppDirectDraw);
+
+    // IDirectDraw
   }
 
 
@@ -523,22 +522,34 @@ namespace DirectShowLib
   public interface IAMDirectSound
   {
     [PreserveSig]
-    int GetDirectSoundInterface([MarshalAs(UnmanagedType.IUnknown)] out object lplpds); // IDirectSound
+    int GetDirectSoundInterface([MarshalAs(UnmanagedType.IUnknown)] out object lplpds);
+
+    // IDirectSound
 
     [PreserveSig]
-    int GetPrimaryBufferInterface([MarshalAs(UnmanagedType.IUnknown)] out object lplpdsb); // IDirectSoundBuffer
+    int GetPrimaryBufferInterface([MarshalAs(UnmanagedType.IUnknown)] out object lplpdsb);
+
+    // IDirectSoundBuffer
 
     [PreserveSig]
-    int GetSecondaryBufferInterface([MarshalAs(UnmanagedType.IUnknown)] out object lplpdsb); // IDirectSoundBuffer
+    int GetSecondaryBufferInterface([MarshalAs(UnmanagedType.IUnknown)] out object lplpdsb);
+
+    // IDirectSoundBuffer
 
     [PreserveSig]
-    int ReleaseDirectSoundInterface([MarshalAs(UnmanagedType.IUnknown)] object lpds); // IDirectSound
+    int ReleaseDirectSoundInterface([MarshalAs(UnmanagedType.IUnknown)] object lpds);
+
+    // IDirectSound
 
     [PreserveSig]
-    int ReleasePrimaryBufferInterface([MarshalAs(UnmanagedType.IUnknown)] object lpdsb); // IDirectSoundBuffer
+    int ReleasePrimaryBufferInterface([MarshalAs(UnmanagedType.IUnknown)] object lpdsb);
+
+    // IDirectSoundBuffer
 
     [PreserveSig]
-    int ReleaseSecondaryBufferInterface([MarshalAs(UnmanagedType.IUnknown)] object lpdsb); // IDirectSoundBuffer
+    int ReleaseSecondaryBufferInterface([MarshalAs(UnmanagedType.IUnknown)] object lpdsb);
+
+    // IDirectSoundBuffer
 
     [PreserveSig]
     int SetFocusWindow(IntPtr hWnd, [In, MarshalAs(UnmanagedType.Bool)] bool bSet);
@@ -786,7 +797,9 @@ namespace DirectShowLib
   public interface IGetCapabilitiesKey
   {
     [PreserveSig]
-    int GetCapabilitiesKey([Out] out IntPtr pHKey); // HKEY
+    int GetCapabilitiesKey([Out] out IntPtr pHKey);
+
+    // HKEY
   }
 
   #endregion

@@ -45,9 +45,9 @@ namespace Mediaportal.TV.Server.TVLibrary
       applicationPath = Path.GetFullPath(applicationPath);
       applicationPath = Path.GetDirectoryName(applicationPath);
       Directory.SetCurrentDirectory(applicationPath);
-      
+
       _powerEventHandlers = new List<PowerEventHandler>();
-      GlobalServiceProvider.Instance.Add<IPowerEventHandler>(this);      
+      GlobalServiceProvider.Instance.Add<IPowerEventHandler>(this);
 
       AddPowerEventHandler(OnPowerEventHandler);
       try
@@ -312,7 +312,7 @@ namespace Mediaportal.TV.Server.TVLibrary
       var listCopy = new List<PowerEventHandler>();
       foreach (PowerEventHandler handler in _powerEventHandlers)
       {
-        listCopy.Add((PowerEventHandler)handler.Clone());
+        listCopy.Add((PowerEventHandler) handler.Clone());
       }
       // Now iterate the 'copy'
       foreach (PowerEventHandler handler in listCopy)
@@ -396,7 +396,6 @@ namespace Mediaportal.TV.Server.TVLibrary
       return true;
     }
 
-
     #endregion
 
     private void StartPlugins()
@@ -430,7 +429,7 @@ namespace Mediaportal.TV.Server.TVLibrary
           }
           catch (Exception ex)
           {
-            this.LogError(ex, "TV Service:  Plugin: {0} failed to start", plugin.Name);            
+            this.LogError(ex, "TV Service:  Plugin: {0} failed to start", plugin.Name);
           }
         }
         else
@@ -453,7 +452,7 @@ namespace Mediaportal.TV.Server.TVLibrary
           }
           catch (Exception ex)
           {
-            this.LogError(ex, "TV Service: Plugin: {0} failed to startedAll", plugin.Name);            
+            this.LogError(ex, "TV Service: Plugin: {0} failed to startedAll", plugin.Name);
           }
         }
       }
@@ -472,7 +471,7 @@ namespace Mediaportal.TV.Server.TVLibrary
           }
           catch (Exception ex)
           {
-            this.LogError(ex, "TV Service: plugin: {0} failed to stop", plugin.Name);            
+            this.LogError(ex, "TV Service: plugin: {0} failed to stop", plugin.Name);
           }
         }
         _pluginsStarted = new List<ITvServerPlugin>();
@@ -480,7 +479,6 @@ namespace Mediaportal.TV.Server.TVLibrary
       this.LogInfo("TV Service: Plugins stopped");
     }
 
-   
 
     private void DoStop()
     {
@@ -508,7 +506,7 @@ namespace Mediaportal.TV.Server.TVLibrary
       _powerEventThread = null;
       _started = false;
       this.LogDebug("TV Service: stopped");
-    }    
+    }
 
     private void ApplyProcessPriority()
     {
@@ -569,13 +567,13 @@ namespace Mediaportal.TV.Server.TVLibrary
           _priorityApplied = true;
         }
         catch (Exception ex)
-        {          
+        {
           this.LogError("OnStart: exception applying process priority: {0}", ex.StackTrace);
         }
       }
 
       _tvServiceThreadEvt.Reset();
-      _tvServiceThread.Start();      
+      _tvServiceThread.Start();
     }
 
     public void Stop(int maxWaitMsecs)
@@ -593,8 +591,8 @@ namespace Mediaportal.TV.Server.TVLibrary
           _tvServiceThread.Join();
           this.LogDebug("tvService thread aborted.");
         }
-        _tvServiceThread = null; 
-      }      
+        _tvServiceThread = null;
+      }
     }
 
     private void DoStart()

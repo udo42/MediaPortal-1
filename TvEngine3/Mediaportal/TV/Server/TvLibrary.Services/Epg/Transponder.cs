@@ -105,7 +105,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
         {
           this.LogError("transponder index out of range:{0}/{1}", Index, Channels.Count);
           return null;
-        }                
+        }
         return ChannelManagement.GetTuningChannelByType(Channels[Index], TuningDetail.ChannelType);
       }
     }
@@ -146,7 +146,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
     /// </returns>
     public override bool Equals(object obj)
     {
-      var other = (Transponder)obj;
+      var other = (Transponder) obj;
       if (other.TuningDetail.ChannelType != TuningDetail.ChannelType)
         return false;
       if (other.TuningDetail.Frequency != TuningDetail.Frequency)
@@ -251,7 +251,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
         //if epg grabbing is enabled and channel is a radio or tv channel
         if (channel.GrabEpg == false)
           continue;
-        if (channel.MediaType == (int)MediaTypeEnum.Radio == false && channel.MediaType == (int)MediaTypeEnum.TV == false)
+        if (channel.MediaType == (int) MediaTypeEnum.Radio == false &&
+            channel.MediaType == (int) MediaTypeEnum.TV == false)
           continue;
 
         //for each tuning detail of the channel

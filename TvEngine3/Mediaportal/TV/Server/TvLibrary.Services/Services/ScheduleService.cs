@@ -19,7 +19,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public Schedule SaveSchedule(Schedule schedule)
     {
-      return ScheduleManagement.SaveSchedule(schedule);      
+      return ScheduleManagement.SaveSchedule(schedule);
     }
 
     public Schedule GetSchedule(int idSchedule)
@@ -42,7 +42,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     /// <param name="startTime">StartTime</param>
     /// <param name="endTime">EndTime</param>
     /// <returns>schedule instance or null</returns>
-    public Schedule RetrieveSeriesByStartEndTimes(int idChannel, string programName, DateTime startTime, DateTime endTime)
+    public Schedule RetrieveSeriesByStartEndTimes(int idChannel, string programName, DateTime startTime,
+                                                  DateTime endTime)
     {
       Schedule retrieveSeries = ScheduleManagement.RetrieveSeries(idChannel, programName, startTime, endTime);
       return retrieveSeries;
@@ -129,5 +130,5 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     }
 
     #endregion
-  }  
+  }
 }

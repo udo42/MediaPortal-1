@@ -311,7 +311,7 @@ namespace Mediaportal.TV.Server.TestApp
     {
       if (listViewChannels.SelectedItems.Count <= 0) return;
       ListViewItem item = listViewChannels.SelectedItems[0];
-      var channel = (IChannel)item.Tag;
+      var channel = (IChannel) item.Tag;
       _currentCard.Tune(0, channel);
       //_currentCard.TuneScan(channel);
     }
@@ -348,7 +348,9 @@ namespace Mediaportal.TV.Server.TestApp
       _currentCard.SubChannels[0].TeletextDecoder.OnPageUpdated += TeletextDecoder_OnPageUpdated;
     }
 
-    private static void TeletextDecoder_OnPageDeleted(int pageNumber, int subPageNumber) {}
+    private static void TeletextDecoder_OnPageDeleted(int pageNumber, int subPageNumber)
+    {
+    }
 
     private void UpdatePage(int pageNumber, int subPageNumber)
     {
@@ -439,11 +441,15 @@ namespace Mediaportal.TV.Server.TestApp
           StreamRun();
         }
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       _streamingRunning = false;
     }
 
-    private void pictureBox3_Click(object sender, EventArgs e) {}
+    private void pictureBox3_Click(object sender, EventArgs e)
+    {
+    }
 
     private void textBoxPageNr_TextChanged(object sender, EventArgs e)
     {
@@ -453,7 +459,9 @@ namespace Mediaportal.TV.Server.TestApp
         _currentPageNumber = pageNumber;
         pictureBox3.Image = _currentCard.SubChannels[0].TeletextDecoder.GetPage(_currentPageNumber, 0);
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
     }
   }
 }

@@ -37,6 +37,6 @@ namespace MediaPortal.Common.Utils.ExtensionMethods
           disp.Dispose();
         }
       }
-    }  
+    }
   }
 }

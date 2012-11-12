@@ -3,17 +3,16 @@ using System.ServiceModel;
 using System.ServiceModel.Description;
 
 namespace Mediaportal.TV.Server.TVControl.ServiceAgents
-{ 
+{
   public abstract class ServiceAgent<T> : IDisposable
   {
     protected T _channel;
 
-    protected ServiceAgent ()
+    protected ServiceAgent()
     {
-      
     }
 
-    protected ServiceAgent (string hostname)
+    protected ServiceAgent(string hostname)
     {
       if (!String.IsNullOrEmpty(hostname))
       {
@@ -32,8 +31,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
         }
         _channel = channelFactory.CreateChannel();
 
-        ((IClientChannel)_channel).Faulted += ServiceAgent_Faulted;
-        ((IClientChannel)_channel).Closed += ServiceAgent_Closed;
+        ((IClientChannel) _channel).Faulted += ServiceAgent_Faulted;
+        ((IClientChannel) _channel).Closed += ServiceAgent_Closed;
       }
     }
 
@@ -41,7 +40,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
 
     public virtual void Dispose()
     {
-      var clientChannel = _channel as IClientChannel;            
+      var clientChannel = _channel as IClientChannel;
       if (clientChannel == null)
       {
         return;
@@ -56,7 +55,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
         {
           // we need this timeout, otherwise the call to 'Close' will block until any ongoing parallel WCF calls are still active          
           // so instead of having to wait for the default timeout of 1min, we instead wait 1 sec, before giving up and instead calls 'Abort'
-          var timeout = new TimeSpan(0,0,0,1); 
+          var timeout = new TimeSpan(0, 0, 0, 1);
           clientChannel.Close(timeout);
         }
         else
@@ -74,7 +73,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       }
       catch (Exception e)
       {
-        clientChannel.Abort();        
+        clientChannel.Abort();
       }
       finally
       {
@@ -104,8 +103,5 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
         ServiceAgentFaulted(sender, e);
       }
     }
-    
   }
-
-  
 }

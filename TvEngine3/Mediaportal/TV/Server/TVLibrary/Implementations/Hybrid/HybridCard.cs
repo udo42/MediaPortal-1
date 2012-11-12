@@ -90,7 +90,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Hybrid
         var internalDevice = _internalCard as TvCardBase;
         if (internalDevice == null)
         {
-          throw new TvException("HybridCard: failed to set new subchannel event handler for device type " + _internalCard.CardType);
+          throw new TvException("HybridCard: failed to set new subchannel event handler for device type " +
+                                _internalCard.CardType);
         }
         internalDevice.NewSubChannelEvent += value;
       }
@@ -107,7 +108,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Hybrid
         var internalDevice = _internalCard as TvCardBase;
         if (internalDevice == null)
         {
-          throw new TvException("HybridCard: failed to set after tune event handler for device type " + _internalCard.CardType);
+          throw new TvException("HybridCard: failed to set after tune event handler for device type " +
+                                _internalCard.CardType);
         }
         internalDevice.AfterTuneEvent -= value;
         internalDevice.AfterTuneEvent += value;

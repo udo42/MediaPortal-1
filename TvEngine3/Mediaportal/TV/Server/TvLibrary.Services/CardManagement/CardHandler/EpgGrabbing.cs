@@ -30,8 +30,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 {
   public class EpgGrabbing : IEpgGrabbing
   {
-
-
     private readonly ITvCardHandler _cardHandler;
 
     /// <summary>
@@ -125,7 +123,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           {
             return false;
           }
-         
+
           return _cardHandler.Card.IsEpgGrabbing;
         }
         catch (Exception ex)
@@ -147,8 +145,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       int recentSubChannelId = _cardHandler.UserManagement.GetRecentSubChannelId(user.Name);
       if (recentSubChannelId > -1 && !_cardHandler.UserManagement.ContainsUsersForSubchannel(recentSubChannelId))
       {
-        _cardHandler.Card.FreeSubChannel(recentSubChannelId);        
-      }      
+        _cardHandler.Card.FreeSubChannel(recentSubChannelId);
+      }
       _cardHandler.Card.IsEpgGrabbing = false;
     }
 

@@ -32,13 +32,13 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     public static string GetDefaultRecordingFolder()
     {
       string recPath = ReturnRegistryValue(@"SOFTWARE\Microsoft\Windows\CurrentVersion\MediaCenter\Service\Recording",
-                                  "RecordPath");
+                                           "RecordPath");
       if (String.IsNullOrEmpty(recPath))
       {
         recPath = OSInfo.OSInfo.VistaOrLater()
-          //Windows Vista and up
+                  //Windows Vista and up
                     ? Environment.GetEnvironmentVariable("PUBLIC") + "\\Recorded TV"
-          //Windows XP
+                  //Windows XP
                     : Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +
                       "\\Shared Documents\\Recorded TV";
       }
@@ -61,6 +61,6 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         return strKeyValue;
       }
       return String.Empty;
-    }    
+    }
   }
 }

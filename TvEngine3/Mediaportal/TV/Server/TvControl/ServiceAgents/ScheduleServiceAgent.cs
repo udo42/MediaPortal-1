@@ -34,7 +34,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       return _channel.IsScheduleRecording(idSchedule);
     }
 
-    public Schedule RetrieveSeriesByStartEndTimes(int idChannel, string programName, DateTime startTime, DateTime endTime)
+    public Schedule RetrieveSeriesByStartEndTimes(int idChannel, string programName, DateTime startTime,
+                                                  DateTime endTime)
     {
       return _channel.RetrieveSeriesByStartEndTimes(idChannel, programName, startTime, endTime);
     }

@@ -7,13 +7,14 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
 {
   [Serializable]
   public class OnChannelsCondition : IScheduleCondition
-  {    
+  {
     private IList<Channel> _channels;
 
     public OnChannelsCondition(IList<Channel> channels)
     {
       _channels = channels;
     }
+
     public OnChannelsCondition()
     {
     }
@@ -45,6 +46,5 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
      
     for example the OnDayCondition would have a "days" param that would be a set of DayOfWeek
      */
-   
   }
 }

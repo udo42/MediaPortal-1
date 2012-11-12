@@ -129,10 +129,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.Device
     /// </summary>
     public virtual byte Priority
     {
-      get
-      {
-        return 50;
-      }
+      get { return 50; }
     }
 
     /// <summary>
@@ -141,10 +138,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.Device
     /// </summary>
     public virtual String Name
     {
-      get
-      {
-        return GetType().Name;
-      }
+      get { return GetType().Name; }
     }
 
     /// <summary>
@@ -182,7 +176,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.Device
     /// <param name="currentChannel">The channel that the tuner is currently tuned to..</param>
     /// <param name="channel">The channel that the tuner will been tuned to.</param>
     /// <param name="action">The action to take, if any.</param>
-    public virtual void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel, out DeviceAction action)
+    public virtual void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel,
+                                     out DeviceAction action)
     {
       action = DeviceAction.Default;
     }

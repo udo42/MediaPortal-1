@@ -67,7 +67,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private bool _usersShareChannels;
 
     public TestChannels()
-      : this("TestChannels") {}
+      : this("TestChannels")
+    {
+    }
 
     public TestChannels(string name)
       : base(name)
@@ -153,7 +155,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         }
         return retVal;
       }
-      catch (Exception) { }
+      catch (Exception)
+      {
+      }
       return null;
     }
 
@@ -178,7 +182,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           }
           else
           {
-            channelChunks = SplitIntoChunks(channelsO, (int)Decimal.Floor(channelsO.Count / _concurrentTunes));
+            channelChunks = SplitIntoChunks(channelsO, (int) Decimal.Floor(channelsO.Count/_concurrentTunes));
           }
 
           for (int i = 0; i < _concurrentTunes; i++)
@@ -189,7 +193,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
               channelsForUser = channelsForUser.Randomize();
 
               int priority = GetUserPriority();
-              string name = "stress-" + Convert.ToString(rnd.Next(1, 500)) + " [" + priority + "]";              
+              string name = "stress-" + Convert.ToString(rnd.Next(1, 500)) + " [" + priority + "]";
               IUser user = UserFactory.CreateBasicUser(name, priority);
 
               while (_users.ContainsKey(user.Name))
@@ -245,7 +249,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
       else
       {
-        rndPrio = UserFactory.USER_PRIORITY;  
+        rndPrio = UserFactory.USER_PRIORITY;
       }
       return rndPrio;
     }
@@ -271,7 +275,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         UpdateCounters();
 
         IEnumerable<Channel> channels = new List<Channel>();
-        var idItem = (ComboBoxExItem)comboBoxGroups.Items[comboBoxGroups.SelectedIndex];
+        var idItem = (ComboBoxExItem) comboBoxGroups.Items[comboBoxGroups.SelectedIndex];
 
         ChannelGroup group = ServiceAgents.Instance.ChannelGroupServiceAgent.GetChannelGroup(idItem.Id);
         IList<GroupMap> maps = group.GroupMaps;
@@ -282,7 +286,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         channelTestThread.IsBackground = true;
         channelTestThread.Priority = ThreadPriority.Lowest;
         channelsO = channels as List<Channel>;
-        channelsO.AddRange(maps.Select(map => map.Channel).Where(ch => ch.MediaType == (int)MediaTypeEnum.TV));
+        channelsO.AddRange(maps.Select(map => map.Channel).Where(ch => ch.MediaType == (int) MediaTypeEnum.TV));
         _usersShareChannels = chkShareChannels.Checked;
         _tunedelay = txtTuneDelay.Value;
         _concurrentTunes = txtConcurrentTunes.Value;
@@ -323,7 +327,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
             ServiceAgents.Instance.ControllerServiceAgent.StopTimeShifting(user.Name, out user);
           }
         }
-        catch (Exception) {}
+        catch (Exception)
+        {
+        }
         if (user != null)
         {
           _users[user.Name] = false;
@@ -442,7 +448,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
             _total++;
           }
           UpdateCounters();
-          
+
           Thread.Sleep(rnd.Next(_rndFrom, _rndTo));
         }
       }
@@ -455,12 +461,15 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       UpdateDiscontinuityCounter(user, nextRowIndexForDiscUpdate);
       if (user.Priority.HasValue)
       {
-        result = ServiceAgents.Instance.ControllerServiceAgent.StartTimeShifting(user.Name, user.Priority.GetValueOrDefault(), channel.IdChannel, out card, out user); 
+        result = ServiceAgents.Instance.ControllerServiceAgent.StartTimeShifting(user.Name,
+                                                                                 user.Priority.GetValueOrDefault(),
+                                                                                 channel.IdChannel, out card, out user);
       }
       else
       {
-        result = ServiceAgents.Instance.ControllerServiceAgent.StartTimeShifting(user.Name, channel.IdChannel, out card, out user); 
-      }      
+        result = ServiceAgents.Instance.ControllerServiceAgent.StartTimeShifting(user.Name, channel.IdChannel, out card,
+                                                                                 out user);
+      }
       mSecsElapsed = sw.ElapsedMilliseconds;
       _avg += mSecsElapsed;
       return user;
@@ -545,7 +554,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         {
           int discCounter = 0;
           int totalBytes = 0;
-          ServiceAgents.Instance.ControllerServiceAgent.GetStreamQualityCounters(user.Name, out totalBytes, out discCounter);
+          ServiceAgents.Instance.ControllerServiceAgent.GetStreamQualityCounters(user.Name, out totalBytes,
+                                                                                 out discCounter);
           item.SubItems[7].Text = Convert.ToString(discCounter);
 
           txtDisc.Value += discCounter;
@@ -564,7 +574,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       {
         if (InvokeRequired)
         {
-          return (int)Invoke(new Add2LogDelegate(Add2Log), new object[] {state, channel, msec, name, card, details});
+          return (int) Invoke(new Add2LogDelegate(Add2Log), new object[] {state, channel, msec, name, card, details});
         }
 
         lock (_listViewLock)
@@ -612,7 +622,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         txtFirstFail.Value = _firstFail;
         if (_avg > 0 && _total > 0)
         {
-          txtAvgMsec.Value = Convert.ToInt32(_avg / _total);
+          txtAvgMsec.Value = Convert.ToInt32(_avg/_total);
         }
         Application.DoEvents();
         this.LogDebug("TestChannels: Succeeded={0}", _succeeded);
@@ -635,7 +645,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       }
 
-      Utils.UpdateCardStatus(mpListView1);      
+      Utils.UpdateCardStatus(mpListView1);
     }
 
     private void ColorLine(Card card, ListViewItem item)
@@ -777,7 +787,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
       else
       {
-        Sorter = (ListViewSorter)listView.ListViewItemSorter;
+        Sorter = (ListViewSorter) listView.ListViewItemSorter;
       }
 
 
@@ -806,28 +816,29 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private void chkRndPrio_CheckedChanged(object sender, EventArgs e)
     {
       _rndPrio = chkRndPrio.Checked;
-  }
+    }
 
     private void btnCustom_Click(object sender, EventArgs e)
     {
-      IVirtualCard card;      
+      IVirtualCard card;
 
       Channel dr1 = ServiceAgents.Instance.ChannelServiceAgent.GetChannel(1);
       Channel dr2 = ServiceAgents.Instance.ChannelServiceAgent.GetChannel(2);
 
-      
 
       IUser low = UserFactory.CreateBasicUser("dr1", 1);
       IUser low2 = UserFactory.CreateBasicUser("dr2", 1);
 
-      TvResult tvresult = ServiceAgents.Instance.ControllerServiceAgent.StartTimeShifting(low.Name, dr1.IdChannel, out card, out low);
+      TvResult tvresult = ServiceAgents.Instance.ControllerServiceAgent.StartTimeShifting(low.Name, dr1.IdChannel,
+                                                                                          out card, out low);
       low.CardId = card.Id;
       Thread.Sleep(2000);
 
-      bool result = ServiceAgents.Instance.ControllerServiceAgent.ParkTimeShifting(low.Name, 0, dr1.IdChannel, out low);      
+      bool result = ServiceAgents.Instance.ControllerServiceAgent.ParkTimeShifting(low.Name, 0, dr1.IdChannel, out low);
 
       Thread.Sleep(1000);
-      tvresult = ServiceAgents.Instance.ControllerServiceAgent.StartTimeShifting(low.Name, dr2.IdChannel, out card, out low);
+      tvresult = ServiceAgents.Instance.ControllerServiceAgent.StartTimeShifting(low.Name, dr2.IdChannel, out card,
+                                                                                 out low);
       low.CardId = card.Id;
 
       //StartTimeshifting(tv3, low, 0, out mSecsElapsed, out result, out card);      
@@ -878,9 +889,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       if (!(o2 is ListViewItem))
         return (0);
 
-      var lvi1 = (ListViewItem)o2;
+      var lvi1 = (ListViewItem) o2;
       string str1 = lvi1.SubItems[ByColumn].Text;
-      var lvi2 = (ListViewItem)o1;
+      var lvi2 = (ListViewItem) o1;
       string str2 = lvi2.SubItems[ByColumn].Text;
 
       int result;

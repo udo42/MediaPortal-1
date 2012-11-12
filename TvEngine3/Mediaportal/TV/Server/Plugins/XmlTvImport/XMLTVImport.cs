@@ -46,7 +46,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
     private static bool _isImporting;
 
-    private readonly IDictionary<string, ProgramCategory> _categories = new ConcurrentDictionary<string, ProgramCategory>();
+    private readonly IDictionary<string, ProgramCategory> _categories =
+      new ConcurrentDictionary<string, ProgramCategory>();
 
     private readonly ProgramManagement _programManagement = new ProgramManagement();
     private int _backgroundDelay;
@@ -55,7 +56,9 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     private readonly Stats _status = new Stats();
 
     public XMLTVImport()
-      : this(0) {}
+      : this(0)
+    {
+    }
 
     public XMLTVImport(int backgroundDelay)
     {
@@ -84,8 +87,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     public int Compare(object x, object y)
     {
       if (x == y) return 0;
-      var item1 = (Program)x;
-      var item2 = (Program)y;
+      var item1 = (Program) x;
+      var item2 = (Program) y;
       if (item1 == null) return -1;
       if (item2 == null) return -1;
 
@@ -167,15 +170,15 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       bool useTimeZone = SettingsManagement.GetValue("xmlTvUseTimeZone", false);
       int hours = SettingsManagement.GetValue("xmlTvTimeZoneHours", 0);
       int mins = SettingsManagement.GetValue("xmlTvTimeZoneMins", 0);
-      int timeZoneCorrection = hours * 60 + mins;
+      int timeZoneCorrection = hours*60 + mins;
 
       var Programs = new ArrayList();
       var dChannelPrograms = new Dictionary<int, ChannelPrograms>();
       try
       {
         //layer.RemoveOldPrograms();        
-        ProgramManagement.DeleteOldPrograms();        
-        this.LogDebug("xmltv import {0}", fileName);        
+        ProgramManagement.DeleteOldPrograms();
+        this.LogDebug("xmltv import {0}", fileName);
         //
         // Make sure the file exists before we try to do any processing
         //
@@ -294,7 +297,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
           #endregion
 
-          allChannels = ChannelManagement.GetAllChannelsWithExternalId().ToList();          
+          allChannels = ChannelManagement.GetAllChannelsWithExternalId().ToList();
           if (allChannels.Count == 0)
           {
             _isImporting = false;
@@ -472,7 +475,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                 if (nodeStart != null && nodeChannel != null && nodeTitle != null &&
                     nodeStart.Length > 0 && nodeChannel.Length > 0 && nodeTitle.Length > 0)
                 {
-                  
                   string description = "";
                   string category = "-";
                   string date = "";
@@ -492,11 +494,11 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                     if (Char.IsDigit(nodeStart[12]) && Char.IsDigit(nodeStart[13]))
                       startDate = Int64.Parse(nodeStart.Substring(0, 14)); //20040331222000
                     else
-                      startDate = 100 * Int64.Parse(nodeStart.Substring(0, 12)); //200403312220
+                      startDate = 100*Int64.Parse(nodeStart.Substring(0, 12)); //200403312220
                   }
                   else if (nodeStart.Length >= 12)
                   {
-                    startDate = 100 * Int64.Parse(nodeStart.Substring(0, 12)); //200403312220
+                    startDate = 100*Int64.Parse(nodeStart.Substring(0, 12)); //200403312220
                   }
 
                   long stopDate = startDate;
@@ -507,11 +509,11 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                       if (Char.IsDigit(nodeStop[12]) && Char.IsDigit(nodeStop[13]))
                         stopDate = Int64.Parse(nodeStop.Substring(0, 14)); //20040331222000
                       else
-                        stopDate = 100 * Int64.Parse(nodeStop.Substring(0, 12)); //200403312220
+                        stopDate = 100*Int64.Parse(nodeStop.Substring(0, 12)); //200403312220
                     }
                     else if (nodeStop.Length >= 12)
                     {
-                      stopDate = 100 * Int64.Parse(nodeStop.Substring(0, 12)); //200403312220
+                      stopDate = 100*Int64.Parse(nodeStop.Substring(0, 12)); //200403312220
                     }
                   }
 
@@ -545,8 +547,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                   if (useTimeZone)
                   {
                     int off = GetTimeOffset(timeZoneStart);
-                    int h = off / 100; // 220 -> 2,  -220 -> -2
-                    int m = off - (h * 100); // 220 -> 20, -220 -> -20
+                    int h = off/100; // 220 -> 2,  -220 -> -2
+                    int m = off - (h*100); // 220 -> 20, -220 -> -20
 
                     dateTimeStart = dateTimeStart.AddHours(-h);
                     dateTimeStart = dateTimeStart.AddMinutes(-m);
@@ -562,8 +564,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                     if (useTimeZone)
                     {
                       int off = GetTimeOffset(timeZoneEnd);
-                      int h = off / 100; // 220 -> 2,  -220 -> -2
-                      int m = off - (h * 100); // 220 -> 20, -220 -> -20
+                      int h = off/100; // 220 -> 2,  -220 -> -2
+                      int m = off - (h*100); // 220 -> 20, -220 -> -20
 
                       dateTimeEnd = dateTimeEnd.AddHours(-h);
                       dateTimeEnd = dateTimeEnd.AddMinutes(-m);
@@ -631,7 +633,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                     date = nodeDate;
                   }
 
-                  repeat = (nodeRepeat != null);                  
+                  repeat = (nodeRepeat != null);
 
                   if (nodeStarRating != null)
                   {
@@ -643,7 +645,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                     classification = nodeClassification;
                   }
 
-                  if (showProgress && ShowProgress != null && (_status.Programs % 100) == 0) ShowProgress(_status);
+                  if (showProgress && ShowProgress != null && (_status.Programs%100) == 0) ShowProgress(_status);
 
                   #endregion
 
@@ -683,14 +685,14 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                         episodeName = episodeName.Replace("\r", " ");
                         episodeName = episodeName.Replace("\n", " ");
                         episodeName = episodeName.Replace("  ", " ");
-                    
+
                         var prg = new Program();
                         prg.IdChannel = chan.IdChannel;
                         prg.StartTime = longtodate(startDate);
                         prg.EndTime = longtodate(stopDate);
                         prg.Title = title;
-                        prg.Description = description;                        
-                        prg.State = (int)ProgramState.None;
+                        prg.Description = description;
+                        prg.State = (int) ProgramState.None;
                         prg.OriginalAirDate = SqlDateTime.MinValue.Value;
                         prg.SeriesNum = seriesNum;
                         prg.EpisodeNum = episodeNum;
@@ -704,9 +706,9 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                         {
                           foreach (ProgramCredit credit in credits)
                           {
-                            prg.ProgramCredits.Add(credit);                            
-                          }                          
-                        }                        
+                            prg.ProgramCredits.Add(credit);
+                          }
+                        }
 
                         ProgramCategory programCategory;
                         bool hasCategory = _categories.TryGetValue(category, out programCategory);
@@ -718,11 +720,11 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                         }
                         prg.IdProgramCategory = programCategory.IdProgramCategory;
                         channelPrograms.programs.Add(prg);
-                        
+
                         //programs.Add(prg);                                              
-                        programIndex++;                      
+                        programIndex++;
                         _status.Programs++;
-                      }                      
+                      }
                     }
                   }
                 }
@@ -755,7 +757,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                 int idChannel = progChan.programs[0].IdChannel;
 
                 if (!deleteBeforeImport)
-                {                  
+                {
                   _programManagement.DeleteAllProgramsWithChannelId(idChannel);
                   List<Program> programs = _programManagement.FindAllProgramsByChannelId(idChannel).ToList();
                   progChan.programs.RemoveOverlappingPrograms(programs, true);
@@ -789,14 +791,14 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                   if (prog.EndTime > _status.endTime)
                     _status.endTime = prog.EndTime;
                   _status.Programs++;
-                  if (showProgress && ShowProgress != null && (_status.Programs % 100) == 0) ShowProgress(_status);
+                  if (showProgress && ShowProgress != null && (_status.Programs%100) == 0) ShowProgress(_status);
                 }
                 this.LogInfo("XMLTVImport: Inserting {0} programs for {1}", progChan.programs.Count.ToString(),
-                         progChan.Name);
+                             progChan.Name);
                 _programManagement.InsertPrograms(progChan.programs,
-                                     deleteBeforeImport
-                                       ? DeleteBeforeImportOption.OverlappingPrograms
-                                       : DeleteBeforeImportOption.None, ThreadPriority.BelowNormal);
+                                                  deleteBeforeImport
+                                                    ? DeleteBeforeImportOption.OverlappingPrograms
+                                                    : DeleteBeforeImportOption.None, ThreadPriority.BelowNormal);
               }
             }
 
@@ -831,12 +833,12 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       }
       finally
       {
-        _isImporting = false;        
+        _isImporting = false;
       }
 
       Programs.Clear();
       Programs = null;
-      
+
       //      TVDatabase.SupressEvents = false;
       if (xmlReader != null)
       {
@@ -860,7 +862,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
             string creditRole = nodeCredits.Name;
             if (creditRole.Length > 50)
             {
-              creditRole = creditRole.Substring(0, 50);  
+              creditRole = creditRole.Substring(0, 50);
             }
             string creditPerson = nodeCredits.ReadString();
             if (creditPerson.Length > 200)
@@ -944,7 +946,9 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
           if (timeZone[0] == '-') return -iOff;
           else return iOff;
         }
-        catch (Exception) {}
+        catch (Exception)
+        {
+        }
       }
       return 0;
     }
@@ -953,18 +957,18 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     {
       //format : 20050710245500
       long orgDateTime = datetime;
-      long sec = datetime % 100;
+      long sec = datetime%100;
       datetime /= 100;
-      long min = datetime % 100;
+      long min = datetime%100;
       datetime /= 100;
-      long hour = datetime % 100;
+      long hour = datetime%100;
       datetime /= 100;
-      long day = datetime % 100;
+      long day = datetime%100;
       datetime /= 100;
-      long month = datetime % 100;
+      long month = datetime%100;
       datetime /= 100;
       long year = datetime;
-      var dt = new DateTime((int)year, (int)month, (int)day, 0, 0, 0);
+      var dt = new DateTime((int) year, (int) month, (int) day, 0, 0, 0);
       dt = dt.AddHours(hour);
       dt = dt.AddMinutes(min);
       dt = dt.AddSeconds(sec);
@@ -990,10 +994,10 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       {
         if (Programs.Count == 0) return;
         Programs.Sort(this);
-        var prevProg = (Program)Programs[0];
+        var prevProg = (Program) Programs[0];
         for (int i = 1; i < Programs.Count; i++)
         {
-          var newProg = (Program)Programs[i];
+          var newProg = (Program) Programs[i];
           if (newProg.StartTime < prevProg.EndTime) // we have an overlap here
           {
             // let us find out which one is the correct one
@@ -1012,7 +1016,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
             Program syncProg = newProg;
             for (int j = i + 1; j < Programs.Count; j++)
             {
-              var syncNew = (Program)Programs[j];
+              var syncNew = (Program) Programs[j];
               if (syncPrev.EndTime == syncNew.StartTime)
               {
                 prevList.Add(syncNew);
@@ -1065,10 +1069,10 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     {
       Programs.Sort(this);
       dbEPG.Sort(this);
-      var prevProg = (Program)Programs[0];
+      var prevProg = (Program) Programs[0];
       for (int i = 1; i < Programs.Count; i++)
       {
-        var newProg = (Program)Programs[i];
+        var newProg = (Program) Programs[i];
         if (newProg.StartTime > prevProg.EndTime) // we have a gab here
         {
           // try to find data in the database
@@ -1099,14 +1103,16 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
         long iYear = dt.Year;
 
         long lRet = (iYear);
-        lRet = lRet * 100L + iMonth;
-        lRet = lRet * 100L + iDay;
-        lRet = lRet * 100L + iHour;
-        lRet = lRet * 100L + iMin;
-        lRet = lRet * 100L + iSec;
+        lRet = lRet*100L + iMonth;
+        lRet = lRet*100L + iDay;
+        lRet = lRet*100L + iHour;
+        lRet = lRet*100L + iMin;
+        lRet = lRet*100L + iSec;
         return lRet;
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       return 0;
     }
 
@@ -1116,19 +1122,21 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       {
         if (ldate < 0) return DateTime.MinValue;
         ldate /= 100L;
-        var minute = (int)(ldate % 100L);
+        var minute = (int) (ldate%100L);
         ldate /= 100L;
-        var hour = (int)(ldate % 100L);
+        var hour = (int) (ldate%100L);
         ldate /= 100L;
-        var day = (int)(ldate % 100L);
+        var day = (int) (ldate%100L);
         ldate /= 100L;
-        var month = (int)(ldate % 100L);
+        var month = (int) (ldate%100L);
         ldate /= 100L;
-        var year = (int)ldate;
+        var year = (int) ldate;
         var dt = new DateTime(year, month, day, hour, minute, 0, 0);
         return dt;
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       return DateTime.Now;
     }
 
@@ -1151,11 +1159,10 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       //int iAnsiPos=0;
       using (var writer = new StringWriter())
       {
-
         HttpUtility.HtmlDecode(html, writer);
         String DecodedString = writer.ToString();
         strippedHtml = DecodedString.Replace("<br>", "\n");
-      }            
+      }
     }
 
     #region Nested type: ChannelPrograms
@@ -1166,7 +1173,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       public string Name;
       public string externalId;
       //public ArrayList programs = new ArrayList();
-    } ;
+    };
 
     #endregion
 
@@ -1199,7 +1206,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
         get { return _endTime; }
         set { _endTime = value; }
       }
-    } ;
+    };
 
     #endregion
   }

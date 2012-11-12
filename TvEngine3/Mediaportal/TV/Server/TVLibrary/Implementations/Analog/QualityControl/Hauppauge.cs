@@ -68,34 +68,34 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
 
         //Get Proc addresses, and set the delegates for each function
         IntPtr procaddr = GetProcAddress(hauppaugelib, "Init");
-        _Init = (Init)Marshal.GetDelegateForFunctionPointer(procaddr, typeof (Init));
+        _Init = (Init) Marshal.GetDelegateForFunctionPointer(procaddr, typeof (Init));
 
         procaddr = GetProcAddress(hauppaugelib, "DeInit");
-        _DeInit = (DeInit)Marshal.GetDelegateForFunctionPointer(procaddr, typeof (DeInit));
+        _DeInit = (DeInit) Marshal.GetDelegateForFunctionPointer(procaddr, typeof (DeInit));
 
         procaddr = GetProcAddress(hauppaugelib, "IsHauppauge");
-        _IsHauppauge = (IsHauppauge)Marshal.GetDelegateForFunctionPointer(procaddr, typeof (IsHauppauge));
+        _IsHauppauge = (IsHauppauge) Marshal.GetDelegateForFunctionPointer(procaddr, typeof (IsHauppauge));
 
         procaddr = GetProcAddress(hauppaugelib, "SetVidBitRate");
-        _SetVidBitRate = (SetVidBitRate)Marshal.GetDelegateForFunctionPointer(procaddr, typeof (SetVidBitRate));
+        _SetVidBitRate = (SetVidBitRate) Marshal.GetDelegateForFunctionPointer(procaddr, typeof (SetVidBitRate));
 
         procaddr = GetProcAddress(hauppaugelib, "GetVidBitRate");
-        _GetVidBitRate = (GetVidBitRate)Marshal.GetDelegateForFunctionPointer(procaddr, typeof (GetVidBitRate));
+        _GetVidBitRate = (GetVidBitRate) Marshal.GetDelegateForFunctionPointer(procaddr, typeof (GetVidBitRate));
 
         procaddr = GetProcAddress(hauppaugelib, "SetAudBitRate");
-        _SetAudBitRate = (SetAudBitRate)Marshal.GetDelegateForFunctionPointer(procaddr, typeof (SetAudBitRate));
+        _SetAudBitRate = (SetAudBitRate) Marshal.GetDelegateForFunctionPointer(procaddr, typeof (SetAudBitRate));
 
         procaddr = GetProcAddress(hauppaugelib, "GetAudBitRate");
-        _GetAudBitRate = (GetAudBitRate)Marshal.GetDelegateForFunctionPointer(procaddr, typeof (GetAudBitRate));
+        _GetAudBitRate = (GetAudBitRate) Marshal.GetDelegateForFunctionPointer(procaddr, typeof (GetAudBitRate));
 
         procaddr = GetProcAddress(hauppaugelib, "SetStreamType");
-        _SetStreamType = (SetStreamType)Marshal.GetDelegateForFunctionPointer(procaddr, typeof (SetStreamType));
+        _SetStreamType = (SetStreamType) Marshal.GetDelegateForFunctionPointer(procaddr, typeof (SetStreamType));
 
         procaddr = GetProcAddress(hauppaugelib, "GetStreamType");
-        _GetStreamType = (GetStreamType)Marshal.GetDelegateForFunctionPointer(procaddr, typeof (GetStreamType));
+        _GetStreamType = (GetStreamType) Marshal.GetDelegateForFunctionPointer(procaddr, typeof (GetStreamType));
 
         procaddr = GetProcAddress(hauppaugelib, "SetDNRFilter");
-        _SetDNRFilter = (SetDNRFilter)Marshal.GetDelegateForFunctionPointer(procaddr, typeof (SetDNRFilter));
+        _SetDNRFilter = (SetDNRFilter) Marshal.GetDelegateForFunctionPointer(procaddr, typeof (SetDNRFilter));
 
         //Hack
         //The following is strangely necessary when using delegates instead of P/Invoke - linked to MP using utf-8

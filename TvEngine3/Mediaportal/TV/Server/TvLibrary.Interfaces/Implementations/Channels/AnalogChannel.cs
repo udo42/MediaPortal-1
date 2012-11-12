@@ -46,42 +46,52 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       /// Automatic detection based on related pin index
       /// </summary>
       Automatic,
+
       /// <summary>
       /// Tuner input
       /// </summary>
       Tuner,
+
       /// <summary>
       /// AUX input #1
       /// </summary>
       AUXInput1,
+
       /// <summary>
       /// AUX input #2
       /// </summary>
       AUXInput2,
+
       /// <summary>
       /// AUX input #3
       /// </summary>
       AUXInput3,
+
       /// <summary>
       /// Line input #1
       /// </summary>
       LineInput1,
+
       /// <summary>
       /// Line input #2
       /// </summary>
       LineInput2,
+
       /// <summary>
       /// Line input #3
       /// </summary>
       LineInput3,
+
       /// <summary>
       /// SPDIF input #1
       /// </summary>
       SPDIFInput1,
+
       /// <summary>
       /// SPDIF input #2
       /// </summary>
       SPDIFInput2,
+
       /// <summary>
       /// SPDIF input #3
       /// </summary>
@@ -101,62 +111,77 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       /// Tuner input
       /// </summary>
       Tuner,
+
       /// <summary>
       /// CVBS input #1
       /// </summary>
       VideoInput1,
+
       /// <summary>
       /// CVBS input #2
       /// </summary>
       VideoInput2,
+
       /// <summary>
       /// CVBS input #3
       /// </summary>
       VideoInput3,
+
       /// <summary>
       /// SVHS input #1
       /// </summary>
       SvhsInput1,
+
       /// <summary>
       /// SVHS input #2
       /// </summary>
       SvhsInput2,
+
       /// <summary>
       /// SVHS input #3
       /// </summary>
       SvhsInput3,
+
       /// <summary>
       /// RGB input #1
       /// </summary>
       RgbInput1,
+
       /// <summary>
       /// RGB input #2
       /// </summary>
       RgbInput2,
+
       /// <summary>
       /// RGB input #3
       /// </summary>
       RgbInput3,
+
       /// <summary>
       /// RGB input #1
       /// </summary>
       YRYBYInput1,
+
       /// <summary>
       /// RGB input #2
       /// </summary>
       YRYBYInput2,
+
       /// <summary>
       /// RGB input #3
       /// </summary>
       YRYBYInput3,
+
       /// <summary>
       /// HDMI input #1
       /// </summary>
       HdmiInput1,
+
       /// <summary>
       /// HDMI input #2
       /// </summary>
       HdmiInput2,
+
       /// <summary>
       /// HDMI input #3
       /// </summary>
@@ -169,35 +194,26 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
 
     #region variables
 
-    [DataMember]
-    private AudioInputType _audioInputType = AudioInputType.Tuner;
+    [DataMember] private AudioInputType _audioInputType = AudioInputType.Tuner;
 
-    [DataMember]
-    private long _channelFrequency = -1;  // Used for FM radio; analog TV is usually tuned by channel number.
+    [DataMember] private long _channelFrequency = -1;
+                              // Used for FM radio; analog TV is usually tuned by channel number.
 
-    [DataMember]
-    private string _channelName = String.Empty;
+    [DataMember] private string _channelName = String.Empty;
 
-    [DataMember]
-    private int _channelNumber = -1;
+    [DataMember] private int _channelNumber = -1;
 
-    [DataMember]
-    private Country _country;
+    [DataMember] private Country _country;
 
-    [DataMember]
-    private bool _freeToAir = true;
+    [DataMember] private bool _freeToAir = true;
 
-    [DataMember]
-    private bool _isVcrSignal;
+    [DataMember] private bool _isVcrSignal;
 
-    [DataMember]
-    private MediaTypeEnum _mediaType;
+    [DataMember] private MediaTypeEnum _mediaType;
 
-    [DataMember]
-    private TunerInputType _tunerSource = TunerInputType.Cable;
+    [DataMember] private TunerInputType _tunerSource = TunerInputType.Cable;
 
-    [DataMember]
-    private VideoInputType _videoInputType = VideoInputType.Tuner;
+    [DataMember] private VideoInputType _videoInputType = VideoInputType.Tuner;
 
     #endregion
 
@@ -212,7 +228,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       _channelFrequency = -1;
       _channelNumber = 4;
       var collection = new CountryCollection();
-      _country = collection.GetTunerCountryFromID(31);  // The Netherlands.
+      _country = collection.GetTunerCountryFromID(31); // The Netherlands.
       _tunerSource = TunerInputType.Cable;
       _videoInputType = VideoInputType.Tuner;
       _audioInputType = AudioInputType.Tuner;
@@ -235,7 +251,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       _videoInputType = channel.VideoSource;
       _audioInputType = channel.AudioSource;
       _isVcrSignal = channel.IsVcrSignal;
-      _mediaType= channel.MediaType;      
+      _mediaType = channel.MediaType;
       _freeToAir = channel.FreeToAir;
     }
 
@@ -405,7 +421,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       if (ch.MediaType != MediaType)
       {
         return false;
-      }   
+      }
       if (ch.FreeToAir != _freeToAir)
       {
         return false;
@@ -458,11 +474,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
         return true;
       }
       return analogChannel.MediaType != MediaType ||
-           analogChannel.Country.Id != Country.Id ||
-           analogChannel.VideoSource != VideoSource ||
-           analogChannel.TunerSource != TunerSource ||
-           analogChannel.ChannelNumber != ChannelNumber ||
-           analogChannel.Frequency != Frequency;
+             analogChannel.Country.Id != Country.Id ||
+             analogChannel.VideoSource != VideoSource ||
+             analogChannel.TunerSource != TunerSource ||
+             analogChannel.ChannelNumber != ChannelNumber ||
+             analogChannel.Frequency != Frequency;
     }
 
     /// <summary>
@@ -472,7 +488,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     public IChannel GetTuningChannel()
     {
       // No adjustments required.
-      return (IChannel)Clone();
+      return (IChannel) Clone();
     }
 
     #endregion

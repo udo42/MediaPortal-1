@@ -11,7 +11,7 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
     ~EventDispatcher()
     {
       Stop();
-    }    
+    }
 
     public void Register(string username)
     {
@@ -47,6 +47,5 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
       }
       return usersCopy;
     }
-
   }
 }

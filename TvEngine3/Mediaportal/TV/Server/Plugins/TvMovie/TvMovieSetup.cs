@@ -92,7 +92,9 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     #region Constructor
 
     public TvMovieSetup()
-      : this("TV Movie Clickfinder EPG import") {}
+      : this("TV Movie Clickfinder EPG import")
+    {
+    }
 
     public TvMovieSetup(string name)
       : base(name)
@@ -116,17 +118,28 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
     private void SaveDbSettings()
     {
-      TvMovie.DatabasePath = tbDbPath.Text;      
-      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieEnabled", checkBoxEnableImport.Checked ? "true" : "false");
-      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieShortProgramDesc", checkBoxUseShortDesc.Checked ? "true" : "false");
-      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieExtendDescription", checkBoxAdditionalInfo.Checked ? "true" : "false");
-      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieShowAudioFormat", checkBoxShowAudioFormat.Checked ? "true" : "false");
-      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieSlowImport", checkBoxSlowImport.Checked ? "true" : "false");
-      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieShowRatings", checkBoxShowRatings.Checked ? "true" : "false");
-      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieLimitActors", checkBoxLimitActors.Checked ? numericUpDownActorCount.Value.ToString() : "0");
-      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieShowLive", checkBoxShowLive.Checked ? "true" : "false");
-      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieShowRepeating", checkBoxShowRepeat.Checked ? "true" : "false");
-      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieRestPeriod", GetRestPeriod());      
+      TvMovie.DatabasePath = tbDbPath.Text;
+      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieEnabled",
+                                                             checkBoxEnableImport.Checked ? "true" : "false");
+      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieShortProgramDesc",
+                                                             checkBoxUseShortDesc.Checked ? "true" : "false");
+      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieExtendDescription",
+                                                             checkBoxAdditionalInfo.Checked ? "true" : "false");
+      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieShowAudioFormat",
+                                                             checkBoxShowAudioFormat.Checked ? "true" : "false");
+      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieSlowImport",
+                                                             checkBoxSlowImport.Checked ? "true" : "false");
+      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieShowRatings",
+                                                             checkBoxShowRatings.Checked ? "true" : "false");
+      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieLimitActors",
+                                                             checkBoxLimitActors.Checked
+                                                               ? numericUpDownActorCount.Value.ToString()
+                                                               : "0");
+      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieShowLive",
+                                                             checkBoxShowLive.Checked ? "true" : "false");
+      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieShowRepeating",
+                                                             checkBoxShowRepeat.Checked ? "true" : "false");
+      ServiceAgents.Instance.SettingServiceAgent.SaveSetting("TvMovieRestPeriod", GetRestPeriod());
     }
 
     public override void OnSectionActivated()
@@ -138,14 +151,27 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
     private void LoadDbSettings()
     {
-      checkBoxEnableImport.Checked = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieEnabled", "false").Value == "true";
-      checkBoxUseShortDesc.Checked = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieShortProgramDesc", "false").Value == "true";
-      checkBoxAdditionalInfo.Checked = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieExtendDescription", "true").Value == "true";
-      checkBoxShowRatings.Checked = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieShowRatings", "true").Value == "true";
-      checkBoxShowAudioFormat.Checked = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieShowAudioFormat", "false").Value == "true";
-      checkBoxSlowImport.Checked = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieSlowImport", "true").Value == "true";
+      checkBoxEnableImport.Checked =
+        ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieEnabled", "false").Value == "true";
+      checkBoxUseShortDesc.Checked =
+        ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieShortProgramDesc", "false").Value ==
+        "true";
+      checkBoxAdditionalInfo.Checked =
+        ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieExtendDescription", "true").Value ==
+        "true";
+      checkBoxShowRatings.Checked =
+        ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieShowRatings", "true").Value ==
+        "true";
+      checkBoxShowAudioFormat.Checked =
+        ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieShowAudioFormat", "false").Value ==
+        "true";
+      checkBoxSlowImport.Checked =
+        ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieSlowImport", "true").Value ==
+        "true";
 
-      decimal tvMovieLimitActors = Convert.ToDecimal(ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieLimitActors", "5").Value);
+      decimal tvMovieLimitActors =
+        Convert.ToDecimal(
+          ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieLimitActors", "5").Value);
       if (tvMovieLimitActors < numericUpDownActorCount.Minimum || tvMovieLimitActors > numericUpDownActorCount.Maximum)
       {
         checkBoxLimitActors.Checked = false;
@@ -157,9 +183,13 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
         numericUpDownActorCount.Value = tvMovieLimitActors;
       }
 
-      checkBoxShowLive.Checked = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieShowLive", "true").Value == "true";
-      checkBoxShowRepeat.Checked = ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieShowRepeating", "false").Value == "true";
-      SetRestPeriod(ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieRestPeriod", "24").Value);
+      checkBoxShowLive.Checked =
+        ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieShowLive", "true").Value == "true";
+      checkBoxShowRepeat.Checked =
+        ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieShowRepeating", "false").Value ==
+        "true";
+      SetRestPeriod(
+        ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("TvMovieRestPeriod", "24").Value);
     }
 
     #endregion
@@ -199,7 +229,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
                   // convert gif to ico
                   IntPtr iconHandle;
-                  using (var tvmLogo = new Bitmap(channelLogo)) 
+                  using (var tvmLogo = new Bitmap(channelLogo))
                   {
                     iconHandle = tvmLogo.GetHicon();
                   }
@@ -264,7 +294,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       while (selectedChannel.Parent != null)
         selectedChannel = selectedChannel.Parent;
 
-      var selectedStation = (TreeNode)treeViewTvMStations.SelectedNode.Clone();
+      var selectedStation = (TreeNode) treeViewTvMStations.SelectedNode.Clone();
 
       foreach (TreeNode stationNode in selectedChannel.Nodes)
         if (stationNode.Text == selectedStation.Text)
@@ -318,19 +348,18 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       else
         this.LogInfo("TvMovieSetup: SaveMapping - no mappingList items");
 
-      
 
       foreach (TreeNode channel in treeViewMpChannels.Nodes)
       {
         //this.LogDebug("TvMovieSetup: Processing channel {0}", channel.Text);
         foreach (TreeNode station in channel.Nodes)
         {
-          var channelInfo = (ChannelInfo)station.Tag;
+          var channelInfo = (ChannelInfo) station.Tag;
           //this.LogDebug("TvMovieSetup: Processing channelInfo {0}", channelInfo.Name);
           TvMovieMapping mapping = null;
           try
           {
-            mapping = new TvMovieMapping(((Channel)channel.Tag).IdChannel, channelInfo.Name, channelInfo.Start,
+            mapping = new TvMovieMapping(((Channel) channel.Tag).IdChannel, channelInfo.Name, channelInfo.Start,
                                          channelInfo.End);
           }
           catch (Exception exm)
@@ -380,7 +409,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
                   string stationName = mapping.StationName;
                   if (FindStation(stationName) != null)
                   {
-                    var stationNode = (TreeNode)FindStation(stationName).Clone();
+                    var stationNode = (TreeNode) FindStation(stationName).Clone();
                     var channelInfo = new ChannelInfo();
                     if (stationNode != null)
                     {
@@ -408,8 +437,9 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
               }
               catch (Exception exInner)
               {
-                this.LogDebug("TVMovie plugin: Mapping of station {0} failed; maybe it has been deleted / changed ({1})",
-                              MpChannelName, exInner.Message);
+                this.LogDebug(
+                  "TVMovie plugin: Mapping of station {0} failed; maybe it has been deleted / changed ({1})",
+                  MpChannelName, exInner.Message);
               }
             }
           }
@@ -449,7 +479,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     {
       foreach (TreeNode TvMNode in treeViewTvMStations.Nodes)
         if (TvMNode.Tag != null)
-          if (((ChannelInfo)TvMNode.Tag).Name == aTvMStationName)
+          if (((ChannelInfo) TvMNode.Tag).Name == aTvMStationName)
             return TvMNode;
 
       return null;
@@ -483,7 +513,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
         return;
       }
       panelTimeSpan.Visible = true;
-      var channelInfo = (ChannelInfo)e.Node.Tag;
+      var channelInfo = (ChannelInfo) e.Node.Tag;
       maskedTextBoxTimeStart.Text = channelInfo.Start;
       maskedTextBoxTimeEnd.Text = channelInfo.End;
     }
@@ -510,7 +540,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
     private void maskedTextBoxTimeStart_Validated(object sender, EventArgs e)
     {
-      var channelInfo = (ChannelInfo)treeViewMpChannels.SelectedNode.Tag;
+      var channelInfo = (ChannelInfo) treeViewMpChannels.SelectedNode.Tag;
       channelInfo.Start = CleanInput(maskedTextBoxTimeStart.Text);
       maskedTextBoxTimeStart.Text = CleanInput(maskedTextBoxTimeStart.Text);
       treeViewMpChannels.SelectedNode.Tag = channelInfo;
@@ -523,7 +553,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
     private void maskedTextBoxTimeEnd_Validated(object sender, EventArgs e)
     {
-      var channelInfo = (ChannelInfo)treeViewMpChannels.SelectedNode.Tag;
+      var channelInfo = (ChannelInfo) treeViewMpChannels.SelectedNode.Tag;
       channelInfo.End = CleanInput(maskedTextBoxTimeEnd.Text);
       maskedTextBoxTimeEnd.Text = CleanInput(maskedTextBoxTimeEnd.Text);
       treeViewMpChannels.SelectedNode.Tag = channelInfo;

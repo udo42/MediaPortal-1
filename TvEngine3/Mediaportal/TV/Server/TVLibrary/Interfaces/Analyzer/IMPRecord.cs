@@ -192,7 +192,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer
     /// <returns></returns>
     [PreserveSig]
     int OnTeletextReceived(IntPtr data, short packetCount);
-  } ;
+  };
 
   /// <summary>
   /// Interface to the analog channel scan interface
@@ -239,7 +239,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer
     /// <returns></returns>
     [PreserveSig]
     int SetCallBack(IAnalogChannelScanCallback callback);
-  } ;
+  };
 
   /// <summary>
   /// Interface to the analog channel callback

@@ -100,12 +100,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     public bool CreateFilterInstance(Graph graph, IFilterGraph2 graphBuilder, Capture capture)
     {
       this.LogDebug("analog: SetupTeletext()");
-      Guid guidBaseFilter = typeof(IBaseFilter).GUID;
+      Guid guidBaseFilter = typeof (IBaseFilter).GUID;
       object obj;
       //find and add tee/sink to sink filter
       DsDevice[] devices = DsDevice.GetDevicesOfCat(FilterCategory.AMKSSplitter);
       devices[0].Mon.BindToObject(null, null, ref guidBaseFilter, out obj);
-      _teeSink = (IBaseFilter)obj;
+      _teeSink = (IBaseFilter) obj;
       int hr = graphBuilder.AddFilter(_teeSink, devices[0].Name);
       if (hr != 0)
       {
@@ -136,7 +136,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
             //found it, add it to the graph
             this.LogInfo("analog:Using teletext component - {0}", graph.Teletext.Name);
             device.Mon.BindToObject(null, null, ref guidBaseFilter, out obj);
-            _filterWstDecoder = (IBaseFilter)obj;
+            _filterWstDecoder = (IBaseFilter) obj;
             hr = graphBuilder.AddFilter(_filterWstDecoder, device.Name);
             if (hr != 0)
             {
@@ -162,7 +162,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
             //found it, add it to the graph
             this.LogInfo("analog:Found WST Codec filter");
             device.Mon.BindToObject(null, null, ref guidBaseFilter, out obj);
-            _filterWstDecoder = (IBaseFilter)obj;
+            _filterWstDecoder = (IBaseFilter) obj;
             hr = graphBuilder.AddFilter(_filterWstDecoder, device.Name);
             if (hr != 0)
             {
@@ -188,7 +188,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
               //found it, add it to the graph
               this.LogInfo("analog:Found VBI Codec filter");
               device.Mon.BindToObject(null, null, ref guidBaseFilter, out obj);
-              _filterWstDecoder = (IBaseFilter)obj;
+              _filterWstDecoder = (IBaseFilter) obj;
               hr = graphBuilder.AddFilter(_filterWstDecoder, device.Name);
               if (hr != 0)
               {

@@ -41,7 +41,9 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Xml
     /// </summary>
     /// <param name="writer">The writer.</param>
     public XmlNoNamespaceWriter(TextWriter writer)
-      : base(writer) {}
+      : base(writer)
+    {
+    }
 
     #endregion
 

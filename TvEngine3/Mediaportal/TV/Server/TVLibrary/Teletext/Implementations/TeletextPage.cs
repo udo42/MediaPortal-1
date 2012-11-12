@@ -123,8 +123,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       }
       if (_pageCache[subPageNumber] == IntPtr.Zero)
         return null;
-      var pageChars = new byte[MAX_ROWS * 42];
-      Marshal.Copy(_pageCache[subPageNumber], pageChars, 0, MAX_ROWS * 42);
+      var pageChars = new byte[MAX_ROWS*42];
+      Marshal.Copy(_pageCache[subPageNumber], pageChars, 0, MAX_ROWS*42);
       return pageChars;
     }
 
@@ -280,11 +280,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
         return false;
       unsafe
       {
-        var ptr = (byte*)pagePtr.ToPointer();
+        var ptr = (byte*) pagePtr.ToPointer();
         bool isSet = Hamming.IsEraseBitSet(0, ref pageData);
         for (int row = 0; row < 31; row++)
         {
-          int off = row * 42;
+          int off = row*42;
           if (row != 0)
           {
             if (pageData[off] == 32 && isSet)
@@ -301,7 +301,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
           }
 
 
-          off = row * 42;
+          off = row*42;
           int rowNr = Hamming.GetPacketNumber(off, ref pageData);
 
           if (rowNr < 0)
@@ -361,11 +361,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       IntPtr pagePtr = _pageCache[subPageNumber];
       unsafe
       {
-        var ptr = (byte*)pagePtr.ToPointer();
+        var ptr = (byte*) pagePtr.ToPointer();
         bool isSet = Hamming.IsEraseBitSet(0, ref pageData);
         for (int row = 0; row < 31; row++)
         {
-          int off = row * 42;
+          int off = row*42;
           if (row != 0)
           {
             if (pageData[off] == 32 && isSet)
@@ -382,7 +382,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
           }
 
 
-          off = row * 42;
+          off = row*42;
           int rowNr = Hamming.GetPacketNumber(off, ref pageData);
           if (rowNr < 0)
             continue;
@@ -460,7 +460,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
 
       if (_pageCache[subPageNumber] != IntPtr.Zero)
         return;
-      const int size = MAX_ROWS * 42;
+      const int size = MAX_ROWS*42;
 
       _pageCache[subPageNumber] = Marshal.AllocHGlobal(size);
       Marshal.Copy(page, 0, _pageCache[subPageNumber], size);
@@ -490,11 +490,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
     /// <summary>
     /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
     /// </summary>  
-		public void Dispose()
-		{
-		  Dispose(true);
-		  GC.SuppressFinalize(this);
-		}
+    public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
 
     #endregion
 
@@ -504,7 +504,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       {
         // get rid of managed resources
       }
-		
+
       // get rid of unmanaged resources
       for (int i = 0; i < MAX_SUB_PAGES; ++i)
       {
@@ -513,8 +513,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
     }
 
     ~TeletextPage()
-		{
-		  Dispose(false);
-		}
+    {
+      Dispose(false);
+    }
   }
 }

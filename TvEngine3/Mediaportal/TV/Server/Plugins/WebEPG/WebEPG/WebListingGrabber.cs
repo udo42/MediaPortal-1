@@ -95,9 +95,9 @@ namespace WebEPG
 
         var s = new XmlSerializer(typeof (GrabberConfigFile));
 
-        using (TextReader r = new StreamReader(_strBaseDir + File)) 
+        using (TextReader r = new StreamReader(_strBaseDir + File))
         {
-          _grabber = (GrabberConfigFile)s.Deserialize(r);
+          _grabber = (GrabberConfigFile) s.Deserialize(r);
         }
       }
       catch (InvalidOperationException ex)
@@ -370,7 +370,7 @@ namespace WebEPG
     /// <returns>the tv program data</returns>
     private ProgramData GetProgram(int index)
     {
-      var guideData = (ProgramData)_parser.GetData(index);
+      var guideData = (ProgramData) _parser.GetData(index);
 
       if (guideData == null ||
           guideData.StartTime == null || guideData.Title == string.Empty)
@@ -452,7 +452,7 @@ namespace WebEPG
           this.LogInfo("WebEPG: SubLink Request {0} - Delay: {1}ms", guideData.SublinkRequest.ToString(),
                        guideData.SublinkRequest.Delay);
 
-          var webParser = (WebParser)_parser;
+          var webParser = (WebParser) _parser;
 
           if (!webParser.GetLinkedData(ref guideData))
           {
@@ -531,8 +531,9 @@ namespace WebEPG
                       listingCount, _discarded);
         if (programCount < (listingCount - _discarded))
         {
-          this.LogInfo("WebEPG: Program Count ({0}) < Listing Count ({1}) - Discard Count ({2}), possible template error",
-                       programCount, listingCount, _discarded);
+          this.LogInfo(
+            "WebEPG: Program Count ({0}) < Listing Count ({1}) - Discard Count ({2}), possible template error",
+            programCount, listingCount, _discarded);
         }
 
         if (_timeControl.GrabDay > _maxGrabDays)

@@ -51,7 +51,7 @@ namespace MediaPortal.Common.Utils
     {
       lock (_servicesLock)
       {
-        return _services.ContainsKey(typeof(T));
+        return _services.ContainsKey(typeof (T));
       }
     }
 
@@ -66,8 +66,8 @@ namespace MediaPortal.Common.Utils
     {
       lock (_servicesLock)
       {
-        return _services.ContainsKey(t);  
-      }      
+        return _services.ContainsKey(t);
+      }
     }
 
     /// <summary>
@@ -79,7 +79,7 @@ namespace MediaPortal.Common.Utils
     public void Add<T>(T service)
     {
       // Make sure service implements type
-      Type t = typeof(T);
+      Type t = typeof (T);
 
       lock (_servicesLock)
       {
@@ -122,7 +122,7 @@ namespace MediaPortal.Common.Utils
     /// <param name="callback">The <see cref="ServiceCreatorCallback<T>"/> to call to get to the service instance.</param>
     public void Add<T>(ServiceCreatorCallback<T> callback)
     {
-      Type t = typeof(T);
+      Type t = typeof (T);
       lock (_servicesLock)
       {
         if (_services.ContainsKey(t))
@@ -140,7 +140,7 @@ namespace MediaPortal.Common.Utils
     /// <returns>The service implementation.</returns>
     public T Get<T>()
     {
-      Type t = typeof(T);
+      Type t = typeof (T);
       lock (_servicesLock)
       {
         object o = null;
@@ -168,7 +168,7 @@ namespace MediaPortal.Common.Utils
     /// <typeparam name="T">The type of the service to remove.</typeparam>
     public void Remove<T>()
     {
-      Type t = typeof(T);
+      Type t = typeof (T);
       Remove(t);
     }
 

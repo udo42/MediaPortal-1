@@ -14,6 +14,7 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
     {
       _channels = channels;
     }
+
     public NotOnChannelsCondition()
     {
     }

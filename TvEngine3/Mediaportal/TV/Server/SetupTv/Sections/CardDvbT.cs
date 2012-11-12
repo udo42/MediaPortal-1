@@ -97,10 +97,14 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     #region Constructors
 
     public CardDvbT()
-      : this("DVBT") {}
+      : this("DVBT")
+    {
+    }
 
     public CardDvbT(string name)
-      : base(name) {}
+      : base(name)
+    {
+    }
 
     public CardDvbT(string name, int cardNumber)
       : base(name)
@@ -122,7 +126,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       Init();
     }
 
-    private void EnableSections() {}
+    private void EnableSections()
+    {
+    }
 
     #endregion
 
@@ -224,7 +230,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       {
         XmlReader parFileXML = XmlReader.Create(fileName);
         var xmlSerializer = new XmlSerializer(typeof (List<DVBTTuning>));
-        _dvbtChannels = (List<DVBTTuning>)xmlSerializer.Deserialize(parFileXML);
+        _dvbtChannels = (List<DVBTTuning>) xmlSerializer.Deserialize(parFileXML);
         parFileXML.Close();
       }
       catch (Exception ex)
@@ -246,17 +252,21 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         mpComboBoxCountry.SelectedIndex = index;
       }
 
-      index = Math.Max(ServiceAgents.Instance.SettingServiceAgent.GetValue("dvbt" + _cardNumber + "Region", 0), 0); // limit to >= 0
+      index = Math.Max(ServiceAgents.Instance.SettingServiceAgent.GetValue("dvbt" + _cardNumber + "Region", 0), 0);
+        // limit to >= 0
       if (index < mpComboBoxRegion.Items.Count)
       {
         mpComboBoxRegion.SelectedIndex = index;
       }
 
       textBoxFreq.Text = ServiceAgents.Instance.SettingServiceAgent.GetValue("dvbt" + _cardNumber + "Freq", "306000");
-      textBoxBandwidth.Text = ServiceAgents.Instance.SettingServiceAgent.GetValue("dvbt" + _cardNumber + "Bandwidth", "8");
+      textBoxBandwidth.Text = ServiceAgents.Instance.SettingServiceAgent.GetValue("dvbt" + _cardNumber + "Bandwidth",
+                                                                                  "8");
 
-      checkBoxCreateGroups.Checked = (ServiceAgents.Instance.SettingServiceAgent.GetValue("dvbt" + _cardNumber + "creategroups", false));
-      checkBoxCreateSignalGroup.Checked = (ServiceAgents.Instance.SettingServiceAgent.GetValue("dvbt" + _cardNumber + "createsignalgroup", false));
+      checkBoxCreateGroups.Checked =
+        (ServiceAgents.Instance.SettingServiceAgent.GetValue("dvbt" + _cardNumber + "creategroups", false));
+      checkBoxCreateSignalGroup.Checked =
+        (ServiceAgents.Instance.SettingServiceAgent.GetValue("dvbt" + _cardNumber + "createsignalgroup", false));
     }
 
     /// <summary>
@@ -264,13 +274,16 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     /// </summary>
     private void PersistState()
     {
-      
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("dvbt" + _cardNumber + "Country", mpComboBoxCountry.SelectedIndex);
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("dvbt" + _cardNumber + "Region", mpComboBoxRegion.SelectedIndex);
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("dvbt" + _cardNumber + "Country",
+                                                           mpComboBoxCountry.SelectedIndex);
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("dvbt" + _cardNumber + "Region",
+                                                           mpComboBoxRegion.SelectedIndex);
       ServiceAgents.Instance.SettingServiceAgent.SaveValue("dvbt" + _cardNumber + "Freq", textBoxFreq.Text);
       ServiceAgents.Instance.SettingServiceAgent.SaveValue("dvbt" + _cardNumber + "Bandwidth", textBoxBandwidth.Text);
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("dvbt" + _cardNumber + "creategroups", checkBoxCreateGroups.Checked);
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("dvbt" + _cardNumber + "createsignalgroup", checkBoxCreateSignalGroup.Checked);      
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("dvbt" + _cardNumber + "creategroups",
+                                                           checkBoxCreateGroups.Checked);
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("dvbt" + _cardNumber + "createsignalgroup",
+                                                           checkBoxCreateSignalGroup.Checked);
     }
 
     /// <summary>
@@ -302,7 +315,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
         case ScanState.Initialized:
           // common checks
-          Card card = ServiceAgents.Instance.CardServiceAgent.GetCardByDevicePath(ServiceAgents.Instance.ControllerServiceAgent.CardDevice(_cardNumber));
+          Card card =
+            ServiceAgents.Instance.CardServiceAgent.GetCardByDevicePath(
+              ServiceAgents.Instance.ControllerServiceAgent.CardDevice(_cardNumber));
           if (card.Enabled == false)
           {
             MessageBox.Show(this, "Tuner is disabled. Please enable the tuner before scanning.");
@@ -333,8 +348,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           {
               // use tuning details from file
             case ScanTypes.Predefined:
-              var tuningFile = (CustomFileName)mpComboBoxRegion.SelectedItem;
-              _dvbtChannels = (List<DVBTTuning>)fileFilters.LoadList(tuningFile.FileName, typeof (List<DVBTTuning>));
+              var tuningFile = (CustomFileName) mpComboBoxRegion.SelectedItem;
+              _dvbtChannels = (List<DVBTTuning>) fileFilters.LoadList(tuningFile.FileName, typeof (List<DVBTTuning>));
               if (_dvbtChannels == null)
               {
                 _dvbtChannels = new List<DVBTTuning>();
@@ -357,7 +372,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
               {
                 for (int i = 0; i < channels.Length; ++i)
                 {
-                  var ch = (DVBTChannel)channels[i];
+                  var ch = (DVBTChannel) channels[i];
                   _dvbtChannels.Add(ch.TuningInfo);
                   item = listViewStatus.Items.Add(new ListViewItem(ch.TuningInfo.ToString()));
                   item.EnsureVisible();
@@ -436,19 +451,21 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         ServiceAgents.Instance.ControllerServiceAgent.EpgGrabberEnabled = false;
 
         SetButtonState();
-        
-        Card card = ServiceAgents.Instance.CardServiceAgent.GetCardByDevicePath(ServiceAgents.Instance.ControllerServiceAgent.CardDevice(_cardNumber));
+
+        Card card =
+          ServiceAgents.Instance.CardServiceAgent.GetCardByDevicePath(
+            ServiceAgents.Instance.ControllerServiceAgent.CardDevice(_cardNumber));
 
         for (int index = 0; index < _dvbtChannels.Count; ++index)
         {
           if (scanState == ScanState.Cancel)
             return;
 
-          float percent = ((float)(index)) / _dvbtChannels.Count;
+          float percent = ((float) (index))/_dvbtChannels.Count;
           percent *= 100f;
           if (percent > 100f)
             percent = 100f;
-          progressBar1.Value = (int)percent;
+          progressBar1.Value = (int) percent;
 
           Application.DoEvents();
 
@@ -504,7 +521,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           for (int i = 0; i < channels.Length; ++i)
           {
             Channel dbChannel;
-            var channel = (DVBTChannel)channels[i];
+            var channel = (DVBTChannel) channels[i];
             bool exists;
             TuningDetail currentDetail;
             //Check if we already have this tuningdetail. The user has the option to enable channel move detection...
@@ -515,8 +532,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
               //track channel movements.
               TuningDetailSearchEnum tuningDetailSearchEnum = TuningDetailSearchEnum.NetworkId;
               tuningDetailSearchEnum |= TuningDetailSearchEnum.ServiceId;
-              currentDetail = ServiceAgents.Instance.ChannelServiceAgent.GetTuningDetailCustom(channel, tuningDetailSearchEnum);   
-              
+              currentDetail = ServiceAgents.Instance.ChannelServiceAgent.GetTuningDetailCustom(channel,
+                                                                                               tuningDetailSearchEnum);
             }
             else
             {
@@ -547,33 +564,42 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
             }
 
 
-            if (dbChannel.MediaType == (int)MediaTypeEnum.TV)
+            if (dbChannel.MediaType == (int) MediaTypeEnum.TV)
             {
-              ChannelGroup group = ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(TvConstants.TvGroupNames.AllChannels, MediaTypeEnum.TV);
+              ChannelGroup group =
+                ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(TvConstants.TvGroupNames.AllChannels,
+                                                                                 MediaTypeEnum.TV);
               MappingHelper.AddChannelToGroup(ref dbChannel, @group);
               if (checkBoxCreateSignalGroup.Checked)
               {
-                group = ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(TvConstants.TvGroupNames.DVBT, MediaTypeEnum.TV);
+                group = ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(TvConstants.TvGroupNames.DVBT,
+                                                                                         MediaTypeEnum.TV);
                 MappingHelper.AddChannelToGroup(ref dbChannel, @group);
               }
               if (checkBoxCreateGroups.Checked)
               {
-                group = ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(channel.Provider, MediaTypeEnum.TV);
+                group = ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(channel.Provider,
+                                                                                         MediaTypeEnum.TV);
                 MappingHelper.AddChannelToGroup(ref dbChannel, @group);
               }
             }
-            else if (dbChannel.MediaType == (int)MediaTypeEnum.Radio)
+            else if (dbChannel.MediaType == (int) MediaTypeEnum.Radio)
             {
-              ChannelGroup group = ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(TvConstants.RadioGroupNames.AllChannels, MediaTypeEnum.Radio);
+              ChannelGroup group =
+                ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(
+                  TvConstants.RadioGroupNames.AllChannels, MediaTypeEnum.Radio);
               MappingHelper.AddChannelToGroup(ref dbChannel, @group);
               if (checkBoxCreateSignalGroup.Checked)
               {
-                group = ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(TvConstants.RadioGroupNames.DVBT, MediaTypeEnum.Radio);
+                group =
+                  ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(TvConstants.RadioGroupNames.DVBT,
+                                                                                   MediaTypeEnum.Radio);
                 MappingHelper.AddChannelToGroup(ref dbChannel, @group);
               }
               if (checkBoxCreateGroups.Checked)
               {
-                group = ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(channel.Provider, MediaTypeEnum.Radio);
+                group = ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(channel.Provider,
+                                                                                         MediaTypeEnum.Radio);
                 MappingHelper.AddChannelToGroup(ref dbChannel, @group);
               }
             }
@@ -585,7 +611,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
             else
             {
               //update tuning details...
-              ServiceAgents.Instance.ChannelServiceAgent.UpdateTuningDetail(dbChannel.IdChannel, currentDetail.IdTuning, channel);
+              ServiceAgents.Instance.ChannelServiceAgent.UpdateTuningDetail(dbChannel.IdChannel, currentDetail.IdTuning,
+                                                                            channel);
             }
 
             if (channel.MediaType == MediaTypeEnum.TV)

@@ -43,7 +43,6 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       InitializeComponent();
     }
 
-    
 
     public Channel Channel
     {
@@ -69,31 +68,31 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       _channel.MediaType = (int) _mediaType;
 
       foreach (TuningDetail detail in _channel.TuningDetails)
-      {                
+      {
         if (detail.ChangeTracker.State != ObjectState.Deleted)
         {
           detail.IdChannel = _channel.IdChannel;
-          detail.MediaType = (int)_mediaType;
+          detail.MediaType = (int) _mediaType;
           if (string.IsNullOrEmpty(detail.Name))
           {
             detail.Name = _channel.DisplayName;
           }
-        }    
+        }
       }
 
-      _channel = ServiceAgents.Instance.ChannelServiceAgent.SaveChannel(_channel);      
+      _channel = ServiceAgents.Instance.ChannelServiceAgent.SaveChannel(_channel);
 
       if (_newChannel)
       {
         if (_mediaType == MediaTypeEnum.TV)
         {
-          MappingHelper.AddChannelToGroup(ref _channel, TvConstants.TvGroupNames.AllChannels, MediaTypeEnum.TV);          
+          MappingHelper.AddChannelToGroup(ref _channel, TvConstants.TvGroupNames.AllChannels, MediaTypeEnum.TV);
         }
         else if (_mediaType == MediaTypeEnum.Radio)
         {
-          MappingHelper.AddChannelToGroup(ref _channel, TvConstants.RadioGroupNames.AllChannels, MediaTypeEnum.Radio);          
+          MappingHelper.AddChannelToGroup(ref _channel, TvConstants.RadioGroupNames.AllChannels, MediaTypeEnum.Radio);
         }
-      }            
+      }
 
 
       DialogResult = DialogResult.OK;
@@ -106,10 +105,11 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       if (_channel == null)
       {
         _newChannel = true;
-        _channel = ChannelFactory.CreateChannel(MediaTypeEnum.TV, 0, Schedule.MinSchedule, true, Schedule.MinSchedule, 10000, true, "", "");        
+        _channel = ChannelFactory.CreateChannel(MediaTypeEnum.TV, 0, Schedule.MinSchedule, true, Schedule.MinSchedule,
+                                                10000, true, "", "");
       }
       textBoxName.Text = _channel.DisplayName;
-      checkBoxVisibleInTvGuide.Checked = _channel.VisibleInGuide;            
+      checkBoxVisibleInTvGuide.Checked = _channel.VisibleInGuide;
       UpdateTuningDetailList();
     }
 
@@ -138,7 +138,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
           {
             case 0:
               channelType = "Analog";
-              if (detail.VideoSource == (int)AnalogChannel.VideoInputType.Tuner)
+              if (detail.VideoSource == (int) AnalogChannel.VideoInputType.Tuner)
               {
                 frequency = detail.Frequency;
                 frequency /= 1000000.0f;
@@ -165,7 +165,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
               frequency = detail.Frequency;
               frequency /= 1000.0f;
               description = String.Format("{0} MHz {1}", frequency.ToString("f2"),
-                                          (((Polarisation)detail.Polarisation)));
+                                          (((Polarisation) detail.Polarisation)));
               break;
             case 4:
               channelType = "DVB-T";
@@ -206,7 +206,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       }
       float freq = float.Parse(text);
       freq *= 1000000f;
-      return (long)freq;
+      return (long) freq;
     }
 
     private static string SetFrequency(long frequency, string precision)
@@ -286,7 +286,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
           {
             int index = mpListView1.SelectedIndices[i];
             TuningDetail tuningDetailToDelete = _channel.TuningDetails[index];
-            tuningDetailToDelete.ChangeTracker.State = ObjectState.Deleted;                        
+            tuningDetailToDelete.ChangeTracker.State = ObjectState.Deleted;
           }
           UpdateTuningDetailList();
         }

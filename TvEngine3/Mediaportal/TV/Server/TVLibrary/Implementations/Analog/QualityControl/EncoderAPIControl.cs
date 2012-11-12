@@ -31,8 +31,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
   /// </summary>
   public class EncoderAPIControl : BaseControl
   {
-
-
     #region variable
 
 #pragma warning disable 618,612
@@ -55,7 +53,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
     {
       _encoderAPI = encoderAPI;
       this.LogDebug("analog: IEncoderAPI supported by: " +
-                        FilterGraphTools.GetFilterName(_encoderAPI as IBaseFilter) + "; Checking capabilities ");
+                    FilterGraphTools.GetFilterName(_encoderAPI as IBaseFilter) + "; Checking capabilities ");
       CheckCapabilities();
     }
 

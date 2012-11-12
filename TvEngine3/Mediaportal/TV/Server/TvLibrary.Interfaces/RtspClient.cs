@@ -43,7 +43,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
     /// <summary>
     /// Initializes a new instance of the <see cref="RtspClient"/> class.
     /// </summary>
-    public RtspClient() {}
+    public RtspClient()
+    {
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RtspClient"/> class.

@@ -90,7 +90,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
     /// </summary>
     /// <param name="card">The card</param>
     public EpgCard(Card card)
-    {      
+    {
       _card = card;
       _user = UserFactory.CreateEpgUser();
 
@@ -145,7 +145,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
     /// Should be overriden by the class
     /// </summary>
     public override void OnEpgCancelled()
-    {      
+    {
       this.LogInfo("epg grabber:epg cancelled");
 
       if (_state == EpgState.Idle)
@@ -246,7 +246,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
 
       _state = EpgState.Idle;
       _isRunning = true;
-      _user = UserFactory.CreateEpgUser();      
+      _user = UserFactory.CreateEpgUser();
       if (GrabEpgForChannel(channel, _currentTransponder.Tuning, _card))
       {
         this.LogInfo("EpgCard: card: {0} starting to grab {1}", _user.CardId, _currentTransponder.Tuning.ToString());
@@ -499,7 +499,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
           try
           {
             ICardReservation cardReservationImpl = new CardReservationTimeshifting();
-            ticket = cardReservationImpl.RequestCardTuneReservation(cardHandler, tuning, _user, cardHandler.UserManagement.GetRecentChannelId(_user.Name));
+            ticket = cardReservationImpl.RequestCardTuneReservation(cardHandler, tuning, _user,
+                                                                    cardHandler.UserManagement.GetRecentChannelId(
+                                                                      _user.Name));
 
             if (ticket != null)
             {
@@ -593,7 +595,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
           catch (Exception ex)
           {
             this.LogError(ex);
-          }          
+          }
         }
         if (_state != EpgState.Idle && _user.CardId >= 0)
         {

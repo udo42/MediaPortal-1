@@ -114,22 +114,32 @@ namespace DirectShowLib
     int SetSwitches(int Switches);
 
     [PreserveSig]
-    int GetCaps(out IntPtr pCaps); // DDCAPS
+    int GetCaps(out IntPtr pCaps);
+
+    // DDCAPS
 
     [PreserveSig]
-    int GetEmulatedCaps(out IntPtr pCaps); // DDCAPS
+    int GetEmulatedCaps(out IntPtr pCaps);
+
+    // DDCAPS
 
     [PreserveSig]
-    int GetSurfaceDesc(out IntPtr pSurfaceDesc); // DDSURFACEDESC
+    int GetSurfaceDesc(out IntPtr pSurfaceDesc);
+
+    // DDSURFACEDESC
 
     [PreserveSig]
     int GetFourCCCodes(out int pCount, out int pCodes);
 
     [PreserveSig]
-    int SetDirectDraw(IntPtr pDirectDraw); // LPDIRECTDRAW
+    int SetDirectDraw(IntPtr pDirectDraw);
+
+    // LPDIRECTDRAW
 
     [PreserveSig]
-    int GetDirectDraw(out IntPtr ppDirectDraw); // LPDIRECTDRAW
+    int GetDirectDraw(out IntPtr ppDirectDraw);
+
+    // LPDIRECTDRAW
 
     [PreserveSig]
     int GetSurfaceType(out DirectDrawSwitches pSurfaceType);
@@ -276,10 +286,14 @@ namespace DirectShowLib
     #endregion
 
     [PreserveSig]
-    int SetAcceleratorTable(IntPtr hwnd, IntPtr hAccel); // HACCEL
+    int SetAcceleratorTable(IntPtr hwnd, IntPtr hAccel);
+
+    // HACCEL
 
     [PreserveSig]
-    int GetAcceleratorTable(out IntPtr phwnd, out IntPtr phAccel); // HACCEL
+    int GetAcceleratorTable(out IntPtr phwnd, out IntPtr phAccel);
+
+    // HACCEL
 
     [PreserveSig]
     int KeepPixelAspectRatio(int KeepAspect);

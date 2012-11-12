@@ -90,7 +90,9 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (IChannelRepository channelRepository = new ChannelRepository())
       {
-        IOrderedQueryable<Channel> query = channelRepository.GetQuery<Channel>(c => c.VisibleInGuide && c.MediaType == (int)mediaType).OrderBy(c => c.SortOrder).OrderBy(c => c.DisplayName);
+        IOrderedQueryable<Channel> query =
+          channelRepository.GetQuery<Channel>(c => c.VisibleInGuide && c.MediaType == (int) mediaType).OrderBy(
+            c => c.SortOrder).OrderBy(c => c.DisplayName);
         return channelRepository.IncludeAllRelations(query).ToList();
       }
     }
@@ -122,7 +124,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (IChannelRepository channelRepository = new ChannelRepository())
       {
-        IOrderedQueryable<Channel> query = channelRepository.GetQuery<Channel>(c => c.MediaType == (int)mediaType).OrderBy(c => c.SortOrder);
+        IOrderedQueryable<Channel> query =
+          channelRepository.GetQuery<Channel>(c => c.MediaType == (int) mediaType).OrderBy(c => c.SortOrder);
         return channelRepository.IncludeAllRelations(query).ToList();
       }
     }
@@ -140,7 +143,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       if (OnStateChangedChannelMapEvent != null || OnStateChangedTuningDetailEvent != null)
       {
-        Dictionary<string, ObjectList>.ValueCollection deletedProperties = channel.ChangeTracker.ObjectsRemovedFromCollectionProperties.Values;
+        Dictionary<string, ObjectList>.ValueCollection deletedProperties =
+          channel.ChangeTracker.ObjectsRemovedFromCollectionProperties.Values;
         foreach (ObjectList deletedProperty in deletedProperties)
         {
           if (OnStateChangedTuningDetailEvent != null)
@@ -165,7 +169,6 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
       using (IChannelRepository channelRepository = new ChannelRepository())
       {
-
         channelRepository.AttachEntityIfChangeTrackingDisabled(channelRepository.ObjectContext.Channels, channel);
         channelRepository.ApplyChanges(channelRepository.ObjectContext.Channels, channel);
         channelRepository.UnitOfWork.SaveChanges();
@@ -218,7 +221,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (IChannelRepository channelRepository = new ChannelRepository())
       {
-        IQueryable<Channel> query = channelRepository.GetQuery<Channel>(c => c.IdChannel == idChannel);        
+        IQueryable<Channel> query = channelRepository.GetQuery<Channel>(c => c.IdChannel == idChannel);
         Channel channel = channelRepository.IncludeAllRelations(query, includeRelations).FirstOrDefault();
         return channel;
       }
@@ -237,7 +240,11 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (IChannelRepository channelRepository = new ChannelRepository())
       {
-        IQueryable<Channel> query = channelRepository.GetQuery<Channel>(c => c.TuningDetails.Any(t => t.NetworkId == networkId && t.TransportId == transportId && t.ServiceId == serviceId));
+        IQueryable<Channel> query =
+          channelRepository.GetQuery<Channel>(
+            c =>
+            c.TuningDetails.Any(
+              t => t.NetworkId == networkId && t.TransportId == transportId && t.ServiceId == serviceId));
         return channelRepository.IncludeAllRelations(query).FirstOrDefault();
       }
     }
@@ -249,11 +256,13 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       {
         if (forEpg)
         {
-          isChannelMappedToCard = channelRepository.Count<ChannelMap>(c => c.IdCard == idCard && c.IdChannel == idChannel && c.EpgOnly) > 0;
+          isChannelMappedToCard =
+            channelRepository.Count<ChannelMap>(c => c.IdCard == idCard && c.IdChannel == idChannel && c.EpgOnly) > 0;
         }
         else
         {
-          isChannelMappedToCard = channelRepository.Count<ChannelMap>(c => c.IdCard == idCard && c.IdChannel == idChannel) > 0;
+          isChannelMappedToCard =
+            channelRepository.Count<ChannelMap>(c => c.IdCard == idCard && c.IdChannel == idChannel) > 0;
         }
       }
       return isChannelMappedToCard;
@@ -339,11 +348,11 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
           var collection = new CountryCollection();
           analogChannel.Country = collection.Countries[detail.CountryId];
           analogChannel.Frequency = detail.Frequency;
-          analogChannel.MediaType = (MediaTypeEnum)detail.MediaType;
+          analogChannel.MediaType = (MediaTypeEnum) detail.MediaType;
           analogChannel.Name = detail.Name;
-          analogChannel.TunerSource = (TunerInputType)detail.TuningSource;
-          analogChannel.VideoSource = (AnalogChannel.VideoInputType)detail.VideoSource;
-          analogChannel.AudioSource = (AnalogChannel.AudioInputType)detail.AudioSource;
+          analogChannel.TunerSource = (TunerInputType) detail.TuningSource;
+          analogChannel.VideoSource = (AnalogChannel.VideoInputType) detail.VideoSource;
+          analogChannel.AudioSource = (AnalogChannel.AudioInputType) detail.AudioSource;
           return analogChannel;
         case 1: //ATSCChannel
           var atscChannel = new ATSCChannel();
@@ -352,7 +361,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
           atscChannel.PhysicalChannel = detail.ChannelNumber;
           atscChannel.FreeToAir = detail.FreeToAir;
           atscChannel.Frequency = detail.Frequency;
-          atscChannel.MediaType = (MediaTypeEnum)detail.MediaType;
+          atscChannel.MediaType = (MediaTypeEnum) detail.MediaType;
           atscChannel.Name = detail.Name;
           atscChannel.NetworkId = detail.NetworkId;
           atscChannel.PmtPid = detail.PmtPid;
@@ -360,14 +369,14 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
           atscChannel.ServiceId = detail.ServiceId;
           //atscChannel.SymbolRate = detail.Symbolrate;
           atscChannel.TransportId = detail.TransportId;
-          atscChannel.ModulationType = (ModulationType)detail.Modulation;
+          atscChannel.ModulationType = (ModulationType) detail.Modulation;
           return atscChannel;
         case 2: //DVBCChannel
           var dvbcChannel = new DVBCChannel();
-          dvbcChannel.ModulationType = (ModulationType)detail.Modulation;
+          dvbcChannel.ModulationType = (ModulationType) detail.Modulation;
           dvbcChannel.FreeToAir = detail.FreeToAir;
           dvbcChannel.Frequency = detail.Frequency;
-          dvbcChannel.MediaType = (MediaTypeEnum)detail.MediaType;
+          dvbcChannel.MediaType = (MediaTypeEnum) detail.MediaType;
           dvbcChannel.Name = detail.Name;
           dvbcChannel.NetworkId = detail.NetworkId;
           dvbcChannel.PmtPid = detail.PmtPid;
@@ -379,11 +388,11 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
           return dvbcChannel;
         case 3: //DVBSChannel
           var dvbsChannel = new DVBSChannel();
-          dvbsChannel.Diseqc = (DiseqcPort)detail.DiSEqC;
-          dvbsChannel.Polarisation = (Polarisation)detail.Polarisation;
+          dvbsChannel.Diseqc = (DiseqcPort) detail.DiSEqC;
+          dvbsChannel.Polarisation = (Polarisation) detail.Polarisation;
           dvbsChannel.FreeToAir = detail.FreeToAir;
           dvbsChannel.Frequency = detail.Frequency;
-          dvbsChannel.MediaType = (MediaTypeEnum)detail.MediaType;
+          dvbsChannel.MediaType = (MediaTypeEnum) detail.MediaType;
           dvbsChannel.Name = detail.Name;
           dvbsChannel.NetworkId = detail.NetworkId;
           dvbsChannel.PmtPid = detail.PmtPid;
@@ -392,10 +401,10 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
           dvbsChannel.SymbolRate = detail.Symbolrate;
           dvbsChannel.TransportId = detail.TransportId;
           dvbsChannel.SatelliteIndex = detail.SatIndex;
-          dvbsChannel.ModulationType = (ModulationType)detail.Modulation;
-          dvbsChannel.InnerFecRate = (BinaryConvolutionCodeRate)detail.InnerFecRate;
-          dvbsChannel.Pilot = (Pilot)detail.Pilot;
-          dvbsChannel.RollOff = (RollOff)detail.RollOff;
+          dvbsChannel.ModulationType = (ModulationType) detail.Modulation;
+          dvbsChannel.InnerFecRate = (BinaryConvolutionCodeRate) detail.InnerFecRate;
+          dvbsChannel.Pilot = (Pilot) detail.Pilot;
+          dvbsChannel.RollOff = (RollOff) detail.RollOff;
           dvbsChannel.LogicalChannelNumber = detail.ChannelNumber;
           return dvbsChannel;
         case 4: //DVBTChannel
@@ -403,7 +412,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
           dvbtChannel.Bandwidth = detail.Bandwidth;
           dvbtChannel.FreeToAir = detail.FreeToAir;
           dvbtChannel.Frequency = detail.Frequency;
-          dvbtChannel.MediaType = (MediaTypeEnum)detail.MediaType;
+          dvbtChannel.MediaType = (MediaTypeEnum) detail.MediaType;
           dvbtChannel.Name = detail.Name;
           dvbtChannel.NetworkId = detail.NetworkId;
           dvbtChannel.PmtPid = detail.PmtPid;
@@ -415,7 +424,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         case 7: //DVBIPChannel
           var dvbipChannel = new DVBIPChannel();
           dvbipChannel.FreeToAir = detail.FreeToAir;
-          dvbipChannel.MediaType = (MediaTypeEnum)detail.MediaType;
+          dvbipChannel.MediaType = (MediaTypeEnum) detail.MediaType;
           dvbipChannel.Name = detail.Name;
           dvbipChannel.NetworkId = detail.NetworkId;
           dvbipChannel.PmtPid = detail.PmtPid;
@@ -433,7 +442,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (IChannelRepository channelRepository = new ChannelRepository())
       {
-        channelRepository.AttachEntityIfChangeTrackingDisabled(channelRepository.ObjectContext.TuningDetails, tuningDetail);
+        channelRepository.AttachEntityIfChangeTrackingDisabled(channelRepository.ObjectContext.TuningDetails,
+                                                               tuningDetail);
         channelRepository.ApplyChanges(channelRepository.ObjectContext.TuningDetails, tuningDetail);
         channelRepository.UnitOfWork.SaveChanges();
         tuningDetail.AcceptChanges();
@@ -475,7 +485,6 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       }
       return null;
     }
-
 
 
     public static History SaveChannelHistory(History history)
@@ -534,7 +543,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       int channelType = GetChannelType(dvbChannel);
       using (IChannelRepository channelRepository = new ChannelRepository())
       {
-        IQueryable<TuningDetail> query = channelRepository.GetQuery<TuningDetail>(t => t.ChannelType == channelType && t.Url == url);
+        IQueryable<TuningDetail> query =
+          channelRepository.GetQuery<TuningDetail>(t => t.ChannelType == channelType && t.Url == url);
         query = channelRepository.IncludeAllRelations(query);
         return query.FirstOrDefault();
       }
@@ -551,12 +561,13 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         OnStateChangedTuningDetailEvent(tuningDetail, ObjectState.Added);
       }
     }
+
     public static void UpdateTuningDetail(int idChannel, int idTuning, IChannel channel)
     {
-
       using (IChannelRepository channelRepository = new ChannelRepository())
       {
-        IQueryable<TuningDetail> query = channelRepository.GetQuery<TuningDetail>(t => t.IdTuning == idTuning && t.IdChannel == idChannel);
+        IQueryable<TuningDetail> query =
+          channelRepository.GetQuery<TuningDetail>(t => t.IdTuning == idTuning && t.IdChannel == idChannel);
         TuningDetail tuningDetail = query.FirstOrDefault();
 
         TuningDetail detail = UpdateTuningDetailWithChannelData(idChannel, channel, tuningDetail);
@@ -569,7 +580,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       }
     }
 
-    private static TuningDetail UpdateTuningDetailWithChannelData(int idChannel, IChannel channel, TuningDetail tuningDetail)
+    private static TuningDetail UpdateTuningDetailWithChannelData(int idChannel, IChannel channel,
+                                                                  TuningDetail tuningDetail)
     {
       string channelName = "";
       long channelFrequency = 0;
@@ -595,9 +607,9 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       int channelType = 0;
       int band = 0;
       int satIndex = -1;
-      var innerFecRate = (int)BinaryConvolutionCodeRate.RateNotSet;
-      var pilot = (int)Pilot.NotSet;
-      var rollOff = (int)RollOff.NotSet;
+      var innerFecRate = (int) BinaryConvolutionCodeRate.RateNotSet;
+      var pilot = (int) Pilot.NotSet;
+      var rollOff = (int) RollOff.NotSet;
       string url = "";
       MediaTypeEnum mediaType = MediaTypeEnum.TV;
 
@@ -609,9 +621,9 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         channelNumber = analogChannel.ChannelNumber;
         country = analogChannel.Country.Index;
         mediaType = analogChannel.MediaType;
-        tunerSource = (int)analogChannel.TunerSource;
-        videoInputType = (int)analogChannel.VideoSource;
-        audioInputType = (int)analogChannel.AudioSource;
+        tunerSource = (int) analogChannel.TunerSource;
+        videoInputType = (int) analogChannel.VideoSource;
+        audioInputType = (int) analogChannel.AudioSource;
         isVCRSignal = analogChannel.IsVcrSignal;
         channelType = 0;
       }
@@ -622,7 +634,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         majorChannel = atscChannel.MajorChannel;
         minorChannel = atscChannel.MinorChannel;
         channelNumber = atscChannel.PhysicalChannel;
-        modulation = (int)atscChannel.ModulationType;
+        modulation = (int) atscChannel.ModulationType;
         channelType = 1;
       }
 
@@ -630,7 +642,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       if (dvbcChannel != null)
       {
         symbolRate = dvbcChannel.SymbolRate;
-        modulation = (int)dvbcChannel.ModulationType;
+        modulation = (int) dvbcChannel.ModulationType;
         channelNumber = dvbcChannel.LogicalChannelNumber > 999 ? idChannel : dvbcChannel.LogicalChannelNumber;
         channelType = 2;
       }
@@ -639,13 +651,13 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       if (dvbsChannel != null)
       {
         symbolRate = dvbsChannel.SymbolRate;
-        polarisation = (int)dvbsChannel.Polarisation;
-        diseqc = (int)dvbsChannel.Diseqc;
+        polarisation = (int) dvbsChannel.Polarisation;
+        diseqc = (int) dvbsChannel.Diseqc;
         satIndex = dvbsChannel.SatelliteIndex;
-        modulation = (int)dvbsChannel.ModulationType;
-        innerFecRate = (int)dvbsChannel.InnerFecRate;
-        pilot = (int)dvbsChannel.Pilot;
-        rollOff = (int)dvbsChannel.RollOff;
+        modulation = (int) dvbsChannel.ModulationType;
+        innerFecRate = (int) dvbsChannel.InnerFecRate;
+        pilot = (int) dvbsChannel.Pilot;
+        rollOff = (int) dvbsChannel.RollOff;
         channelNumber = dvbsChannel.LogicalChannelNumber > 999 ? idChannel : dvbsChannel.LogicalChannelNumber;
         channelType = 3;
       }
@@ -684,9 +696,9 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       tuningDetail.Provider = provider;
       tuningDetail.ChannelType = channelType;
       tuningDetail.ChannelNumber = channelNumber;
-      tuningDetail.Frequency = (int)channelFrequency;
+      tuningDetail.Frequency = (int) channelFrequency;
       tuningDetail.CountryId = country;
-      tuningDetail.MediaType = (int)mediaType;
+      tuningDetail.MediaType = (int) mediaType;
       tuningDetail.NetworkId = networkId;
       tuningDetail.TransportId = transportId;
       tuningDetail.ServiceId = serviceId;
@@ -723,12 +735,12 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     }
 
 
-
     public static IList<TuningDetail> GetTuningDetailsByName(string channelName, int channelType)
     {
       using (IChannelRepository channelRepository = new ChannelRepository())
       {
-        IQueryable<TuningDetail> query = channelRepository.GetQuery<TuningDetail>(t => t.Name == channelName && t.ChannelType == channelType);
+        IQueryable<TuningDetail> query =
+          channelRepository.GetQuery<TuningDetail>(t => t.Name == channelName && t.ChannelType == channelType);
         query = channelRepository.IncludeAllRelations(query);
         return query.ToList();
       }
@@ -847,11 +859,13 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       }
     }
 
-    public static IList<Channel> ListAllChannelsByMediaType(MediaTypeEnum mediaType, ChannelIncludeRelationEnum includeRelations)
+    public static IList<Channel> ListAllChannelsByMediaType(MediaTypeEnum mediaType,
+                                                            ChannelIncludeRelationEnum includeRelations)
     {
       using (IChannelRepository channelRepository = new ChannelRepository())
       {
-        IQueryable<Channel> query = channelRepository.GetQuery<Channel>(c => c.MediaType == (int)mediaType).OrderBy(c => c.SortOrder);
+        IQueryable<Channel> query =
+          channelRepository.GetQuery<Channel>(c => c.MediaType == (int) mediaType).OrderBy(c => c.SortOrder);
         query = channelRepository.IncludeAllRelations(query, includeRelations);
         //this.LogDebug("ListAllChannelsByMediaType(MediaTypeEnum mediaType, ChannelIncludeRelationEnum includeRelations) SQL = {0}", query.ToTraceString());
         return query.ToList();
@@ -867,7 +881,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       }
     }
 
-    public static IList<Channel> GetAllChannelsByGroupIdAndMediaType(int idGroup, MediaTypeEnum mediaType, ChannelIncludeRelationEnum include)
+    public static IList<Channel> GetAllChannelsByGroupIdAndMediaType(int idGroup, MediaTypeEnum mediaType,
+                                                                     ChannelIncludeRelationEnum include)
     {
       try
       {

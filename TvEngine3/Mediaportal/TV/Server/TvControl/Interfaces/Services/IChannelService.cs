@@ -9,21 +9,21 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
 {
   // Define a service contract.  
   [ServiceContract(Namespace = "http://www.team-mediaportal.com")]
-  [ServiceKnownType(typeof(DVBTChannel))]
-  [ServiceKnownType(typeof(DVBCChannel))]
-  [ServiceKnownType(typeof(DVBSChannel))]
-  [ServiceKnownType(typeof(ATSCChannel))]
-  [ServiceKnownType(typeof(DVBIPChannel))]
-  [ServiceKnownType(typeof(AnalogChannel))]
+  [ServiceKnownType(typeof (DVBTChannel))]
+  [ServiceKnownType(typeof (DVBCChannel))]
+  [ServiceKnownType(typeof (DVBSChannel))]
+  [ServiceKnownType(typeof (ATSCChannel))]
+  [ServiceKnownType(typeof (DVBIPChannel))]
+  [ServiceKnownType(typeof (AnalogChannel))]
   public interface IChannelService
   {
-    [OperationContract]    
+    [OperationContract]
     IList<Channel> GetAllChannelsByGroupIdAndMediaType(int groupId, MediaTypeEnum mediatype);
 
-    [OperationContract]    
+    [OperationContract]
     IList<Channel> GetAllChannelsByGroupId(int groupId);
 
-    [OperationContract]    
+    [OperationContract]
     IList<Channel> ListAllChannels();
 
     [OperationContract]
@@ -69,16 +69,20 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     IList<TuningDetail> GetTuningDetailsByName(string channelName, int channelType);
 
     [OperationContract]
-    void UpdateTuningDetail(int idChannel, int idTuning, IChannel channel);    
+    void UpdateTuningDetail(int idChannel, int idTuning, IChannel channel);
 
     [OperationContract]
     Channel GetChannelByName(string channelName, ChannelIncludeRelationEnum includeRelations);
+
     [OperationContract]
     void DeleteTuningDetail(int idTuning);
+
     [OperationContract]
     GroupMap SaveChannelGroupMap(GroupMap groupMap);
+
     [OperationContract]
     void DeleteChannelMap(int idChannelMap);
+
     [OperationContract]
     ChannelMap SaveChannelMap(ChannelMap map);
 
@@ -89,6 +93,7 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     IList<Channel> ListAllChannelsByMediaType(MediaTypeEnum mediaType, ChannelIncludeRelationEnum includeRelations);
 
     [OperationContract(Name = "GetAllChannelsByGroupIdAndMediaTypeWithSpecificRelations")]
-    IList<Channel> GetAllChannelsByGroupIdAndMediaType(int idGroup, MediaTypeEnum mediaTypeEnum, ChannelIncludeRelationEnum include);    
-  } 
+    IList<Channel> GetAllChannelsByGroupIdAndMediaType(int idGroup, MediaTypeEnum mediaTypeEnum,
+                                                       ChannelIncludeRelationEnum include);
+  }
 }

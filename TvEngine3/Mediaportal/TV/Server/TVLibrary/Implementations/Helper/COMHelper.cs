@@ -33,7 +33,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
   [ComImport, InterfaceType(ComInterfaceType.InterfaceIsIUnknown), Guid("00000001-0000-0000-C000-000000000046")]
   internal interface IClassFactory
   {
-    void CreateInstance([MarshalAs(UnmanagedType.Interface)] object pUnkOuter, ref Guid refiid, [MarshalAs(UnmanagedType.Interface)] out object ppunk);
+    void CreateInstance([MarshalAs(UnmanagedType.Interface)] object pUnkOuter, ref Guid refiid,
+                        [MarshalAs(UnmanagedType.Interface)] out object ppunk);
+
     void LockServer(bool fLock);
   }
 
@@ -45,7 +47,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
   {
     // DllGetClassObject fuction pointer signature
 
-    static readonly DllList DLL_LIST = new DllList();
+    private static readonly DllList DLL_LIST = new DllList();
 
     /// <summary>
     /// Gets a class factory for a specific COM Class ID. 
@@ -76,11 +78,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         return null;
 
       //Convert the function pointer to a .net delegate
-      var dllGetClassObject = (DllGetClassObject) Marshal.GetDelegateForFunctionPointer(dllGetClassObjectPtr, typeof(DllGetClassObject));
+      var dllGetClassObject =
+        (DllGetClassObject) Marshal.GetDelegateForFunctionPointer(dllGetClassObjectPtr, typeof (DllGetClassObject));
 
       //Call the DllGetClassObject to retreive a class factory for out Filter class
       Guid baseFilterGuid = filterPersistClass;
-      Guid classFactoryGuid = typeof(IClassFactory).GUID; //IClassFactory class id
+      Guid classFactoryGuid = typeof (IClassFactory).GUID; //IClassFactory class id
       Object unk;
       if (dllGetClassObject(ref baseFilterGuid, ref classFactoryGuid, out unk) != 0)
         return null;
@@ -90,7 +93,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 
     #region Nested type: DllGetClassObject
 
-    private delegate int DllGetClassObject(ref Guid classId, ref Guid interfaceId, [Out, MarshalAs(UnmanagedType.Interface)] out object ppunk);
+    private delegate int DllGetClassObject(
+      ref Guid classId, ref Guid interfaceId, [Out, MarshalAs(UnmanagedType.Interface)] out object ppunk);
 
     #endregion
 
@@ -103,6 +107,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     private class DllList
     {
       private readonly List<IntPtr> _handleList = new List<IntPtr>();
+
       public void AddDllHandle(IntPtr dllHandle)
       {
         lock (_handleList)
@@ -119,7 +124,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
           {
             MediaPortal.Common.Utils.NativeMethods.FreeLibrary(dllHandle);
           }
-          catch { }
+          catch
+          {
+          }
         }
       }
     }

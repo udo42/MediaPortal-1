@@ -770,7 +770,9 @@ namespace DirectShowLib
   public interface IMediaEvent
   {
     [PreserveSig]
-    int GetEventHandle([Out] out IntPtr hEvent); // HEVENT
+    int GetEventHandle([Out] out IntPtr hEvent);
+
+    // HEVENT
 
     [PreserveSig]
     int GetEvent(

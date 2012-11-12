@@ -31,8 +31,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Impleme
 {
   public class CardReservationRec : CardReservationBase
   {
- 
-
     private CardDetail _cardInfo;
     private RecordingDetail _recDetail;
 
@@ -58,11 +56,15 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Impleme
     {
       bool startRecordingOnDisc = true;
       if (ServiceManager.Instance.InternalControllerService.SupportsSubChannels(_cardInfo.Card.IdCard) == false)
-      {        
+      {
         this.LogDebug("Scheduler : record, now start timeshift");
         string timeshiftFileName = String.Format(@"{0}\live{1}-{2}.ts", _cardInfo.Card.TimeshiftingFolder, _cardInfo.Id,
                                                  tvcard.UserManagement.GetSubChannelIdByChannelId(user.Name, idChannel));
-        startRecordingOnDisc = (TvResult.Succeeded == ServiceManager.Instance.InternalControllerService.StartTimeShifting(ref user, ref timeshiftFileName, idChannel));
+        startRecordingOnDisc = (TvResult.Succeeded ==
+                                ServiceManager.Instance.InternalControllerService.StartTimeShifting(ref user,
+                                                                                                    ref
+                                                                                                      timeshiftFileName,
+                                                                                                    idChannel));
       }
 
       if (startRecordingOnDisc)
@@ -71,7 +73,9 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Impleme
         _recDetail.CardInfo = _cardInfo;
         this.LogDebug("Scheduler : record to {0}", _recDetail.FileName);
         string fileName = _recDetail.FileName;
-        startRecordingOnDisc = (TvResult.Succeeded == ServiceManager.Instance.InternalControllerService.StartRecording(user.Name, user.CardId, out user, ref fileName));
+        startRecordingOnDisc = (TvResult.Succeeded ==
+                                ServiceManager.Instance.InternalControllerService.StartRecording(user.Name, user.CardId,
+                                                                                                 out user, ref fileName));
 
         if (startRecordingOnDisc)
         {
@@ -86,6 +90,5 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Impleme
 
       return startRecordingOnDisc;
     }
-
   }
 }

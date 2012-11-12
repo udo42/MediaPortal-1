@@ -7,6 +7,6 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.Enums
     Tuning,
     Tuned,
     TuneCancelled,
-    TuneFailed    
+    TuneFailed
   }
 }

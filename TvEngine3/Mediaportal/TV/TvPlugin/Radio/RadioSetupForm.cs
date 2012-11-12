@@ -62,7 +62,7 @@ namespace Mediaportal.TV.TvPlugin.Radio
         xmlreader.SetValueAsBool("myradio", "showallchannelsgroup", _showAllChannelsGroup);
         xmlreader.SetValueAsBool("myradio", "rememberlastgroup", _rememberLastGroup);
         xmlreader.SetValue("myradio", "rootgroup", _rootGroup);
-        xmlreader.SetValueAsBool ("myradio", "autoturnonradio",_autoTurnOnRadio);
+        xmlreader.SetValueAsBool("myradio", "autoturnonradio", _autoTurnOnRadio);
       }
     }
 
@@ -87,7 +87,8 @@ namespace Mediaportal.TV.TvPlugin.Radio
       comboBoxGroups.Items.Clear();
       comboBoxGroups.Items.Add("(none)");
       int selectedIdx = 0;
-      IEnumerable<ChannelGroup> groups = ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllChannelGroupsByMediaType(MediaTypeEnum.Radio);
+      IEnumerable<ChannelGroup> groups =
+        ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllChannelGroupsByMediaType(MediaTypeEnum.Radio);
       foreach (ChannelGroup group in groups)
       {
         int idx = comboBoxGroups.Items.Add(group.GroupName);

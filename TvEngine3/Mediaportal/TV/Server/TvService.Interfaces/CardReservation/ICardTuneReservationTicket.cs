@@ -26,26 +26,26 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.CardReservation
 {
   public interface ICardTuneReservationTicket
   {
-    IChannel TuningDetail  { get; }
+    IChannel TuningDetail { get; }
 
     IList<IUser> InactiveUsers { get; }
     IList<IUser> ActiveUsers { get; }
     List<KeyValuePair<string, IUser>> Users { get; }
     List<IUser> RecordingUsers { get; }
-    IList<IUser> TimeshiftingUsers { get; }        
+    IList<IUser> TimeshiftingUsers { get; }
 
-    bool IsSameTransponder  { get; }
+    bool IsSameTransponder { get; }
     bool IsOwner { get; }
     bool IsAnySubChannelTimeshifting { get; }
     bool IsFreeToAir { get; }
-    bool ConflictingSubchannelFound { get; }    
+    bool ConflictingSubchannelFound { get; }
 
     int NumberOfOtherUsersOnSameChannel { get; }
     int NumberOfOtherUsersOnCurrentCard { get; }
     int NumberOfUsersOnSameCurrentChannel { get; }
 
     int Id { get; }
-    ISubChannel OwnerSubchannel { get; }    
+    ISubChannel OwnerSubchannel { get; }
     int CardId { get; }
     int NumberOfChannelsDecrypting { get; }
     bool IsCamAlreadyDecodingChannel { get; }

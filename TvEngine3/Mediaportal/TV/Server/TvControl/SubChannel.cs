@@ -7,17 +7,14 @@ namespace Mediaportal.TV.Server.TVControl
   [DataContract]
   public class SubChannel : ISubChannel
   {
-    [DataMember]
-    private int _id;
+    [DataMember] private int _id;
 
-    [DataMember]
-    private int _idChannel;
+    [DataMember] private int _idChannel;
 
-    [DataMember]
-    private TvUsage _tvUsage;
+    [DataMember] private TvUsage _tvUsage;
 
     public SubChannel()
-    {     
+    {
     }
 
     public SubChannel(int id, int idChannel, TvUsage tvUsage)

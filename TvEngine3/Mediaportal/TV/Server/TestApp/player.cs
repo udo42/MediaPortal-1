@@ -151,19 +151,19 @@ namespace Mediaportal.TV.Server.TestApp
     {
       fileName += ".tsbuffer";
       this.LogDebug("play:{0}", fileName);
-      _graphBuilder = (IFilterGraph2)new FilterGraph();
+      _graphBuilder = (IFilterGraph2) new FilterGraph();
       _rotEntry = new DsROTEntry(_graphBuilder);
 
 
       this.LogDebug("add tsfilesource");
       _tsFileSource = new TsFileSource();
-      _graphBuilder.AddFilter((IBaseFilter)_tsFileSource, "TsFileSource");
+      _graphBuilder.AddFilter((IBaseFilter) _tsFileSource, "TsFileSource");
 
       #region add mpeg-2 demux filter
 
       this.LogDebug("add mpeg-2 demux");
       var demux = new MPEG2Demultiplexer();
-      _mpegDemux = (IBaseFilter)demux;
+      _mpegDemux = (IBaseFilter) demux;
       int hr = _graphBuilder.AddFilter(_mpegDemux, "MPEG-2 Demultiplexer");
 
       #endregion
@@ -195,7 +195,7 @@ namespace Mediaportal.TV.Server.TestApp
       #region load file in tsfilesource
 
       this.LogDebug("load file in tsfilesource");
-      var interfaceFile = (IFileSourceFilter)_tsFileSource;
+      var interfaceFile = (IFileSourceFilter) _tsFileSource;
       if (interfaceFile == null)
       {
         this.LogDebug("TSStreamBufferPlayer9:Failed to get IFileSourceFilter");
@@ -225,7 +225,7 @@ namespace Mediaportal.TV.Server.TestApp
 
       this.LogDebug("connect tsfilesource->demux");
       this.LogDebug("TSStreamBufferPlayer9:connect tsfilesource->mpeg2 demux");
-      IPin pinTsOut = DsFindPin.ByDirection((IBaseFilter)_tsFileSource, PinDirection.Output, 0);
+      IPin pinTsOut = DsFindPin.ByDirection((IBaseFilter) _tsFileSource, PinDirection.Output, 0);
       if (pinTsOut == null)
       {
         this.LogDebug("TSStreamBufferPlayer9:failed to find output pin of tsfilesource");
@@ -252,14 +252,14 @@ namespace Mediaportal.TV.Server.TestApp
       #region map demux pids
 
       this.LogDebug("map mpeg2 pids");
-      var pStreamId = (IMPEG2StreamIdMap)_pinVideo;
+      var pStreamId = (IMPEG2StreamIdMap) _pinVideo;
       hr = pStreamId.MapStreamId(0xe0, MPEG2Program.ElementaryStream, 0, 0);
       if (hr != 0)
       {
         this.LogDebug("TSStreamBufferPlayer9: failed to map pid 0xe0->video pin");
         return false;
       }
-      pStreamId = (IMPEG2StreamIdMap)_pinAudio;
+      pStreamId = (IMPEG2StreamIdMap) _pinAudio;
       hr = pStreamId.MapStreamId(0xc0, MPEG2Program.ElementaryStream, 0, 0);
       if (hr != 0)
       {
@@ -294,13 +294,13 @@ namespace Mediaportal.TV.Server.TestApp
         _videoWin.put_Visible(OABool.True);
         _videoWin.put_Owner(form.Handle);
         _videoWin.put_WindowStyle(
-          (WindowStyle)((int)WindowStyle.Child + (int)WindowStyle.ClipSiblings + (int)WindowStyle.ClipChildren));
+          (WindowStyle) ((int) WindowStyle.Child + (int) WindowStyle.ClipSiblings + (int) WindowStyle.ClipChildren));
         _videoWin.put_MessageDrain(form.Handle);
         _videoWin.SetWindowPosition(190, 250, 150, 150);
       }
 
       this.LogDebug("run graph");
-      _mediaCtrl = (IMediaControl)_graphBuilder;
+      _mediaCtrl = (IMediaControl) _graphBuilder;
       hr = _mediaCtrl.Run();
       this.LogDebug("TSStreamBufferPlayer9:running:{0:X}", hr);
 
@@ -382,7 +382,9 @@ namespace Mediaportal.TV.Server.TestApp
     #region Nested type: TsFileSource
 
     [ComImport, Guid("4F8BF30C-3BEB-43A3-8BF2-10096FD28CF2")]
-    protected class TsFileSource {}
+    protected class TsFileSource
+    {
+    }
 
     #endregion
   }

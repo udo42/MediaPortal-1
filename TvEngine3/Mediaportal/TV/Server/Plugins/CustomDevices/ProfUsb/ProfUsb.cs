@@ -43,14 +43,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
 
     private enum BdaExtensionProperty
     {
-      Tuner = 0,            // For tuning.
-      Ir,                   // For retrieving IR codes from the device's IR receiver.
-      Tone,                 // For controlling the 22 kHz oscillator.
-      Motor,                // For sending raw DiSEqC commands.
-      LnbPower,             // For controlling the power supply to the LNB.
-      TunerLock,            // For retrieving signal lock, strength and quality information.
-      MacAddress,           // For retrieving a device's MAC address.
-      DeviceId              // For retrieving a device's ID (device path section).
+      Tuner = 0, // For tuning.
+      Ir, // For retrieving IR codes from the device's IR receiver.
+      Tone, // For controlling the 22 kHz oscillator.
+      Motor, // For sending raw DiSEqC commands.
+      LnbPower, // For controlling the power supply to the LNB.
+      TunerLock, // For retrieving signal lock, strength and quality information.
+      MacAddress, // For retrieving a device's MAC address.
+      DeviceId // For retrieving a device's ID (device path section).
     }
 
     #endregion
@@ -135,28 +135,29 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct BdaExtensionParams
     {
-      public UInt32 Frequency;                // unit = MHz
+      public UInt32 Frequency; // unit = MHz
       // Note that the driver does not automatically enable and disable the 22 kHz tone. Further, it is not
       // clear how the driver interprets these parameters. I recommend that the same frequency should be
       // passed in both parameters.
-      public UInt32 LnbLowBandLof;            // unit = MHz
-      public UInt32 LnbHighBandLof;           // unit = MHz
-      public UInt32 SymbolRate;               // unit = ks/s
+      public UInt32 LnbLowBandLof; // unit = MHz
+      public UInt32 LnbHighBandLof; // unit = MHz
+      public UInt32 SymbolRate; // unit = ks/s
       public ProfPolarisation Polarisation;
-      public ProfLnbPower LnbPower;           // BdaExtensionProperty.LnbPower
-      public Prof22k Tone22k;                 // BdaExtensionProperty.Tone
-      public ProfToneBurst ToneBurst;         // BdaExtensionProperty.Tone
+      public ProfLnbPower LnbPower; // BdaExtensionProperty.LnbPower
+      public Prof22k Tone22k; // BdaExtensionProperty.Tone
+      public ProfToneBurst ToneBurst; // BdaExtensionProperty.Tone
       public ProfDiseqcPort DiseqcPort;
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcMessageLength)]
-      public byte[] DiseqcRawCommand;         // BdaExtensionProperty.Motor
-      public readonly ProfIrCode IrCode;               // BdaExtensionProperty.Ir
-      public readonly byte LockState;                  // BdaExtensionProperty.TunerLock
-      public readonly byte SignalStrength;             // BdaExtensionProperty.TunerLock
-      public readonly byte SignalQuality;              // BdaExtensionProperty.TunerLock
-      public byte InnerFecRate;               // (BinaryConvolutionCodeRate)
-      public byte Modulation;                 // (ModulationType)
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)]
-      private readonly byte[] Reserved;
+
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcMessageLength)] public byte[] DiseqcRawCommand;
+                                                                                              // BdaExtensionProperty.Motor
+
+      public readonly ProfIrCode IrCode; // BdaExtensionProperty.Ir
+      public readonly byte LockState; // BdaExtensionProperty.TunerLock
+      public readonly byte SignalStrength; // BdaExtensionProperty.TunerLock
+      public readonly byte SignalQuality; // BdaExtensionProperty.TunerLock
+      public byte InnerFecRate; // (BinaryConvolutionCodeRate)
+      public byte Modulation; // (ModulationType)
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = 256)] private readonly byte[] Reserved;
     }
 
     #endregion
@@ -167,7 +168,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
     private const int MaxDiseqcMessageLength = 5;
     private const int MacAddressLength = 6;
     private const int DeviceIdLength = 8;
-    private static readonly Guid BdaExtensionPropertySet = new Guid(0xc6efe5eb, 0x855a, 0x4f1b, 0xb7, 0xaa, 0x87, 0xb5, 0xe1, 0xdc, 0x41, 0x13);
+
+    private static readonly Guid BdaExtensionPropertySet = new Guid(0xc6efe5eb, 0x855a, 0x4f1b, 0xb7, 0xaa, 0x87, 0xb5,
+                                                                    0xe1, 0xdc, 0x41, 0x13);
 
     #endregion
 
@@ -189,7 +192,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       // Check whether custom tuning is supported.
       this.LogDebug("Prof (USB): checking for tuning property support");
       KSPropertySupport support;
-      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.Tuner, out support);
+      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int) BdaExtensionProperty.Tuner, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
         this.LogDebug("Prof (USB): property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -207,11 +210,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
         Marshal.WriteByte(_generalBuffer, i, 0);
       }
       int returnedByteCount;
-      hr = _propertySet.Get(BdaExtensionPropertySet, (int)BdaExtensionProperty.MacAddress,
-        _generalBuffer, MacAddressLength,
-        _generalBuffer, MacAddressLength,
-        out returnedByteCount
-      );
+      hr = _propertySet.Get(BdaExtensionPropertySet, (int) BdaExtensionProperty.MacAddress,
+                            _generalBuffer, MacAddressLength,
+                            _generalBuffer, MacAddressLength,
+                            out returnedByteCount
+        );
       if (hr != 0 || returnedByteCount != MacAddressLength)
       {
         this.LogDebug("Prof (USB): result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -223,7 +226,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
         {
           address += String.Format("{0:x2}-", Marshal.ReadByte(_generalBuffer, i));
         }
-        this.LogDebug("  MAC address = {0}", address.Substring(0, (returnedByteCount * 3) - 1));
+        this.LogDebug("  MAC address = {0}", address.Substring(0, (returnedByteCount*3) - 1));
       }
 
       // Device ID.
@@ -232,11 +235,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       {
         Marshal.WriteByte(_generalBuffer, i, 0);
       }
-      hr = _propertySet.Get(BdaExtensionPropertySet, (int)BdaExtensionProperty.DeviceId,
-        _generalBuffer, DeviceIdLength,
-        _generalBuffer, DeviceIdLength,
-        out returnedByteCount
-      );
+      hr = _propertySet.Get(BdaExtensionPropertySet, (int) BdaExtensionProperty.DeviceId,
+                            _generalBuffer, DeviceIdLength,
+                            _generalBuffer, DeviceIdLength,
+                            out returnedByteCount
+        );
       if (hr != 0 || returnedByteCount != DeviceIdLength)
       {
         this.LogDebug("Prof (USB): result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -273,10 +276,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
     /// </summary>
     public override String Name
     {
-      get
-      {
-        return "Prof (USB)";
-      }
+      get { return "Prof (USB)"; }
     }
 
     /// <summary>
@@ -311,10 +311,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       }
 
       KSPropertySupport support;
-      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.Motor, out support);
+      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int) BdaExtensionProperty.Motor, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
-        this.LogDebug("Prof (USB): device does not support the Prof USB property set, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Prof (USB): device does not support the Prof USB property set, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         return false;
       }
 
@@ -333,7 +334,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
     /// <param name="currentChannel">The channel that the tuner is currently tuned to..</param>
     /// <param name="channel">The channel that the tuner will been tuned to.</param>
     /// <param name="action">The action to take, if any.</param>
-    public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel, out DeviceAction action)
+    public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel,
+                                      out DeviceAction action)
     {
       this.LogDebug("Prof (USB): on before tune callback");
       action = DeviceAction.Default;
@@ -386,7 +388,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       }
 
       KSPropertySupport support;
-      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.LnbPower, out support);
+      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int) BdaExtensionProperty.LnbPower, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
         this.LogDebug("Prof (USB): property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -406,7 +408,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       Marshal.StructureToPtr(command, _generalBuffer, true);
       //DVB_MMI.DumpBinary(_generalBuffer, 0, BdaExtensionParamsSize);
 
-      hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.LnbPower,
+      hr = _propertySet.Set(BdaExtensionPropertySet, (int) BdaExtensionProperty.LnbPower,
                             IntPtr.Zero, 0,
                             _generalBuffer, BdaExtensionParamsSize
         );
@@ -483,13 +485,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       }
 
       var tuningParams = new BdaExtensionParams();
-      tuningParams.Frequency = (uint)dvbsChannel.Frequency / 1000;
+      tuningParams.Frequency = (uint) dvbsChannel.Frequency/1000;
       // See the notes for the struct to understand why we do this. Note that OnBeforeTune() ensures that the low LOF
       // is set appropriately.
-      UInt32 lnbLof = (UInt32)dvbsChannel.LnbType.LowBandFrequency / 1000;
+      UInt32 lnbLof = (UInt32) dvbsChannel.LnbType.LowBandFrequency/1000;
       tuningParams.LnbLowBandLof = lnbLof;
       tuningParams.LnbHighBandLof = lnbLof;
-      tuningParams.SymbolRate = (uint)dvbsChannel.SymbolRate;
+      tuningParams.SymbolRate = (uint) dvbsChannel.SymbolRate;
       tuningParams.Polarisation = profPolarisation;
       tuningParams.LnbPower = ProfLnbPower.On;
       tuningParams.Tone22k = tone22k;
@@ -497,13 +499,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       // DiSEqC commands are already sent using the raw command interface. No need to resend them and
       // unnecessarily slow down the tune request.
       tuningParams.DiseqcPort = ProfDiseqcPort.Null;
-      tuningParams.InnerFecRate = (byte)dvbsChannel.InnerFecRate;
-      tuningParams.Modulation = (byte)dvbsChannel.ModulationType;
+      tuningParams.InnerFecRate = (byte) dvbsChannel.InnerFecRate;
+      tuningParams.Modulation = (byte) dvbsChannel.ModulationType;
 
       Marshal.StructureToPtr(tuningParams, _generalBuffer, true);
       //DVB_MMI.DumpBinary(_generalBuffer, 0, BdaExtensionParamsSize);
 
-      int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.Tuner,
+      int hr = _propertySet.Set(BdaExtensionPropertySet, (int) BdaExtensionProperty.Tuner,
                                 IntPtr.Zero, 0,
                                 _generalBuffer, BdaExtensionParamsSize
         );
@@ -538,7 +540,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       }
 
       KSPropertySupport support;
-      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.Tone,
+      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int) BdaExtensionProperty.Tone,
                                            out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
@@ -565,7 +567,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       Marshal.StructureToPtr(command, _generalBuffer, true);
       //DVB_MMI.DumpBinary(_generalBuffer, 0, BdaExtensionParamsSize);
 
-      hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.Tone,
+      hr = _propertySet.Set(BdaExtensionPropertySet, (int) BdaExtensionProperty.Tone,
                             IntPtr.Zero, 0,
                             _generalBuffer, BdaExtensionParamsSize
         );
@@ -611,7 +613,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.ProfUsb
       Marshal.StructureToPtr(propertyParams, _generalBuffer, true);
       //DVB_MMI.DumpBinary(_generalBuffer, 0, BdaExtensionParamsSize);
 
-      int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.Motor,
+      int hr = _propertySet.Set(BdaExtensionPropertySet, (int) BdaExtensionProperty.Motor,
                                 IntPtr.Zero, 0,
                                 _generalBuffer, BdaExtensionParamsSize
         );

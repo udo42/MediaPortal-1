@@ -25,5 +25,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   /// <summary>
   /// Summary description for MPToolTip.
   /// </summary>
-  public class MPToolTip : ToolTip {}
+  public class MPToolTip : ToolTip
+  {
+  }
 }

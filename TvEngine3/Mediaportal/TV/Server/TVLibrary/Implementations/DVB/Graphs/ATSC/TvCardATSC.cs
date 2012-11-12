@@ -81,7 +81,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
         return;
       }
 
-      var tuner = (ITuner)_filterNetworkProvider;
+      var tuner = (ITuner) _filterNetworkProvider;
       ITuneRequest request;
 
       IEnumTuningSpaces enumTuning;
@@ -102,10 +102,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
           if (name.Equals("MediaPortal ATSC TuningSpace"))
           {
             this.LogDebug("TvCardAtsc: found correct tuningspace");
-            _tuningSpace = (IATSCTuningSpace)spaces[0];
+            _tuningSpace = (IATSCTuningSpace) spaces[0];
             tuner.put_TuningSpace(_tuningSpace);
             _tuningSpace.CreateTuneRequest(out request);
-            _tuneRequest = (IATSCChannelTuneRequest)request;
+            _tuneRequest = (IATSCChannelTuneRequest) request;
             Release.ComObject("TuningSpaceContainer", container);
             return;
           }
@@ -119,20 +119,20 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
 
       // We didn't find our tuning space registered in the system, so create a new one.
       this.LogDebug("TvCardAtsc: create new tuningspace");
-      _tuningSpace = (IATSCTuningSpace)new ATSCTuningSpace();
+      _tuningSpace = (IATSCTuningSpace) new ATSCTuningSpace();
       _tuningSpace.put_UniqueName("MediaPortal ATSC TuningSpace");
       _tuningSpace.put_FriendlyName("MediaPortal ATSC TuningSpace");
-      _tuningSpace.put__NetworkType(typeof(ATSCNetworkProvider).GUID);
+      _tuningSpace.put__NetworkType(typeof (ATSCNetworkProvider).GUID);
       _tuningSpace.put_CountryCode(0);
       _tuningSpace.put_InputType(TunerInputType.Antenna);
-      _tuningSpace.put_MaxMinorChannel(999);     // the number of minor channels per major channel
-      _tuningSpace.put_MaxPhysicalChannel(158);  // 69 for ATSC, 158 for cable (QAM)
-      _tuningSpace.put_MaxChannel(99);           // the number of scannable major channels
+      _tuningSpace.put_MaxMinorChannel(999); // the number of minor channels per major channel
+      _tuningSpace.put_MaxPhysicalChannel(158); // 69 for ATSC, 158 for cable (QAM)
+      _tuningSpace.put_MaxChannel(99); // the number of scannable major channels
       _tuningSpace.put_MinMinorChannel(0);
-      _tuningSpace.put_MinPhysicalChannel(1);    // 1 for ATSC, 2 for cable (QAM)
+      _tuningSpace.put_MinPhysicalChannel(1); // 1 for ATSC, 2 for cable (QAM)
       _tuningSpace.put_MinChannel(1);
 
-      var locator = (IATSCLocator)new ATSCLocator();
+      var locator = (IATSCLocator) new ATSCLocator();
       locator.put_CarrierFrequency(-1);
       locator.put_PhysicalChannel(-1);
       locator.put_SymbolRate(-1);
@@ -151,7 +151,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
 
       tuner.put_TuningSpace(_tuningSpace);
       _tuningSpace.CreateTuneRequest(out request);
-      _tuneRequest = (IATSCChannelTuneRequest)request;
+      _tuneRequest = (IATSCChannelTuneRequest) request;
     }
 
     protected override DVBBaseChannel CreateChannel()
@@ -201,8 +201,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
 
       ILocator locator;
       _tuningSpace.get_DefaultLocator(out locator);
-      var atscLocator = (IATSCLocator)locator;
-      atscLocator.put_CarrierFrequency((int)atscChannel.Frequency);
+      var atscLocator = (IATSCLocator) locator;
+      atscLocator.put_CarrierFrequency((int) atscChannel.Frequency);
       atscLocator.put_PhysicalChannel(atscChannel.PhysicalChannel);
       atscLocator.put_Modulation(atscChannel.ModulationType);
 

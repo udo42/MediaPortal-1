@@ -44,7 +44,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
         //Editing
         textBoxChannel.Text = TuningDetail.ChannelNumber.ToString();
         comboBoxInput.SelectedIndex = 0;
-        if (TuningDetail.TuningSource == (int)TunerInputType.Cable)
+        if (TuningDetail.TuningSource == (int) TunerInputType.Cable)
           comboBoxInput.SelectedIndex = 1;
         comboBoxCountry.SelectedIndex = TuningDetail.CountryId;
         comboBoxVideoSource.SelectedIndex = TuningDetail.VideoSource;
@@ -82,13 +82,13 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
     private void UpdateTuningDetail()
     {
       TuningDetail.ChannelNumber = Convert.ToInt32(textBoxChannel.Text);
-      TuningDetail.CountryId = ((Country)comboBoxCountry.SelectedItem).Index;
-      TuningDetail.TuningSource = (int)(comboBoxInput.SelectedIndex == 1
-                                          ? TunerInputType.Cable
-                                          : TunerInputType.Antenna);
+      TuningDetail.CountryId = ((Country) comboBoxCountry.SelectedItem).Index;
+      TuningDetail.TuningSource = (int) (comboBoxInput.SelectedIndex == 1
+                                           ? TunerInputType.Cable
+                                           : TunerInputType.Antenna);
       TuningDetail.VideoSource = comboBoxVideoSource.SelectedIndex;
-      TuningDetail.AudioSource  = comboBoxAudioSource.SelectedIndex;
-      TuningDetail.Frequency = (int)GetFrequency(textBoxAnalogFrequency.Text, "2");
+      TuningDetail.AudioSource = comboBoxAudioSource.SelectedIndex;
+      TuningDetail.Frequency = (int) GetFrequency(textBoxAnalogFrequency.Text, "2");
       TuningDetail.IsVCRSignal = checkBoxVCR.Checked;
       TuningDetail.ChannelType = 0;
     }
@@ -163,7 +163,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       }
       float freq = float.Parse(text);
       freq *= 1000000f;
-      return (long)freq;
+      return (long) freq;
     }
 
     private static string SetFrequency(long frequency, string precision)

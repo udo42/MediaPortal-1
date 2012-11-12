@@ -28,7 +28,7 @@ using Mediaportal.TV.Server.TVDatabase.Entities;
 namespace Mediaportal.TV.Server.SetupTV.Dialogs
 {
   public partial class FormDVBSTuningDetail : FormTuningDetailCommon
-  {    
+  {
     public FormDVBSTuningDetail()
     {
       InitializeComponent();
@@ -56,7 +56,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
         IEnumerator en = comboBoxLnbType.Items.GetEnumerator();
         while (en.MoveNext())
         {
-          var lnbType = (LnbType)en.Current;
+          var lnbType = (LnbType) en.Current;
           if (lnbType != null && lnbType.IdLnbType == TuningDetail.IdLnbType)
           {
             comboBoxLnbType.SelectedItem = en.Current;
@@ -107,18 +107,18 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       TuningDetail.TransportId = Int32.Parse(textBoxTransportId.Text);
       TuningDetail.ServiceId = Int32.Parse(textBoxServiceId.Text);
       TuningDetail.Symbolrate = Int32.Parse(textBoxSymbolRate.Text);
-      TuningDetail.Polarisation = (int)(Polarisation)(comboBoxPol.SelectedIndex - 1);
-      TuningDetail.InnerFecRate = (int)(BinaryConvolutionCodeRate)(comboBoxInnerFecRate.SelectedIndex - 1);
-      TuningDetail.Pilot = (int)(Pilot)(comboBoxPilot.SelectedIndex - 1);
-      TuningDetail.RollOff = (int)(RollOff)(comboBoxRollOff.SelectedIndex - 1);
-      TuningDetail.Modulation = (int)(ModulationType)(comboBoxModulation.SelectedIndex - 1);
+      TuningDetail.Polarisation = (int) (Polarisation) (comboBoxPol.SelectedIndex - 1);
+      TuningDetail.InnerFecRate = (int) (BinaryConvolutionCodeRate) (comboBoxInnerFecRate.SelectedIndex - 1);
+      TuningDetail.Pilot = (int) (Pilot) (comboBoxPilot.SelectedIndex - 1);
+      TuningDetail.RollOff = (int) (RollOff) (comboBoxRollOff.SelectedIndex - 1);
+      TuningDetail.Modulation = (int) (ModulationType) (comboBoxModulation.SelectedIndex - 1);
       TuningDetail.ChannelNumber = Int32.Parse(textBoxDVBSChannel.Text);
       TuningDetail.PmtPid = Int32.Parse(textBoxDVBSPmt.Text);
       TuningDetail.Provider = textBoxDVBSProvider.Text;
       TuningDetail.FreeToAir = checkBoxDVBSfta.Checked;
       TuningDetail.DiSEqC = comboBoxDiseqc.SelectedIndex;
       // This should be safe because we've validated the selection in ValidateInput().
-      TuningDetail.IdLnbType = ((LnbType)comboBoxLnbType.SelectedItem).IdLnbType;
+      TuningDetail.IdLnbType = ((LnbType) comboBoxLnbType.SelectedItem).IdLnbType;
     }
 
     private bool ValidateInput()

@@ -82,11 +82,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
       _tunerType = CardType.DvbS;
       if (_devicePath != null)
       {
-        Card c = CardManagement.GetCardByDevicePath(_devicePath, CardIncludeRelationEnum.None);        
+        Card c = CardManagement.GetCardByDevicePath(_devicePath, CardIncludeRelationEnum.None);
         if (c != null)
         {
           _alwaysSendDiseqcCommands = c.AlwaysSendDiseqcCommands;
-          _diseqcCommandRepeatCount = (ushort)c.DiseqcCommandRepeatCount;
+          _diseqcCommandRepeatCount = (ushort) c.DiseqcCommandRepeatCount;
           if (_diseqcCommandRepeatCount > 5)
           {
             // It would be rare that commands would need to be repeated more than twice. Five times
@@ -138,7 +138,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
         return;
       }
 
-      var tuner = (ITuner)_filterNetworkProvider;
+      var tuner = (ITuner) _filterNetworkProvider;
 
       // Defaults: Ku linear "universal" LNB settings.
       const int lowOsc = 9750000;
@@ -163,7 +163,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
           if (name.Equals("MediaPortal DVBS TuningSpace"))
           {
             this.LogDebug("TvCardDvbS: found correct tuningspace");
-            _tuningSpace = (IDVBSTuningSpace)spaces[0];
+            _tuningSpace = (IDVBSTuningSpace) spaces[0];
             _tuningSpace.put_SpectralInversion(SpectralInversion.Automatic);
             _tuningSpace.put_LowOscillator(lowOsc);
             _tuningSpace.put_HighOscillator(hiOsc);
@@ -182,16 +182,16 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
 
       // We didn't find our tuning space registered in the system, so create a new one.
       this.LogDebug("TvCardDvbS: create new tuningspace");
-      _tuningSpace = (IDVBSTuningSpace)new DVBSTuningSpace();
+      _tuningSpace = (IDVBSTuningSpace) new DVBSTuningSpace();
       _tuningSpace.put_UniqueName("MediaPortal DVBS TuningSpace");
       _tuningSpace.put_FriendlyName("MediaPortal DVBS TuningSpace");
-      _tuningSpace.put__NetworkType(typeof(DVBSNetworkProvider).GUID);
+      _tuningSpace.put__NetworkType(typeof (DVBSNetworkProvider).GUID);
       _tuningSpace.put_SystemType(DVBSystemType.Satellite);
       _tuningSpace.put_LowOscillator(lowOsc);
       _tuningSpace.put_HighOscillator(hiOsc);
       _tuningSpace.put_LNBSwitch(switchFrequency);
 
-      var locator = (IDVBSLocator)new DVBSLocator();
+      var locator = (IDVBSLocator) new DVBSLocator();
       locator.put_CarrierFrequency(-1);
       locator.put_SymbolRate(-1);
       locator.put_Modulation(ModulationType.ModNotSet);
@@ -253,8 +253,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
 
       ILocator locator;
       _tuningSpace.get_DefaultLocator(out locator);
-      var dvbsLocator = (IDVBSLocator)locator;
-      dvbsLocator.put_CarrierFrequency((int)dvbsChannel.Frequency);
+      var dvbsLocator = (IDVBSLocator) locator;
+      dvbsLocator.put_CarrierFrequency((int) dvbsChannel.Frequency);
       dvbsLocator.put_SymbolRate(dvbsChannel.SymbolRate);
       dvbsLocator.put_SignalPolarisation(dvbsChannel.Polarisation);
       dvbsLocator.put_Modulation(dvbsChannel.ModulationType);
@@ -262,7 +262,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
 
       ITuneRequest request;
       _tuningSpace.CreateTuneRequest(out request);
-      var tuneRequest = (IDVBTuneRequest)request;
+      var tuneRequest = (IDVBTuneRequest) request;
       tuneRequest.put_ONID(dvbsChannel.NetworkId);
       tuneRequest.put_TSID(dvbsChannel.TransportId);
       tuneRequest.put_SID(dvbsChannel.ServiceId);
@@ -295,10 +295,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBS
     /// DiSEqC commands</value>
     public override IDiseqcController DiseqcController
     {
-      get
-      {
-        return _diseqcController;
-      }
+      get { return _diseqcController; }
     }
 
     /// <summary>

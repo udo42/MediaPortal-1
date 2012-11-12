@@ -49,14 +49,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
     private static extern void StreamRun();
 
     [DllImport("StreamingServer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
-    private static extern void StreamAddTimeShiftFile(string streamName, 
-                                                      [In, MarshalAs(UnmanagedType.LPWStr)] string fileName, 
+    private static extern void StreamAddTimeShiftFile(string streamName,
+                                                      [In, MarshalAs(UnmanagedType.LPWStr)] string fileName,
                                                       bool isProgramStream,
                                                       int channelType);
 
     [DllImport("StreamingServer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
     private static extern void StreamAddMpegFile(string streamName,
-                                                 [In, MarshalAs(UnmanagedType.LPWStr)] string fileName, 
+                                                 [In, MarshalAs(UnmanagedType.LPWStr)] string fileName,
                                                  int channelType);
 
     [DllImport("StreamingServer.dll", CharSet = CharSet.Ansi, CallingConvention = CallingConvention.Cdecl)]
@@ -97,7 +97,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
     /// </summary>
     /// <param name="hostName">ipadress to use for streaming.</param>
     public RtspStreaming(string hostName)
-      : this(hostName, DefaultPort) {}
+      : this(hostName, DefaultPort)
+    {
+    }
 
     /// <summary>
     /// Initializes a new instance of the <see cref="RtspStreaming"/> class.
@@ -379,13 +381,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
           new ManagementObjectSearcher("root\\CIMV2",
                                        "SELECT DefaultIPGateway, IPAddress FROM Win32_NetworkAdapterConfiguration"))
         {
-
           foreach (ManagementObject queryObj in searcher.Get())
           {
             if (queryObj["DefaultIPGateway"] != null && queryObj["IPAddress"] != null)
             {
-              var arrDefaultIPGateway = (String[])(queryObj["DefaultIPGateway"]);
-              var arrIPAddress = (String[])(queryObj["IPAddress"]);
+              var arrDefaultIPGateway = (String[]) (queryObj["DefaultIPGateway"]);
+              var arrIPAddress = (String[]) (queryObj["IPAddress"]);
               if (arrDefaultIPGateway.Length > 0 && arrIPAddress.Length > 0)
               {
                 foreach (string address in arrIPAddress)

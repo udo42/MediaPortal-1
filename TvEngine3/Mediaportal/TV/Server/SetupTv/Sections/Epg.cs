@@ -31,7 +31,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private string crcSettingsFile = DebugSettings.SettingPath("DisableCRCCheck");
 
     public Epg()
-      : this("DVB EPG") {}
+      : this("DVB EPG")
+    {
+    }
 
     public Epg(string name)
       : base(name)
@@ -42,37 +44,47 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     public override void OnSectionActivated()
     {
       base.OnSectionActivated();
-      
 
-      checkBoxAlwaysFillHoles.Checked = ServiceAgents.Instance.SettingServiceAgent.GetValue("generalEPGAlwaysFillHoles", false);
-      checkBoxAlwaysUpdate.Checked = ServiceAgents.Instance.SettingServiceAgent.GetValue("generalEPGAlwaysReplace", false);
-      checkboxSameTransponder.Checked = ServiceAgents.Instance.SettingServiceAgent.GetValue("generalGrapOnlyForSameTransponder", false);
 
-      checkBoxEnableEPGWhileIdle.Checked = ServiceAgents.Instance.SettingServiceAgent.GetValue("idleEPGGrabberEnabled", true);
+      checkBoxAlwaysFillHoles.Checked = ServiceAgents.Instance.SettingServiceAgent.GetValue(
+        "generalEPGAlwaysFillHoles", false);
+      checkBoxAlwaysUpdate.Checked = ServiceAgents.Instance.SettingServiceAgent.GetValue("generalEPGAlwaysReplace",
+                                                                                         false);
+      checkboxSameTransponder.Checked =
+        ServiceAgents.Instance.SettingServiceAgent.GetValue("generalGrapOnlyForSameTransponder", false);
+
+      checkBoxEnableEPGWhileIdle.Checked = ServiceAgents.Instance.SettingServiceAgent.GetValue("idleEPGGrabberEnabled",
+                                                                                               true);
       checkBoxEnableCRCCheck.Checked = !DebugSettings.DisableCRCCheck;
       numericUpDownEpgTimeOut.Value = ServiceAgents.Instance.SettingServiceAgent.GetValue("timeoutEPG", 10);
       numericUpDownEpgRefresh.Value = ServiceAgents.Instance.SettingServiceAgent.GetValue("timeoutEPGRefresh", 240);
-      checkBoxEnableEpgWhileTimeshifting.Checked = ServiceAgents.Instance.SettingServiceAgent.GetValue("timeshiftingEpgGrabberEnabled", false);
-      numericUpDownTSEpgTimeout.Value = ServiceAgents.Instance.SettingServiceAgent.GetValue("timeshiftingEpgGrabberTimeout", 2);
+      checkBoxEnableEpgWhileTimeshifting.Checked =
+        ServiceAgents.Instance.SettingServiceAgent.GetValue("timeshiftingEpgGrabberEnabled", false);
+      numericUpDownTSEpgTimeout.Value =
+        ServiceAgents.Instance.SettingServiceAgent.GetValue("timeshiftingEpgGrabberTimeout", 2);
 
       edTitleTemplate.Text = ServiceAgents.Instance.SettingServiceAgent.GetValue("epgTitleTemplate", "%TITLE%");
-      edDescriptionTemplate.Text = ServiceAgents.Instance.SettingServiceAgent.GetValue("epgDescriptionTemplate", "%DESCRIPTION%");
+      edDescriptionTemplate.Text = ServiceAgents.Instance.SettingServiceAgent.GetValue("epgDescriptionTemplate",
+                                                                                       "%DESCRIPTION%");
     }
 
     public override void OnSectionDeActivated()
     {
       base.OnSectionDeActivated();
       ServiceAgents.Instance.SettingServiceAgent.SaveValue("generalEPGAlwaysFillHoles", checkBoxAlwaysFillHoles.Checked);
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("generalEPGAlwaysReplace", checkBoxAlwaysUpdate.Checked);      
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("generalGrapOnlyForSameTransponder", checkboxSameTransponder.Checked);
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("generalEPGAlwaysReplace", checkBoxAlwaysUpdate.Checked);
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("generalGrapOnlyForSameTransponder",
+                                                           checkboxSameTransponder.Checked);
       DebugSettings.DisableCRCCheck = !checkBoxEnableCRCCheck.Checked;
       ServiceAgents.Instance.SettingServiceAgent.SaveValue("idleEPGGrabberEnabled", checkBoxEnableEPGWhileIdle.Checked);
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("timeoutEPG", (int)numericUpDownEpgTimeOut.Value);
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("timeoutEPGRefresh", (int)numericUpDownEpgRefresh.Value);
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("timeshiftingEpgGrabberEnabled", checkBoxEnableEpgWhileTimeshifting.Checked);
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("timeshiftingEpgGrabberTimeout", (int)numericUpDownTSEpgTimeout.Value);      
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("epgTitleTemplate", edTitleTemplate.Text);      
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("epgDescriptionTemplate", edDescriptionTemplate.Text);      
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("timeoutEPG", (int) numericUpDownEpgTimeOut.Value);
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("timeoutEPGRefresh", (int) numericUpDownEpgRefresh.Value);
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("timeshiftingEpgGrabberEnabled",
+                                                           checkBoxEnableEpgWhileTimeshifting.Checked);
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("timeshiftingEpgGrabberTimeout",
+                                                           (int) numericUpDownTSEpgTimeout.Value);
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("epgTitleTemplate", edTitleTemplate.Text);
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("epgDescriptionTemplate", edDescriptionTemplate.Text);
     }
 
     private static string EvalTemplate(string template, NameValueCollection values)

@@ -31,8 +31,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
   {
     #region variables
 
-    [DataMember]
-    private string _url;
+    [DataMember] private string _url;
 
     #endregion
 

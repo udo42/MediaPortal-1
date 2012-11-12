@@ -102,7 +102,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
     /// <value>The row24.</value>
     public byte[] Row24
     {
-      get { return (byte[])_row24.Clone(); }
+      get { return (byte[]) _row24.Clone(); }
     }
 
     /// <summary>
@@ -114,11 +114,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
     {
       if (number < 0)
         return -1;
-      int mag = number / 100;
-      number -= (mag * 100);
-      int tens = (number / 10);
-      int units = (number % 10);
-      return mag * 0x100 + tens * 0x10 + units;
+      int mag = number/100;
+      number -= (mag*100);
+      int tens = (number/10);
+      int units = (number%10);
+      return mag*0x100 + tens*0x10 + units;
     }
 
     /// <summary>
@@ -145,21 +145,21 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       Hamming.SetPacketNumber(0, ref _row24, pageNumber, 24);
       int spaces = 40 - (nextGroup.Length + nextBlock.Length + 3 + 3 + 4);
       spaces /= 3;
-      string line = ((char)TeletextPageRenderer.Attributes.AlphaRed) + red.ToString();
+      string line = ((char) TeletextPageRenderer.Attributes.AlphaRed) + red.ToString();
       for (int x = 0; x < spaces; x++)
         line += " ";
 
-      line += ((char)TeletextPageRenderer.Attributes.AlphaGreen) + nextGroup;
+      line += ((char) TeletextPageRenderer.Attributes.AlphaGreen) + nextGroup;
       for (int x = 0; x < spaces; x++)
         line += " ";
 
-      line += ((char)TeletextPageRenderer.Attributes.AlphaYellow) + nextBlock;
+      line += ((char) TeletextPageRenderer.Attributes.AlphaYellow) + nextBlock;
       for (int x = 0; x < spaces; x++)
         line += " ";
-      line += ((char)TeletextPageRenderer.Attributes.AlphaCyan) + blue.ToString();
+      line += ((char) TeletextPageRenderer.Attributes.AlphaCyan) + blue.ToString();
       for (int i = 0; i < line.Length && i <= 40; ++i)
       {
-        _row24[2 + i] = (byte)line[i];
+        _row24[2 + i] = (byte) line[i];
       }
       return true;
     }
@@ -183,10 +183,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       //green = first page of next group
       //yellow= first page of next block
       //blue  = next page
-      int mag = pageNumber / 0x100;
-      int tens = (pageNumber - mag * 0x100) / 0x10;
-      int units = (pageNumber - mag * 0x100) - tens * 0x10;
-      int decimalPage = mag * 100 + tens * 10 + units;
+      int mag = pageNumber/0x100;
+      int tens = (pageNumber - mag*0x100)/0x10;
+      int units = (pageNumber - mag*0x100) - tens*0x10;
+      int decimalPage = mag*100 + tens*10 + units;
 
       Clear();
       nextGroup = "";
@@ -332,9 +332,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       byte[] basicPage = cache.GetPage(TOP_BASIC_PAGE, 0);
       for (int pageNr = 100; pageNr <= 899; pageNr++)
       {
-        int row = ((pageNr - 100) / 40) + 1;
-        int col = ((pageNr - 100) % 40) + 2;
-        byte data = Hamming.Decode[basicPage[row * 42 + col]];
+        int row = ((pageNr - 100)/40) + 1;
+        int col = ((pageNr - 100)%40) + 2;
+        byte data = Hamming.Decode[basicPage[row*42 + col]];
         if (data == ProgramInfoBlockPageMulti ||
             data == BlockPageMulti ||
             data == GroupPageMulti ||
@@ -376,9 +376,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       byte[] multiPage = cache.GetPage(TOP_MULTI_PAGE, 0);
       for (int pageNr = 100; pageNr <= 899; pageNr++)
       {
-        int row = ((pageNr - 100) / 40) + 1;
-        int col = ((pageNr - 100) % 40) + 2;
-        byte data = Hamming.Decode[multiPage[row * 42 + col]];
+        int row = ((pageNr - 100)/40) + 1;
+        int col = ((pageNr - 100)%40) + 2;
+        byte data = Hamming.Decode[multiPage[row*42 + col]];
         if (data == NotPresent)
         {
           //page is offair
@@ -413,11 +413,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
         int lineCounter = 0;
         while (true)
         {
-          int row = 1 + (lineCounter / 2);
-          int col = (20 * (lineCounter % 2));
-          byte magazine = Hamming.Decode[additionalPage[row * 42 + 2 + col]];
-          byte pageTens = Hamming.Decode[additionalPage[row * 42 + 3 + col]];
-          byte pageUnits = Hamming.Decode[additionalPage[row * 42 + 4 + col]];
+          int row = 1 + (lineCounter/2);
+          int col = (20*(lineCounter%2));
+          byte magazine = Hamming.Decode[additionalPage[row*42 + 2 + col]];
+          byte pageTens = Hamming.Decode[additionalPage[row*42 + 3 + col]];
+          byte pageUnits = Hamming.Decode[additionalPage[row*42 + 4 + col]];
           if (magazine >= 0 && magazine <= 7)
           {
             if (pageTens >= 0x0 && pageTens <= 9)
@@ -427,14 +427,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
                 string description = String.Empty;
                 for (int i = 1; i < 12; ++i)
                 {
-                  row = 1 + (lineCounter / 2);
-                  col = 9 + i + (20 * (lineCounter % 2));
+                  row = 1 + (lineCounter/2);
+                  col = 9 + i + (20*(lineCounter%2));
 
-                  description += (char)(additionalPage[row * 42 + col] & 0x7f);
+                  description += (char) (additionalPage[row*42 + col] & 0x7f);
                 }
                 if (magazine == 0)
                   magazine = 8;
-                int pageNo = magazine * 100 + pageTens * 10 + pageUnits;
+                int pageNo = magazine*100 + pageTens*10 + pageUnits;
                 if (pageNo >= 100 && pageNo <= 899)
                 {
                   _pageDescription[pageNo] = description;

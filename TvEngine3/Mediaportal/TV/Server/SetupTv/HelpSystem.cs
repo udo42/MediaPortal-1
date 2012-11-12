@@ -26,7 +26,6 @@ namespace Mediaportal.TV.Server.SetupTV
 {
   public static class HelpSystem
   {
-
     private const string baseURL = @"http://wiki.team-mediaportal.com/REDIRECTS/";
 
     public static void ShowHelp(string sectionName)

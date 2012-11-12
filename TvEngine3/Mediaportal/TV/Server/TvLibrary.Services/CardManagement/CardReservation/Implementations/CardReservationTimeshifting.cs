@@ -38,7 +38,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Impleme
       return cardHandler.Tuner.IsTunedToTransponder(tuningDetail);
     }
 
-
     #endregion
   }
- }
+}

@@ -376,7 +376,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
         using (var reader = new BinaryReader(stream))
         {
           var logoPage = new byte[stream.Length];
-          reader.Read(logoPage, 0, (int)stream.Length);
+          reader.Read(logoPage, 0, (int) stream.Length);
           _fastTextDecoder.Decode(logoPage);
           _topTextDecoder.Clear();
           return _renderer.RenderPage(logoPage, _currentPageNumber, 0);
@@ -417,20 +417,20 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
     {
       if (dataPtr == IntPtr.Zero)
         return;
-      var dataAdd = (int)dataPtr;
+      var dataAdd = (int) dataPtr;
       try
       {
         for (int line = 0; line < 4; line++)
         {
-          Marshal.Copy((IntPtr)((dataAdd + 4) + (line * 0x2e)), tmpBuffer, 0, 46);
+          Marshal.Copy((IntPtr) ((dataAdd + 4) + (line*0x2e)), tmpBuffer, 0, 46);
 
           if ((tmpBuffer[0] == 0x02 || tmpBuffer[0] == 0x03) && (tmpBuffer[1] == 0x2C))
           {
             for (int b = 4; b < 46; b++)
             {
-              var upper = (byte)((tmpBuffer[b] >> 4) & 0xf);
-              var lower = (byte)(tmpBuffer[b] & 0xf);
-              tmpBuffer[b - 4] = (byte)((m_lutTable[upper]) | (m_lutTable[lower + 16]));
+              var upper = (byte) ((tmpBuffer[b] >> 4) & 0xf);
+              var lower = (byte) (tmpBuffer[b] & 0xf);
+              tmpBuffer[b - 4] = (byte) ((m_lutTable[upper]) | (m_lutTable[lower + 16]));
             } //for(b=4;
             _decoder.Decode(tmpBuffer, 0, 1);
           } //if ((tmpBuffer
@@ -449,13 +449,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
     private void AddTopTextRow24(ref byte[] byPage)
     {
       int offsetRow24 = -1;
-      int maxRows = byPage.Length / 42;
+      int maxRows = byPage.Length/42;
       for (int row = 0; row < maxRows; ++row)
       {
-        int packetNr = Hamming.GetPacketNumber(row * 42, ref byPage);
+        int packetNr = Hamming.GetPacketNumber(row*42, ref byPage);
         if (packetNr == 24 || packetNr < 0)
         {
-          offsetRow24 = row * 42;
+          offsetRow24 = row*42;
           break;
         }
       }

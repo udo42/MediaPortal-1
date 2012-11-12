@@ -9,8 +9,6 @@ namespace Mediaportal.TV.TvPlugin.EventHandlers
   /// </summary>
   public class CiMenuEventEventHandler : CiMenuEventCallbackSink
   {
- 
-
     /// <summary>
     /// eventhandler to show CI Menu dialog
     /// </summary>

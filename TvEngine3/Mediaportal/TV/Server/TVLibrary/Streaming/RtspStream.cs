@@ -109,11 +109,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Streaming
     {
       get { return _card; }
     }
-   
+
 
     public MediaTypeEnum MediaType
     {
-      get { return _mediaType; }      
+      get { return _mediaType; }
     }
 
     #endregion

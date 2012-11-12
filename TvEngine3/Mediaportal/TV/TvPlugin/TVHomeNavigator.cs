@@ -91,13 +91,14 @@ namespace Mediaportal.TV.TvPlugin
     private long m_zapdelay;
     private int m_zapgroup = -1;
     private DateTime m_zaptime;
-    private bool reentrant;    
+    private bool reentrant;
 
     #endregion
 
     #region events & delegates
 
     internal event OnZapChannelDelegate OnZapChannel;
+
     internal delegate void OnZapChannelDelegate();
 
     #endregion
@@ -139,8 +140,8 @@ namespace Mediaportal.TV.TvPlugin
         this.LogError("Unable to create/modify gentle.config {0},{1}", ex.Message, ex.StackTrace);
       }
       this.LogInfo("ChannelNavigator::Reload()");*/
-    }   
-    
+    }
+
     public void ReLoad()
     {
       //System.Diagnostics.Debugger.Launch();
@@ -149,12 +150,15 @@ namespace Mediaportal.TV.TvPlugin
         _groups.Clear();
         SetupDatabaseConnection();
         Task taskGetAllChannels = Task.Factory.StartNew(GetAllChannels);
-        Task taskGetOrCreateGroup = Task.Factory.StartNew(delegate
-                                                            {
-                                                              ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(TvConstants.TvGroupNames.AllChannels, MediaTypeEnum.TV);
-                                                            });
-        
-        Task taskGetAllGroups = Task.Factory.StartNew(GetAllGroups);                
+        Task taskGetOrCreateGroup =
+          Task.Factory.StartNew(
+            delegate
+              {
+                ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(TvConstants.TvGroupNames.AllChannels,
+                                                                                 MediaTypeEnum.TV);
+              });
+
+        Task taskGetAllGroups = Task.Factory.StartNew(GetAllGroups);
         taskGetOrCreateGroup.WaitAndHandleExceptions();
         taskGetAllChannels.WaitAndHandleExceptions();
         taskGetAllGroups.WaitAndHandleExceptions();
@@ -163,8 +167,8 @@ namespace Mediaportal.TV.TvPlugin
       }
       catch (Exception ex)
       {
-        this.LogError(ex, "TVHome: Error in Reload");        
-      }      
+        this.LogError(ex, "TVHome: Error in Reload");
+      }
     }
 
     private void GetAllChannels()
@@ -172,16 +176,17 @@ namespace Mediaportal.TV.TvPlugin
       if (_channels.Count == 0)
       {
         this.LogInfo("get _channels from database");
-        IList<Channel> channels = ServiceAgents.Instance.ChannelServiceAgent.ListAllChannelsByMediaType(MediaTypeEnum.TV,
-                                                                                                        ChannelIncludeRelationEnum
-                                                                                                          .None);
+        IList<Channel> channels = ServiceAgents.Instance.ChannelServiceAgent.ListAllChannelsByMediaType(
+          MediaTypeEnum.TV,
+          ChannelIncludeRelationEnum
+            .None);
         _channels = channels.Distinct().ToDictionary(c => c.IdChannel);
-        this.LogInfo("found:{0} tv channels", _channels.Count); 
+        this.LogInfo("found:{0} tv channels", _channels.Count);
       }
     }
 
     private void GetAllGroups()
-    {      
+    {
       if (_groups.Count == 0)
       {
         bool hideAllChannelsGroup;
@@ -197,17 +202,19 @@ namespace Mediaportal.TV.TvPlugin
         if (hideAllChannelsGroup)
         {
           _groups =
-            ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllCustomChannelGroups(include, MediaTypeEnum.TV).OrderBy(g => g.GroupName).
+            ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllCustomChannelGroups(include, MediaTypeEnum.TV).
+              OrderBy(g => g.GroupName).
               ToList();
         }
         else
         {
           _groups =
-            ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllChannelGroupsByMediaType(MediaTypeEnum.TV, include).OrderBy(g => g.GroupName).ToList();
+            ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllChannelGroupsByMediaType(MediaTypeEnum.TV, include).
+              OrderBy(g => g.GroupName).ToList();
         }
         this.LogInfo("loaded {0} tv groups", _groups.Count);
       }
-    }    
+    }
 
     #endregion
 
@@ -295,14 +302,8 @@ namespace Mediaportal.TV.TvPlugin
     /// </summary>
     public int ZapChannelNr
     {
-      get
-      {
-        return m_zapChannelNr;
-      }
-      set
-      {
-        m_zapChannelNr = value;
-      }
+      get { return m_zapChannelNr; }
+      set { m_zapChannelNr = value; }
     }
 
     /// <summary>
@@ -351,10 +352,10 @@ namespace Mediaportal.TV.TvPlugin
       if (reentrant)
       {
         return false;
-      }      
+      }
       try
       {
-        reentrant = true;        
+        reentrant = true;
         // Zapping to another group or channel?
         if (m_zapgroup != -1 || m_zapchannel != null)
         {
@@ -386,7 +387,8 @@ namespace Mediaportal.TV.TvPlugin
               if (m_zapchannel.CurrentGroup != null)
               {
                 m_currentgroup = GetGroupIndex(m_zapchannel.CurrentGroup.GroupName);
-                this.LogInfo("Channel change:{0} on group {1}", zappingTo.DisplayName, m_zapchannel.CurrentGroup.GroupName);
+                this.LogInfo("Channel change:{0} on group {1}", zappingTo.DisplayName,
+                             m_zapchannel.CurrentGroup.GroupName);
               }
               else
               {
@@ -404,8 +406,8 @@ namespace Mediaportal.TV.TvPlugin
       }
       finally
       {
-        reentrant = false;        
-      }      
+        reentrant = false;
+      }
       return false;
     }
 
@@ -459,7 +461,7 @@ namespace Mediaportal.TV.TvPlugin
               id = card.IdChannel;
               if (id >= 0)
               {
-                newChannel = ServiceAgents.Instance.ChannelServiceAgent.GetChannel(id);                
+                newChannel = ServiceAgents.Instance.ChannelServiceAgent.GetChannel(id);
               }
             }
           }
@@ -538,8 +540,9 @@ namespace Mediaportal.TV.TvPlugin
 
               if (detail.ChannelNumber == channelNr)
               {
-                this.LogDebug("find channel: iCounter {0}, detail.channelNumber {1}, detail.name {2}, _channels.Count {3}",
-                              iCounter, detail.ChannelNumber, detail.Name, channels.Count);
+                this.LogDebug(
+                  "find channel: iCounter {0}, detail.channelNumber {1}, detail.name {2}, _channels.Count {3}",
+                  iCounter, detail.ChannelNumber, detail.Name, channels.Count);
                 found = true;
                 ZapToChannel(iCounter + 1, useZapDelay);
               }
@@ -611,7 +614,7 @@ namespace Mediaportal.TV.TvPlugin
       m_zapchannel.CurrentGroup = null;
       m_zapChannelNr = -1;
       this.LogInfo("Navigator:ZapNext {0}->{1}", currentChan.DisplayName, m_zapchannel.Entity.DisplayName);
-      if (GUIWindowManager.ActiveWindow == (int)GUIWindow.Window.WINDOW_TVFULLSCREEN)
+      if (GUIWindowManager.ActiveWindow == (int) GUIWindow.Window.WINDOW_TVFULLSCREEN)
       {
         if (useZapDelay)
         {
@@ -627,9 +630,9 @@ namespace Mediaportal.TV.TvPlugin
         m_zaptime = DateTime.Now;
       }
       RaiseOnZapChannelEvent();
-    }    
+    }
 
-    private void RaiseOnZapChannelEvent ()
+    private void RaiseOnZapChannelEvent()
     {
       if (OnZapChannel != null)
       {
@@ -675,7 +678,7 @@ namespace Mediaportal.TV.TvPlugin
       m_zapChannelNr = -1;
       this.LogInfo("Navigator:ZapPrevious {0}->{1}",
                    currentChan.DisplayName, m_zapchannel.Entity.DisplayName);
-      if (GUIWindowManager.ActiveWindow == (int)GUIWindow.Window.WINDOW_TVFULLSCREEN)
+      if (GUIWindowManager.ActiveWindow == (int) GUIWindow.Window.WINDOW_TVFULLSCREEN)
       {
         if (useZapDelay)
         {
@@ -825,7 +828,7 @@ namespace Mediaportal.TV.TvPlugin
           channel = null;
         }
       }
-      return new ChannelBLL(channel);      
+      return new ChannelBLL(channel);
     }
 
     public Channel GetChannel(string channelName)
@@ -841,7 +844,7 @@ namespace Mediaportal.TV.TvPlugin
     {
       this.LogInfo("ChannelNavigator::LoadSettings()");
       string currentchannelName = xmlreader.GetValueAsString("mytv", "channel", String.Empty);
-      m_zapdelay = 1000 * xmlreader.GetValueAsInt("movieplayer", "zapdelay", 2);
+      m_zapdelay = 1000*xmlreader.GetValueAsInt("movieplayer", "zapdelay", 2);
       string groupname = xmlreader.GetValueAsString("mytv", "group", TvConstants.TvGroupNames.AllChannels);
       m_currentgroup = GetGroupIndex(groupname);
       if (m_currentgroup < 0 || m_currentgroup >= _groups.Count) // Group no longer exists?
@@ -877,7 +880,7 @@ namespace Mediaportal.TV.TvPlugin
           if (foundMatchingGroupName)
           {
             break;
-          }          
+          }
         }
       }
 
@@ -901,7 +904,7 @@ namespace Mediaportal.TV.TvPlugin
       {
         GroupMap groupMap = m_currentChannel.Entity.GroupMaps[m_currentChannel.Entity.GroupMaps.Count - 1];
 
-        ChannelGroup group = groupMap.ChannelGroup;        
+        ChannelGroup group = groupMap.ChannelGroup;
 
         if (group != null)
         {
@@ -915,7 +918,7 @@ namespace Mediaportal.TV.TvPlugin
         else
         {
           m_currentgroup = 0;
-        }        
+        }
       }
 
       if (m_currentChannel.Entity != null)
@@ -949,14 +952,16 @@ namespace Mediaportal.TV.TvPlugin
             }
           }
         }
-        catch (Exception) {}
+        catch (Exception)
+        {
+        }
       }
 
       if (m_currentChannel.Entity != null)
       {
         try
         {
-          if (m_currentChannel.Entity.MediaType == (int)MediaTypeEnum.TV)
+          if (m_currentChannel.Entity.MediaType == (int) MediaTypeEnum.TV)
           {
             bool foundMatchingGroupName = false;
 
@@ -966,7 +971,7 @@ namespace Mediaportal.TV.TvPlugin
               if (foundMatchingGroupName)
               {
                 break;
-              }                        
+              }
             }
             if (foundMatchingGroupName)
             {
@@ -987,11 +992,13 @@ namespace Mediaportal.TV.TvPlugin
             }
           }
         }
-        catch (Exception) {}
+        catch (Exception)
+        {
+        }
       }
     }
 
-    private static bool DoesGroupNameContainGroupName (GroupMap groupMap, string groupname)
+    private static bool DoesGroupNameContainGroupName(GroupMap groupMap, string groupname)
     {
       bool foundMatchingGroupName = false;
       ChannelGroup group = groupMap.ChannelGroup;

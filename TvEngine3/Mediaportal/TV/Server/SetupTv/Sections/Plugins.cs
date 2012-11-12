@@ -53,7 +53,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       _needRestart = false;
       _ignoreEvents = true;
-      
+
       base.OnSectionActivated();
       listView1.Items.Clear();
       ListViewGroup listGroup = listView1.Groups["listViewGroupAvailable"];
@@ -64,7 +64,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         item.SubItems.Add(plugin.Name);
         item.SubItems.Add(plugin.Author);
         item.SubItems.Add(plugin.Version);
-        bool setting = ServiceAgents.Instance.SettingServiceAgent.GetValue(String.Format("plugin{0}", plugin.Name), false);
+        bool setting = ServiceAgents.Instance.SettingServiceAgent.GetValue(String.Format("plugin{0}", plugin.Name),
+                                                                           false);
         item.Checked = setting;
         item.Tag = setting;
       }
@@ -101,7 +102,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         e.Item.Checked = false;
         return;
       }
-      
+
       ServiceAgents.Instance.SettingServiceAgent.SaveValue(setting.Tag, e.Item.Checked);
       _needRestart = true;
 

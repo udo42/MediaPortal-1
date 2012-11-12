@@ -31,7 +31,7 @@ using Mediaportal.TV.Server.TVLibrary.Interfaces;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.SetupTV.Sections
-{  
+{
   public partial class ChannelsInGroupControl : UserControl
   {
     private static bool _userConfirmedAutoReorder;
@@ -77,9 +77,13 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
     }
 
-    private void listView1_SelectedIndexChanged(object sender, EventArgs e) {}
+    private void listView1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+    }
 
-    private void ChannelsInGroupControl_Load(object sender, EventArgs e) {}
+    private void ChannelsInGroupControl_Load(object sender, EventArgs e)
+    {
+    }
 
     public void OnActivated()
     {
@@ -93,13 +97,15 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         UpdateMenuAndTabs();
 
         listView1.Items.Clear();
-       
+
 
         ChannelIncludeRelationEnum include = ChannelIncludeRelationEnum.ChannelMaps;
         include |= ChannelIncludeRelationEnum.TuningDetails;
         include |= ChannelIncludeRelationEnum.GroupMaps;
         include |= ChannelIncludeRelationEnum.GroupMapsChannelGroup;
-        IList<Channel> channels = ServiceAgents.Instance.ChannelServiceAgent.GetAllChannelsByGroupIdAndMediaType(_channelGroup.IdGroup, _mediaTypeEnum, include);
+        IList<Channel> channels =
+          ServiceAgents.Instance.ChannelServiceAgent.GetAllChannelsByGroupIdAndMediaType(_channelGroup.IdGroup,
+                                                                                         _mediaTypeEnum, include);
 
         foreach (Channel channel in channels)
         {
@@ -110,7 +116,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
               listView1.Items.Add(CreateItemForChannel(channel, groupMap));
               break;
             }
-          }          
+          }
         }
 
         bool isAllChannelsGroup = (_channelGroup.GroupName == _allChannelsGroupName);
@@ -185,7 +191,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       IList<GroupMap> groupMaps = new List<GroupMap>();
       for (int i = 0; i < listView1.Items.Count; ++i)
       {
-        var groupMap = (GroupMap)listView1.Items[i].Tag;
+        var groupMap = (GroupMap) listView1.Items[i].Tag;
         if (groupMap.SortOrder != i)
         {
           groupMap.SortOrder = i;
@@ -201,7 +207,10 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       addToFavoritesToolStripMenuItem.DropDownItems.Clear();
 
-      IList<ChannelGroup> groups = ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllChannelGroupsByMediaType(_mediaTypeEnum, ChannelGroupIncludeRelationEnum.None);
+      IList<ChannelGroup> groups =
+        ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllChannelGroupsByMediaType(_mediaTypeEnum,
+                                                                                        ChannelGroupIncludeRelationEnum.
+                                                                                          None);
 
       foreach (ChannelGroup group in groups)
       {
@@ -217,7 +226,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private void addToFavoritesToolStripMenuItem_Click(object sender, EventArgs e)
     {
       ChannelGroup group;
-      var menuItem = (ToolStripMenuItem)sender;
+      var menuItem = (ToolStripMenuItem) sender;
 
       if (menuItem.Tag == null)
       {
@@ -228,12 +237,12 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           return;
         }
 
-        group = ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(dlg.GroupName, _mediaTypeEnum);        
+        group = ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(dlg.GroupName, _mediaTypeEnum);
         UpdateMenuAndTabs();
       }
       else
       {
-        group = (ChannelGroup)menuItem.Tag;
+        group = (ChannelGroup) menuItem.Tag;
       }
 
       ListView.SelectedIndexCollection indexes = listView1.SelectedIndices;
@@ -242,7 +251,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       for (int i = 0; i < indexes.Count; ++i)
       {
         ListViewItem item = listView1.Items[indexes[i]];
-        var map = (GroupMap)item.Tag;
+        var map = (GroupMap) item.Tag;
         Channel channel = map.Channel;
         MappingHelper.AddChannelToGroup(ref channel, @group);
       }
@@ -271,7 +280,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
 
       var dlg = new NotifyForm("Deleting selected tv channels...",
-                                      "This can take some time\n\nPlease be patient...");
+                               "This can take some time\n\nPlease be patient...");
       dlg.Show();
       dlg.WaitForDisplay();
       for (int i = indexes.Count - 1; i >= 0; i--)
@@ -281,7 +290,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         {
           ListViewItem item = listView1.Items[index];
           listView1.Items.RemoveAt(index);
-          var map = (GroupMap)item.Tag;
+          var map = (GroupMap) item.Tag;
           Channel channel = map.Channel;
           ServiceAgents.Instance.ChannelServiceAgent.DeleteChannel(channel.IdChannel);
         }
@@ -302,7 +311,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         if (index >= 0 && index < listView1.Items.Count)
         {
           ListViewItem item = listView1.Items[index];
-          var map = (GroupMap)item.Tag;
+          var map = (GroupMap) item.Tag;
           Channel channel = map.Channel;
           var dlg = new FormEditChannel();
           dlg.Channel = channel;
@@ -323,7 +332,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       if (e.Label != null)
       {
-        Channel channel = ((GroupMap)listView1.Items[e.Item].Tag).Channel;
+        Channel channel = ((GroupMap) listView1.Items[e.Item].Tag).Channel;
         channel.DisplayName = e.Label;
         channel = ServiceAgents.Instance.ChannelServiceAgent.SaveChannel(channel);
         channel.AcceptChanges();
@@ -337,7 +346,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         Channel ch = ((GroupMap) e.Item.Tag).Channel;
         if (ch.VisibleInGuide != e.Item.Checked)
         {
-          ch.VisibleInGuide = e.Item.Checked;          
+          ch.VisibleInGuide = e.Item.Checked;
           ch = ServiceAgents.Instance.ChannelServiceAgent.SaveChannel(ch);
           ch.AcceptChanges();
           ((GroupMap) e.Item.Tag).Channel = ch;
@@ -345,7 +354,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
     }
 
-   
 
     private void mpButtonPreview_Click(object sender, EventArgs e)
     {
@@ -354,7 +362,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       var previewWindow = new FormPreview();
 
-      var map = (GroupMap)listView1.Items[indexes[0]].Tag;
+      var map = (GroupMap) listView1.Items[indexes[0]].Tag;
       previewWindow.Channel = map.Channel;
       previewWindow.ShowDialog(this);
     }
@@ -430,11 +438,11 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       if (indexes.Count == 0)
         return;
       var dlg = new NotifyForm("Removing tv channels from group...",
-                                      "This can take some time\n\nPlease be patient...");
+                               "This can take some time\n\nPlease be patient...");
       dlg.Show();
       dlg.WaitForDisplay();
 
-            
+
       for (int i = indexes.Count - 1; i >= 0; i--)
       {
         int index = indexes[i];
@@ -442,8 +450,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         {
           ListViewItem item = listView1.Items[index];
           listView1.Items.RemoveAt(index);
-          var map = (GroupMap)item.Tag;
-          
+          var map = (GroupMap) item.Tag;
+
           ServiceAgents.Instance.ChannelGroupServiceAgent.DeleteChannelGroupMap(map.IdMap);
         }
       }

@@ -59,15 +59,15 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     [OperationContract]
     Satellite SaveSatellite(Satellite satellite);
 
-    [OperationContract] 
+    [OperationContract]
     SoftwareEncoder SaveSoftwareEncoder(SoftwareEncoder encoder);
 
     [OperationContract]
     void DeleteGroupMap(int idMap);
 
-    [OperationContract] 
+    [OperationContract]
     CardGroupMap SaveCardGroupMap(CardGroupMap map);
-    
+
     [OperationContract]
     LnbType GetLnbType(int idLnbType);
 

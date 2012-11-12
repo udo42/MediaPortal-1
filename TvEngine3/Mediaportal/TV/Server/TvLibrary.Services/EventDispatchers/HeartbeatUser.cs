@@ -8,7 +8,7 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
     private readonly string _name;
 
     public HeartbeatUser()
-    {            
+    {
       _name = Dns.GetHostName();
       LastSeen = DateTime.MinValue;
     }
@@ -16,8 +16,8 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
     public DateTime LastSeen { get; set; }
 
     public string Name
-	  {
-	    get { return _name; }
-	  }
+    {
+      get { return _name; }
+    }
   }
 }

@@ -32,7 +32,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     {
       AsString,
       AsValue
-    } ;
+    };
 
     #endregion
 
@@ -46,8 +46,8 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     {
       int compareResult = 0;
       // Cast the objects to be compared to ListViewItem objects
-      var listviewX = (ListViewItem)x;
-      var listviewY = (ListViewItem)y;
+      var listviewX = (ListViewItem) x;
+      var listviewY = (ListViewItem) y;
       switch (OrderType)
       {
         case OrderTypes.AsString:

@@ -118,7 +118,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
             _event = new ManualResetEvent(false);
             _scanner.SetCallBack(this);
             _scanner.Start();
-            _event.WaitOne(settings.TimeOutAnalog * 1000, true);
+            _event.WaitOne(settings.TimeOutAnalog*1000, true);
 
             IntPtr serviceName;
             _scanner.GetChannel(out serviceName);
@@ -144,7 +144,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
               for (int x = 0; x < channelName.Length; ++x)
               {
                 char k = channelName[x];
-                if (k < (char)32 || k > (char)127)
+                if (k < (char) 32 || k > (char) 127)
                   break;
                 channel.Name += k.ToString();
               }
@@ -190,6 +190,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
     /// <summary>
     /// Disposes this instance.
     /// </summary>
-    public void Dispose() {}
+    public void Dispose()
+    {
+    }
   }
 }

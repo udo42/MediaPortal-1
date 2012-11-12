@@ -32,8 +32,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
 {
   public abstract class CardAllocationBase
   {
-
-
     private bool _logEnabled = true;
 
     protected bool LogEnabled
@@ -59,7 +57,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
             //todo gibman - could be buggy, needs looking at.
             //foreach(var subchannel in user.SubChannels.Values)
             {
-              bool isFreeToAir = IsFreeToAir(tvcard, user.Name, tvcard.UserManagement.GetTimeshiftingChannelId(user.Name));
+              bool isFreeToAir = IsFreeToAir(tvcard, user.Name,
+                                             tvcard.UserManagement.GetTimeshiftingChannelId(user.Name));
               if (!isFreeToAir)
               {
                 int numberOfUsersOnCurrentChannel = GetNumberOfUsersOnCurrentChannel(tvcard, user.Name);
@@ -71,7 +70,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
                 }
               }
             }
-            
           }
           //check if cam is capable of descrambling an extra channel
           isCamAbleToDecryptChannel = (camDecrypting < decryptLimit);
@@ -82,15 +80,15 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
       return true;
     }
 
-    protected virtual int GetNumberOfUsersOnCurrentChannel(ITvCardHandler tvcard, string userName) 
+    protected virtual int GetNumberOfUsersOnCurrentChannel(ITvCardHandler tvcard, string userName)
     {
       int currentChannelId = tvcard.CurrentDbChannel(userName);
-      int count = tvcard.UserManagement.GetNumberOfUsersOnChannel(currentChannelId);      
+      int count = tvcard.UserManagement.GetNumberOfUsersOnChannel(currentChannelId);
       return count;
     }
 
     protected virtual bool IsFreeToAir(ITvCardHandler tvcard, string userName, int idChannel)
-    {      
+    {
       IChannel currentUserCh = tvcard.CurrentChannel(userName, idChannel);
       return (currentUserCh != null && currentUserCh.FreeToAir);
     }
@@ -102,10 +100,9 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
 
     protected virtual bool IsCamAlreadyDecodingChannel(ITvCardHandler tvcard, IChannel tuningDetail)
     {
-      bool isCamAlreadyDecodingChannel = tvcard.UserManagement.IsAnyUserOnTuningDetail(tuningDetail);      
+      bool isCamAlreadyDecodingChannel = tvcard.UserManagement.IsAnyUserOnTuningDetail(tuningDetail);
       return isCamAlreadyDecodingChannel;
     }
-
 
 
     protected static bool IsValidTuningDetails(ICollection<IChannel> tuningDetails)
@@ -117,7 +114,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
     public virtual bool CheckTransponder(IUser user, ITvCardHandler tvcard, IChannel tuningDetail)
     {
       int decryptLimit = tvcard.DataBaseCard.DecryptLimit;
-      int cardId = tvcard.DataBaseCard.IdCard;      
+      int cardId = tvcard.DataBaseCard.IdCard;
 
       bool checkTransponder = true;
       bool isOwnerOfCard = IsOwnerOfCard(tvcard, user);
@@ -217,7 +214,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
     }
 
     protected virtual bool IsOwnerOfCard(ITvCardHandler tvcard, IUser user)
-    {      
+    {
       bool hasHighestPriority = HasHighestPriority(tvcard, user);
       bool isOwnerOfCard = false;
 

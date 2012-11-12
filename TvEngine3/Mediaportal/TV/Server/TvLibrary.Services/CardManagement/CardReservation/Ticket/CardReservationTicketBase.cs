@@ -18,14 +18,13 @@
 
 #endregion
 
-
 namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Ticket
 {
   public class CardReservationTicketBase
   {
     private readonly int _id;
 
-    protected CardReservationTicketBase ()
+    protected CardReservationTicketBase()
     {
       _id = CardReservationHelper.GetNextId;
     }

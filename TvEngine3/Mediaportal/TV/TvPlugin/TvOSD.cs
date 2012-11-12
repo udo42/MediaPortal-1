@@ -70,7 +70,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public TvOsd()
     {
-      GetID = (int)Window.WINDOW_TVOSD;
+      GetID = (int) Window.WINDOW_TVOSD;
     }
 
     public override bool IsTv
@@ -123,7 +123,7 @@ namespace Mediaportal.TV.TvPlugin
     private void FocusControl(int dwSenderId, int dwControlID, int dwParam)
     {
       var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_SETFOCUS, GetID, dwSenderId, dwControlID, dwParam,
-                                      0, null);
+                               0, null);
       OnMessage(msg);
     }
 
@@ -169,7 +169,7 @@ namespace Mediaportal.TV.TvPlugin
             }
             if (action.wID == Action.ActionType.ACTION_CONTEXT_MENU)
             {
-              var tvWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)Window.WINDOW_TVFULLSCREEN);
+              var tvWindow = (TvFullScreen) GUIWindowManager.GetWindow((int) Window.WINDOW_TVFULLSCREEN);
               tvWindow.OnAction(new Action(Action.ActionType.ACTION_SHOW_OSD, 0, 0));
               tvWindow.OnAction(action);
             }
@@ -179,8 +179,8 @@ namespace Mediaportal.TV.TvPlugin
         case Action.ActionType.ACTION_PAUSE:
           {
             // push a message through to this window to handle the remote control button
-            var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int)Controls.OSD_PAUSE,
-                                               (int)Controls.OSD_PAUSE, 0, 0, null);
+            var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int) Controls.OSD_PAUSE,
+                                        (int) Controls.OSD_PAUSE, 0, 0, null);
             OnMessage(msgSet);
 
             if (g_Player.Paused)
@@ -199,10 +199,10 @@ namespace Mediaportal.TV.TvPlugin
         case Action.ActionType.ACTION_MUSIC_PLAY:
           {
             g_Player.Speed = 1; // Single speed
-            ToggleButton((int)Controls.OSD_REWIND, false); // pop all the relevant
-            ToggleButton((int)Controls.OSD_FFWD, false); // buttons back to
-            ToggleButton((int)Controls.OSD_PLAY, false); // their up state
-            ToggleButton((int)Controls.OSD_PLAY, false); // make sure play button is up (so it shows the play symbol)
+            ToggleButton((int) Controls.OSD_REWIND, false); // pop all the relevant
+            ToggleButton((int) Controls.OSD_FFWD, false); // buttons back to
+            ToggleButton((int) Controls.OSD_PLAY, false); // their up state
+            ToggleButton((int) Controls.OSD_PLAY, false); // make sure play button is up (so it shows the play symbol)
             GUIWindowManager.IsPauseOsdVisible = false;
             return;
           }
@@ -214,7 +214,7 @@ namespace Mediaportal.TV.TvPlugin
             {
               this.LogDebug("TvOSD: user request to stop");
               var dlgPlayStop =
-                (GUIDialogPlayStop)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PLAY_STOP);
+                (GUIDialogPlayStop) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_PLAY_STOP);
               if (dlgPlayStop != null)
               {
                 dlgPlayStop.SetHeading(GUILocalizeStrings.Get(605));
@@ -231,19 +231,19 @@ namespace Mediaportal.TV.TvPlugin
             }
             if (g_Player.IsTVRecording)
             {
-                this.LogDebug("TvOSD: stop from recorded TV");
-                g_Player.Stop();
+              this.LogDebug("TvOSD: stop from recorded TV");
+              g_Player.Stop();
             }
             GUIWindowManager.IsPauseOsdVisible = false;
-              return;
+            return;
           }
 
 
         case Action.ActionType.ACTION_FORWARD:
           {
             // push a message through to this window to handle the remote control button
-            var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int)Controls.OSD_FFWD,
-                                               (int)Controls.OSD_FFWD, 0, 0, null);
+            var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int) Controls.OSD_FFWD,
+                                        (int) Controls.OSD_FFWD, 0, 0, null);
             OnMessage(msgSet);
 
             GUIWindowManager.IsPauseOsdVisible = false;
@@ -254,8 +254,8 @@ namespace Mediaportal.TV.TvPlugin
         case Action.ActionType.ACTION_REWIND:
           {
             // push a message through to this window to handle the remote control button
-            var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int)Controls.OSD_REWIND,
-                                               (int)Controls.OSD_REWIND, 0, 0, null);
+            var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int) Controls.OSD_REWIND,
+                                        (int) Controls.OSD_REWIND, 0, 0, null);
             OnMessage(msgSet);
 
             GUIWindowManager.IsPauseOsdVisible = false;
@@ -266,8 +266,8 @@ namespace Mediaportal.TV.TvPlugin
         case Action.ActionType.ACTION_OSD_SHOW_VALUE_PLUS:
           {
             // push a message through to this window to handle the remote control button
-            var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int)Controls.OSD_SKIPFWD,
-                                               (int)Controls.OSD_SKIPFWD, 0, 0, null);
+            var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int) Controls.OSD_SKIPFWD,
+                                        (int) Controls.OSD_SKIPFWD, 0, 0, null);
             OnMessage(msgSet);
             return;
           }
@@ -275,8 +275,8 @@ namespace Mediaportal.TV.TvPlugin
         case Action.ActionType.ACTION_OSD_SHOW_VALUE_MIN:
           {
             // push a message through to this window to handle the remote control button
-            var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int)Controls.OSD_SKIPBWD,
-                                               (int)Controls.OSD_SKIPBWD, 0, 0, null);
+            var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_CLICKED, GetID, (int) Controls.OSD_SKIPBWD,
+                                        (int) Controls.OSD_SKIPBWD, 0, 0, null);
             OnMessage(msgSet);
             return;
           }
@@ -295,14 +295,14 @@ namespace Mediaportal.TV.TvPlugin
             return;
           }
       }
-      if (/*((action.wID >= Action.ActionType.REMOTE_0) && (action.wID <= Action.ActionType.REMOTE_9)) ||*/
-           (action.wID == Action.ActionType.ACTION_KEY_PRESSED && action.m_key != null &&
-            (char)action.m_key.KeyChar >= '0' && (char)action.m_key.KeyChar <= '9'))
+      if ( /*((action.wID >= Action.ActionType.REMOTE_0) && (action.wID <= Action.ActionType.REMOTE_9)) ||*/
+        (action.wID == Action.ActionType.ACTION_KEY_PRESSED && action.m_key != null &&
+         (char) action.m_key.KeyChar >= '0' && (char) action.m_key.KeyChar <= '9'))
       {
-        var TVWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)Window.WINDOW_TVFULLSCREEN);
+        var TVWindow = (TvFullScreen) GUIWindowManager.GetWindow((int) Window.WINDOW_TVFULLSCREEN);
         if (TVWindow != null)
         {
-          TVWindow.OnKeyCode((char)action.m_key.KeyChar);
+          TVWindow.OnKeyCode((char) action.m_key.KeyChar);
         }
       }
       base.OnAction(action);
@@ -336,16 +336,16 @@ namespace Mediaportal.TV.TvPlugin
             m_bNeedRefresh = false;
             m_dateTime = DateTime.Now;
             Reset();
-            FocusControl(GetID, (int)Controls.OSD_PLAY, 0); // set focus to play button by default when window is shown
+            FocusControl(GetID, (int) Controls.OSD_PLAY, 0); // set focus to play button by default when window is shown
             ShowPrograms();
             QueueAnimation(AnimationType.WindowOpen);
-            for (var i = (int)Controls.Panel1; i < (int)Controls.Panel2; ++i)
+            for (var i = (int) Controls.Panel1; i < (int) Controls.Panel2; ++i)
             {
               ShowControl(GetID, i);
             }
             m_delayInterval = SubEngine.GetInstance().DelayInterval;
             if (m_delayInterval > 0)
-              m_subtitleDelay = SubEngine.GetInstance().Delay / m_delayInterval;
+              m_subtitleDelay = SubEngine.GetInstance().Delay/m_delayInterval;
             return true;
           }
 
@@ -389,11 +389,12 @@ namespace Mediaportal.TV.TvPlugin
             {
               if (iControl == btnPreviousProgram.GetID)
               {
-                Program prog = ServiceAgents.Instance.ProgramServiceAgent.GetProgramAt(m_dateTime, GetChannel().Entity.IdChannel);                
+                Program prog = ServiceAgents.Instance.ProgramServiceAgent.GetProgramAt(m_dateTime,
+                                                                                       GetChannel().Entity.IdChannel);
                 if (prog != null)
                 {
                   prog = ServiceAgents.Instance.ProgramServiceAgent.GetProgramAt(
-                      prog.StartTime.Subtract(new TimeSpan(0, 1, 0)), GetChannel().Entity.IdChannel);
+                    prog.StartTime.Subtract(new TimeSpan(0, 1, 0)), GetChannel().Entity.IdChannel);
                   if (prog != null)
                   {
                     m_dateTime = prog.StartTime.AddMinutes(1);
@@ -403,10 +404,12 @@ namespace Mediaportal.TV.TvPlugin
               }
               if (iControl == btnNextProgram.GetID)
               {
-                Program prog = ServiceAgents.Instance.ProgramServiceAgent.GetProgramAt(m_dateTime, GetChannel().Entity.IdChannel);
+                Program prog = ServiceAgents.Instance.ProgramServiceAgent.GetProgramAt(m_dateTime,
+                                                                                       GetChannel().Entity.IdChannel);
                 if (prog != null)
                 {
-                  prog = ServiceAgents.Instance.ProgramServiceAgent.GetProgramAt(prog.EndTime.AddMinutes(+1), GetChannel().Entity.IdChannel);
+                  prog = ServiceAgents.Instance.ProgramServiceAgent.GetProgramAt(prog.EndTime.AddMinutes(+1),
+                                                                                 GetChannel().Entity.IdChannel);
                   if (prog != null)
                   {
                     m_dateTime = prog.StartTime.AddMinutes(1);
@@ -416,68 +419,68 @@ namespace Mediaportal.TV.TvPlugin
               }
             }
 
-            if (iControl >= (int)Controls.OSD_VOLUMESLIDER)
+            if (iControl >= (int) Controls.OSD_VOLUMESLIDER)
               // one of the settings (sub menu) controls is sending us a message
             {
               Handle_ControlSetting(iControl, message.Param1);
             }
 
-            if (iControl == (int)Controls.OSD_PAUSE)
+            if (iControl == (int) Controls.OSD_PAUSE)
             {
               if (g_Player.Paused)
               {
-                ToggleButton((int)Controls.OSD_PLAY, true);
+                ToggleButton((int) Controls.OSD_PLAY, true);
                 // make sure play button is down (so it shows the pause symbol)                
-                ToggleButton((int)Controls.OSD_FFWD, false); // pop the button back to it's up state
-                ToggleButton((int)Controls.OSD_REWIND, false); // pop the button back to it's up state
+                ToggleButton((int) Controls.OSD_FFWD, false); // pop the button back to it's up state
+                ToggleButton((int) Controls.OSD_REWIND, false); // pop the button back to it's up state
               }
               else
               {
-                ToggleButton((int)Controls.OSD_PLAY, false);
+                ToggleButton((int) Controls.OSD_PLAY, false);
                 // make sure play button is up (so it shows the play symbol)
                 if (g_Player.Speed < 1) // are we not playing back at normal speed
                 {
-                  ToggleButton((int)Controls.OSD_REWIND, true); // make sure out button is in the down position
-                  ToggleButton((int)Controls.OSD_FFWD, false); // pop the button back to it's up state
+                  ToggleButton((int) Controls.OSD_REWIND, true); // make sure out button is in the down position
+                  ToggleButton((int) Controls.OSD_FFWD, false); // pop the button back to it's up state
                 }
                 else
                 {
-                  ToggleButton((int)Controls.OSD_REWIND, false); // pop the button back to it's up state
+                  ToggleButton((int) Controls.OSD_REWIND, false); // pop the button back to it's up state
                   if (g_Player.Speed == 1)
                   {
-                    ToggleButton((int)Controls.OSD_FFWD, false); // pop the button back to it's up state
+                    ToggleButton((int) Controls.OSD_FFWD, false); // pop the button back to it's up state
                   }
                 }
               }
             }
 
-            if (iControl == (int)Controls.OSD_PLAY)
+            if (iControl == (int) Controls.OSD_PLAY)
             {
               int iSpeed = g_Player.Speed;
               if (iSpeed != 1) // we're in ffwd or rewind mode
               {
                 g_Player.Speed = 1; // drop back to single speed
-                ToggleButton((int)Controls.OSD_REWIND, false); // pop all the relevant
-                ToggleButton((int)Controls.OSD_FFWD, false); // buttons back to
-                ToggleButton((int)Controls.OSD_PLAY, false); // their up state
+                ToggleButton((int) Controls.OSD_REWIND, false); // pop all the relevant
+                ToggleButton((int) Controls.OSD_FFWD, false); // buttons back to
+                ToggleButton((int) Controls.OSD_PLAY, false); // their up state
               }
               else
               {
                 g_Player.Pause(); //Pause/Un-Pause playback
                 if (g_Player.Paused)
                 {
-                  ToggleButton((int)Controls.OSD_PLAY, true);
+                  ToggleButton((int) Controls.OSD_PLAY, true);
                   // make sure play button is down (so it shows the pause symbol)
                 }
                 else
                 {
-                  ToggleButton((int)Controls.OSD_PLAY, false);
+                  ToggleButton((int) Controls.OSD_PLAY, false);
                   // make sure play button is up (so it shows the play symbol)
                 }
               }
             }
 
-            if (iControl == (int)Controls.OSD_STOP)
+            if (iControl == (int) Controls.OSD_STOP)
             {
               if (isSubMenuVisible) // sub menu currently active ?
               {
@@ -496,7 +499,7 @@ namespace Mediaportal.TV.TvPlugin
               }
               //GUIWindowManager.ShowPreviousWindow();							// go back to the previous window
             }
-            if (iControl == (int)Controls.OSD_REWIND)
+            if (iControl == (int) Controls.OSD_REWIND)
             {
               if (g_Player.Paused)
               {
@@ -505,20 +508,20 @@ namespace Mediaportal.TV.TvPlugin
 
               if (g_Player.Speed < 1) // are we not playing back at normal speed
               {
-                ToggleButton((int)Controls.OSD_REWIND, true); // make sure out button is in the down position
-                ToggleButton((int)Controls.OSD_FFWD, false); // pop the button back to it's up state
+                ToggleButton((int) Controls.OSD_REWIND, true); // make sure out button is in the down position
+                ToggleButton((int) Controls.OSD_FFWD, false); // pop the button back to it's up state
               }
               else
               {
-                ToggleButton((int)Controls.OSD_REWIND, false); // pop the button back to it's up state
+                ToggleButton((int) Controls.OSD_REWIND, false); // pop the button back to it's up state
                 if (g_Player.Speed == 1)
                 {
-                  ToggleButton((int)Controls.OSD_FFWD, false); // pop the button back to it's up state
+                  ToggleButton((int) Controls.OSD_FFWD, false); // pop the button back to it's up state
                 }
               }
             }
 
-            if (iControl == (int)Controls.OSD_FFWD)
+            if (iControl == (int) Controls.OSD_FFWD)
             {
               if (g_Player.Paused)
               {
@@ -527,21 +530,21 @@ namespace Mediaportal.TV.TvPlugin
 
               if (g_Player.Speed > 1) // are we not playing back at normal speed
               {
-                ToggleButton((int)Controls.OSD_FFWD, true); // make sure out button is in the down position
-                ToggleButton((int)Controls.OSD_REWIND, false); // pop the button back to it's up state
+                ToggleButton((int) Controls.OSD_FFWD, true); // make sure out button is in the down position
+                ToggleButton((int) Controls.OSD_REWIND, false); // pop the button back to it's up state
               }
               else
               {
-                ToggleButton((int)Controls.OSD_FFWD, false); // pop the button back to it's up state
+                ToggleButton((int) Controls.OSD_FFWD, false); // pop the button back to it's up state
                 if (g_Player.Speed == 1)
                 {
-                  ToggleButton((int)Controls.OSD_REWIND, false); // pop the button back to it's up state
+                  ToggleButton((int) Controls.OSD_REWIND, false); // pop the button back to it's up state
                 }
               }
             }
 
 
-            if (iControl == (int)Controls.OSD_SKIPBWD)
+            if (iControl == (int) Controls.OSD_SKIPBWD)
             {
               if (_immediateSeekIsRelative)
               {
@@ -551,10 +554,10 @@ namespace Mediaportal.TV.TvPlugin
               {
                 g_Player.SeekRelative(-_immediateSeekValue);
               }
-              ToggleButton((int)Controls.OSD_SKIPBWD, false); // pop the button back to it's up state
+              ToggleButton((int) Controls.OSD_SKIPBWD, false); // pop the button back to it's up state
             }
 
-            if (iControl == (int)Controls.OSD_SKIPFWD)
+            if (iControl == (int) Controls.OSD_SKIPFWD)
             {
               if (_immediateSeekIsRelative)
               {
@@ -564,20 +567,20 @@ namespace Mediaportal.TV.TvPlugin
               {
                 g_Player.SeekRelative(_immediateSeekValue);
               }
-              ToggleButton((int)Controls.OSD_SKIPFWD, false); // pop the button back to it's up state
+              ToggleButton((int) Controls.OSD_SKIPFWD, false); // pop the button back to it's up state
             }
 
-            if (iControl == (int)Controls.OSD_MUTE)
+            if (iControl == (int) Controls.OSD_MUTE)
             {
-              ToggleSubMenu(iControl, (int)Controls.OSD_SUBMENU_BG_VOL); // hide or show the sub-menu
+              ToggleSubMenu(iControl, (int) Controls.OSD_SUBMENU_BG_VOL); // hide or show the sub-menu
               if (isSubMenuVisible) // is sub menu on?
               {
-                ShowControl(GetID, (int)Controls.OSD_VOLUMESLIDER); // show the volume control
-                FocusControl(GetID, (int)Controls.OSD_VOLUMESLIDER, 0); // set focus to it
+                ShowControl(GetID, (int) Controls.OSD_VOLUMESLIDER); // show the volume control
+                FocusControl(GetID, (int) Controls.OSD_VOLUMESLIDER, 0); // set focus to it
               }
               else // sub menu is off
               {
-                FocusControl(GetID, (int)Controls.OSD_MUTE, 0); // set focus to the mute button
+                FocusControl(GetID, (int) Controls.OSD_MUTE, 0); // set focus to the mute button
               }
             }
 
@@ -588,88 +591,88 @@ namespace Mediaportal.TV.TvPlugin
             }
             */
 
-            if (iControl == (int)Controls.OSD_SUBTITLES)
+            if (iControl == (int) Controls.OSD_SUBTITLES)
             {
-              ToggleSubMenu(iControl, (int)Controls.OSD_SUBMENU_BG_SUBTITLES); // hide or show the sub-menu
+              ToggleSubMenu(iControl, (int) Controls.OSD_SUBMENU_BG_SUBTITLES); // hide or show the sub-menu
               if (isSubMenuVisible)
               {
                 // set the controls values
-                var pControl = (GUISliderControl)GetControl((int)Controls.OSD_SUBTITLE_DELAY);
+                var pControl = (GUISliderControl) GetControl((int) Controls.OSD_SUBTITLE_DELAY);
                 pControl.SpinType = GUISpinControl.SpinType.SPIN_CONTROL_TYPE_FLOAT;
                 pControl.FloatInterval = 1;
                 pControl.SetRange(-10, 10);
-                SetSliderValue(-10, 10, m_subtitleDelay, (int)Controls.OSD_SUBTITLE_DELAY);
-                SetCheckmarkValue(g_Player.EnableSubtitle, (int)Controls.OSD_SUBTITLE_ONOFF);
+                SetSliderValue(-10, 10, m_subtitleDelay, (int) Controls.OSD_SUBTITLE_DELAY);
+                SetCheckmarkValue(g_Player.EnableSubtitle, (int) Controls.OSD_SUBTITLE_ONOFF);
                 // show the controls on this sub menu
-                ShowControl(GetID, (int)Controls.OSD_SUBTITLE_DELAY);
-                ShowControl(GetID, (int)Controls.OSD_SUBTITLE_DELAY_LABEL);
-                ShowControl(GetID, (int)Controls.OSD_SUBTITLE_ONOFF);
-                ShowControl(GetID, (int)Controls.OSD_SUBTITLE_LIST);
+                ShowControl(GetID, (int) Controls.OSD_SUBTITLE_DELAY);
+                ShowControl(GetID, (int) Controls.OSD_SUBTITLE_DELAY_LABEL);
+                ShowControl(GetID, (int) Controls.OSD_SUBTITLE_ONOFF);
+                ShowControl(GetID, (int) Controls.OSD_SUBTITLE_LIST);
 
-                FocusControl(GetID, (int)Controls.OSD_SUBTITLE_DELAY, 0);
+                FocusControl(GetID, (int) Controls.OSD_SUBTITLE_DELAY, 0);
                 // set focus to the first control in our group
                 PopulateSubTitles(); // populate the list control with subtitles for this video
               }
             }
 
-            if (iControl == (int)Controls.OSD_BOOKMARKS)
+            if (iControl == (int) Controls.OSD_BOOKMARKS)
             {
-              ToggleSubMenu(iControl, (int)Controls.OSD_SUBMENU_BG_BOOKMARKS); // hide or show the sub-menu
+              ToggleSubMenu(iControl, (int) Controls.OSD_SUBMENU_BG_BOOKMARKS); // hide or show the sub-menu
               if (isSubMenuVisible)
               {
                 // show the controls on this sub menu
-                ShowControl(GetID, (int)Controls.OSD_CREATEBOOKMARK);
-                ShowControl(GetID, (int)Controls.OSD_BOOKMARKS_LIST);
-                ShowControl(GetID, (int)Controls.OSD_BOOKMARKS_LIST_LABEL);
-                ShowControl(GetID, (int)Controls.OSD_CLEARBOOKMARKS);
+                ShowControl(GetID, (int) Controls.OSD_CREATEBOOKMARK);
+                ShowControl(GetID, (int) Controls.OSD_BOOKMARKS_LIST);
+                ShowControl(GetID, (int) Controls.OSD_BOOKMARKS_LIST_LABEL);
+                ShowControl(GetID, (int) Controls.OSD_CLEARBOOKMARKS);
 
-                FocusControl(GetID, (int)Controls.OSD_CREATEBOOKMARK, 0);
+                FocusControl(GetID, (int) Controls.OSD_CREATEBOOKMARK, 0);
                 // set focus to the first control in our group
               }
             }
 
-            if (iControl == (int)Controls.OSD_VIDEO)
+            if (iControl == (int) Controls.OSD_VIDEO)
             {
-              ToggleSubMenu(iControl, (int)Controls.OSD_SUBMENU_BG_VIDEO); // hide or show the sub-menu
+              ToggleSubMenu(iControl, (int) Controls.OSD_SUBMENU_BG_VIDEO); // hide or show the sub-menu
               if (isSubMenuVisible) // is sub menu on?
               {
                 // set the controls values
-                var fPercent = (float)(100 * (g_Player.CurrentPosition / g_Player.Duration));
-                SetSliderValue(0.0f, 100.0f, fPercent, (int)Controls.OSD_VIDEOPOS);
+                var fPercent = (float) (100*(g_Player.CurrentPosition/g_Player.Duration));
+                SetSliderValue(0.0f, 100.0f, fPercent, (int) Controls.OSD_VIDEOPOS);
 
 
                 UpdateGammaContrastBrightness();
                 // show the controls on this sub menu
-                ShowControl(GetID, (int)Controls.OSD_VIDEOPOS);
-                ShowControl(GetID, (int)Controls.OSD_SATURATIONLABEL);
-                ShowControl(GetID, (int)Controls.OSD_SATURATION);
-                ShowControl(GetID, (int)Controls.OSD_SHARPNESSLABEL);
-                ShowControl(GetID, (int)Controls.OSD_SHARPNESS);
-                ShowControl(GetID, (int)Controls.OSD_VIDEOPOS_LABEL);
-                ShowControl(GetID, (int)Controls.OSD_BRIGHTNESS);
-                ShowControl(GetID, (int)Controls.OSD_BRIGHTNESSLABEL);
-                ShowControl(GetID, (int)Controls.OSD_CONTRAST);
-                ShowControl(GetID, (int)Controls.OSD_CONTRASTLABEL);
-                ShowControl(GetID, (int)Controls.OSD_GAMMA);
-                ShowControl(GetID, (int)Controls.OSD_GAMMALABEL);
-                FocusControl(GetID, (int)Controls.OSD_VIDEOPOS, 0); // set focus to the first control in our group
+                ShowControl(GetID, (int) Controls.OSD_VIDEOPOS);
+                ShowControl(GetID, (int) Controls.OSD_SATURATIONLABEL);
+                ShowControl(GetID, (int) Controls.OSD_SATURATION);
+                ShowControl(GetID, (int) Controls.OSD_SHARPNESSLABEL);
+                ShowControl(GetID, (int) Controls.OSD_SHARPNESS);
+                ShowControl(GetID, (int) Controls.OSD_VIDEOPOS_LABEL);
+                ShowControl(GetID, (int) Controls.OSD_BRIGHTNESS);
+                ShowControl(GetID, (int) Controls.OSD_BRIGHTNESSLABEL);
+                ShowControl(GetID, (int) Controls.OSD_CONTRAST);
+                ShowControl(GetID, (int) Controls.OSD_CONTRASTLABEL);
+                ShowControl(GetID, (int) Controls.OSD_GAMMA);
+                ShowControl(GetID, (int) Controls.OSD_GAMMALABEL);
+                FocusControl(GetID, (int) Controls.OSD_VIDEOPOS, 0); // set focus to the first control in our group
               }
             }
 
-            if (iControl == (int)Controls.OSD_AUDIO)
+            if (iControl == (int) Controls.OSD_AUDIO)
             {
-              ToggleSubMenu(iControl, (int)Controls.OSD_SUBMENU_BG_AUDIO); // hide or show the sub-menu
+              ToggleSubMenu(iControl, (int) Controls.OSD_SUBMENU_BG_AUDIO); // hide or show the sub-menu
               if (isSubMenuVisible) // is sub menu on?
               {
                 // set the controls values
                 //SetSliderValue(-10.0f, 10.0f, g_application.m_pPlayer.GetAVDelay(), Controls.OSD_AVDELAY);
 
                 // show the controls on this sub menu
-                ShowControl(GetID, (int)Controls.OSD_AVDELAY);
-                ShowControl(GetID, (int)Controls.OSD_AVDELAY_LABEL);
+                ShowControl(GetID, (int) Controls.OSD_AVDELAY);
+                ShowControl(GetID, (int) Controls.OSD_AVDELAY_LABEL);
                 lstAudioStreamList.Visible = true;
 
-                FocusControl(GetID, (int)Controls.OSD_AVDELAY, 0); // set focus to the first control in our group
+                FocusControl(GetID, (int) Controls.OSD_AVDELAY, 0); // set focus to the first control in our group
                 PopulateAudioStreams(); // populate the list control with audio streams for this video
               }
             }
@@ -688,11 +691,11 @@ namespace Mediaportal.TV.TvPlugin
       float fSaturation = GUIGraphicsContext.Saturation;
       float fSharpness = GUIGraphicsContext.Sharpness;
 
-      SetSliderValue(0.0f, 100.0f, fBrightNess, (int)Controls.OSD_BRIGHTNESS);
-      SetSliderValue(0.0f, 100.0f, fContrast, (int)Controls.OSD_CONTRAST);
-      SetSliderValue(0.0f, 100.0f, fGamma, (int)Controls.OSD_GAMMA);
-      SetSliderValue(0.0f, 100.0f, fSaturation, (int)Controls.OSD_SATURATION);
-      SetSliderValue(0.0f, 100.0f, fSharpness, (int)Controls.OSD_SHARPNESS);
+      SetSliderValue(0.0f, 100.0f, fBrightNess, (int) Controls.OSD_BRIGHTNESS);
+      SetSliderValue(0.0f, 100.0f, fContrast, (int) Controls.OSD_CONTRAST);
+      SetSliderValue(0.0f, 100.0f, fGamma, (int) Controls.OSD_GAMMA);
+      SetSliderValue(0.0f, 100.0f, fSaturation, (int) Controls.OSD_SATURATION);
+      SetSliderValue(0.0f, 100.0f, fSharpness, (int) Controls.OSD_SHARPNESS);
     }
 
     private void SetVideoProgress()
@@ -704,7 +707,7 @@ namespace Mediaportal.TV.TvPlugin
         //    if (null!=pControl) pControl.Percentage=(int)(100*fPercentage);			// Update our progress bar accordingly ...
 
         int iValue = g_Player.Volume;
-        var pSlider = GetControl((int)Controls.OSD_VOLUMESLIDER) as GUISliderControl;
+        var pSlider = GetControl((int) Controls.OSD_VOLUMESLIDER) as GUISliderControl;
         if (null != pSlider)
         {
           pSlider.Percentage = iValue; // Update our progress bar accordingly ...
@@ -729,24 +732,24 @@ namespace Mediaportal.TV.TvPlugin
       }
       else
       {
-        var currentPosition = (long)(g_Player.CurrentPosition);
-        int hh = (int)(currentPosition / 3600) % 100;
-        var mm = (int)((currentPosition / 60) % 60);
-        var ss = (int)((currentPosition / 1) % 60);
+        var currentPosition = (long) (g_Player.CurrentPosition);
+        int hh = (int) (currentPosition/3600)%100;
+        var mm = (int) ((currentPosition/60)%60);
+        var ss = (int) ((currentPosition/1)%60);
         var startTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hh, mm, ss);
 
-        var duration = (long)(g_Player.Duration);
-        hh = (int)(duration / 3600) % 100;
-        mm = (int)((duration / 60) % 60);
-        ss = (int)((duration / 1) % 60);
+        var duration = (long) (g_Player.Duration);
+        hh = (int) (duration/3600)%100;
+        mm = (int) ((duration/60)%60);
+        ss = (int) ((duration/1)%60);
         var endTime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, hh, mm, ss);
 
         strTime = String.Format("{0}-{1}",
                                 startTime.ToString("t", CultureInfo.CurrentCulture.DateTimeFormat),
                                 endTime.ToString("t", CultureInfo.CurrentCulture.DateTimeFormat));
       }
-      var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int)Controls.OSD_TIMEINFO, 0,
-                                      0, null);
+      var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_SET, GetID, 0, (int) Controls.OSD_TIMEINFO, 0,
+                               0, null);
       msg.Label = strTime;
       OnMessage(msg); // ask our label to update it's caption
     }
@@ -774,7 +777,7 @@ namespace Mediaportal.TV.TvPlugin
     {
       int iX, iY;
 
-      var pImgNib = GetControl((int)Controls.OSD_SUBMENU_NIB) as GUIImage; // pointer to the nib graphic
+      var pImgNib = GetControl((int) Controls.OSD_SUBMENU_NIB) as GUIImage; // pointer to the nib graphic
       var pImgBG = GetControl(iBackID) as GUIImage; // pointer to the background graphic
       var pButton = GetControl(iButtonID) as GUIToggleButtonControl;
       // pointer to the OSD menu button
@@ -789,7 +792,7 @@ namespace Mediaportal.TV.TvPlugin
       // Get button position
       if (pButton != null)
       {
-        iX = (pButton.XPosition + (pButton.Width / 2)); // center of button
+        iX = (pButton.XPosition + (pButton.Width/2)); // center of button
         iY = pButton.YPosition;
       }
       else
@@ -801,7 +804,7 @@ namespace Mediaportal.TV.TvPlugin
       // Set nib position
       if (pImgNib != null && pImgBG != null)
       {
-        pImgNib.SetPosition(iX - (pImgNib.TextureWidth / 2), iY - pImgNib.TextureHeight);
+        pImgNib.SetPosition(iX - (pImgNib.TextureWidth/2), iY - pImgNib.TextureHeight);
 
         if (!isSubMenuVisible) // sub menu not currently showing?
         {
@@ -821,57 +824,57 @@ namespace Mediaportal.TV.TvPlugin
         m_bNeedRefresh = true;
       }
       // Set all sub menu controls to hidden
-      HideControl(GetID, (int)Controls.OSD_VOLUMESLIDER);
-      HideControl(GetID, (int)Controls.OSD_VIDEOPOS);
-      HideControl(GetID, (int)Controls.OSD_VIDEOPOS_LABEL);
+      HideControl(GetID, (int) Controls.OSD_VOLUMESLIDER);
+      HideControl(GetID, (int) Controls.OSD_VIDEOPOS);
+      HideControl(GetID, (int) Controls.OSD_VIDEOPOS_LABEL);
       lstAudioStreamList.Visible = false;
 
-      HideControl(GetID, (int)Controls.OSD_AVDELAY);
-      HideControl(GetID, (int)Controls.OSD_SHARPNESSLABEL);
-      HideControl(GetID, (int)Controls.OSD_SHARPNESS);
-      HideControl(GetID, (int)Controls.OSD_SATURATIONLABEL);
-      HideControl(GetID, (int)Controls.OSD_SATURATION);
-      HideControl(GetID, (int)Controls.OSD_AVDELAY_LABEL);
+      HideControl(GetID, (int) Controls.OSD_AVDELAY);
+      HideControl(GetID, (int) Controls.OSD_SHARPNESSLABEL);
+      HideControl(GetID, (int) Controls.OSD_SHARPNESS);
+      HideControl(GetID, (int) Controls.OSD_SATURATIONLABEL);
+      HideControl(GetID, (int) Controls.OSD_SATURATION);
+      HideControl(GetID, (int) Controls.OSD_AVDELAY_LABEL);
 
-      HideControl(GetID, (int)Controls.OSD_BRIGHTNESS);
-      HideControl(GetID, (int)Controls.OSD_BRIGHTNESSLABEL);
+      HideControl(GetID, (int) Controls.OSD_BRIGHTNESS);
+      HideControl(GetID, (int) Controls.OSD_BRIGHTNESSLABEL);
 
-      HideControl(GetID, (int)Controls.OSD_GAMMA);
-      HideControl(GetID, (int)Controls.OSD_GAMMALABEL);
+      HideControl(GetID, (int) Controls.OSD_GAMMA);
+      HideControl(GetID, (int) Controls.OSD_GAMMALABEL);
 
-      HideControl(GetID, (int)Controls.OSD_CONTRAST);
-      HideControl(GetID, (int)Controls.OSD_CONTRASTLABEL);
+      HideControl(GetID, (int) Controls.OSD_CONTRAST);
+      HideControl(GetID, (int) Controls.OSD_CONTRASTLABEL);
 
-      HideControl(GetID, (int)Controls.OSD_CREATEBOOKMARK);
-      HideControl(GetID, (int)Controls.OSD_BOOKMARKS_LIST);
-      HideControl(GetID, (int)Controls.OSD_BOOKMARKS_LIST_LABEL);
-      HideControl(GetID, (int)Controls.OSD_CLEARBOOKMARKS);
-      HideControl(GetID, (int)Controls.OSD_SUBTITLE_DELAY);
-      HideControl(GetID, (int)Controls.OSD_SUBTITLE_DELAY_LABEL);
-      HideControl(GetID, (int)Controls.OSD_SUBTITLE_ONOFF);
-      HideControl(GetID, (int)Controls.OSD_SUBTITLE_LIST);
+      HideControl(GetID, (int) Controls.OSD_CREATEBOOKMARK);
+      HideControl(GetID, (int) Controls.OSD_BOOKMARKS_LIST);
+      HideControl(GetID, (int) Controls.OSD_BOOKMARKS_LIST_LABEL);
+      HideControl(GetID, (int) Controls.OSD_CLEARBOOKMARKS);
+      HideControl(GetID, (int) Controls.OSD_SUBTITLE_DELAY);
+      HideControl(GetID, (int) Controls.OSD_SUBTITLE_DELAY_LABEL);
+      HideControl(GetID, (int) Controls.OSD_SUBTITLE_ONOFF);
+      HideControl(GetID, (int) Controls.OSD_SUBTITLE_LIST);
 
       // Reset the other buttons back to up except the one that's active
-      if (iButtonID != (int)Controls.OSD_MUTE)
+      if (iButtonID != (int) Controls.OSD_MUTE)
       {
-        ToggleButton((int)Controls.OSD_MUTE, false);
+        ToggleButton((int) Controls.OSD_MUTE, false);
       }
       //if (iButtonID != (int)Controls.OSD_SYNC) ToggleButton((int)Controls.OSD_SYNC, false); - not used
-      if (iButtonID != (int)Controls.OSD_SUBTITLES)
+      if (iButtonID != (int) Controls.OSD_SUBTITLES)
       {
-        ToggleButton((int)Controls.OSD_SUBTITLES, false);
+        ToggleButton((int) Controls.OSD_SUBTITLES, false);
       }
-      if (iButtonID != (int)Controls.OSD_BOOKMARKS)
+      if (iButtonID != (int) Controls.OSD_BOOKMARKS)
       {
-        ToggleButton((int)Controls.OSD_BOOKMARKS, false);
+        ToggleButton((int) Controls.OSD_BOOKMARKS, false);
       }
-      if (iButtonID != (int)Controls.OSD_VIDEO)
+      if (iButtonID != (int) Controls.OSD_VIDEO)
       {
-        ToggleButton((int)Controls.OSD_VIDEO, false);
+        ToggleButton((int) Controls.OSD_VIDEO, false);
       }
-      if (iButtonID != (int)Controls.OSD_AUDIO)
+      if (iButtonID != (int) Controls.OSD_AUDIO)
       {
-        ToggleButton((int)Controls.OSD_AUDIO, false);
+        ToggleButton((int) Controls.OSD_AUDIO, false);
       }
 
       m_iActiveMenu = iBackID;
@@ -896,12 +899,12 @@ namespace Mediaportal.TV.TvPlugin
             break;
 
           case GUISpinControl.SpinType.SPIN_CONTROL_TYPE_INT:
-            pControl.SetRange((int)fMin, (int)fMax);
-            pControl.IntValue = (int)fValue;
+            pControl.SetRange((int) fMin, (int) fMax);
+            pControl.IntValue = (int) fValue;
             break;
 
           default:
-            pControl.Percentage = (int)fValue;
+            pControl.Percentage = (int) fValue;
             break;
         }
       }
@@ -927,7 +930,7 @@ namespace Mediaportal.TV.TvPlugin
 
       switch (iControlID)
       {
-        case (int)Controls.OSD_VOLUMESLIDER:
+        case (int) Controls.OSD_VOLUMESLIDER:
           {
             var pControl = GetControl(iControlID) as GUISliderControl;
             if (null != pControl)
@@ -942,7 +945,7 @@ namespace Mediaportal.TV.TvPlugin
           }
           break;
 
-        case (int)Controls.OSD_VIDEOPOS:
+        case (int) Controls.OSD_VIDEOPOS:
           {
             var pControl = GetControl(iControlID) as GUISliderControl;
             if (null != pControl)
@@ -952,7 +955,7 @@ namespace Mediaportal.TV.TvPlugin
             }
           }
           break;
-        case (int)Controls.OSD_SATURATION:
+        case (int) Controls.OSD_SATURATION:
           {
             var pControl = GetControl(iControlID) as GUISliderControl;
             if (null != pControl)
@@ -963,7 +966,7 @@ namespace Mediaportal.TV.TvPlugin
             }
           }
           break;
-        case (int)Controls.OSD_SHARPNESS:
+        case (int) Controls.OSD_SHARPNESS:
           {
             var pControl = GetControl(iControlID) as GUISliderControl;
             if (null != pControl)
@@ -975,7 +978,7 @@ namespace Mediaportal.TV.TvPlugin
           }
           break;
 
-        case (int)Controls.OSD_BRIGHTNESS:
+        case (int) Controls.OSD_BRIGHTNESS:
           {
             var pControl = GetControl(iControlID) as GUISliderControl;
             if (null != pControl)
@@ -986,7 +989,7 @@ namespace Mediaportal.TV.TvPlugin
             }
           }
           break;
-        case (int)Controls.OSD_CONTRAST:
+        case (int) Controls.OSD_CONTRAST:
           {
             var pControl = GetControl(iControlID) as GUISliderControl;
             if (null != pControl)
@@ -997,7 +1000,7 @@ namespace Mediaportal.TV.TvPlugin
             }
           }
           break;
-        case (int)Controls.OSD_GAMMA:
+        case (int) Controls.OSD_GAMMA:
           {
             var pControl = GetControl(iControlID) as GUISliderControl;
             if (null != pControl)
@@ -1056,25 +1059,25 @@ namespace Mediaportal.TV.TvPlugin
                 }
                 break;                
       */
-        case (int)Controls.OSD_SUBTITLE_ONOFF:
+        case (int) Controls.OSD_SUBTITLE_ONOFF:
           {
             g_Player.EnableSubtitle = !g_Player.EnableSubtitle;
           }
           break;
 
-        case (int)Controls.OSD_SUBTITLE_LIST:
+        case (int) Controls.OSD_SUBTITLE_LIST:
           {
             if (wID != 0) // check to see if list control has an action ID, remote can cause 0 based events
             {
               var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0,
-                                              (int)Controls.OSD_SUBTITLE_LIST, 0, 0, null);
+                                       (int) Controls.OSD_SUBTITLE_LIST, 0, 0, null);
               OnMessage(msg); // retrieve the selected list item
               if (g_Player.SupportsCC) // Subtitle CC
               {
                 if (g_Player.SupportsCC && msg.Param1 == 0)
                 {
                   msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_GET_SELECTED_ITEM, GetID, 0,
-                                              (int)Controls.OSD_SUBTITLE_LIST, msg.Param1, 0, null);
+                                       (int) Controls.OSD_SUBTITLE_LIST, msg.Param1, 0, null);
                   g_Player.EnableSubtitle = false;
                   g_Player.CurrentSubtitleStream = -1;
                   this.LogInfo("Subtitle CC selected ");
@@ -1096,9 +1099,9 @@ namespace Mediaportal.TV.TvPlugin
           }
           break;
 
-        case (int)Controls.OSD_SUBTITLE_DELAY:
+        case (int) Controls.OSD_SUBTITLE_DELAY:
           {
-            var pControl = (GUISliderControl)GetControl(iControlID);
+            var pControl = (GUISliderControl) GetControl(iControlID);
             if (null != pControl && g_Player.EnableSubtitle)
             {
               if (pControl.FloatValue < m_subtitleDelay)
@@ -1109,7 +1112,7 @@ namespace Mediaportal.TV.TvPlugin
               {
                 SubEngine.GetInstance().DelayPlus();
               }
-              m_subtitleDelay = (int)pControl.FloatValue;
+              m_subtitleDelay = (int) pControl.FloatValue;
             }
           }
           break;
@@ -1173,7 +1176,7 @@ namespace Mediaportal.TV.TvPlugin
       int subStreamsCount = g_Player.SubtitleStreams;
 
       // tell the list control not to show the page x/y spin control
-      var pControl = GetControl((int)Controls.OSD_SUBTITLE_LIST) as GUIListControl;
+      var pControl = GetControl((int) Controls.OSD_SUBTITLE_LIST) as GUIListControl;
       if (null != pControl)
       {
         pControl.SetPageControlVisible(false);
@@ -1181,7 +1184,7 @@ namespace Mediaportal.TV.TvPlugin
 
       // empty the list ready for population
       var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_RESET, GetID, 0,
-                                      (int)Controls.OSD_SUBTITLE_LIST, 0, 0, null);
+                               (int) Controls.OSD_SUBTITLE_LIST, 0, 0, null);
       OnMessage(msg);
 
       string strLabel = GUILocalizeStrings.Get(462); // "Subtitle"
@@ -1203,7 +1206,7 @@ namespace Mediaportal.TV.TvPlugin
 
         // add it ...
         var msg2 = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_ADD, GetID, 0,
-                                         (int)Controls.OSD_SUBTITLE_LIST, 0, 0, pItem);
+                                  (int) Controls.OSD_SUBTITLE_LIST, 0, 0, pItem);
         OnMessage(msg2);
       }
       for (int i = 0; i < subStreamsCount; ++i)
@@ -1226,7 +1229,7 @@ namespace Mediaportal.TV.TvPlugin
 
         // add it ...
         var msg2 = new GUIMessage(GUIMessage.MessageType.GUI_MSG_LABEL_ADD, GetID, 0,
-                                         (int)Controls.OSD_SUBTITLE_LIST, 0, 0, pItem);
+                                  (int) Controls.OSD_SUBTITLE_LIST, 0, 0, pItem);
         OnMessage(msg2);
       }
 
@@ -1236,20 +1239,20 @@ namespace Mediaportal.TV.TvPlugin
         if (currentSubtitleStream == -1)
         {
           var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECT, GetID, 0,
-            (int)Controls.OSD_SUBTITLE_LIST, 0, 0, null);
+                                      (int) Controls.OSD_SUBTITLE_LIST, 0, 0, null);
           OnMessage(msgSet);
         }
         else
         {
           var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECT, GetID, 0,
-            (int)Controls.OSD_SUBTITLE_LIST, currentSubtitleStream + 1, 0, null);
+                                      (int) Controls.OSD_SUBTITLE_LIST, currentSubtitleStream + 1, 0, null);
           OnMessage(msgSet);
         }
       }
       else
       {
         var msgSet = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECT, GetID, 0,
-          (int)Controls.OSD_SUBTITLE_LIST, g_Player.CurrentSubtitleStream, 0, null);
+                                    (int) Controls.OSD_SUBTITLE_LIST, g_Player.CurrentSubtitleStream, 0, null);
         OnMessage(msgSet);
       }
     }
@@ -1305,57 +1308,57 @@ namespace Mediaportal.TV.TvPlugin
     {
       // Set all sub menu controls to hidden
 
-      HideControl(GetID, (int)Controls.OSD_SUBMENU_BG_AUDIO);
-      HideControl(GetID, (int)Controls.OSD_SUBMENU_BG_VIDEO);
-      HideControl(GetID, (int)Controls.OSD_SUBMENU_BG_BOOKMARKS);
-      HideControl(GetID, (int)Controls.OSD_SUBMENU_BG_SUBTITLES);
-      HideControl(GetID, (int)Controls.OSD_SUBMENU_BG_VOL);
+      HideControl(GetID, (int) Controls.OSD_SUBMENU_BG_AUDIO);
+      HideControl(GetID, (int) Controls.OSD_SUBMENU_BG_VIDEO);
+      HideControl(GetID, (int) Controls.OSD_SUBMENU_BG_BOOKMARKS);
+      HideControl(GetID, (int) Controls.OSD_SUBMENU_BG_SUBTITLES);
+      HideControl(GetID, (int) Controls.OSD_SUBMENU_BG_VOL);
 
 
-      HideControl(GetID, (int)Controls.OSD_VOLUMESLIDER);
-      HideControl(GetID, (int)Controls.OSD_VIDEOPOS);
-      HideControl(GetID, (int)Controls.OSD_VIDEOPOS_LABEL);
+      HideControl(GetID, (int) Controls.OSD_VOLUMESLIDER);
+      HideControl(GetID, (int) Controls.OSD_VIDEOPOS);
+      HideControl(GetID, (int) Controls.OSD_VIDEOPOS_LABEL);
       lstAudioStreamList.Visible = false;
 
-      HideControl(GetID, (int)Controls.OSD_AVDELAY);
-      HideControl(GetID, (int)Controls.OSD_SATURATIONLABEL);
-      HideControl(GetID, (int)Controls.OSD_SATURATION);
-      HideControl(GetID, (int)Controls.OSD_SHARPNESSLABEL);
-      HideControl(GetID, (int)Controls.OSD_SHARPNESS);
-      HideControl(GetID, (int)Controls.OSD_AVDELAY_LABEL);
+      HideControl(GetID, (int) Controls.OSD_AVDELAY);
+      HideControl(GetID, (int) Controls.OSD_SATURATIONLABEL);
+      HideControl(GetID, (int) Controls.OSD_SATURATION);
+      HideControl(GetID, (int) Controls.OSD_SHARPNESSLABEL);
+      HideControl(GetID, (int) Controls.OSD_SHARPNESS);
+      HideControl(GetID, (int) Controls.OSD_AVDELAY_LABEL);
 
-      HideControl(GetID, (int)Controls.OSD_BRIGHTNESS);
-      HideControl(GetID, (int)Controls.OSD_BRIGHTNESSLABEL);
+      HideControl(GetID, (int) Controls.OSD_BRIGHTNESS);
+      HideControl(GetID, (int) Controls.OSD_BRIGHTNESSLABEL);
 
-      HideControl(GetID, (int)Controls.OSD_GAMMA);
-      HideControl(GetID, (int)Controls.OSD_GAMMALABEL);
+      HideControl(GetID, (int) Controls.OSD_GAMMA);
+      HideControl(GetID, (int) Controls.OSD_GAMMALABEL);
 
-      HideControl(GetID, (int)Controls.OSD_CONTRAST);
-      HideControl(GetID, (int)Controls.OSD_CONTRASTLABEL);
+      HideControl(GetID, (int) Controls.OSD_CONTRAST);
+      HideControl(GetID, (int) Controls.OSD_CONTRASTLABEL);
 
-      HideControl(GetID, (int)Controls.OSD_CREATEBOOKMARK);
-      HideControl(GetID, (int)Controls.OSD_BOOKMARKS_LIST);
-      HideControl(GetID, (int)Controls.OSD_BOOKMARKS_LIST_LABEL);
-      HideControl(GetID, (int)Controls.OSD_CLEARBOOKMARKS);
-      HideControl(GetID, (int)Controls.OSD_SUBTITLE_DELAY);
-      HideControl(GetID, (int)Controls.OSD_SUBTITLE_DELAY_LABEL);
-      HideControl(GetID, (int)Controls.OSD_SUBTITLE_ONOFF);
-      HideControl(GetID, (int)Controls.OSD_SUBTITLE_LIST);
+      HideControl(GetID, (int) Controls.OSD_CREATEBOOKMARK);
+      HideControl(GetID, (int) Controls.OSD_BOOKMARKS_LIST);
+      HideControl(GetID, (int) Controls.OSD_BOOKMARKS_LIST_LABEL);
+      HideControl(GetID, (int) Controls.OSD_CLEARBOOKMARKS);
+      HideControl(GetID, (int) Controls.OSD_SUBTITLE_DELAY);
+      HideControl(GetID, (int) Controls.OSD_SUBTITLE_DELAY_LABEL);
+      HideControl(GetID, (int) Controls.OSD_SUBTITLE_ONOFF);
+      HideControl(GetID, (int) Controls.OSD_SUBTITLE_LIST);
 
-      ToggleButton((int)Controls.OSD_MUTE, false);
-      ToggleButton((int)Controls.OSD_SUBTITLES, false);
-      ToggleButton((int)Controls.OSD_BOOKMARKS, false);
-      ToggleButton((int)Controls.OSD_VIDEO, false);
-      ToggleButton((int)Controls.OSD_AUDIO, false);
+      ToggleButton((int) Controls.OSD_MUTE, false);
+      ToggleButton((int) Controls.OSD_SUBTITLES, false);
+      ToggleButton((int) Controls.OSD_BOOKMARKS, false);
+      ToggleButton((int) Controls.OSD_VIDEO, false);
+      ToggleButton((int) Controls.OSD_AUDIO, false);
 
-      ToggleButton((int)Controls.OSD_REWIND, false); // pop all the relevant
-      ToggleButton((int)Controls.OSD_FFWD, false); // buttons back to
-      ToggleButton((int)Controls.OSD_PLAY, false); // their up state
+      ToggleButton((int) Controls.OSD_REWIND, false); // pop all the relevant
+      ToggleButton((int) Controls.OSD_FFWD, false); // buttons back to
+      ToggleButton((int) Controls.OSD_PLAY, false); // their up state
 
-      ToggleButton((int)Controls.OSD_SKIPBWD, false); // pop all the relevant
-      ToggleButton((int)Controls.OSD_STOP, false); // buttons back to
-      ToggleButton((int)Controls.OSD_SKIPFWD, false); // their up state
-      ToggleButton((int)Controls.OSD_MUTE, false); // their up state
+      ToggleButton((int) Controls.OSD_SKIPBWD, false); // pop all the relevant
+      ToggleButton((int) Controls.OSD_STOP, false); // buttons back to
+      ToggleButton((int) Controls.OSD_SKIPFWD, false); // their up state
+      ToggleButton((int) Controls.OSD_MUTE, false); // their up state
     }
 
     public override bool NeedRefresh()
@@ -1408,7 +1411,7 @@ namespace Mediaportal.TV.TvPlugin
 
       if (imgTvChannelLogo != null)
       {
-        if (!string.IsNullOrEmpty(strLogo))                      
+        if (!string.IsNullOrEmpty(strLogo))
         {
           imgTvChannelLogo.SetFileName(strLogo);
           m_bNeedRefresh = true;
@@ -1517,7 +1520,8 @@ namespace Mediaportal.TV.TvPlugin
         ChannelBLL chan = GetChannel();
         if (chan != null)
         {
-          prog = ServiceAgents.Instance.ProgramServiceAgent.GetProgramAt(prog.EndTime.AddMinutes(1), chan.Entity.IdChannel);          
+          prog = ServiceAgents.Instance.ProgramServiceAgent.GetProgramAt(prog.EndTime.AddMinutes(1),
+                                                                         chan.Entity.IdChannel);
 
           if (prog != null)
           {
@@ -1546,18 +1550,18 @@ namespace Mediaportal.TV.TvPlugin
           if (ch != null)
           {
             string strLogo = Utils.GetCoverArt(Thumbs.TVChannel, ch.DisplayName);
-            if (string.IsNullOrEmpty(strLogo))                          
+            if (string.IsNullOrEmpty(strLogo))
             {
               strLogo = "defaultVideoBig.png";
             }
             GUIPropertyManager.SetProperty("#TV.View.thumb", strLogo);
           }
 
-          var currentPosition = (long)(g_Player.CurrentPosition);
-          string startTime = Utils.SecondsToHMSString((int)currentPosition); // DateTime.MinValue;
+          var currentPosition = (long) (g_Player.CurrentPosition);
+          string startTime = Utils.SecondsToHMSString((int) currentPosition); // DateTime.MinValue;
 
-          var duration = (long)(g_Player.Duration);
-          string endTime = Utils.SecondsToHMSString((int)duration); //  DateTime.MaxValue;
+          var duration = (long) (g_Player.Duration);
+          string endTime = Utils.SecondsToHMSString((int) duration); //  DateTime.MaxValue;
 
           //remaining = "0";                    
           if (tbOnTvNow != null)
@@ -1659,7 +1663,7 @@ namespace Mediaportal.TV.TvPlugin
         double iTotalSecs = ts.TotalSeconds;
         ts = DateTime.Now - prog.StartTime;
         double iCurSecs = ts.TotalSeconds;
-        double fPercent = (iCurSecs) / (iTotalSecs);
+        double fPercent = (iCurSecs)/(iTotalSecs);
         fPercent *= 100.0d;
         GUIPropertyManager.SetProperty("#TV.View.Percentage", fPercent.ToString());
         Get_TimeInfo();
@@ -1703,16 +1707,16 @@ namespace Mediaportal.TV.TvPlugin
         rec = TvRecorded.ActiveRecording();
         if (rec != null)
         {
-          var currentPosition = (long)(g_Player.CurrentPosition);
-          string startTime = Utils.SecondsToHMSString((int)currentPosition);
+          var currentPosition = (long) (g_Player.CurrentPosition);
+          string startTime = Utils.SecondsToHMSString((int) currentPosition);
 
-          var duration = (long)(g_Player.Duration);
-          string endTime = Utils.SecondsToHMSString((int)duration);
+          var duration = (long) (g_Player.Duration);
+          string endTime = Utils.SecondsToHMSString((int) duration);
 
 
           string channelDisplayName = TvRecorded.GetRecordingDisplayName(rec) + " (" + GUILocalizeStrings.Get(604) + ")";
 
-          double fPercent = (currentPosition) / ((double)duration);
+          double fPercent = (currentPosition)/((double) duration);
           fPercent *= 100.0d;
 
           GUIPropertyManager.SetProperty("#TV.View.Percentage", fPercent.ToString());
@@ -1782,7 +1786,7 @@ namespace Mediaportal.TV.TvPlugin
       OSD_SUBTITLE_ONOFF = 801,
       OSD_SUBTITLE_LIST = 802,
       OSD_SUBTITLE_DELAY_LABEL = 850,
-    } ;
+    };
 
     #endregion
   }

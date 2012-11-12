@@ -1302,7 +1302,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
                 else
                 {
                   TreeNode tn = tnTemp;
-                  int iMax = ClientRectangle.Height / ItemHeight;
+                  int iMax = ClientRectangle.Height/ItemHeight;
                   for (int i = 0; i < iMax; i++)
                   {
                     if (tn.PrevVisibleNode != null)
@@ -1414,7 +1414,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
                 else
                 {
                   TreeNode tn = tnTemp;
-                  int iMax = ClientRectangle.Height / ItemHeight;
+                  int iMax = ClientRectangle.Height/ItemHeight;
                   for (int i = 0; i < iMax; i++)
                   {
                     if (tn.NextVisibleNode != null)
@@ -2077,19 +2077,19 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
             //The next line is not used because if the Control is scrolled horizontally while the rubberband is painted it is not cleared properly.
             //Rectangle rctInvalidate1 = new Rectangle(ptMouseDown.X, ptMouseDown.Y, ptMouseMoveClient.X - ptMouseDown.X, ptMouseMoveClient.Y - ptMouseDown.Y);
             var rctInvalidate1 = new Rectangle(ClientRectangle.Left, ptMouseDown.Y, ClientRectangle.Width,
-                                                     ptMouseMoveClient.Y - ptMouseDown.Y);
+                                               ptMouseMoveClient.Y - ptMouseDown.Y);
 
             ptMouseDownScreen = PointToScreen(ptMouseDown);
             ptMouseMoveScreen = PointToScreen(new Point(e.X, e.Y));
 
             var rctSelection = new Rectangle(ptMouseDownScreen.X, ptMouseDownScreen.Y,
-                                                   ptMouseMoveScreen.X - ptMouseDownScreen.X,
-                                                   ptMouseMoveScreen.Y - ptMouseDownScreen.Y);
+                                             ptMouseMoveScreen.X - ptMouseDownScreen.X,
+                                             ptMouseMoveScreen.Y - ptMouseDownScreen.Y);
 
             //The next line is not used because if the Control is scrolled horizontally while the rubberband is painted it is not cleared properly.
             //Rectangle rctInvalidate2 = new Rectangle(ptMouseDown.X, ptMouseDown.Y, e.X - ptMouseDown.X, e.Y - ptMouseDown.Y);
             var rctInvalidate2 = new Rectangle(ClientRectangle.Left, ptMouseDown.Y, ClientRectangle.Width,
-                                                     e.Y - ptMouseDown.Y);
+                                               e.Y - ptMouseDown.Y);
 
             //Two Rectangles need to be Invalidated because the new Rectangle could be bigger than the old one or smaller.
             Invalidate(rctInvalidate1, false);
@@ -2364,7 +2364,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
                 }
                 else
                 {
-                  alTreeNodeLevel[iIndex] = Math.Max((int)alTreeNodeLevel[iIndex], GetTreeNodeLevel(mwtnw.Node));
+                  alTreeNodeLevel[iIndex] = Math.Max((int) alTreeNodeLevel[iIndex], GetTreeNodeLevel(mwtnw.Node));
                 }
               }
 
@@ -2374,7 +2374,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
               {
                 foreach (MWTreeNodeWrapper mwtnw in SelNodes.Values)
                 {
-                  if ((int)alTreeNodeLevel[i] == GetTreeNodeLevel(mwtnw.Node) &&
+                  if ((int) alTreeNodeLevel[i] == GetTreeNodeLevel(mwtnw.Node) &&
                       alTreeNodeGrandParent[i] == GetTreeNodeGrandParent(mwtnw.Node) &&
                       !ht.Contains(mwtnw.Node.GetHashCode()))
                   {
@@ -4835,15 +4835,15 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 
         for (int i = 0; i < al.Count; i++)
         {
-          if (((MWTreeNodeWrapper)al[i]).Node == SelNode)
+          if (((MWTreeNodeWrapper) al[i]).Node == SelNode)
           {
             SelNode = null;
           }
 
           MWTreeNodeWrapper.Deselect(al[i] as MWTreeNodeWrapper);
-          LowlightNode(((MWTreeNodeWrapper)al[i]).Node);
+          LowlightNode(((MWTreeNodeWrapper) al[i]).Node);
 
-          SelNodes.Remove(((MWTreeNodeWrapper)al[i]).Node.GetHashCode());
+          SelNodes.Remove(((MWTreeNodeWrapper) al[i]).Node.GetHashCode());
         }
       }
     }
@@ -5460,7 +5460,9 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
             bRetVal = true;
           }
         }
-        catch {}
+        catch
+        {
+        }
       }
 
       return bRetVal;

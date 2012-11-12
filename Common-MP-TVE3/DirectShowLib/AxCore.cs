@@ -448,7 +448,9 @@ namespace DirectShowLib
   public interface IMediaSample
   {
     [PreserveSig]
-    int GetPointer([Out] out IntPtr ppBuffer); // BYTE **
+    int GetPointer([Out] out IntPtr ppBuffer);
+
+    // BYTE **
 
     [PreserveSig]
     int GetSize();
@@ -724,7 +726,7 @@ namespace DirectShowLib
     [PreserveSig]
     int Next(
       [In] int cMediaTypes,
-      [In, Out, MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(EMTMarshaler), SizeParamIndex = 0)] AMMediaType[] ppMediaTypes,
+      [In, Out, MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof (EMTMarshaler), SizeParamIndex = 0)] AMMediaType[] ppMediaTypes,
       [Out] out int pcFetched
       );
 
@@ -746,7 +748,9 @@ namespace DirectShowLib
     #region IMediaSample Methods
 
     [PreserveSig]
-    new int GetPointer([Out] out IntPtr ppBuffer); // BYTE **
+    new int GetPointer([Out] out IntPtr ppBuffer);
+
+    // BYTE **
 
     [PreserveSig]
     new int GetSize();

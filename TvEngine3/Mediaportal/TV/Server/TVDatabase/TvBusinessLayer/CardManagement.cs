@@ -8,15 +8,15 @@ using Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories;
 namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 {
   public static class CardManagement
-  {   
+  {
     public static IList<Card> ListAllCards()
     {
       using (ICardRepository cardRepository = new CardRepository())
       {
         IQueryable<Card> query = cardRepository.GetAll<Card>();
         query = cardRepository.IncludeAllRelations(query);
-        return query.ToList(); 
-      }      
+        return query.ToList();
+      }
     }
 
     /// <summary>
@@ -49,9 +49,9 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       {
         IQueryable<Card> query = cardRepository.GetQuery<Card>(c => c.DevicePath == devicePath);
         query = cardRepository.IncludeAllRelations(query);
-        Card card = query.ToList().FirstOrDefault(); 
+        Card card = query.ToList().FirstOrDefault();
         return card;
-      }            
+      }
     }
 
 
@@ -75,7 +75,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         cardRepository.UnitOfWork.SaveChanges();
         card.AcceptChanges();
         return card;
-      }    
+      }
     }
 
     public static void DeleteCard(int idCard)
@@ -105,7 +105,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         cardRepository.UnitOfWork.SaveChanges();
         motor.AcceptChanges();
         return motor;
-      }  
+      }
     }
 
     public static Card GetCard(int idCard)
@@ -116,7 +116,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         query = cardRepository.IncludeAllRelations(query);
         Card card = query.ToList().FirstOrDefault();
         return card;
-      }  
+      }
     }
 
     public static Card GetCard(int idCard, CardIncludeRelationEnum includeRelations)
@@ -139,7 +139,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         cardRepository.UnitOfWork.SaveChanges();
         @group.AcceptChanges();
         return @group;
-      }  
+      }
     }
 
     public static void DeleteCardGroup(int idCardGroup)
@@ -155,7 +155,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (ICardRepository cardRepository = new CardRepository())
       {
-        return cardRepository.GetQuery<SoftwareEncoder>(s=>s.Type == 0).OrderBy(s=>s.Priority).ToList();                
+        return cardRepository.GetQuery<SoftwareEncoder>(s => s.Type == 0).OrderBy(s => s.Priority).ToList();
       }
     }
 
@@ -184,7 +184,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         cardRepository.UnitOfWork.SaveChanges();
         satellite.AcceptChanges();
         return satellite;
-      }  
+      }
     }
 
     public static SoftwareEncoder SaveSoftwareEncoder(SoftwareEncoder encoder)
@@ -196,7 +196,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         cardRepository.UnitOfWork.SaveChanges();
         encoder.AcceptChanges();
         return encoder;
-      }  
+      }
     }
 
     public static void DeleteGroupMap(int idMap)
@@ -217,7 +217,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         cardRepository.UnitOfWork.SaveChanges();
         map.AcceptChanges();
         return map;
-      }  
+      }
     }
 
     public static IList<Card> ListAllCards(CardIncludeRelationEnum includeRelations)

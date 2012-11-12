@@ -42,9 +42,9 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     {
       //int compareResult;
       // Cast the objects to be compared to ListViewItem objects
-      var listviewX = (ListViewItem)x;
+      var listviewX = (ListViewItem) x;
       int image1 = listviewX.ImageIndex;
-      var listviewY = (ListViewItem)y;
+      var listviewY = (ListViewItem) y;
       int image2 = listviewY.ImageIndex;
       if (image1 < image2)
       {
@@ -66,8 +66,8 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     {
       // in case x,y are strings and actually number,
       // convert them to int and use the base.Compare for comparison
-      if ((x is String) && IsWholeNumber((string)x)
-          && (y is String) && IsWholeNumber((string)y))
+      if ((x is String) && IsWholeNumber((string) x)
+          && (y is String) && IsWholeNumber((string) y))
       {
         return base.Compare(Convert.ToInt32(x),
                             Convert.ToInt32(y));

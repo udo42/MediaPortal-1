@@ -51,7 +51,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     private void button1_Click(object sender, EventArgs e)
     {
       if (comboBox1.SelectedIndex != -1)
-        _selectedProcess = (string)comboBox1.Items[comboBox1.SelectedIndex];
+        _selectedProcess = (string) comboBox1.Items[comboBox1.SelectedIndex];
       DialogResult = DialogResult.OK;
       Close();
     }

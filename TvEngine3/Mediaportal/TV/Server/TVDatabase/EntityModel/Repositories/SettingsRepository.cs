@@ -5,7 +5,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 {
   public class SettingsRepository : GenericRepository<Model>, ISettingsRepository
   {
-    public SettingsRepository()    
+    public SettingsRepository()
     {
     }
 
@@ -15,7 +15,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
     }
 
     public SettingsRepository(bool trackingEnabled) : base(trackingEnabled)
-    {      
+    {
     }
 
     #region ISettingsRepository Members
@@ -24,11 +24,11 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
     /// saves a value to the database table "Setting"
     /// </summary>    
     public void SaveSetting(string tagName, string value)
-    {            
+    {
       var setting = First<Setting>(s => s.Tag == tagName);
       if (setting == null)
       {
-        setting = new Setting { Value = value, Tag = tagName };
+        setting = new Setting {Value = value, Tag = tagName};
         Add(setting);
       }
       else
@@ -62,7 +62,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
         Add(setting);
         UnitOfWork.SaveChanges();
       }
-            
+
       return setting;
     }
 

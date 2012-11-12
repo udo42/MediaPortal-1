@@ -32,7 +32,9 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.html
     /// <summary>
     /// Private constructor
     /// </summary>
-    private HtmlString() {}
+    private HtmlString()
+    {
+    }
 
     #endregion
 
@@ -96,11 +98,11 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.html
       stripped = HttpUtility.HtmlDecode(stripped);
 
       // replace unicode characters
-      stripped = stripped.Replace((char)145, '’');
-      stripped = stripped.Replace((char)146, '’');
-      stripped = stripped.Replace((char)148, '\"');
-      stripped = stripped.Replace((char)150, '-');
-      stripped = stripped.Replace((char)160, ' ');
+      stripped = stripped.Replace((char) 145, '’');
+      stripped = stripped.Replace((char) 146, '’');
+      stripped = stripped.Replace((char) 148, '\"');
+      stripped = stripped.Replace((char) 150, '-');
+      stripped = stripped.Replace((char) 160, ' ');
 
       return stripped;
     }

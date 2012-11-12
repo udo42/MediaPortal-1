@@ -85,13 +85,14 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
         checkBoxAllowEpgGrab.Checked = _card.GrabEPG;
         checkBoxConditionalAccessEnabled.Checked = _card.UseConditionalAccess;
         numericUpDownDecryptLimit.Value = _card.DecryptLimit;
-        mpComboBoxMultiChannelDecryptMode.SelectedItem = ((MultiChannelDecryptMode)_card.MultiChannelDecryptMode).ToString();
-        mpComboBoxCamType.SelectedItem = ((CamType)_card.CamType).ToString();
+        mpComboBoxMultiChannelDecryptMode.SelectedItem =
+          ((MultiChannelDecryptMode) _card.MultiChannelDecryptMode).ToString();
+        mpComboBoxCamType.SelectedItem = ((CamType) _card.CamType).ToString();
         checkBoxAlwaysSendDiseqcCommands.Checked = _card.AlwaysSendDiseqcCommands;
         numericUpDownDiseqcCommandRepeatCount.Value = _card.DiseqcCommandRepeatCount;
-        mpComboBoxPidFilterMode.SelectedItem = ((PidFilterMode)_card.PidFilterMode).ToString();
+        mpComboBoxPidFilterMode.SelectedItem = ((PidFilterMode) _card.PidFilterMode).ToString();
       }
-      mpComboBoxIdleMode.SelectedItem = ((DeviceIdleMode)_card.IdleMode).ToString();
+      mpComboBoxIdleMode.SelectedItem = ((DeviceIdleMode) _card.IdleMode).ToString();
       setConditionalAccessFieldVisibility();
 
       // Devices can't be preloaded if they're part of a hybrid group.
@@ -114,15 +115,15 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
         comboBoxNetworkProvider.Enabled = true;
 
         // Add available network providers based on device type and operating system.
-        comboBoxNetworkProvider.Items.Add(Enum.Parse(typeof(DbNetworkProvider), _cardType));
+        comboBoxNetworkProvider.Items.Add(Enum.Parse(typeof (DbNetworkProvider), _cardType));
         // The generic network provider is available only on XP MCE 2005 + Update Rollup 2,
         // Windows Vista [Home Premium and Ultimate], and Windows 7 [Home Premium, Ultimate,
         // Professional, and Enterprise]
-        if (FilterGraphTools.IsThisComObjectInstalled(typeof(NetworkProvider).GUID))
+        if (FilterGraphTools.IsThisComObjectInstalled(typeof (NetworkProvider).GUID))
         {
           comboBoxNetworkProvider.Items.Add(DbNetworkProvider.Generic);
         }
-        comboBoxNetworkProvider.SelectedItem = (DbNetworkProvider)_card.NetProvider;
+        comboBoxNetworkProvider.SelectedItem = (DbNetworkProvider) _card.NetProvider;
       }
     }
 
@@ -137,20 +138,21 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       _card.Name = mpTextBoxDeviceName.Text;
       _card.GrabEPG = checkBoxAllowEpgGrab.Checked;
       _card.UseConditionalAccess = checkBoxConditionalAccessEnabled.Checked;
-      _card.DecryptLimit = (int)numericUpDownDecryptLimit.Value;
+      _card.DecryptLimit = (int) numericUpDownDecryptLimit.Value;
       _card.AlwaysSendDiseqcCommands = checkBoxAlwaysSendDiseqcCommands.Checked;
-      _card.DiseqcCommandRepeatCount = (int)numericUpDownDiseqcCommandRepeatCount.Value;
-      _card.IdleMode = (int)Enum.Parse(typeof(DeviceIdleMode), (String)mpComboBoxIdleMode.SelectedItem);
+      _card.DiseqcCommandRepeatCount = (int) numericUpDownDiseqcCommandRepeatCount.Value;
+      _card.IdleMode = (int) Enum.Parse(typeof (DeviceIdleMode), (String) mpComboBoxIdleMode.SelectedItem);
 
       // Careful here! The selected items will be null for certain device types.
       if (!_cardType.Equals("Analog"))
       {
-        _card.MultiChannelDecryptMode = (int)Enum.Parse(typeof(MultiChannelDecryptMode), (String)mpComboBoxMultiChannelDecryptMode.SelectedItem);
-        _card.CamType = (int)Enum.Parse(typeof(CamType), (String)mpComboBoxCamType.SelectedItem);
-        _card.PidFilterMode = (int)Enum.Parse(typeof(PidFilterMode), (String)mpComboBoxPidFilterMode.SelectedItem);
+        _card.MultiChannelDecryptMode =
+          (int) Enum.Parse(typeof (MultiChannelDecryptMode), (String) mpComboBoxMultiChannelDecryptMode.SelectedItem);
+        _card.CamType = (int) Enum.Parse(typeof (CamType), (String) mpComboBoxCamType.SelectedItem);
+        _card.PidFilterMode = (int) Enum.Parse(typeof (PidFilterMode), (String) mpComboBoxPidFilterMode.SelectedItem);
         if (!_cardType.Equals("DvbIP"))
         {
-          _card.NetProvider = (int)(DbNetworkProvider)comboBoxNetworkProvider.SelectedItem;
+          _card.NetProvider = (int) (DbNetworkProvider) comboBoxNetworkProvider.SelectedItem;
         }
       }
       _card.PreloadCard = checkBoxPreloadCard.Checked;

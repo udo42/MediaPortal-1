@@ -64,7 +64,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     /// <param name="bdaDeviceName">The name of the device registered by the product's BDA driver.</param>
     /// <param name="dbSettingName">The name of the TV Server database setting that holds the product tuner association.</param>
     /// <param name="comInterface">The COM interface used to interact with the CI.</param>
-    public SmarDtvUsbCiProduct(String name, String wdmDeviceName, String bdaDeviceName, String dbSettingName, Type comInterface)
+    public SmarDtvUsbCiProduct(String name, String wdmDeviceName, String bdaDeviceName, String dbSettingName,
+                               Type comInterface)
     {
       ProductName = name;
       WdmDeviceName = wdmDeviceName;
@@ -190,8 +191,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
           "WinTVCIUSB",
           "WinTVCIUSBBDA Source",
           "winTvCiTuner",
-          typeof(IHauppaugeWinTvCi)
-        );
+          typeof (IHauppaugeWinTvCi)
+          );
         _products.Add(p);
 
         // TerraTec Cinergy CI USB
@@ -201,8 +202,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
           "US2CIBDA",
           "Cinergy CI USB Capture",
           "cinergyCiUsbTuner",
-          typeof(ITerraTecCinergyCiUsb)
-        );
+          typeof (ITerraTecCinergyCiUsb)
+          );
         _products.Add(p);
       }
       return new ReadOnlyCollection<SmarDtvUsbCiProduct>(_products);

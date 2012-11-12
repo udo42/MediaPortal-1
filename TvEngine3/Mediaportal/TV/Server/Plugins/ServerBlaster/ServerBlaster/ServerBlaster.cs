@@ -135,7 +135,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
 
     private void events_OnTvServerEvent(object sender, EventArgs eventArgs)
     {
-      var tvEvent = (TvServerEventArgs)eventArgs;
+      var tvEvent = (TvServerEventArgs) eventArgs;
       var analogChannel = tvEvent.channel as AnalogChannel;
       if (analogChannel == null) return;
       if (tvEvent.EventType == TvServerEventType.StartZapChannel)
@@ -167,7 +167,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
       {
         using (
           var fs = new FileStream(String.Format(@"{0}\ServerBlaster.dat", PathManager.GetDataPath), FileMode.Open,
-                                         FileAccess.Read))
+                                  FileAccess.Read))
         {
           var bf = new BinaryFormatter();
           _packetCollection = bf.Deserialize(fs) as Hashtable;
@@ -177,7 +177,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
             foreach (string buttonName in _packetCollection.Keys)
             {
               this.LogDebug("ServerBlaster.LoadRemoteCodes: Packet '{0}' ({1} bytes)", buttonName,
-                            ((byte[])_packetCollection[buttonName]).Length);
+                            ((byte[]) _packetCollection[buttonName]).Length);
             }
           }
         }
@@ -189,7 +189,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
 
       try
       {
-        
         _sendSelect = SettingsManagement.GetValue("SrvBlasterSendSelect", false);
         _sleepTime = 100; //xmlreader.GetValueAsInt("ServerBlaster", "delay", 100);
         _sendPort = 1; //xmlreader.GetValueAsInt("ServerBlaster", "forceport", 1);

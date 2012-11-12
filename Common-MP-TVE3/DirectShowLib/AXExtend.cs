@@ -173,7 +173,7 @@ namespace DirectShowLib
   {
     [FieldOffset(0)] public RegFilterPins[] rgPins;
     [FieldOffset(0)] public RegFilterPins2[] rgPins2;
-  } ;
+  };
 
   [StructLayout(LayoutKind.Sequential)]
   public struct RegFilter2
@@ -1516,7 +1516,9 @@ namespace DirectShowLib
     #endregion
 
     [PreserveSig]
-    int OnDisplayChange(IntPtr hMonitor); // HMONITOR
+    int OnDisplayChange(IntPtr hMonitor);
+
+    // HMONITOR
   }
 
   [ComImport, SuppressUnmanagedCodeSecurity,
@@ -1546,7 +1548,9 @@ namespace DirectShowLib
     int SetColorKey([In] ref ColorKey pColorKey);
 
     [PreserveSig]
-    int GetWindowHandle([Out] out IntPtr pHwnd); // HWND *
+    int GetWindowHandle([Out] out IntPtr pHwnd);
+
+    // HWND *
 
     [PreserveSig]
     int GetClipList(
@@ -1777,7 +1781,9 @@ namespace DirectShowLib
     new int get_TuningSpace([Out] out int plTuningSpace);
 
     [PreserveSig]
-    new int Logon([In] IntPtr hCurrentUser); // HANDLE
+    new int Logon([In] IntPtr hCurrentUser);
+
+    // HANDLE
 
     [PreserveSig]
     new int Logout();
@@ -1970,7 +1976,9 @@ namespace DirectShowLib
       );
 
     [PreserveSig]
-    int CheckMemory([In] IntPtr pBuffer); // BYTE *
+    int CheckMemory([In] IntPtr pBuffer);
+
+    // BYTE *
 
     [PreserveSig]
     int Alloc(
@@ -1979,7 +1987,9 @@ namespace DirectShowLib
       );
 
     [PreserveSig]
-    int Free([In] IntPtr pBuffer); // BYTE *
+    int Free([In] IntPtr pBuffer);
+
+    // BYTE *
 
     [PreserveSig]
     int GetDevMemoryObject(
@@ -2566,7 +2576,9 @@ namespace DirectShowLib
       );
 
     [PreserveSig]
-    int SetLogFile(IntPtr hFile); // DWORD_PTR
+    int SetLogFile(IntPtr hFile);
+
+    // DWORD_PTR
 
     [PreserveSig]
     int Abort();
@@ -2643,7 +2655,9 @@ namespace DirectShowLib
       );
 
     [PreserveSig]
-    new int SetLogFile(IntPtr hFile); // DWORD_PTR
+    new int SetLogFile(IntPtr hFile);
+
+    // DWORD_PTR
 
     [PreserveSig]
     new int Abort();
@@ -2879,7 +2893,9 @@ namespace DirectShowLib
     int get_TuningSpace([Out] out int plTuningSpace);
 
     [PreserveSig]
-    int Logon([In] IntPtr hCurrentUser); // HANDLE
+    int Logon([In] IntPtr hCurrentUser);
+
+    // HANDLE
 
     [PreserveSig]
     int Logout();
@@ -2955,7 +2971,9 @@ namespace DirectShowLib
     new int get_TuningSpace([Out] out int plTuningSpace);
 
     [PreserveSig]
-    new int Logon([In] IntPtr hCurrentUser); // HANDLE
+    new int Logon([In] IntPtr hCurrentUser);
+
+    // HANDLE
 
     [PreserveSig]
     new int Logout();
@@ -4191,7 +4209,9 @@ namespace DirectShowLib
       );
 
     [PreserveSig]
-    new int SetLogFile(IntPtr hFile); // DWORD_PTR
+    new int SetLogFile(IntPtr hFile);
+
+    // DWORD_PTR
 
     [PreserveSig]
     new int Abort();

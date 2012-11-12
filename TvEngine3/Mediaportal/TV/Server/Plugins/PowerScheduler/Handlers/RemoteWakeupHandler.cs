@@ -35,7 +35,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
     public RemoteWakeupHandler(String URL, int tag)
     {
-      remote = (IWakeupHandler)Activator.GetObject(typeof (IWakeupHandler), URL);
+      remote = (IWakeupHandler) Activator.GetObject(typeof (IWakeupHandler), URL);
       this.tag = tag;
       Url = URL;
     }

@@ -38,7 +38,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     /// <returns></returns>
     [PreserveSig]
     int OnEpgReceived();
-  } ;
+  };
 
   /// <summary>
   /// Base class used for dvb epg-grabbing
@@ -63,7 +63,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     /// Gets called when epg has been cancelled
     /// Should be overriden by the class
     /// </summary>
-    public virtual void OnEpgCancelled() {}
+    public virtual void OnEpgCancelled()
+    {
+    }
   }
 
   /// <summary>

@@ -15,9 +15,14 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 {
   public abstract class TimeShifterBase
   {
-    protected readonly ManualResetEvent _eventAudio = new ManualResetEvent(false); // gets signaled when audio PID is seen
+    protected readonly ManualResetEvent _eventAudio = new ManualResetEvent(false);
+                                        // gets signaled when audio PID is seen
+
     protected readonly ManualResetEvent _eventTimeshift = new ManualResetEvent(true);
-    protected readonly ManualResetEvent _eventVideo = new ManualResetEvent(false); // gets signaled when video PID is seen
+
+    protected readonly ManualResetEvent _eventVideo = new ManualResetEvent(false);
+                                        // gets signaled when video PID is seen
+
     private readonly int _waitForTimeshifting = 15;
     protected bool _cancelled;
     protected ITvCardHandler _cardHandler;
@@ -29,7 +34,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       _eventAudio.Reset();
       _eventVideo.Reset();
 
-      
+
       _waitForTimeshifting = SettingsManagement.GetValue("timeshiftWaitForTimeshifting", 15);
 
       if (_cardHandler != null && _cardHandler.Tuner != null)
@@ -61,7 +66,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         if (subchannel is BaseSubChannel)
         {
           this.LogDebug("card {2}: Cancel Timeshifting sub:{1}", subchannel, _cardHandler.Card.Name);
-          ((BaseSubChannel)subchannel).AudioVideoEvent -= AudioVideoEventHandler;
+          ((BaseSubChannel) subchannel).AudioVideoEvent -= AudioVideoEventHandler;
           _eventAudio.Set();
           _eventVideo.Set();
           _eventTimeshift.WaitOne();
@@ -87,15 +92,14 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       ITvSubChannel subchannel = null;
       if (_cardHandler.DataBaseCard.Enabled)
       {
-           
         //_cardHandler.UserManagement.RefreshUser(ref user, out userExists);
         bool userExists = _cardHandler.UserManagement.DoesUserExist(userName);
         if (userExists)
         {
           subchannel = GetSubChannel(_cardHandler.UserManagement.GetSubChannelIdByChannelId(userName, idChannel));
-        }          
+        }
       }
-      
+
       return subchannel;
     }
 
@@ -107,7 +111,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       {
         if (!_cardHandler.IsConditionalAccessSupported)
         {
-          this.LogDebug("card: WaitForTimeShiftFile - return scrambled, since the device does not support conditional access");
+          this.LogDebug(
+            "card: WaitForTimeShiftFile - return scrambled, since the device does not support conditional access");
           isScrambled = true;
         }
       }
@@ -128,14 +133,14 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       {
         return false;
       }
-      
+
       scrambled = IsScrambled(ref user);
       if (scrambled)
       {
         return false;
       }
 
-      int waitForEvent = _waitForTimeshifting * 1000; // in ms           
+      int waitForEvent = _waitForTimeshifting*1000; // in ms           
 
       DateTime timeStart = DateTime.Now;
 
@@ -198,7 +203,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           {
             TimeSpan ts = DateTime.Now - timeStart;
             this.LogDebug("card: WaitForFile - video was found, but audio was not found after {0} seconds",
-                      ts.TotalSeconds);
+                          ts.TotalSeconds);
             if (_cardHandler.IsScrambled(user.Name))
             {
               this.LogDebug("card: WaitForFile - audio stream is scrambled");
@@ -237,14 +242,14 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         else
         {
           this.LogInfo("TimeshiftingEPG: channel {0} is not configured for grabbing epg",
-                   channel.DisplayName);
+                       channel.DisplayName);
         }
       }
     }
 
     protected TvResult GetFailedTvResult(bool isScrambled)
     {
-      TvResult result;    
+      TvResult result;
       if (IsTuneCancelled())
       {
         result = TvResult.TuneCancelled;
@@ -264,7 +269,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     {
       if (subchannel is BaseSubChannel)
       {
-        ((BaseSubChannel)subchannel).AudioVideoEvent += AudioVideoEventHandler;
+        ((BaseSubChannel) subchannel).AudioVideoEvent += AudioVideoEventHandler;
       }
     }
 
@@ -272,8 +277,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     {
       if (subchannel is BaseSubChannel)
       {
-        ((BaseSubChannel)subchannel).AudioVideoEvent -= AudioVideoEventHandler;
-      }      
+        ((BaseSubChannel) subchannel).AudioVideoEvent -= AudioVideoEventHandler;
+      }
     }
   }
 }

@@ -48,7 +48,7 @@ namespace Mediaportal.TV.Server.SetupControls
 
       try
       {
-        ComboBoxExItem item = (ComboBoxExItem)Items[ea.Index];
+        ComboBoxExItem item = (ComboBoxExItem) Items[ea.Index];
 
         if (item.ImageIndex != -1)
         {
@@ -85,10 +85,14 @@ namespace Mediaportal.TV.Server.SetupControls
     private string _text;
 
     public ComboBoxExItem()
-      : this("") {}
+      : this("")
+    {
+    }
 
     public ComboBoxExItem(string text)
-      : this(text, -1, -1) {}
+      : this(text, -1, -1)
+    {
+    }
 
     public ComboBoxExItem(string text, int imageIndex, int id)
     {

@@ -17,15 +17,14 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.CardHandler
     /// <param name="idChannel"> </param>
     void RemoveUser(IUser user, int idChannel);
 
-    
 
     /// <summary>
     /// Gets the users for this card.
     /// </summary>
     /// <returns></returns>
     //IDictionary<string, IUser> Users { get; }
-
     bool HasEqualOrHigherPriority(IUser user);
+
     bool HasHighestPriority(IUser user);
     int GetTimeshiftingSubChannel(string userName);
     int GetTimeshiftingChannelId(string userName);
@@ -68,7 +67,7 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.CardHandler
     /// </summary>
     /// <param name = "user">The user.</param>
     void RemoveUser(IUser user);
-    
+
 
     /// <summary>
     ///   Gets the user.
@@ -140,7 +139,7 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.CardHandler
     ISubChannel GetSubChannel(string userName, int subChannelId);
 
     ISubChannel GetSubChannelByChannelId(string userName, int idChannel);
-    void SetOwnerSubChannel(int subChannelId, string userName);    
+    void SetOwnerSubChannel(int subChannelId, string userName);
     int NumberOfOtherUsers(string name);
     int GetNumberOfUsersOnChannel(int currentChannelId);
     bool IsAnyUserTimeShiftingOrRecording();

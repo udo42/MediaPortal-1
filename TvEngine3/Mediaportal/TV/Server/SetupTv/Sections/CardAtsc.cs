@@ -48,10 +48,14 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private FileFilters fileFilters;
 
     public CardAtsc()
-      : this("DVBC") {}
+      : this("DVBC")
+    {
+    }
 
     public CardAtsc(string name)
-      : base(name) {}
+      : base(name)
+    {
+    }
 
     public CardAtsc(string name, int cardNumber)
       : base(name)
@@ -87,14 +91,15 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       base.OnSectionActivated();
       UpdateStatus();
-      checkBoxQAM.Checked = ServiceAgents.Instance.SettingServiceAgent.GetValue("atsc" + _cardNumber + "supportsqam", false);
+      checkBoxQAM.Checked = ServiceAgents.Instance.SettingServiceAgent.GetValue("atsc" + _cardNumber + "supportsqam",
+                                                                                false);
       checkBoxQAM_CheckedChanged(null, null);
     }
 
     public override void OnSectionDeActivated()
     {
       base.OnSectionDeActivated();
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("atsc" + _cardNumber + "supportsqam", checkBoxQAM.Checked);      
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("atsc" + _cardNumber + "supportsqam", checkBoxQAM.Checked);
     }
 
     private void UpdateStatus()
@@ -109,8 +114,10 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       {
         checkBoxQAM.Enabled = false;
 
-        
-        Card card = ServiceAgents.Instance.CardServiceAgent.GetCardByDevicePath(ServiceAgents.Instance.ControllerServiceAgent.CardDevice(_cardNumber));
+
+        Card card =
+          ServiceAgents.Instance.CardServiceAgent.GetCardByDevicePath(
+            ServiceAgents.Instance.ControllerServiceAgent.CardDevice(_cardNumber));
         if (card.Enabled == false)
         {
           MessageBox.Show(this, "Tuner is disabled. Please enable the tuner before scanning.");
@@ -129,8 +136,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
                           "Tuner is locked. Scanning is not possible at the moment. Perhaps you are using another part of a hybrid card?");
           return;
         }
-        var tuningFile = (SimpleFileName)mpComboBoxFrequencies.SelectedItem;
-        _atscChannels = (List<ATSCTuning>)fileFilters.LoadList(tuningFile.FileName, typeof (List<ATSCTuning>));
+        var tuningFile = (SimpleFileName) mpComboBoxFrequencies.SelectedItem;
+        _atscChannels = (List<ATSCTuning>) fileFilters.LoadList(tuningFile.FileName, typeof (List<ATSCTuning>));
         if (_atscChannels == null)
         {
           return;
@@ -163,8 +170,10 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           return;
         mpComboBoxFrequencies.Enabled = false;
         listViewStatus.Items.Clear();
-        
-        Card card = ServiceAgents.Instance.CardServiceAgent.GetCardByDevicePath(ServiceAgents.Instance.ControllerServiceAgent.CardDevice(_cardNumber));
+
+        Card card =
+          ServiceAgents.Instance.CardServiceAgent.GetCardByDevicePath(
+            ServiceAgents.Instance.ControllerServiceAgent.CardDevice(_cardNumber));
         IUser user = new User();
         user.CardId = _cardNumber;
         int minchan = 2;
@@ -179,11 +188,11 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         {
           if (_stopScanning)
             return;
-          float percent = ((float)(index)) / (maxchan - minchan);
+          float percent = ((float) (index))/(maxchan - minchan);
           percent *= 100f;
           if (percent > 100f)
             percent = 100f;
-          progressBar1.Value = (int)percent;
+          progressBar1.Value = (int) percent;
           var tuneChannel = new ATSCChannel();
           tuneChannel.NetworkId = -1;
           tuneChannel.TransportId = -1;
@@ -252,7 +261,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           for (int i = 0; i < channels.Length; ++i)
           {
             Channel dbChannel;
-            var channel = (ATSCChannel)channels[i];
+            var channel = (ATSCChannel) channels[i];
             //No support for channel moving, or merging with existing channels here.
             //We do not know how ATSC works to correctly implement this.
             TuningDetail currentDetail = ServiceAgents.Instance.ChannelServiceAgent.GetTuningDetail(channel);
@@ -276,18 +285,22 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
               exists = true;
               dbChannel = currentDetail.Channel;
             }
-            dbChannel.MediaType = (int)channel.MediaType;
+            dbChannel.MediaType = (int) channel.MediaType;
             dbChannel = ServiceAgents.Instance.ChannelServiceAgent.SaveChannel(dbChannel);
             dbChannel.AcceptChanges();
             if (dbChannel.MediaType == (decimal) MediaTypeEnum.TV)
             {
-              ChannelGroup group = ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(TvConstants.TvGroupNames.AllChannels, MediaTypeEnum.TV);
-              MappingHelper.AddChannelToGroup(ref dbChannel, @group);              
+              ChannelGroup group =
+                ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(TvConstants.TvGroupNames.AllChannels,
+                                                                                 MediaTypeEnum.TV);
+              MappingHelper.AddChannelToGroup(ref dbChannel, @group);
             }
             else if (dbChannel.MediaType == (decimal) MediaTypeEnum.Radio)
             {
-              ChannelGroup group = ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(TvConstants.RadioGroupNames.AllChannels, MediaTypeEnum.Radio);
-              MappingHelper.AddChannelToGroup(ref dbChannel, @group);                            
+              ChannelGroup group =
+                ServiceAgents.Instance.ChannelGroupServiceAgent.GetOrCreateGroup(
+                  TvConstants.RadioGroupNames.AllChannels, MediaTypeEnum.Radio);
+              MappingHelper.AddChannelToGroup(ref dbChannel, @group);
             }
             if (currentDetail == null)
             {
@@ -296,7 +309,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
             else
             {
               //update tuning details...
-              ServiceAgents.Instance.ChannelServiceAgent.UpdateTuningDetail(dbChannel.IdChannel, currentDetail.IdTuning, channel);
+              ServiceAgents.Instance.ChannelServiceAgent.UpdateTuningDetail(dbChannel.IdChannel, currentDetail.IdTuning,
+                                                                            channel);
             }
             if (channel.MediaType == MediaTypeEnum.TV)
             {
@@ -323,7 +337,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
                 radioChannelsNew++;
                 newChannels++;
               }
-            }            
+            }
             MappingHelper.AddChannelToCard(dbChannel, card, false);
             line = String.Format("physical channel:{0} frequency:{1} modulation:{2} New:{3} Updated:{4}",
                                  tuneChannel.PhysicalChannel, tuneChannel.Frequency, tuneChannel.ModulationType,
@@ -369,7 +383,10 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     public class ATSCTuning
     {
       public int frequency; // frequency
-      public ATSCTuning() {}
+
+      public ATSCTuning()
+      {
+      }
 
       public ATSCTuning(int f)
       {

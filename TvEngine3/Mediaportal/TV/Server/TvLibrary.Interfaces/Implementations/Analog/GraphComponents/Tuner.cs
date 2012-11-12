@@ -36,10 +36,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     /// No radio support
     /// </summary>
     None,
+
     /// <summary>
     /// Tuner supports FM radio
     /// </summary>
     FM,
+
     /// <summary>
     /// Tuner supports AM radio
     /// </summary>
@@ -79,7 +81,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
 
     #region cotr
 
-    private Tuner() { }
+    private Tuner()
+    {
+    }
 
     #endregion
 
@@ -103,7 +107,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
         {
           tuner.VideoPin = Int32.Parse(videoPinNode.InnerText);
           tuner.AudioPin = Int32.Parse(audioPinNode.InnerText);
-          tuner.RadioMode = (RadioMode)Int32.Parse(radioModeNode.InnerText);
+          tuner.RadioMode = (RadioMode) Int32.Parse(radioModeNode.InnerText);
         }
         catch
         {
@@ -129,7 +133,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
       writer.WriteElementString("name", _name ?? "");
       writer.WriteElementString("videoPin", _videoPin.ToString());
       writer.WriteElementString("audioPin", _audioPin.ToString());
-      writer.WriteElementString("radioMode", ((Int32)_radioMode).ToString());
+      writer.WriteElementString("radioMode", ((Int32) _radioMode).ToString());
       writer.WriteEndElement(); //</tuner>
     }
 

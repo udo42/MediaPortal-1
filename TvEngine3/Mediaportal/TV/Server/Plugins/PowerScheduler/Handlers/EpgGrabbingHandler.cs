@@ -226,7 +226,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     /// <param name="action"></param>
     public void RunExternalCommand(String action)
     {
-      
       String cmd = SettingsManagement.GetValue("PowerSchedulerEpgCommand", String.Empty);
       if (string.IsNullOrEmpty(cmd))
         return;
@@ -244,7 +243,8 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
         }
 
         p.StartInfo = psi;
-        this.LogDebug("EpgGrabbingHandler: Starting external command: {0} {1}", p.StartInfo.FileName, p.StartInfo.Arguments);
+        this.LogDebug("EpgGrabbingHandler: Starting external command: {0} {1}", p.StartInfo.FileName,
+                      p.StartInfo.Arguments);
         try
         {
           p.Start();
@@ -264,7 +264,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       // ShouldRun still returns true until LastRun is updated, 
       // shutdown is disallowed until then
 
-      
+
       var config = new EPGWakeupConfig((SettingsManagement.GetValue("EPGWakeupConfig", String.Empty)));
 
       this.LogInfo("PowerScheduler: EPG schedule {0}:{1} is due: {2}:{3}",
@@ -294,7 +294,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
       // Update last schedule run status
       config.LastRun = DateTime.Now;
-      SettingsManagement.SaveValue("EPGWakeupConfig", config.SerializeAsString());      
+      SettingsManagement.SaveValue("EPGWakeupConfig", config.SerializeAsString());
       _epgThreadRunning = false;
     }
 
@@ -304,7 +304,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     /// <returns></returns>
     private bool ShouldRunNow()
     {
-      
       var config = new EPGWakeupConfig((SettingsManagement.GetValue("EPGWakeupConfig", String.Empty)));
 
       // check if schedule is due
@@ -418,7 +417,9 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       }
     }
 
-    public void UserShutdownNow() {}
+    public void UserShutdownNow()
+    {
+    }
 
     public string HandlerName
     {
@@ -522,7 +523,9 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
                 _epgScheduleDue -= del as EPGScheduleHandler;
             }
           }
-          catch (Exception) {}
+          catch (Exception)
+          {
+          }
           _epgScheduleDue += handler;
         }
       }

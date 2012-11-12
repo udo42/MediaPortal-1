@@ -38,8 +38,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 {
   public class UserManagement : IUserManagement
   {
-
-
     private readonly ITvCardHandler _cardHandler;
     private readonly object _ownerLock = new object();
     private readonly object _usersLock = new object();
@@ -50,7 +48,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     /// <param name="cardHandler">The card handler.</param>
     public UserManagement(ITvCardHandler cardHandler)
     {
-      _cardHandler = cardHandler;      
+      _cardHandler = cardHandler;
     }
 
     private ITvCardContext Context
@@ -62,16 +60,16 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     /// Gets the users for this card.
     /// </summary>
     /// <returns></returns>
-    private IDictionary<string,IUser> Users
+    private IDictionary<string, IUser> Users
     {
       get
-      {        
+      {
         if (Context == null)
         {
           return new Dictionary<string, IUser>();
         }
-        return Context.Users; 
-      }      
+        return Context.Users;
+      }
     }
 
     #region IUserManagement Members
@@ -97,7 +95,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     /// <param name="user">The user.</param>
     /// <param name="idChannel"> </param>
     public void RemoveUser(IUser user, int idChannel)
-    {      
+    {
       if (Context == null)
       {
         return;
@@ -119,10 +117,10 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           if (subchannel.IdChannel == idChannel)
           {
             this.LogDebug("usermanagement.RemoveUser: {0}, subch: {1} of {2}, card: {3}", user.Name, subchannel.Id,
-                      _cardHandler.Card.SubChannels.Length, _cardHandler.DataBaseCard.IdCard);
+                          _cardHandler.Card.SubChannels.Length, _cardHandler.DataBaseCard.IdCard);
             if (!ContainsUsersForSubchannel(subchannel.Id))
             {
-              subchannelsId.Add(subchannel.Id);              
+              subchannelsId.Add(subchannel.Id);
             }
             break;
           }
@@ -151,7 +149,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
             new CleanTimeshiftFilesThread(_cardHandler.DataBaseCard.TimeshiftingFolder,
                                           String.Format("live{0}-{1}.ts", _cardHandler.DataBaseCard.IdCard,
                                                         usedSubChannel));
-          var cleanupThread = new Thread(cleanTimeshiftFilesThread.CleanTimeshiftFiles) { IsBackground = true, Name = "TS_File_Cleanup", Priority = ThreadPriority.Lowest };
+          var cleanupThread = new Thread(cleanTimeshiftFilesThread.CleanTimeshiftFiles)
+                                {IsBackground = true, Name = "TS_File_Cleanup", Priority = ThreadPriority.Lowest};
           cleanupThread.Start();
         }
       }
@@ -166,7 +165,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 
     public bool HasEqualOrHigherPriority(IUser user)
     {
-      bool hasEqualOrHigherPriority = false;      
+      bool hasEqualOrHigherPriority = false;
       if (Context != null)
       {
         hasEqualOrHigherPriority = HasUserEqualOrHigherPriority(user);
@@ -176,12 +175,12 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 
     public bool HasHighestPriority(IUser user)
     {
-      bool hasHighestPriority = false;      
+      bool hasHighestPriority = false;
       if (Context != null)
       {
         hasHighestPriority = HasUserHighestPriority(user);
       }
-      return hasHighestPriority;         
+      return hasHighestPriority;
     }
 
     public int GetTimeshiftingSubChannel(string userName)
@@ -207,7 +206,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 
     public int GetTimeshiftingChannelId(string userName)
     {
-      return GetChannelId(userName, TvUsage.Timeshifting);      
+      return GetChannelId(userName, TvUsage.Timeshifting);
     }
 
     public int GetChannelId(string userName, TvUsage tvUsage)
@@ -321,7 +320,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           {
             if (u.UserType != userType.GetValueOrDefault())
             {
-              continue;              
+              continue;
             }
           }
           var anyUser = u.Clone() as IUser;
@@ -329,8 +328,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           {
             clonedList.Add(anyUser);
           }
-        } 
-      }      
+        }
+      }
       return clonedList;
     }
 
@@ -424,7 +423,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
             }
             int idChannel = subchannel.IdChannel;
             if (_cardHandler.Recorder.IsRecording(user.Name))
-            {              
+            {
               result[idChannel] = ChannelState.recording;
             }
             else if (_cardHandler.TimeShifter.IsTimeShifting(user))
@@ -467,7 +466,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
             {
               continue;
             }
-            var userCopy = (IUser)user.Clone();
+            var userCopy = (IUser) user.Clone();
             if (_cardHandler.CurrentDbChannel(userCopy.Name) == idChannel)
             {
               if (_cardHandler.Recorder.IsRecording(userCopy.Name))
@@ -482,7 +481,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       return recUser;
     }
 
-  
 
     public int NumberOfOtherUsers(string name)
     {
@@ -520,7 +518,9 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     public bool IsAnyUserTimeShiftingOrRecording()
     {
       IEnumerable<IUser> safeUsers = GetUsersCopy();
-      return safeUsers.Any(user => _cardHandler.TimeShifter.IsTimeShifting(user) || _cardHandler.Recorder.IsRecording(user.Name));
+      return
+        safeUsers.Any(
+          user => _cardHandler.TimeShifter.IsTimeShifting(user) || _cardHandler.Recorder.IsRecording(user.Name));
     }
 
     public bool IsAnyUserOnTuningDetail(IChannel tuningDetail)
@@ -534,7 +534,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           {
             IChannel currentChannel = _cardHandler.CurrentChannel(user.Name, subchannel.IdChannel);
             if (currentChannel != null && currentChannel.Equals(tuningDetail))
-            {                
+            {
               isAnyUserOnTuningDetail = true;
               break;
             }
@@ -623,10 +623,10 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       {
         if (Context.OwnerSubChannel != null)
         {
-          ownerName = Context.OwnerSubChannel.OwnerName;  
+          ownerName = Context.OwnerSubChannel.OwnerName;
         }
       }
-      
+
       if (ownerName != null)
       {
         lock (_usersLock)
@@ -641,8 +641,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
             }
           }
         }
-      }      
-      
+      }
+
       return isLocked;
     }
 
@@ -660,8 +660,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         if (Context.OwnerSubChannel == null)
         {
           return true;
-        } 
-      }      
+        }
+      }
 
       IUser owner;
       bool isLocked = IsLocked(out owner);
@@ -753,7 +753,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           {
             Context.Users.Remove(username);
           }
-          
+
           if (Context.Users.Count > 0)
           {
             lock (_ownerLock)
@@ -808,7 +808,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           if (ownerName.Equals(existingUser.Name))
           {
             IList<int> removeSubChIds =
-              (from subch in existingUser.SubChannels.Values where subch.TvUsage == TvUsage.Timeshifting select subch.Id).
+              (from subch in existingUser.SubChannels.Values where subch.TvUsage == TvUsage.Timeshifting select subch.Id)
+                .
                 ToList();
             foreach (int removeSubChId in removeSubChIds)
             {
@@ -856,7 +857,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     /// <param name = "userExists">IUser exists</param>
     public void RefreshUser(ref IUser user, out bool userExists)
     {
-      var userCopy = (User)user.Clone();
+      var userCopy = (User) user.Clone();
       IUser existingUser = GetUser(userCopy.Name);
 
       if (existingUser != null)
@@ -874,7 +875,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         userExists = false;
       }
     }
-
 
 
     /// <summary>
@@ -956,7 +956,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       {
         IUser existingUser = GetUser(userName);
         if (existingUser != null)
-        {          
+        {
           return existingUser.TvStoppedReason;
         }
       }
@@ -1022,7 +1022,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       return hasHighestPriority;
     }
 
-    
 
     /// <summary>
     ///   Determines whether one or more users exist for the given subchannel
@@ -1072,7 +1071,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         {
           ChannelManagement.SaveChannelHistory(history);
         }
-        user.History = null;  
+        user.History = null;
       }
     }
 
@@ -1106,25 +1105,24 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           if (p != null)
           {
             var history1 = new History
-            {
-              IdChannel = channel.IdChannel,
-              StartTime = p.StartTime,
-              EndTime = p.EndTime,
-              Title = p.Title,
-              Description = p.Description,
-              ProgramCategory = p.ProgramCategory,
-              Recorded = false,
-              Watched = 0
-            };
+                             {
+                               IdChannel = channel.IdChannel,
+                               StartTime = p.StartTime,
+                               EndTime = p.EndTime,
+                               Title = p.Title,
+                               Description = p.Description,
+                               ProgramCategory = p.ProgramCategory,
+                               Recorded = false,
+                               Watched = 0
+                             };
             existingUser.History = history1;
           }
         }
       }
       catch (Exception ex)
-      {        
-       this.LogError(ex, "could not persist user's channel change history."); 
+      {
+        this.LogError(ex, "could not persist user's channel change history.");
       }
-      
     }
 
     private OwnerSubChannel GetNextAvailableSubchannelOwner()
@@ -1186,7 +1184,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       IUser userFound = null;
       lock (_usersLock)
       {
-        userFound = Context.Users.Values.FirstOrDefault(t => t.SubChannels.ContainsKey(subChannelId));        
+        userFound = Context.Users.Values.FirstOrDefault(t => t.SubChannels.ContainsKey(subChannelId));
       }
       return userFound;
     }
@@ -1197,8 +1195,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     {
       IUser user;
       lock (_usersLock)
-      {        
-        Context.Users.TryGetValue(name, out user);        
+      {
+        Context.Users.TryGetValue(name, out user);
       }
       return user;
     }
@@ -1215,8 +1213,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           isAnyUserExceptThisTimeShifting = _cardHandler.TimeShifter.IsTimeShifting(user);
           if (isAnyUserExceptThisTimeShifting)
           {
-            break; 
-          }                      
+            break;
+          }
         }
       }
       return isAnyUserExceptThisTimeShifting;

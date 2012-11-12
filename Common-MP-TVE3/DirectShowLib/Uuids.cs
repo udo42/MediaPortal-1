@@ -985,7 +985,6 @@ namespace DirectShowLib
   {
   }
 
-
   #endregion
 
   #region GUIDS
@@ -1225,7 +1224,7 @@ namespace DirectShowLib
 
     /// <summary> MEDIATYPE_Text 'txts' </summary>
     public static readonly Guid Texts = new Guid(0x73747874, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b,
-                                                0x71);
+                                                 0x71);
 
     /// <summary> MEDIATYPE_Stream </summary>
     public static readonly Guid Stream = new Guid(0xe436eb83, 0x524f, 0x11ce, 0x9f, 0x53, 0x00, 0x20, 0xaf, 0x0b, 0xa7,
@@ -1285,12 +1284,11 @@ namespace DirectShowLib
 
     /// <summary> MEDIATYPE_AUXTeletextPage </summary>
     public static readonly Guid AUXTeletextPage = new Guid(0x11264acb, 0x37de, 0x4eba, 0x8c, 0x35, 0x7f, 0x4, 0xa1, 0xa6,
-                                                            0x83, 0x32);
+                                                           0x83, 0x32);
 
     /// <summary> MEDIATYPE_CC_CONTAINER </summary>
     public static readonly Guid CC_Container = new Guid(0xaeb312e9, 0x3357, 0x43ca, 0xb7, 0x1, 0x97, 0xec, 0x19, 0x8e,
                                                         0x2b, 0x62);
-
   }
 
   public static class MediaSubType
@@ -1814,11 +1812,11 @@ namespace DirectShowLib
 
     /// <summary> MEDIASUBTYPE_DVB_SUBTITLES </summary>
     public static readonly Guid DVB_Subtitles = new Guid(0x34FFCBC3, 0xD5B3, 0x4171, 0x90, 0x02, 0xD4, 0xC6, 0x03, 0x01,
-                                                          0x69, 0x7F);
+                                                         0x69, 0x7F);
 
     /// <summary> MEDIASUBTYPE_ISDB_CAPTIONS </summary>
     public static readonly Guid ISDB_Captions = new Guid(0x059dd67d, 0x2e55, 0x4d41, 0x8d, 0x1b, 0x01, 0xf5, 0xe4, 0xf5,
-                                                          0x06, 0x07);
+                                                         0x06, 0x07);
 
     /// <summary> MEDIASUBTYPE_ISDB_SUPERIMPOSE </summary>
     public static readonly Guid ISDB_Superimpose = new Guid(0x36dc6d28, 0xf1a6, 0x4216, 0x90, 0x48, 0x9c, 0xfc, 0xef,
@@ -1872,12 +1870,11 @@ namespace DirectShowLib
 
     /// <summary> MEDIASUBTYPE_ETDTFilter_Tagged </summary>
     public static readonly Guid ETDTFilter_Tagged = new Guid(0xC4C4C4D0, 0x0049, 0x4E2B, 0x98, 0xFB, 0x95, 0x37, 0xF6,
-                                                              0xCE, 0x51, 0x6D);
+                                                             0xCE, 0x51, 0x6D);
 
     /// <summary> MEDIASUBTYPE_CPFilters_Processed </summary>
     public static readonly Guid CPFilters_Processed = new Guid(0x46adbd28, 0x6fd0, 0x4796, 0x93, 0xb2, 0x15, 0x5c, 0x51,
-                                                                0xdc, 0x4, 0x8d);
-
+                                                               0xdc, 0x4, 0x8d);
   }
 
   public static class FormatType
@@ -1934,11 +1931,11 @@ namespace DirectShowLib
 
     /// <summary> FORMATTYPE_ETDTFilter_Tagged </summary>
     public static readonly Guid ETDTFilter_Tagged = new Guid(0xC4C4C4D1, 0x0049, 0x4E2B, 0x98, 0xFB, 0x95, 0x37, 0xF6,
-                                                              0xCE, 0x51, 0x6D);
+                                                             0xCE, 0x51, 0x6D);
 
     /// <summary> FORMATTYPE_CPFilters_Processed </summary>
     public static readonly Guid CPFilters_Processed = new Guid(0x6739b36f, 0x1d5f, 0x4ac2, 0x81, 0x92, 0x28, 0xbb, 0xe,
-                                                                0x73, 0xd1, 0x6a);
+                                                               0x73, 0xd1, 0x6a);
   }
 
   public static class DSAttrib
@@ -1953,27 +1950,31 @@ namespace DirectShowLib
 
     /// <summary> DSATTRIB_OptionalVideoAttributes </summary>
     public static readonly Guid OptionalVideoAttributes = new Guid(0x5A5F08CA, 0x55C2, 0x4033, 0x92, 0xAB, 0x55, 0xDB,
-                                                                    0x8F, 0x78, 0x12, 0x26);
+                                                                   0x8F, 0x78, 0x12, 0x26);
 
     /// <summary> DSATTRIB_CC_CONTAINER_INFO </summary>
-    public static readonly Guid CC_ContainerInfo = new Guid(0xe7e050fb, 0xdd5d, 0x40dd, 0x99, 0x15, 0x35, 0xDC, 0xB8, 0x1B,
+    public static readonly Guid CC_ContainerInfo = new Guid(0xe7e050fb, 0xdd5d, 0x40dd, 0x99, 0x15, 0x35, 0xDC, 0xB8,
+                                                            0x1B,
                                                             0xDC, 0x8a);
 
     /// <summary> DSATTRIB_TRANSPORT_PROPERTIES </summary>
-    public static readonly Guid TransportProperties = new Guid(0xb622f612, 0x47ad, 0x4671, 0xad, 0x6c, 0x5, 0xa9, 0x8e, 0x65,
-                                                                0xde, 0x3a);
+    public static readonly Guid TransportProperties = new Guid(0xb622f612, 0x47ad, 0x4671, 0xad, 0x6c, 0x5, 0xa9, 0x8e,
+                                                               0x65,
+                                                               0xde, 0x3a);
 
     /// <summary> DSATTRIB_PBDATAG_ATTRIBUTE </summary>
-    public static readonly Guid PBDATagAttribute = new Guid(0xe0b56679, 0x12b9, 0x43cc, 0xb7, 0xdf, 0x57, 0x8c, 0xaa, 0x5a,
+    public static readonly Guid PBDATagAttribute = new Guid(0xe0b56679, 0x12b9, 0x43cc, 0xb7, 0xdf, 0x57, 0x8c, 0xaa,
+                                                            0x5a,
                                                             0x7b, 0x63);
 
     /// <summary> DSATTRIB_CAPTURE_STREAMTIME </summary>
-    public static readonly Guid CaptureStreamtime = new Guid(0x0c1a5614, 0x30cd, 0x4f40, 0xbc, 0xbf, 0xd0, 0x3e, 0x52, 0x30,
-                                                              0x62, 0x07);
+    public static readonly Guid CaptureStreamtime = new Guid(0x0c1a5614, 0x30cd, 0x4f40, 0xbc, 0xbf, 0xd0, 0x3e, 0x52,
+                                                             0x30,
+                                                             0x62, 0x07);
 
     /// <summary> DSATTRIB_DSHOW_STREAM_DESC </summary>
     public static readonly Guid DShowStreamDesc = new Guid(0x5fb5673b, 0xa2a, 0x4565, 0x82, 0x7b, 0x68, 0x53, 0xfd, 0x75,
-                                                            0xe6, 0x11);
+                                                           0xe6, 0x11);
 
     /// <summary> DSATTRIB_SAMPLE_LIVE_STREAM_TIME </summary>
     public static readonly Guid SampleLiveStreamtime = new Guid(0x892cd111, 0x72f3, 0x411d, 0x8b, 0x91, 0xa9, 0xe9, 0x12,
@@ -1981,11 +1982,11 @@ namespace DirectShowLib
 
     /// <summary> DSATTRIB_WMDRMProtectionInfo </summary>
     public static readonly Guid WMDRMProtectionInfo = new Guid(0x40749583, 0x6b9d, 0x4eec, 0xb4, 0x3c, 0x67, 0xa1, 0x80,
-                                                                0x1e, 0x1a, 0x9b);
+                                                               0x1e, 0x1a, 0x9b);
 
     /// <summary> DSATTRIB_BadSampleInfo </summary>
     public static readonly Guid BadSampleInfo = new Guid(0xe4846dda, 0x5838, 0x42b4, 0xb8, 0x97, 0x6f, 0x7e, 0x5f, 0xaa,
-                                                          0x2f, 0x2f);
+                                                         0x2f, 0x2f);
   }
 
   public static class PropSetID
@@ -2256,7 +2257,7 @@ namespace DirectShowLib
   {
     /// <summary> UUID_UdriTagTables </summary>
     public static readonly Guid UdriTagTables = new Guid(0xe1b98d74, 0x9778, 0x4878, 0xb6, 0x64, 0xeb, 0x20, 0x20, 0x36,
-                                                          0x4d, 0x88);
+                                                         0x4d, 0x88);
 
     /// <summary> UUID_WMDRMTagTables </summary>
     public static readonly Guid WMDRMTagTables = new Guid(0x5DCD1101, 0x9263, 0x45bb, 0xa4, 0xd5, 0xc4, 0x15, 0xab, 0x8c,

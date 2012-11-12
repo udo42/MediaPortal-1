@@ -27,7 +27,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
   public partial class DebugOptions : SectionSettings
   {
     public DebugOptions()
-      : this("Debug Options") {}
+      : this("Debug Options")
+    {
+    }
 
     public DebugOptions(string name)
       : base(name)

@@ -48,7 +48,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private TabPage usbWINTV_tabpage;
 
     public TvCards()
-      : this("TV Cards") {}
+      : this("TV Cards")
+    {
+    }
 
     public TvCards(string name)
       : base(name)
@@ -76,7 +78,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private void placeInHybridCardToolStripMenuItem_Click(object sender, EventArgs e)
     {
-      var menuItem = (ToolStripMenuItem)sender;
+      var menuItem = (ToolStripMenuItem) sender;
       CardGroup group;
       if (menuItem.Tag == null)
       {
@@ -92,7 +94,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
       else
       {
-        group = (CardGroup)menuItem.Tag;
+        group = (CardGroup) menuItem.Tag;
       }
       ListView.SelectedIndexCollection indexes = mpListView1.SelectedIndices;
       if (indexes.Count == 0)
@@ -100,9 +102,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       for (int i = 0; i < indexes.Count; ++i)
       {
         ListViewItem item = mpListView1.Items[indexes[i]];
-        var card = (Card)item.Tag;
+        var card = (Card) item.Tag;
         var map = new CardGroupMap();
-        map.IdCard = card.IdCard;        
+        map.IdCard = card.IdCard;
         map.IdCardGroup = group.IdCardGroup;
         ServiceAgents.Instance.CardServiceAgent.SaveCardGroupMap(map);
         ServiceAgents.Instance.CardServiceAgent.SaveCard(card);
@@ -116,14 +118,14 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       ReOrder();
 
       // DVB-IP cards
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("iptvCardCount", (int)iptvUpDown.Value);
-      
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("iptvCardCount", (int) iptvUpDown.Value);
+
 
       // WinTV CI
-      var info = (CardInfo)mpComboBoxCard.SelectedItem;
+      var info = (CardInfo) mpComboBoxCard.SelectedItem;
       if (info != null)
       {
-        ServiceAgents.Instance.SettingServiceAgent.SaveValue("winTvCiTuner", info.card.IdCard);        
+        ServiceAgents.Instance.SettingServiceAgent.SaveValue("winTvCiTuner", info.card.IdCard);
       }
 
       if (_needRestart)
@@ -171,7 +173,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           mpComboBoxCard.Items.Add(new CardInfo(card));
         }
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       try
       {
         cards = cards.OrderByDescending(c => c.Priority).ToList();
@@ -357,7 +361,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       {
         mpListView1.Items[i].SubItems[1].Text = (mpListView1.Items.Count - i).ToString();
 
-        var card = (Card)mpListView1.Items[i].Tag;
+        var card = (Card) mpListView1.Items[i].Tag;
         card.Priority = mpListView1.Items.Count - i;
         if (card.Enabled != mpListView1.Items[i].Checked)
           _needRestart = true;
@@ -383,7 +387,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       bool enabled = mpListView1.SelectedItems.Count == 1;
       if (enabled)
       {
-        var card = (Card)mpListView1.SelectedItems[0].Tag;
+        var card = (Card) mpListView1.SelectedItems[0].Tag;
         enabled = !ServiceAgents.Instance.ControllerServiceAgent.IsCardPresent(card.IdCard);
       }
       UpdateEditButtonState();
@@ -404,7 +408,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
     }
 
-    private void tabControl1_SelectedIndexChanged(object sender, EventArgs e) {}
+    private void tabControl1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+    }
 
     private void UpdateHybrids()
     {
@@ -434,8 +440,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       var group = node.Parent.Tag as CardGroup;
       if (group != null)
-      {                
-
+      {
         IList<CardGroupMap> cards = group.CardGroupMaps;
         CardGroupMap cardGroupMap2Remove = null;
         foreach (CardGroupMap map in cards.Where(map => map.IdCard == card.IdCard))
@@ -449,7 +454,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         {
           group.CardGroupMaps.Remove(cardGroupMap2Remove);
           ServiceAgents.Instance.CardServiceAgent.SaveCardGroup(group);
-        }        
+        }
       }
       UpdateHybrids();
       ServiceAgents.Instance.ControllerServiceAgent.Restart();
@@ -477,8 +482,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       ReOrder();
       UpdateList();
       var dlg = new FormEditCard();
-      dlg.Card = (Card)item.Tag;
-      dlg.CardType = cardTypes[((Card)item.Tag).DevicePath].ToString();
+      dlg.Card = (Card) item.Tag;
+      dlg.CardType = cardTypes[((Card) item.Tag).DevicePath].ToString();
       if (dlg.ShowDialog() == DialogResult.OK)
       {
         // User clicked save...
@@ -491,7 +496,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private void buttonRemove_Click(object sender, EventArgs e)
     {
-      var card = (Card)mpListView1.SelectedItems[0].Tag;
+      var card = (Card) mpListView1.SelectedItems[0].Tag;
 
       DialogResult res = MessageBox.Show(this,
                                          "Are you sure you want to delete this card along with all the channel mappings? (channels will not be deleted)",

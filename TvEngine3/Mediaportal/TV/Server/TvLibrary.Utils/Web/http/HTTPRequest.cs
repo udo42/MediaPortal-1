@@ -35,7 +35,9 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
     private string _postQuery = string.Empty;
     private string _scheme = string.Empty;
 
-    public HTTPRequest() {}
+    public HTTPRequest()
+    {
+    }
 
     public HTTPRequest(string baseUrl, string getQuery)
     {
@@ -200,9 +202,9 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
 
     public static bool operator ==(HTTPRequest r1, HTTPRequest r2)
     {
-      if ((object)r1 == null || (object)r2 == null)
+      if ((object) r1 == null || (object) r2 == null)
       {
-        if ((object)r1 == null && (object)r2 == null)
+        if ((object) r1 == null && (object) r2 == null)
           return true;
         return false;
       }

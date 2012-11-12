@@ -58,7 +58,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
 
     #region ctor
 
-    private Graph() {}
+    private Graph()
+    {
+    }
 
     #endregion
 

@@ -32,8 +32,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.CIMenu
   /// </summary>
   public class CiMenuEventHandler : ICiMenuEventCallback
   {
-
-
     private CI_Menu_Dialog _refDlg;
 
     #region ICiMenuEventCallback Members

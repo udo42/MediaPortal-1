@@ -208,7 +208,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
       {
         Thread.Sleep(500);
       }
-      var doc = (HTMLDocumentClass)webBrowser.Document;
+      var doc = (HTMLDocumentClass) webBrowser.Document;
 
       _strPageSource = doc.body.innerHTML;
 

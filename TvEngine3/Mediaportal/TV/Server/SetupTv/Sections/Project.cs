@@ -30,7 +30,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
   public partial class Project : SectionSettings
   {
     public Project()
-      : this("Project") {}
+      : this("Project")
+    {
+    }
 
     public Project(string name)
       : base(name)
@@ -96,7 +98,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       {
         Process.Start("http://www.team-mediaportal.com/donate.html");
       }
-      catch {}
+      catch
+      {
+      }
     }
   }
 }

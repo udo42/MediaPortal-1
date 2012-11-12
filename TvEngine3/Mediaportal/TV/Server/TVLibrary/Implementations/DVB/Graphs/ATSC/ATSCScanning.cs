@@ -52,11 +52,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
       {
         if (videoStreamCount != 0)
         {
-          return (int)AtscServiceType.DigitalTelevision;
+          return (int) AtscServiceType.DigitalTelevision;
         }
         else if (audioStreamCount != 0)
         {
-          return (int)AtscServiceType.Audio;
+          return (int) AtscServiceType.Audio;
         }
       }
       return serviceType;
@@ -69,7 +69,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
     /// <returns><c>true</c> if the service type is a radio service type, otherwise <c>false</c></returns>
     protected override bool IsRadioService(int serviceType)
     {
-      return serviceType == (int)AtscServiceType.Audio;
+      return serviceType == (int) AtscServiceType.Audio;
     }
 
     /// <summary>
@@ -79,8 +79,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.ATSC
     /// <returns><c>true</c> if the service type is a television service type, otherwise <c>false</c></returns>
     protected override bool IsTvService(int serviceType)
     {
-      return serviceType == (int)AtscServiceType.AnalogTelevision ||
-             serviceType == (int)AtscServiceType.DigitalTelevision;
+      return serviceType == (int) AtscServiceType.AnalogTelevision ||
+             serviceType == (int) AtscServiceType.DigitalTelevision;
     }
 
     /// <summary>

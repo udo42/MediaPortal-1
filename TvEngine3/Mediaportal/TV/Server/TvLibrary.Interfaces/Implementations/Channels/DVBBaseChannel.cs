@@ -29,44 +29,34 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
   /// A base class for holding DVB (and ATSC) channel tuning details.
   /// </summary>
   [DataContract]
-  [KnownType(typeof(DVBTChannel))]
-  [KnownType(typeof(DVBCChannel))]
-  [KnownType(typeof(DVBSChannel))]
-  [KnownType(typeof(DVBIPChannel))]
-  [KnownType(typeof(ATSCChannel))]
-    public abstract class DVBBaseChannel : IChannel
+  [KnownType(typeof (DVBTChannel))]
+  [KnownType(typeof (DVBCChannel))]
+  [KnownType(typeof (DVBSChannel))]
+  [KnownType(typeof (DVBIPChannel))]
+  [KnownType(typeof (ATSCChannel))]
+  public abstract class DVBBaseChannel : IChannel
   {
     #region variables
 
-    [DataMember]
-    private long _channelFrequency = -1;
+    [DataMember] private long _channelFrequency = -1;
 
-    [DataMember]
-    private string _channelName = String.Empty;
+    [DataMember] private string _channelName = String.Empty;
 
-    [DataMember]
-    private bool _freeToAir = true;
+    [DataMember] private bool _freeToAir = true;
 
-    [DataMember]
-    private int _lcn = 10000;
+    [DataMember] private int _lcn = 10000;
 
-    [DataMember]
-    private MediaTypeEnum _mediaType;
+    [DataMember] private MediaTypeEnum _mediaType;
 
-    [DataMember]
-    private int _networkId = -1;
+    [DataMember] private int _networkId = -1;
 
-    [DataMember]
-    private int _pmtPid = -1;
+    [DataMember] private int _pmtPid = -1;
 
-    [DataMember]
-    private string _providerName = String.Empty;
+    [DataMember] private string _providerName = String.Empty;
 
-    [DataMember]
-    private int _serviceId = -1;
+    [DataMember] private int _serviceId = -1;
 
-    [DataMember]
-    private int _transportId = -1;
+    [DataMember] private int _transportId = -1;
 
     #endregion
 
@@ -104,7 +94,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       _serviceId = channel.ServiceId;
       _pmtPid = channel.PmtPid;
       _lcn = channel.LogicalChannelNumber;
-      _mediaType = channel._mediaType;      
+      _mediaType = channel._mediaType;
       _freeToAir = channel.FreeToAir;
     }
 
@@ -269,7 +259,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       if (ch.MediaType != MediaType)
       {
         return false;
-      }      
+      }
       if (ch.FreeToAir != _freeToAir)
       {
         return false;
@@ -286,7 +276,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     {
       return base.GetHashCode() ^ _channelName.GetHashCode() ^ _providerName.GetHashCode() ^
              _channelFrequency.GetHashCode() ^ _networkId.GetHashCode() ^ _transportId.GetHashCode() ^
-             _serviceId.GetHashCode() ^ _pmtPid.GetHashCode() ^ _lcn.GetHashCode() ^ _mediaType.GetHashCode() 
+             _serviceId.GetHashCode() ^ _pmtPid.GetHashCode() ^ _lcn.GetHashCode() ^ _mediaType.GetHashCode()
              ^ _freeToAir.GetHashCode();
     }
 
@@ -324,7 +314,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     public virtual IChannel GetTuningChannel()
     {
       // No adjustments required.
-      return (IChannel)Clone();
+      return (IChannel) Clone();
     }
 
     #endregion

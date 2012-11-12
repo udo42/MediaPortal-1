@@ -175,26 +175,26 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog
             {
               tempValue = 0;
             }
-            _configuration.PlaybackQualityMode = (VIDEOENCODER_BITRATE_MODE)tempValue;
+            _configuration.PlaybackQualityMode = (VIDEOENCODER_BITRATE_MODE) tempValue;
             tempValue = int.Parse(tempNode.Attributes["type"].Value);
             if (tempValue < 1 || tempValue > 6)
             {
               tempValue = 1;
             }
-            _configuration.PlaybackQualityType = (QualityType)tempValue;
+            _configuration.PlaybackQualityType = (QualityType) tempValue;
             tempNode = node.SelectSingleNode("record");
             tempValue = int.Parse(tempNode.Attributes["mode"].Value);
             if (tempValue < 0 || tempValue > 2)
             {
               tempValue = 0;
             }
-            _configuration.RecordQualityMode = (VIDEOENCODER_BITRATE_MODE)tempValue;
+            _configuration.RecordQualityMode = (VIDEOENCODER_BITRATE_MODE) tempValue;
             tempValue = int.Parse(tempNode.Attributes["type"].Value);
             if (tempValue < 1 || tempValue > 6)
             {
               tempValue = 1;
             }
-            _configuration.RecordQualityType = (QualityType)tempValue;
+            _configuration.RecordQualityType = (QualityType) tempValue;
             _configuration.Graph = Graph.CreateInstance(cardNode.SelectSingleNode("graph"));
           }
         }
@@ -224,11 +224,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog
       if (configuration != null && configuration.CardId != 0)
       {
         String fileName = GetFileName(configuration.Name, configuration.CardId);
-        using (var writer = new XmlTextWriter(fileName, Encoding.UTF8)) 
+        using (var writer = new XmlTextWriter(fileName, Encoding.UTF8))
         {
           writer.Formatting = Formatting.Indented;
           writer.Indentation = 1;
-          writer.IndentChar = (char)9;
+          writer.IndentChar = (char) 9;
           writer.WriteStartDocument(true);
           writer.WriteStartElement("configuration"); //<configuration>
           writer.WriteAttributeString("version", "2");
@@ -245,12 +245,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog
           writer.WriteAttributeString("peakValue", XmlConvert.ToString(configuration.CustomPeakQualityValue));
           writer.WriteEndElement(); //</customSettings>
           writer.WriteStartElement("playback"); //<playback>
-          writer.WriteAttributeString("mode", XmlConvert.ToString((int)configuration.PlaybackQualityMode));
-          writer.WriteAttributeString("type", XmlConvert.ToString((int)configuration.PlaybackQualityType));
+          writer.WriteAttributeString("mode", XmlConvert.ToString((int) configuration.PlaybackQualityMode));
+          writer.WriteAttributeString("type", XmlConvert.ToString((int) configuration.PlaybackQualityType));
           writer.WriteEndElement(); //</playback>
           writer.WriteStartElement("record"); //<record>
-          writer.WriteAttributeString("mode", XmlConvert.ToString((int)configuration.RecordQualityMode));
-          writer.WriteAttributeString("type", XmlConvert.ToString((int)configuration.RecordQualityType));
+          writer.WriteAttributeString("mode", XmlConvert.ToString((int) configuration.RecordQualityMode));
+          writer.WriteAttributeString("type", XmlConvert.ToString((int) configuration.RecordQualityType));
           writer.WriteEndElement(); //</record>
           writer.WriteEndElement(); //</qualityControl>
           writer.WriteEndElement(); //</card>

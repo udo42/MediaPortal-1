@@ -30,13 +30,12 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
 {
   public class RecordingManagement
   {
- 
-    private readonly Timer _timer;    
+    private readonly Timer _timer;
 
     public RecordingManagement()
     {
       _timer = new Timer();
-      _timer.Interval = 4 * 60 * 60 * 1000;
+      _timer.Interval = 4*60*60*1000;
       _timer.Enabled = false;
       _timer.Elapsed += _timer_Elapsed;
     }
@@ -56,13 +55,14 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
     /// </remarks>
     private static void DeleteOldRecordings()
     {
-      IList<Recording> recordings = TVDatabase.TVBusinessLayer.RecordingManagement.ListAllRecordingsByMediaType(MediaTypeEnum.TV);
+      IList<Recording> recordings =
+        TVDatabase.TVBusinessLayer.RecordingManagement.ListAllRecordingsByMediaType(MediaTypeEnum.TV);
       foreach (Recording recording in recordings.Where(ShouldBeDeleted))
       {
         Log.Debug("Recorder: delete old recording:{0} date:{1}",
                   recording.FileName,
                   recording.StartTime.ToShortDateString());
-        recordings.Remove(recording);        
+        recordings.Remove(recording);
         TVDatabase.TVBusinessLayer.RecordingManagement.DeleteRecording(recording.IdRecording);
         break;
       }
@@ -70,7 +70,7 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
 
     private static bool ShouldBeDeleted(Recording recording)
     {
-      if (recording.KeepUntil != (int)KeepMethodType.TillDate)
+      if (recording.KeepUntil != (int) KeepMethodType.TillDate)
       {
         return false;
       }

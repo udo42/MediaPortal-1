@@ -69,7 +69,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     /// <summary>
     /// Private constructor
     /// </summary>
-    private Crossbar() {}
+    private Crossbar()
+    {
+    }
 
     #endregion
 
@@ -107,7 +109,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
             foreach (XmlNode pin in videoPinList)
             {
               var type =
-                (AnalogChannel.VideoInputType)Int32.Parse(pin.Attributes["type"].Value);
+                (AnalogChannel.VideoInputType) Int32.Parse(pin.Attributes["type"].Value);
               int index = Int32.Parse(pin.Attributes["index"].Value);
               int related = Int32.Parse(pin.Attributes["related"].Value);
               videoPinMap.Add(type, index);
@@ -119,7 +121,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
             foreach (XmlNode pin in audioPinList)
             {
               var type =
-                (AnalogChannel.AudioInputType)Int32.Parse(pin.Attributes["type"].Value);
+                (AnalogChannel.AudioInputType) Int32.Parse(pin.Attributes["type"].Value);
               int index = Int32.Parse(pin.Attributes["index"].Value);
               audioPinMap.Add(type, index);
             }
@@ -151,7 +153,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
       foreach (AnalogChannel.VideoInputType type in _videoPinMap.Keys)
       {
         writer.WriteStartElement("videoPin"); //<videoPin>
-        writer.WriteAttributeString("type", ((Int32)type).ToString());
+        writer.WriteAttributeString("type", ((Int32) type).ToString());
         writer.WriteAttributeString("index", _videoPinMap[type].ToString());
         writer.WriteAttributeString("related", _videoPinRelatedAudioMap[type].ToString());
         writer.WriteEndElement(); //<</videoPin>
@@ -159,7 +161,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
       foreach (AnalogChannel.AudioInputType type in _audioPinMap.Keys)
       {
         writer.WriteStartElement("audioPin"); //<audioPin>
-        writer.WriteAttributeString("type", ((Int32)type).ToString());
+        writer.WriteAttributeString("type", ((Int32) type).ToString());
         writer.WriteAttributeString("index", _audioPinMap[type].ToString());
         writer.WriteEndElement(); //</audioPin>
       }

@@ -28,7 +28,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.html
 
     public virtual MatchTag this[int Index]
     {
-      get { return (MatchTag)List[Index]; }
+      get { return (MatchTag) List[Index]; }
     }
 
     #endregion

@@ -43,9 +43,10 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
     private const int LENGTH_SYSTEMTIME = 16;
 
     private static readonly string[] REG_KEYS_TIME_ZONES = {
-                                                    "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time Zones",
-                                                    "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Time Zones"
-                                                  };
+                                                             "SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion\\Time Zones"
+                                                             ,
+                                                             "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Time Zones"
+                                                           };
 
     private static Dictionary<string, TimeZoneInfo> _TimeZoneList;
     private static Dictionary<string, string> _TimeZoneNames;
@@ -180,8 +181,8 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
         int LastDay = DateTime.DaysInMonth(year, TimeChange.Month);
         ChangeDay = new DateTime(year, TimeChange.Month, LastDay);
 
-        var MonthEnd = (int)ChangeDay.DayOfWeek;
-        var WeekDay = (int)TimeChange.DayOfWeek;
+        var MonthEnd = (int) ChangeDay.DayOfWeek;
+        var WeekDay = (int) TimeChange.DayOfWeek;
 
         if (MonthEnd != WeekDay)
         {
@@ -199,8 +200,8 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
       {
         ChangeDay = new DateTime(year, TimeChange.Month, 1);
 
-        var MonthStart = (int)ChangeDay.DayOfWeek;
-        var WeekDay = (int)TimeChange.DayOfWeek;
+        var MonthStart = (int) ChangeDay.DayOfWeek;
+        var WeekDay = (int) TimeChange.DayOfWeek;
 
         if (MonthStart != WeekDay)
         {
@@ -213,7 +214,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
             MonthOffset = WeekDay + 7 - MonthStart;
           }
         }
-        MonthOffset += 7 * TimeChange.WeekOfMonth;
+        MonthOffset += 7*TimeChange.WeekOfMonth;
       }
       ChangeDay = ChangeDay.AddDays(MonthOffset);
       ChangeDay = ChangeDay.Add(TimeChange.TimeOfDay);
@@ -258,10 +259,10 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
                 var TZInfo = new TimeZoneInfo();
 
                 //TZInfo.Index = (int)TZKey.GetValue(VALUE_INDEX);
-                TZInfo.Display = (string)TZKey.GetValue(VALUE_DISPLAY_NAME);
-                TZInfo.StdName = (string)TZKey.GetValue(VALUE_STANDARD_NAME);
-                TZInfo.DltName = (string)TZKey.GetValue(VALUE_DAYLIGHT_NAME);
-                var timeZoneData = (byte[])TZKey.GetValue(VALUE_ZONE_INFO);
+                TZInfo.Display = (string) TZKey.GetValue(VALUE_DISPLAY_NAME);
+                TZInfo.StdName = (string) TZKey.GetValue(VALUE_STANDARD_NAME);
+                TZInfo.DltName = (string) TZKey.GetValue(VALUE_DAYLIGHT_NAME);
+                var timeZoneData = (byte[]) TZKey.GetValue(VALUE_ZONE_INFO);
 
                 if (timeZoneData != null)
                 {
@@ -286,7 +287,9 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
               }
             }
           }
-          catch (Exception) {}
+          catch (Exception)
+          {
+          }
         }
         RegKeyRoot.Close();
       }
@@ -307,7 +310,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
       TimeChange.Month = BitConverter.ToInt16(bytes, index);
 
       index += LENGTH_WORD;
-      TimeChange.DayOfWeek = (DayOfWeek)BitConverter.ToInt16(bytes, index);
+      TimeChange.DayOfWeek = (DayOfWeek) BitConverter.ToInt16(bytes, index);
 
       index += LENGTH_WORD;
       TimeChange.WeekOfMonth = BitConverter.ToInt16(bytes, index) - 1;

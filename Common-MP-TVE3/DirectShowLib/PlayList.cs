@@ -161,7 +161,7 @@ namespace DirectShowLib
   public interface IAMRebuild
   {
     int RebuildNow();
-  } ;
+  };
 
   #endregion
 }

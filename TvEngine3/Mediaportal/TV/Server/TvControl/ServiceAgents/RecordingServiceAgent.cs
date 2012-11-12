@@ -5,7 +5,7 @@ using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 
 namespace Mediaportal.TV.Server.TVControl.ServiceAgents
 {
-  public class RecordingServiceAgent : ServiceAgent<IRecordingService>, IRecordingService 
+  public class RecordingServiceAgent : ServiceAgent<IRecordingService>, IRecordingService
   {
     public RecordingServiceAgent(string hostname) : base(hostname)
     {

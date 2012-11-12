@@ -25,7 +25,7 @@ using MediaPortal.Util;
 
 namespace Mediaportal.TV.TvPlugin
 {
-  public class TVNotifyYesNoDialog: GUIDialogYesNo
+  public class TVNotifyYesNoDialog : GUIDialogYesNo
   {
     [SkinControl(12)] protected GUIImage imgLogo;
 
@@ -34,7 +34,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public TVNotifyYesNoDialog()
     {
-      GetID = (int)Window.WINDOW_DIALOG_TVNOTIFYYESNO;
+      GetID = (int) Window.WINDOW_DIALOG_TVNOTIFYYESNO;
     }
 
     public override bool Init()
@@ -78,7 +78,7 @@ namespace Mediaportal.TV.TvPlugin
     public void SetImage(string filename)
     {
       logoUrl = filename;
-      if (Utils.FileExistsInCache(filename))            
+      if (Utils.FileExistsInCache(filename))
       {
         if (imgLogo != null)
         {

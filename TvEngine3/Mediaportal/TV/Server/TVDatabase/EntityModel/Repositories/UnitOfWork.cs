@@ -32,8 +32,9 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
     {
       if (IsInTransaction)
       {
-        throw new ApplicationException("Cannot begin a new transaction while an existing transaction is still running. " +
-                                        "Please commit or rollback the existing transaction before starting a new one.");
+        throw new ApplicationException(
+          "Cannot begin a new transaction while an existing transaction is still running. " +
+          "Please commit or rollback the existing transaction before starting a new one.");
       }
       OpenConnection();
       _transaction = _objectContext.Connection.BeginTransaction(isolationLevel);

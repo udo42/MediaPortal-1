@@ -36,7 +36,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     /// <param name="interfaceId">Interface to create an object instance for</param>
     /// <param name="useAssemblyRelativeLocation">Combine the given file name to a full path</param>
     /// <returns>Instance or <c>null</c></returns>
-    public static IBaseFilter LoadFilterFromDll(string dllName, Guid interfaceId, bool useAssemblyRelativeLocation = false)
+    public static IBaseFilter LoadFilterFromDll(string dllName, Guid interfaceId,
+                                                bool useAssemblyRelativeLocation = false)
     {
       //Get a classFactory for our classID
       string dllPath = useAssemblyRelativeLocation ? PathManager.BuildAssemblyRelativePath(dllName) : dllName;
@@ -45,7 +46,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         return null;
 
       //And create an IFilter instance using that class factory
-      Guid baseFilterGuid = typeof(IBaseFilter).GUID;
+      Guid baseFilterGuid = typeof (IBaseFilter).GUID;
       Object obj;
       classFactory.CreateInstance(null, ref baseFilterGuid, out obj);
       return (obj as IBaseFilter);

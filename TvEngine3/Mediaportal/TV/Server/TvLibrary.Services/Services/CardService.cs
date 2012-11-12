@@ -83,6 +83,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     {
       return TVDatabase.TVBusinessLayer.CardManagement.ListAllSofwareEncodersVideo();
     }
+
     public IList<SoftwareEncoder> ListAllSofwareEncodersAudio()
     {
       return TVDatabase.TVBusinessLayer.CardManagement.ListAllSofwareEncodersAudio();
@@ -113,7 +114,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       return TVDatabase.TVBusinessLayer.CardManagement.SaveCardGroupMap(map);
     }
 
-    
+
     public LnbType GetLnbType(int idLnbType)
     {
       return LnbTypeManagement.GetLnbType(idLnbType);

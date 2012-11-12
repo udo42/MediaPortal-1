@@ -37,6 +37,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
     /// </summary>
     /// <value>The users.</value>
     IDictionary<string, IUser> Users { get; }
+
     IDictionary<string, ParkedUser> ParkedUsers { get; }
     IDictionary<string, IUser> UsersHistory { get; }
   }

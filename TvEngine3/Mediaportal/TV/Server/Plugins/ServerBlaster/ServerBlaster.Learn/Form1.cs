@@ -146,7 +146,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
         foreach (XPListViewItem item in listButtons.Items) item.Tag = new BlasterCommand(item.Text);
         foreach (XPListViewItem item in listButtons.Items)
-          if (item.GroupIndex == 1) ((BlasterCommand)item.Tag).Port = Port.Two;
+          if (item.GroupIndex == 1) ((BlasterCommand) item.Tag).Port = Port.Two;
       }
 
       listButtons.Items[0].Selected = true;
@@ -482,7 +482,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
       if (--_timeoutRemaining <= 0)
       {
-        _selectedItem.SubItems[0].Text = ((BlasterCommand)_selectedItem.Tag).Name;
+        _selectedItem.SubItems[0].Text = ((BlasterCommand) _selectedItem.Tag).Name;
 
         buttonStart.Text = "&Learn";
         buttonTest.Enabled = false;
@@ -612,10 +612,10 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
         if (item.Tag == null)
           continue;
 
-        if (((BlasterCommand)item.Tag).RawData == null)
+        if (((BlasterCommand) item.Tag).RawData == null)
           continue;
 
-        hash[item.Text] = ((BlasterCommand)item.Tag).RawData;
+        hash[item.Text] = ((BlasterCommand) item.Tag).RawData;
       }
 
       if (hash.Count > 0)

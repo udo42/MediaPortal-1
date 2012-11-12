@@ -36,9 +36,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
   /// A class for handling conditional access and DiSEqC for Twinhan devices, including clones from TerraTec,
   /// TechniSat and Digital Rise.
   /// </summary>
-  public class Twinhan : BaseCustomDevice, /*IAddOnDevice, ICustomTuner,*/ IPowerDevice, IPidFilterController, IConditionalAccessProvider, ICiMenuActions, IDiseqcDevice
+  public class Twinhan : BaseCustomDevice, /*IAddOnDevice, ICustomTuner,*/ IPowerDevice, IPidFilterController,
+                         IConditionalAccessProvider, ICiMenuActions, IDiseqcDevice
   {
-
     #region enums
 
     [Flags]
@@ -49,7 +49,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       DvbT = 0x0002,
       DvbC = 0x0004,
       Atsc = 0x0008,
-      AnnexC = 0x0010,        // US OpenCable (clear QAM)
+      AnnexC = 0x0010, // US OpenCable (clear QAM)
       IsdbT = 0x0020,
       IsdbS = 0x0040,
 
@@ -66,11 +66,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
 
     private enum TwinhanDeviceSpeed : byte
     {
-      Pci = 0xff,             // PCI
-      Pcie = 0xfe,            // PCI-express
-      UsbLow = 0,             // USB 1.x
-      UsbFull = 1,            // USB 1.x
-      UsbHigh = 2             // USB 2.0
+      Pci = 0xff, // PCI
+      Pcie = 0xfe, // PCI-express
+      UsbLow = 0, // USB 1.x
+      UsbFull = 1, // USB 1.x
+      UsbHigh = 2 // USB 2.0
     }
 
     private enum TwinhanCiSupport : byte
@@ -83,7 +83,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     [Flags]
     private enum TwinhanSimulatorType : uint
     {
-      Physical = 0,   // ie. not a simulator
+      Physical = 0, // ie. not a simulator
       VirtualDvbS = 1,
       VirtualDvbT = 2,
       VirtualDvbC = 4,
@@ -91,59 +91,61 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       MceVirtualDvbT = 16
     }
 
-    private enum TwinhanCamType   // CAM_TYPE_ENUM
+    private enum TwinhanCamType // CAM_TYPE_ENUM
     {
       Unknown = 0,
-      Default = 1,            // Viaccess
+      Default = 1, // Viaccess
       Astoncrypt,
       Conax,
       Cryptoworks
     }
 
-    private enum TwinhanCiState : uint    // CIMessage
+    private enum TwinhanCiState : uint // CIMessage
     {
       // Old states - CI API v1.
-      Empty_Old = 0,          // CI_STATUS_EMPTY_OLD - there is no CAM present
-      Cam1Okay_Old,           // CI_STATUS_CAM_OK1_OLD (ME0) - the first slot has a CAM
-      Cam2Okay_Old,           // CI_STATUS_CAM_OK2_OLD (ME1) - the second slot has a CAM
+      Empty_Old = 0, // CI_STATUS_EMPTY_OLD - there is no CAM present
+      Cam1Okay_Old, // CI_STATUS_CAM_OK1_OLD (ME0) - the first slot has a CAM
+      Cam2Okay_Old, // CI_STATUS_CAM_OK2_OLD (ME1) - the second slot has a CAM
 
       // New states - CI API v2.
-      Empty = 10,             // CI_STATUS_EMPTY - there is no CAM present
-      CamInserted,            // CI_STATUS_INSERTED - a CAM is present but is still being initialised
-      CamOkay,                // CI_STATUS_CAM_OK - a CAM is present, initialised and ready for interaction
-      CamUnknown              // CI_STATUS_CAM_UNKNOW
+      Empty = 10, // CI_STATUS_EMPTY - there is no CAM present
+      CamInserted, // CI_STATUS_INSERTED - a CAM is present but is still being initialised
+      CamOkay, // CI_STATUS_CAM_OK - a CAM is present, initialised and ready for interaction
+      CamUnknown // CI_STATUS_CAM_UNKNOW
     }
 
-    private enum TwinhanMmiState : uint   // CIMessage
+    private enum TwinhanMmiState : uint // CIMessage
     {
-      Idle = 0,               // NON_CI_INFO - there are no new MMI objects available
+      Idle = 0, // NON_CI_INFO - there are no new MMI objects available
 
       // Old states - CI API v1.
-      Menu1Okay_Old = 3,      // MMI_STATUS_GET_MENU_OK1_OLD (MMI0) - the CAM in the first slot has an MMI object waiting
-      Menu2Okay_Old,          // MMI_STATUS_GET_MENU_OK2_OLD (MMI1) - the CAM in the second slot has an MMI object waiting
-      Menu1Close_Old,         // MMI_STATUS_GET_MENU_CLOSE1_OLD (MMI0_ClOSE) - the CAM in the first slot requests that the MMI session be closed
-      Menu2Close_Old,         // MMI_STATUS_GET_MENU_CLOSE2_OLD (MMI1_ClOSE) - the CAM in the second slot requests that the MMI session be closed
+      Menu1Okay_Old = 3, // MMI_STATUS_GET_MENU_OK1_OLD (MMI0) - the CAM in the first slot has an MMI object waiting
+      Menu2Okay_Old, // MMI_STATUS_GET_MENU_OK2_OLD (MMI1) - the CAM in the second slot has an MMI object waiting
+      Menu1Close_Old,
+      // MMI_STATUS_GET_MENU_CLOSE1_OLD (MMI0_ClOSE) - the CAM in the first slot requests that the MMI session be closed
+      Menu2Close_Old,
+      // MMI_STATUS_GET_MENU_CLOSE2_OLD (MMI1_ClOSE) - the CAM in the second slot requests that the MMI session be closed
 
       // New states - CI API v2.
-      SendMenuAnswer = 14,    // MMI_STATUS_ANSWER_SEND 
-      MenuOkay,               // MMI_STATUS_GET_MENU_OK - the CAM has an MMI object waiting
-      MenuFail,               // MMI_STATUS_GET_MENU_FAIL - the CAM failed to assemble or send and MMI object
-      MenuInit,               // MMI_STATUS_GET_MENU_INIT - the CAM is assembling an MMI object
-      MenuClose,              // MMI_STATUS_GET_MENU_CLOSE - the CAM requests that the MMI session be closed
-      MenuClosed,             // MMI_STATUS_GET_MENU_CLOSED - there is no open MMI session
+      SendMenuAnswer = 14, // MMI_STATUS_ANSWER_SEND 
+      MenuOkay, // MMI_STATUS_GET_MENU_OK - the CAM has an MMI object waiting
+      MenuFail, // MMI_STATUS_GET_MENU_FAIL - the CAM failed to assemble or send and MMI object
+      MenuInit, // MMI_STATUS_GET_MENU_INIT - the CAM is assembling an MMI object
+      MenuClose, // MMI_STATUS_GET_MENU_CLOSE - the CAM requests that the MMI session be closed
+      MenuClosed, // MMI_STATUS_GET_MENU_CLOSED - there is no open MMI session
     }
 
-    private enum TwinhanRawCommandState : uint    // CIMessage
+    private enum TwinhanRawCommandState : uint // CIMessage
     {
-      SendCommand = 30,       // RAW_CMD_STATUS_SEND
-      DataOkay                // RAW_CMD_STATUS_GET_DATA_OK
+      SendCommand = 30, // RAW_CMD_STATUS_SEND
+      DataOkay // RAW_CMD_STATUS_GET_DATA_OK
     }
 
     private enum TwinhanPidFilterMode : byte
     {
-      Whitelist = 0,          // PID_FILTER_MODE_PASS - PID filter list contains PIDs that pass through
-      Disabled,               // PID_FILTER_MODE_DISABLE - PID filter disabled and all PIDs pass through
-      Blacklist               // PID_FILTER_MODE_FILTER - PID filter list contains PIDs that *don't* pass through
+      Whitelist = 0, // PID_FILTER_MODE_PASS - PID filter list contains PIDs that pass through
+      Disabled, // PID_FILTER_MODE_DISABLE - PID filter disabled and all PIDs pass through
+      Blacklist // PID_FILTER_MODE_FILTER - PID filter list contains PIDs that *don't* pass through
     }
 
     private enum TwinhanToneBurst : byte
@@ -155,7 +157,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
 
     private enum Twinhan22k : byte
     {
-      Auto = 0,               // Based on transponder frequency and LNB switch frequency...
+      Auto = 0, // Based on transponder frequency and LNB switch frequency...
       Off,
       On
     }
@@ -174,71 +176,76 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     #region structs
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    private struct DeviceInfo   // DEVICE_INFO
+    private struct DeviceInfo // DEVICE_INFO
     {
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-      public readonly String Name;                                     // Example: VP1020, VP3020C, VP7045...
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)] public readonly String Name;
+                                                                                  // Example: VP1020, VP3020C, VP7045...
 
-      public readonly TwinhanDeviceType Type;                          // Values are bitwise AND'ed together to produce the final device type.
+      public readonly TwinhanDeviceType Type; // Values are bitwise AND'ed together to produce the final device type.
       public readonly TwinhanDeviceSpeed Speed;
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)]
-      public readonly byte[] MacAddress;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = 6)] public readonly byte[] MacAddress;
       public readonly TwinhanCiSupport CiSupport;
 
-      public readonly Int32 TsPacketLength;                            // 188 or 204
+      public readonly Int32 TsPacketLength; // 188 or 204
 
       // mm1352000: The following two bytes don't appear to always be set correctly.
       // Maybe these fields are only present for certain devices or driver versions.
       public readonly byte IsPidFilterPresent;
       public readonly byte IsPidFilterBypassSupported;
 
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = 190)]
-      private readonly byte[] Reserved;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = 190)] private readonly byte[] Reserved;
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    private struct DriverInfo   // DriverInfo
+    private struct DriverInfo // DriverInfo
     {
-      public readonly byte DriverMajorVersion;                         // BCD encoding eg. 0x32 -> 3.2
-      public readonly byte DriverMinorVersion;                         // BCD encoding eg. 0x21 -> 2.1
-      public readonly byte FirmwareMajorVersion;                       // BCD encoding eg. 0x10 -> 1.0
-      public readonly byte FirmwareMinorVersion;                       // BCD encoding eg. 0x05 -> 0.5  ==> 1.0b05
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 22)]
-      public readonly String Date;                                     // Example: "2004-12-20 18:30:00" or  "DEC 20 2004 10:22:10"  with compiler __DATE__ and __TIME__  definition s
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)]
-      public readonly String Company;                                  // Example: "TWINHAN" 
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
-      public readonly String HardwareInfo;                             // Example: "PCI DVB CX-878 with MCU series", "PCI ATSC CX-878 with MCU series", "7020/7021 USB-Sat", "7045/7046 USB-Ter" etc.
-      public readonly byte CiMmiFlags;                                 // Bit 0 = event mode support (0 => not supported, 1 => supported)
+      public readonly byte DriverMajorVersion; // BCD encoding eg. 0x32 -> 3.2
+      public readonly byte DriverMinorVersion; // BCD encoding eg. 0x21 -> 2.1
+      public readonly byte FirmwareMajorVersion; // BCD encoding eg. 0x10 -> 1.0
+      public readonly byte FirmwareMinorVersion; // BCD encoding eg. 0x05 -> 0.5  ==> 1.0b05
+
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 22)] public readonly String Date;
+                                                                                  // Example: "2004-12-20 18:30:00" or  "DEC 20 2004 10:22:10"  with compiler __DATE__ and __TIME__  definition s
+
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)] public readonly String Company; // Example: "TWINHAN" 
+
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)] public readonly String HardwareInfo;
+                                                                                  // Example: "PCI DVB CX-878 with MCU series", "PCI ATSC CX-878 with MCU series", "7020/7021 USB-Sat", "7045/7046 USB-Ter" etc.
+
+      public readonly byte CiMmiFlags; // Bit 0 = event mode support (0 => not supported, 1 => supported)
       private readonly byte Reserved;
       public readonly TwinhanSimulatorType SimType;
 
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = 184)]
-      private readonly byte[] Reserved2;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = 184)] private readonly byte[] Reserved2;
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    private struct PidFilterParams    // PID_FILTER_INFO
+    private struct PidFilterParams // PID_FILTER_INFO
     {
       public TwinhanPidFilterMode FilterMode;
-      public readonly byte MaxPids;                                    // Max number of PIDs supported by the PID filter (HW/FW limit, always <= MaxPidFilterPids).
+
+      public readonly byte MaxPids;
+                           // Max number of PIDs supported by the PID filter (HW/FW limit, always <= MaxPidFilterPids).
+
       private readonly UInt16 Padding;
-      public UInt32 ValidPidMask;                             // A bit mask specifying the current valid PIDs. If the bit is 0 then the PID is ignored. Example: if ValidPidMask = 0x00000005 then there are 2 valid PIDs at indexes 0 and 2.
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPidFilterPids)]
-      public UInt16[] FilterPids;                             // Filter PID list.
+
+      public UInt32 ValidPidMask;
+                    // A bit mask specifying the current valid PIDs. If the bit is 0 then the PID is ignored. Example: if ValidPidMask = 0x00000005 then there are 2 valid PIDs at indexes 0 and 2.
+
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPidFilterPids)] public UInt16[] FilterPids;
+                                                                                          // Filter PID list.
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    private struct LnbParams  // LNB_DATA
+    private struct LnbParams // LNB_DATA
     {
-      [MarshalAs(UnmanagedType.I1)]
-      public bool PowerOn;
+      [MarshalAs(UnmanagedType.I1)] public bool PowerOn;
       public TwinhanToneBurst ToneBurst;
       private readonly UInt16 Padding;
 
-      public UInt32 LowBandLof;                               // unit = kHz
-      public UInt32 HighBandLof;                              // unit = kHz
-      public UInt32 SwitchFrequency;                          // unit = kHz
+      public UInt32 LowBandLof; // unit = kHz
+      public UInt32 HighBandLof; // unit = kHz
+      public UInt32 SwitchFrequency; // unit = kHz
       public Twinhan22k Tone22k;
       public TwinhanDiseqcPort DiseqcPort;
       private readonly UInt16 Padding2;
@@ -248,26 +255,24 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     private struct DiseqcMessage
     {
       public Int32 MessageLength;
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcMessageLength)]
-      public byte[] Message;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcMessageLength)] public byte[] Message;
     }
 
     // New CI/MMI state info structure - CI API v2.
     [StructLayout(LayoutKind.Sequential)]
-    private struct CiStateInfo    // THCIState
+    private struct CiStateInfo // THCIState
     {
       public readonly TwinhanCiState CiState;
       public readonly TwinhanMmiState MmiState;
       public readonly UInt32 PmtState;
-      public readonly UInt32 EventMessage;                             // Current event status.
+      public readonly UInt32 EventMessage; // Current event status.
       public readonly TwinhanRawCommandState RawCmdState;
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = 7)]
-      private readonly UInt32[] Reserved;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = 7)] private readonly UInt32[] Reserved;
     }
 
     // Old CI/MMI state info structure - CI API v1.
     [StructLayout(LayoutKind.Sequential)]
-    private struct CiStateInfoOld   // THCIStateOld
+    private struct CiStateInfoOld // THCIStateOld
     {
       public readonly TwinhanCiState CiState;
       public readonly TwinhanMmiState MmiState;
@@ -317,7 +322,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       {
         if (isTerraTecFormat)
         {
-          var mmiData = (TerraTecMmiData)Marshal.PtrToStructure(buffer, typeof(TerraTecMmiData));
+          var mmiData = (TerraTecMmiData) Marshal.PtrToStructure(buffer, typeof (TerraTecMmiData));
           Title = mmiData.Title;
           SubTitle = mmiData.SubTitle;
           Footer = mmiData.Footer;
@@ -340,7 +345,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
         }
         else
         {
-          var mmiData = (DefaultMmiData)Marshal.PtrToStructure(buffer, typeof(DefaultMmiData));
+          var mmiData = (DefaultMmiData) Marshal.PtrToStructure(buffer, typeof (DefaultMmiData));
           Title = mmiData.Title;
           SubTitle = mmiData.SubTitle;
           Footer = mmiData.Footer;
@@ -367,113 +372,93 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct DefaultMmiMenuEntry
     {
-      #pragma warning disable 0649
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 42)]
-      public readonly String Text;
-      #pragma warning restore 0649
+#pragma warning disable 0649
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 42)] public readonly String Text;
+#pragma warning restore 0649
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct DefaultMmiData
     {
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public readonly String Title;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public readonly String SubTitle;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public readonly String Footer;
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = DefaultMaxCamMenuEntries)]
-      public readonly DefaultMmiMenuEntry[] Entries;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public readonly String Title;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public readonly String SubTitle;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public readonly String Footer;
+
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = DefaultMaxCamMenuEntries)] public readonly DefaultMmiMenuEntry[]
+        Entries;
+
       private readonly UInt16 Padding1;
       public readonly Int32 EntryCount;
 
-      [MarshalAs(UnmanagedType.Bool)]
-      public readonly bool IsEnquiry;
+      [MarshalAs(UnmanagedType.Bool)] public readonly bool IsEnquiry;
 
-      [MarshalAs(UnmanagedType.Bool)]
-      public readonly bool IsBlindAnswer;
-      public Int32 AnswerLength;    // enquiry: expected answer length, enquiry answer: actual answer length
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public readonly String Prompt;
+      [MarshalAs(UnmanagedType.Bool)] public readonly bool IsBlindAnswer;
+      public Int32 AnswerLength; // enquiry: expected answer length, enquiry answer: actual answer length
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public readonly String Prompt;
 
       public Int32 ChoiceIndex;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public String Answer;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public String Answer;
 
-      public Int32 Type;            // 1, 2 (menu/list, select entry) or 3 (enquiry, enquiry answer)
+      public Int32 Type; // 1, 2 (menu/list, select entry) or 3 (enquiry, enquiry answer)
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct TerraTecMmiMenuEntry
     {
-      #pragma warning disable 0649
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)]
-      public readonly String Text;
-      #pragma warning restore 0649
+#pragma warning disable 0649
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 128)] public readonly String Text;
+#pragma warning restore 0649
     }
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct TerraTecMmiData
     {
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public readonly String Title;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public readonly String SubTitle;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public readonly String Footer;
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = TerraTecMaxCamMenuEntries)]
-      public readonly TerraTecMmiMenuEntry[] Entries;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public readonly String Title;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public readonly String SubTitle;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public readonly String Footer;
+
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = TerraTecMaxCamMenuEntries)] public readonly
+        TerraTecMmiMenuEntry[] Entries;
+
       public readonly Int32 EntryCount;
 
-      [MarshalAs(UnmanagedType.Bool)]
-      public readonly bool IsEnquiry;
+      [MarshalAs(UnmanagedType.Bool)] public readonly bool IsEnquiry;
 
-      [MarshalAs(UnmanagedType.Bool)]
-      public readonly bool IsBlindAnswer;
-      public Int32 AnswerLength;    // enquiry: expected answer length, enquiry answer: actual answer length
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public readonly String Prompt;
+      [MarshalAs(UnmanagedType.Bool)] public readonly bool IsBlindAnswer;
+      public Int32 AnswerLength; // enquiry: expected answer length, enquiry answer: actual answer length
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public readonly String Prompt;
 
       public Int32 ChoiceIndex;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)]
-      public String Answer;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 256)] public String Answer;
 
-      public Int32 Type;            // 1, 2 (menu/list, select entry) or 3 (enquiry, enquiry answer)
+      public Int32 Type; // 1, 2 (menu/list, select entry) or 3 (enquiry, enquiry answer)
     }
 
     #endregion
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    private struct ApplicationInfo    // THAppInfo
+    private struct ApplicationInfo // THAppInfo
     {
       public readonly UInt32 ApplicationType;
       public readonly UInt32 Manufacturer;
       public readonly UInt32 ManufacturerCode;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
-      public readonly String RootMenuTitle;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)] public readonly String RootMenuTitle;
     }
 
     [StructLayout(LayoutKind.Explicit)]
-    private struct TuningParams   // TURNER_VALUE
+    private struct TuningParams // TURNER_VALUE
     {
-      [FieldOffset(0)]
-      public UInt32 Frequency;                                // unit = kHz
+      [FieldOffset(0)] public UInt32 Frequency; // unit = kHz
 
       // Note: these two fields are unioned - they are never both required in
       // a single tune request so the bytes are reused.
-      [FieldOffset(4)]
-      public UInt32 SymbolRate;                               // unit = ks/s
-      [FieldOffset(4)]
-      public UInt32 Bandwidth;                                // unit = MHz
+      [FieldOffset(4)] public UInt32 SymbolRate; // unit = ks/s
+      [FieldOffset(4)] public UInt32 Bandwidth; // unit = MHz
 
-      [FieldOffset(8)]
-      public ModulationType Modulation;
-      [FieldOffset(12), MarshalAs(UnmanagedType.I1)]
-      public bool LockWaitForResult;
-      [FieldOffset(13)]
-      private readonly byte Padding1;
-      [FieldOffset(14)]
-      private readonly UInt16 Padding2;
+      [FieldOffset(8)] public ModulationType Modulation;
+      [FieldOffset(12), MarshalAs(UnmanagedType.I1)] public bool LockWaitForResult;
+      [FieldOffset(13)] private readonly byte Padding1;
+      [FieldOffset(14)] private readonly UInt16 Padding2;
     }
 
     #endregion
@@ -489,7 +474,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       private IntPtr _outBuffer;
       private readonly Int32 _outBufferSize;
 
-      public TwinhanCommand(UInt32 controlCode, IntPtr inBuffer, Int32 inBufferSize, IntPtr outBuffer, Int32 outBufferSize)
+      public TwinhanCommand(UInt32 controlCode, IntPtr inBuffer, Int32 inBufferSize, IntPtr outBuffer,
+                            Int32 outBufferSize)
       {
         _controlCode = controlCode;
         _inBuffer = inBuffer;
@@ -509,7 +495,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
 
         IntPtr instanceBuffer = Marshal.AllocCoTaskMem(InstanceSize);
         IntPtr commandBuffer = Marshal.AllocCoTaskMem(CommandSize);
-        IntPtr returnedByteCountBuffer = Marshal.AllocCoTaskMem(sizeof(int));
+        IntPtr returnedByteCountBuffer = Marshal.AllocCoTaskMem(sizeof (int));
         try
         {
           // Clear buffers. This is probably not actually needed, but better
@@ -523,7 +509,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
           // Fill the command buffer.
           byte[] guidAsBytes = CommandGuid.ToByteArray();
           Marshal.Copy(guidAsBytes, 0, commandBuffer, guidAsBytes.Length);
-          Marshal.WriteInt32(commandBuffer, 16, (Int32)_controlCode);
+          Marshal.WriteInt32(commandBuffer, 16, (Int32) _controlCode);
           Marshal.WriteInt32(commandBuffer, 20, _inBuffer.ToInt32());
           Marshal.WriteInt32(commandBuffer, 24, _inBufferSize);
           Marshal.WriteInt32(commandBuffer, 28, _outBuffer.ToInt32());
@@ -694,7 +680,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     //OutBuffer     : NULL
     //OutBufferSize : 0 bytes
     //*******************************************************************************************************
-    private readonly uint THBDA_IOCTL_SET_PID_FILTER_INFO = CTL_CODE(THBDA_IO_INDEX, 113, METHOD_BUFFERED, FILE_ANY_ACCESS);
+    private readonly uint THBDA_IOCTL_SET_PID_FILTER_INFO = CTL_CODE(THBDA_IO_INDEX, 113, METHOD_BUFFERED,
+                                                                     FILE_ANY_ACCESS);
 
     //*******************************************************************************************************
     //Functionality : Get Pids, PLD mode and available max number Pids
@@ -703,7 +690,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     //OutBuffer     : struct PID_FILTER_INFO
     //OutBufferSize : sizeof(PID_FILTER_INFO) bytes
     //*******************************************************************************************************
-    private readonly uint THBDA_IOCTL_GET_PID_FILTER_INFO = CTL_CODE(THBDA_IO_INDEX, 114, METHOD_BUFFERED, FILE_ANY_ACCESS);
+    private readonly uint THBDA_IOCTL_GET_PID_FILTER_INFO = CTL_CODE(THBDA_IO_INDEX, 114, METHOD_BUFFERED,
+                                                                     FILE_ANY_ACCESS);
 
     #endregion
 
@@ -840,7 +828,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     //OutBuffer     : struct RING_BUF_STATUS 
     //OutBufferSize : sizeof(RING_BUF_STATUS) bytes
     //*******************************************************************************************************
-    private readonly uint THBDA_IOCTL_GET_RINGBUFFER_STATUS = CTL_CODE(THBDA_IO_INDEX, 111, METHOD_BUFFERED, FILE_ANY_ACCESS);
+    private readonly uint THBDA_IOCTL_GET_RINGBUFFER_STATUS = CTL_CODE(THBDA_IO_INDEX, 111, METHOD_BUFFERED,
+                                                                       FILE_ANY_ACCESS);
 
     //*******************************************************************************************************
     //Functionality : Get TS from driver's ring buffer to local  buffer 
@@ -862,7 +851,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     //OutBuffer     : NULL
     //OutBufferSize : 0 bytes
     //*******************************************************************************************************
-    private readonly uint THBDA_IOCTL_START_REMOTE_CONTROL = CTL_CODE(THBDA_IO_INDEX, 115, METHOD_BUFFERED, FILE_ANY_ACCESS);
+    private readonly uint THBDA_IOCTL_START_REMOTE_CONTROL = CTL_CODE(THBDA_IO_INDEX, 115, METHOD_BUFFERED,
+                                                                      FILE_ANY_ACCESS);
 
     //*******************************************************************************************************
     //Functionality : Stop RC thread, and remove all RC event
@@ -871,7 +861,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     //OutBuffer     : NULL
     //OutBufferSize : 0 bytes
     //*******************************************************************************************************
-    private readonly uint THBDA_IOCTL_STOP_REMOTE_CONTROL = CTL_CODE(THBDA_IO_INDEX, 116, METHOD_BUFFERED, FILE_ANY_ACCESS);
+    private readonly uint THBDA_IOCTL_STOP_REMOTE_CONTROL = CTL_CODE(THBDA_IO_INDEX, 116, METHOD_BUFFERED,
+                                                                     FILE_ANY_ACCESS);
 
 
     //*******************************************************************************************************
@@ -900,7 +891,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     //OutBuffer     : BYTE
     //OutBufferSize : 1 bytes
     //*******************************************************************************************************
-    private readonly uint THBDA_IOCTL_GET_REMOTE_CONTROL_VALUE = CTL_CODE(THBDA_IO_INDEX, 119, METHOD_BUFFERED, FILE_ANY_ACCESS);
+    private readonly uint THBDA_IOCTL_GET_REMOTE_CONTROL_VALUE = CTL_CODE(THBDA_IO_INDEX, 119, METHOD_BUFFERED,
+                                                                          FILE_ANY_ACCESS);
 
     //*******************************************************************************************************
     //Functionality : Set Remote control,HID function enable or disable
@@ -966,7 +958,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     //OutBuffer     : NULL
     //OutBufferSize : 0 bytes
     //*******************************************************************************************************
-    private readonly uint THBDA_IOCTL_ENABLE_VIRTUAL_DVBT = CTL_CODE(THBDA_IO_INDEX, 300, METHOD_BUFFERED, FILE_ANY_ACCESS);
+    private readonly uint THBDA_IOCTL_ENABLE_VIRTUAL_DVBT = CTL_CODE(THBDA_IO_INDEX, 300, METHOD_BUFFERED,
+                                                                     FILE_ANY_ACCESS);
 
     //*******************************************************************************************************
     //Functionality : Reset (Clear) DVB-S Transponder mapping table entry for virtual DVB-T interface
@@ -1006,7 +999,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     //OutBuffer     :1 byte buffer,  0-99: download percentage, 100:download complete, 255:Fail 
     //OutBufferSize : 1 bytes
     //*******************************************************************************************************
-    private readonly uint THBDA_IOCTL_DOWNLOAD_TUNER_FIRMWARE = CTL_CODE(THBDA_IO_INDEX, 400, METHOD_BUFFERED, FILE_ANY_ACCESS);
+    private readonly uint THBDA_IOCTL_DOWNLOAD_TUNER_FIRMWARE = CTL_CODE(THBDA_IO_INDEX, 400, METHOD_BUFFERED,
+                                                                         FILE_ANY_ACCESS);
 
     //*******************************************************************************************************
     //Functionality : Get tuner firmware download progress
@@ -1015,7 +1009,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     //OutBuffer     :1 byte buffer,  0-99: download percentage, 100:download complete, 255:Fail 
     //OutBufferSize : 1 bytes
     //*******************************************************************************************************
-    private readonly uint THBDA_IOCTL_DOWNLOAD_TUNER_FIRMWARE_STAUS = CTL_CODE(THBDA_IO_INDEX, 401, METHOD_BUFFERED, FILE_ANY_ACCESS);
+    private readonly uint THBDA_IOCTL_DOWNLOAD_TUNER_FIRMWARE_STAUS = CTL_CODE(THBDA_IO_INDEX, 401, METHOD_BUFFERED,
+                                                                               FILE_ANY_ACCESS);
 
     #endregion
 
@@ -1059,7 +1054,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     //OutBuffer     : Raw command data buffer
     //OutBufferSize : Max 1024 bytes
     //*******************************************************************************************************
-    private readonly uint THBDA_IOCTL_CI_GET_RAW_CMD_DATA = CTL_CODE(THBDA_IO_INDEX, 212, METHOD_BUFFERED, FILE_ANY_ACCESS);
+    private readonly uint THBDA_IOCTL_CI_GET_RAW_CMD_DATA = CTL_CODE(THBDA_IO_INDEX, 212, METHOD_BUFFERED,
+                                                                     FILE_ANY_ACCESS);
 
     #endregion
 
@@ -1070,11 +1066,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     #region constants
 
     // GUID_THBDA_TUNER
-    private static readonly Guid BdaExtensionPropertySet = new Guid(0xe5644cc4, 0x17a1, 0x4eed, 0xbd, 0x90, 0x74, 0xfd, 0xa1, 0xd6, 0x54, 0x23);
-    // GUID_THBDA_CMD
-    private static readonly Guid CommandGuid = new Guid(0x255e0082, 0x2017, 0x4b03, 0x90, 0xf8, 0x85, 0x6a, 0x62, 0xcb, 0x3d, 0x67);
+    private static readonly Guid BdaExtensionPropertySet = new Guid(0xe5644cc4, 0x17a1, 0x4eed, 0xbd, 0x90, 0x74, 0xfd,
+                                                                    0xa1, 0xd6, 0x54, 0x23);
 
-    private const int InstanceSize = 32;    // The size of a property instance (KSP_NODE) parameter.
+    // GUID_THBDA_CMD
+    private static readonly Guid CommandGuid = new Guid(0x255e0082, 0x2017, 0x4b03, 0x90, 0xf8, 0x85, 0x6a, 0x62, 0xcb,
+                                                        0x3d, 0x67);
+
+    private const int InstanceSize = 32; // The size of a property instance (KSP_NODE) parameter.
     private const int CommandSize = 40;
 
     private const int DeviceInfoSize = 240;
@@ -1089,7 +1088,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     private const int ApplicationInfoSize = 76;
     private const int TuningParamsSize = 16;
 
-    private const int MmiHandlerThreadSleepTime = 500;    // unit = ms
+    private const int MmiHandlerThreadSleepTime = 500; // unit = ms
 
     // TerraTec have entended the length and number of
     // possible CAM menu entries in the MMI data struct
@@ -1106,9 +1105,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
 
     private bool _isTwinhan;
     private bool _isTerraTec;
-    #pragma warning disable 0414
+#pragma warning disable 0414
     private bool _isCamPresent;
-    #pragma warning restore 0414
+#pragma warning restore 0414
     private bool _isCamReady;
     private bool _isPidFilterSupported;
     private bool _isPidFilterBypassSupported = true;
@@ -1171,8 +1170,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
         int hr = command.Execute(_propertySet, out returnedByteCount);
         if (hr == 0)
         {
-          ciState = (TwinhanCiState)Marshal.ReadInt32(responseBuffer, 0);
-          mmiState = (TwinhanMmiState)Marshal.ReadInt32(responseBuffer, 4);
+          ciState = (TwinhanCiState) Marshal.ReadInt32(responseBuffer, 0);
+          mmiState = (TwinhanMmiState) Marshal.ReadInt32(responseBuffer, 4);
           //DVB_MMI.DumpBinary(responseBuffer, 0, returnedByteCount);
         }
         return hr;
@@ -1209,7 +1208,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
 
       //this.LogDebug("Twinhan: number of DeviceInfo bytes returned is {0}", returnedByteCount);
       //DVB_MMI.DumpBinary(_generalBuffer, 0, returnedByteCount);
-      var deviceInfo = (DeviceInfo)Marshal.PtrToStructure(_generalBuffer, typeof(DeviceInfo));
+      var deviceInfo = (DeviceInfo) Marshal.PtrToStructure(_generalBuffer, typeof (DeviceInfo));
       this.LogDebug("  name                        = {0}", deviceInfo.Name);
       this.LogDebug("  supported modes             = {0}", deviceInfo.Type.ToString());
       this.LogDebug("  speed/interface             = {0}", deviceInfo.Speed);
@@ -1242,7 +1241,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       {
         Marshal.WriteByte(_generalBuffer, 0);
       }
-      var command = new TwinhanCommand(THBDA_IOCTL_GET_PID_FILTER_INFO, IntPtr.Zero, 0, _generalBuffer, PidFilterParamsSize);
+      var command = new TwinhanCommand(THBDA_IOCTL_GET_PID_FILTER_INFO, IntPtr.Zero, 0, _generalBuffer,
+                                       PidFilterParamsSize);
       int returnedByteCount;
       int hr = command.Execute(_propertySet, out returnedByteCount);
       if (hr != 0)
@@ -1253,7 +1253,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
 
       //this.LogDebug("Twinhan: number of PidFilterParams bytes returned is {0}", returnedByteCount);
       //DVB_MMI.DumpBinary(_generalBuffer, 0, returnedByteCount);
-      var pidFilterInfo = (PidFilterParams)Marshal.PtrToStructure(_generalBuffer, typeof(PidFilterParams));
+      var pidFilterInfo = (PidFilterParams) Marshal.PtrToStructure(_generalBuffer, typeof (PidFilterParams));
       this.LogDebug("  current mode                = {0}", pidFilterInfo.FilterMode);
       this.LogDebug("  maximum PIDs                = {0}", pidFilterInfo.MaxPids);
       _maxPidFilterPids = pidFilterInfo.MaxPids;
@@ -1280,13 +1280,15 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
 
       //this.LogDebug("Twinhan: number of DriverInfo bytes returned is {0}", returnedByteCount);
       //DVB_MMI.DumpBinary(_generalBuffer, 0, returnedByteCount);
-      var driverInfo = (DriverInfo)Marshal.PtrToStructure(_generalBuffer, typeof(DriverInfo));
+      var driverInfo = (DriverInfo) Marshal.PtrToStructure(_generalBuffer, typeof (DriverInfo));
       char[] majorVersion = String.Format("{0:x2}", driverInfo.DriverMajorVersion).ToCharArray();
       char[] minorVersion = String.Format("{0:x2}", driverInfo.DriverMinorVersion).ToCharArray();
-      this.LogDebug("  driver version              = {0}.{1}.{2}.{3}", majorVersion[0], majorVersion[1], minorVersion[0], minorVersion[1]);
+      this.LogDebug("  driver version              = {0}.{1}.{2}.{3}", majorVersion[0], majorVersion[1], minorVersion[0],
+                    minorVersion[1]);
       majorVersion = String.Format("{0:x2}", driverInfo.FirmwareMajorVersion).ToCharArray();
       minorVersion = String.Format("{0:x2}", driverInfo.FirmwareMinorVersion).ToCharArray();
-      this.LogDebug("  firmware version            = {0}.{1}.{2}.{3}", majorVersion[0], majorVersion[1], minorVersion[0], minorVersion[1]);
+      this.LogDebug("  firmware version            = {0}.{1}.{2}.{3}", majorVersion[0], majorVersion[1], minorVersion[0],
+                    minorVersion[1]);
       this.LogDebug("  date                        = {0}", driverInfo.Date);
       this.LogDebug("  company                     = {0}", driverInfo.Company);
       this.LogDebug("  hardware info               = {0}", driverInfo.HardwareInfo);
@@ -1356,14 +1358,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
             this.LogDebug("Twinhan: CI state change, old state = {0}, new state = {1}", prevCiState, ciState);
             prevCiState = ciState;
             if (ciState == TwinhanCiState.CamInserted ||
-              ciState == TwinhanCiState.CamUnknown)
+                ciState == TwinhanCiState.CamUnknown)
             {
               _isCamPresent = true;
               _isCamReady = false;
             }
             else if (ciState == TwinhanCiState.CamOkay ||
-              ciState == TwinhanCiState.Cam1Okay_Old ||
-              ciState == TwinhanCiState.Cam2Okay_Old)
+                     ciState == TwinhanCiState.Cam1Okay_Old ||
+                     ciState == TwinhanCiState.Cam2Okay_Old)
             {
               _isCamPresent = true;
               _isCamReady = true;
@@ -1395,7 +1397,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
             mmiState == TwinhanMmiState.Menu2Okay_Old ||
             // CI API v2
             (prevMmiState != mmiState && mmiState == TwinhanMmiState.MenuOkay)
-          )
+            )
           {
             MmiData mmi;
             if (ReadMmi(out mmi))
@@ -1411,7 +1413,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
                 {
                   try
                   {
-                    _ciMenuCallbacks.OnCiRequest(mmi.IsBlindAnswer, (uint)mmi.AnswerLength, mmi.Prompt);
+                    _ciMenuCallbacks.OnCiRequest(mmi.IsBlindAnswer, (uint) mmi.AnswerLength, mmi.Prompt);
                   }
                   catch (Exception ex)
                   {
@@ -1641,7 +1643,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       int hr = command.Execute(_propertySet, out returnedByteCount);
       if (hr != 0)
       {
-        this.LogDebug("Twinhan: device does not support the Twinhan property set, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Twinhan: device does not support the Twinhan property set, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         return false;
       }
 
@@ -1658,12 +1661,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       }
       if (hr != 0 || tunerFilterInfo.achName == null)
       {
-        this.LogDebug("Twinhan: failed to get the tuner filter name, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Twinhan: failed to get the tuner filter name, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
       }
       else
       {
         _tunerFilterName = tunerFilterInfo.achName;
-        if (_tunerFilterName.ToLowerInvariant().Contains("terratec") || _tunerFilterName.ToLowerInvariant().Contains("cinergy"))
+        if (_tunerFilterName.ToLowerInvariant().Contains("terratec") ||
+            _tunerFilterName.ToLowerInvariant().Contains("cinergy"))
         {
           this.LogDebug("Twinhan: this device is using a TerraTec driver");
           _isTerraTec = true;
@@ -1704,7 +1709,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     /// <param name="currentChannel">The channel that the tuner is currently tuned to..</param>
     /// <param name="channel">The channel that the tuner will been tuned to.</param>
     /// <param name="action">The action to take, if any.</param>
-    public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel, out DeviceAction action)
+    public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel,
+                                      out DeviceAction action)
     {
       this.LogDebug("Twinhan: on before tune callback");
       action = DeviceAction.Default;
@@ -1800,7 +1806,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
         !lowerFilterName.Equals("technisat udst7000bda dvb-t vtuner") &&
         !lowerFilterName.Equals("terratec h7 digital tuner (dvb-c)") &&
         !lowerFilterName.Equals("terratec h7 digital tuner (dvb-t)")
-      )
+        )
       {
         // No problem with non-H7 devices.
         return true;
@@ -1867,7 +1873,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       if (_tunerType != CardType.DvbS)
       {
         this.LogDebug("Twinhan: function disabled for safety");
-        return true;    // Don't retry...
+        return true; // Don't retry...
       }
 
       if (powerOn)
@@ -1906,8 +1912,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       // probably supports ATSC as well, however I'm not sure how to implement that since we tune ATSC by
       // channel number rather than frequency.
       if ((channel is DVBCChannel && _tunerType == CardType.DvbC) ||
-        (channel is DVBSChannel && _tunerType == CardType.DvbS) ||
-        (channel is DVBTChannel && _tunerType == CardType.DvbT))
+          (channel is DVBSChannel && _tunerType == CardType.DvbS) ||
+          (channel is DVBTChannel && _tunerType == CardType.DvbT))
       {
         return true;
       }
@@ -1942,8 +1948,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       if (channel is DVBCChannel)
       {
         var ch = channel as DVBCChannel;
-        tuningParams.Frequency = (UInt32)ch.Frequency;
-        tuningParams.SymbolRate = (UInt32)ch.SymbolRate;
+        tuningParams.Frequency = (UInt32) ch.Frequency;
+        tuningParams.SymbolRate = (UInt32) ch.SymbolRate;
         tuningParams.Modulation = ch.ModulationType;
       }
       else if (channel is DVBSChannel)
@@ -1952,9 +1958,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
         var lnbParams = new LnbParams();
         lnbParams.PowerOn = true;
         lnbParams.ToneBurst = TwinhanToneBurst.Off;
-        lnbParams.LowBandLof = (UInt32)dvbsChannel.LnbType.LowBandFrequency;
-        lnbParams.HighBandLof = (UInt32)dvbsChannel.LnbType.HighBandFrequency;
-        lnbParams.SwitchFrequency = (UInt32)dvbsChannel.LnbType.SwitchFrequency;
+        lnbParams.LowBandLof = (UInt32) dvbsChannel.LnbType.LowBandFrequency;
+        lnbParams.HighBandLof = (UInt32) dvbsChannel.LnbType.HighBandFrequency;
+        lnbParams.SwitchFrequency = (UInt32) dvbsChannel.LnbType.SwitchFrequency;
         lnbParams.Tone22k = Twinhan22k.Off;
         if (dvbsChannel.Frequency > dvbsChannel.LnbType.SwitchFrequency)
         {
@@ -1974,16 +1980,16 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
           this.LogDebug("Twinhan: result = failure, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         }
 
-        tuningParams.Frequency = (UInt32)dvbsChannel.Frequency;
-        tuningParams.SymbolRate = (UInt32)dvbsChannel.SymbolRate;
-        tuningParams.Modulation = (ModulationType)1;
+        tuningParams.Frequency = (UInt32) dvbsChannel.Frequency;
+        tuningParams.SymbolRate = (UInt32) dvbsChannel.SymbolRate;
+        tuningParams.Modulation = (ModulationType) 1;
       }
       else if (channel is DVBTChannel)
       {
         var ch = channel as DVBTChannel;
-        tuningParams.Frequency = (UInt32)ch.Frequency;
-        tuningParams.Bandwidth = (UInt32)ch.Bandwidth;
-        tuningParams.Modulation = 0;  // ???
+        tuningParams.Frequency = (UInt32) ch.Frequency;
+        tuningParams.Bandwidth = (UInt32) ch.Bandwidth;
+        tuningParams.Modulation = 0; // ???
       }
       else
       {
@@ -2064,7 +2070,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       if (!_isPidFilterSupported)
       {
         this.LogDebug("Twinhan: PID filtering not supported");
-        return true;    // Don't retry...
+        return true; // Don't retry...
       }
 
       // It is not ideal to have to enable PID filtering because doing so can limit the number of channels
@@ -2085,7 +2091,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
         pidFilterParams.FilterMode = TwinhanPidFilterMode.Whitelist;
         if (pids.Count > _maxPidFilterPids)
         {
-          this.LogDebug("Twinhan: too many PIDs, hardware limit = {0}, actual count = {1}", _maxPidFilterPids, pids.Count);
+          this.LogDebug("Twinhan: too many PIDs, hardware limit = {0}, actual count = {1}", _maxPidFilterPids,
+                        pids.Count);
           // When the forceEnable flag is set, we just set as many PIDs as possible.
           if (_isPidFilterBypassSupported && !forceEnable)
           {
@@ -2109,7 +2116,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
 
       Marshal.StructureToPtr(pidFilterParams, _generalBuffer, true);
       DVB_MMI.DumpBinary(_generalBuffer, 0, PidFilterParamsSize);
-      var command = new TwinhanCommand(THBDA_IOCTL_SET_PID_FILTER_INFO, _generalBuffer, PidFilterParamsSize, IntPtr.Zero, 0);
+      var command = new TwinhanCommand(THBDA_IOCTL_SET_PID_FILTER_INFO, _generalBuffer, PidFilterParamsSize, IntPtr.Zero,
+                                       0);
       int returnedByteCount;
       int hr = command.Execute(_propertySet, out returnedByteCount);
       if (hr == 0)
@@ -2177,14 +2185,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       else
       {
         if (ciState == TwinhanCiState.CamInserted ||
-          ciState == TwinhanCiState.CamUnknown)
+            ciState == TwinhanCiState.CamUnknown)
         {
           _isCamPresent = true;
           _isCamReady = false;
         }
         else if (ciState == TwinhanCiState.CamOkay ||
-          ciState == TwinhanCiState.Cam1Okay_Old ||
-          ciState == TwinhanCiState.Cam2Okay_Old)
+                 ciState == TwinhanCiState.Cam1Okay_Old ||
+                 ciState == TwinhanCiState.Cam2Okay_Old)
         {
           _isCamPresent = true;
           _isCamReady = true;
@@ -2210,7 +2218,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
         _stopMmiHandlerThread = true;
         // In the worst case scenario it should take approximately
         // twice the thread sleep time to cleanly stop the thread.
-        Thread.Sleep(MmiHandlerThreadSleepTime * 2);
+        Thread.Sleep(MmiHandlerThreadSleepTime*2);
         _mmiHandlerThread = null;
       }
 
@@ -2290,8 +2298,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       this.LogDebug("Twinhan: CI state = {0}, MMI state = {1}", ciState, mmiState);
       bool camReady = false;
       if (ciState == TwinhanCiState.Cam1Okay_Old ||
-        ciState == TwinhanCiState.Cam2Okay_Old ||
-        ciState == TwinhanCiState.CamOkay)
+          ciState == TwinhanCiState.Cam2Okay_Old ||
+          ciState == TwinhanCiState.CamOkay)
       {
         camReady = true;
       }
@@ -2310,7 +2318,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     /// <param name="pmt">The programme map table for the service.</param>
     /// <param name="cat">The conditional access table for the service.</param>
     /// <returns><c>true</c> if the command is successfully sent, otherwise <c>false</c></returns>
-    public bool SendCommand(IChannel channel, CaPmtListManagementAction listAction, CaPmtCommand command, Pmt pmt, Cat cat)
+    public bool SendCommand(IChannel channel, CaPmtListManagementAction listAction, CaPmtCommand command, Pmt pmt,
+                            Cat cat)
     {
       this.LogDebug("Twinhan: send conditional access command, list action = {0}, command = {1}", listAction, command);
 
@@ -2412,8 +2421,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
           return false;
         }
 
-        var info = (ApplicationInfo)Marshal.PtrToStructure(_mmiBuffer, typeof(ApplicationInfo));
-        this.LogDebug("  type         = {0}", (MmiApplicationType)info.ApplicationType);
+        var info = (ApplicationInfo) Marshal.PtrToStructure(_mmiBuffer, typeof (ApplicationInfo));
+        this.LogDebug("  type         = {0}", (MmiApplicationType) info.ApplicationType);
         this.LogDebug("  manufacturer = 0x{0:x}", info.Manufacturer);
         this.LogDebug("  code         = 0x{0:x}", info.ManufacturerCode);
         this.LogDebug("  menu title   = {0}", info.RootMenuTitle);
@@ -2474,7 +2483,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
     /// <returns><c>true</c> if the selection is successfully passed to and processed by the CAM, otherwise <c>false</c></returns>
     public bool SelectMenu(byte choice)
     {
-      this.LogDebug("Twinhan: select menu entry, choice = {0}", (int)choice);
+      this.LogDebug("Twinhan: select menu entry, choice = {0}", (int) choice);
       var mmi = new MmiData();
       mmi.ChoiceIndex = choice;
       mmi.Type = 1;
@@ -2605,7 +2614,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Twinhan
       if (hr == 0)
       {
         this.LogDebug("Twinhan: result = success");
-        var message = (DiseqcMessage)Marshal.PtrToStructure(_generalBuffer, typeof(DiseqcMessage));
+        var message = (DiseqcMessage) Marshal.PtrToStructure(_generalBuffer, typeof (DiseqcMessage));
         response = new byte[message.MessageLength];
         Buffer.BlockCopy(message.Message, 0, response, 0, message.MessageLength);
 

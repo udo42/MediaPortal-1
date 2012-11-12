@@ -37,38 +37,38 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Epg
     //
 
     private readonly string[] LanguageCodeExceptions = {
-                                                "alb", "arm",
-                                                "baq", "bur",
-                                                "chi", "cze",
-                                                "dut",
-                                                "fre",
-                                                "geo", "ger", "gre",
-                                                "ice",
-                                                "mac", "may", "mao",
-                                                "per",
-                                                "rum",
-                                                "tib",
-                                                "wel",
-                                                "scc",
-                                                "scr"
-                                              };
+                                                         "alb", "arm",
+                                                         "baq", "bur",
+                                                         "chi", "cze",
+                                                         "dut",
+                                                         "fre",
+                                                         "geo", "ger", "gre",
+                                                         "ice",
+                                                         "mac", "may", "mao",
+                                                         "per",
+                                                         "rum",
+                                                         "tib",
+                                                         "wel",
+                                                         "scc",
+                                                         "scr"
+                                                       };
 
     private readonly string[] LanguageNameExceptions = {
-                                                "Albanian", "Armenian",
-                                                "Basque", "Burmese",
-                                                "Chinese", "Czech",
-                                                "Dutch",
-                                                "French",
-                                                "Georgian", "German", "Greek (Modern)",
-                                                "Icelandic",
-                                                "Macedonian", "Malay", "Maori",
-                                                "Persian",
-                                                "Romanian",
-                                                "Tibetan",
-                                                "Welsh",
-                                                "Serbo-Croatian (Cyrillic)",
-                                                "Serbo-Croatian (Roman)"
-                                              };
+                                                         "Albanian", "Armenian",
+                                                         "Basque", "Burmese",
+                                                         "Chinese", "Czech",
+                                                         "Dutch",
+                                                         "French",
+                                                         "Georgian", "German", "Greek (Modern)",
+                                                         "Icelandic",
+                                                         "Macedonian", "Malay", "Maori",
+                                                         "Persian",
+                                                         "Romanian",
+                                                         "Tibetan",
+                                                         "Welsh",
+                                                         "Serbo-Croatian (Cyrillic)",
+                                                         "Serbo-Croatian (Roman)"
+                                                       };
 
     /// <summary>
     /// Gets the languages.

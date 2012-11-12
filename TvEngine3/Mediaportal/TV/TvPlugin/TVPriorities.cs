@@ -53,10 +53,12 @@ namespace Mediaportal.TV.TvPlugin
 
     public TvPriorities()
     {
-      GetID = (int)Window.WINDOW_TV_SCHEDULER_PRIORITIES;
+      GetID = (int) Window.WINDOW_TV_SCHEDULER_PRIORITIES;
     }
 
-    ~TvPriorities() {}
+    ~TvPriorities()
+    {
+    }
 
     #endregion
 
@@ -123,7 +125,7 @@ namespace Mediaportal.TV.TvPlugin
       if (control == listPriorities)
       {
         var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, control.GetID, 0, 0,
-                                        null);
+                                 null);
         OnMessage(msg);
         int iItem = msg.Param1;
         if (actionType == Action.ActionType.ACTION_SELECT_ITEM)
@@ -138,7 +140,7 @@ namespace Mediaportal.TV.TvPlugin
       if (control == listPriorities)
       {
         var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, control.GetID, 0, 0,
-                                        null);
+                                 null);
         OnMessage(msg);
         int iItem = msg.Param1;
         OnMoveUp(iItem);
@@ -150,7 +152,7 @@ namespace Mediaportal.TV.TvPlugin
       if (control == listPriorities)
       {
         var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, control.GetID, 0, 0,
-                                        null);
+                                 null);
         OnMessage(msg);
         int iItem = msg.Param1;
         OnMoveDown(iItem);
@@ -194,7 +196,7 @@ namespace Mediaportal.TV.TvPlugin
     private int GetSelectedItemNo()
     {
       var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, listPriorities.GetID, 0, 0,
-                                      null);
+                               null);
       OnMessage(msg);
       int iItem = msg.Param1;
       return iItem;
@@ -212,13 +214,14 @@ namespace Mediaportal.TV.TvPlugin
     private void LoadDirectory()
     {
       GUIControl.ClearControl(GetID, listPriorities.GetID);
-      
+
       IList<ScheduleBLL> itemlist = new List<ScheduleBLL>();
-      foreach (Schedule schedule in ServiceAgents.Instance.ScheduleServiceAgent.ListAllSchedules().OrderBy(s => s.Priority))
+      foreach (
+        Schedule schedule in ServiceAgents.Instance.ScheduleServiceAgent.ListAllSchedules().OrderBy(s => s.Priority))
       {
         var scheduleBll = new ScheduleBLL(schedule);
         itemlist.Add(scheduleBll);
-      }      
+      }
 
       int total = 0;
       foreach (ScheduleBLL rec in itemlist)
@@ -231,15 +234,15 @@ namespace Mediaportal.TV.TvPlugin
         item.Label = String.Format("{0}.{1}", total, rec.Entity.ProgramName);
         item.TVTag = rec;
         string strLogo = Utils.GetCoverArt(Thumbs.TVChannel, rec.Entity.Channel.DisplayName);
-        if (string.IsNullOrEmpty(strLogo))                      
+        if (string.IsNullOrEmpty(strLogo))
         {
           strLogo = "defaultVideoBig.png";
         }
-        
+
         IVirtualCard card;
         if (ServiceAgents.Instance.ControllerServiceAgent.IsRecordingSchedule(rec.Entity.IdSchedule, out card))
         {
-          if (rec.Entity.ScheduleType != (int)ScheduleRecordingType.Once)
+          if (rec.Entity.ScheduleType != (int) ScheduleRecordingType.Once)
           {
             item.PinImage = Thumbs.TvRecordingSeriesIcon;
           }
@@ -273,9 +276,9 @@ namespace Mediaportal.TV.TvPlugin
       {
         return;
       }
-      var rec = (Schedule)item.TVTag;
+      var rec = (Schedule) item.TVTag;
 
-      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_MENU);
       if (dlg == null)
       {
         return;
@@ -295,7 +298,7 @@ namespace Mediaportal.TV.TvPlugin
         dlg.AddLocalizedString(888); //Episodes management
       }
       IVirtualCard card;
-      
+
       if (ServiceAgents.Instance.ControllerServiceAgent.IsRecordingSchedule(rec.IdSchedule, out card))
       {
         dlg.AddLocalizedString(979); //Play recording from beginning
@@ -332,7 +335,7 @@ namespace Mediaportal.TV.TvPlugin
           {
             if (ServiceAgents.Instance.ControllerServiceAgent.IsRecordingSchedule(rec.IdSchedule, out card))
             {
-              var dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_YES_NO);
+              var dlgYesNo = (GUIDialogYesNo) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_YES_NO);
               if (null != dlgYesNo)
               {
                 dlgYesNo.SetHeading(GUILocalizeStrings.Get(653)); //Delete this recording?
@@ -343,8 +346,8 @@ namespace Mediaportal.TV.TvPlugin
 
                 if (dlgYesNo.IsConfirmed)
                 {
-                  ServiceAgents.Instance.ControllerServiceAgent.StopRecordingSchedule(rec.IdSchedule);                  
-                  ServiceAgents.Instance.ScheduleServiceAgent.SaveSchedule(rec);                  
+                  ServiceAgents.Instance.ControllerServiceAgent.StopRecordingSchedule(rec.IdSchedule);
+                  ServiceAgents.Instance.ScheduleServiceAgent.SaveSchedule(rec);
                   ServiceAgents.Instance.ControllerServiceAgent.OnNewSchedule();
                 }
               }
@@ -366,7 +369,7 @@ namespace Mediaportal.TV.TvPlugin
           {
             if (ServiceAgents.Instance.ControllerServiceAgent.IsRecordingSchedule(rec.IdSchedule, out card))
             {
-              var dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_YES_NO);
+              var dlgYesNo = (GUIDialogYesNo) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_YES_NO);
               if (null != dlgYesNo)
               {
                 dlgYesNo.SetHeading(GUILocalizeStrings.Get(653)); //Delete this recording?
@@ -385,7 +388,7 @@ namespace Mediaportal.TV.TvPlugin
             }
             else
             {
-              ServiceAgents.Instance.ScheduleServiceAgent.DeleteSchedule(rec.IdSchedule);              
+              ServiceAgents.Instance.ScheduleServiceAgent.DeleteSchedule(rec.IdSchedule);
               ServiceAgents.Instance.ControllerServiceAgent.OnNewSchedule();
             }
             LoadDirectory();
@@ -430,7 +433,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private void ChangeType(Schedule rec)
     {
-      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_MENU);
       if (dlg != null)
       {
         dlg.Reset();
@@ -446,8 +449,8 @@ namespace Mediaportal.TV.TvPlugin
         }
         dlg.Add(GUILocalizeStrings.Get(WeekEndTool.GetText(DayType.Record_WorkingDays)));
         dlg.Add(GUILocalizeStrings.Get(WeekEndTool.GetText(DayType.Record_WeekendDays)));
-        dlg.Add(GUILocalizeStrings.Get(990000));// 990000=Weekly everytime on this channel		
-        switch ((ScheduleRecordingType)rec.ScheduleType)
+        dlg.Add(GUILocalizeStrings.Get(990000)); // 990000=Weekly everytime on this channel		
+        switch ((ScheduleRecordingType) rec.ScheduleType)
         {
           case ScheduleRecordingType.Once:
             dlg.SelectedLabel = 0;
@@ -482,40 +485,40 @@ namespace Mediaportal.TV.TvPlugin
         switch (dlg.SelectedLabel)
         {
           case 0: //once
-            rec.ScheduleType = (int)ScheduleRecordingType.Once;
+            rec.ScheduleType = (int) ScheduleRecordingType.Once;
             rec.Canceled = ScheduleFactory.MinSchedule;
             break;
           case 1: //everytime, this channel
-            rec.ScheduleType = (int)ScheduleRecordingType.EveryTimeOnThisChannel;
+            rec.ScheduleType = (int) ScheduleRecordingType.EveryTimeOnThisChannel;
             rec.Canceled = ScheduleFactory.MinSchedule;
             break;
           case 2: //everytime, all channels
-            rec.ScheduleType = (int)ScheduleRecordingType.EveryTimeOnEveryChannel;
+            rec.ScheduleType = (int) ScheduleRecordingType.EveryTimeOnEveryChannel;
             rec.Canceled = ScheduleFactory.MinSchedule;
             break;
           case 3: //weekly
-            rec.ScheduleType = (int)ScheduleRecordingType.Weekly;
+            rec.ScheduleType = (int) ScheduleRecordingType.Weekly;
             rec.Canceled = ScheduleFactory.MinSchedule;
             break;
           case 4: //daily
-            rec.ScheduleType = (int)ScheduleRecordingType.Daily;
+            rec.ScheduleType = (int) ScheduleRecordingType.Daily;
             rec.Canceled = ScheduleFactory.MinSchedule;
             break;
           case 5: //WorkingDays
-            rec.ScheduleType = (int)ScheduleRecordingType.WorkingDays;
+            rec.ScheduleType = (int) ScheduleRecordingType.WorkingDays;
             rec.Canceled = ScheduleFactory.MinSchedule;
             break;
           case 6: //Weekends
-            rec.ScheduleType = (int)ScheduleRecordingType.Weekends;
+            rec.ScheduleType = (int) ScheduleRecordingType.Weekends;
             rec.Canceled = ScheduleFactory.MinSchedule;
             break;
-          case 7://weekly everytime, this channel
-            rec.ScheduleType = (int)ScheduleRecordingType.WeeklyEveryTimeOnThisChannel;
+          case 7: //weekly everytime, this channel
+            rec.ScheduleType = (int) ScheduleRecordingType.WeeklyEveryTimeOnThisChannel;
             rec.Canceled = ScheduleFactory.MinSchedule;
             break;
-        }        
+        }
         ServiceAgents.Instance.ScheduleServiceAgent.SaveSchedule(rec);
-        
+
         ServiceAgents.Instance.ControllerServiceAgent.OnNewSchedule();
         LoadDirectory();
       }
@@ -549,7 +552,7 @@ namespace Mediaportal.TV.TvPlugin
           strType = GUILocalizeStrings.Get(679); //Weekly
           break;
         case ScheduleRecordingType.WeeklyEveryTimeOnThisChannel:
-          strType = GUILocalizeStrings.Get(990000);//Weekly Everytime on this channel
+          strType = GUILocalizeStrings.Get(990000); //Weekly Everytime on this channel
           break;
       }
       return strType;
@@ -588,7 +591,7 @@ namespace Mediaportal.TV.TvPlugin
         tempPriority = tmprec.Priority;
         tmprec.Priority = Schedule.HighestPriority - i;
         if (tempPriority != tmprec.Priority)
-        {          
+        {
           ServiceAgents.Instance.ScheduleServiceAgent.SaveSchedule(tmprec);
         }
       }
@@ -597,7 +600,7 @@ namespace Mediaportal.TV.TvPlugin
       tempPriority = tmprec.Priority;
       tmprec.Priority = Schedule.HighestPriority - item;
       if (tempPriority != tmprec.Priority)
-      {        
+      {
         ServiceAgents.Instance.ScheduleServiceAgent.SaveSchedule(tmprec);
       }
 
@@ -608,14 +611,14 @@ namespace Mediaportal.TV.TvPlugin
         tempPriority = tmprec.Priority;
         tmprec.Priority = Schedule.HighestPriority - i;
         if (tempPriority != tmprec.Priority)
-        {          
+        {
           ServiceAgents.Instance.ScheduleServiceAgent.SaveSchedule(tmprec);
         }
       }
 
       rec.Priority = Schedule.HighestPriority - item - 1;
       ServiceAgents.Instance.ScheduleServiceAgent.SaveSchedule(rec);
-      
+
       ServiceAgents.Instance.ControllerServiceAgent.OnNewSchedule();
       LoadDirectory();
     }
@@ -658,9 +661,9 @@ namespace Mediaportal.TV.TvPlugin
       }
 
       rec.Priority = Schedule.HighestPriority - item + 1;
-      
+
       ServiceAgents.Instance.ScheduleServiceAgent.SaveSchedule(rec);
-      
+
       ServiceAgents.Instance.ControllerServiceAgent.OnNewSchedule();
       LoadDirectory();
     }
@@ -677,7 +680,7 @@ namespace Mediaportal.TV.TvPlugin
       GUIPropertyManager.SetProperty("#TV.RecordedTV.Time", strTime);
       GUIPropertyManager.SetProperty("#TV.RecordedTV.Description", "");
       string strLogo = Utils.GetCoverArt(Thumbs.TVChannel, rec.Channel.DisplayName);
-      if (string.IsNullOrEmpty(strLogo))                    
+      if (string.IsNullOrEmpty(strLogo))
       {
         GUIPropertyManager.SetProperty("#TV.RecordedTV.thumb", "defaultVideoBig.png");
       }
@@ -717,13 +720,13 @@ namespace Mediaportal.TV.TvPlugin
 
 
       string logo = Utils.GetCoverArt(Thumbs.TVChannel, schedule.Channel.DisplayName);
-      if (string.IsNullOrEmpty(logo))              
+      if (string.IsNullOrEmpty(logo))
       {
         GUIPropertyManager.SetProperty("#TV.Scheduled.thumb", "defaultVideoBig.png");
       }
       else
       {
-        GUIPropertyManager.SetProperty("#TV.Scheduled.thumb", logo);        
+        GUIPropertyManager.SetProperty("#TV.Scheduled.thumb", logo);
       }
     }
 
@@ -731,8 +734,12 @@ namespace Mediaportal.TV.TvPlugin
     private void UpdateDescription()
     {
       Schedule rec = ScheduleFactory.CreateSchedule(1, "", ScheduleFactory.MinSchedule, ScheduleFactory.MinSchedule);
-      rec.PreRecordInterval = Int32.Parse(ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("preRecordInterval", "5").Value);
-      rec.PostRecordInterval = Int32.Parse(ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("postRecordInterval", "5").Value);
+      rec.PreRecordInterval =
+        Int32.Parse(
+          ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("preRecordInterval", "5").Value);
+      rec.PostRecordInterval =
+        Int32.Parse(
+          ServiceAgents.Instance.SettingServiceAgent.GetSettingWithDefaultValue("postRecordInterval", "5").Value);
 
       SetProperties(rec);
       GUIListItem pItem = GetItem(GetSelectedItemNo());
@@ -745,14 +752,14 @@ namespace Mediaportal.TV.TvPlugin
       {
         return;
       }
-      Program prog = ServiceAgents.Instance.ProgramServiceAgent.GetProgramAt(rec.StartTime.AddMinutes(1), rec.IdChannel);      
+      Program prog = ServiceAgents.Instance.ProgramServiceAgent.GetProgramAt(rec.StartTime.AddMinutes(1), rec.IdChannel);
       SetProperties(rec, prog);
     }
 
     public static void OnSetEpisodesToKeep(Schedule rec)
     {
       Schedule schedule = ServiceAgents.Instance.ScheduleServiceAgent.GetSchedule(rec.IdSchedule);
-      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_MENU);
       if (dlg == null)
       {
         return;
@@ -787,9 +794,9 @@ namespace Mediaportal.TV.TvPlugin
       else
       {
         schedule.MaxAirings = dlg.SelectedLabel;
-      }      
+      }
       ServiceAgents.Instance.ScheduleServiceAgent.SaveSchedule(schedule);
-      
+
       ServiceAgents.Instance.ControllerServiceAgent.OnNewSchedule();
     }
 
@@ -797,7 +804,7 @@ namespace Mediaportal.TV.TvPlugin
     {
       var recBLL = new ScheduleBLL(rec);
 
-      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_MENU);
       if (dlg != null)
       {
         dlg.Reset();
@@ -850,7 +857,7 @@ namespace Mediaportal.TV.TvPlugin
             break;
         }
 
-        recBLL.BitRateMode = _newBitRate;        
+        recBLL.BitRateMode = _newBitRate;
         ServiceAgents.Instance.ScheduleServiceAgent.SaveSchedule(recBLL.Entity);
 
         dlg.Reset();
@@ -927,10 +934,10 @@ namespace Mediaportal.TV.TvPlugin
             break;
         }
 
-        recBLL.QualityType = _newQuality;        
+        recBLL.QualityType = _newQuality;
         ServiceAgents.Instance.ScheduleServiceAgent.SaveSchedule(recBLL.Entity);
       }
-      
+
       ServiceAgents.Instance.ControllerServiceAgent.OnNewSchedule();
     }
 

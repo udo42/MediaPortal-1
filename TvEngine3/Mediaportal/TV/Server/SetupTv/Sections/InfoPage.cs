@@ -27,7 +27,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
   public partial class InfoPage : SectionSettings
   {
     public InfoPage()
-      : this("InfoPage") {}
+      : this("InfoPage")
+    {
+    }
 
     public InfoPage(string name)
       : base(name)

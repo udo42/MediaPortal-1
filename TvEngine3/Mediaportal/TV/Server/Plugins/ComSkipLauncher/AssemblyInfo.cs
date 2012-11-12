@@ -38,6 +38,5 @@ using MediaPortal.Common.Utils;
 
 [assembly: ComVisible(false)]
 [assembly: CLSCompliant(true)]
-
 [assembly: CompatibleVersion("Own")]
 [assembly: UsesSubsystem("TVE")]

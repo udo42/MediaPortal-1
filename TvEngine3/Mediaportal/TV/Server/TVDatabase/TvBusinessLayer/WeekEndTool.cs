@@ -34,30 +34,37 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     /// The first working day
     /// </summary>
     FirstWorkingDay,
+
     /// <summary>
     /// The last working day
     /// </summary>
     LastWorkingDay,
+
     /// <summary>
     /// The first weekend day
     /// </summary>
     FirstWeekendDay,
+
     /// <summary>
     /// The last weekend day
     /// </summary>
     LastWeekendDay,
+
     /// <summary>
     /// The working day
     /// </summary>
     WorkingDays,
+
     /// <summary>
     /// The record working days
     /// </summary>
     Record_WorkingDays,
+
     /// <summary>
     /// The weekend day
     /// </summary>
     WeekendDays,
+
     /// <summary>
     /// The record weekend day
     /// </summary>
@@ -69,7 +76,6 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
   /// </summary>
   public class WeekEndTool
   {
-
     private static bool _startDayLoaded;
     private static DayOfWeek _firstWorkingDay = DayOfWeek.Monday;
 
@@ -102,8 +108,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       get
       {
-        int firstWeekend = (int)FirstWeekendDay + 1;
-        int secondWeekend = (int)SecondWeekendDay + 1;
+        int firstWeekend = (int) FirstWeekendDay + 1;
+        int secondWeekend = (int) SecondWeekendDay + 1;
         return "" + firstWeekend + "," + secondWeekend;
       }
     }
@@ -120,7 +126,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         string result = "";
         for (int i = 0; i < 5; i++)
         {
-          int sqlDayNumber = (int)GetDayByIndex(i) + 1;
+          int sqlDayNumber = (int) GetDayByIndex(i) + 1;
           if (i != 0)
           {
             result += ",";
@@ -133,12 +139,12 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
     private static int GetDayIndex(DayOfWeek day)
     {
-      return ((int)day + 7 - (int)GetFirstWorkingDay()) % 7;
+      return ((int) day + 7 - (int) GetFirstWorkingDay())%7;
     }
 
     private static DayOfWeek GetDayByIndex(int dayIndex)
     {
-      return (DayOfWeek)((dayIndex + (int)GetFirstWorkingDay()) % 7);
+      return (DayOfWeek) ((dayIndex + (int) GetFirstWorkingDay())%7);
     }
 
     /// <summary>
@@ -157,7 +163,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       {
         // load first working day from database
         //var setting = Setting.RetrieveByTag("FirstDayOfWeekend");
-        Setting setting = GlobalServiceProvider.Get<ISettingService>().GetSetting("FirstDayOfWeekend");  
+        Setting setting = GlobalServiceProvider.Get<ISettingService>().GetSetting("FirstDayOfWeekend");
         if (setting == null)
         {
           _firstWorkingDay = DayOfWeek.Monday;
@@ -167,7 +173,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
           int dayOfWeek = Convert.ToInt16(setting.Value);
           // in DayOfWeek enum Sunday = 0 so need to convert from value stored in database
           // which is Saturday = 0, Sunday=1 etc
-          _firstWorkingDay = (DayOfWeek)((dayOfWeek + 1) % 7);
+          _firstWorkingDay = (DayOfWeek) ((dayOfWeek + 1)%7);
         }
         _startDayLoaded = true;
       }

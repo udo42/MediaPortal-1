@@ -103,7 +103,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <summary>
     /// The property set used for accessing and controlling CI slot properties.
     /// </summary>
-    public static readonly Guid CommonInterfacePropertySet = new Guid(0x0aa8a501, 0xa240, 0x11de, 0xb1, 0x30, 0x00, 0x00, 0x00, 0x00, 0x4d, 0x56);
+    public static readonly Guid CommonInterfacePropertySet = new Guid(0x0aa8a501, 0xa240, 0x11de, 0xb1, 0x30, 0x00, 0x00,
+                                                                      0x00, 0x00, 0x4d, 0x56);
 
     /// <summary>
     /// A DsDevice device path fragment that is common to all Digital Devices KS software components.
@@ -118,9 +119,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     {
       var slotSettings = new Dictionary<String, DigitalDevicesCiSlot>();
       byte i = 0;
-      while (true)  // Loop until we don't find any more settings.
+      while (true) // Loop until we don't find any more settings.
       {
-        string devicePath = SettingsManagement.GetValue("digitalDevicesCiDevicePath" + i, String.Empty);        
+        string devicePath = SettingsManagement.GetValue("digitalDevicesCiDevicePath" + i, String.Empty);
         if (string.IsNullOrEmpty(devicePath))
         {
           break;
@@ -163,14 +164,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       try
       {
         int returnedByteCount;
-        int hr = ((IKsPropertySet)ciFilter).Get(CommonInterfacePropertySet, (int)CommonInterfaceProperty.CamMenuTitle,
-          buffer, bufferSize,
-          buffer, bufferSize,
-          out returnedByteCount
-        );
+        int hr = ((IKsPropertySet) ciFilter).Get(CommonInterfacePropertySet, (int) CommonInterfaceProperty.CamMenuTitle,
+                                                 buffer, bufferSize,
+                                                 buffer, bufferSize,
+                                                 out returnedByteCount
+          );
         if (hr == 0)
         {
-          title = Marshal.PtrToStringAnsi(buffer, returnedByteCount).TrimEnd(new[] { (char)0 });
+          title = Marshal.PtrToStringAnsi(buffer, returnedByteCount).TrimEnd(new[] {(char) 0});
         }
         return hr;
       }
@@ -189,8 +190,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     public static bool IsDigitalDevicesCiDevice(DsDevice device)
     {
       if (device != null && device.Name != null &&
-        device.DevicePath.ToLowerInvariant().Contains(CommonDevicePathSection) &&
-        device.Name.ToLowerInvariant().Contains("common interface"))
+          device.DevicePath.ToLowerInvariant().Contains(CommonDevicePathSection) &&
+          device.Name.ToLowerInvariant().Contains("common interface"))
       {
         return true;
       }

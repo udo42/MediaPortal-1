@@ -41,12 +41,12 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (var recordingRepository = new RecordingRepository())
       {
-        recordingRepository.AttachEntityIfChangeTrackingDisabled(recordingRepository.ObjectContext.Recordings, recording);                        
+        recordingRepository.AttachEntityIfChangeTrackingDisabled(recordingRepository.ObjectContext.Recordings, recording);
         recordingRepository.ApplyChanges(recordingRepository.ObjectContext.Recordings, recording);
         recordingRepository.UnitOfWork.SaveChanges();
         recording.AcceptChanges();
         return recording;
-      }      
+      }
     }
 
     public static Recording GetRecordingByFileName(string filename)
@@ -103,7 +103,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       using (IRecordingRepository recordingRepository = new RecordingRepository())
       {
         hasRecordingPendingDeletion =
-          recordingRepository.Count<PendingDeletion>(c => c.FileName == filename) > 0;      
+          recordingRepository.Count<PendingDeletion>(c => c.FileName == filename) > 0;
       }
       return hasRecordingPendingDeletion;
     }
@@ -112,12 +112,13 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (var recordingRepository = new RecordingRepository())
       {
-        recordingRepository.AttachEntityIfChangeTrackingDisabled(recordingRepository.ObjectContext.PendingDeletions, pendingDeletion);        
-        recordingRepository.ApplyChanges(recordingRepository.ObjectContext.PendingDeletions, pendingDeletion);        
+        recordingRepository.AttachEntityIfChangeTrackingDisabled(recordingRepository.ObjectContext.PendingDeletions,
+                                                                 pendingDeletion);
+        recordingRepository.ApplyChanges(recordingRepository.ObjectContext.PendingDeletions, pendingDeletion);
         recordingRepository.UnitOfWork.SaveChanges();
         pendingDeletion.AcceptChanges();
         return pendingDeletion;
-      }      
+      }
     }
 
     public static void DeletePendingRecordingDeletion(int idPendingDeletion)
@@ -154,13 +155,13 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         IQueryable<Recording> activeRecordings = recordingRepository.GetAll<Recording>();
         foreach (Recording rec in activeRecordings)
         {
-          rec.IsRecording = false;          
+          rec.IsRecording = false;
         }
 
         recordingRepository.ApplyChanges(recordingRepository.ObjectContext.Recordings, activeRecordings);
         //recordingRepository.UpdateList(activeRecordings);
         recordingRepository.UnitOfWork.SaveChanges();
-      }            
+      }
     }
   }
 }

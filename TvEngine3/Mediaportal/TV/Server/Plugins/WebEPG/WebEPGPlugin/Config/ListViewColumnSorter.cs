@@ -87,11 +87,12 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
     public int Compare(object x, object y)
     {
       // Cast the objects to be compared to ListViewItem objects
-      var listviewX = (ListViewItem)x;
-      var listviewY = (ListViewItem)y;
+      var listviewX = (ListViewItem) x;
+      var listviewY = (ListViewItem) y;
 
       // Compare the two items
-      int compareResult = ObjectCompare.Compare(listviewX.SubItems[ColumnToSort].Text, listviewY.SubItems[ColumnToSort].Text);
+      int compareResult = ObjectCompare.Compare(listviewX.SubItems[ColumnToSort].Text,
+                                                listviewY.SubItems[ColumnToSort].Text);
 
       // Calculate correct return value based on object comparison
       if (OrderOfSort == SortOrder.Ascending)

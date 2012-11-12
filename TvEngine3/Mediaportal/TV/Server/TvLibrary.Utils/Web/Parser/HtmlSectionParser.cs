@@ -133,7 +133,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
       int s = 0;
       for (int t = 0; t < _templateData.dataFields.Count; t++)
       {
-        var templateField = (DataField)_templateData.dataFields[t];
+        var templateField = (DataField) _templateData.dataFields[t];
 
         if (templateField.optional)
         {
@@ -145,7 +145,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
 
         if (s < sourceData.dataFields.Count)
         {
-          var sourceField = (DataField)sourceData.dataFields[s];
+          var sourceField = (DataField) sourceData.dataFields[s];
 
           if (!templateField.hasData &&
               templateField.htmlTag != null &&
@@ -164,7 +164,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
               int index = 0;
               for (int i = 0; i < templateField.dataElements.Count; i++)
               {
-                var element = (ElementData)templateField.dataElements[i];
+                var element = (ElementData) templateField.dataElements[i];
 
                 if (index < sourceField.source.Length)
                 {

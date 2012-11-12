@@ -14,7 +14,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel
 {
   public static class EntitySqlDebug
   {
-    private static readonly Assembly EfAssembly = typeof(EntityCommand).Assembly;
+    private static readonly Assembly EfAssembly = typeof (EntityCommand).Assembly;
 
     public static string ToTraceString(this IQueryable query)
     {
@@ -36,11 +36,11 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel
 
       var conn = context.Connection as EntityConnection;
       var parameter = new object[]
-                {
-                context.ObjectStateManager,
-                conn.GetMetadataWorkspace(),
-                conn, context.CommandTimeout
-                };
+                        {
+                          context.ObjectStateManager,
+                          conn.GetMetadataWorkspace(),
+                          conn, context.CommandTimeout
+                        };
 
       const BindingFlags flags = BindingFlags.NonPublic | BindingFlags.Instance;
       object updTranslator = Activator.CreateInstance(updTranslate, flags, null, parameter, null);
@@ -48,20 +48,20 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel
       object updateCommands = prodCommands.Invoke(updTranslator, null);
       var dbCommands = new List<DbCommand>();
 
-      foreach (object obj in (IEnumerable)updateCommands)
+      foreach (object obj in (IEnumerable) updateCommands)
       {
         if (funcUpdate.IsInstanceOfType(obj))
         {
           FieldInfo dbCommand = funcUpdate.
-          GetField("m_dbCommand", flags);
-          dbCommands.Add((DbCommand)dbCommand.GetValue(obj));
+            GetField("m_dbCommand", flags);
+          dbCommands.Add((DbCommand) dbCommand.GetValue(obj));
         }
         else if (dynUpdate.IsInstanceOfType(obj))
         {
           MethodInfo createCommand = dynUpdate.
-          GetMethod("CreateCommand", flags);
-          var mParams = new[] { updTranslator, new Dictionary<int, object>() };
-          dbCommands.Add((DbCommand)createCommand.Invoke(obj, mParams));
+            GetMethod("CreateCommand", flags);
+          var mParams = new[] {updTranslator, new Dictionary<int, object>()};
+          dbCommands.Add((DbCommand) createCommand.Invoke(obj, mParams));
         }
         else
         {
@@ -77,7 +77,8 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel
 
         foreach (DbParameter param in command.Parameters)
         {
-          traceString.AppendFormat("declare {0} {1} set {0} = '{2}'", param.ParameterName, GetSqlDbType(param), param.Value);
+          traceString.AppendFormat("declare {0} {1} set {0} = '{2}'", param.ParameterName, GetSqlDbType(param),
+                                   param.Value);
           traceString.AppendLine();
         }
         traceString.AppendLine();

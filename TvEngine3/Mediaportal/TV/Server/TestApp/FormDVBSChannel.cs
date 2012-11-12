@@ -48,20 +48,25 @@ namespace Mediaportal.TV.Server.TestApp
       }
       set
       {
-        _channel = (DVBSChannel)value;
+        _channel = (DVBSChannel) value;
         textboxFreq.Text = _channel.Frequency.ToString();
         textBoxONID.Text = _channel.NetworkId.ToString();
         textBoxTSID.Text = _channel.TransportId.ToString();
         textBoxSID.Text = _channel.ServiceId.ToString();
         textBoxSymbolRate.Text = _channel.SymbolRate.ToString();
         textBoxSwitch.Text = _channel.SwitchingFrequency.ToString();
-        comboBoxDisEqc.SelectedIndex = (int)_channel.DisEqc;
+        comboBoxDisEqc.SelectedIndex = (int) _channel.DisEqc;
         comboBoxPol.SelectedIndex = _channel.Polarisation == Polarisation.LinearH ? 0 : 1;
       }
     }
 
-    private void comboBox1_SelectedIndexChanged(object sender, EventArgs e) {}
-    private void textBox1_TextChanged(object sender, EventArgs e) {}
+    private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
+    {
+    }
+
+    private void textBox1_TextChanged(object sender, EventArgs e)
+    {
+    }
 
     private void buttonOK_Click(object sender, EventArgs e)
     {
@@ -71,7 +76,7 @@ namespace Mediaportal.TV.Server.TestApp
       _channel.ServiceId = Int32.Parse(textBoxSID.Text);
       _channel.SymbolRate = Int32.Parse(textBoxSymbolRate.Text);
       _channel.SwitchingFrequency = Int32.Parse(textBoxSwitch.Text);
-      _channel.DisEqc = (DisEqcType)comboBoxDisEqc.SelectedIndex;
+      _channel.DisEqc = (DisEqcType) comboBoxDisEqc.SelectedIndex;
       _channel.Polarisation = comboBoxPol.SelectedIndex == 0 ? Polarisation.LinearH : Polarisation.LinearV;
 
       Close();

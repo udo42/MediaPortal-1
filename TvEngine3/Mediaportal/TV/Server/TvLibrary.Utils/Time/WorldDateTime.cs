@@ -152,7 +152,9 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
     /// </summary>
     /// <param name="dateTimeGmt">The date time GMT.</param>
     public WorldDateTime(string dateTimeGmt)
-      : this(dateTimeGmt, true) {}
+      : this(dateTimeGmt, true)
+    {
+    }
 
     #endregion
 
@@ -329,14 +331,14 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
     {
       TimeSpan ts = DateTime.Subtract(value);
 
-      return (long)ts.TotalDays;
+      return (long) ts.TotalDays;
     }
 
     public long SecondsSince(DateTime value)
     {
       TimeSpan ts = DateTime.Subtract(value);
 
-      return (long)ts.TotalSeconds;
+      return (long) ts.TotalSeconds;
     }
 
     public long ToEpochTime()
@@ -349,7 +351,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
 
       //long epochtime = ((((((ts.Days * 24) + ts.Hours) * 60) + ts.Minutes) * 60) + ts.Seconds);
 
-      return (long)ts.TotalSeconds;
+      return (long) ts.TotalSeconds;
     }
 
     public long ToEpochDate()
@@ -414,7 +416,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
       _second = 0;
       if (ldatetime > 10000000000000)
       {
-        _second = (int)(ldatetime % 100L);
+        _second = (int) (ldatetime%100L);
         ldatetime /= 100L;
         if (_second < 0 || _second > 59)
         {
@@ -422,15 +424,15 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
         }
       }
 
-      _minute = (int)(ldatetime % 100L);
+      _minute = (int) (ldatetime%100L);
       ldatetime /= 100L;
-      _hour = (int)(ldatetime % 100L);
+      _hour = (int) (ldatetime%100L);
       ldatetime /= 100L;
-      _day = (int)(ldatetime % 100L);
+      _day = (int) (ldatetime%100L);
       ldatetime /= 100L;
-      _month = (int)(ldatetime % 100L);
+      _month = (int) (ldatetime%100L);
       ldatetime /= 100L;
-      _year = (int)ldatetime;
+      _year = (int) ldatetime;
 
       if (_day < 0 || _day > 31)
       {
@@ -488,9 +490,9 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
         try
         {
           int iOff = Int32.Parse(strOff);
-          int mintue = (iOff % 100);
+          int mintue = (iOff%100);
           iOff /= 100;
-          int hour = (iOff % 100);
+          int hour = (iOff%100);
           var tsOff = new TimeSpan(hour, mintue, 0);
           if (strTimeZone[0] == '-')
           {
@@ -501,7 +503,9 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
             ts = tsOff;
           }
         }
-        catch (Exception) {}
+        catch (Exception)
+        {
+        }
       }
       return ts;
     }
@@ -558,7 +562,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Time
     /// <exception cref="T:System.ArgumentException">obj is not the same type as this instance. </exception>
     public int CompareTo(object obj)
     {
-      var compareObj = (WorldDateTime)obj;
+      var compareObj = (WorldDateTime) obj;
       return (DateTime.CompareTo(compareObj.DateTime));
     }
 

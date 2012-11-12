@@ -34,7 +34,6 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 
     private MediaTypeEnum _mediaType = MediaTypeEnum.TV;
 
-   
 
     public GroupNameForm()
     {
@@ -84,7 +83,8 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 
     private void GetGroupNames()
     {
-      IList<ChannelGroup> groups = ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllChannelGroupsByMediaType(_mediaType);
+      IList<ChannelGroup> groups =
+        ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllChannelGroupsByMediaType(_mediaType);
       _groupNames = new List<string>();
       foreach (ChannelGroup group in groups)
       {

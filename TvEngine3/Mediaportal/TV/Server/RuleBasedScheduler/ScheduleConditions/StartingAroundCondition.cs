@@ -38,7 +38,7 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
     {
       if (_aroundTime.HasValue && _deviationMins.HasValue)
       {
-        DateTime from = _aroundTime.GetValueOrDefault().AddMinutes(-1 * _deviationMins.GetValueOrDefault());
+        DateTime from = _aroundTime.GetValueOrDefault().AddMinutes(-1*_deviationMins.GetValueOrDefault());
         DateTime to = _aroundTime.GetValueOrDefault().AddMinutes(_deviationMins.GetValueOrDefault());
         return baseQuery.Where(program => (program.StartTime >= from && program.StartTime <= to));
       }

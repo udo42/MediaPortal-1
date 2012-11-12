@@ -9,7 +9,11 @@ using Mediaportal.TV.Server.TVDatabase.EntityModel.Specification;
 
 namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Interfaces
 {
-  public enum SortOrder { Ascending, Descending }
+  public enum SortOrder
+  {
+    Ascending,
+    Descending
+  }
 
   public interface IRepository<T> : IDisposable where T : ObjectContext, IDisposable
   {
@@ -127,7 +131,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Interfaces
     /// <param name="entity">The entity.</param>
     void Update<TEntity>(TEntity entity) where TEntity : class;
 
-    void UpdateList<TEntity>(IEnumerable<TEntity> entities) where TEntity : class;    
+    void UpdateList<TEntity>(IEnumerable<TEntity> entities) where TEntity : class;
 
     /// <summary>
     /// Finds entities based on provided criteria.
@@ -177,7 +181,8 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Interfaces
     /// <param name="pageSize">Size of the page.</param>
     /// <param name="sortOrder">The sort order.</param>
     /// <returns></returns>
-    IQueryable<TEntity> Get<TEntity>(Expression<Func<TEntity, string>> orderBy, int pageIndex, int pageSize, SortOrder sortOrder = SortOrder.Ascending) where TEntity : class;
+    IQueryable<TEntity> Get<TEntity>(Expression<Func<TEntity, string>> orderBy, int pageIndex, int pageSize,
+                                     SortOrder sortOrder = SortOrder.Ascending) where TEntity : class;
 
     /// <summary>
     /// Gets a collection of entity base on criteria with paging support
@@ -189,7 +194,9 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Interfaces
     /// <param name="pageSize">Size of the page.</param>
     /// <param name="sortOrder">The sort order.</param>
     /// <returns></returns>
-    IQueryable<TEntity> Get<TEntity>(Expression<Func<TEntity, bool>> criteria, Expression<Func<TEntity, string>> orderBy, int pageIndex, int pageSize, SortOrder sortOrder = SortOrder.Ascending) where TEntity : class;
+    IQueryable<TEntity> Get<TEntity>(Expression<Func<TEntity, bool>> criteria, Expression<Func<TEntity, string>> orderBy,
+                                     int pageIndex, int pageSize, SortOrder sortOrder = SortOrder.Ascending)
+      where TEntity : class;
 
     /// <summary>
     /// Gets entities which satify specification
@@ -201,7 +208,9 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Interfaces
     /// <param name="pageSize">Size of the page.</param>
     /// <param name="sortOrder">The sort order.</param>
     /// <returns></returns>
-    IQueryable<TEntity> Get<TEntity>(ISpecification<TEntity> criteria, Expression<Func<TEntity, string>> orderBy, int pageIndex, int pageSize, SortOrder sortOrder = SortOrder.Ascending) where TEntity : class;
+    IQueryable<TEntity> Get<TEntity>(ISpecification<TEntity> criteria, Expression<Func<TEntity, string>> orderBy,
+                                     int pageIndex, int pageSize, SortOrder sortOrder = SortOrder.Ascending)
+      where TEntity : class;
 
     /// <summary>
     /// Counts the specified entities.
@@ -230,12 +239,20 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Interfaces
     void DeleteList<TEntity>(IList<TEntity> entities) where TEntity : class;
 
     Expression<Func<TElement, bool>> BuildContainsExpression<TElement, TValue>(
-    Expression<Func<TElement, TValue>> valueSelector, IEnumerable<TValue> values);
+      Expression<Func<TElement, TValue>> valueSelector, IEnumerable<TValue> values);
 
-    void ApplyChanges<TEntity>(ObjectSet<TEntity> objectSet, TEntity entity) where TEntity : class, IObjectWithChangeTracker;
+    void ApplyChanges<TEntity>(ObjectSet<TEntity> objectSet, TEntity entity)
+      where TEntity : class, IObjectWithChangeTracker;
+
     void ApplyChanges<TEntity>(string entitySetName, TEntity entity) where TEntity : class, IObjectWithChangeTracker;
-    void ApplyChanges<TEntity>(ObjectSet<TEntity> entitySetName, IEnumerable<TEntity> entities) where TEntity : class, IObjectWithChangeTracker;
-    void AttachEntityIfChangeTrackingDisabled<TEntity>(ObjectSet<TEntity> objectSet, TEntity entity) where TEntity : class, IObjectWithChangeTracker;
-    void AttachEntityIfChangeTrackingDisabled<TEntity>(ObjectSet<TEntity> objectSet, IEnumerable<TEntity> entities) where TEntity : class, IObjectWithChangeTracker;
-  }    
+
+    void ApplyChanges<TEntity>(ObjectSet<TEntity> entitySetName, IEnumerable<TEntity> entities)
+      where TEntity : class, IObjectWithChangeTracker;
+
+    void AttachEntityIfChangeTrackingDisabled<TEntity>(ObjectSet<TEntity> objectSet, TEntity entity)
+      where TEntity : class, IObjectWithChangeTracker;
+
+    void AttachEntityIfChangeTrackingDisabled<TEntity>(ObjectSet<TEntity> objectSet, IEnumerable<TEntity> entities)
+      where TEntity : class, IObjectWithChangeTracker;
+  }
 }

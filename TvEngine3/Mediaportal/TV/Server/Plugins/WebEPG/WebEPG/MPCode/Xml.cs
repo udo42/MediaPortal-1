@@ -28,7 +28,6 @@ namespace WebEPG.MPCode
 {
   public class Xml : IDisposable
   {
- 
     // Fields
     //private static string		_rootName = "profile";
     //private static Encoding _encoding = Encoding.UTF8;
@@ -44,7 +43,9 @@ namespace WebEPG.MPCode
 
     /// <summary>
     ///   Initializes a new instance of the Xml class by setting the <see cref="Profile.Name" /> to <see cref="Profile.DefaultName" />. </summary>
-    public Xml() {}
+    public Xml()
+    {
+    }
 
     /// <summary>
     ///   Initializes a new instance of the Xml class by setting the <see cref="Profile.Name" /> to the given file name. </summary>
@@ -178,13 +179,15 @@ namespace WebEPG.MPCode
               File.Delete(_strFileName + ".bak");
               File.Move(_strFileName, _strFileName + ".bak");
             }
-            catch (Exception) {}
+            catch (Exception)
+            {
+            }
 
             using (var stream = new StreamWriter(_strFileName, false))
             {
               _doc.Save(stream);
               _doc = null;
-              stream.Flush();              
+              stream.Flush();
             }
             _bChanged = false;
           }
@@ -213,7 +216,7 @@ namespace WebEPG.MPCode
         // If the file does not exist, use the writer to quickly create it
         if (!File.Exists(_strFileName))
         {
-          using (var writer = new XmlTextWriter(_strFileName, _encoding)) 
+          using (var writer = new XmlTextWriter(_strFileName, _encoding))
           {
             writer.Formatting = Formatting.Indented;
 
@@ -230,7 +233,7 @@ namespace WebEPG.MPCode
             }
             writer.WriteEndElement();
             writer.WriteEndElement();
-            writer.WriteEndElement();            
+            writer.WriteEndElement();
           }
           _doc = null;
           return;
@@ -279,7 +282,7 @@ namespace WebEPG.MPCode
 
     public string GetValueAsString(string section, string entry, string strDefault)
     {
-      var strValue = (string)GetValue(section, entry);
+      var strValue = (string) GetValue(section, entry);
       if (strValue == null)
       {
         return strDefault;
@@ -293,7 +296,7 @@ namespace WebEPG.MPCode
 
     public bool GetValueAsBool(string section, string entry, bool bDefault)
     {
-      var strValue = (string)GetValue(section, entry);
+      var strValue = (string) GetValue(section, entry);
       if (strValue == null)
       {
         return bDefault;
@@ -311,7 +314,7 @@ namespace WebEPG.MPCode
 
     public int GetValueAsInt(string section, string entry, int iDefault)
     {
-      var strValue = (string)GetValue(section, entry);
+      var strValue = (string) GetValue(section, entry);
       if (strValue == null)
       {
         return iDefault;
@@ -325,13 +328,15 @@ namespace WebEPG.MPCode
         int iRet = Int32.Parse(strValue);
         return iRet;
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       return iDefault;
     }
 
     public float GetValueAsFloat(string section, string entry, float fDefault)
     {
-      var strValue = (string)GetValue(section, entry);
+      var strValue = (string) GetValue(section, entry);
       if (strValue == null)
       {
         return fDefault;
@@ -342,10 +347,12 @@ namespace WebEPG.MPCode
       }
       try
       {
-        var fRet = (float)Double.Parse(strValue);
+        var fRet = (float) Double.Parse(strValue);
         return fRet;
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       return fDefault;
     }
 

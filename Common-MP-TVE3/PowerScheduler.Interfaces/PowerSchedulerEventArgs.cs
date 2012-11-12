@@ -38,31 +38,38 @@ namespace TvEngine.PowerScheduler.Interfaces
     /// Sent when PowerScheduler is started
     /// </summary>
     Started,
+
     /// <summary>
     /// Sent when PowerScheduler is stopped
     /// </summary>
     Stopped,
+
     /// <summary>
     /// Sent when Powerscheduler settings have changed
     /// </summary>
     SettingsChanged,
+
     /// <summary>
     /// Sent when PowerScheduler detects the system state changed from idle to busy
     /// </summary>
     SystemBusy,
+
     /// <summary>
     /// Sent when PowerScheduler detects the system state changed from busy to idle
     /// </summary>
     SystemIdle,
+
     /// <summary>
     /// Sent when PowerScheduler is about to put the system into standby or when
     /// powerscheduler detects the system is put into standby
     /// </summary>
     EnteringStandby,
+
     /// <summary>
     /// Sent when PowerScheduler detects the system resumed from standby
     /// </summary>
     ResumedFromStandby,
+
     /// <summary>
     /// Sent when PowerScheduler's check interval is due again
     /// (so, sent every PowerSettings.CheckInterval seconds)
@@ -108,7 +115,7 @@ namespace TvEngine.PowerScheduler.Interfaces
       Type dataType = typeof (T);
       if (_dataType == dataType)
       {
-        return (T)_data;
+        return (T) _data;
       }
       return default(T);
     }

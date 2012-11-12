@@ -5,7 +5,7 @@ using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 
 namespace Mediaportal.TV.Server.TVLibrary.Services
-{  
+{
   public class ConflictService : IConflictService
   {
     #region IConflictService Members
@@ -29,6 +29,4 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     #endregion
   }
-
-  
 }

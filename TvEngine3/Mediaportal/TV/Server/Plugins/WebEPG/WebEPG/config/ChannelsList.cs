@@ -292,7 +292,7 @@ namespace WebEPG.config
       if (File.Exists(_strChannelsFile))
       {
         //this.LogDebug(LogType.Log, false, "WebEPG Config: Loading Existing channels.xml");
-        using (var xmlreader = new Xml(_strChannelsFile)) 
+        using (var xmlreader = new Xml(_strChannelsFile))
         {
           int channelCount = xmlreader.GetValueAsInt("ChannelInfo", "TotalChannels", 0);
 
@@ -328,9 +328,9 @@ namespace WebEPG.config
       try
       {
         var s = new XmlSerializer(typeof (GrabberConfigFile));
-        using (var r = new StreamReader(file.FullName)) 
+        using (var r = new StreamReader(file.FullName))
         {
-          grabber = (GrabberConfigFile)s.Deserialize(r);
+          grabber = (GrabberConfigFile) s.Deserialize(r);
         }
       }
       catch (InvalidOperationException)

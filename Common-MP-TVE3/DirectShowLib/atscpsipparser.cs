@@ -715,7 +715,6 @@ namespace DirectShowLib.BDA
       byte bIndex,
       [MarshalAs(UnmanagedType.LPArray, SizeConst = 3)] out byte[] LangCode
       );
-
   };
 
   #endregion

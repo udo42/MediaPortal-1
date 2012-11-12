@@ -34,7 +34,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public TvOverlay()
     {
-      GetID = (int)Window.WINDOW_TV_OVERLAY;
+      GetID = (int) Window.WINDOW_TV_OVERLAY;
     }
 
     public override bool SupportsDelayedLoad
@@ -105,7 +105,7 @@ namespace Mediaportal.TV.TvPlugin
     public override bool Init()
     {
       bool bResult = Load(GUIGraphicsContext.Skin + @"\tvOverlay.xml");
-      GetID = (int)Window.WINDOW_TV_OVERLAY;
+      GetID = (int) Window.WINDOW_TV_OVERLAY;
       GUILayerManager.RegisterLayer(this, GUILayerManager.LayerType.TvOverlay);
       return bResult;
     }

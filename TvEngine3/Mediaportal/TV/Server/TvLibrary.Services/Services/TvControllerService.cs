@@ -60,10 +60,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     /// <value>Returns the AssemblyVersion of tvservice.exe</value>    
     public string GetAssemblyVersion
     {
-      get
-      {
-        return Service.GetAssemblyVersion;
-      }
+      get { return Service.GetAssemblyVersion; }
     }
 
     ///<summary>
@@ -327,7 +324,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public bool IsRecording(int idChannel, int idCard)
     {
-      return Service.IsRecording(idChannel, idCard);      
+      return Service.IsRecording(idChannel, idCard);
     }
 
     /// <summary>
@@ -351,7 +348,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     /// <returns>
     /// 	<c>true</c> if a card is recording or timeshifting; otherwise, <c>false</c>.
     /// </returns>
-    public bool IsAnyCardRecordingOrTimeshifting(string userName, out bool isUserTS, out bool isAnyUserTS, out bool isRec)
+    public bool IsAnyCardRecordingOrTimeshifting(string userName, out bool isUserTS, out bool isAnyUserTS,
+                                                 out bool isRec)
     {
       return Service.IsAnyCardRecordingOrTimeshifting(userName, out isUserTS, out isAnyUserTS, out isRec);
     }
@@ -776,12 +774,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     /// <param name="position2"></param>
     /// <param name="bufferFile2"></param>
     /// <param name="recordingFile"></param>
-    public void CopyTimeShiftFile(long position1, string bufferFile1, long position2, string bufferFile2, string recordingFile)
+    public void CopyTimeShiftFile(long position1, string bufferFile1, long position2, string bufferFile2,
+                                  string recordingFile)
     {
       Service.CopyTimeShiftFile(position1, bufferFile1, position2, bufferFile2, recordingFile);
     }
 
-  
 
     /// <summary>
     /// Stops the card.
@@ -797,7 +795,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       return Service.ParkTimeShifting(userName, duration, idChannel, out user);
     }
 
-    public bool UnParkTimeShifting(string userName, double duration, int idChannel, out IUser user, out IVirtualCard card)
+    public bool UnParkTimeShifting(string userName, double duration, int idChannel, out IUser user,
+                                   out IVirtualCard card)
     {
       return Service.UnParkTimeShifting(userName, duration, idChannel, out user, out card);
     }
@@ -828,9 +827,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     /// <returns>
     /// TvResult indicating whether method succeeded
     /// </returns>        
-    public TvResult StartTimeShifting(string userName, int idChannel, int? kickCardId, out IVirtualCard card, out Dictionary<int, List<IUser>> kickableCards, bool forceCardId, out IUser user)
+    public TvResult StartTimeShifting(string userName, int idChannel, int? kickCardId, out IVirtualCard card,
+                                      out Dictionary<int, List<IUser>> kickableCards, bool forceCardId, out IUser user)
     {
-      return Service.StartTimeShifting(userName, idChannel, kickCardId, out card, out kickableCards, forceCardId, out user);
+      return Service.StartTimeShifting(userName, idChannel, kickCardId, out card, out kickableCards, forceCardId,
+                                       out user);
     }
 
     /// <summary>
@@ -847,9 +848,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     /// <returns>
     /// TvResult indicating whether method succeeded
     /// </returns>
-    public TvResult StartTimeShifting(string userName, int idChannel, int? kickCardId, out IVirtualCard card, out Dictionary<int, List<IUser>> kickableCards, out bool cardChanged, out double? parkedDuration, out IUser user)
+    public TvResult StartTimeShifting(string userName, int idChannel, int? kickCardId, out IVirtualCard card,
+                                      out Dictionary<int, List<IUser>> kickableCards, out bool cardChanged,
+                                      out double? parkedDuration, out IUser user)
     {
-      return Service.StartTimeShifting(userName, idChannel, kickCardId, out card, out kickableCards, out cardChanged, out parkedDuration, out user);
+      return Service.StartTimeShifting(userName, idChannel, kickCardId, out card, out kickableCards, out cardChanged,
+                                       out parkedDuration, out user);
     }
 
     /// <summary>
@@ -867,7 +871,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       return Service.StartTimeShifting(userName, idChannel, out card, out user);
     }
 
-    public TvResult StartTimeShifting(string userName, int userPriority, int idChannel, out IVirtualCard card, out IUser user)
+    public TvResult StartTimeShifting(string userName, int userPriority, int idChannel, out IVirtualCard card,
+                                      out IUser user)
     {
       return Service.StartTimeShifting(userName, userPriority, idChannel, out card, out user);
     }
@@ -1137,10 +1142,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       Service.GetStreamQualityCounters(userName, out totalTSpackets, out discontinuityCounter);
     }
 
-    public void RegisterUserForHeartbeatMonitoring (string username)
+    public void RegisterUserForHeartbeatMonitoring(string username)
     {
       Service.RegisterUserForHeartbeatMonitoring(username);
-    }    
+    }
 
     public void RegisterUserForCiMenu(string username)
     {

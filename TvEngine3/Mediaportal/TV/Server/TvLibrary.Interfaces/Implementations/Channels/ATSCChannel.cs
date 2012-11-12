@@ -28,22 +28,18 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
   /// <summary>
   /// class holding all tuning details for ATSC
   /// </summary>
-  [DataContract]  
+  [DataContract]
   public class ATSCChannel : DVBBaseChannel
   {
     #region variables
 
-    [DataMember]
-    private int _majorChannel;
+    [DataMember] private int _majorChannel;
 
-    [DataMember]
-    private int _minorChannel;
+    [DataMember] private int _minorChannel;
 
-    [DataMember]
-    private ModulationType _modulation = ModulationType.ModNotSet;
+    [DataMember] private ModulationType _modulation = ModulationType.ModNotSet;
 
-    [DataMember]
-    private int _physicalChannel;
+    [DataMember] private int _physicalChannel;
 
     #endregion
 

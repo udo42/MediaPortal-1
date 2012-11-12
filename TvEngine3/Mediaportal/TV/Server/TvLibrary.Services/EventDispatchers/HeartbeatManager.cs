@@ -11,8 +11,6 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
 {
   public class HeartbeatManager : EventDispatcher
   {
-  
-
     private const int HEARTBEAT_REQUEST_INTERVAL_SECS = 15;
     private const int HEARTBEAT_MAX_SECS_EXCEED_ALLOWED = 30;
 
@@ -24,7 +22,7 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
 
     ~HeartbeatManager()
     {
-      StopHeartbeatThreads();      
+      StopHeartbeatThreads();
     }
 
     private void UserDisconnectedFromService(string username)
@@ -38,20 +36,22 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
         }
       }
       //else
-     // {
+      // {
       //  this.LogInfo("HeartbeatManager: will not monitor parked user '{0}'", username);
-     // }
+      // }
     }
 
     private void SetupHeartbeatThreads()
-    {            
+    {
       StopHeartbeatThreads();
 
       _evtHeartbeatCtrl.Reset();
-      _requestHeartBeatThread = new Thread(RequestHeartBeatThread) { Name = "RequestHeartBeatThread", IsBackground = true };
+      _requestHeartBeatThread = new Thread(RequestHeartBeatThread)
+                                  {Name = "RequestHeartBeatThread", IsBackground = true};
       _requestHeartBeatThread.Start();
 
-      _heartBeatMonitorThread = new Thread(HeartBeatMonitorThread) { Name = "HeartBeatMonitorThread", IsBackground = true };
+      _heartBeatMonitorThread = new Thread(HeartBeatMonitorThread)
+                                  {Name = "HeartBeatMonitorThread", IsBackground = true};
       _heartBeatMonitorThread.Start();
     }
 
@@ -61,25 +61,29 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
       if (_requestHeartBeatThread != null && _requestHeartBeatThread.IsAlive)
       {
         try
-        {          
+        {
           _requestHeartBeatThread.Join();
         }
-        catch (Exception) { }
+        catch (Exception)
+        {
+        }
       }
-      
+
       if (_heartBeatMonitorThread != null && _heartBeatMonitorThread.IsAlive)
       {
         try
-        {          
+        {
           _heartBeatMonitorThread.Join();
         }
-        catch (Exception) { }
-      }      
+        catch (Exception)
+        {
+        }
+      }
     }
 
     private void HeartBeatMonitorThread()
     {
-      while (!_evtHeartbeatCtrl.WaitOne(HEARTBEAT_REQUEST_INTERVAL_SECS * 1000))
+      while (!_evtHeartbeatCtrl.WaitOne(HEARTBEAT_REQUEST_INTERVAL_SECS*1000))
       {
         try
         {
@@ -107,32 +111,35 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
               TimeSpan ts = lastSeen - now;
 
               // more than 30 seconds have elapsed since last heartbeat was received. lets kick the client
-              if (ts.TotalSeconds < (-1 * HEARTBEAT_MAX_SECS_EXCEED_ALLOWED))
+              if (ts.TotalSeconds < (-1*HEARTBEAT_MAX_SECS_EXCEED_ALLOWED))
               {
                 this.LogDebug("HeartbeatManager: idle user found: {0}", username);
-                IDictionary<int, ITvCardHandler> cards = ServiceManager.Instance.InternalControllerService.CardCollection;
+                IDictionary<int, ITvCardHandler> cards =
+                  ServiceManager.Instance.InternalControllerService.CardCollection;
                 foreach (ITvCardHandler card in cards.Values)
-                {                  
+                {
                   IDictionary<string, IUser> users = card.UserManagement.UsersCopy;
                   IUser tmpUser;
                   bool foundUser = users.TryGetValue(username, out tmpUser);
                   if (foundUser)
-                  {                    
+                  {
                     int timeshiftingChannelId = card.UserManagement.GetTimeshiftingChannelId(tmpUser.Name);
                     if (timeshiftingChannelId > 0)
                     {
                       this.LogDebug("Controller: Heartbeat Monitor - kicking idle user {0}", tmpUser.Name);
                       ServiceManager.Instance.InternalControllerService.StopTimeShifting(ref tmpUser,
-                                                                                       TvStoppedReason.HeartBeatTimeOut, timeshiftingChannelId);
+                                                                                         TvStoppedReason.
+                                                                                           HeartBeatTimeOut,
+                                                                                         timeshiftingChannelId);
                     }
-                    
+
                     lock (_disconnectedHeartbeatUsersLock)
                     {
                       if (_diconnectedHeartbeatUsers.ContainsKey(username))
                       {
                         _diconnectedHeartbeatUsers.Remove(username);
                       }
-                    }                    
+                    }
                     break;
                   }
                 }
@@ -151,7 +158,7 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
     private void RequestHeartBeatThread()
     {
       //#if !DEBUG      
-      while (!_evtHeartbeatCtrl.WaitOne(HEARTBEAT_REQUEST_INTERVAL_SECS * 1000))
+      while (!_evtHeartbeatCtrl.WaitOne(HEARTBEAT_REQUEST_INTERVAL_SECS*1000))
       {
         IList<string> updateUsers = new List<string>();
         try
@@ -162,10 +169,10 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
             if (EventService.CallbackRequestHeartbeat(heartbeatuser.Key))
             {
               updateUsers.Add(heartbeatuser.Key);
-            }            
-          }                    
+            }
+          }
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
           this.LogError("HeartbeatManager: RequestHeartBeatThread exception - {0}", ex);
         }
@@ -182,11 +189,11 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
     }
 
     #region public methods
-    
+
     public override void Start()
     {
       this.LogInfo("HeartbeatManager: start");
-      SetupHeartbeatThreads();      
+      SetupHeartbeatThreads();
       EventService.UserDisconnectedFromService += UserDisconnectedFromService;
     }
 

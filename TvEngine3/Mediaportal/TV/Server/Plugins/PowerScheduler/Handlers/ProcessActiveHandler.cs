@@ -68,7 +68,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
           if (ps == null)
             return;
           PowerSetting setting = ps.Settings.GetSetting("Processes");
-          
+
           string processString = SettingsManagement.GetSetting("PowerSchedulerProcesses").Value;
           var processes = new List<string>();
           foreach (string process in processString.Split(','))
@@ -127,7 +127,9 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       }
     }
 
-    public void UserShutdownNow() {}
+    public void UserShutdownNow()
+    {
+    }
 
     public string HandlerName
     {

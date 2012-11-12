@@ -9,9 +9,11 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
   public class CreditCondition : IScheduleCondition
   {
     private IList<ProgramCredit> _credits;
+
     public CreditCondition()
     {
     }
+
     public CreditCondition(IList<ProgramCredit> credits)
     {
       _credits = credits;
@@ -29,7 +31,7 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
     {
       return
         baseQuery.Where(
-          program =>  
+          program =>
           program.ProgramCredits != null &&
           program.ProgramCredits.Any(
             c =>

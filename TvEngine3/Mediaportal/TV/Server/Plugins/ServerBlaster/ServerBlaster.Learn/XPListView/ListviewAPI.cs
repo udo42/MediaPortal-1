@@ -422,7 +422,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
         apiItem.iItem = index;
         apiItem.iGroupId = groupID;
 
-        int ptrRetVal = (int)SendMessage(lst.Handle, LVM_SETITEM, 0, ref apiItem);
+        int ptrRetVal = (int) SendMessage(lst.Handle, LVM_SETITEM, 0, ref apiItem);
 
         return ptrRetVal;
       }
@@ -451,7 +451,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
         apiGroup.state = LVGS_NORMAL;
         apiGroup.cbSize = Marshal.SizeOf(typeof (LVGROUP));
 
-        int ptrRetVal = (int)SendMessage(lst.Handle, LVM_INSERTGROUP, -1, ref apiGroup);
+        int ptrRetVal = (int) SendMessage(lst.Handle, LVM_INSERTGROUP, -1, ref apiGroup);
         return ptrRetVal;
       }
       catch (Exception ex)
@@ -471,7 +471,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
         }
 
         int param = 0;
-        int ptrRetVal = (int)SendMessage(lst.Handle, LVM_REMOVEGROUP, index, ref param);
+        int ptrRetVal = (int) SendMessage(lst.Handle, LVM_REMOVEGROUP, index, ref param);
 
         return ptrRetVal;
       }
@@ -494,7 +494,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
         }
 
         int param = 0;
-        ptrRetVal = (int)SendMessage(lst.Handle, LVM_REMOVEALLGROUPS, 0, ref param);
+        ptrRetVal = (int) SendMessage(lst.Handle, LVM_REMOVEALLGROUPS, 0, ref param);
       }
       catch (Exception ex)
       {
@@ -515,7 +515,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
         }
 
         int param = lst.Items.Count - 1;
-        ptrRetVal = (int)SendMessage(lst.Handle, LVM_REDRAWITEMS, 0, ref param);
+        ptrRetVal = (int) SendMessage(lst.Handle, LVM_REDRAWITEMS, 0, ref param);
 
         if (update)
         {
@@ -545,7 +545,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
         for (int i = 0; i < lst.Items.Count - 1; i++)
         {
           int param = 0;
-          ptrRetVal = (int)SendMessage(lst.Handle, LVM_UPDATE, i, ref param);
+          ptrRetVal = (int) SendMessage(lst.Handle, LVM_UPDATE, i, ref param);
         }
       }
       catch (Exception ex)

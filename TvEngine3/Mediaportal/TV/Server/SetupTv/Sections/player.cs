@@ -43,18 +43,18 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       _form = form;
       this.LogDebug("play:{0}", fileName);
-      _graphBuilder = (IFilterGraph2)new FilterGraph();
+      _graphBuilder = (IFilterGraph2) new FilterGraph();
       _rotEntry = new DsROTEntry(_graphBuilder);
 
       var reader = new TsReader();
-      _tsReader = (IBaseFilter)reader;
+      _tsReader = (IBaseFilter) reader;
       this.LogInfo("TSReaderPlayer:add TsReader to graph");
       _graphBuilder.AddFilter(_tsReader, "TsReader");
 
       #region load file in TsReader
 
       this.LogDebug("load file in Ts");
-      var interfaceFile = (IFileSourceFilter)_tsReader;
+      var interfaceFile = (IFileSourceFilter) _tsReader;
       if (interfaceFile == null)
       {
         this.LogDebug("TSReaderPlayer:Failed to get IFileSourceFilter");
@@ -100,7 +100,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         _videoWin.put_Visible(OABool.True);
         _videoWin.put_Owner(form.Handle);
         _videoWin.put_WindowStyle(
-          (WindowStyle)((int)WindowStyle.Child + (int)WindowStyle.ClipSiblings + (int)WindowStyle.ClipChildren));
+          (WindowStyle) ((int) WindowStyle.Child + (int) WindowStyle.ClipSiblings + (int) WindowStyle.ClipChildren));
         _videoWin.put_MessageDrain(form.Handle);
 
         _videoWin.SetWindowPosition(form.ClientRectangle.X, form.ClientRectangle.Y, form.ClientRectangle.Width,
@@ -108,7 +108,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       }
 
       this.LogDebug("run graph");
-      _mediaCtrl = (IMediaControl)_graphBuilder;
+      _mediaCtrl = (IMediaControl) _graphBuilder;
       hr = _mediaCtrl.Run();
       this.LogDebug("TSReaderPlayer:running:{0:X}", hr);
 
@@ -162,7 +162,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     #region Nested type: TsReader
 
     [ComImport, Guid("b9559486-E1BB-45D3-A2A2-9A7AFE49B23F")]
-    protected class TsReader {}
+    protected class TsReader
+    {
+    }
 
     #endregion
   }

@@ -24,27 +24,27 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       SettingsManagement.SaveSetting(tagName, defaultValue);
     }
 
-    public void SaveValue (string tagName, int defaultValue)
+    public void SaveValue(string tagName, int defaultValue)
     {
       SettingsManagement.SaveValue(tagName, defaultValue);
     }
 
-    public void SaveValue (string tagName, double defaultValue)
+    public void SaveValue(string tagName, double defaultValue)
     {
       SettingsManagement.SaveValue(tagName, defaultValue);
     }
 
-    public void SaveValue (string tagName, bool defaultValue)
+    public void SaveValue(string tagName, bool defaultValue)
     {
       SettingsManagement.SaveValue(tagName, defaultValue);
     }
 
-    public void SaveValue (string tagName, string defaultValue)
+    public void SaveValue(string tagName, string defaultValue)
     {
       SettingsManagement.SaveValue(tagName, defaultValue);
     }
 
-    public void SaveValue (string tagName, DateTime defaultValue)
+    public void SaveValue(string tagName, DateTime defaultValue)
     {
       SettingsManagement.SaveValue(tagName, defaultValue);
     }
@@ -73,7 +73,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     {
       return SettingsManagement.GetValue(tagName, defaultValue);
     }
-
 
     #endregion
   }

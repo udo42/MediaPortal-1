@@ -42,7 +42,7 @@ namespace Mediaportal.TV.TvPlugin
       Title = 0,
       KeyWord,
       Genres,
-    } ;
+    };
 
     #endregion
 
@@ -64,7 +64,7 @@ namespace Mediaportal.TV.TvPlugin
     public TvNewScheduleSearch()
     {
       this.LogInfo("newsearch ctor");
-      GetID = (int)Window.WINDOW_TV_SEARCH;
+      GetID = (int) Window.WINDOW_TV_SEARCH;
     }
 
     public override bool IsTv
@@ -78,7 +78,9 @@ namespace Mediaportal.TV.TvPlugin
       set { _searchType = value; }
     }
 
-    ~TvNewScheduleSearch() {}
+    ~TvNewScheduleSearch()
+    {
+    }
 
     public override bool Init()
     {
@@ -127,7 +129,7 @@ namespace Mediaportal.TV.TvPlugin
       if (control == listResults)
       {
         var msg = new GUIMessage(GUIMessage.MessageType.GUI_MSG_ITEM_SELECTED, GetID, 0, listResults.GetID, 0, 0,
-                                        null);
+                                 null);
         OnMessage(msg);
         int iItem = msg.Param1;
         if (actionType == Action.ActionType.ACTION_SELECT_ITEM)
@@ -137,7 +139,7 @@ namespace Mediaportal.TV.TvPlugin
       }
 
       bool searchButtonClicked = false;
-      
+
       if (control == btnSearchTitle)
       {
         SearchFor = SearchType.Title;
@@ -173,7 +175,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private bool GetKeyboard(ref string strLine)
     {
-      var keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
+      var keyboard = (VirtualKeyboard) GUIWindowManager.GetWindow((int) Window.WINDOW_VIRTUAL_KEYBOARD);
       if (null == keyboard)
       {
         return false;
@@ -208,7 +210,7 @@ namespace Mediaportal.TV.TvPlugin
       TVProgramInfo.CurrentProgram = item.TVTag as Program;
       if (TVProgramInfo.CurrentProgram != null)
       {
-        GUIWindowManager.ActivateWindow((int)Window.WINDOW_TV_PROGRAM_INFO);
+        GUIWindowManager.ActivateWindow((int) Window.WINDOW_TV_PROGRAM_INFO);
       }
       return;
     }
@@ -235,17 +237,22 @@ namespace Mediaportal.TV.TvPlugin
       {
         case SearchType.Genres:
           StringComparisonEnum stringComparisonCategory = StringComparisonEnum.StartsWith;
-            stringComparisonCategory |= StringComparisonEnum.EndsWith;
-            listPrograms = ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByTitleAndCategoryAndMediaType(_searchKeyword, "",
-                                                                                      MediaTypeEnum.TV,
-                                                                                      stringComparisonCategory,
-                                                                                      StringComparisonEnum.StartsWith).ToList();          
+          stringComparisonCategory |= StringComparisonEnum.EndsWith;
+          listPrograms =
+            ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByTitleAndCategoryAndMediaType(_searchKeyword, "",
+                                                                                                 MediaTypeEnum.TV,
+                                                                                                 stringComparisonCategory,
+                                                                                                 StringComparisonEnum.
+                                                                                                   StartsWith).ToList();
           break;
         case SearchType.KeyWord:
-          listPrograms = ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByDescription("%" + _searchKeyword, stringComparison).ToList();
+          listPrograms =
+            ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByDescription("%" + _searchKeyword, stringComparison).
+              ToList();
           break;
         case SearchType.Title:
-          listPrograms = ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByTitle(_searchKeyword, stringComparison).ToList();          
+          listPrograms =
+            ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByTitle(_searchKeyword, stringComparison).ToList();
           break;
       }
       if (listPrograms == null)
@@ -262,7 +269,7 @@ namespace Mediaportal.TV.TvPlugin
         var item = new GUIListItem();
         item.Label = TVUtil.GetDisplayTitle(program);
         string logo = Utils.GetCoverArt(Thumbs.TVChannel, program.Channel.DisplayName);
-        if (string.IsNullOrEmpty(logo))                            
+        if (string.IsNullOrEmpty(logo))
         {
           logo = "defaultVideoBig.png";
         }

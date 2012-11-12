@@ -129,7 +129,7 @@ namespace Mediaportal.TV.Server.TVLibrary
       }
 
       #endregion
-    } ;
+    };
 
     #endregion
   }

@@ -97,7 +97,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
     /// List is sorted.
     /// </summary>
     /// <returns>list containg all free cards which can receive the channel</returns>
-    public List<CardDetail> GetFreeCardsForChannel(IDictionary<int, ITvCardHandler> cards, Channel dbChannel, IUser user, out TvResult result)
+    public List<CardDetail> GetFreeCardsForChannel(IDictionary<int, ITvCardHandler> cards, Channel dbChannel, IUser user,
+                                                   out TvResult result)
     {
       Stopwatch stopwatch = Stopwatch.StartNew();
       try
@@ -171,7 +172,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
     /// List is sorted.
     /// </summary>
     /// <returns>list containg all cards which can receive the channel</returns>
-    public List<CardDetail> GetAvailableCardsForChannel(IDictionary<int, ITvCardHandler> cards, Channel dbChannel, IUser user, out IDictionary<int, TvResult> cardsUnAvailable)
+    public List<CardDetail> GetAvailableCardsForChannel(IDictionary<int, ITvCardHandler> cards, Channel dbChannel,
+                                                        IUser user, out IDictionary<int, TvResult> cardsUnAvailable)
     {
       Stopwatch stopwatch = Stopwatch.StartNew();
       cardsUnAvailable = new Dictionary<int, TvResult>();
@@ -244,9 +246,10 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
             }
             int nrOfOtherUsers = NumberOfOtherUsersOnCurrentCard(cardHandler, user);
             long? channelTimeshiftingOnOtherMux;
-            IsChannelTimeshiftingOnOtherMux(cardHandler, dbChannel.IdChannel, tuningDetail, out channelTimeshiftingOnOtherMux);
+            IsChannelTimeshiftingOnOtherMux(cardHandler, dbChannel.IdChannel, tuningDetail,
+                                            out channelTimeshiftingOnOtherMux);
             var cardInfo = new CardDetail(cardId, cardHandler.DataBaseCard, tuningDetail, isSameTransponder,
-                                                 nrOfOtherUsers, channelTimeshiftingOnOtherMux);
+                                          nrOfOtherUsers, channelTimeshiftingOnOtherMux);
             cardsAvailable.Add(cardInfo);
           }
         }
@@ -288,7 +291,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
       return resultNoCards;
     }
 
-    public virtual bool IsChannelTimeshiftingOnOtherMux(ITvCardHandler card, int idChannel, IChannel tuningDetail, out long? otherFrequency)
+    public virtual bool IsChannelTimeshiftingOnOtherMux(ITvCardHandler card, int idChannel, IChannel tuningDetail,
+                                                        out long? otherFrequency)
     {
       otherFrequency = null;
       bool isChannelTimeshiftingOnOtherMux = false;
@@ -363,7 +367,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
       }
 
       //check if channel is mapped to this card and that the mapping is not for "Epg Only"
-      bool isChannelMappedToCard = CardAllocationCache.IsChannelMappedToCard(dbChannel.IdChannel, cardHandler.DataBaseCard.IdCard);
+      bool isChannelMappedToCard = CardAllocationCache.IsChannelMappedToCard(dbChannel.IdChannel,
+                                                                             cardHandler.DataBaseCard.IdCard);
       if (!isChannelMappedToCard)
       {
         if (LogEnabled)
@@ -375,7 +380,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
       return true;
     }
 
-    private static void AddCardUnAvailable(ref IDictionary<int, TvResult> cardsUnAvailable, int cardId, TvResult tvResult)
+    private static void AddCardUnAvailable(ref IDictionary<int, TvResult> cardsUnAvailable, int cardId,
+                                           TvResult tvResult)
     {
       if (!cardsUnAvailable.ContainsKey(cardId))
       {

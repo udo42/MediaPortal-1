@@ -55,8 +55,8 @@ namespace Mediaportal.TV.Server.SetupControls
       const int audioInputType = 0;
       bool isVcrSignal = false;
       const int symbolRate = 0;
-      const int modulation = (int)ModulationType.ModNotSet;
-      const int polarisation = (int)Polarisation.NotSet;
+      const int modulation = (int) ModulationType.ModNotSet;
+      const int polarisation = (int) Polarisation.NotSet;
       const int diseqc = 0;
       const int bandwidth = 8;
       const int pmtPid = -1;
@@ -70,44 +70,44 @@ namespace Mediaportal.TV.Server.SetupControls
       const int channelType = 0;
       const int idLnbType = 0;
       const int satIndex = -1;
-      var innerFecRate = (int)BinaryConvolutionCodeRate.RateNotSet;
-      var pilot = (int)Pilot.NotSet;
-      var rollOff = (int)RollOff.NotSet;
+      var innerFecRate = (int) BinaryConvolutionCodeRate.RateNotSet;
+      var pilot = (int) Pilot.NotSet;
+      var rollOff = (int) RollOff.NotSet;
       const string url = "";
       const int bitrate = 0;
 
       var initialTuningDetail = new TuningDetail
-      {
-        Name = channelName,
-        Provider = provider,
-        ChannelType = channelType,
-        ChannelNumber = channelNumber,
-        Frequency = channelFrequency,
-        CountryId = country,
-        NetworkId = networkId,
-        TransportId = transportId,
-        ServiceId = serviceId,
-        PmtPid = pmtPid,
-        FreeToAir = true,
-        Modulation = modulation,
-        Polarisation = polarisation,
-        Symbolrate = symbolRate,
-        DiSEqC = diseqc,
-        Bandwidth = bandwidth,
-        MajorChannel = majorChannel,
-        MinorChannel = minorChannel,
-        VideoSource = videoInputType,
-        AudioSource = audioInputType,
-        IsVCRSignal = false,
-        TuningSource = tunerSource,
-        SatIndex = satIndex,
-        InnerFecRate = innerFecRate,
-        Pilot = pilot,
-        RollOff = rollOff,
-        Url = url,
-        Bitrate = 0,
-        IdLnbType = idLnbType
-      };
+                                  {
+                                    Name = channelName,
+                                    Provider = provider,
+                                    ChannelType = channelType,
+                                    ChannelNumber = channelNumber,
+                                    Frequency = channelFrequency,
+                                    CountryId = country,
+                                    NetworkId = networkId,
+                                    TransportId = transportId,
+                                    ServiceId = serviceId,
+                                    PmtPid = pmtPid,
+                                    FreeToAir = true,
+                                    Modulation = modulation,
+                                    Polarisation = polarisation,
+                                    Symbolrate = symbolRate,
+                                    DiSEqC = diseqc,
+                                    Bandwidth = bandwidth,
+                                    MajorChannel = majorChannel,
+                                    MinorChannel = minorChannel,
+                                    VideoSource = videoInputType,
+                                    AudioSource = audioInputType,
+                                    IsVCRSignal = false,
+                                    TuningSource = tunerSource,
+                                    SatIndex = satIndex,
+                                    InnerFecRate = innerFecRate,
+                                    Pilot = pilot,
+                                    RollOff = rollOff,
+                                    Url = url,
+                                    Bitrate = 0,
+                                    IdLnbType = idLnbType
+                                  };
 
       return initialTuningDetail;
     }

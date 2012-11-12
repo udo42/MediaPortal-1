@@ -64,7 +64,9 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
 
     #region ctor
 
-    public DatabaseEPGDataSink() {}
+    public DatabaseEPGDataSink()
+    {
+    }
 
     public DatabaseEPGDataSink(bool deleteExisting)
     {
@@ -94,7 +96,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
       {
         Program prog = _channelPrograms[i];
         var windowEnd = new DateTime(prog.StartTime.Year, prog.StartTime.Month, prog.StartTime.Day,
-                                          _timeWindow.End.Hour, _timeWindow.End.Minute, 0);
+                                     _timeWindow.End.Hour, _timeWindow.End.Minute, 0);
         if (windowEnd < prog.StartTime)
         {
           windowEnd = windowEnd.AddDays(1);
@@ -182,7 +184,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
       {
         try
         {
-          IList<Channel> dbChannels = ChannelManagement.GetChannelsByName(name);          
+          IList<Channel> dbChannels = ChannelManagement.GetChannelsByName(name);
           if (dbChannels.Count > 0)
           {
             _channels.Add(channelKey, dbChannels);
@@ -254,7 +256,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
         _channelPrograms.RemoveOverlappingPrograms(dbPrograms);
       }
       foreach (Channel chan in _currentChannels)
-      {        
+      {
         ProgramManagement.DeleteOldPrograms(chan.IdChannel);
       }
 

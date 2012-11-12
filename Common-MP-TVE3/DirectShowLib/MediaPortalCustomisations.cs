@@ -32,7 +32,7 @@ using System.Text;
 /// and merging issues when it comes to upgrading the DirectShow.NET library.
 /// </summary>
 
-  #region AXExtend.cs
+#region AXExtend.cs
 
 namespace DirectShowLib
 {
@@ -43,46 +43,26 @@ namespace DirectShowLib
   public enum AnalogVideoStandard
   {
     None = 0x00000000,
-    [Description("NTSC M")]
-    NTSC_M = 0x00000001,
-    [Description("NTSC J")]
-    NTSC_M_J = 0x00000002,
-    [Description("NTSC 4.43")]
-    NTSC_433 = 0x00000004,
-    [Description("PAL B")]
-    PAL_B = 0x00000010,
-    [Description("PAL D")]
-    PAL_D = 0x00000020,
-    [Description("PAL G")]
-    PAL_G = 0x00000040,
-    [Description("PAL H")]
-    PAL_H = 0x00000080,
-    [Description("PAL I")]
-    PAL_I = 0x00000100,
-    [Description("PAL M")]
-    PAL_M = 0x00000200,
-    [Description("PAL N")]
-    PAL_N = 0x00000400,
-    [Description("PAL 60")]
-    PAL_60 = 0x00000800,
-    [Description("SECAM B")]
-    SECAM_B = 0x00001000,
-    [Description("SECAM D")]
-    SECAM_D = 0x00002000,
-    [Description("SECAM G")]
-    SECAM_G = 0x00004000,
-    [Description("SECAM H")]
-    SECAM_H = 0x00008000,
-    [Description("SECAM K")]
-    SECAM_K = 0x00010000,
-    [Description("SECAM K1")]
-    SECAM_K1 = 0x00020000,
-    [Description("SECAM L")]
-    SECAM_L = 0x00040000,
-    [Description("SECAM L1")]
-    SECAM_L1 = 0x00080000,
-    [Description("PAL N Combo")]
-    PAL_N_COMBO = 0x00100000,
+    [Description("NTSC M")] NTSC_M = 0x00000001,
+    [Description("NTSC J")] NTSC_M_J = 0x00000002,
+    [Description("NTSC 4.43")] NTSC_433 = 0x00000004,
+    [Description("PAL B")] PAL_B = 0x00000010,
+    [Description("PAL D")] PAL_D = 0x00000020,
+    [Description("PAL G")] PAL_G = 0x00000040,
+    [Description("PAL H")] PAL_H = 0x00000080,
+    [Description("PAL I")] PAL_I = 0x00000100,
+    [Description("PAL M")] PAL_M = 0x00000200,
+    [Description("PAL N")] PAL_N = 0x00000400,
+    [Description("PAL 60")] PAL_60 = 0x00000800,
+    [Description("SECAM B")] SECAM_B = 0x00001000,
+    [Description("SECAM D")] SECAM_D = 0x00002000,
+    [Description("SECAM G")] SECAM_G = 0x00004000,
+    [Description("SECAM H")] SECAM_H = 0x00008000,
+    [Description("SECAM K")] SECAM_K = 0x00010000,
+    [Description("SECAM K1")] SECAM_K1 = 0x00020000,
+    [Description("SECAM L")] SECAM_L = 0x00040000,
+    [Description("SECAM L1")] SECAM_L1 = 0x00080000,
+    [Description("PAL N Combo")] PAL_N_COMBO = 0x00100000,
 
     NTSCMask = 0x00000007,
     PALMask = 0x00100FF0,
@@ -92,7 +72,9 @@ namespace DirectShowLib
   [ComImport, SuppressUnmanagedCodeSecurity,
    Guid("70423839-6ACC-4b23-B079-21DBF08156A5"),
    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-  [Obsolete("This interface is deprecated and is maintained for backward compatibility only. New applications and drivers should use the ICodecAPI interface.")]
+  [Obsolete(
+    "This interface is deprecated and is maintained for backward compatibility only. New applications and drivers should use the ICodecAPI interface."
+    )]
   public interface IEncoderAPI
   {
     [PreserveSig]
@@ -131,7 +113,7 @@ namespace DirectShowLib
     [PreserveSig]
     int SetValue(
       [In, MarshalAs(UnmanagedType.LPStruct)] Guid Api,
-      [In] ref object Value     // *** Changed to ref. ***
+      [In] ref object Value // *** Changed to ref. ***
       );
   }
 
@@ -151,43 +133,43 @@ namespace DirectShowLib
     [PreserveSig]
     new int GetParameterRange(
       [In, MarshalAs(UnmanagedType.LPStruct)] Guid Api,
-        [Out] out object ValueMin,
-        [Out] out object ValueMax,
-        [Out] out object SteppingDelta
-        );
+      [Out] out object ValueMin,
+      [Out] out object ValueMax,
+      [Out] out object SteppingDelta
+      );
 
     [PreserveSig]
     new int GetParameterValues(
       [In, MarshalAs(UnmanagedType.LPStruct)] Guid Api,
-        [Out] out object[] Values,
-        [Out] out int ValuesCount
-        );
+      [Out] out object[] Values,
+      [Out] out int ValuesCount
+      );
 
     [PreserveSig]
     new int GetDefaultValue(
       [In, MarshalAs(UnmanagedType.LPStruct)] Guid Api,
-        [Out] out object Value
-        );
+      [Out] out object Value
+      );
 
     [PreserveSig]
     new int GetValue(
       [In, MarshalAs(UnmanagedType.LPStruct)] Guid Api,
-        [Out] out object Value
-        );
+      [Out] out object Value
+      );
 
     [PreserveSig]
     new int SetValue(
       [In, MarshalAs(UnmanagedType.LPStruct)] Guid Api,
-      [In] ref object Value     // *** Changed to ref. ***
-        );
+      [In] ref object Value // *** Changed to ref. ***
+      );
 
     #endregion
   }
 }
 
-  #endregion
+#endregion
 
-  #region BDAIface.cs
+#region BDAIface.cs
 
 namespace DirectShowLib.BDA
 {
@@ -200,7 +182,7 @@ namespace DirectShowLib.BDA
     int Next(
       [In] int cRequest,
       [Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0, ArraySubType = UnmanagedType.Struct)] PIDMap[] pPIDMap,
-      [Out] out int pcReceived  // *** Changed from IntPtr to int. ***
+      [Out] out int pcReceived // *** Changed from IntPtr to int. ***
       );
 
     [PreserveSig]
@@ -237,10 +219,14 @@ namespace DirectShowLib.BDA
     int get_Polarity([Out] out Polarisation pPolarity);
 
     [PreserveSig]
-    int put_Range([In] ulong ulRange);        // *** Changed from int to ulong. ***
+    int put_Range([In] ulong ulRange);
+
+    // *** Changed from int to ulong. ***
 
     [PreserveSig]
-    int get_Range([Out] out ulong pulRange);  // *** Changed from int to ulong. ***
+    int get_Range([Out] out ulong pulRange);
+
+    // *** Changed from int to ulong. ***
 
     [PreserveSig]
     int put_Bandwidth([In] int ulBandwidth);
@@ -256,9 +242,9 @@ namespace DirectShowLib.BDA
   }
 }
 
-  #endregion
+#endregion
 
-  #region BDATypes.cs
+#region BDATypes.cs
 
 namespace DirectShowLib.BDA
 {
@@ -267,16 +253,11 @@ namespace DirectShowLib.BDA
   /// </summary>
   public enum RollOff
   {
-    [Description("Not Set")]
-    NotSet = -1,
-    [Description("Not Defined")]
-    NotDefined = 0,
-    [Description("0.20")]
-    Twenty = 1,
-    [Description("0.25")]
-    TwentyFive,
-    [Description("0.35")]
-    ThirtyFive
+    [Description("Not Set")] NotSet = -1,
+    [Description("Not Defined")] NotDefined = 0,
+    [Description("0.20")] Twenty = 1,
+    [Description("0.25")] TwentyFive,
+    [Description("0.35")] ThirtyFive
   }
 
   /// <summary>
@@ -284,10 +265,8 @@ namespace DirectShowLib.BDA
   /// </summary>
   public enum Pilot
   {
-    [Description("Not Set")]
-    NotSet = -1,
-    [Description("Not Defined")]
-    NotDefined = 0,
+    [Description("Not Set")] NotSet = -1,
+    [Description("Not Defined")] NotDefined = 0,
     Off = 1,
     On
   }
@@ -297,38 +276,22 @@ namespace DirectShowLib.BDA
   /// </summary>
   public enum BinaryConvolutionCodeRate
   {
-    [Description("Not Set")]
-    RateNotSet = -1,
-    [Description("Not Defined")]
-    RateNotDefined = 0,
-    [Description("1/2")]
-    Rate1_2 = 1,
-    [Description("2/3")]
-    Rate2_3,
-    [Description("3/4")]
-    Rate3_4,
-    [Description("3/5")]
-    Rate3_5,
-    [Description("4/5")]
-    Rate4_5,
-    [Description("5/6")]
-    Rate5_6,
-    [Description("5/11")]
-    Rate5_11,
-    [Description("7/8")]
-    Rate7_8,
-    [Description("1/4")]
-    Rate1_4,
-    [Description("1/3")]
-    Rate1_3,
-    [Description("2/5")]
-    Rate2_5,
-    [Description("6/7")]
-    Rate6_7,
-    [Description("8/9")]
-    Rate8_9,
-    [Description("9/10")]
-    Rate9_10
+    [Description("Not Set")] RateNotSet = -1,
+    [Description("Not Defined")] RateNotDefined = 0,
+    [Description("1/2")] Rate1_2 = 1,
+    [Description("2/3")] Rate2_3,
+    [Description("3/4")] Rate3_4,
+    [Description("3/5")] Rate3_5,
+    [Description("4/5")] Rate4_5,
+    [Description("5/6")] Rate5_6,
+    [Description("5/11")] Rate5_11,
+    [Description("7/8")] Rate7_8,
+    [Description("1/4")] Rate1_4,
+    [Description("1/3")] Rate1_3,
+    [Description("2/5")] Rate2_5,
+    [Description("6/7")] Rate6_7,
+    [Description("8/9")] Rate8_9,
+    [Description("9/10")] Rate9_10
   }
 
   /// <summary>
@@ -336,24 +299,18 @@ namespace DirectShowLib.BDA
   /// </summary>
   public enum Polarisation
   {
-    [Description("Not Set")]
-    NotSet = -1,
-    [Description("Not Defined")]
-    NotDefined = 0,
-    [Description("Linear Horizontal")]
-    LinearH = 1,
-    [Description("Linear Vertical")]
-    LinearV,
-    [Description("Circular Left")]
-    CircularL,
-    [Description("Circular Right")]
-    CircularR
+    [Description("Not Set")] NotSet = -1,
+    [Description("Not Defined")] NotDefined = 0,
+    [Description("Linear Horizontal")] LinearH = 1,
+    [Description("Linear Vertical")] LinearV,
+    [Description("Circular Left")] CircularL,
+    [Description("Circular Right")] CircularR
   }
 }
 
-  #endregion
+#endregion
 
-  #region Control.cs
+#region Control.cs
 
 namespace DirectShowLib
 {
@@ -365,13 +322,15 @@ namespace DirectShowLib
     #region IMediaEvent Methods
 
     [PreserveSig]
-    new int GetEventHandle([Out] out IntPtr hEvent); // HEVENT
+    new int GetEventHandle([Out] out IntPtr hEvent);
+
+    // HEVENT
 
     [PreserveSig]
     int GetEvent(
       [Out] out EventCode lEventCode,
-      [Out] out int lParam1,  // *** Changed from IntPtr to int. ***
-      [Out] out int lParam2,  // *** Changed from IntPtr to int. ***
+      [Out] out int lParam1, // *** Changed from IntPtr to int. ***
+      [Out] out int lParam2, // *** Changed from IntPtr to int. ***
       [In] int msTimeout
       );
 
@@ -390,8 +349,8 @@ namespace DirectShowLib
     [PreserveSig]
     int FreeEventParams(
       [In] EventCode lEvCode,
-      [In] int lParam1,       // *** Changed from IntPtr to int. ***
-      [In] int lParam2        // *** Changed from IntPtr to int. ***
+      [In] int lParam1, // *** Changed from IntPtr to int. ***
+      [In] int lParam2 // *** Changed from IntPtr to int. ***
       );
 
     #endregion
@@ -411,25 +370,25 @@ namespace DirectShowLib
   }
 }
 
-  #endregion
+#endregion
 
-  #region DsUtils.cs
+#region DsUtils.cs
 
-  // 1. The definition for DsUtils.ReleaseComObject() was added.
-  // 2. References to Marshal.ReleaseComObject() were replaced with ReleaseComObject().
-  // 3. The while loops in DsFindPin methods have been modified as follows:
-  //
-  //  ...
-  //  int lFetched;
-  //  ...
-  //    while ((ppEnum.Next(1, pPins, out lFetched) >= 0) && (lFetched == 1))
-  //  ...
-  //
-  //  Note the replacement of IntPtr.Zero with lFetched.
+// 1. The definition for DsUtils.ReleaseComObject() was added.
+// 2. References to Marshal.ReleaseComObject() were replaced with ReleaseComObject().
+// 3. The while loops in DsFindPin methods have been modified as follows:
+//
+//  ...
+//  int lFetched;
+//  ...
+//    while ((ppEnum.Next(1, pPins, out lFetched) >= 0) && (lFetched == 1))
+//  ...
+//
+//  Note the replacement of IntPtr.Zero with lFetched.
 
-  #endregion
+#endregion
 
-  #region DVDIf.cs
+#region DVDIf.cs
 
 namespace DirectShowLib.Dvd
 {
@@ -500,7 +459,7 @@ namespace DirectShowLib.Dvd
     int GetTitleAttributes(
       [In] int ulTitle,
       [Out] out DvdMenuAttributes pMenu,
-      [In, Out, MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(DTAMarshaler))] DvdTitleAttributes
+      [In, Out, MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof (DTAMarshaler))] DvdTitleAttributes
         pTitle
       );
 
@@ -519,7 +478,7 @@ namespace DirectShowLib.Dvd
     [PreserveSig]
     int GetKaraokeAttributes(
       [In] int ulStream,
-      [In, Out, MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof(DKAMarshaler))] DvdKaraokeAttributes
+      [In, Out, MarshalAs(UnmanagedType.CustomMarshaler, MarshalTypeRef = typeof (DKAMarshaler))] DvdKaraokeAttributes
         pAttributes
       );
 
@@ -623,7 +582,7 @@ namespace DirectShowLib.Dvd
 
     [PreserveSig]
     int GetCmdFromEvent(
-      [In] int lParam1,         // *** Changed from IntPtr to int. ***
+      [In] int lParam1, // *** Changed from IntPtr to int. ***
       [Out] out IDvdCmd pCmdObj
       );
 
@@ -659,9 +618,9 @@ namespace DirectShowLib.Dvd
   }
 }
 
-  #endregion
+#endregion
 
-  #region Tuner.cs
+#region Tuner.cs
 
 namespace DirectShowLib.BDA
 {
@@ -673,7 +632,7 @@ namespace DirectShowLib.BDA
     int Next(
       [In] int celt,
       [Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] ITuningSpace[] rgelt,
-      [Out] out int pceltFetched    // *** Changed from IntPtr to int. ***
+      [Out] out int pceltFetched // *** Changed from IntPtr to int. ***
       );
 
     int Skip([In] int celt);
@@ -684,7 +643,7 @@ namespace DirectShowLib.BDA
   }
 }
 
-  #endregion
+#endregion
 
 namespace DirectShowLib
 {
@@ -702,10 +661,12 @@ namespace DirectShowLib
   public static class MediaPortalGuid
   {
     /// <summary> AM_KSCATEGORY_MULTIVBICODEC </summary>
-    public static readonly Guid AMKSMULTIVBICodec = new Guid(0x9c24a977, 0x0951, 0x451a, 0x80, 0x06, 0x0e, 0x49, 0xbd, 0x28, 0xcd, 0x5f);
+    public static readonly Guid AMKSMULTIVBICodec = new Guid(0x9c24a977, 0x0951, 0x451a, 0x80, 0x06, 0x0e, 0x49, 0xbd,
+                                                             0x28, 0xcd, 0x5f);
 
     /// <summary> MEDIATYPE_Subtitle 'subs' </summary>
-    public static readonly Guid Subtitle = new Guid(0xE487EB08, 0x6B26, 0x4be9, 0x9D, 0xD3, 0x99, 0x34, 0x34, 0xD3, 0x13, 0xFD);
+    public static readonly Guid Subtitle = new Guid(0xE487EB08, 0x6B26, 0x4be9, 0x9D, 0xD3, 0x99, 0x34, 0x34, 0xD3, 0x13,
+                                                    0xFD);
   }
 
   /// <summary>
@@ -715,45 +676,59 @@ namespace DirectShowLib
   {
     public static readonly Guid AAC = new Guid(0x00000FF, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
 
-    public static readonly Guid DDPLUS = new Guid(0xa7fb87af, 0x2d02, 0x42fb,0xa4, 0xd4, 0x05, 0xcd, 0x93, 0x84, 0x3b, 0xdd);
+    public static readonly Guid DDPLUS = new Guid(0xa7fb87af, 0x2d02, 0x42fb, 0xa4, 0xd4, 0x05, 0xcd, 0x93, 0x84, 0x3b,
+                                                  0xdd);
 
-    public static readonly Guid DVD_LPCM_AUDIO = new Guid(0xe06d8032, 0xdb46, 0x11cf, 0xb4, 0xd1, 0x00, 0x80, 0x05f, 0x6c, 0xbb, 0xea);
+    public static readonly Guid DVD_LPCM_AUDIO = new Guid(0xe06d8032, 0xdb46, 0x11cf, 0xb4, 0xd1, 0x00, 0x80, 0x05f,
+                                                          0x6c, 0xbb, 0xea);
 
     /// <summary> MEDIASUBTYPE_BDA_MPEG2_TRANSPORT </summary>
-    public static readonly Guid BdaMpeg2Transport = new Guid(0xF4AEB342, 0x0329, 0x4fdd, 0xA8, 0xFD, 0x4A, 0xFF, 0x49, 0x26, 0xC9, 0x78);
+    public static readonly Guid BdaMpeg2Transport = new Guid(0xF4AEB342, 0x0329, 0x4fdd, 0xA8, 0xFD, 0x4A, 0xFF, 0x49,
+                                                             0x26, 0xC9, 0x78);
 
     /// <summary> MEDIASUBTYPE_VC1 </summary>
-    public static readonly Guid VC1 = new Guid(0x31435657, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B, 0x71);
+    public static readonly Guid VC1 = new Guid(0x31435657, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B,
+                                               0x71);
 
     /// <summary> MEDIASUBTYPE_VC1_Cyberlink </summary>
-    public static readonly Guid CyberlinkVC1 = new Guid(0xD979F77B, 0xDBEA, 0x4BF6, 0x9E, 0x6D, 0x1D, 0x7E, 0x57, 0xFB, 0xAD, 0x53);
+    public static readonly Guid CyberlinkVC1 = new Guid(0xD979F77B, 0xDBEA, 0x4BF6, 0x9E, 0x6D, 0x1D, 0x7E, 0x57, 0xFB,
+                                                        0xAD, 0x53);
 
     /// <summary> MEDIASUBTYPE_AVC1 </summary>
-    public static readonly Guid AVC1 = new Guid(0x31435641, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
+    public static readonly Guid AVC1 = new Guid(0x31435641, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b,
+                                                0x71);
 
     // 44495658-0000-0010-8000-00AA00389B71
-    public static readonly Guid XVID1 = new Guid(0x44495658, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B, 0x71);
+    public static readonly Guid XVID1 = new Guid(0x44495658, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B,
+                                                 0x71);
 
     // 64697678-0000-0010-8000-00AA00389B71
-    public static readonly Guid XVID2 = new Guid(0x64697678, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B, 0x71);
+    public static readonly Guid XVID2 = new Guid(0x64697678, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B,
+                                                 0x71);
 
     // 30355844-0000-0010-8000-00aa00389b71
-    public static readonly Guid DX50_1 = new Guid(0x30355844, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B, 0x71);
+    public static readonly Guid DX50_1 = new Guid(0x30355844, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B,
+                                                  0x71);
 
     // 30357864-0000-0010-8000-00AA00389B71
-    public static readonly Guid DX50_2 = new Guid(0x30357864, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B, 0x71);
+    public static readonly Guid DX50_2 = new Guid(0x30357864, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B,
+                                                  0x71);
 
     // 58564944-0000-0010-8000-00AA00389B71
-    public static readonly Guid DIVX1 = new Guid(0x58564944, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B, 0x71);
+    public static readonly Guid DIVX1 = new Guid(0x58564944, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B,
+                                                 0x71);
 
     // 78766964-0000-0010-8000-00AA00389B71
-    public static readonly Guid DIVX2 = new Guid(0x78766964, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B, 0x71);
+    public static readonly Guid DIVX2 = new Guid(0x78766964, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B,
+                                                 0x71);
 
     /// <summary> MEDIASUBTYPE_LATM_AAC </summary>
-    public static readonly Guid LATMAAC = new Guid(0x00001FF, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71);
+    public static readonly Guid LATMAAC = new Guid(0x00001FF, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b,
+                                                   0x71);
 
     /// <summary> MEDIASUBTYPE_LATM_AAC_LAVF_SPLITTER </summary>
-    public static readonly Guid LATMAACLAVF = new Guid(0x53544441, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38, 0x9B, 0x71);
+    public static readonly Guid LATMAACLAVF = new Guid(0x53544441, 0x0000, 0x0010, 0x80, 0x00, 0x00, 0xAA, 0x00, 0x38,
+                                                       0x9B, 0x71);
   }
 
   #region IKsControl
@@ -770,7 +745,7 @@ namespace DirectShowLib
       [In, Out] IntPtr PropertyData,
       [In] Int32 DataLength,
       [In, Out] ref Int32 BytesReturned
-    );
+      );
 
     [PreserveSig]
     int KsMethod(
@@ -779,7 +754,7 @@ namespace DirectShowLib
       [In, Out] IntPtr MethodData,
       [In] Int32 DataLength,
       [In, Out] ref Int32 BytesReturned
-    );
+      );
 
     [PreserveSig]
     int KsEvent(
@@ -788,7 +763,7 @@ namespace DirectShowLib
       [In, Out] IntPtr EventData,
       [In] Int32 DataLength,
       [In, Out] ref Int32 BytesReturned
-    );
+      );
   }
 
   public struct KsMethod
@@ -819,6 +794,7 @@ namespace DirectShowLib
 
 namespace DirectShowLib.BDA
 {
+
   #region IBDA_DiseqCommand
 
   /// <summary>
@@ -839,8 +815,7 @@ namespace DirectShowLib.BDA
   /// </summary>
   public struct BdaDiseqcMessage
   {
-    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)]
-    public byte[] PacketData;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 8)] public byte[] PacketData;
 
     public UInt32 PacketLength;
     public UInt32 RequestId;
@@ -864,6 +839,6 @@ namespace DirectShowLib.BDA
     RollOff,
     Pilot,
     SignalTimeouts,
-    PlpNumber               // physical layer pipe - for DVB-S2 and DVB-T2
+    PlpNumber // physical layer pipe - for DVB-S2 and DVB-T2
   }
 }

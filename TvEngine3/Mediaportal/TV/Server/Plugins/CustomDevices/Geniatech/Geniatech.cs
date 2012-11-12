@@ -43,26 +43,37 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
     {
       /// For sending and receiving DiSEqC messages.
       DiseqcMessage = 0,
+
       /// For initialising DiSEqC interfaces.
       DiseqcInit,
+
       /// Unsupported generic Conexant property.
       ScanFrequency,
+
       /// For direct/custom tuning.
       ChannelChange,
+
       /// For retrieving demodulator firmware state and version.
       DemodInfo,
+
       /// Unsupported generic Conexant property.
       EffectiveFrequency,
+
       /// For retrieving signal quality, strength, BER and other attributes.
       SignalStatus,
+
       /// For retrieving demodulator lock indicators.
       LockStatus,
+
       /// For controlling error correction and BER window.
       ErrorControl,
+
       /// For retrieving the locked values of frequency, symbol rate etc. after fine tuning.
       ChannelInfo,
+
       /// For setting DVB-S2 parameters that could not initially be set through BDA interfaces.
       NbcParams,
+
       /// For controlling the LNB power supply state.
       LnbPower
     }
@@ -75,7 +86,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
     {
       Off = 0,
       On,
-      Unknown               // (Not used...)
+      Unknown // (Not used...)
     }
 
     #endregion
@@ -85,9 +96,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
     private enum GtRollOff
     {
       Undefined = 0xff,
-      Twenty = 0,           // 0.2
-      TwentyFive,           // 0.25
-      ThirtyFive            // 0.35
+      Twenty = 0, // 0.2
+      TwentyFive, // 0.25
+      ThirtyFive // 0.35
     }
 
     #endregion
@@ -161,10 +172,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
       }
 
       KSPropertySupport support;
-      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.NbcParams, out support);
+      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int) BdaExtensionProperty.NbcParams, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
-        this.LogDebug("Geniatech: device does not support the NBC parameter property, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Geniatech: device does not support the NBC parameter property, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         return false;
       }
 
@@ -182,7 +194,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
     /// <param name="currentChannel">The channel that the tuner is currently tuned to..</param>
     /// <param name="channel">The channel that the tuner will been tuned to.</param>
     /// <param name="action">The action to take, if any.</param>
-    public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel, out DeviceAction action)
+    public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel,
+                                      out DeviceAction action)
     {
       this.LogDebug("Geniatech: on before tune callback");
       action = DeviceAction.Default;
@@ -240,13 +253,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
       this.LogDebug("  roll-off   = {0}", nbcParams.RollOff);
 
       Marshal.StructureToPtr(nbcParams, _paramBuffer, true);
-      int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.NbcParams,
+      int hr = _propertySet.Set(BdaExtensionPropertySet, (int) BdaExtensionProperty.NbcParams,
                                 _instanceBuffer, InstanceSize,
                                 _paramBuffer, NbcParamsSize
         );
       if (hr != 0)
       {
-        this.LogDebug("Geniatech: failed to set pilot and roll-off, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Geniatech: failed to set pilot and roll-off, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
       }
     }
 
@@ -272,10 +286,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
       }
 
       KSPropertySupport support;
-      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.LnbPower, out support);
+      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int) BdaExtensionProperty.LnbPower, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
-        this.LogDebug("Geniatech: LNB power property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Geniatech: LNB power property not supported, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
       }
 
       if (powerOn)
@@ -286,9 +301,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Geniatech
       {
         Marshal.WriteInt32(_paramBuffer, 0, 0);
       }
-      hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.LnbPower,
+      hr = _propertySet.Set(BdaExtensionPropertySet, (int) BdaExtensionProperty.LnbPower,
                             _instanceBuffer, InstanceSize,
-                            _paramBuffer, sizeof(Int32)
+                            _paramBuffer, sizeof (Int32)
         );
       if (hr == 0)
       {

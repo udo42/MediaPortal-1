@@ -98,7 +98,9 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       }
     }
 
-    public void UserShutdownNow() {}
+    public void UserShutdownNow()
+    {
+    }
 
     public string HandlerName
     {

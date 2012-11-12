@@ -29,7 +29,7 @@ namespace Mediaportal.Common.Utils
             }                               
 #endif
     }
-   
+
     ///<summary>
     /// ThreadHelper.ParallelInvoke encapsulated with a try catch, throwing the 1st possible exception.
     ///</summary>

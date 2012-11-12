@@ -12,13 +12,17 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
   {
     [OperationContract]
     IList<Program> GetProgramsForSchedule(Schedule schedule);
-    [ServiceKnownType(typeof(NowAndNext))]
+
+    [ServiceKnownType(typeof (NowAndNext))]
     [OperationContract]
     IDictionary<int, NowAndNext> GetNowAndNextForChannelGroup(int idGroup);
+
     [OperationContract]
     IList<Program> GetProgramsByChannelAndStartEndTimes(int idChannel, DateTime startTime, DateTime endTime);
+
     [OperationContract]
     Program SaveProgram(Program program);
+
     [OperationContract]
     IList<Program> GetNowAndNextProgramsForChannel(int idChannel);
 
@@ -30,6 +34,7 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
 
     [OperationContract]
     IList<Program> GetProgramsByTitleAndTimesInterval(string title, DateTime startTime, DateTime endTime);
+
     [OperationContract]
     Program GetProgramsByTitleTimesAndChannel(string programName, DateTime startTime, DateTime endTime, int idChannel);
 
@@ -52,7 +57,8 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     Program GetProgramByTitleAndTimes(string programName, DateTime startTime, DateTime endTime);
 
     [OperationContract]
-    IList<Program> GetProgramsByDescriptionAndMediaType(string descriptionCriteria, MediaTypeEnum mediaType, StringComparisonEnum stringComparison);
+    IList<Program> GetProgramsByDescriptionAndMediaType(string descriptionCriteria, MediaTypeEnum mediaType,
+                                                        StringComparisonEnum stringComparison);
 
     [OperationContract]
     IList<Program> GetProgramsByDescription(string descriptionCriteria, StringComparisonEnum stringComparison);
@@ -61,22 +67,28 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     IList<Program> GetProgramsByTitle(string titleCriteria, StringComparisonEnum stringComparison);
 
     [OperationContract]
-    IList<Program> GetProgramsByTitleAndMediaType(string titleCriteria, MediaTypeEnum mediaType, StringComparisonEnum stringComparison);
+    IList<Program> GetProgramsByTitleAndMediaType(string titleCriteria, MediaTypeEnum mediaType,
+                                                  StringComparisonEnum stringComparison);
 
     [OperationContract]
     Program GetProgram(int idProgram);
 
     [OperationContract]
-    IDictionary<int, IList<Program>> GetProgramsForAllChannels(DateTime startTime, DateTime endTime, IEnumerable<Channel> channels);
+    IDictionary<int, IList<Program>> GetProgramsForAllChannels(DateTime startTime, DateTime endTime,
+                                                               IEnumerable<Channel> channels);
 
     [OperationContract]
-    IList<Program> GetProgramsByTitleAndCategoryAndMediaType(string categoryCriteriea, string titleCriteria, MediaTypeEnum mediaType, StringComparisonEnum stringComparisonCategory, StringComparisonEnum stringComparisonTitle);
+    IList<Program> GetProgramsByTitleAndCategoryAndMediaType(string categoryCriteriea, string titleCriteria,
+                                                             MediaTypeEnum mediaType,
+                                                             StringComparisonEnum stringComparisonCategory,
+                                                             StringComparisonEnum stringComparisonTitle);
 
     [OperationContract]
     IList<Program> GetProgramsByTimesInterval(DateTime startTime, DateTime endTime);
 
     [OperationContract]
-    IList<Program> GetProgramsByChannelAndTitleAndStartEndTimes(int idChannel, string title, DateTime startTime, DateTime endTime);
+    IList<Program> GetProgramsByChannelAndTitleAndStartEndTimes(int idChannel, string title, DateTime startTime,
+                                                                DateTime endTime);
 
     [OperationContract]
     IList<Program> GetProgramsByTitleAndStartEndTimes(string title, DateTime startTime, DateTime endTime);
@@ -89,12 +101,16 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
 
     [OperationContract]
     IList<string> ListAllDistinctCreditRoles();
+
     [OperationContract]
     IList<ProgramCategory> ListAllCategories();
+
     [OperationContract]
     IList<ProgramCredit> ListAllCredits();
+
     [OperationContract]
     IList<Program> RetrieveByChannelAndTimesInterval(int channelId, DateTime startTime, DateTime endTime);
+
     [OperationContract]
     void InitiateInsertPrograms();
   }

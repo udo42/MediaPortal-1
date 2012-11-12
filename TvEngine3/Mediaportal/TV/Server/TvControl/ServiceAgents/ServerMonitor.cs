@@ -22,7 +22,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     #endregion
 
     private const int SERVER_ALIVE_INTERVAL_SEC = 5;
-    private readonly static ManualResetEvent _evtHeartbeatCtrl = new ManualResetEvent(false);
+    private static readonly ManualResetEvent _evtHeartbeatCtrl = new ManualResetEvent(false);
 
     private readonly ManualResetEvent _evtServer = new ManualResetEvent(false);
     private bool _isConnected;
@@ -51,7 +51,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       {
         _evtHeartbeatCtrl.Reset();
         this.LogDebug("ServerMonitor: ServerMonitor thread started.");
-        _serverMonitorThread = new Thread(ServerMonitorThread) { IsBackground = true, Name = "ServerMonitor thread" };
+        _serverMonitorThread = new Thread(ServerMonitorThread) {IsBackground = true, Name = "ServerMonitor thread"};
         _serverMonitorThread.Start();
       }
     }
@@ -66,17 +66,17 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
           _serverMonitorThread.Join();
           this.LogDebug("ServerMonitor: ServerMonitor thread stopped.");
         }
-        catch (Exception) { }
+        catch (Exception)
+        {
+        }
       }
     }
 
 
-
     private void ServerMonitorThread()
     {
-      while (!_evtHeartbeatCtrl.WaitOne(SERVER_ALIVE_INTERVAL_SEC * 1000))
+      while (!_evtHeartbeatCtrl.WaitOne(SERVER_ALIVE_INTERVAL_SEC*1000))
       {
-
         bool isconnected = false;
         try
         {
@@ -89,14 +89,14 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
         finally
         {
           if (!_isConnected && isconnected)
-          {            
+          {
             if (OnServerConnected != null)
             {
               OnServerConnected();
             }
           }
           else if (_isConnected && !isconnected)
-          {            
+          {
             if (OnServerDisconnected != null)
             {
               OnServerDisconnected();

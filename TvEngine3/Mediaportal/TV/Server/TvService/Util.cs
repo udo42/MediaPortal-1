@@ -44,7 +44,9 @@ namespace Mediaportal.TV.Server.TVService
     private static char[] crypt = new char[10] {'G', 'D', 'J', 'S', 'I', 'B', 'T', 'P', 'W', 'Q'};
 
     // singleton. Dont allow any instance of this class
-    private Utils() {}
+    private Utils()
+    {
+    }
 
     [DllImport("kernel32.dll")]
     private static extern bool GetDiskFreeSpaceEx(string lpDirectoryName, out UInt64 lpFreeBytesAvailable,
@@ -98,7 +100,8 @@ namespace Mediaportal.TV.Server.TVService
       uint sysflags; //receives file system flags
       var sysname = new StringBuilder(256); //receives the file system name
 
-      bool retval = GetVolumeInformation(drive.Substring(0, 2), volname, 256, out sn, out maxcomplen, out sysflags, sysname,
+      bool retval = GetVolumeInformation(drive.Substring(0, 2), volname, 256, out sn, out maxcomplen, out sysflags,
+                                         sysname,
                                          256);
 
       if (retval)
@@ -166,19 +169,19 @@ namespace Mediaportal.TV.Server.TVService
       if (dwFileSize < 1024)
       {
         //  substract the integer part of the float value
-        float fRemainder = ((dwFileSize) / 1024.0f) - ((dwFileSize) / 1024.0f);
+        float fRemainder = ((dwFileSize)/1024.0f) - ((dwFileSize)/1024.0f);
         float fToAdd = 0.0f;
         if (fRemainder < 0.01f)
           fToAdd = 0.1f;
-        szTemp = String.Format("{0:f} KB", ((dwFileSize) / 1024.0f) + fToAdd);
+        szTemp = String.Format("{0:f} KB", ((dwFileSize)/1024.0f) + fToAdd);
         return szTemp;
       }
-      const long iOneMeg = 1024 * 1024;
+      const long iOneMeg = 1024*1024;
 
       // file < 1 megabyte?
       if (dwFileSize < iOneMeg)
       {
-        szTemp = String.Format("{0:f} KB", (dwFileSize) / 1024.0f);
+        szTemp = String.Format("{0:f} KB", (dwFileSize)/1024.0f);
         return szTemp;
       }
 
@@ -187,7 +190,7 @@ namespace Mediaportal.TV.Server.TVService
       iOneGigabyte *= 1000;
       if (dwFileSize < iOneGigabyte)
       {
-        szTemp = String.Format("{0:f} MB", (dwFileSize) / ((float)iOneMeg));
+        szTemp = String.Format("{0:f} MB", (dwFileSize)/((float) iOneMeg));
         return szTemp;
       }
       //file > 1 GByte
@@ -197,7 +200,7 @@ namespace Mediaportal.TV.Server.TVService
         dwFileSize -= iOneGigabyte;
         iGigs++;
       }
-      float fMegs = (dwFileSize) / ((float)iOneMeg);
+      float fMegs = (dwFileSize)/((float) iOneMeg);
       fMegs /= 1000.0f;
       fMegs += iGigs;
       szTemp = String.Format("{0:f} GB", fMegs);
@@ -331,7 +334,9 @@ namespace Mediaportal.TV.Server.TVService
           }
         }
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
 
       // No matches were found, so no stacking
       return false;
@@ -409,7 +414,9 @@ namespace Mediaportal.TV.Server.TVService
           CloseHandle(fHandle);
         }
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
 
       return result;
     }
@@ -425,19 +432,21 @@ namespace Mediaportal.TV.Server.TVService
       {
         if (ldate < 0) return DateTime.MinValue;
         ldate /= 100L;
-        var minute = (int)(ldate % 100L);
+        var minute = (int) (ldate%100L);
         ldate /= 100L;
-        var hour = (int)(ldate % 100L);
+        var hour = (int) (ldate%100L);
         ldate /= 100L;
-        var day = (int)(ldate % 100L);
+        var day = (int) (ldate%100L);
         ldate /= 100L;
-        var month = (int)(ldate % 100L);
+        var month = (int) (ldate%100L);
         ldate /= 100L;
-        var year = (int)ldate;
+        var year = (int) ldate;
         var dt = new DateTime(year, month, day, hour, minute, 0, 0);
         return dt;
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       return DateTime.Now;
     }
 
@@ -453,14 +462,16 @@ namespace Mediaportal.TV.Server.TVService
         long iYear = dt.Year;
 
         long lRet = (iYear);
-        lRet = lRet * 100L + iMonth;
-        lRet = lRet * 100L + iDay;
-        lRet = lRet * 100L + iHour;
-        lRet = lRet * 100L + iMin;
-        lRet = lRet * 100L + iSec;
+        lRet = lRet*100L + iMonth;
+        lRet = lRet*100L + iDay;
+        lRet = lRet*100L + iHour;
+        lRet = lRet*100L + iMin;
+        lRet = lRet*100L + iSec;
         return lRet;
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       return 0;
     }
 
@@ -506,7 +517,9 @@ namespace Mediaportal.TV.Server.TVService
         File.Delete(strFile);
         return true;
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       return false;
     }
 
@@ -537,7 +550,9 @@ namespace Mediaportal.TV.Server.TVService
         }
         return true;
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       return false;
     }
 
@@ -550,7 +565,9 @@ namespace Mediaportal.TV.Server.TVService
         Directory.Delete(strDir);
         return true;
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       return false;
     }
 
@@ -573,9 +590,9 @@ namespace Mediaportal.TV.Server.TVService
 
     public static void RGB2YUV(int R, int G, int B, out int Y, out int U, out int V)
     {
-      Y = (int)((R) * 0.257f + (G) * 0.504f + (B) * 0.098f + 16.0f);
-      U = (int)((R) * -0.148f + (G) * -0.291f + (B) * 0.439f + 128.0f);
-      V = (int)((R) * 0.439f + (G) * -0.368f + (B) * -0.071f + 128.0f);
+      Y = (int) ((R)*0.257f + (G)*0.504f + (B)*0.098f + 16.0f);
+      U = (int) ((R)*-0.148f + (G)*-0.291f + (B)*0.439f + 128.0f);
+      V = (int) ((R)*0.439f + (G)*-0.368f + (B)*-0.071f + 128.0f);
       Y = Y & 0xff;
       U = U & 0xff;
       V = V & 0xff;
@@ -658,10 +675,14 @@ namespace Mediaportal.TV.Server.TVService
           {
             File.Delete(strFile);
           }
-          catch (Exception) {}
+          catch (Exception)
+          {
+          }
         }
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
     }
 
     public static DateTime ParseDateTimeString(string dateTime)
@@ -683,7 +704,9 @@ namespace Mediaportal.TV.Server.TVService
         int sec = Int32.Parse(parts[5]);
         return new DateTime(year, month, day, hour, min, sec, 0);
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       return DateTime.Now;
     }
 

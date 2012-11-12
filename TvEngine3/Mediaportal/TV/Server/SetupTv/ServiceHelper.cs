@@ -34,7 +34,6 @@ namespace Mediaportal.TV.Server.SetupTV
   /// </summary>
   public static class ServiceHelper
   {
-
     public const string SERVICENAME_TVSERVICE = @"TvService";
     private static bool _ignoreDisconnections;
 
@@ -67,7 +66,7 @@ namespace Mediaportal.TV.Server.SetupTV
         }
         catch (Exception ex)
         {
-          Log.Error(ex, 
+          Log.Error(ex,
                     "ServiceHelper: Check whether the tvservice is running failed. Please check your installation.");
           return false;
         }
@@ -135,7 +134,7 @@ namespace Mediaportal.TV.Server.SetupTV
         ServiceController[] services = ServiceController.GetServices(hostname);
 
         Log.Error("services count = {0}", services.Length);
-        
+
 
         foreach (ServiceController service in services)
         {
@@ -173,7 +172,7 @@ namespace Mediaportal.TV.Server.SetupTV
     /// <returns>true if thTvService is initialized</returns>
     public static bool WaitInitialized()
     {
-      return WaitInitialized(DefaultInitTimeOut() * 1000);
+      return WaitInitialized(DefaultInitTimeOut()*1000);
     }
 
     /// <summary>
@@ -199,7 +198,7 @@ namespace Mediaportal.TV.Server.SetupTV
       }
       catch (Exception ex) // either we have no right, or the event does not exist
       {
-        Log.Error(ex, "Failed to wait for {0}", RemoteControl.InitializedEventName);        
+        Log.Error(ex, "Failed to wait for {0}", RemoteControl.InitializedEventName);
       }
 
       /*
@@ -265,8 +264,8 @@ namespace Mediaportal.TV.Server.SetupTV
       }
       catch (Exception ex)
       {
-        Log.Error(ex, 
-          "ServiceHelper: Stopping tvservice failed. Please check your installation.");
+        Log.Error(ex,
+                  "ServiceHelper: Stopping tvservice failed. Please check your installation.");
         return false;
       }
     }
@@ -359,7 +358,7 @@ namespace Mediaportal.TV.Server.SetupTV
         {
           if (rKey != null)
           {
-            var startMode = (int)rKey.GetValue("Start", 3);
+            var startMode = (int) rKey.GetValue("Start", 3);
             if (startMode == 2) // autostart
               return true;
             if (aSetEnabled)

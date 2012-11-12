@@ -9,13 +9,13 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 {
   public class RecordingRepository : GenericRepository<Model>, IRecordingRepository, IDisposable
   {
-    public RecordingRepository()    
+    public RecordingRepository()
     {
     }
 
     public RecordingRepository(bool trackingEnabled)
       : base(trackingEnabled)
-    {      
+    {
     }
 
     public RecordingRepository(Model context)
@@ -25,33 +25,33 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 
     #region IRecordingRepository Members
 
-    public Recording GetRecording (int idRecording)
-    {      
-      Recording recording =  GetQuery<Recording>(c => c.IdRecording == idRecording)
+    public Recording GetRecording(int idRecording)
+    {
+      Recording recording = GetQuery<Recording>(c => c.IdRecording == idRecording)
         .Include(r => r.Channel)
         .Include(r => r.RecordingCredits)
         .Include(r => r.Schedule)
-        .Include(r => r.ProgramCategory)        
+        .Include(r => r.ProgramCategory)
         .FirstOrDefault();
-      return recording;     
+      return recording;
     }
 
     public IQueryable<Recording> ListAllRecordingsByMediaType(MediaTypeEnum mediaType)
     {
-      IQueryable<Recording> recordings = GetQuery<Recording>(r => r.MediaType == (int)mediaType)
+      IQueryable<Recording> recordings = GetQuery<Recording>(r => r.MediaType == (int) mediaType)
         .Include(r => r.Channel)
         .Include(r => r.RecordingCredits)
-        .Include(c => c.Schedule)        
+        .Include(c => c.Schedule)
         .Include(r => r.ProgramCategory);
-      return recordings;     
+      return recordings;
     }
 
     public IQueryable<Recording> IncludeAllRelations(IQueryable<Recording> query)
     {
       IQueryable<Recording> includeRelations = query.Include(r => r.Channel)
-                                  .Include(r => r.RecordingCredits)
-                                  .Include(c => c.Schedule)
-                                  .Include(r => r.ProgramCategory);
+        .Include(r => r.RecordingCredits)
+        .Include(c => c.Schedule)
+        .Include(r => r.ProgramCategory);
       return includeRelations;
     }
 

@@ -100,7 +100,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
         int line;
         for (line = 0; line < rows; line++)
         {
-          int off = startOff + line * 43;
+          int off = startOff + line*43;
           bool copyData = false;
           int byte1 = Hamming.Decode[rowData[off + 0]];
           int byte2 = Hamming.Decode[rowData[off + 1]];
@@ -112,7 +112,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
             _line += "HE1 ";
             continue;
           }
-          var magazine = (byte)(byte1 & 0x7);
+          var magazine = (byte) (byte1 & 0x7);
 
           //get packet number
           int packetNumber = Hamming.GetPacketNumber(off, ref rowData);
@@ -153,7 +153,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
             string channelName = "";
             for (int i = 0; i < 20; i++)
             {
-              var char1 = (char)(rowData[off + 22 + i] & 127);
+              var char1 = (char) (rowData[off + 22 + i] & 127);
               //this.LogDebug("{0}-{1:x}", char1, (byte)(rowData[off + 22 + i] & 127));
               channelName += char1;
             }
@@ -334,7 +334,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
             if (_magazineCurrentPageNr[magazine] != -1 && _magazineCurrentSubPage[magazine] != -1)
             {
               //_rowsReceived[magazine, packetNumber] = true;
-              int offwp = packetNumber * 42;
+              int offwp = packetNumber*42;
               for (int c = 0; c < 42; ++c)
               {
                 _workingPage[magazine][offwp + c] = rowData[off + c];

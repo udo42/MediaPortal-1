@@ -29,14 +29,17 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.Enums
     /// the channel cannot be tuned right now - maybe all cards are busy
     /// </summary>
     nottunable = 0,
+
     /// <summary>
     /// the channel can be zapped
     /// </summary>
     tunable = 1,
+
     /// <summary>
     /// this channel is currently timeshifted by one card
     /// </summary>
     timeshifting = 2,
+
     /// <summary>
     /// this channel is currently being recorded
     /// </summary>

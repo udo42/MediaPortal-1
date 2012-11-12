@@ -86,21 +86,16 @@ namespace Mediaportal.TV.TvPlugin.Teletext
 
     public override bool IsTv
     {
-      get 
-      { 
-        return true;
-      }
+      get { return true; }
     }
 
     public bool Waiting
     {
-      get
-      { 
-        return _waiting;
-      }
+      get { return _waiting; }
       set
-      { 
-        if (_waiting != value) {
+      {
+        if (_waiting != value)
+        {
           _waiting = value;
           //_renderer.Waiting = value;
           RequestUpdate(false);
@@ -176,7 +171,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
         using (var reader = new BinaryReader(stream))
         {
           receivedPage = new byte[stream.Length];
-          reader.Read(receivedPage, 0, (int)stream.Length);
+          reader.Read(receivedPage, 0, (int) stream.Length);
           receivedPageNumber = 0;
           receivedSubPageNumber = 0;
         }
@@ -190,7 +185,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
     public override void OnAction(Action action)
     {
       // if we have a keypress or a remote button press then check if it is a number and add it to the inputLine
-      var key = (char)0;
+      var key = (char) 0;
       if (action.wID == Action.ActionType.ACTION_KEY_PRESSED)
       {
         if (action.m_key != null)
@@ -198,10 +193,10 @@ namespace Mediaportal.TV.TvPlugin.Teletext
           if (action.m_key.KeyChar >= '0' && action.m_key.KeyChar <= '9')
           {
             // Get offset to item
-            key = (char)action.m_key.KeyChar;
+            key = (char) action.m_key.KeyChar;
           }
         }
-        if (key == (char)0)
+        if (key == (char) 0)
         {
           return;
         }
@@ -502,7 +497,8 @@ namespace Mediaportal.TV.TvPlugin.Teletext
         }
       }
 
-      this.LogInfo("dvb-teletext page updated. {0:X}/{1:X} total:{2} rotspeed:{3}", currentPageNumber, currentSubPageNumber,
+      this.LogInfo("dvb-teletext page updated. {0:X}/{1:X} total:{2} rotspeed:{3}", currentPageNumber,
+                   currentSubPageNumber,
                    NumberOfSubpages, tsRotation.TotalMilliseconds);
       // Request the update
       RequestUpdate(false);
@@ -585,10 +581,11 @@ namespace Mediaportal.TV.TvPlugin.Teletext
         bool wasWaiting = _waiting;
         _waiting = true;
         _renderer.SubPageSelectText = "";
-        if (receivedPage != null)// && !wasWaiting)
+        if (receivedPage != null) // && !wasWaiting)
         {
           Redraw();
-          this.LogInfo("dvb-teletext: nothing, received page {0:X} / subpage {1:X}", receivedPageNumber, receivedSubPageNumber);
+          this.LogInfo("dvb-teletext: nothing, received page {0:X} / subpage {1:X}", receivedPageNumber,
+                       receivedSubPageNumber);
         }
         return;
       }
@@ -629,7 +626,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
       {
         bool wasWaiting = _waiting;
         _waiting = true;
-        if (receivedPage != null)// && !wasWaiting)
+        if (receivedPage != null) // && !wasWaiting)
         {
           Redraw();
           this.LogInfo("dvb-teletext: received page {0:X} / subpage {1:X}", receivedPageNumber, receivedSubPageNumber);
@@ -668,12 +665,12 @@ namespace Mediaportal.TV.TvPlugin.Teletext
 
     protected int Decimal(int bcd)
     {
-      return ((bcd >> 4) * 10) + bcd % 16;
+      return ((bcd >> 4)*10) + bcd%16;
     }
 
     protected int BCD(int dec)
     {
-      return ((dec / 10) << 4) + (dec % 10);
+      return ((dec/10) << 4) + (dec%10);
     }
 
     #endregion

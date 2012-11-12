@@ -104,10 +104,10 @@ namespace Mediaportal.TV.TvPlugin
 
         for (int i = 0; i < entries; i++)
         {
-          table[i] = (MIB_IPNETROW)Marshal.PtrToStructure(
-            new IntPtr(currentBuffer.ToInt64() + (i * Marshal.SizeOf(typeof (MIB_IPNETROW)))),
+          table[i] = (MIB_IPNETROW) Marshal.PtrToStructure(
+            new IntPtr(currentBuffer.ToInt64() + (i*Marshal.SizeOf(typeof (MIB_IPNETROW)))),
             typeof (MIB_IPNETROW)
-                                     );
+                                      );
         }
       }
       finally
@@ -145,7 +145,7 @@ namespace Mediaportal.TV.TvPlugin
       {
         for (int x = 0; x < 6; x++)
         {
-          packet[i * 6 + x] = hwAddress[x];
+          packet[i*6 + x] = hwAddress[x];
         }
       }
       return packet;
@@ -292,7 +292,7 @@ namespace Mediaportal.TV.TvPlugin
         return false;
       }
 
-      while (waited < timeout * 1000)
+      while (waited < timeout*1000)
       {
         this.LogDebug("WOLMgr: Ping {0}", wakeupTarget);
         if (Ping(wakeupTarget, 1000))

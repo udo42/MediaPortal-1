@@ -43,10 +43,10 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     private EventServiceAgent _eventServiceAgent;
 
     public EventServiceClient(string hostname)
-    {      
-      _hostname = hostname;      
+    {
+      _hostname = hostname;
     }
-    
+
     private EventServiceAgent EventServiceAgent
     {
       get
@@ -57,7 +57,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
           RegisterEventServiceIfNeeded();
           RegisterUserForServerEvents();
         }
-        return _eventServiceAgent;        
+        return _eventServiceAgent;
       }
     }
 
@@ -78,7 +78,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       if (_eventServiceAgent != null)
       {
         _eventServiceAgent.Dispose();
-      }      
+      }
     }
 
     #endregion
@@ -252,6 +252,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
         Interlocked.Exchange(ref _isRunningUnRegisterTvServerEventCallbacks, 0);
       }
     }
+
     #endregion
 
     private void CreateEventService()
@@ -309,8 +310,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
         //if (IsConnectionReady ())
         if (_eventServiceAgent != null)
         {
-          EventServiceAgent.Unsubscribe(_hostname); 
-        }        
+          EventServiceAgent.Unsubscribe(_hostname);
+        }
       }
     }
 

@@ -381,7 +381,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
 
         for (int i = insertItems.Count - 1; i >= 0; i--)
         {
-          var insertItem = (ListViewItem)insertItems[i];
+          var insertItem = (ListViewItem) insertItems[i];
 
           //delete old items first
           for (int j = Items.Count - 1; j >= 0; j--)
@@ -470,7 +470,9 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       base.OnDoubleClick(e);
     }
 
-    protected override void OnPaintBackground(PaintEventArgs pevent) {}
+    protected override void OnPaintBackground(PaintEventArgs pevent)
+    {
+    }
 
     protected override void OnNotifyMessage(Message m)
     {

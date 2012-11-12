@@ -64,10 +64,10 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
           {
             g.Clip = newRegion;
             var charWidth =
-              (int)Math.Ceiling(g.MeasureString("c", e.TextFont, 20, StringFormat.GenericTypographic).Width);
+              (int) Math.Ceiling(g.MeasureString("c", e.TextFont, 20, StringFormat.GenericTypographic).Width);
 
             string s = GetColumnValueAtRow(source, rowNum).ToString();
-            int maxChars = Math.Min(s.Length, (bounds.Width / charWidth));
+            int maxChars = Math.Min(s.Length, (bounds.Width/charWidth));
 
             try
             {
@@ -178,7 +178,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       lockValue = true;
       beingEdited = true;
       saveRow = rowNum;
-      saveValue = (bool)base.GetColumnValueAtRow(source, rowNum);
+      saveValue = (bool) base.GetColumnValueAtRow(source, rowNum);
       base.Edit(source, rowNum, bounds, readOnly, instantText, cellIsVisible);
     }
 

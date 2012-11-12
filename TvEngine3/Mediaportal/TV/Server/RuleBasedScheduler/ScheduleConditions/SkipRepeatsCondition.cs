@@ -11,7 +11,7 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
 
     public IQueryable<Program> ApplyCondition(IQueryable<Program> baseQuery)
     {
-       return baseQuery.Where(program => !program.PreviouslyShown);
+      return baseQuery.Where(program => !program.PreviouslyShown);
     }
 
     #endregion

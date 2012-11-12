@@ -50,7 +50,6 @@ namespace Mediaportal.TV.TvPlugin
   /// 
   public class TvMiniGuide : GUIDialogWindow
   {
- 
     // Member variables                                  
 
     private readonly string PathIconNoTune = GUIGraphicsContext.Skin + @"\Media\remote_blue.png";
@@ -68,29 +67,28 @@ namespace Mediaportal.TV.TvPlugin
     private List<ChannelGroup> _channelGroupList;
     private List<Channel> _channelList = new List<Channel>();
     private int _channelNumberMaxLength = 3;
-    private readonly IDictionary<int, IDictionary<int, NowAndNext>> _listNowNext = new Dictionary<int, IDictionary<int, NowAndNext>>();
+
+    private readonly IDictionary<int, IDictionary<int, NowAndNext>> _listNowNext =
+      new Dictionary<int, IDictionary<int, NowAndNext>>();
+
     private readonly Dictionary<int, DateTime> _nextEPGupdate = new Dictionary<int, DateTime>();
     private bool _showChannelNumber;
     private Dictionary<int, List<Channel>> _tvGroupChannelListCache;
     private bool _zap = true;
     private Stopwatch benchClock;
 
-    [SkinControl(34)]
-    protected GUIButtonControl cmdExit;
+    [SkinControl(34)] protected GUIButtonControl cmdExit;
 
     protected GUIListControl lstChannels;
 
-    [SkinControl(35)]
-    protected GUIListControl lstChannelsNoStateIcons;
+    [SkinControl(35)] protected GUIListControl lstChannelsNoStateIcons;
 
-    [SkinControl(37)]
-    protected GUIListControl lstChannelsWithStateIcons;
+    [SkinControl(37)] protected GUIListControl lstChannelsWithStateIcons;
 
     private readonly StringBuilder sb = new StringBuilder();
     private readonly StringBuilder sbTmp = new StringBuilder();
 
-    [SkinControl(36)]
-    protected GUISpinControl spinGroup;
+    [SkinControl(36)] protected GUISpinControl spinGroup;
 
     #region Serialisation
 
@@ -111,7 +109,7 @@ namespace Mediaportal.TV.TvPlugin
     /// </summary>
     public TvMiniGuide()
     {
-      GetID = (int)Window.WINDOW_MINI_GUIDE;
+      GetID = (int) Window.WINDOW_MINI_GUIDE;
     }
 
     public override bool SupportsDelayedLoad
@@ -161,7 +159,7 @@ namespace Mediaportal.TV.TvPlugin
     {
       bool bResult = Load(GUIGraphicsContext.Skin + @"\TVMiniGuide.xml");
 
-      GetID = (int)Window.WINDOW_MINI_GUIDE;
+      GetID = (int) Window.WINDOW_MINI_GUIDE;
       //GUILayerManager.RegisterLayer(this, GUILayerManager.LayerType.MiniEPG);
       _canceled = true;
       LoadSettings();
@@ -193,10 +191,10 @@ namespace Mediaportal.TV.TvPlugin
           {
             if (message.SenderControlId == 35 || message.SenderControlId == 37) // listbox
             {
-              if ((int)Action.ActionType.ACTION_SELECT_ITEM == message.Param1)
+              if ((int) Action.ActionType.ACTION_SELECT_ITEM == message.Param1)
               {
                 // switching logic
-                SelectedChannel = (Channel)lstChannels.SelectedListItem.TVTag;
+                SelectedChannel = (Channel) lstChannels.SelectedListItem.TVTag;
 
                 Channel changeChannel = null;
                 if (AutoZap)
@@ -333,7 +331,6 @@ namespace Mediaportal.TV.TvPlugin
       GUIWaitCursor.Hide();
 
       this.LogDebug("OnGroupChanged {0} took {1} msec", spinGroup.Value, bClock.ElapsedMilliseconds);
-
     }
 
     /// <summary>
@@ -378,7 +375,7 @@ namespace Mediaportal.TV.TvPlugin
       }
 
       List<Channel> channels = null;
-      if (_tvGroupChannelListCache.TryGetValue(idGroup, out channels))  //already in cache ? then return it.      
+      if (_tvGroupChannelListCache.TryGetValue(idGroup, out channels)) //already in cache ? then return it.      
       {
         this.LogDebug("TvMiniGuide: GetChannelListByGroup returning cached version of channels.");
         return channels;
@@ -415,11 +412,11 @@ namespace Mediaportal.TV.TvPlugin
       ThreadHelper.ParallelInvoke(
         () => tvChannelList = GetChannelListByGroup(),
         () => listNowNext = GetNowAndNext(nextEPGupdate)
-      );            
+        );
 
       benchClock.Stop();
       this.LogDebug("TvMiniGuide: FillChannelList retrieved {0} programs for {1} channels in {2} ms", listNowNext.Count,
-                tvChannelList.Count, benchClock.ElapsedMilliseconds.ToString());
+                    tvChannelList.Count, benchClock.ElapsedMilliseconds.ToString());
 
       //List<int> RecChannels = null;
       //List<int> TSChannels = null;
@@ -434,13 +431,13 @@ namespace Mediaportal.TV.TvPlugin
         benchClock.Reset();
         benchClock.Start();
 
-        tvChannelStatesList = TVHome.TvChannelStatesList;        
+        tvChannelStatesList = TVHome.TvChannelStatesList;
 
         benchClock.Stop();
         if (tvChannelStatesList != null)
         {
           this.LogDebug("TvMiniGuide: FillChannelList - {0} channel states for group retrieved in {1} ms",
-                    Convert.ToString(tvChannelStatesList.Count), benchClock.ElapsedMilliseconds.ToString());
+                        Convert.ToString(tvChannelStatesList.Count), benchClock.ElapsedMilliseconds.ToString());
         }
       }
 
@@ -537,7 +534,7 @@ namespace Mediaportal.TV.TvPlugin
                 break;
             }
           }
-          
+
           sbTmp.Length = 0;
 
           NowAndNext currentNowAndNext;
@@ -548,8 +545,8 @@ namespace Mediaportal.TV.TvPlugin
             if (!string.IsNullOrEmpty(currentNowAndNext.TitleNow))
             {
               TVUtil.TitleDisplay(sbTmp, currentNowAndNext.TitleNow, currentNowAndNext.EpisodeName,
-                                              currentNowAndNext.SeriesNum,
-                                              currentNowAndNext.EpisodeNum, currentNowAndNext.EpisodePart);
+                                  currentNowAndNext.SeriesNum,
+                                  currentNowAndNext.EpisodeNum, currentNowAndNext.EpisodePart);
             }
             else
             {
@@ -571,7 +568,7 @@ namespace Mediaportal.TV.TvPlugin
           {
             sb.Append(" - ");
             if (!_byIndex)
-            {              
+            {
               foreach (TuningDetail detail in tvChannelList[i].TuningDetails)
               {
                 sb.Append(detail.ChannelNumber);
@@ -604,13 +601,12 @@ namespace Mediaportal.TV.TvPlugin
           }
 
 
-
           if (hasNowNext && listNowNext[channelID].IdProgramNext != -1)
           {
             TVUtil.TitleDisplay(sbTmp, currentNowAndNext.TitleNext, currentNowAndNext.EpisodeNameNext,
-                                            currentNowAndNext.SeriesNumNext,
-                                            currentNowAndNext.EpisodeNumNext,
-                                            currentNowAndNext.EpisodePartNext);
+                                currentNowAndNext.SeriesNumNext,
+                                currentNowAndNext.EpisodeNumNext,
+                                currentNowAndNext.EpisodePartNext);
           }
           else
           {
@@ -627,7 +623,8 @@ namespace Mediaportal.TV.TvPlugin
         }
       }
       benchClock.Stop();
-      this.LogDebug("TvMiniGuide: State check + filling completed after {0} ms", benchClock.ElapsedMilliseconds.ToString());
+      this.LogDebug("TvMiniGuide: State check + filling completed after {0} ms",
+                    benchClock.ElapsedMilliseconds.ToString());
       lstChannels.SelectedListItemIndex = SelectedID;
 
       if (lstChannels.GetID == 37)
@@ -649,13 +646,16 @@ namespace Mediaportal.TV.TvPlugin
         bool updateNow = (DateTime.Now >= nextEPGupdate);
         if (updateNow)
         {
-          getNowAndNext = ServiceAgents.Instance.ProgramServiceAgent.GetNowAndNextForChannelGroup(TVHome.Navigator.CurrentGroup.IdGroup);
+          getNowAndNext =
+            ServiceAgents.Instance.ProgramServiceAgent.GetNowAndNextForChannelGroup(
+              TVHome.Navigator.CurrentGroup.IdGroup);
           _listNowNext[idGroup] = getNowAndNext;
         }
       }
       else
       {
-        getNowAndNext = ServiceAgents.Instance.ProgramServiceAgent.GetNowAndNextForChannelGroup(TVHome.Navigator.CurrentGroup.IdGroup);
+        getNowAndNext =
+          ServiceAgents.Instance.ProgramServiceAgent.GetNowAndNextForChannelGroup(TVHome.Navigator.CurrentGroup.IdGroup);
         _listNowNext.Add(idGroup, getNowAndNext);
       }
       return getNowAndNext;
@@ -676,7 +676,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private DateTime GetNextEpgUpdate()
     {
-      DateTime nextEPGupdate = DateTime.MinValue;      
+      DateTime nextEPGupdate = DateTime.MinValue;
       int idGroup = TVHome.Navigator.CurrentGroup.IdGroup;
 
       _nextEPGupdate.TryGetValue(idGroup, out nextEPGupdate);
@@ -695,7 +695,7 @@ namespace Mediaportal.TV.TvPlugin
       double fprogress = 0;
       if (length.TotalMinutes > 0)
       {
-        fprogress = (passed.TotalMinutes / length.TotalMinutes) * 100;
+        fprogress = (passed.TotalMinutes/length.TotalMinutes)*100;
         fprogress = Math.Floor(fprogress);
         if (fprogress > 100.0f)
         {

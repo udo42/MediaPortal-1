@@ -70,7 +70,7 @@ namespace Mediaportal.TV.Server.TVControl
                                    if (!isCompleted)
                                    {
                                      Monitor.Wait(sync, _timeout);
-                                   }                                   
+                                   }
                                  }
                                  if (!isCompleted)
                                  {

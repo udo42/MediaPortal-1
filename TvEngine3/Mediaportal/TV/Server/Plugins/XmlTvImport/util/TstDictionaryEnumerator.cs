@@ -184,7 +184,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
 
       while (stack.Count > 0)
       {
-        currentNode = (TstDictionaryEntry)stack.Pop();
+        currentNode = (TstDictionaryEntry) stack.Pop();
         if (currentNode.HighChild != null)
           stack.Push(currentNode.HighChild);
         if (currentNode.EqChild != null)

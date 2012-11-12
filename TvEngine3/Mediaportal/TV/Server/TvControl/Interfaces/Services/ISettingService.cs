@@ -32,7 +32,7 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
 
     [OperationContract(Name = "GetValueDateTime")]
     void SaveValue(string tagName, DateTime defaultValue);
-    
+
     [OperationContract(Name = "GetValueInt")]
     int GetValue(string tagName, int defaultValue);
 

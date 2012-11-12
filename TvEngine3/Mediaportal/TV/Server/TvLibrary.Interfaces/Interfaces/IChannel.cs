@@ -39,7 +39,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     bool FreeToAir { get; set; }
 
 
-
     /// <summary>
     /// 
     /// </summary>

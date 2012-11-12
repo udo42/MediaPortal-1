@@ -13,10 +13,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
     /// <returns>Application data path of TvServer</returns>
     public static string GetDataPath
     {
-      get
-      {
-        return GlobalServiceProvider.Instance.Get<IIntegrationProvider>().PathManager.GetPath("<TVCORE>");
-      }
+      get { return GlobalServiceProvider.Instance.Get<IIntegrationProvider>().PathManager.GetPath("<TVCORE>"); }
     }
 
     /// <summary>

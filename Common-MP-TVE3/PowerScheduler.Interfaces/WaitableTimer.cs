@@ -184,7 +184,9 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
       {
         m_Waiting.Abort();
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
 
       // Detach
       m_Waiting = null;
@@ -200,7 +202,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
     /// </remarks>
     private void WaitThread(object arg)
     {
-      var handshake = (ManualResetEvent)arg;
+      var handshake = (ManualResetEvent) arg;
       // Ignore aborts
       try
       {

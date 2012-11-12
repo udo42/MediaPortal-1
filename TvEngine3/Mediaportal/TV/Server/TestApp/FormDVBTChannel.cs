@@ -40,7 +40,7 @@ namespace Mediaportal.TV.Server.TestApp
       get { return _channel; }
       set
       {
-        _channel = (DVBTChannel)value;
+        _channel = (DVBTChannel) value;
         textboxFreq.Text = _channel.Frequency.ToString();
         textBoxONID.Text = _channel.NetworkId.ToString();
         textBoxTSID.Text = _channel.TransportId.ToString();

@@ -35,7 +35,7 @@ namespace TvLibrary.Interfaces
   /// fire events back through these delegates. Overriding OnServerEvent to capture
   /// the callback from the server
   /// </summary>
-  public abstract class CiMenuCallbackSink 
+  public abstract class CiMenuCallbackSink
   {
     /// <summary>
     /// Called by the server to fire the call back to the client
@@ -242,7 +242,5 @@ namespace TvLibrary.Interfaces
       _bPassword = bPassword;
       _menuState = CiMenuState.Request;
     }
-
-  
   }
 }

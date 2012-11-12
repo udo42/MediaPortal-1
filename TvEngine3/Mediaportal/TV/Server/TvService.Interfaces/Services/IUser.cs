@@ -59,13 +59,13 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.Services
     /// <value>The card id.</value>
     [DataMember]
     int CardId { get; set; }
-  
+
     /// <summary>
     /// Gets or sets the name.
     /// </summary>
     /// <value>The name.</value>
     [DataMember]
-    string Name { get; set; }    
+    string Name { get; set; }
 
     /// <summary>
     /// Gets or sets the history.

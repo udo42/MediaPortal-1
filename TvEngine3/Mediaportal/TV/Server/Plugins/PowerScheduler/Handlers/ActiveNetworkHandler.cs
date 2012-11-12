@@ -87,20 +87,20 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       // Calculates download and upload speed.
       double monitorInterval = thisSampleTime.Subtract(lastSampleTime).TotalSeconds;
       lastSampleTime = thisSampleTime;
-      var dlSpeed = (long)((dlValue - dlValueOld) / monitorInterval);
-      var ulSpeed = (long)((ulValue - ulValueOld) / monitorInterval);
+      var dlSpeed = (long) ((dlValue - dlValueOld)/monitorInterval);
+      var ulSpeed = (long) ((ulValue - ulValueOld)/monitorInterval);
 
       dlValueOld = dlValue;
       ulValueOld = ulValue;
 
-      if ((dlSpeed / 1024) > dlSpeedPeak) // Store peak values in KB/s
+      if ((dlSpeed/1024) > dlSpeedPeak) // Store peak values in KB/s
       {
-        dlSpeedPeak = (dlSpeed / 1024);
+        dlSpeedPeak = (dlSpeed/1024);
       }
 
-      if ((ulSpeed / 1024) > ulSpeedPeak) // Store peak values in KB/s
+      if ((ulSpeed/1024) > ulSpeedPeak) // Store peak values in KB/s
       {
-        ulSpeedPeak = (ulSpeed / 1024);
+        ulSpeedPeak = (ulSpeed/1024);
       }
     }
   }
@@ -149,7 +149,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
 
           // Check if standby should be prevented
-          PowerSetting setting = ps.Settings.GetSetting("NetworkMonitorEnabled");          
+          PowerSetting setting = ps.Settings.GetSetting("NetworkMonitorEnabled");
           bool enabled = SettingsManagement.GetValue("NetworkMonitorEnabled", false);
 
           if (setting.Get<bool>() != enabled) // Setting changed
@@ -200,7 +200,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
         }
 
         // Create and enable the timer 
-        timer = new Timer(MonitorInteval * 1000);
+        timer = new Timer(MonitorInteval*1000);
         timer.Elapsed += timer_Elapsed;
         timer.Enabled = true;
       }
@@ -257,7 +257,9 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       }
     }
 
-    public void UserShutdownNow() {}
+    public void UserShutdownNow()
+    {
+    }
 
     public string HandlerName
     {

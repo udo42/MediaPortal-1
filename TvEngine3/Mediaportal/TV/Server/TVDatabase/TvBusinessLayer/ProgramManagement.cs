@@ -17,9 +17,6 @@ using ThreadState = System.Threading.ThreadState;
 
 namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 {
-
-
-
   public class ProgramManagement
   {
     #region delegates
@@ -59,27 +56,29 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
           ThreadHelper.ParallelInvoke(
             delegate
-            {
-              Stopwatch s1 = Stopwatch.StartNew();
-              using (IProgramRepository programRepositoryForThread = new ProgramRepository())
               {
-                IQueryable<Program> nowProgramsForChannelGroup = programRepositoryForThread.GetNowProgramsForChannelGroup(idGroup);
-                //this.LogDebug("GetNowProgramsForChannelGroup SQL = {0}", nowProgramsForChannelGroup.ToTraceString());
-                nowPrograms = nowProgramsForChannelGroup.ToList();
+                Stopwatch s1 = Stopwatch.StartNew();
+                using (IProgramRepository programRepositoryForThread = new ProgramRepository())
+                {
+                  IQueryable<Program> nowProgramsForChannelGroup =
+                    programRepositoryForThread.GetNowProgramsForChannelGroup(idGroup);
+                  //this.LogDebug("GetNowProgramsForChannelGroup SQL = {0}", nowProgramsForChannelGroup.ToTraceString());
+                  nowPrograms = nowProgramsForChannelGroup.ToList();
+                }
+                Log.Debug("GetNowProgramsForChannelGroup took {0}", s1.ElapsedMilliseconds);
+                AddNowProgramsToList(nowPrograms, progList);
               }
-              Log.Debug("GetNowProgramsForChannelGroup took {0}", s1.ElapsedMilliseconds);
-              AddNowProgramsToList(nowPrograms, progList);
-            }
             ,
             delegate
-            {
-              Stopwatch s2 = Stopwatch.StartNew();
-              IQueryable<Program> nextProgramsForChannelGroup = programRepository.GetNextProgramsForChannelGroup(idGroup);
-              //this.LogDebug("GetNextProgramsForChannelGroup SQL = {0}", nextProgramsForChannelGroup.ToTraceString());
-              nextPrograms = nextProgramsForChannelGroup.ToList();
-              Log.Debug("GetNowProgramsForChannelGroup took {0}", s2.ElapsedMilliseconds);
-            }
-          );
+              {
+                Stopwatch s2 = Stopwatch.StartNew();
+                IQueryable<Program> nextProgramsForChannelGroup =
+                  programRepository.GetNextProgramsForChannelGroup(idGroup);
+                //this.LogDebug("GetNextProgramsForChannelGroup SQL = {0}", nextProgramsForChannelGroup.ToTraceString());
+                nextPrograms = nextProgramsForChannelGroup.ToList();
+                Log.Debug("GetNowProgramsForChannelGroup took {0}", s2.ElapsedMilliseconds);
+              }
+            );
 
           AddNextProgramsToList(nextPrograms, progList);
           return progList;
@@ -94,7 +93,6 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       {
         Log.Debug("GetNowAndNextForChannelGroup took {0}", s.ElapsedMilliseconds);
       }
-
     }
 
     private static void AddNextProgramsToList(IEnumerable<Program> nextPrograms, IDictionary<int, NowAndNext> progList)
@@ -204,7 +202,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       programRepository.Delete<Program>(t => channelIds.Any(c => c == t.IdChannel));
     }
 
-    private void DeleteProgramsByPartitions(IProgramRepository programRepository, IEnumerable<ProgramListPartition> deleteProgramRanges)
+    private void DeleteProgramsByPartitions(IProgramRepository programRepository,
+                                            IEnumerable<ProgramListPartition> deleteProgramRanges)
     {
       /*sqlCmd.CommandText =
       "DELETE FROM Program WHERE idChannel = @idChannel AND ((endTime > @rangeStart AND startTime < @rangeEnd) OR (startTime = endTime AND startTime BETWEEN @rangeStart AND @rangeEnd))";
@@ -218,7 +217,6 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
           t.IdChannel == partition.IdChannel && ((t.EndTime > partition.Start && t.StartTime < partition.End)) ||
           (t.StartTime == t.EndTime && t.StartTime >= partition.Start && t.StartTime <= partition.End));
       }
-
     }
 
     public static void DeleteAllPrograms()
@@ -253,7 +251,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       }
     }
 
-    public static IList<Program> GetProgramsByChannelAndStartEndTimes(int idChannel, DateTime startTime, DateTime endTime)
+    public static IList<Program> GetProgramsByChannelAndStartEndTimes(int idChannel, DateTime startTime,
+                                                                      DateTime endTime)
     {
       using (IProgramRepository programRepository = new ProgramRepository())
       {
@@ -265,7 +264,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       }
     }
 
-    public static IList<Program> GetProgramsByChannelAndTitleAndStartEndTimes(int idChannel, string title, DateTime startTime, DateTime endTime)
+    public static IList<Program> GetProgramsByChannelAndTitleAndStartEndTimes(int idChannel, string title,
+                                                                              DateTime startTime, DateTime endTime)
     {
       using (IProgramRepository programRepository = new ProgramRepository())
       {
@@ -351,7 +351,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     /// The deletion is also performed in the same transaction as the inserts so that EPG will not be at any time empty.</para>
     /// <para>After all insert have completed and the background thread is idle for 60 seconds, the program states are
     /// automatically updated to reflect the changes.</para></remarks>
-    public int InsertPrograms(List<Program> aProgramList, DeleteBeforeImportOption progamsToDelete, ThreadPriority aThreadPriority)
+    public int InsertPrograms(List<Program> aProgramList, DeleteBeforeImportOption progamsToDelete,
+                              ThreadPriority aThreadPriority)
     {
       try
       {
@@ -390,11 +391,11 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
           if (_insertProgramsThread == null)
           {
             _insertProgramsThread = new Thread(InsertProgramsThreadStart)
-            {
-              Priority = ThreadPriority.Lowest,
-              Name = "SQL EPG importer",
-              IsBackground = true
-            };
+                                      {
+                                        Priority = ThreadPriority.Lowest,
+                                        Name = "SQL EPG importer",
+                                        IsBackground = true
+                                      };
             _insertProgramsThread.Start();
           }
         }
@@ -513,7 +514,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     }
 
 
-    public static Program RetrieveByTitleTimesAndChannel(string programName, DateTime startTime, DateTime endTime, int idChannel)
+    public static Program RetrieveByTitleTimesAndChannel(string programName, DateTime startTime, DateTime endTime,
+                                                         int idChannel)
     {
       using (IProgramRepository programRepository = new ProgramRepository())
       {
@@ -534,7 +536,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       using (IProgramRepository programRepository = new ProgramRepository())
       {
         DateTime now = DateTime.Now;
-        IQueryable<Program> query = programRepository.GetQuery<Program>(p => p.EndTime >= now && p.IdChannel == channelId);
+        IQueryable<Program> query =
+          programRepository.GetQuery<Program>(p => p.EndTime >= now && p.IdChannel == channelId);
         if (maxDays > 0)
         {
           query = query.Where(p => p.StartTime < now.AddDays(maxDays));
@@ -571,7 +574,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
     public static IList<Program> RetrieveEveryTimeOnEveryChannel(string title)
     {
-      IList<Program> retrieveByTitleAndTimesInterval = RetrieveByTitleAndTimesInterval(title, DateTime.Now, DateTime.MaxValue);
+      IList<Program> retrieveByTitleAndTimesInterval = RetrieveByTitleAndTimesInterval(title, DateTime.Now,
+                                                                                       DateTime.MaxValue);
       return retrieveByTitleAndTimesInterval;
     }
 
@@ -624,8 +628,11 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       // TODO workaround/hack for Entity Framework not currently (as of 21-11-2011) supporting DayOfWeek and other similar date functions.
       // once this gets sorted, if ever, this code should be refactored. The db helper fields should be deleted as they have no purpose.
+
       #region hack
-      query = query.Where(p => p.StartTimeDayOfWeek == (int)dayOfWeek);
+
+      query = query.Where(p => p.StartTimeDayOfWeek == (int) dayOfWeek);
+
       #endregion
 
       //query = query.Where(p => p.startTime.DayOfWeek == dayOfWeek);
@@ -643,7 +650,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       using (IProgramRepository programRepository = new ProgramRepository())
       {
         DateTime now = DateTime.Now;
-        IQueryable<Program> query = programRepository.GetQuery<Program>(p => p.EndTime >= now && p.IdChannel == channelId);
+        IQueryable<Program> query =
+          programRepository.GetQuery<Program>(p => p.EndTime >= now && p.IdChannel == channelId);
         if (maxDays > 0)
         {
           query = query.Where(p => p.StartTime < now.AddDays(maxDays));
@@ -662,8 +670,12 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
       // TODO workaround/hack for Entity Framework not currently (as of 21-11-2011) supporting DayOfWeek and other similar date functions.
       // once this gets sorted, if ever, this code should be refactored. The db helper fields should be deleted as they have no purpose.
+
       #region hack
-      query = query.Where(p => p.StartTimeDayOfWeek == (int)firstWeekendDay || p.StartTimeDayOfWeek == (int)secondWeekendDay);
+
+      query =
+        query.Where(p => p.StartTimeDayOfWeek == (int) firstWeekendDay || p.StartTimeDayOfWeek == (int) secondWeekendDay);
+
       #endregion
 
       //query = query.Where(p => p.startTime.DayOfWeek == firstWeekendDay || p.startTime.DayOfWeek == secondWeekendDay);
@@ -681,7 +693,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       using (IProgramRepository programRepository = new ProgramRepository())
       {
         DateTime now = DateTime.Now;
-        IQueryable<Program> query = programRepository.GetQuery<Program>(p => p.EndTime >= now && p.IdChannel == channelId);
+        IQueryable<Program> query =
+          programRepository.GetQuery<Program>(p => p.EndTime >= now && p.IdChannel == channelId);
         if (maxDays > 0)
         {
           query = query.Where(p => p.StartTime < now.AddDays(maxDays));
@@ -700,11 +713,11 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
     public static IList<Program> RetrieveWorkingDays(DateTime startTime, DateTime endTime, int channelId, int maxDays)
     {
-
       using (IProgramRepository programRepository = new ProgramRepository())
       {
         DateTime now = DateTime.Now;
-        IQueryable<Program> query = programRepository.GetQuery<Program>(p => p.EndTime >= now && p.IdChannel == channelId);
+        IQueryable<Program> query =
+          programRepository.GetQuery<Program>(p => p.EndTime >= now && p.IdChannel == channelId);
         if (maxDays > 0)
         {
           query = query.Where(p => p.StartTime < now.AddDays(maxDays));
@@ -723,9 +736,14 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
       // TODO workaround/hack for Entity Framework not currently (as of 21-11-2011) supporting DayOfWeek and other similar date functions.
       // once this gets sorted, if ever, this code should be refactored. The db helper fields should be deleted as they have no purpose.
+
       #region hack
-      query = query.Where(p => p.StartTimeDayOfWeek != (int)firstWeekendDay && p.StartTimeDayOfWeek != (int)secondWeekendDay);
+
+      query =
+        query.Where(p => p.StartTimeDayOfWeek != (int) firstWeekendDay && p.StartTimeDayOfWeek != (int) secondWeekendDay);
+
       #endregion
+
       //query = query.Where(p => p.startTime.DayOfWeek != firstWeekendDay && p.startTime.DayOfWeek != secondWeekendDay);
       return query;
     }
@@ -734,7 +752,6 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (IProgramRepository programRepository = new ProgramRepository())
       {
-
         SynchronizeDateHelpers(program);
 
         programRepository.AttachEntityIfChangeTrackingDisabled(programRepository.ObjectContext.Programs, program);
@@ -760,8 +777,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
       DateTime startDateTime = program.StartTime;
       DateTime endDateTime = program.EndTime;
-      program.StartTimeDayOfWeek = (short)startDateTime.DayOfWeek;
-      program.EndTimeDayOfWeek = (short)endDateTime.DayOfWeek;
+      program.StartTimeDayOfWeek = (short) startDateTime.DayOfWeek;
+      program.EndTimeDayOfWeek = (short) endDateTime.DayOfWeek;
       program.StartTimeOffset = CreateDateTimeFromTimeSpan(startDateTime.TimeOfDay);
       program.EndTimeOffset = CreateDateTimeFromTimeSpan(endDateTime.Subtract(startDateTime.Date));
 
@@ -780,7 +797,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       }
     }
 
-    public static Program GetProgramsByTitleTimesAndChannel(string programName, DateTime startTime, DateTime endTime, int idChannel)
+    public static Program GetProgramsByTitleTimesAndChannel(string programName, DateTime startTime, DateTime endTime,
+                                                            int idChannel)
     {
       using (IProgramRepository programRepository = new ProgramRepository())
       {
@@ -796,7 +814,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       using (IProgramRepository programRepository = new ProgramRepository())
       {
         IQueryable<Program> programsByState =
-          programRepository.GetQuery<Program>(p => (p.State & (int)state) == (int)state).Include(
+          programRepository.GetQuery<Program>(p => (p.State & (int) state) == (int) state).Include(
             p => p.ProgramCategory);
         return programsByState.ToList();
       }
@@ -813,13 +831,14 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       }
     }
 
-    public static IList<Program> GetProgramsByDescription(string searchCriteria, MediaTypeEnum mediaType, StringComparisonEnum stringComparison)
+    public static IList<Program> GetProgramsByDescription(string searchCriteria, MediaTypeEnum mediaType,
+                                                          StringComparisonEnum stringComparison)
     {
       using (IProgramRepository programRepository = new ProgramRepository())
       {
         IQueryable<Program> query = programRepository.GetQuery<Program>();
         query = programRepository.GetProgramsByDescription(query, searchCriteria, stringComparison);
-        query = query.Where(p => p.Channel.MediaType == (int)mediaType);
+        query = query.Where(p => p.Channel.MediaType == (int) mediaType);
         query = programRepository.IncludeAllRelations(query);
         return query.ToList();
       }
@@ -832,7 +851,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         //todo gibman: check if those stringComparison that contains reg. expr. are indeed working.. client calls with reg exp.
         IQueryable<Program> programsByDescription = programRepository.GetQuery<Program>();
         programsByDescription = programRepository.GetProgramsByDescription(programsByDescription, searchCriteria,
-                                                                            stringComparison);
+                                                                           stringComparison);
         programsByDescription = programRepository.IncludeAllRelations(programsByDescription);
         return programsByDescription.ToList();
       }
@@ -857,19 +876,20 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       {
         IQueryable<Program> programsByCategory = programRepository.GetQuery<Program>();
         programsByCategory = programRepository.GetProgramsByCategory(programsByCategory, searchCriteria,
-                                                                      stringComparison);
+                                                                     stringComparison);
         programsByCategory = programRepository.IncludeAllRelations(programsByCategory);
         return programsByCategory.ToList();
       }
     }
 
-    public static IList<Program> GetProgramsByTitle(string searchCriteria, MediaTypeEnum mediaType, StringComparisonEnum stringComparisonEnum)
+    public static IList<Program> GetProgramsByTitle(string searchCriteria, MediaTypeEnum mediaType,
+                                                    StringComparisonEnum stringComparisonEnum)
     {
       using (IProgramRepository programRepository = new ProgramRepository())
       {
         IQueryable<Program> programsByTitle = programRepository.GetQuery<Program>();
         programsByTitle = programRepository.GetProgramsByTitle(programsByTitle, searchCriteria, stringComparisonEnum);
-        programsByTitle = programsByTitle.Where(p => p.Channel.MediaType == (int)mediaType);
+        programsByTitle = programsByTitle.Where(p => p.Channel.MediaType == (int) mediaType);
         programsByTitle = programRepository.IncludeAllRelations(programsByTitle);
         return programsByTitle.ToList();
       }
@@ -893,7 +913,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         var program = programRepository.FindOne<Program>(
           p => p.Title == programName && p.StartTime == startTime && p.IdChannel == idChannel);
 
-        var programBll = new ProgramBLL(program) { IsRecordingOncePending = false, IsRecordingSeriesPending = true };
+        var programBll = new ProgramBLL(program) {IsRecordingOncePending = false, IsRecordingSeriesPending = true};
         programRepository.Update(programBll.Entity);
         programRepository.UnitOfWork.SaveChanges();
       }
@@ -904,25 +924,28 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       using (IProgramRepository programRepository = new ProgramRepository())
       {
         IList<int> channelIds = channels.Select(channel => channel.IdChannel).ToList();
-        Expression<Func<Channel, bool>> buildContainsExpression = programRepository.BuildContainsExpression<Channel, int>(e => e.IdChannel,
-                                                                                              channelIds);
+        Expression<Func<Channel, bool>> buildContainsExpression =
+          programRepository.BuildContainsExpression<Channel, int>(e => e.IdChannel,
+                                                                  channelIds);
 
         IQueryable<Program> query = programRepository.GetQuery<Program>(
           p => (
-               programRepository.ObjectContext.Channels.Where(buildContainsExpression).Any(
-                 c => c.IdChannel == p.IdChannel)));
+                 programRepository.ObjectContext.Channels.Where(buildContainsExpression).Any(
+                   c => c.IdChannel == p.IdChannel)));
 
         return query.ToList();
       }
     }
 
-    public static IDictionary<int, IList<Program>> GetProgramsForAllChannels(DateTime startTime, DateTime endTime, IEnumerable<Channel> channels)
+    public static IDictionary<int, IList<Program>> GetProgramsForAllChannels(DateTime startTime, DateTime endTime,
+                                                                             IEnumerable<Channel> channels)
     {
       using (IProgramRepository programRepository = new ProgramRepository())
       {
         IList<int> channelIds = channels.Select(channel => channel.IdChannel).ToList();
-        Expression<Func<Channel, bool>> buildContainsExpression = programRepository.BuildContainsExpression<Channel, int>(e => e.IdChannel,
-                                                                                              channelIds);
+        Expression<Func<Channel, bool>> buildContainsExpression =
+          programRepository.BuildContainsExpression<Channel, int>(e => e.IdChannel,
+                                                                  channelIds);
 
         IQueryable<Program> query = programRepository.GetQuery<Program>(
           p => (p.EndTime > startTime && p.EndTime < endTime) ||
@@ -947,14 +970,17 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       }
     }
 
-    public static IList<Program> GetProgramsByTitleAndCategoryAndMediaType(string categoryCriteriea, string titleCriteria, MediaTypeEnum mediaType, StringComparisonEnum stringComparisonCategory, StringComparisonEnum stringComparisonTitle)
+    public static IList<Program> GetProgramsByTitleAndCategoryAndMediaType(string categoryCriteriea,
+                                                                           string titleCriteria, MediaTypeEnum mediaType,
+                                                                           StringComparisonEnum stringComparisonCategory,
+                                                                           StringComparisonEnum stringComparisonTitle)
     {
       using (IProgramRepository programRepository = new ProgramRepository())
       {
         IQueryable<Program> query = programRepository.GetQuery<Program>();
         query = programRepository.GetProgramsByTitle(query, titleCriteria, stringComparisonTitle);
         query = programRepository.GetProgramsByCategory(query, categoryCriteriea, stringComparisonCategory);
-        query = query.Where(p => p.Channel.MediaType == (int)mediaType);
+        query = query.Where(p => p.Channel.MediaType == (int) mediaType);
         query = programRepository.IncludeAllRelations(query);
         return query.ToList();
       }
@@ -989,7 +1015,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         else
         {
           bool isPartialRecording = schedule.IsPartialRecording(prog);
-          if (schedule.Entity.ScheduleType == (int)ScheduleRecordingType.Once)
+          if (schedule.Entity.ScheduleType == (int) ScheduleRecordingType.Once)
           {
             // is one off recording that is still active so set pending flags accordingly
             programBll.IsRecordingOncePending = true;
@@ -1029,45 +1055,47 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         SaveProgram(prog.Entity);
       }
     }
+
     public static IList<Program> GetProgramsForSchedule(Schedule schedule)
     {
       IList<Program> progsEntities = new List<Program>();
       switch (schedule.ScheduleType)
       {
-        case (int)ScheduleRecordingType.Once:
+        case (int) ScheduleRecordingType.Once:
           Program prgOnce = RetrieveByTitleTimesAndChannel(schedule.ProgramName, schedule.StartTime, schedule.EndTime,
-                                                        schedule.IdChannel);
+                                                           schedule.IdChannel);
           if (prgOnce != null)
           {
             progsEntities.Add(prgOnce);
           }
           return progsEntities;
 
-        case (int)ScheduleRecordingType.Daily:
+        case (int) ScheduleRecordingType.Daily:
           progsEntities = RetrieveDaily(schedule.StartTime, schedule.EndTime, schedule.IdChannel);
           break;
 
-        case (int)ScheduleRecordingType.EveryTimeOnEveryChannel:
+        case (int) ScheduleRecordingType.EveryTimeOnEveryChannel:
           progsEntities = RetrieveEveryTimeOnEveryChannel(schedule.ProgramName).ToList();
           return progsEntities;
 
-        case (int)ScheduleRecordingType.EveryTimeOnThisChannel:
+        case (int) ScheduleRecordingType.EveryTimeOnThisChannel:
           progsEntities = RetrieveEveryTimeOnThisChannel(schedule.ProgramName, schedule.IdChannel).ToList();
           return progsEntities;
 
-        case (int)ScheduleRecordingType.WeeklyEveryTimeOnThisChannel:
-          progsEntities = RetrieveWeeklyEveryTimeOnThisChannel(schedule.StartTime, schedule.ProgramName, schedule.IdChannel).ToList();
+        case (int) ScheduleRecordingType.WeeklyEveryTimeOnThisChannel:
+          progsEntities =
+            RetrieveWeeklyEveryTimeOnThisChannel(schedule.StartTime, schedule.ProgramName, schedule.IdChannel).ToList();
           return progsEntities;
 
-        case (int)ScheduleRecordingType.Weekends:
+        case (int) ScheduleRecordingType.Weekends:
           progsEntities = RetrieveWeekends(schedule.StartTime, schedule.EndTime, schedule.IdChannel);
           break;
 
-        case (int)ScheduleRecordingType.Weekly:
+        case (int) ScheduleRecordingType.Weekly:
           progsEntities = RetrieveWeekly(schedule.StartTime, schedule.EndTime, schedule.IdChannel);
           break;
 
-        case (int)ScheduleRecordingType.WorkingDays:
+        case (int) ScheduleRecordingType.WorkingDays:
           progsEntities = RetrieveWorkingDays(schedule.StartTime, schedule.EndTime, schedule.IdChannel);
           break;
       }
@@ -1108,12 +1136,15 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       //TODO implement Future recording as discussed
     }
 
-    public static IList<Program> RetrieveCurrentRunningByTitle(string programName, int preRecordInterval, int postRecordInterval)
+    public static IList<Program> RetrieveCurrentRunningByTitle(string programName, int preRecordInterval,
+                                                               int postRecordInterval)
     {
       using (IProgramRepository programRepository = new ProgramRepository())
       {
         DateTime now = DateTime.Now;
-        return programRepository.GetQuery<Program>(p => p.Title == programName && p.StartTime <= now.AddMinutes(preRecordInterval) && p.EndTime > now).ToList();
+        return
+          programRepository.GetQuery<Program>(
+            p => p.Title == programName && p.StartTime <= now.AddMinutes(preRecordInterval) && p.EndTime > now).ToList();
       }
     }
 
@@ -1154,7 +1185,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       using (IProgramRepository programRepository = new ProgramRepository())
       {
         IQueryable<Program> query =
-          programRepository.GetQuery<Program>(p => p.IdChannel == channelId && p.StartTime >= startTime && p.EndTime <= endTime);
+          programRepository.GetQuery<Program>(
+            p => p.IdChannel == channelId && p.StartTime >= startTime && p.EndTime <= endTime);
         query = programRepository.IncludeAllRelations(query);
         return query.ToList();
       }
@@ -1193,7 +1225,9 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (IProgramRepository programRepository = new ProgramRepository())
       {
-        return programRepository.GetQuery<Program>(p => p.IdChannel == idChannel && p.StartTime >= startTime).OrderBy(p => p.StartTime).ToList();
+        return
+          programRepository.GetQuery<Program>(p => p.IdChannel == idChannel && p.StartTime >= startTime).OrderBy(
+            p => p.StartTime).ToList();
       }
     }
 
@@ -1201,7 +1235,9 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (IProgramRepository programRepository = new ProgramRepository())
       {
-        Program program = programRepository.GetQuery<Program>(p => p.IdChannel == idChannel).OrderByDescending(p => p.StartTime).FirstOrDefault();
+        Program program =
+          programRepository.GetQuery<Program>(p => p.IdChannel == idChannel).OrderByDescending(p => p.StartTime).
+            FirstOrDefault();
         if (program != null)
         {
           return program.StartTime;
@@ -1237,7 +1273,9 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     }
 
     #region hack
-    private static IQueryable<Program> AddTimeRangeConstraint(IQueryable<Program> query, DateTime startTime, DateTime endTime)
+
+    private static IQueryable<Program> AddTimeRangeConstraint(IQueryable<Program> query, DateTime startTime,
+                                                              DateTime endTime)
     {
       TimeSpan startOffset = startTime.TimeOfDay;
       TimeSpan endOffset = endTime - startTime.Date;
@@ -1265,6 +1303,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         );
       return query;
     }
+
     #endregion
   }
 }

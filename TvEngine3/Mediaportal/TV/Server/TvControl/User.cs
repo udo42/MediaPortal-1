@@ -35,32 +35,23 @@ namespace Mediaportal.TV.Server.TVControl
   {
     #region private members
 
-    [DataMember]
-    private int _cardId;
+    [DataMember] private int _cardId;
 
-    [DataMember]
-    private Dictionary<int, ChannelState> _channelStates; //used primarily for miniepg.
+    [DataMember] private Dictionary<int, ChannelState> _channelStates; //used primarily for miniepg.
 
-    [DataMember]
-    private int _failedCardId;
+    [DataMember] private int _failedCardId;
 
-    [NonSerialized]
-    private object _history;
+    [NonSerialized] private object _history;
 
-    [DataMember]
-    private string _hostName;
+    [DataMember] private string _hostName;
 
-    [DataMember]
-    private int? _priority;
+    [DataMember] private int? _priority;
 
-    [DataMember]
-    private IDictionary<int, ISubChannel> _subChannels; //key is subChannelId
+    [DataMember] private IDictionary<int, ISubChannel> _subChannels; //key is subChannelId
 
-    [DataMember]
-    private TvStoppedReason _timeshiftStoppedReason;
+    [DataMember] private TvStoppedReason _timeshiftStoppedReason;
 
-    [DataMember] 
-    private UserType _userType;
+    [DataMember] private UserType _userType;
 
     #endregion
 
@@ -87,7 +78,7 @@ namespace Mediaportal.TV.Server.TVControl
     /// <param name="name">The name.</param>
     /// <param name="userType"> </param>    
     public User(string name, UserType userType) : this()
-    {      
+    {
       _hostName = name;
       _userType = userType;
     }
@@ -99,8 +90,8 @@ namespace Mediaportal.TV.Server.TVControl
     /// <param name="userType"> </param>
     /// <param name="cardId">The card id.</param>
     public User(string name, UserType userType, int cardId) : this(name, userType)
-    {      
-      _cardId = cardId;     
+    {
+      _cardId = cardId;
     }
 
     /// <summary>
@@ -112,8 +103,8 @@ namespace Mediaportal.TV.Server.TVControl
     /// <param name="priority">card lock priority</param>
     public User(string name, UserType userType, int cardId, int priority)
       : this(name, userType, cardId)
-    {     
-      _priority = priority;           
+    {
+      _priority = priority;
     }
 
     #endregion
@@ -129,12 +120,12 @@ namespace Mediaportal.TV.Server.TVControl
     public object Clone()
     {
       var user = new User(_hostName, _userType, _cardId, _priority.GetValueOrDefault())
-                   {                                              
+                   {
                      SubChannels = new SortedDictionary<int, ISubChannel>(_subChannels),
                      History = _history,
                      ChannelStates = new Dictionary<int, ChannelState>(_channelStates),
                      FailedCardId = _failedCardId,
-                     TvStoppedReason = _timeshiftStoppedReason                      
+                     TvStoppedReason = _timeshiftStoppedReason
                    };
 
       return user;
@@ -183,7 +174,7 @@ namespace Mediaportal.TV.Server.TVControl
       get { return _cardId; }
       set { _cardId = value; }
     }
-    
+
     /// <summary>
     /// Gets or sets the name.
     /// </summary>
@@ -192,7 +183,7 @@ namespace Mediaportal.TV.Server.TVControl
     {
       get { return _hostName; }
       set { _hostName = value; }
-    }    
+    }
 
     /// <summary>
     /// Gets or sets the history.

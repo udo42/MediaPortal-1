@@ -6,7 +6,7 @@ using Mediaportal.TV.Server.TVLibrary;
 
 namespace Mediaportal.TV.Server.TVService
 {
-  static class Program
+  internal static class Program
   {
     /// <summary>
     /// The main entry point for the application.
@@ -16,20 +16,20 @@ namespace Mediaportal.TV.Server.TVService
       if (args.Contains("-console"))
       {
         var tvServiceThread = new TvServiceThread(Application.ExecutablePath);
-        tvServiceThread.Start();        
+        tvServiceThread.Start();
 
         while (Console.ReadKey().KeyChar != 'q')
         {
-        }        
+        }
         tvServiceThread.Stop(60000);
       }
 
       else
       {
-        var servicesToRun = new ServiceBase[] 
-                                                  { 
-                                                      new Service1() 
-                                                  };
+        var servicesToRun = new ServiceBase[]
+                              {
+                                new Service1()
+                              };
         ServiceBase.Run(servicesToRun);
       }
     }

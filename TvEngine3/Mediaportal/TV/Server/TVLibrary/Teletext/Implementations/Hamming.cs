@@ -151,7 +151,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
 
       int pageUnits = Decode[rowData[offset + PAGENUMBER_BYTE1_OFFSET]];
       int pageTens = Decode[rowData[offset + PAGENUMBER_BYTE2_OFFSET]];
-      return (magazine * 0x100 + pageTens * 0x10 + pageUnits);
+      return (magazine*0x100 + pageTens*0x10 + pageUnits);
     }
 
     /// <summary>
@@ -266,9 +266,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
     /// <param name="subnr">SubPageNumber</param>
     public static void SetHeader(int offset, ref byte[] byData, int pagenr, int subnr)
     {
-      int magazine = (pagenr / 256) & 0x7;
-      int pageTens = ((pagenr - (magazine * 256)) / 16) & 0xf;
-      int pageUnits = (pagenr - (magazine * 256) - (pageTens * 16)) & 0xf;
+      int magazine = (pagenr/256) & 0x7;
+      int pageTens = ((pagenr - (magazine*256))/16) & 0xf;
+      int pageUnits = (pagenr - (magazine*256) - (pageTens*16)) & 0xf;
 
       if (magazine == 8)
         magazine = 0;
@@ -285,23 +285,23 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       if (magazine == 0)
         magazine = 8; // back to original magazine
 
-      byData[10] = (byte)('0' + magazine);
+      byData[10] = (byte) ('0' + magazine);
       if (pageTens > 9)
       {
         // hex A t/m F
-        byData[11] = (byte)('A' + (pageTens - 10));
+        byData[11] = (byte) ('A' + (pageTens - 10));
       }
       else
       {
-        byData[11] = (byte)('0' + pageTens);
+        byData[11] = (byte) ('0' + pageTens);
       }
       if (pageUnits > 9)
       {
-        byData[12] = (byte)('A' + (pageUnits - 10));
+        byData[12] = (byte) ('A' + (pageUnits - 10));
       }
       else
       {
-        byData[12] = (byte)('0' + pageUnits);
+        byData[12] = (byte) ('0' + pageUnits);
       }
       for (int x = 13; x < 42; x++)
         byData[x] = 0x20;
@@ -316,12 +316,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
     /// <param name="packetNumber">PacketNumber</param>
     public static void SetPacketNumber(int offset, ref byte[] byData, int pageNumber, int packetNumber)
     {
-      int iMagazine = pageNumber / 0x100;
+      int iMagazine = pageNumber/0x100;
       if (iMagazine == 8)
         iMagazine = 0;
 
-      byData[offset + 0] = (packetNumber % 2) == 0 ? Encode[iMagazine] : Encode[iMagazine + 8];
-      byData[offset + 1] = Encode[packetNumber / 2];
+      byData[offset + 0] = (packetNumber%2) == 0 ? Encode[iMagazine] : Encode[iMagazine + 8];
+      byData[offset + 1] = Encode[packetNumber/2];
     }
 
     #endregion

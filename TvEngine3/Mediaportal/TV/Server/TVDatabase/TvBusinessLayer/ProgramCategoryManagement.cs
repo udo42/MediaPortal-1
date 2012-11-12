@@ -7,7 +7,6 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 {
   public static class ProgramCategoryManagement
   {
-
     public static void AddCategory(ProgramCategory category)
     {
       using (var programCategoryRepository = new GenericRepository<Model>())

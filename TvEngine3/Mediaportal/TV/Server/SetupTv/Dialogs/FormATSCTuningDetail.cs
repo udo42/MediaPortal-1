@@ -40,7 +40,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
         textBoxFrequency.Text = TuningDetail.Frequency.ToString();
         textBoxMajor.Text = TuningDetail.MajorChannel.ToString();
         textBoxMinor.Text = TuningDetail.MinorChannel.ToString();
-        switch ((ModulationType)TuningDetail.Modulation)
+        switch ((ModulationType) TuningDetail.Modulation)
         {
           case ModulationType.ModNotSet:
             comboBoxQAMModulation.SelectedIndex = 0;
@@ -102,16 +102,16 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       switch (comboBoxQAMModulation.SelectedIndex)
       {
         case 0:
-          TuningDetail.Modulation = (int)ModulationType.ModNotSet;
+          TuningDetail.Modulation = (int) ModulationType.ModNotSet;
           break;
         case 1:
-          TuningDetail.Modulation = (int)ModulationType.Mod8Vsb;
+          TuningDetail.Modulation = (int) ModulationType.Mod8Vsb;
           break;
         case 2:
-          TuningDetail.Modulation = (int)ModulationType.Mod64Qam;
+          TuningDetail.Modulation = (int) ModulationType.Mod64Qam;
           break;
         case 3:
-          TuningDetail.Modulation = (int)ModulationType.Mod256Qam;
+          TuningDetail.Modulation = (int) ModulationType.Mod256Qam;
           break;
       }
       TuningDetail.NetworkId = Int32.Parse(textBoxQamONID.Text);
@@ -148,7 +148,8 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       // Frequency must be set to -1 for ATSC channels as they are tuned by channel
       // number. QAM channels are tuned by frequency and must have a valid frequency
       // specified.
-      if ((comboBoxQAMModulation.SelectedIndex == 1 && frequency != -1) || (comboBoxQAMModulation.SelectedIndex != 1 && frequency <= 0))
+      if ((comboBoxQAMModulation.SelectedIndex == 1 && frequency != -1) ||
+          (comboBoxQAMModulation.SelectedIndex != 1 && frequency <= 0))
       {
         MessageBox.Show(this, "Please enter a valid frequency!", "Incorrect input");
         return false;

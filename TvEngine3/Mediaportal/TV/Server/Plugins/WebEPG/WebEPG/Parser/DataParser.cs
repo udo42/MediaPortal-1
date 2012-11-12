@@ -119,7 +119,7 @@ namespace WebEPG.Parser
     {
       string rowSource = _rows.GetSource(index);
 
-      var rowData = (IParserData)Activator.CreateInstance(_dataType);
+      var rowData = (IParserData) Activator.CreateInstance(_dataType);
 
       _parser.ParseRow(rowSource, ref rowData);
 

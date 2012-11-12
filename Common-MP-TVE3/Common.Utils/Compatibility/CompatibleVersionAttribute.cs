@@ -68,7 +68,9 @@ namespace MediaPortal.Common.Utils
 
     private static Version ParseVersion(string version)
     {
-      return version.Equals("own", StringComparison.InvariantCultureIgnoreCase) ? OwnAssemblyVersion : new Version(version);
+      return version.Equals("own", StringComparison.InvariantCultureIgnoreCase)
+               ? OwnAssemblyVersion
+               : new Version(version);
     }
   }
 }

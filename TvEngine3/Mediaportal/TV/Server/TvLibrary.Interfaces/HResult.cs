@@ -68,114 +68,142 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       /// Unknown
       /// </summary>
       Unknown = -1,
+
       /// <summary>
       /// Null
       /// </summary>
       Null = 0,
+
       /// <summary>
       /// RPC
       /// </summary>
       RPC = 1,
+
       /// <summary>
       /// Dispatch
       /// </summary>
       Dispatch = 2,
+
       /// <summary>
       /// Storage
       /// </summary>
       Storage = 3,
+
       /// <summary>
       /// ITF
       /// </summary>
       ITF = 4,
+
       /// <summary>
       /// Win32
       /// </summary>
       Win32 = 7,
+
       /// <summary>
       /// Windows
       /// </summary>
       Windows = 8,
+
       /// <summary>
       /// Security
       /// </summary>
       Security = 9,
+
       /// <summary>
       /// Control
       /// </summary>
       Control = 10,
+
       /// <summary>
       /// Cert
       /// </summary>
       Cert = 11,
+
       /// <summary>
       /// Internet
       /// </summary>
       Internet = 12,
+
       /// <summary>
       /// MediaServer
       /// </summary>
       MediaServer = 13,
+
       /// <summary>
       /// MSMQ
       /// </summary>
       MSMQ = 14,
+
       /// <summary>
       /// SetupAPI
       /// </summary>
       SetupAPI = 15,
+
       /// <summary>
       /// SCard
       /// </summary>
       SCard = 16,
+
       /// <summary>
       /// ComPlus
       /// </summary>
       ComPlus = 17,
+
       /// <summary>
       /// AAF
       /// </summary>
       AAF = 18,
+
       /// <summary>
       /// ACS
       /// </summary>
       ACS = 20,
+
       /// <summary>
       /// DPlay
       /// </summary>
       DPlay = 21,
+
       /// <summary>
       /// UMI
       /// </summary>
       UMI = 22,
+
       /// <summary>
       /// SXS
       /// </summary>
       SXS = 23,
+
       /// <summary>
       /// Windows CE
       /// </summary>
       WindowsCE = 24,
+
       /// <summary>
       /// HTTP
       /// </summary>
       HTTP = 25,
+
       /// <summary>
       /// BackgroundCopy
       /// </summary>
       BackgroundCopy = 32,
+
       /// <summary>
       /// Configuration
       /// </summary>
       Configuration = 33,
+
       /// <summary>
       /// StateManagement
       /// </summary>
       StateManagement = 34,
+
       /// <summary>
       /// MetaDirectory
       /// </summary>
       MetaDirectory = 35,
+
       /// <summary>
       /// D3DX
       /// </summary>
@@ -195,18 +223,22 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       /// Unknown severity
       /// </summary>
       Unknown = -1,
+
       /// <summary>
       /// Success severity
       /// </summary>
       Success = 0,
+
       /// <summary>
       /// Info severity
       /// </summary>
       Info = 1,
+
       /// <summary>
       /// Warning severity
       /// </summary>
       Warning = 2,
+
       /// <summary>
       /// Errror severity
       /// </summary>
@@ -285,7 +317,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
     /// <value>The DX error string.</value>
     private string DXErrorString
     {
-      get { return GetDXErrorString((int)_hresult); }
+      get { return GetDXErrorString((int) _hresult); }
     }
 
     /// <summary>
@@ -294,7 +326,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
     /// <value>The DX error description.</value>
     private string DXErrorDescription
     {
-      get { return DsError.GetErrorText((int)_hresult); }
+      get { return DsError.GetErrorText((int) _hresult); }
     }
 
     #endregion
@@ -307,20 +339,20 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
     /// <param name="hresult">The hresult.</param>
     public void Set(int hresult)
     {
-      _hresult = (uint)hresult;
+      _hresult = (uint) hresult;
 
-      _severityCode = (int)(_hresult >> 30);
-      _severity = (Severity)_severityCode;
+      _severityCode = (int) (_hresult >> 30);
+      _severity = (Severity) _severityCode;
 
-      _facilityCode = (int)(_hresult >> 16);
+      _facilityCode = (int) (_hresult >> 16);
       _facilityCode = _facilityCode & 0x0FFF;
 
       if (Enum.IsDefined(typeof (Facility), _facilityCode))
-        _facility = (Facility)_facilityCode;
+        _facility = (Facility) _facilityCode;
       else
         _facility = Facility.Unknown;
 
-      _code = (int)_hresult & 0x0000FFFF;
+      _code = (int) _hresult & 0x0000FFFF;
     }
 
     /// <summary>
@@ -369,7 +401,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
     /// <returns>bool</returns>
     public static bool operator ==(HResult a, int b)
     {
-      return a._hresult == (uint)b;
+      return a._hresult == (uint) b;
     }
 
     /// <summary>
@@ -440,7 +472,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       // Check for null values and compare run-time types.
       if (obj == null || GetType() != obj.GetType())
         return false;
-      return _hresult == ((HResult)obj)._hresult;
+      return _hresult == ((HResult) obj)._hresult;
     }
 
     /// <summary>

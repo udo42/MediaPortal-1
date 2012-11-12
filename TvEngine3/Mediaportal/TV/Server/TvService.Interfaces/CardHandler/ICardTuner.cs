@@ -8,11 +8,13 @@ using Mediaportal.TV.Server.TVService.Interfaces.Services;
 namespace Mediaportal.TV.Server.TVService.Interfaces.CardHandler
 {
   public delegate void OnAfterCancelTuneDelegate(int subchannel);
+
   public delegate void OnAfterTuneDelegate(ITvCardHandler cardHandler);
+
   public delegate void OnBeforeTuneDelegate(ITvCardHandler cardHandler);
 
   public interface ICardTuner
-  {    
+  {
     object CardReservationsLock { get; }
     CardTuneState CardTuneState { get; set; }
     ICardTuneReservationTicket ActiveCardTuneReservationTicket { get; set; }

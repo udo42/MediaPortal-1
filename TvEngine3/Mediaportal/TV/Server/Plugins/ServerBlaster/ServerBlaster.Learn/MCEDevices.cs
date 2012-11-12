@@ -175,14 +175,14 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       {
         if (_deviceStream.EndRead(asyncResult) == 13)
         {
-          if (_deviceBuffer[5] == (int)_doubleClickButton &&
+          if (_deviceBuffer[5] == (int) _doubleClickButton &&
               Environment.TickCount - _doubleClickTick <= _doubleClickTime)
           {
             if (DoubleClick != null) DoubleClick(_doubleClickButton);
           }
           else
           {
-            _doubleClickButton = (RemoteButton)_deviceBuffer[5];
+            _doubleClickButton = (RemoteButton) _deviceBuffer[5];
             _doubleClickTick = Environment.TickCount;
 
             if (Click != null) Click(_doubleClickButton);
@@ -192,7 +192,9 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
         // begin another asynchronous read from the device
         _deviceStream.BeginRead(_deviceBuffer, 0, _deviceBuffer.Length, OnReadComplete, null);
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
     }
 
     private void OnSettingsChanged()
@@ -254,18 +256,18 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       if (blasterPort < 0 || blasterPort > 2) throw new ArgumentException("blasterPort must be 1, 2 or 0 (both)");
 
       var packetSpeed = new[]
-                               {
-                                 new byte[] {0x9F, 0x06, 0x01, 0x44}, // fast
-                                 new byte[] {0x9F, 0x06, 0x01, 0x4A}, // medium
-                                 new byte[] {0x9F, 0x06, 0x01, 0x50}, // slow???
-                               };
+                          {
+                            new byte[] {0x9F, 0x06, 0x01, 0x44}, // fast
+                            new byte[] {0x9F, 0x06, 0x01, 0x4A}, // medium
+                            new byte[] {0x9F, 0x06, 0x01, 0x50}, // slow???
+                          };
 
       var packetPorts = new[]
-                               {
-                                 new byte[] {0x9F, 0x08, 0x06}, // both
-                                 new byte[] {0x9F, 0x08, 0x04}, // 1
-                                 new byte[] {0x9F, 0x08, 0x02}, // 2
-                               };
+                          {
+                            new byte[] {0x9F, 0x08, 0x06}, // both
+                            new byte[] {0x9F, 0x08, 0x04}, // 1
+                            new byte[] {0x9F, 0x08, 0x02}, // 2
+                          };
 
       int s = Math.Max(0, Math.Min(2, _currentSpeed));
       int p = blasterPort;
@@ -368,9 +370,9 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
         lock (_deviceSingleton) _packetArray.Add(packetBuffer);
 
-        if (Array.IndexOf(packetBuffer, (byte)0x80) != -1)
+        if (Array.IndexOf(packetBuffer, (byte) 0x80) != -1)
         {
-          ((LearnCallback)asyncResult.AsyncState)(FinalizePacket());
+          ((LearnCallback) asyncResult.AsyncState)(FinalizePacket());
           return;
         }
 
@@ -419,7 +421,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       foreach (byte[] packetBytes in _packetArray) packetLength += packetBytes.Length;
 
       packetLength -= _packetArray.Count;
-      packetLength += packetLength / 32;
+      packetLength += packetLength/32;
 
       var packetFinal = new byte[packetLength];
 
@@ -427,9 +429,9 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       {
         for (int byteIndex = 1; byteIndex < packetBytes.Length; byteIndex++)
         {
-          if (packetOffset == 0 || packetOffset == 31 || packetOffset % 31 == 0)
+          if (packetOffset == 0 || packetOffset == 31 || packetOffset%31 == 0)
           {
-            packetFinal[packetOffset++] = (byte)((packetOffset + 31 <= packetLength) ? 0x9E : 0x9B);
+            packetFinal[packetOffset++] = (byte) ((packetOffset + 31 <= packetLength) ? 0x9E : 0x9B);
           }
 
           packetFinal[packetOffset++] = packetBytes[byteIndex];
@@ -450,7 +452,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
       foreach (byte[] packetBytes in _packetArray)
       {
-        int indexOf9F = Array.IndexOf(packetBytes, (byte)0x9F);
+        int indexOf9F = Array.IndexOf(packetBytes, (byte) 0x9F);
 
         if (indexOf9F != -1)
         {
@@ -467,7 +469,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       {
         foreach (byte packetByte in packetBytes)
         {
-          packetFinal[packetOffset++] = (packetByte == 0x9F) ? (byte)0x80 : packetByte;
+          packetFinal[packetOffset++] = (packetByte == 0x9F) ? (byte) 0x80 : packetByte;
 
           if (packetByte == 0x9F) break;
         }
@@ -849,7 +851,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
       var Params = new CreateParams();
       Params.ExStyle = 0x80;
-      Params.Style = unchecked((int)0x80000000);
+      Params.Style = unchecked((int) 0x80000000);
       CreateHandle(Params);
     }
 
@@ -874,11 +876,11 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
         switch (m.WParam.ToInt32())
         {
           case DBT_DEVICEARRIVAL:
-            OnDeviceArrival((DeviceBroadcastHeader)Marshal.PtrToStructure(m.LParam, typeof (DeviceBroadcastHeader)),
+            OnDeviceArrival((DeviceBroadcastHeader) Marshal.PtrToStructure(m.LParam, typeof (DeviceBroadcastHeader)),
                             m.LParam);
             break;
           case DBT_DEVICEREMOVECOMPLETE:
-            OnDeviceRemoval((DeviceBroadcastHeader)Marshal.PtrToStructure(m.LParam, typeof (DeviceBroadcastHeader)),
+            OnDeviceRemoval((DeviceBroadcastHeader) Marshal.PtrToStructure(m.LParam, typeof (DeviceBroadcastHeader)),
                             m.LParam);
             break;
         }
@@ -946,7 +948,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       if (dbh.DeviceType == 0x05)
       {
         var dbi =
-          (DeviceBroadcastInterface)Marshal.PtrToStructure(ptr, typeof (DeviceBroadcastInterface));
+          (DeviceBroadcastInterface) Marshal.PtrToStructure(ptr, typeof (DeviceBroadcastInterface));
 
         if (dbi.ClassGuid == _deviceClass && DeviceArrival != null) DeviceArrival();
       }
@@ -956,7 +958,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     {
       if (header.DeviceType == 0x06)
       {
-        var dbh = (DeviceBroadcastHandle)Marshal.PtrToStructure(ptr, typeof (DeviceBroadcastHandle));
+        var dbh = (DeviceBroadcastHandle) Marshal.PtrToStructure(ptr, typeof (DeviceBroadcastHandle));
 
         if (dbh.Handle != _deviceHandle) return;
 

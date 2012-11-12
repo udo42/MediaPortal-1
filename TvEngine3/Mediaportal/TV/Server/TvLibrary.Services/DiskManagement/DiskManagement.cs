@@ -34,15 +34,13 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
   /// </summary>
   public class DiskManagement
   {
- 
-    
     private readonly Timer _timer;
-    
+
 
     public DiskManagement()
     {
       _timer = new Timer();
-      _timer.Interval = 15 * 60 * 1000;
+      _timer.Interval = 15*60*1000;
       _timer.Enabled = true;
       _timer.Elapsed += _timer_Elapsed;
       this.LogDebug("DiskManagement: started");
@@ -85,7 +83,7 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
     private static void CheckFreeDiskSpace()
     {
       //check diskspace every 15 minutes...
-      
+
       if (SettingsManagement.GetValue("diskQuotaEnabled", false))
       {
         //Disk Quota Management disabled: quitting
@@ -131,7 +129,8 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
     private static List<RecordingFileInfo> GetRecordingsOnDrive(string drive)
     {
       var recordings = new List<RecordingFileInfo>();
-      IList<Recording> recordedTvShows = TVDatabase.TVBusinessLayer.RecordingManagement.ListAllRecordingsByMediaType(MediaTypeEnum.TV);
+      IList<Recording> recordedTvShows =
+        TVDatabase.TVBusinessLayer.RecordingManagement.ListAllRecordingsByMediaType(MediaTypeEnum.TV);
 
       foreach (Recording recorded in recordedTvShows)
       {
@@ -192,13 +191,13 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
       while (OutOfDiskSpace(drive) && recordings.Count > 0)
       {
         RecordingFileInfo fi = recordings[0];
-        if (fi.record.KeepUntil == (int)KeepMethodType.UntilSpaceNeeded)
+        if (fi.record.KeepUntil == (int) KeepMethodType.UntilSpaceNeeded)
         {
           // Delete the file from disk and the recording entry from the database.          
           bool result = RecordingFileHandler.DeleteRecordingOnDisk(fi.record.FileName);
           if (result)
           {
-            TVDatabase.TVBusinessLayer.RecordingManagement.DeleteRecording(fi.record.IdRecording);            
+            TVDatabase.TVBusinessLayer.RecordingManagement.DeleteRecording(fi.record.IdRecording);
           }
         }
         recordings.RemoveAt(0);

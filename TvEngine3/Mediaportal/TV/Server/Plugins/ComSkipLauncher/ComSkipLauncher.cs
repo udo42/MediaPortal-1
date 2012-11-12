@@ -112,7 +112,7 @@ namespace Mediaportal.TV.Server.Plugins.ComSkipLauncher
 
     [CLSCompliant(false)]
     public void Start(IInternalControllerService controllerService)
-    {      
+    {
       this.LogInfo("plugin: ComSkipLauncher start");
 
       LoadSettings();
@@ -144,8 +144,8 @@ namespace Mediaportal.TV.Server.Plugins.ComSkipLauncher
     {
       try
       {
-        var tvEvent = (TvServerEventArgs)eventArgs;
-        
+        var tvEvent = (TvServerEventArgs) eventArgs;
+
         Recording recording = RecordingManagement.GetRecording(tvEvent.Recording);
         if (tvEvent.EventType == TvServerEventType.RecordingStarted && _runAtStart)
         {
@@ -185,7 +185,6 @@ namespace Mediaportal.TV.Server.Plugins.ComSkipLauncher
     {
       try
       {
-
         _runAtStart = SettingsManagement.GetValue("ComSkipLauncher_RunAtStart", DefaultRunAtStrart);
         _program = SettingsManagement.GetValue("ComSkipLauncher_Program", DefaultProgram);
         _parameters = SettingsManagement.GetValue("ComSkipLauncher_Parameters", DefaultParameters);
@@ -206,7 +205,7 @@ namespace Mediaportal.TV.Server.Plugins.ComSkipLauncher
       {
         SettingsManagement.SaveValue("ComSkipLauncher_RunAtStart", _runAtStart);
         SettingsManagement.SaveValue("ComSkipLauncher_Program", _program);
-        SettingsManagement.SaveValue("ComSkipLauncher_Parameters", _parameters);        
+        SettingsManagement.SaveValue("ComSkipLauncher_Parameters", _parameters);
       }
       catch (Exception ex)
       {
@@ -244,7 +243,7 @@ namespace Mediaportal.TV.Server.Plugins.ComSkipLauncher
     {
       try
       {
-        using (var process = new Process()) 
+        using (var process = new Process())
         {
           process.StartInfo = new ProcessStartInfo();
           process.StartInfo.Arguments = parameters;

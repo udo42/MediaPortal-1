@@ -5,208 +5,206 @@ using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
 {
-    public static class ObjectContextManager
+  public static class ObjectContextManager
+  {
+    static ObjectContextManager()
     {
-   
-
-      static ObjectContextManager ()
+      try
       {
-        try
-        {
-          var model = new Model();
+        var model = new Model();
 
-          if (!model.DatabaseExists())
-          {
-            Log.Info("DataBase does not exist. Creating database...");
-            model.CreateDatabase();
-            SetupStaticValues(model);
-          }
-          DropConstraint(model, "Recordings", "FK_ChannelRecording");
-          DropConstraint(model, "Recordings", "FK_RecordingProgramCategory");
-          DropConstraint(model, "Recordings", "FK_ScheduleRecording");    
+        if (!model.DatabaseExists())
+        {
+          Log.Info("DataBase does not exist. Creating database...");
+          model.CreateDatabase();
+          SetupStaticValues(model);
         }
-        catch(Exception ex)
-        {
-          Log.Error(ex, "ObjectContextManager : error opening database. Is the SQL engine running ?");
-          throw;
-        }        
+        DropConstraint(model, "Recordings", "FK_ChannelRecording");
+        DropConstraint(model, "Recordings", "FK_RecordingProgramCategory");
+        DropConstraint(model, "Recordings", "FK_ScheduleRecording");
       }
-
-      public static Model CreateDbContext
+      catch (Exception ex)
       {
-        // seems a new instance per WCF is the way to go, since a shared context will end up in EF errors.
-        get
-        {          
-          var model = new Model();
-
-          //model.ContextOptions.DefaultQueryPlanCachingSetting = true;
-          model.ContextOptions.LazyLoadingEnabled = false;
-          model.ContextOptions.ProxyCreationEnabled = false;
-
-          model.CanceledSchedules.MergeOption = MergeOption.NoTracking;
-          model.CardGroupMaps.MergeOption = MergeOption.NoTracking;
-          model.CardGroups.MergeOption = MergeOption.NoTracking;
-          model.Cards.MergeOption = MergeOption.NoTracking;
-          model.ChannelGroups.MergeOption = MergeOption.NoTracking;
-          model.ChannelLinkageMaps.MergeOption = MergeOption.NoTracking;
-          model.ChannelMaps.MergeOption = MergeOption.NoTracking;
-          model.Channels.MergeOption = MergeOption.NoTracking;
-          model.Conflicts.MergeOption = MergeOption.NoTracking;
-          model.DisEqcMotors.MergeOption = MergeOption.NoTracking;
-          model.Favorites.MergeOption = MergeOption.NoTracking;
-          model.GroupMaps.MergeOption = MergeOption.NoTracking;
-          model.Histories.MergeOption = MergeOption.NoTracking;
-          model.KeywordMaps.MergeOption = MergeOption.NoTracking;
-          model.Keywords.MergeOption = MergeOption.NoTracking;
-          model.PendingDeletions.MergeOption = MergeOption.NoTracking;
-          model.PersonalTVGuideMaps.MergeOption = MergeOption.NoTracking;
-          model.ProgramCategories.MergeOption = MergeOption.NoTracking;
-          model.ProgramCredits.MergeOption = MergeOption.NoTracking;
-          model.Programs.MergeOption = MergeOption.NoTracking;
-          model.RecordingCredits.MergeOption = MergeOption.NoTracking;
-          model.Recordings.MergeOption = MergeOption.NoTracking;
-          model.RuleBasedSchedules.MergeOption = MergeOption.NoTracking;
-          model.Satellites.MergeOption = MergeOption.NoTracking;
-          model.ScheduleRulesTemplates.MergeOption = MergeOption.NoTracking;
-          model.Schedules.MergeOption = MergeOption.NoTracking;
-          model.Settings.MergeOption = MergeOption.NoTracking;
-          model.SoftwareEncoders.MergeOption = MergeOption.NoTracking;
-          model.Timespans.MergeOption = MergeOption.NoTracking;
-          model.TuningDetails.MergeOption = MergeOption.NoTracking;
-          model.TvMovieMappings.MergeOption = MergeOption.NoTracking;
-          model.Versions.MergeOption = MergeOption.NoTracking;
-
-          return model;
-        }
+        Log.Error(ex, "ObjectContextManager : error opening database. Is the SQL engine running ?");
+        throw;
       }
+    }
 
-      public static void SetupStaticValues(Model ctx)
+    public static Model CreateDbContext
+    {
+      // seems a new instance per WCF is the way to go, since a shared context will end up in EF errors.
+      get
       {
-        var lnbtype = new LnbType();
-        lnbtype.IdLnbType = 1;
-        lnbtype.Name = "Universal";
-        lnbtype.LowBandFrequency = 9750000;
-        lnbtype.HighBandFrequency = 10600000;
-        lnbtype.SwitchFrequency = 11700000;
-        lnbtype.IsBandStacked = false;
-        lnbtype.IsToroidal = false;
-        ctx.LnbTypes.AddObject(lnbtype);
-        ctx.SaveChanges();
-        var lnbtype2 = new LnbType();
-        lnbtype2.IdLnbType = 2;
-        lnbtype2.Name = "C-Band";
-        lnbtype2.LowBandFrequency = 5150000;
-        lnbtype2.HighBandFrequency = 5650000;
-        lnbtype2.SwitchFrequency = 18000000;
-        lnbtype2.IsBandStacked = false;
-        lnbtype2.IsToroidal = false;
-        ctx.LnbTypes.AddObject(lnbtype2);
-        ctx.SaveChanges();
-        var lnbtype3 = new LnbType();
-        lnbtype3.IdLnbType = 3;
-        lnbtype3.Name = "10750 MHz";
-        lnbtype3.LowBandFrequency = 10750000;
-        lnbtype3.HighBandFrequency = 11250000;
-        lnbtype3.SwitchFrequency = 18000000;
-        lnbtype3.IsBandStacked = false;
-        lnbtype3.IsToroidal = false;
-        ctx.LnbTypes.AddObject(lnbtype3);
-        ctx.SaveChanges();
-        var lnbtype4 = new LnbType();
-        lnbtype4.IdLnbType = 4;
-        lnbtype4.Name = "11250 MHz (NA Legacy)";
-        lnbtype4.LowBandFrequency = 11250000;
-        lnbtype4.HighBandFrequency = 11750000;
-        lnbtype4.SwitchFrequency = 18000000;
-        lnbtype4.IsBandStacked = false;
-        lnbtype4.IsToroidal = false;
-        ctx.LnbTypes.AddObject(lnbtype4);
-        ctx.SaveChanges();
-        var lnbtype5 = new LnbType();
-        lnbtype5.IdLnbType = 5;
-        lnbtype5.Name = "11300 MHz";
-        lnbtype5.LowBandFrequency = 11300000;
-        lnbtype5.HighBandFrequency = 11800000;
-        lnbtype5.SwitchFrequency = 18000000;
-        lnbtype5.IsBandStacked = false;
-        lnbtype5.IsToroidal = false;
-        ctx.LnbTypes.AddObject(lnbtype5);
-        ctx.SaveChanges();
-        var lnbtype6 = new LnbType();
-        lnbtype6.IdLnbType = 6;
-        lnbtype6.Name = "DishPro Band Stacked FSS";
-        lnbtype6.LowBandFrequency = 10750000;
-        lnbtype6.HighBandFrequency = 13850000;
-        lnbtype6.SwitchFrequency = 18000000;
-        lnbtype6.IsBandStacked = true;
-        lnbtype6.IsToroidal = false;
-        ctx.LnbTypes.AddObject(lnbtype6);
-        ctx.SaveChanges();
-        var lnbtype7 = new LnbType();
-        lnbtype7.IdLnbType = 7;
-        lnbtype7.Name = "DishPro Band Stacked DBS";
-        lnbtype7.LowBandFrequency = 11250000;
-        lnbtype7.HighBandFrequency = 14350000;
-        lnbtype7.SwitchFrequency = 18000000;
-        lnbtype7.IsBandStacked = true;
-        lnbtype7.IsToroidal = false;
-        ctx.LnbTypes.AddObject(lnbtype7);
-        ctx.SaveChanges();
-        var lnbtype8 = new LnbType();
-        lnbtype8.IdLnbType = 8;
-        lnbtype8.Name = "NA Band Stacked FSS";
-        lnbtype8.LowBandFrequency = 10750000;
-        lnbtype8.HighBandFrequency = 10175000;
-        lnbtype8.SwitchFrequency = 18000000;
-        lnbtype8.IsBandStacked = true;
-        lnbtype8.IsToroidal = false;
-        ctx.LnbTypes.AddObject(lnbtype8);
-        ctx.SaveChanges();
-        var lnbtype9 = new LnbType();
-        lnbtype9.IdLnbType = 9;
-        lnbtype9.Name = "NA Band Stacked DBS";
-        lnbtype9.LowBandFrequency = 11250000;
-        lnbtype9.HighBandFrequency = 10675000;
-        lnbtype9.SwitchFrequency = 18000000;
-        lnbtype9.IsBandStacked = true;
-        lnbtype9.IsToroidal = false;
-        ctx.LnbTypes.AddObject(lnbtype9);
-        ctx.SaveChanges();
-        var lnbtype10 = new LnbType();
-        lnbtype10.IdLnbType = 10;
-        lnbtype10.Name = "Sadoun Band Stacked";
-        lnbtype10.LowBandFrequency = 10100000;
-        lnbtype10.HighBandFrequency = 10750000;
-        lnbtype10.SwitchFrequency = 18000000;
-        lnbtype10.IsBandStacked = true;
-        lnbtype10.IsToroidal = false;
-        ctx.LnbTypes.AddObject(lnbtype10);
-        ctx.SaveChanges();
-        var lnbtype11 = new LnbType();
-        lnbtype11.IdLnbType = 11;
-        lnbtype11.Name = "C-Band Band Stacked";
-        lnbtype11.LowBandFrequency = 5150000;
-        lnbtype11.HighBandFrequency = 5750000;
-        lnbtype11.SwitchFrequency = 18000000;
-        lnbtype11.IsBandStacked = true;
-        lnbtype11.IsToroidal = false;
-        ctx.LnbTypes.AddObject(lnbtype11);
-        ctx.SaveChanges();
-      }
+        var model = new Model();
 
-      private static void DropConstraint(Model model, string tablename, string constraintname)
+        //model.ContextOptions.DefaultQueryPlanCachingSetting = true;
+        model.ContextOptions.LazyLoadingEnabled = false;
+        model.ContextOptions.ProxyCreationEnabled = false;
+
+        model.CanceledSchedules.MergeOption = MergeOption.NoTracking;
+        model.CardGroupMaps.MergeOption = MergeOption.NoTracking;
+        model.CardGroups.MergeOption = MergeOption.NoTracking;
+        model.Cards.MergeOption = MergeOption.NoTracking;
+        model.ChannelGroups.MergeOption = MergeOption.NoTracking;
+        model.ChannelLinkageMaps.MergeOption = MergeOption.NoTracking;
+        model.ChannelMaps.MergeOption = MergeOption.NoTracking;
+        model.Channels.MergeOption = MergeOption.NoTracking;
+        model.Conflicts.MergeOption = MergeOption.NoTracking;
+        model.DisEqcMotors.MergeOption = MergeOption.NoTracking;
+        model.Favorites.MergeOption = MergeOption.NoTracking;
+        model.GroupMaps.MergeOption = MergeOption.NoTracking;
+        model.Histories.MergeOption = MergeOption.NoTracking;
+        model.KeywordMaps.MergeOption = MergeOption.NoTracking;
+        model.Keywords.MergeOption = MergeOption.NoTracking;
+        model.PendingDeletions.MergeOption = MergeOption.NoTracking;
+        model.PersonalTVGuideMaps.MergeOption = MergeOption.NoTracking;
+        model.ProgramCategories.MergeOption = MergeOption.NoTracking;
+        model.ProgramCredits.MergeOption = MergeOption.NoTracking;
+        model.Programs.MergeOption = MergeOption.NoTracking;
+        model.RecordingCredits.MergeOption = MergeOption.NoTracking;
+        model.Recordings.MergeOption = MergeOption.NoTracking;
+        model.RuleBasedSchedules.MergeOption = MergeOption.NoTracking;
+        model.Satellites.MergeOption = MergeOption.NoTracking;
+        model.ScheduleRulesTemplates.MergeOption = MergeOption.NoTracking;
+        model.Schedules.MergeOption = MergeOption.NoTracking;
+        model.Settings.MergeOption = MergeOption.NoTracking;
+        model.SoftwareEncoders.MergeOption = MergeOption.NoTracking;
+        model.Timespans.MergeOption = MergeOption.NoTracking;
+        model.TuningDetails.MergeOption = MergeOption.NoTracking;
+        model.TvMovieMappings.MergeOption = MergeOption.NoTracking;
+        model.Versions.MergeOption = MergeOption.NoTracking;
+
+        return model;
+      }
+    }
+
+    public static void SetupStaticValues(Model ctx)
+    {
+      var lnbtype = new LnbType();
+      lnbtype.IdLnbType = 1;
+      lnbtype.Name = "Universal";
+      lnbtype.LowBandFrequency = 9750000;
+      lnbtype.HighBandFrequency = 10600000;
+      lnbtype.SwitchFrequency = 11700000;
+      lnbtype.IsBandStacked = false;
+      lnbtype.IsToroidal = false;
+      ctx.LnbTypes.AddObject(lnbtype);
+      ctx.SaveChanges();
+      var lnbtype2 = new LnbType();
+      lnbtype2.IdLnbType = 2;
+      lnbtype2.Name = "C-Band";
+      lnbtype2.LowBandFrequency = 5150000;
+      lnbtype2.HighBandFrequency = 5650000;
+      lnbtype2.SwitchFrequency = 18000000;
+      lnbtype2.IsBandStacked = false;
+      lnbtype2.IsToroidal = false;
+      ctx.LnbTypes.AddObject(lnbtype2);
+      ctx.SaveChanges();
+      var lnbtype3 = new LnbType();
+      lnbtype3.IdLnbType = 3;
+      lnbtype3.Name = "10750 MHz";
+      lnbtype3.LowBandFrequency = 10750000;
+      lnbtype3.HighBandFrequency = 11250000;
+      lnbtype3.SwitchFrequency = 18000000;
+      lnbtype3.IsBandStacked = false;
+      lnbtype3.IsToroidal = false;
+      ctx.LnbTypes.AddObject(lnbtype3);
+      ctx.SaveChanges();
+      var lnbtype4 = new LnbType();
+      lnbtype4.IdLnbType = 4;
+      lnbtype4.Name = "11250 MHz (NA Legacy)";
+      lnbtype4.LowBandFrequency = 11250000;
+      lnbtype4.HighBandFrequency = 11750000;
+      lnbtype4.SwitchFrequency = 18000000;
+      lnbtype4.IsBandStacked = false;
+      lnbtype4.IsToroidal = false;
+      ctx.LnbTypes.AddObject(lnbtype4);
+      ctx.SaveChanges();
+      var lnbtype5 = new LnbType();
+      lnbtype5.IdLnbType = 5;
+      lnbtype5.Name = "11300 MHz";
+      lnbtype5.LowBandFrequency = 11300000;
+      lnbtype5.HighBandFrequency = 11800000;
+      lnbtype5.SwitchFrequency = 18000000;
+      lnbtype5.IsBandStacked = false;
+      lnbtype5.IsToroidal = false;
+      ctx.LnbTypes.AddObject(lnbtype5);
+      ctx.SaveChanges();
+      var lnbtype6 = new LnbType();
+      lnbtype6.IdLnbType = 6;
+      lnbtype6.Name = "DishPro Band Stacked FSS";
+      lnbtype6.LowBandFrequency = 10750000;
+      lnbtype6.HighBandFrequency = 13850000;
+      lnbtype6.SwitchFrequency = 18000000;
+      lnbtype6.IsBandStacked = true;
+      lnbtype6.IsToroidal = false;
+      ctx.LnbTypes.AddObject(lnbtype6);
+      ctx.SaveChanges();
+      var lnbtype7 = new LnbType();
+      lnbtype7.IdLnbType = 7;
+      lnbtype7.Name = "DishPro Band Stacked DBS";
+      lnbtype7.LowBandFrequency = 11250000;
+      lnbtype7.HighBandFrequency = 14350000;
+      lnbtype7.SwitchFrequency = 18000000;
+      lnbtype7.IsBandStacked = true;
+      lnbtype7.IsToroidal = false;
+      ctx.LnbTypes.AddObject(lnbtype7);
+      ctx.SaveChanges();
+      var lnbtype8 = new LnbType();
+      lnbtype8.IdLnbType = 8;
+      lnbtype8.Name = "NA Band Stacked FSS";
+      lnbtype8.LowBandFrequency = 10750000;
+      lnbtype8.HighBandFrequency = 10175000;
+      lnbtype8.SwitchFrequency = 18000000;
+      lnbtype8.IsBandStacked = true;
+      lnbtype8.IsToroidal = false;
+      ctx.LnbTypes.AddObject(lnbtype8);
+      ctx.SaveChanges();
+      var lnbtype9 = new LnbType();
+      lnbtype9.IdLnbType = 9;
+      lnbtype9.Name = "NA Band Stacked DBS";
+      lnbtype9.LowBandFrequency = 11250000;
+      lnbtype9.HighBandFrequency = 10675000;
+      lnbtype9.SwitchFrequency = 18000000;
+      lnbtype9.IsBandStacked = true;
+      lnbtype9.IsToroidal = false;
+      ctx.LnbTypes.AddObject(lnbtype9);
+      ctx.SaveChanges();
+      var lnbtype10 = new LnbType();
+      lnbtype10.IdLnbType = 10;
+      lnbtype10.Name = "Sadoun Band Stacked";
+      lnbtype10.LowBandFrequency = 10100000;
+      lnbtype10.HighBandFrequency = 10750000;
+      lnbtype10.SwitchFrequency = 18000000;
+      lnbtype10.IsBandStacked = true;
+      lnbtype10.IsToroidal = false;
+      ctx.LnbTypes.AddObject(lnbtype10);
+      ctx.SaveChanges();
+      var lnbtype11 = new LnbType();
+      lnbtype11.IdLnbType = 11;
+      lnbtype11.Name = "C-Band Band Stacked";
+      lnbtype11.LowBandFrequency = 5150000;
+      lnbtype11.HighBandFrequency = 5750000;
+      lnbtype11.SwitchFrequency = 18000000;
+      lnbtype11.IsBandStacked = true;
+      lnbtype11.IsToroidal = false;
+      ctx.LnbTypes.AddObject(lnbtype11);
+      ctx.SaveChanges();
+    }
+
+    private static void DropConstraint(Model model, string tablename, string constraintname)
+    {
+      try
       {
-        try
-        {
-          model.ExecuteStoreCommand("ALTER TABLE " + tablename + " DROP CONSTRAINT [" + constraintname + "]");
-        }
-        catch (Exception)
-        {
-          //ignore
-        }        
+        model.ExecuteStoreCommand("ALTER TABLE " + tablename + " DROP CONSTRAINT [" + constraintname + "]");
       }
+      catch (Exception)
+      {
+        //ignore
+      }
+    }
 
-      /*public static void Init(string[] mappingAssemblies, bool recreateDatabaseIfExist = false, bool lazyLoadingEnabled = true)
+    /*public static void Init(string[] mappingAssemblies, bool recreateDatabaseIfExist = false, bool lazyLoadingEnabled = true)
         {
             Init(DefaultConnectionStringName, mappingAssemblies, recreateDatabaseIfExist, lazyLoadingEnabled);
         }        
@@ -329,5 +327,5 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext
         private static Dictionary<string, IObjectContextBuilder<System.Data.Objects.ObjectContext>> objectContextBuilders = new Dictionary<string, IObjectContextBuilder<System.Data.Objects.ObjectContext>>();
 
         private static object _syncLock = new object();*/
-    }  
+  }
 }

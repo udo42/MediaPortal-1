@@ -25,5 +25,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   /// <summary>
   /// Summary description for MPContextMenuStrip.
   /// </summary>
-  public class MPContextMenuStrip : ContextMenuStrip {}
+  public class MPContextMenuStrip : ContextMenuStrip
+  {
+  }
 }

@@ -29,8 +29,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 {
   public class ChannelScanning : IChannelScanning
   {
-
-
     private readonly ITvCardHandler _cardHandler;
 
     /// <summary>
@@ -57,7 +55,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           if (_cardHandler.DataBaseCard.Enabled == false)
           {
             return false;
-          }        
+          }
 
           return _cardHandler.Card.IsScanning;
         }
@@ -84,7 +82,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           return new List<IChannel>().ToArray();
         }
 
-        
+
         ITVScanning scanner = _cardHandler.Card.ScanningInterface;
         if (scanner == null)
           return null;
@@ -114,7 +112,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         {
           return new List<IChannel>().ToArray();
         }
-       
+
         ITVScanning scanner = _cardHandler.Card.ScanningInterface;
         if (scanner == null)
           return null;

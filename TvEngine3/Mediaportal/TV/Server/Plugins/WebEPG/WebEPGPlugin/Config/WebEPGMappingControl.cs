@@ -105,7 +105,8 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
         }
         else
         {
-          IList<ChannelGroup> channelGroups = ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllChannelGroupsByMediaType(MediaTypeEnum.Radio);
+          IList<ChannelGroup> channelGroups =
+            ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllChannelGroupsByMediaType(MediaTypeEnum.Radio);
           foreach (ChannelGroup cg in channelGroups)
           {
             GroupComboBox.Items.Add(new CBChannelGroup(cg.GroupName, cg.IdGroup));
@@ -210,7 +211,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
 
     private void getTvServerChannels()
     {
-      var chGroup = (CBChannelGroup)GroupComboBox.SelectedItem;
+      var chGroup = (CBChannelGroup) GroupComboBox.SelectedItem;
 
       IList<Channel> channels = new List<Channel>();
       MediaTypeEnum mediaType = MediaTypeEnum.Radio;
@@ -220,7 +221,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
       }
       if (chGroup != null && chGroup.idGroup != -1)
       {
-        ServiceAgents.Instance.ChannelServiceAgent.GetAllChannelsByGroupIdAndMediaType(chGroup.idGroup, mediaType);          
+        ServiceAgents.Instance.ChannelServiceAgent.GetAllChannelsByGroupIdAndMediaType(chGroup.idGroup, mediaType);
       }
       else
       {
@@ -254,7 +255,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
         string name = string.Empty;
         if (channel.id != null)
         {
-          var info = (ChannelConfigInfo)_hChannelConfigInfo[channel.id];
+          var info = (ChannelConfigInfo) _hChannelConfigInfo[channel.id];
           if (info != null)
           {
             name = info.FullName;
@@ -301,7 +302,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
           string name = string.Empty;
           if (channelDetails.id != null)
           {
-            var info = (ChannelConfigInfo)_hChannelConfigInfo[channelDetails.id];
+            var info = (ChannelConfigInfo) _hChannelConfigInfo[channelDetails.id];
             if (info != null)
             {
               name = info.FullName;
@@ -380,13 +381,13 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
       if (channelId != null && grabberId != null)
       {
         tbChannelName.Tag = channelId;
-        var info = (ChannelConfigInfo)_hChannelConfigInfo[channelId];
+        var info = (ChannelConfigInfo) _hChannelConfigInfo[channelId];
         if (info != null)
         {
           tbChannelName.Text = info.FullName;
           this.LogInfo("WebEPG Config: Selection: {0}", info.FullName);
 
-          var gInfo = (GrabberConfigInfo)info.GrabberList[grabberId];
+          var gInfo = (GrabberConfigInfo) info.GrabberList[grabberId];
           if (gInfo != null)
           {
             tbGrabSite.Text = gInfo.GrabberName;

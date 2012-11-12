@@ -44,7 +44,9 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       }
     }
 
-    private Log() {}
+    private Log()
+    {
+    }
 
     public static string Filename
     {
@@ -66,6 +68,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
     {
       Write(strFormat, arg);
     }
+
     public static void Write(string strFormat, params object[] arg)
     {
       if (_logEnabled == false) return;
@@ -83,7 +86,9 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
 
           Console.WriteLine(string.Format(strFormat, arg));
         }
-        catch (Exception) {}
+        catch (Exception)
+        {
+        }
       }
     }
   }

@@ -12,7 +12,7 @@ using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.TVLibrary.Services
 {
-  class Subscriber
+  internal class Subscriber
   {
     public string UserName { get; set; }
     public IServerEventCallback ServerEventCallback { get; set; }
@@ -27,7 +27,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     #endregion
 
-    private static readonly IDictionary<string, Subscriber> _subscribers = new ConcurrentDictionary<string, Subscriber>();
+    private static readonly IDictionary<string, Subscriber> _subscribers =
+      new ConcurrentDictionary<string, Subscriber>();
+
     private static readonly object _subscribersLock = new object();
 
     public static UserDisconnectedFromServiceDelegate UserDisconnectedFromService;
@@ -48,7 +50,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       Dispose();
     }
 
-    public static void CleanUp ()
+    public static void CleanUp()
     {
       lock (_subscribersLock)
       {
@@ -59,7 +61,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
           if (obj != null)
           {
             obj.Abort();
-            obj.Close();            
+            obj.Close();
           }
         }
         _subscribers.Clear();
@@ -91,18 +93,17 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
             obj.Faulted += EventService_Faulted;
             obj.Closed += EventService_Closed;
           }
-          var subscriber = new Subscriber { UserName = username, ServerEventCallback = eventCallback };
+          var subscriber = new Subscriber {UserName = username, ServerEventCallback = eventCallback};
           lock (_subscribersLock)
           {
             _subscribers[username] = subscriber;
           }
-          
         }
         catch (Exception e)
         {
           this.LogError("EventService.Subscribe failed for user '{0}' with ex '{1}'", username, e);
         }
-      }      
+      }
     }
 
     public void Unsubscribe(string username)
@@ -115,7 +116,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
         found = _subscribers.TryGetValue(username, out subscriber);
       }
       if (found)
-      {        
+      {
         FireUserDisconnectedFromService(subscriber.ServerEventCallback);
       }
     }
@@ -135,7 +136,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     }
 
     private static void FireUserDisconnectedFromService(IServerEventCallback eventCallback)
-    {      
+    {
       if (eventCallback != null)
       {
         {
@@ -170,9 +171,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
               }
             }
           }
-        }        
+        }
       }
-    }    
+    }
 
     private static bool IsConnectionReady(ICommunicationObject callback)
     {
@@ -210,28 +211,30 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
                                                                          }
                                                                          catch (Exception ex)
                                                                          {
-                                                                           Log.Error("EventService.EndOnCallbackTvServerEvent failed for user:{0} ex:{1}", username, ex);
+                                                                           Log.Error(
+                                                                             "EventService.EndOnCallbackTvServerEvent failed for user:{0} ex:{1}",
+                                                                             username, ex);
                                                                          }
                                                                        },
                                                           null);
                   }
                   catch (Exception ex)
                   {
-                    Log.Error("EventService.BeginOnCallbackTvServerEvent failed for user:{0} ex:{1}", username, ex);        
+                    Log.Error("EventService.BeginOnCallbackTvServerEvent failed for user:{0} ex:{1}", username, ex);
                   }
                 }
-              );             
+              );
           }
           else
           {
             FireUserDisconnectedFromService(subscriber.ServerEventCallback);
           }
-        }    
+        }
       }
       catch (Exception ex)
       {
         Log.Error("EventService.CallbackTvServerEvent failed for user:{0} ex:{1}", username, ex);
-      }      
+      }
     }
 
     public static void CallbackCiMenuEvent(string username, CiMenu eventArgs)
@@ -242,14 +245,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       {
         userFound = _subscribers.TryGetValue(username, out subscriber);
       }
-     
+
       try
       {
         if (userFound)
         {
           if (IsConnectionReady(subscriber.ServerEventCallback as ICommunicationObject))
           {
-            IServerEventCallback callback = subscriber.ServerEventCallback;            
+            IServerEventCallback callback = subscriber.ServerEventCallback;
             ThreadPool.QueueUserWorkItem(
               delegate
                 {
@@ -269,14 +272,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
                                                                 username, ex);
                                                             }
                                                           },
-                                                        null);                
+                                                        null);
                   }
                   catch (Exception ex)
                   {
                     Log.Error("EventService.BeginOnCallbackCiMenuEvent failed for user:{0} ex:{1}", username, ex);
                   }
                 }
-              ); 
+              );
           }
           else
           {
@@ -287,7 +290,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       catch (Exception ex)
       {
         Log.Error("EventService.CallbackCiMenuEvent failed for user:{0} ex:{1}", username, ex);
-      }   
+      }
     }
 
     public static bool CallbackRequestHeartbeat(string username)
@@ -333,7 +336,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
                     Log.Error("EventService.BeginOnCallbackHeartBeatEvent failed for user:{0} ex:{1}", username, ex);
                   }
                 }
-              ); 
+              );
 
             heartbeatSent = true;
           }
@@ -345,9 +348,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       }
       catch (Exception ex)
       {
-        Log.Error("EventService.CallbackRequestHeartbeat failed for user:{0} ex:{1}", username, ex);                
+        Log.Error("EventService.CallbackRequestHeartbeat failed for user:{0} ex:{1}", username, ex);
       }
-      
+
       return heartbeatSent;
     }
 

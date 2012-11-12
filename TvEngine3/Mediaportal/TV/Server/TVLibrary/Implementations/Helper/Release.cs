@@ -29,8 +29,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
   /// </summary>
   public class Release
   {
-
-
     public static int ComObject(object o)
     {
       const int hr = 0;
@@ -59,6 +57,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         //Log.this.LogDebug("  Release {0} returns {1}", line, hr);
       }
     }
+
     /// <summary>
     /// Releases a com object
     /// </summary>
@@ -87,6 +86,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 
         o = default(E);
       }
-    }   
+    }
   }
 }

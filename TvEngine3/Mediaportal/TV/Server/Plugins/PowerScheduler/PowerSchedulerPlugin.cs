@@ -117,10 +117,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
 
     public object GetServiceInstance
     {
-      get
-      {
-        return PowerScheduler.Instance;
-      }
+      get { return PowerScheduler.Instance; }
     }
 
     /// <summary>
@@ -128,7 +125,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     /// </summary>
     public Type GetServiceInterfaceForContractType
     {
-      get { return typeof(IPowerController); }
+      get { return typeof (IPowerController); }
     }
 
     #endregion

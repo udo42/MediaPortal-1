@@ -41,9 +41,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
 
     private enum BdaExtensionProperty
     {
-      Tune = 0,               // For custom tuning implementation.
-      Diseqc,                 // For DiSEqC messaging.
-      SignalStatus,           // For retrieving signal quality, strength, lock status and the actual lock frequency.
+      Tune = 0, // For custom tuning implementation.
+      Diseqc, // For DiSEqC messaging.
+      SignalStatus, // For retrieving signal quality, strength, lock status and the actual lock frequency.
     }
 
     #endregion
@@ -116,25 +116,24 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
     [StructLayout(LayoutKind.Sequential)]
     private struct BdaExtensionParams
     {
-      public UInt32 Frequency;              // unit = MHz
-      public UInt32 LnbLowBandLof;          // unit = MHz
-      public UInt32 LnbHighBandLof;         // unit = MHz
-      public UInt32 LnbSwitchFrequency;     // unit = MHz
-      public UInt32 SymbolRate;             // unit = ks/s
+      public UInt32 Frequency; // unit = MHz
+      public UInt32 LnbLowBandLof; // unit = MHz
+      public UInt32 LnbHighBandLof; // unit = MHz
+      public UInt32 LnbSwitchFrequency; // unit = MHz
+      public UInt32 SymbolRate; // unit = ks/s
       public Polarisation Polarisation;
       public ModulationType Modulation;
       public BinaryConvolutionCodeRate InnerFecRate;
       public GenpixSwitchPort SwitchPort;
 
-      public UInt32 DiseqcRepeats;          // Set to zero to send once, one to send twice, two to send three times etc.
+      public UInt32 DiseqcRepeats; // Set to zero to send once, one to send twice, two to send three times etc.
 
       public UInt32 DiseqcMessageLength;
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcMessageLength)]
-      public byte[] DiseqcMessage;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcMessageLength)] public byte[] DiseqcMessage;
       public bool DiseqcForceHighVoltage;
 
-      public readonly UInt32 SignalStrength;         // range = 0 - 100%
-      public readonly UInt32 SignalQuality;          // range = 0 - 100%
+      public readonly UInt32 SignalStrength; // range = 0 - 100%
+      public readonly UInt32 SignalQuality; // range = 0 - 100%
       public readonly bool SignalIsLocked;
     }
 
@@ -142,11 +141,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
 
     #region constants
 
-    private const int InstanceSize = 32;    // The size of a property instance (KSP_NODE) parameter.
+    private const int InstanceSize = 32; // The size of a property instance (KSP_NODE) parameter.
 
     private const int BdaExtensionParamsSize = 68;
     private const int MaxDiseqcMessageLength = 8;
-    private static readonly Guid BdaExtensionPropertySet = new Guid(0xdf981009, 0x0d8a, 0x430e, 0xa8, 0x03, 0x17, 0xc5, 0x14, 0xdc, 0x8e, 0xc0);
+
+    private static readonly Guid BdaExtensionPropertySet = new Guid(0xdf981009, 0x0d8a, 0x430e, 0xa8, 0x03, 0x17, 0xc5,
+                                                                    0x14, 0xdc, 0x8e, 0xc0);
 
     #endregion
 
@@ -192,10 +193,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
       }
 
       KSPropertySupport support;
-      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.Diseqc, out support);
+      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int) BdaExtensionProperty.Diseqc, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
-        this.LogDebug("Genpix: device does not support the Genpix property set, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Genpix: device does not support the Genpix property set, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         return false;
       }
 
@@ -215,7 +217,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
     /// <param name="currentChannel">The channel that the tuner is currently tuned to..</param>
     /// <param name="channel">The channel that the tuner will been tuned to.</param>
     /// <param name="action">The action to take, if any.</param>
-    public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel, out DeviceAction action)
+    public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel,
+                                      out DeviceAction action)
     {
       this.LogDebug("Genpix: on before tune callback");
       action = DeviceAction.Default;
@@ -361,11 +364,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
 
       var dvbsChannel = channel as DVBSChannel;
       var command = new BdaExtensionParams();
-      command.Frequency = (UInt32)dvbsChannel.Frequency / 1000;
-      command.LnbLowBandLof = (UInt32)dvbsChannel.LnbType.LowBandFrequency / 1000;
-      command.LnbHighBandLof = (UInt32)dvbsChannel.LnbType.HighBandFrequency / 1000;
-      command.LnbSwitchFrequency = (UInt32)dvbsChannel.LnbType.SwitchFrequency / 1000;
-      command.SymbolRate = (UInt32)dvbsChannel.SymbolRate;
+      command.Frequency = (UInt32) dvbsChannel.Frequency/1000;
+      command.LnbLowBandLof = (UInt32) dvbsChannel.LnbType.LowBandFrequency/1000;
+      command.LnbHighBandLof = (UInt32) dvbsChannel.LnbType.HighBandFrequency/1000;
+      command.LnbSwitchFrequency = (UInt32) dvbsChannel.LnbType.SwitchFrequency/1000;
+      command.SymbolRate = (UInt32) dvbsChannel.SymbolRate;
       command.Polarisation = dvbsChannel.Polarisation;
       command.Modulation = dvbsChannel.ModulationType;
       command.InnerFecRate = dvbsChannel.InnerFecRate;
@@ -375,7 +378,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
       Marshal.StructureToPtr(command, _generalBuffer, true);
       DVB_MMI.DumpBinary(_generalBuffer, 0, BdaExtensionParamsSize);
 
-      int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.Tune,
+      int hr = _propertySet.Set(BdaExtensionPropertySet, (int) BdaExtensionProperty.Tune,
                                 _instanceBuffer, InstanceSize,
                                 _generalBuffer, BdaExtensionParamsSize
         );
@@ -428,15 +431,15 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
       command.DiseqcMessage = new byte[MaxDiseqcMessageLength];
       if (toneBurstState == ToneBurst.ToneBurst)
       {
-        command.DiseqcMessage[0] = (byte)GenpixToneBurst.ToneBurst;
+        command.DiseqcMessage[0] = (byte) GenpixToneBurst.ToneBurst;
       }
       else if (toneBurstState == ToneBurst.DataBurst)
       {
-        command.DiseqcMessage[0] = (byte)GenpixToneBurst.DataBurst;
+        command.DiseqcMessage[0] = (byte) GenpixToneBurst.DataBurst;
       }
 
       Marshal.StructureToPtr(command, _generalBuffer, true);
-      int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.Diseqc,
+      int hr = _propertySet.Set(BdaExtensionPropertySet, (int) BdaExtensionProperty.Diseqc,
                                 _instanceBuffer, InstanceSize,
                                 _generalBuffer, BdaExtensionParamsSize
         );
@@ -476,14 +479,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Genpix
       }
 
       var message = new BdaExtensionParams();
-      message.DiseqcMessageLength = (uint)command.Length;
+      message.DiseqcMessageLength = (uint) command.Length;
       message.DiseqcRepeats = 0;
       message.DiseqcForceHighVoltage = true;
       message.DiseqcMessage = new byte[MaxDiseqcMessageLength];
       Buffer.BlockCopy(command, 0, message.DiseqcMessage, 0, command.Length);
 
       Marshal.StructureToPtr(message, _generalBuffer, true);
-      int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.Diseqc,
+      int hr = _propertySet.Set(BdaExtensionPropertySet, (int) BdaExtensionProperty.Diseqc,
                                 _instanceBuffer, InstanceSize,
                                 _generalBuffer, BdaExtensionParamsSize
         );

@@ -10,7 +10,7 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler
   {
     public static string Serialize<T>(IEnumerable<IScheduleCondition> objectToSerialize)
     {
-      var ser = new DataContractSerializer(typeof(T));
+      var ser = new DataContractSerializer(typeof (T));
       using (var writer = new MemoryStream())
       {
         ser.WriteObject(writer, objectToSerialize);
@@ -26,8 +26,8 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler
       using (var writer = new MemoryStream(dataAsbytes))
       {
         XmlDictionaryReader reader = XmlDictionaryReader.CreateTextReader(writer, new XmlDictionaryReaderQuotas());
-        var ser = new DataContractSerializer(typeof(T));
-        return (T)ser.ReadObject(reader, true);
+        var ser = new DataContractSerializer(typeof (T));
+        return (T) ser.ReadObject(reader, true);
       }
     }
   }

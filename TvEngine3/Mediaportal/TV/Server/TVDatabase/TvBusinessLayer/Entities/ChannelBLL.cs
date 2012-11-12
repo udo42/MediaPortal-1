@@ -15,9 +15,9 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
     private DateTime _updateNowAndNextLastRun = DateTime.MinValue;
     private bool _updateNowAndNextRun;
 
-    public ChannelBLL (Channel entity)
-    {      
-      _entity = entity;      
+    public ChannelBLL(Channel entity)
+    {
+      _entity = entity;
     }
 
     /// <summary>
@@ -60,13 +60,14 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
             return;
           }
         }
-        else if (_updateNowAndNextRun) //non EPG channels will cause excessive server calls, lets limit the calls to once a minute.         
+        else if (_updateNowAndNextRun)
+          //non EPG channels will cause excessive server calls, lets limit the calls to once a minute.         
         {
           TimeSpan ts = DateTime.Now - _updateNowAndNextLastRun;
           if (ts.TotalSeconds < 60)
           {
             return;
-          }          
+          }
         }
 
         _currentProgram = null;
@@ -74,7 +75,9 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.Entities
 
         DateTime date = DateTime.Now;
 
-        IList<Program> programs = GlobalServiceProvider.Instance.Get<IProgramService>().GetNowAndNextProgramsForChannel(_entity.IdChannel).ToList();
+        IList<Program> programs =
+          GlobalServiceProvider.Instance.Get<IProgramService>().GetNowAndNextProgramsForChannel(_entity.IdChannel).
+            ToList();
         if (programs.Count == 0)
         {
           return;

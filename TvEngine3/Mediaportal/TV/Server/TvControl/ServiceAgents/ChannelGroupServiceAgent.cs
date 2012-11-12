@@ -47,9 +47,10 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     public void DeleteChannelGroup(int idGroup)
     {
       _channel.DeleteChannelGroup(idGroup);
-    }   
+    }
 
-    public IList<ChannelGroup> ListAllChannelGroupsByMediaType(MediaTypeEnum mediaType, ChannelGroupIncludeRelationEnum includeRelations)
+    public IList<ChannelGroup> ListAllChannelGroupsByMediaType(MediaTypeEnum mediaType,
+                                                               ChannelGroupIncludeRelationEnum includeRelations)
     {
       return _channel.ListAllChannelGroupsByMediaType(mediaType, includeRelations);
     }
@@ -64,7 +65,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       return _channel.ListAllChannelGroups(includeRelations);
     }
 
-    public IList<ChannelGroup> ListAllCustomChannelGroups(ChannelGroupIncludeRelationEnum includeRelations, MediaTypeEnum mediaType)
+    public IList<ChannelGroup> ListAllCustomChannelGroups(ChannelGroupIncludeRelationEnum includeRelations,
+                                                          MediaTypeEnum mediaType)
     {
       return _channel.ListAllCustomChannelGroups(includeRelations, mediaType);
     }

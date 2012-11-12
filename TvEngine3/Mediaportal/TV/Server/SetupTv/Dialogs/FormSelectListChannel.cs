@@ -31,7 +31,6 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
 {
   public partial class FormSelectListChannel : Form
   {
-
     public FormSelectListChannel()
     {
       InitializeComponent();
@@ -49,7 +48,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
           if (selectedChannel.IdChannel > -1)
           {
             this.LogDebug("SelectListChannel: Channel '{0}' has been selected. ID = {1}", selectedChannel.DisplayName,
-                      selectedChannel.IdChannel);
+                          selectedChannel.IdChannel);
             return selectedChannel.IdChannel;
           }
         }
@@ -70,7 +69,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       try
       {
         IList<Channel> channels = new List<Channel>();
-        
+
         if (checkBoxGuideChannels.Checked)
         {
           channels = ServiceAgents.Instance.ChannelServiceAgent.ListAllVisibleChannelsByMediaType(MediaTypeEnum.TV);
@@ -78,9 +77,10 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
         else
         {
           channels =
-            ServiceAgents.Instance.ChannelServiceAgent.ListAllChannelsByMediaType(MediaTypeEnum.TV).OrderBy(c => c.SortOrder).
+            ServiceAgents.Instance.ChannelServiceAgent.ListAllChannelsByMediaType(MediaTypeEnum.TV).OrderBy(
+              c => c.SortOrder).
               OrderBy(c => c.DisplayName).ToList();
-        }                
+        }
 
         foreach (Channel t in channels)
         {
@@ -133,7 +133,9 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
           e.Item.Checked = e.IsSelected;
         }
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
     }
 
     private void listViewChannels_ItemChecked(object sender, ItemCheckedEventArgs e)
@@ -145,7 +147,9 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
           e.Item.Selected = e.Item.Checked;
         }
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
     }
 
     #endregion

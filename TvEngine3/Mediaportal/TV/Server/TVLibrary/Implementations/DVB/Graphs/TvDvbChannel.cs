@@ -118,7 +118,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
 
       _tuner = tuner;
       _subChannelIndex = -1;
-      _tsFilterInterface = (ITsFilter)tsWriter;
+      _tsFilterInterface = (ITsFilter) tsWriter;
       _tsFilterInterface.AddChannel(ref _subChannelIndex);
       this.LogDebug("TvDvbChannel: new subchannel {0} index {1}", _subChannelId, _subChannelIndex);
       _filterTif = tif;
@@ -146,26 +146,17 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
 
     public List<UInt16> Pids
     {
-      get
-      {
-        return _pids;
-      }
+      get { return _pids; }
     }
 
     public Pmt Pmt
     {
-      get
-      {
-        return _pmt;
-      }
+      get { return _pmt; }
     }
 
     public Cat Cat
     {
-      get
-      {
-        return _cat;
-      }
+      get { return _cat; }
     }
 
     #endregion
@@ -193,20 +184,20 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       // Pass the core PIDs to the tuner's hardware PID filter so that we can do
       // basic tuning and scanning.
       _pids = new List<ushort>();
-      _pids.Add(0x0);    // PAT - for service lookup
-      _pids.Add(0x1);    // CAT - for conditional access info when the service needs to be decrypted
-      _pids.Add(0x10);   // DVB NIT - for service info
-      _pids.Add(0x11);   // DVB SDT - for service info
+      _pids.Add(0x0); // PAT - for service lookup
+      _pids.Add(0x1); // CAT - for conditional access info when the service needs to be decrypted
+      _pids.Add(0x10); // DVB NIT - for service info
+      _pids.Add(0x11); // DVB SDT - for service info
       if (_currentChannel is ATSCChannel)
       {
         _pids.Add(0x1ffb); // ATSC VCT - for service info
       }
 
       // If we can, also pass the PMT PID. We don't know what the PMT PID is when scanning.
-      var ch = (DVBBaseChannel)_currentChannel;
+      var ch = (DVBBaseChannel) _currentChannel;
       if (ch != null && ch.PmtPid > 0)
       {
-        _pids.Add((UInt16)ch.PmtPid);
+        _pids.Add((UInt16) ch.PmtPid);
       }
     }
 
@@ -219,7 +210,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     protected bool WaitForPmt(int serviceId, int pmtPid)
     {
       ThrowExceptionIfTuneCancelled();
-      this.LogDebug("TvDvbChannel: subchannel {0} wait for PMT, service ID = {1} (0x{1:x}), PMT PID = {2} (0x{2:x})", _subChannelId, serviceId, pmtPid);
+      this.LogDebug("TvDvbChannel: subchannel {0} wait for PMT, service ID = {1} (0x{1:x}), PMT PID = {2} (0x{2:x})",
+                    _subChannelId, serviceId, pmtPid);
 
       // There 3 classes of service ID settings:
       // -1 = Scanning behaviour, where we don't care about PMT.
@@ -276,7 +268,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         _eventPmt.Reset();
         DateTime dtStartWait = DateTime.Now;
         ThrowExceptionIfTuneCancelled();
-        pmtFound = _eventPmt.WaitOne(_parameters.TimeOutPMT * 1000, true);
+        pmtFound = _eventPmt.WaitOne(_parameters.TimeOutPMT*1000, true);
         ThrowExceptionIfTuneCancelled();
         waitLength = DateTime.Now - dtStartWait;
         if (!pmtFound)
@@ -612,16 +604,16 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         }
 
         _pids = new List<ushort>();
-        _pids.Add(0x0);             // PAT - for PMT monitoring
-        _pids.Add(0x1);             // CAT - for conditional access info when the service needs to be decrypted
-        _pids.Add(0x12);            // DVB EIT - for EPG info
+        _pids.Add(0x0); // PAT - for PMT monitoring
+        _pids.Add(0x1); // CAT - for conditional access info when the service needs to be decrypted
+        _pids.Add(0x12); // DVB EIT - for EPG info
         if (_currentChannel is ATSCChannel)
         {
-          _pids.Add(0x1ffb);        // ATSC VCT - for EPG info
+          _pids.Add(0x1ffb); // ATSC VCT - for EPG info
         }
         if (_pmtPid != 0)
         {
-          _pids.Add((UInt16)_pmtPid); // PMT - for elementary stream and conditional access changes
+          _pids.Add((UInt16) _pmtPid); // PMT - for elementary stream and conditional access changes
         }
 
         _hasTeletext = false;
@@ -682,8 +674,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
           }
           Log.this.LogDebug("Number of HWPIDS that needs to be sent to tuner :{0} ", hwPids.Count);
         }*/
-
-
       }
       catch (Exception ex)
       {
@@ -806,7 +796,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
         _eventCa.Reset();
         _tsFilterInterface.CaSetCallBack(_subChannelIndex, this);
         _tsFilterInterface.CaReset(_subChannelIndex);
-        bool found = _eventCa.WaitOne(_parameters.TimeOutCAT * 1000, true);
+        bool found = _eventCa.WaitOne(_parameters.TimeOutCAT*1000, true);
         ThrowExceptionIfTuneCancelled();
         TimeSpan ts = DateTime.Now - dtNow;
         if (!found)
@@ -904,8 +894,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
     /// <returns>an HRESULT indicating whether the PMT section was successfully handled</returns>
     public int OnPmtReceived(int pmtPid, int serviceId, bool isServiceRunning)
     {
-      this.LogDebug("TvDvbChannel: subchannel {0} OnPmtReceived(), PMT PID = {1} (0x{1:x}), service ID = {2} (0x{2:x}), is service running = {3}, dynamic = {4}",
-                    _subChannelId, pmtPid, serviceId, isServiceRunning, _pmt != null);
+      this.LogDebug(
+        "TvDvbChannel: subchannel {0} OnPmtReceived(), PMT PID = {1} (0x{1:x}), service ID = {2} (0x{2:x}), is service running = {3}, dynamic = {4}",
+        _subChannelId, pmtPid, serviceId, isServiceRunning, _pmt != null);
       _pmtPid = pmtPid;
       _isServiceRunning = isServiceRunning;
       if (_eventPmt != null)
@@ -945,7 +936,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
       var dvbService = _currentChannel as DVBBaseChannel;
       if (dvbService != null && pmtPid != dvbService.PmtPid && dvbService.PmtPid > 0)
       {
-        dvbService.PmtPid = pmtPid;   // Set the value here so we don't hammer this function, regardless of update success/fail.
+        dvbService.PmtPid = pmtPid;
+          // Set the value here so we don't hammer this function, regardless of update success/fail.
 
         TuningDetail currentDetail = ChannelManagement.GetTuningDetail(dvbService);
         if (currentDetail != null)
@@ -960,7 +952,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs
           }
           catch (Exception ex)
           {
-            this.LogError(ex, "TvDvbChannel: failed to persist new PMT PID for service {0} (0x{0:x})", dvbService.ServiceId);
+            this.LogError(ex, "TvDvbChannel: failed to persist new PMT PID for service {0} (0x{0:x})",
+                          dvbService.ServiceId);
           }
         }
         else

@@ -203,7 +203,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
       if (quality == 0)
         return valMin;
       int delta = valMax - valMin;
-      int targetquality = valMin + (int)(delta * quality / 100);
+      int targetquality = valMin + (int) (delta*quality/100);
 
       int newQuality = valMin;
       while (newQuality < targetquality)
@@ -231,7 +231,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.QualityControl
         if (_supported_BitRateMode)
         {
           this.LogInfo("analog: Encoder mode setting to {0}", _bitRateMode);
-          var newMode = (int)_bitRateMode;
+          var newMode = (int) _bitRateMode;
           object newBitRateModeO = newMode;
           Marshal.WriteInt32(newBitRateModeO, 0, newMode);
           int hr = SetValue(PropSetID.ENCAPIPARAM_BitRateMode, ref newBitRateModeO);

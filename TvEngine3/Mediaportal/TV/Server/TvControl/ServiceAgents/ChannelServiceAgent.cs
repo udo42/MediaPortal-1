@@ -10,7 +10,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
   public class ChannelServiceAgent : ServiceAgent<IChannelService>, IChannelService
   {
     public ChannelServiceAgent(string hostname) : base(hostname)
-    {      
+    {
     }
 
     #region IChannelService Members
@@ -147,12 +147,14 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       return _channel.ListAllChannels(includeRelations);
     }
 
-    public IList<Channel> ListAllChannelsByMediaType(MediaTypeEnum mediaType, ChannelIncludeRelationEnum includeRelations)
+    public IList<Channel> ListAllChannelsByMediaType(MediaTypeEnum mediaType,
+                                                     ChannelIncludeRelationEnum includeRelations)
     {
       return _channel.ListAllChannelsByMediaType(mediaType, includeRelations);
     }
 
-    public IList<Channel> GetAllChannelsByGroupIdAndMediaType(int idGroup, MediaTypeEnum mediaTypeEnum, ChannelIncludeRelationEnum include)
+    public IList<Channel> GetAllChannelsByGroupIdAndMediaType(int idGroup, MediaTypeEnum mediaTypeEnum,
+                                                              ChannelIncludeRelationEnum include)
     {
       return _channel.GetAllChannelsByGroupIdAndMediaType(idGroup, mediaTypeEnum, include);
     }

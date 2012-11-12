@@ -71,7 +71,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         string values = "";
         for (int j = 0; j < list.Count; j++)
         {
-          var item = new ListViewItem(new[] { list[j], codes[j] });
+          var item = new ListViewItem(new[] {list[j], codes[j]});
           mpListView2.Items.Add(item);
           item.Tag = codes[j];
           if (setting.Value == "")
@@ -81,7 +81,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           }
           else
           {
-            if (setting.Value.IndexOf((string)item.Tag) >= 0)
+            if (setting.Value.IndexOf((string) item.Tag) >= 0)
             {
               item.Checked = true;
             }
@@ -129,8 +129,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
         ChannelIncludeRelationEnum includeRelations = ChannelIncludeRelationEnum.TuningDetails;
         includeRelations |= ChannelIncludeRelationEnum.ChannelMaps;
-        includeRelations |= ChannelIncludeRelationEnum.ChannelMapsCard;        
-        IList<Channel> channels = ServiceAgents.Instance.ChannelServiceAgent.ListAllChannelsByMediaType(_mediaTypeEnum, includeRelations);
+        includeRelations |= ChannelIncludeRelationEnum.ChannelMapsCard;
+        IList<Channel> channels = ServiceAgents.Instance.ChannelServiceAgent.ListAllChannelsByMediaType(_mediaTypeEnum,
+                                                                                                        includeRelations);
 
 
         foreach (Channel ch in channels)
@@ -143,7 +144,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           bool dvbip = false;
           bool hasFta = false;
           bool hasScrambled = false;
-          if (ch.MediaType != (decimal)_mediaTypeEnum)
+          if (ch.MediaType != (decimal) _mediaTypeEnum)
             continue;
           if (ch.IsWebstream())
           {
@@ -256,19 +257,19 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     public override void SaveSettings()
     {
       if (false == _loaded)
-        return;      
-      
+        return;
+
       string value = ",";
       for (int i = 0; i < mpListView2.Items.Count; ++i)
       {
         if (mpListView2.Items[i].Checked)
         {
-          var code = (string)mpListView2.Items[i].Tag;
+          var code = (string) mpListView2.Items[i].Tag;
           value += code;
           value += ",";
         }
       }
-      
+
       ServiceAgents.Instance.SettingServiceAgent.SaveValue("epgLanguages", value);
       base.SaveSettings();
     }
@@ -301,7 +302,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           return;
         channel.GrabEpg = e.Item.Checked;
         ServiceAgents.Instance.ChannelServiceAgent.SaveChannel(channel);
-      }      
+      }
     }
 
     private void linkLabelTVAll_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -314,7 +315,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         ICollection<Channel> channels = new List<Channel>();
 
         for (int i = 0; i < mpListView1.Items.Count; ++i)
-        {          
+        {
           mpListView1.Items[i].Checked = true;
           var channel = mpListView1.Items[i].Tag as Channel;
           if (channel != null)
@@ -344,7 +345,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         ICollection<Channel> channels = new List<Channel>();
         for (int i = 0; i < mpListView1.Items.Count; ++i)
         {
-          var ch = (Channel)mpListView1.Items[i].Tag;
+          var ch = (Channel) mpListView1.Items[i].Tag;
           mpListView1.Items[i].Checked = (ch.GroupMaps.Count > 1);
           channels.Add(ch);
           // if count > 1 we assume that the channel has one or more custom group(s) associated with it.
@@ -370,7 +371,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         ICollection<Channel> channels = new List<Channel>();
         for (int i = 0; i < mpListView1.Items.Count; ++i)
         {
-          var ch = (Channel)mpListView1.Items[i].Tag;
+          var ch = (Channel) mpListView1.Items[i].Tag;
           mpListView1.Items[i].Checked = (ch.GroupMaps.Count > 1 && ch.VisibleInGuide);
           channels.Add(ch);
           // if count > 1 we assume that the channel has one or more custom group(s) associated with it.
@@ -422,7 +423,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         }
         var languages = new Languages();
         List<String> codes = languages.GetLanguageCodes();
-        
+
         string value = "";
         foreach (string code in codes)
         {

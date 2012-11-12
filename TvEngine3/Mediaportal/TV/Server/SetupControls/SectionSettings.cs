@@ -54,11 +54,17 @@ namespace Mediaportal.TV.Server.SetupControls
       Text = text;
     }
 
-    public virtual void SaveSettings() {}
+    public virtual void SaveSettings()
+    {
+    }
 
-    public virtual void LoadSettings() {}
+    public virtual void LoadSettings()
+    {
+    }
 
-    public virtual void LoadWizardSettings(XmlNode node) {}
+    public virtual void LoadWizardSettings(XmlNode node)
+    {
+    }
 
 
     /// <summary>
@@ -110,8 +116,12 @@ namespace Mediaportal.TV.Server.SetupControls
     }
 
 
-    public virtual void OnSectionActivated() {}
+    public virtual void OnSectionActivated()
+    {
+    }
 
-    public virtual void OnSectionDeActivated() {}
+    public virtual void OnSectionDeActivated()
+    {
+    }
   }
 }

@@ -147,21 +147,23 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
         Thread.Sleep(pageRequest.Delay);
       }
 
-      string agent = string.IsNullOrEmpty(pageRequest.UserAgent)? _agent : pageRequest.UserAgent;
+      string agent = string.IsNullOrEmpty(pageRequest.UserAgent) ? _agent : pageRequest.UserAgent;
 
       Uri pageUri = pageRequest.Uri;
       try
       {
         // Make the Webrequest
         // Create the request header
-        var request = (HttpWebRequest)WebRequest.Create(pageUri);
+        var request = (HttpWebRequest) WebRequest.Create(pageUri);
         try
         {
           // Use the current user in case an NTLM Proxy or similar is used.
           // request.Proxy = WebProxy.GetDefaultProxy();
           request.Proxy.Credentials = CredentialCache.DefaultCredentials;
         }
-        catch (Exception) {}
+        catch (Exception)
+        {
+        }
         request.UserAgent = agent;
         request.AllowAutoRedirect = false;
         if (pageRequest.Cookies != string.Empty)
@@ -218,7 +220,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
           }
         }
 
-        _response = (HttpWebResponse)request.GetResponse();
+        _response = (HttpWebResponse) request.GetResponse();
 
         // Check for redirection
         if ((_response.StatusCode == HttpStatusCode.Found) ||
@@ -227,14 +229,16 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
             (_response.StatusCode == HttpStatusCode.MovedPermanently))
         {
           var uri = new Uri(pageUri, _response.Headers["Location"]);
-          var redirect = (HttpWebRequest)WebRequest.Create(uri);
+          var redirect = (HttpWebRequest) WebRequest.Create(uri);
           try
           {
             // Use the current user in case an NTLM Proxy or similar is used.
             // request.Proxy = WebProxy.GetDefaultProxy();
             redirect.Proxy.Credentials = CredentialCache.DefaultCredentials;
           }
-          catch (Exception) {}
+          catch (Exception)
+          {
+          }
           redirect.UserAgent = agent;
           redirect.AllowAutoRedirect = false;
           redirect.Referer = _response.ResponseUri.ToString();
@@ -253,7 +257,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
             }
           }
           //redirect.ContentType = "text/html"; 
-          _response = (HttpWebResponse)redirect.GetResponse();
+          _response = (HttpWebResponse) redirect.GetResponse();
         }
 
         if (request.CookieContainer != null)
@@ -284,7 +288,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.http
 
         for (int i = 0; i < Blocks.Count; i++)
         {
-          block = (byte[])Blocks[i];
+          block = (byte[]) Blocks[i];
           block.CopyTo(_data, pos);
           pos += block.Length;
         }

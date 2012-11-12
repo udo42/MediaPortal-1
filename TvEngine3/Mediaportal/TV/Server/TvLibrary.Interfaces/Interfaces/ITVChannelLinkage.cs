@@ -36,7 +36,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     /// <returns></returns>
     [PreserveSig]
     int OnLinkageReceived();
-  } ;
+  };
 
   /// <summary>
   /// Base class used for channel linkage grabbing

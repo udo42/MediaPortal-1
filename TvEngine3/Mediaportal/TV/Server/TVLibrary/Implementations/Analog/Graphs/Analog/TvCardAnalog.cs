@@ -47,7 +47,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
     #region imports
 
     [ComImport, Guid("DB35F5ED-26B2-4A2A-92D3-852E145BF32D")]
-    private class MpFileWriter { }
+    private class MpFileWriter
+    {
+    }
 
     #endregion
 
@@ -121,16 +123,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
     /// </summary>
     public override ITVScanning ScanningInterface
     {
-      get
-      {
-        return new AnalogScanning(this);
-      }
+      get { return new AnalogScanning(this); }
     }
 
     #endregion
 
     #region tuning & recording
-
 
     /// <summary>
     /// Tunes the specified channel.
@@ -353,9 +351,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
           throw new TvException("Graph already build");
         }
         //create a new filter graph
-        _graphBuilder = (IFilterGraph2)new FilterGraph();
+        _graphBuilder = (IFilterGraph2) new FilterGraph();
         _rotEntry = new DsROTEntry(_graphBuilder);
-        _capBuilder = (ICaptureGraphBuilder2)new CaptureGraphBuilder2();
+        _capBuilder = (ICaptureGraphBuilder2) new CaptureGraphBuilder2();
         _capBuilder.SetFiltergraph(_graphBuilder);
         Graph graph = _configuration.Graph;
         _tuner = new Tuner(_device);
@@ -466,7 +464,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
     private bool AddTsFileSink()
     {
       this.LogDebug("analog:AddTsFileSink");
-      _tsFileSink = (IBaseFilter)new MpFileWriter();
+      _tsFileSink = (IBaseFilter) new MpFileWriter();
       int hr = _graphBuilder.AddFilter(_tsFileSink, "TsFileSink");
       if (hr != 0)
       {
@@ -544,7 +542,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
       IAnalogChanelScan channelScanner = null;
       if (_tsFileSink != null)
       {
-        channelScanner = (IAnalogChanelScan)_tsFileSink;
+        channelScanner = (IAnalogChanelScan) _tsFileSink;
       }
       return channelScanner;
     }

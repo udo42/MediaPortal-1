@@ -42,7 +42,6 @@ namespace Mediaportal.TV.Server.SetupTV
   /// </summary>
   public class SetupTvSettingsForm : SettingsForm
   {
-
     private readonly PluginLoaderSetupTv _pluginLoader = new PluginLoaderSetupTv();
     private TvCards cardPage;
     private Sections.Plugins pluginsRoot;
@@ -52,7 +51,6 @@ namespace Mediaportal.TV.Server.SetupTV
     public SetupTvSettingsForm()
       : this(false)
     {
-      
     }
 
     public SetupTvSettingsForm(bool ShowAdvancedSettings)
@@ -95,12 +93,12 @@ namespace Mediaportal.TV.Server.SetupTV
 
       var project = new Project();
       AddSection(project);
-      
+
       servers = new Servers();
       AddSection(servers);
 
       IList<Card> cards = ServiceAgents.Instance.CardServiceAgent.ListAllCards(CardIncludeRelationEnum.None);
-      
+
       bool connected = false;
       while (!connected)
       {
@@ -120,19 +118,19 @@ namespace Mediaportal.TV.Server.SetupTV
             if (localHostname != RemoteControl.HostName)
             {
               DialogResult dlg = MessageBox.Show(String.Format("Unable to connect to <{0}>.\n" +
-                                                                "Do you want to try the current computer name ({1}) instead?",
-                                                                RemoteControl.HostName, localHostname),
-                                                  "Wrong config detected",
-                                                  MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                                                               "Do you want to try the current computer name ({1}) instead?",
+                                                               RemoteControl.HostName, localHostname),
+                                                 "Wrong config detected",
+                                                 MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
               if (dlg == DialogResult.Yes)
               {
-                this.LogInfo("Controller: server {0} changed to {1}", RemoteControl.HostName, localHostname);                      
+                this.LogInfo("Controller: server {0} changed to {1}", RemoteControl.HostName, localHostname);
                 ServiceAgents.Instance.SettingServiceAgent.SaveValue("hostname", localHostname);
                 if (!ServiceHelper.IsRestrictedMode)
                 {
                   ServiceHelper.Restart();
-                  ServiceHelper.WaitInitialized(); 
-                }                
+                  ServiceHelper.WaitInitialized();
+                }
               }
               else
               {
@@ -145,21 +143,21 @@ namespace Mediaportal.TV.Server.SetupTV
               this.LogError("Cannot connect to server {0}", RemoteControl.HostName);
               this.LogError(ex);
               DialogResult dlg = MessageBox.Show("Unable to connect to <" + RemoteControl.HostName + ">.\n" +
-                                                  "Please check the TV Server logs for details.\n\n" +
-                                                  "Setup will now close.");
+                                                 "Please check the TV Server logs for details.\n\n" +
+                                                 "Setup will now close.");
               Environment.Exit(-1);
             }
           }
         }
-        
+
         AddServerTvCards(RemoteControl.HostName, false);
 
-        var channels = new Channels("TV Channels", MediaTypeEnum.TV);            
+        var channels = new Channels("TV Channels", MediaTypeEnum.TV);
         AddSection(channels);
         AddChildSection(channels, new ChannelCombinations("TV Combinations", MediaTypeEnum.TV));
         AddChildSection(channels, new ChannelMapping("TV Mapping", MediaTypeEnum.TV));
 
-        var radioChannels = new Channels("Radio Channels", MediaTypeEnum.Radio);        
+        var radioChannels = new Channels("Radio Channels", MediaTypeEnum.Radio);
         AddSection(radioChannels);
         AddChildSection(radioChannels, new ChannelCombinations("Radio Combinations", MediaTypeEnum.Radio));
         AddChildSection(radioChannels, new ChannelMapping("Radio Mapping", MediaTypeEnum.Radio));
@@ -167,7 +165,8 @@ namespace Mediaportal.TV.Server.SetupTV
         var EpgSection = new Epg();
         AddSection(EpgSection);
         AddChildSection(EpgSection, new EpgGrabber("TV Epg grabber", MediaTypeEnum.TV));
-        AddChildSection(EpgSection, new EpgGrabber("Radio Epg grabber", MediaTypeEnum.Radio)); ;
+        AddChildSection(EpgSection, new EpgGrabber("Radio Epg grabber", MediaTypeEnum.Radio));
+        ;
 
         AddSection(new ScanSettings());
         AddSection(new TvRecording());
@@ -190,7 +189,8 @@ namespace Mediaportal.TV.Server.SetupTV
           SectionSettings settings = plugin.Setup;
           if (settings != null)
           {
-            bool isActive = ServiceAgents.Instance.SettingServiceAgent.GetValue(String.Format("plugin{0}", plugin.Name), false);
+            bool isActive = ServiceAgents.Instance.SettingServiceAgent.GetValue(
+              String.Format("plugin{0}", plugin.Name), false);
             settings.Text = plugin.Name;
             if (isActive)
             {
@@ -211,7 +211,7 @@ namespace Mediaportal.TV.Server.SetupTV
       BringToFront();
     }
 
-    private void AddServerTvCards(string hostName,  bool reloaded)
+    private void AddServerTvCards(string hostName, bool reloaded)
     {
       //foreach (TVDatabase.Gentle.Server server in dbsServers)
       {
@@ -277,7 +277,7 @@ namespace Mediaportal.TV.Server.SetupTV
         }
         if (reloaded)
         {
-          var activeNode = (SectionTreeNode)settingSections[hostName];
+          var activeNode = (SectionTreeNode) settingSections[hostName];
           if (activeNode != null)
           {
             activeNode.Expand();
@@ -296,8 +296,10 @@ namespace Mediaportal.TV.Server.SetupTV
       bool isAnyUserTS;
       bool isRec;
       bool isUserTS;
-      bool isRecOrTS = ServiceAgents.Instance.ControllerServiceAgent.IsAnyCardRecordingOrTimeshifting(new User().Name, out isUserTS, out isAnyUserTS,
-                                                                               out isRec);
+      bool isRecOrTS = ServiceAgents.Instance.ControllerServiceAgent.IsAnyCardRecordingOrTimeshifting(new User().Name,
+                                                                                                      out isUserTS,
+                                                                                                      out isAnyUserTS,
+                                                                                                      out isRec);
 
       if (!isAnyUserTS && !isRec && !isRecOrTS && !isUserTS)
       {
@@ -310,7 +312,7 @@ namespace Mediaportal.TV.Server.SetupTV
           ServiceAgents.Instance.ControllerServiceAgent.Restart();
 
           // remove all tv servers / cards, add current ones back later
-          RemoveAllChildSections((SectionTreeNode)settingSections[servers.Text]);
+          RemoveAllChildSections((SectionTreeNode) settingSections[servers.Text]);
 
           // re-add tvservers and cards to tree          
           AddServerTvCards(ServiceAgents.Instance.SettingServiceAgent.GetSetting("hostname").Value, true);
@@ -341,7 +343,7 @@ namespace Mediaportal.TV.Server.SetupTV
           settingSections.Remove(childNode.Text);
         }
         // first remove all children and sections, then nodes themself (otherwise collection changes during iterate)
-        parentTreeNode.Nodes.Clear();       
+        parentTreeNode.Nodes.Clear();
       }
     }
 
@@ -350,7 +352,7 @@ namespace Mediaportal.TV.Server.SetupTV
       // Remove section from tree
       if (parentSection != null)
       {
-        var parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
+        var parentTreeNode = (SectionTreeNode) settingSections[parentSection.Text];
         foreach (SectionTreeNode childNode in parentTreeNode.Nodes)
         {
           // recursive delete all children
@@ -368,7 +370,7 @@ namespace Mediaportal.TV.Server.SetupTV
       // Remove section from tree
       if (parentSection != null)
       {
-        var parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
+        var parentTreeNode = (SectionTreeNode) settingSections[parentSection.Text];
 
         for (int i = 0; i < parentTreeNode.GetNodeCount(true); i++)
         {
@@ -413,7 +415,7 @@ namespace Mediaportal.TV.Server.SetupTV
         //
         // Add to the parent node
         //
-        var parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
+        var parentTreeNode = (SectionTreeNode) settingSections[parentSection.Text];
 
         treeNode.ImageIndex = imageIndex;
         treeNode.SelectedImageIndex = imageIndex;
@@ -438,14 +440,14 @@ namespace Mediaportal.TV.Server.SetupTV
     /// <param name="e">eventarg will always retrun empty</param>
     public void SectChanged(object sender, EventArgs e)
     {
-      string name = ((Setting)sender).Tag.Substring(6);
+      string name = ((Setting) sender).Tag.Substring(6);
 
       foreach (ITvServerPlugin plugin in _pluginLoader.Plugins)
       {
         SectionSettings settings = plugin.Setup;
         if (settings != null && plugin.Name == name)
         {
-          bool isActive = ServiceAgents.Instance.SettingServiceAgent.GetValue(((Setting)sender).Tag, false);
+          bool isActive = ServiceAgents.Instance.SettingServiceAgent.GetValue(((Setting) sender).Tag, false);
           settings.Text = name;
 
           if (isActive)
@@ -487,7 +489,7 @@ namespace Mediaportal.TV.Server.SetupTV
         //
         // Add to the parent node
         //
-        var parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
+        var parentTreeNode = (SectionTreeNode) settingSections[parentSection.Text];
         treeNode.Name = section.Text;
         parentTreeNode.Nodes.Add(treeNode);
       }
@@ -507,8 +509,8 @@ namespace Mediaportal.TV.Server.SetupTV
         {
           MessageBox.Show("TvService not started.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
           e.Cancel = true;
-        } 
-      }        
+        }
+      }
     }
 
     public override bool ActivateSection(SectionSettings section)
@@ -523,12 +525,14 @@ namespace Mediaportal.TV.Server.SetupTV
         {
           ServiceAgents.Instance.ControllerServiceAgent.EpgGrabberEnabled = false;
         }
-        catch (Exception) {}
+        catch (Exception)
+        {
+        }
         //DatabaseManager.Instance.SaveChanges();
         //DatabaseManager.Instance.ClearQueryCache();
         Cursor = Cursors.WaitCursor;
         section.Dock = DockStyle.Fill;
-        
+
         holderPanel.Controls.Clear();
         holderPanel.Controls.Add(section);
 
@@ -561,7 +565,9 @@ namespace Mediaportal.TV.Server.SetupTV
           ServiceAgents.Instance.ControllerServiceAgent.OnNewSchedule();
         }
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
     }
 
     public override void SettingsForm_Load(object sender, EventArgs e)
@@ -579,7 +585,7 @@ namespace Mediaportal.TV.Server.SetupTV
     public SectionTreeNode GetChildNode(SectionSettings parentSection, SectionSettings section)
     {
       var treeNode = new SectionTreeNode(section);
-      var parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
+      var parentTreeNode = (SectionTreeNode) settingSections[parentSection.Text];
 
       for (int i = 0; i < parentTreeNode.GetNodeCount(true); i++)
       {

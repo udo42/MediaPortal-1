@@ -297,19 +297,19 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
     }
 
     protected virtual void Dispose(bool disposing)
-		{
-		  if (disposing)
-		  {
-		    // get rid of managed resources
+    {
+      if (disposing)
+      {
+        // get rid of managed resources
         Clear();
-		  }
-		  // get rid of unmanaged resources
-		}
+      }
+      // get rid of unmanaged resources
+    }
 
 
     ~TeletextPageCache()
-		{
-		  Dispose(false);
-		}
+    {
+      Dispose(false);
+    }
   }
 }

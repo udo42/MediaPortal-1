@@ -31,23 +31,27 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     /// Undefined Bitrate mode
     ///</summary>
     Undefined = -1,
+
     /// <summary>
     /// Constant bit rate mode
     /// </summary>
     ConstantBitRate = 0,
+
     /// <summary>
     /// Variable bit rate mode
     /// </summary>
     VariableBitRateAverage,
+
     /// <summary>
     /// Variable peak bit rate mode
     /// </summary>
     VariableBitRatePeak,
+
     /// <summary>
     /// Bit rate mode not set
     /// </summary>
     NotSet
-  } ;
+  };
 
 
   /// <summary>
@@ -57,16 +61,22 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
   {
     /// <summary>default quality</summary>
     Default = 1,
+
     /// <summary>custom quality setting, defined in SetupTv</summary>
     Custom = 2,
+
     /// <summary>portable quality setting for those recordings that dont need to be close to perfect</summary>
     Portable = 3,
+
     /// <summary>low quality setting for those recordings that dont need to be close to perfect</summary>
     Low = 4,
+
     /// <summary>medium quality but still quite a bit less diskspace needed than high</summary>
     Medium = 5,
+
     /// <summary>high quality setting will create larger files then the other options</summary>
     High = 6,
+
     /// <summary>undefined quality</summary>
     NotSet = 7
   }

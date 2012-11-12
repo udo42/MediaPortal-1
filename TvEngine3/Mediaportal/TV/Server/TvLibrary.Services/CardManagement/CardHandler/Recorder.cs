@@ -36,8 +36,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 {
   public class Recorder : TimeShifterBase, IRecorder
   {
-
-
     /// <summary>
     /// Initializes a new instance of the <see cref="Recording"/> class.
     /// </summary>
@@ -97,7 +95,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 
         _eventTimeshift.Reset();
         if (_cardHandler.DataBaseCard.Enabled)
-        {                              
+        {
           _cardHandler.UserManagement.RefreshUser(ref user);
           int timeshiftingSubChannel = _cardHandler.UserManagement.GetTimeshiftingSubChannel(user.Name);
           ITvSubChannel subchannel = GetSubChannel(timeshiftingSubChannel);
@@ -129,7 +127,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
             if (recStarted)
             {
               fileName = subchannel.RecordingFileName;
-              _cardHandler.UserManagement.SetOwnerSubChannel(timeshiftingSubChannel, user.Name);              
+              _cardHandler.UserManagement.SetOwnerSubChannel(timeshiftingSubChannel, user.Name);
               if (useErrorDetection)
               {
                 bool isScrambled;
@@ -144,7 +142,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
                 }
               }
             }
-          }          
+          }
         }
         else
         {
@@ -253,7 +251,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     {
       string recordingFileName = "";
       try
-      {        
+      {
         ITvSubChannel subchannel = GetSubChannel(userName, _cardHandler.UserManagement.GetRecentChannelId(userName));
         if (subchannel != null)
         {

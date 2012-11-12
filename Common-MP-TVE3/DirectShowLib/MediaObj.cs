@@ -54,7 +54,7 @@ namespace DirectShowLib.DMO
     Time = 0x2,
     TimeLength = 0x4,
     InComplete = 0x1000000
-  } ;
+  };
 
   /// <summary>
   /// From DMO_ENUM_FLAGS
@@ -74,7 +74,7 @@ namespace DirectShowLib.DMO
   {
     None = 0,
     IsKeyed = 0x00000001
-  } ;
+  };
 
   /// <summary>
   /// From DMO_PROCESS_OUTPUT_FLAGS

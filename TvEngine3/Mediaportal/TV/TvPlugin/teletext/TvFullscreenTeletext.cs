@@ -37,7 +37,7 @@ namespace Mediaportal.TV.TvPlugin.Teletext
 
     public TVTeletextFullScreen()
     {
-      GetID = (int)Window.WINDOW_FULLSCREEN_TELETEXT;
+      GetID = (int) Window.WINDOW_FULLSCREEN_TELETEXT;
     }
 
     #endregion

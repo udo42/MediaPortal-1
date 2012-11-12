@@ -33,7 +33,6 @@ namespace Mediaportal.TV.Server.TVLibrary
     private readonly Int64 _posStart;
     private readonly string _recording;
 
-    
 
     public TsCopier(Int64 posStart, string fileStart, Int64 posEnd, string fileEnd, string recording)
     {
@@ -42,8 +41,9 @@ namespace Mediaportal.TV.Server.TVLibrary
       _posEnd = posEnd;
       _fileEnd = fileEnd;
       _recording = recording;
-      this.LogInfo("TsCopier: dtor() pos1: {0}, file1: {1}, pos2: {2}, file2: {3}, rec: {4}", posStart, fileStart, posEnd,
-               fileEnd, recording);
+      this.LogInfo("TsCopier: dtor() pos1: {0}, file1: {1}, pos2: {2}, file2: {3}, rec: {4}", posStart, fileStart,
+                   posEnd,
+                   fileEnd, recording);
     }
 
     public void DoCopy()
@@ -56,7 +56,7 @@ namespace Mediaportal.TV.Server.TVLibrary
         int idCurrent = Int32.Parse(Path.GetFileNameWithoutExtension(_fileStart).Remove(0, 19));
         int idStart = idCurrent;
         int idStop = Int32.Parse(Path.GetFileNameWithoutExtension(_fileEnd).Remove(0, 19));
-        
+
         decimal maxFiles = SettingsManagement.GetValue("timeshiftMaxFiles", 20);
         this.LogInfo("TsCopier: baseTs={0} idCurrent={1} idStop={2} maxFiles={3}", baseTs, idCurrent, idStop, maxFiles);
         Directory.CreateDirectory(Path.GetDirectoryName(_recording) + "\\" +
@@ -65,7 +65,7 @@ namespace Mediaportal.TV.Server.TVLibrary
         if (idStop > idStart)
           cycles = (idStop - idStart) + 1;
         else if (idStop < idStart)
-          cycles = (int)(maxFiles - idStart) + 1 + idStop;
+          cycles = (int) (maxFiles - idStart) + 1 + idStop;
         for (int i = idStart; i <= cycles; i++)
         {
           string currentSourceBuffer = baseTs + idCurrent.ToString() + ".ts";
@@ -82,7 +82,7 @@ namespace Mediaportal.TV.Server.TVLibrary
               while (bytesRead > 0)
               {
                 if (reader.Position > _posEnd && currentSourceBuffer == _fileEnd)
-                  bytesRead -= (int)(reader.Position - _posEnd);
+                  bytesRead -= (int) (reader.Position - _posEnd);
                 if (bytesRead <= 0)
                   break;
                 writer.Write(buf, 0, bytesRead);
@@ -90,7 +90,7 @@ namespace Mediaportal.TV.Server.TVLibrary
               }
               writer.Flush();
             }
-          }          
+          }
           this.LogInfo("TsCopier: copying done.");
           idCurrent++;
           if (idCurrent > maxFiles)

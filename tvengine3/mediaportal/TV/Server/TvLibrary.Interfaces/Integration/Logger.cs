@@ -29,11 +29,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
 {
   public class Logger : ILogger
   {
-    private static readonly IDictionary<Type, Castle.Core.Logging.ILogger> _logCache = new Dictionary<Type, Castle.Core.Logging.ILogger>();
+    private static readonly IDictionary<Type, Castle.Core.Logging.ILogger> _logCache =
+      new Dictionary<Type, Castle.Core.Logging.ILogger>();
+
     private static readonly object _logCacheLock = new object();
     private readonly Type _runtimeType;
 
-    public Logger ()
+    public Logger()
     {
       _runtimeType = GetType();
     }
@@ -114,7 +116,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
       if (logger.IsInfoEnabled)
       {
         logger.Info(string.Format(format, args), ex);
-      }      
+      }
     }
 
     public void Info(string format, Exception ex, params object[] args)
@@ -134,7 +136,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
       if (logger.IsWarnEnabled)
       {
         logger.WarnFormat(format, args);
-      }      
+      }
     }
 
     public void Warn(string format, params object[] args)
@@ -155,7 +157,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
       if (logger.IsWarnEnabled)
       {
         logger.Warn(string.Format(format, args), ex);
-      }      
+      }
     }
 
     public void Warn(string format, Exception ex, params object[] args)
@@ -196,7 +198,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
       if (logger.IsErrorEnabled)
       {
         logger.Error(string.Format(format, args), ex);
-      }      
+      }
     }
 
     public void Error(string format, Exception ex, params object[] args)
@@ -235,7 +237,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
       if (logger.IsFatalEnabled)
       {
         logger.FatalFormat(format, args);
-      }      
+      }
     }
 
     public void Critical(string format, params object[] args)
@@ -252,11 +254,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
     /// <param name="args">An array of objects to write using format.</param>
     public void Critical(Type caller, string format, Exception ex, params object[] args)
     {
-       Castle.Core.Logging.ILogger logger = GetLogger(caller);
-       if (logger.IsFatalEnabled)
-       {
-         logger.Fatal(string.Format(format, args), ex);
-       }
+      Castle.Core.Logging.ILogger logger = GetLogger(caller);
+      if (logger.IsFatalEnabled)
+      {
+        logger.Fatal(string.Format(format, args), ex);
+      }
     }
 
     public void Critical(string format, Exception ex, params object[] args)
@@ -295,7 +297,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
         {
           var container = GlobalServiceProvider.Instance.Get<IWindsorContainer>();
           var loggerFactory = container.Resolve<ILoggerFactory>();
-          logger = loggerFactory.Create(type);      
+          logger = loggerFactory.Create(type);
           _logCache[type] = logger;
         }
       }

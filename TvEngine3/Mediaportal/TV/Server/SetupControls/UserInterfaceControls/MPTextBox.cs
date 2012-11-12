@@ -25,5 +25,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   /// <summary>
   /// Summary description for MPTextBox.
   /// </summary>
-  public class MPTextBox : TextBox {}
+  public class MPTextBox : TextBox
+  {
+  }
 }

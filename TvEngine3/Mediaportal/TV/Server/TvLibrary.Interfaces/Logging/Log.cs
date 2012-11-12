@@ -111,6 +111,5 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Logging
     {
       GlobalServiceProvider.Instance.Get<IIntegrationProvider>().Logger.Error(message, exception, args);
     }
-
   }
 }

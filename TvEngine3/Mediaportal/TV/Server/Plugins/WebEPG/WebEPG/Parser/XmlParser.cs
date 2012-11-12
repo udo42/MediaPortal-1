@@ -106,7 +106,7 @@ namespace WebEPG.Parser
 
     public IParserData GetData(int index)
     {
-      var xmlData = (IParserData)Activator.CreateInstance(_dataType);
+      var xmlData = (IParserData) Activator.CreateInstance(_dataType);
 
       XmlNode progNode = _nodeList.Item(index);
       if (progNode != null)

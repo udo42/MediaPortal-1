@@ -39,34 +39,42 @@ namespace OSInfo
       /// Windows 95/98, NT4.0, 2000
       ///</summary>
       Windows2000andPrevious,
+
       ///<summary>
       /// Windows XP x86
       ///</summary>
       WindowsXp,
+
       ///<summary>
       /// Windows XP x64
       ///</summary>
       WindowsXp64,
+
       ///<summary>
       /// Windows Vista
       ///</summary>
       WindowsVista,
+
       ///<summary>
       /// Windows 7
       ///</summary>
       Windows7,
+
       ///<summary>
       /// Windows 2003 Server
       ///</summary>
       Windows2003,
+
       ///<summary>
       /// Windows 2003 R2 Server
       ///</summary>
       Windows2003R2,
+
       ///<summary>
       /// Windows 2008 Server
       ///</summary>
       Windows2008,
+
       ///<summary>
       /// Windows 2008 R2 Server
       ///</summary>
@@ -86,10 +94,12 @@ namespace OSInfo
       /// Blocked: will cause an immediate exit of the program
       /// </summary>
       Blocked = 0,
+
       /// <summary>
       /// FullySupported: self explanatory
       /// </summary>
       FullySupported = 1,
+
       /// <summary>
       /// NotSupported: officially not supported, will log/display a warning
       /// </summary>
@@ -460,7 +470,7 @@ namespace OSInfo
     /// <returns>(OSMajorVersion * 10 + OSMinorVersion)</returns>
     public static int OsVersionInt()
     {
-      return (OSMajorVersion * 10 + OSMinorVersion);
+      return (OSMajorVersion*10 + OSMinorVersion);
     }
 
     /// <summary>

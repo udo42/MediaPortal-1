@@ -184,7 +184,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     public IChannel GetTuningChannel()
     {
       // No adjustments required.
-      return (IChannel)Clone();
+      return (IChannel) Clone();
     }
 
     public MediaTypeEnum MediaType

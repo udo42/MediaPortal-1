@@ -44,7 +44,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
 
     #region ctor
 
-    private Teletext() {}
+    private Teletext()
+    {
+    }
 
     #endregion
 

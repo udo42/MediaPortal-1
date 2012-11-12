@@ -54,7 +54,9 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       get { return (_controllerService.ActiveStreams > 0); }
     }
 
-    public void UserShutdownNow() {}
+    public void UserShutdownNow()
+    {
+    }
 
     public string HandlerName
     {

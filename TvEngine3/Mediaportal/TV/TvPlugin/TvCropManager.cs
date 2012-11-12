@@ -96,12 +96,14 @@ namespace Mediaportal.TV.TvPlugin
           if (CropSettings.Top > 0 || CropSettings.Bottom > 0 || CropSettings.Left > 0 || CropSettings.Right > 0)
           {
             this.LogInfo("TvCropManager.SendCropMessage(): {0}, {1}, {2}, {3}", CropSettings.Top, CropSettings.Bottom,
-                     CropSettings.Left, CropSettings.Right);
+                         CropSettings.Left, CropSettings.Right);
             GUIWindowManager.SendThreadMessage(new GUIMessage(GUIMessage.MessageType.GUI_MSG_PLANESCENE_CROP, 0, 0, 0, 0,
                                                               0, CropSettings));
           }
         }
-        catch (Exception) {}
+        catch (Exception)
+        {
+        }
       }
     }
   }

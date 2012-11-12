@@ -33,11 +33,13 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     #endregion
 
-    public XPListViewItemCollection(XPListView owner) : base((owner)) {}
+    public XPListViewItemCollection(XPListView owner) : base((owner))
+    {
+    }
 
     public new XPListViewItem this[int displayIndex]
     {
-      get { return ((XPListViewItem)base[displayIndex]); //((XPListViewItem)this[displayIndex])
+      get { return ((XPListViewItem) base[displayIndex]); //((XPListViewItem)this[displayIndex])
       }
       set { base[displayIndex] = value; }
     }
@@ -47,8 +49,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     public XPListViewItem Add(XPListViewItem item)
     {
-      var itm = ((XPListViewItem)base.Add(item));
-      ListViewAPI.AddItemToGroup(((XPListView)itm.ListView), itm.Index, itm.GroupIndex);
+      var itm = ((XPListViewItem) base.Add(item));
+      ListViewAPI.AddItemToGroup(((XPListView) itm.ListView), itm.Index, itm.GroupIndex);
       if (ItemAdded != null)
       {
         ItemAdded(this, new ListViewItemEventArgs(itm));
@@ -73,7 +75,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       base.AddRange(values);
       foreach (XPListViewItem itm in values)
       {
-        ListViewAPI.AddItemToGroup(((XPListView)itm.ListView), itm.Index, itm.GroupIndex);
+        ListViewAPI.AddItemToGroup(((XPListView) itm.ListView), itm.Index, itm.GroupIndex);
         if (ItemAdded != null)
         {
           ItemAdded(this, new ListViewItemEventArgs(itm));
@@ -93,7 +95,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     public XPListViewItem Insert(int index, XPListViewItem item)
     {
-      return ((XPListViewItem)base.Insert(index, item));
+      return ((XPListViewItem) base.Insert(index, item));
     }
 
     public void Remove(XPListViewItem item)

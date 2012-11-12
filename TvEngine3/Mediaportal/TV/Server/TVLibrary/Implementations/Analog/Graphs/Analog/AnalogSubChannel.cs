@@ -56,7 +56,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
       _hasTeletext = hasTeletext;
       _tvAudio = tvAudio;
       _mpFileWriter = mpFileWriter;
-      _mpRecord = (IMPRecord)_mpFileWriter;
+      _mpRecord = (IMPRecord) _mpFileWriter;
       _mpRecord.AddChannel(ref _subChannelId);
     }
 
@@ -126,7 +126,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.Analog
     /// should be called when graph has been stopped
     /// Resets the graph state
     /// </summary>
-    public override void OnGraphStopped() { }
+    public override void OnGraphStopped()
+    {
+    }
 
     #endregion
 

@@ -102,10 +102,10 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
 
         for (int i = 0; i < entries; i++)
         {
-          table[i] = (MIB_IPNETROW)Marshal.PtrToStructure(
-            new IntPtr(currentBuffer.ToInt64() + (i * Marshal.SizeOf(typeof (MIB_IPNETROW)))),
+          table[i] = (MIB_IPNETROW) Marshal.PtrToStructure(
+            new IntPtr(currentBuffer.ToInt64() + (i*Marshal.SizeOf(typeof (MIB_IPNETROW)))),
             typeof (MIB_IPNETROW)
-                                     );
+                                      );
         }
       }
       finally
@@ -143,7 +143,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
       {
         for (int x = 0; x < 6; x++)
         {
-          packet[i * 6 + x] = hwAddress[x];
+          packet[i*6 + x] = hwAddress[x];
         }
       }
       return packet;
@@ -360,7 +360,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
         return false;
       }
 
-      while (waited < timeout * 1000)
+      while (waited < timeout*1000)
       {
         if (Ping(wakeupTarget, 1000))
         {

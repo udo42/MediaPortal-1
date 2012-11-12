@@ -58,7 +58,7 @@ namespace Mediaportal.TV.TvPlugin
         _enableRecNotification = xmlreader.GetValueAsBool("mytv", "enableRecNotifier", false);
         _preNotifyConfig = xmlreader.GetValueAsInt("mytv", "notifyTVBefore", 300);
       }
-      
+
       _busy = false;
       _timer = new Timer();
       _timer.Stop();
@@ -79,17 +79,16 @@ namespace Mediaportal.TV.TvPlugin
       Schedule failedSchedule = ServiceAgents.Instance.ScheduleServiceAgent.GetSchedule(idSchedule);
       if (failedSchedule != null)
       {
-          this.LogDebug("TVPlugIn: No free card available for {0}. Notifying user.", failedSchedule.ProgramName);
+        this.LogDebug("TVPlugIn: No free card available for {0}. Notifying user.", failedSchedule.ProgramName);
 
-          Notify(GUILocalizeStrings.Get(1004),
-                 String.Format("{0}. {1}", failedSchedule.ProgramName, GUILocalizeStrings.Get(200055)),
-                 TVHome.Navigator.Channel.Entity);
+        Notify(GUILocalizeStrings.Get(1004),
+               String.Format("{0}. {1}", failedSchedule.ProgramName, GUILocalizeStrings.Get(200055)),
+               TVHome.Navigator.Channel.Entity);
       }
-    }    
+    }
 
     private void OnRecordingStarted(int idRecording)
     {
-
       Recording startedRec = _recordingServiceAgent.GetRecording(idRecording);
       if (startedRec != null)
       {
@@ -117,13 +116,15 @@ namespace Mediaportal.TV.TvPlugin
       if (stoppedRec != null)
       {
         string textPrg;
-        IList<Program> prgs = ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByTitleAndTimesInterval(stoppedRec.Title, stoppedRec.StartTime,
-                                                                      stoppedRec.EndTime).ToList();        
+        IList<Program> prgs =
+          ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByTitleAndTimesInterval(stoppedRec.Title,
+                                                                                        stoppedRec.StartTime,
+                                                                                        stoppedRec.EndTime).ToList();
         Program prg = null;
         if (prgs != null && prgs.Count > 0)
         {
           prg = prgs[0];
-          }
+        }
         if (prg != null)
         {
           textPrg = String.Format("{0} {1}-{2}",
@@ -132,7 +133,7 @@ namespace Mediaportal.TV.TvPlugin
                                   prg.EndTime.ToString("t", CultureInfo.CurrentCulture.DateTimeFormat));
         }
         else
-        {          
+        {
           textPrg = String.Format("{0} {1}-{2}",
                                   stoppedRec.Title,
                                   stoppedRec.StartTime.ToString("t", CultureInfo.CurrentCulture.DateTimeFormat),
@@ -144,15 +145,15 @@ namespace Mediaportal.TV.TvPlugin
     }
 
     public void Start()
-      {
+    {
       this.LogInfo("TvNotify: start");
 
       if (_enableRecNotification)
       {
-        ServiceAgents.Instance.EventServiceAgent.RegisterTvServerEventCallbacks(this);        
+        ServiceAgents.Instance.EventServiceAgent.RegisterTvServerEventCallbacks(this);
       }
       _timer.Start();
-    }    
+    }
 
     public void Stop()
     {
@@ -160,7 +161,7 @@ namespace Mediaportal.TV.TvPlugin
 
       if (_enableRecNotification)
       {
-        ServiceAgents.Instance.EventServiceAgent.UnRegisterTvServerEventCallbacks(this, !TVHome.Connected);        
+        ServiceAgents.Instance.EventServiceAgent.UnRegisterTvServerEventCallbacks(this, !TVHome.Connected);
       }
       _timer.Stop();
     }
@@ -188,7 +189,6 @@ namespace Mediaportal.TV.TvPlugin
         {
           this.LogInfo("TvNotify: {0} notifies", _notifiesList.Count);
         }
-
       }
       catch (Exception e)
       {
@@ -219,7 +219,7 @@ namespace Mediaportal.TV.TvPlugin
           if (preNotifySecs > program.Entity.StartTime)
           {
             this.LogInfo("Notify {0} on {1} start {2}", program.Entity.Title, program.Entity.Channel.DisplayName,
-                     program.Entity.StartTime);
+                         program.Entity.StartTime);
             program.Notify = false;
             ServiceAgents.Instance.ProgramServiceAgent.SaveProgram(program.Entity);
             var tvProg = new TVProgramDescription
@@ -253,7 +253,7 @@ namespace Mediaportal.TV.TvPlugin
         {
           return;
         }
-        
+
         if (_busy)
         {
           return;
@@ -266,12 +266,12 @@ namespace Mediaportal.TV.TvPlugin
           return;
         }
 
-      
+
         DateTime preNotifySecs = DateTime.Now.AddSeconds(_preNotifyConfig);
         ProcessNotifies(preNotifySecs);
       }
       catch (Exception ex)
-      {        
+      {
         this.LogError(ex, "Tv NotifyManager: Exception at timer_tick");
       }
       finally
@@ -297,7 +297,7 @@ namespace Mediaportal.TV.TvPlugin
         case TvServerEventType.RecordingFailed:
           OnRecordingFailed(eventArgs.Schedule);
           break;
-      }     
+      }
     }
 
     #endregion

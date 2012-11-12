@@ -42,7 +42,7 @@ using Timer = System.Timers.Timer;
 namespace Mediaportal.TV.Server.Plugins.WebEPGImport
 {
   [Interceptor("PluginExceptionInterceptor")]
-  public class WebEPGImport : ITvServerPlugin, ITvServerPluginStartedAll, IWakeupHandler 
+  public class WebEPGImport : ITvServerPlugin, ITvServerPluginStartedAll, IWakeupHandler
   {
     #region constants
 
@@ -178,7 +178,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
 
       try
       {
-        var param = (ThreadParams)aparam;
+        var param = (ThreadParams) aparam;
 
         string destination = SettingsManagement.GetValue("webepgDestination", "db");
         string webepgDirectory = PathManager.GetDataPath;
@@ -246,13 +246,12 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
           SettingsManagement.SaveValue("webepgResultChannels", epg.ImportStats.Channels);
           SettingsManagement.SaveValue("webepgResultPrograms", epg.ImportStats.Programs);
           SettingsManagement.SaveValue("webepgResultStatus", epg.ImportStats.Status);
-          
+
           //this.LogDebug("Xmltv: imported {0} channels, {1} programs status:{2}", numChannels, numPrograms, errors);
         }
         catch (Exception ex)
         {
           this.LogError(ex, @"plugin:webepg import failed");
-
         }
 
         SettingsManagement.SaveValue("webepgResultLastImport", DateTime.Now);
@@ -267,7 +266,6 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
 
     private void _scheduleTimer_Elapsed(object sender, ElapsedEventArgs e)
     {
-      
       bool scheduleEnabled = SettingsManagement.GetValue("webepgScheduleEnabled", true);
       if (scheduleEnabled)
       {
@@ -341,7 +339,6 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
     /// <returns></returns>
     private bool ShouldRunNow()
     {
-      
       var config = new EPGWakeupConfig(SettingsManagement.GetValue("webepgSchedule", String.Empty));
 
       // check if schedule is due
@@ -387,8 +384,6 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
 
     private DateTime GetNextWakeupSchedule(DateTime earliestWakeupTime)
     {
-
-
       var cfg = new EPGWakeupConfig(SettingsManagement.GetValue("webepgSchedule", String.Empty));
 
       // Start by thinking we should run today
@@ -417,7 +412,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
     private class ThreadParams
     {
       public WebEPG.WebEPG.ShowProgressHandler showProgress;
-    } ;
+    };
 
     #endregion
 
@@ -436,7 +431,6 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport
     [MethodImpl(MethodImplOptions.Synchronized)]
     public DateTime GetNextWakeupTime(DateTime earliestWakeupTime)
     {
-
       bool scheduleEnabled = SettingsManagement.GetValue("webepgScheduleEnabled", true);
       if (!scheduleEnabled)
       {

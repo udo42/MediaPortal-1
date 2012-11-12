@@ -34,46 +34,57 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer
     /// Not set
     /// </summary>
     NotSet = 0,
+
     /// <summary>
     /// Analog Tv
     /// </summary>
     AnalogTv = 0x1,
+
     /// <summary>
     /// Analog Radio
     /// </summary>
     AnalogRadio = 0x2,
+
     /// <summary>
     /// Analog RfTuner
     /// </summary>
     AnalogRfTuner = 0x4,
+
     /// <summary>
     /// DVB-T
     /// </summary>
     DvbT = 0x8,
+
     /// <summary>
     /// DVB-S
     /// </summary>
     DvbS = 0x10,
+
     /// <summary>
     /// DVB-C
     /// </summary>
     DvbC = 0x20,
+
     /// <summary>
     /// ATSC
     /// </summary>
     Atsc = 0x40,
+
     /// <summary>
     /// DVB-IP
     /// </summary>
     DvbIp = 0x80,
+
     /// <summary>
     /// DVB-S2
     /// </summary>
     DvbS2 = 0x100,
+
     /// <summary>
     /// ISDB-T
     /// </summary>
     IsdbT = 0x200,
+
     /// <summary>
     /// ISDB-S
     /// </summary>
@@ -110,7 +121,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer
     public uint Bandwidth;
     public Polarisation Polarity;
     public uint Range;
-  } ;
+  };
 
   [StructLayout(LayoutKind.Sequential)]
   public struct LnbInfoSettings
@@ -118,7 +129,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer
     public uint LnbSwitchFrequency;
     public uint LowOscillator;
     public uint HighOscillator;
-  } ;
+  };
 
   [StructLayout(LayoutKind.Sequential)]
   public struct DigitalDemodulatorSettings
@@ -130,7 +141,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer
     public BinaryConvolutionCodeRate OuterFECRate;
     public SpectralInversion SpectralInversion;
     public uint SymbolRate;
-  } ;
+  };
 
   [StructLayout(LayoutKind.Sequential)]
   public struct DigitalDemodulator2Settings
@@ -146,7 +157,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer
     public Pilot Pilot;
     public RollOff RollOff;
     public TransmissionMode TransmissionMode;
-  } ;
+  };
 
   [StructLayout(LayoutKind.Sequential)]
   public struct DiseqcSatelliteSettings
@@ -155,7 +166,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer
     public uint ToneBurstEnabled;
     public LNB_Source Diseq10Selection;
     public DiseqC11Switches Diseq11Selection;
-  } ;
+  };
 
   public enum LogLevelOption
   {
@@ -168,7 +179,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer
     Error = 40000,
     Fatal = 50000,
     Off = 60000
-  } ;
+  };
 
   ///<summary>
   /// Channel scanning callback

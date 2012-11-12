@@ -15,7 +15,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.CiMenu
   /// derived from MarshalByRefObject for passing through remoting
   /// </summary>
   [Serializable]
-  public class CiMenu 
+  public class CiMenu
   {
     #region private vars
 
@@ -152,6 +152,5 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.CiMenu
       _bPassword = bPassword;
       _menuState = CiMenuState.Request;
     }
-
   }
 }

@@ -48,7 +48,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public TvSetup()
     {
-      GetID = (int)Window.WINDOW_SETTINGS_TVENGINE;
+      GetID = (int) Window.WINDOW_SETTINGS_TVENGINE;
     }
 
     #region Serialisation
@@ -81,7 +81,7 @@ namespace Mediaportal.TV.TvPlugin
         basicHome = xmlreader.GetValueAsBool("gui", "startbasichome", false);
       }
 
-      int homeWindow = basicHome ? (int)Window.WINDOW_SECOND_HOME : (int)Window.WINDOW_HOME;
+      int homeWindow = basicHome ? (int) Window.WINDOW_SECOND_HOME : (int) Window.WINDOW_HOME;
       GUIWindowManager.ActivateWindow(homeWindow);
     }
 
@@ -123,13 +123,13 @@ namespace Mediaportal.TV.TvPlugin
     {
       bool succeeded = true;
 
-      if (!CheckTcpPort(ServiceHelper.PortHttpService)) 
+      if (!CheckTcpPort(ServiceHelper.PortHttpService))
       {
         portErrors.Add(ServiceHelper.PortHttpService + "(HTTP) Service");
         succeeded = false;
       }
 
-      if (!CheckTcpPort(ServiceHelper.PortTcpService)) 
+      if (!CheckTcpPort(ServiceHelper.PortTcpService))
       {
         portErrors.Add(ServiceHelper.PortTcpService + "(TCP) Service");
         succeeded = false;
@@ -146,7 +146,7 @@ namespace Mediaportal.TV.TvPlugin
           TVHome.Navigator.SetupDatabaseConnection();
         }
         catch (Exception)
-        {          
+        {
           succeeded = false;
         }
       }
@@ -164,7 +164,7 @@ namespace Mediaportal.TV.TvPlugin
       {
         succeeded = false;
       }
-      
+
       return succeeded;
     }
 
@@ -241,7 +241,9 @@ namespace Mediaportal.TV.TvPlugin
             {
               ctrl.WaitForStatus(ServiceControllerStatus.Running, new TimeSpan(0, 0, 30));
             }
-            catch (Exception) {}
+            catch (Exception)
+            {
+            }
             if (ctrl.Status == ServiceControllerStatus.Running)
             {
               this.LogInfo("TvSetup: TvService started.");
@@ -291,7 +293,7 @@ namespace Mediaportal.TV.TvPlugin
       if (control == btnChange)
       {
         if (GetKeyboard(ref _hostName))
-        {                    
+        {
           ServiceAgents.Instance.Hostname = _hostName;
           if (lblHostName != null)
           {
@@ -307,7 +309,7 @@ namespace Mediaportal.TV.TvPlugin
           bool streamingOk = CheckStreamingConnection(tvServerOk, databaseOk, portErrors);
 
           //Show the check results dialog to the user
-          var pDlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
+          var pDlgOK = (GUIDialogOK) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_OK);
           if (tvServerOk && databaseOk && streamingOk)
           {
             //TVHome.OnPageLoadDone = false;
@@ -325,11 +327,11 @@ namespace Mediaportal.TV.TvPlugin
               pDlgOK.DoModal(GUIWindowManager.ActiveWindow);
             }
             //goto TV home, even directly fullscreen if configured this way.
-            GUIWindowManager.ActivateWindow((int)Window.WINDOW_TV, true);
+            GUIWindowManager.ActivateWindow((int) Window.WINDOW_TV, true);
 
             return;
           }
-          pDlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
+          pDlgOK = (GUIDialogOK) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_OK);
           if (pDlgOK != null)
           {
             if (portErrors.Count > 0)
@@ -400,7 +402,7 @@ namespace Mediaportal.TV.TvPlugin
 
     protected override void OnPageDestroy(int new_windowId)
     {
-      SaveSettings();      
+      SaveSettings();
       ServiceAgents.Instance.Hostname = _hostName;
       base.OnPageDestroy(new_windowId);
     }
@@ -409,7 +411,7 @@ namespace Mediaportal.TV.TvPlugin
 
     protected bool GetKeyboard(ref string strLine)
     {
-      var keyboard = (VirtualKeyboard)GUIWindowManager.GetWindow((int)Window.WINDOW_VIRTUAL_KEYBOARD);
+      var keyboard = (VirtualKeyboard) GUIWindowManager.GetWindow((int) Window.WINDOW_VIRTUAL_KEYBOARD);
       if (keyboard == null)
       {
         return false;

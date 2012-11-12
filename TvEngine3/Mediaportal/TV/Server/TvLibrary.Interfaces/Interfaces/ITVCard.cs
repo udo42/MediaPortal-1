@@ -25,6 +25,7 @@ using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces.Device;
 
 namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
 {
+
   #region event delegates
 
   /// <summary>
@@ -46,6 +47,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
   public interface ITVCard
   {
     #region events
+
     // Note: events are handled as set-only properties to enable clean hybrid tuner handling.
 
     /// <summary>
@@ -110,7 +112,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
     /// Gets/sets the card type
     /// </summary>
     CardType CardType { get; }
-
 
 
     /// <summary>

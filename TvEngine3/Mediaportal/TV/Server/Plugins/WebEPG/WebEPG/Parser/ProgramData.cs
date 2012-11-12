@@ -62,7 +62,9 @@ namespace WebEPG.Parser
 
     #region Constructors/Destructors
 
-    public ProgramData() {}
+    public ProgramData()
+    {
+    }
 
     public ProgramData(Dictionary<string, int> months) //string[] months)
     {
@@ -313,7 +315,6 @@ namespace WebEPG.Parser
 
     public Program ToTvProgram(int dbIdChannel)
     {
-
       ProgramCategory category = ProgramManagement.GetProgramCategoryByName(_genre);
       if (category == null)
       {
@@ -322,7 +323,8 @@ namespace WebEPG.Parser
       }
 
       WorldDateTime endTime = _endTime ?? _startTime;
-      Program program = ProgramFactory.CreateProgram(dbIdChannel, _startTime.ToLocalTime(), endTime.ToLocalTime(), _title, _description,
+      Program program = ProgramFactory.CreateProgram(dbIdChannel, _startTime.ToLocalTime(), endTime.ToLocalTime(),
+                                                     _title, _description,
                                                      category,
                                                      ProgramState.None, SqlDateTime.MinValue.Value,
                                                      String.Empty, String.Empty,

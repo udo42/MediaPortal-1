@@ -113,7 +113,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     /// Starts the plugin
     /// </summary>
     public void Start(IInternalControllerService controllerService)
-    {      
+    {
       this.LogDebug("plugin: xmltv started");
 
       //System.Diagnostics.Debugger.Launch();      
@@ -246,7 +246,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       //System.Diagnostics.Debugger.Launch();
       try
       {
-        
         string info = "";
         byte[] result = null;
 
@@ -355,11 +354,13 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
           }
         }
         SettingsManagement.SaveValue("xmlTvRemoteScheduleTransferStatus", info);
-        SettingsManagement.SaveValue("xmlTvRemoteScheduleLastTransfer", DateTime.Now);        
+        SettingsManagement.SaveValue("xmlTvRemoteScheduleLastTransfer", DateTime.Now);
 
         this.LogInfo(info);
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       finally
       {
         _remoteFileDownloadInProgress = false; //signal that we are done downloading.
@@ -378,7 +379,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       string transferStatus = "";
 
       _remoteURL = URL;
-      
+
       Setting setting;
 
       string errMsg = "";
@@ -387,7 +388,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
         errMsg = "No URL defined.";
         this.LogError(errMsg);
         SettingsManagement.SaveValue("xmlTvRemoteScheduleTransferStatus", errMsg);
-        
+
         _remoteFileDownloadInProgress = false;
         SetStandbyAllowed(true);
         return;
@@ -397,7 +398,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       {
         errMsg = "No tvguide.xml path defined.";
         this.LogError(errMsg);
-        SettingsManagement.SaveValue("xmlTvRemoteScheduleTransferStatus", errMsg);        
+        SettingsManagement.SaveValue("xmlTvRemoteScheduleTransferStatus", errMsg);
         _remoteFileDownloadInProgress = false;
         SetStandbyAllowed(true);
         return;
@@ -484,7 +485,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     /// <param name="importXML">True to import tvguide.xml</param>
     /// <param name="importLST">True to import files in tvguide.lst</param>
     public void ForceImport(string folder, bool importXML, bool importLST)
-    {     
+    {
       string fileName = folder + @"\tvguide.xml";
 
       if (File.Exists(fileName) && importXML)
@@ -504,7 +505,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       if (importXML || importLST)
       {
         var tp = new ThreadParams {_importDate = DateTime.MinValue, _importLST = importLST, _importXML = importXML};
-        ThreadFunctionImportTVGuide(tp);        
+        ThreadFunctionImportTVGuide(tp);
       }
     }
 
@@ -526,7 +527,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
         if (ts.TotalSeconds > remoteFileDonwloadTimeoutSecs)
         {
           //timed out;
-          _remoteFileDownloadInProgress = false;          
+          _remoteFileDownloadInProgress = false;
           Setting setting;
           SettingsManagement.SaveValue("xmlTvRemoteScheduleTransferStatus", "File transfer timed out.");
           SettingsManagement.SaveValue("xmlTvRemoteScheduleLastTransfer", now);
@@ -552,7 +553,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       if (_remoteFileDownloadInProgress)
       {
         return;
-      }      
+      }
 
       bool remoteSchedulerEnabled = SettingsManagement.GetValue("xmlTvRemoteSchedulerEnabled", false);
       if (!remoteSchedulerEnabled)
@@ -588,7 +589,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
     protected void CheckNewTVGuide()
     {
       FileStream streamIn = null;
-      StreamReader fileIn = null;      
+      StreamReader fileIn = null;
       string folder = SettingsManagement.GetValue("xmlTv", DefaultOutputFolder);
       DateTime lastTime = SettingsManagement.GetValue("xmlTvLastUpdate", DateTime.MinValue);
 
@@ -676,7 +677,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       StreamReader fileIn = null;
       if (_workerThreadRunning)
         return;
-      
+
       string folder = SettingsManagement.GetValue("xmlTv", DefaultOutputFolder);
 
       Thread.Sleep(500); // give time to the external prog to close file handle
@@ -779,14 +780,14 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
         {
           return;
         }
-        var param = (ThreadParams)aparam;
+        var param = (ThreadParams) aparam;
 
         string folder = SettingsManagement.GetValue("xmlTv", DefaultOutputFolder);
 
         // Allow for deleting of all existing programs before adding the new ones. 
         // Already imported programs might have incorrect data depending on the grabber & setup
         // f.e when grabbing programs many days ahead
-        bool deleteBeforeImport = SettingsManagement.GetValue("xmlTvDeleteBeforeImport", true);        
+        bool deleteBeforeImport = SettingsManagement.GetValue("xmlTvDeleteBeforeImport", true);
         int numChannels = 0, numPrograms = 0;
         string errors = "";
 
@@ -853,7 +854,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
         }
 
         SettingsManagement.SaveValue("xmlTvLastUpdate", param._importDate);
-        this.LogInfo("Xmltv: waiting for database to finish inserting imported programs.");        
+        this.LogInfo("Xmltv: waiting for database to finish inserting imported programs.");
         ProgramManagement.InitiateInsertPrograms();
       }
       finally
@@ -911,7 +912,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       public DateTime _importDate;
       public bool _importLST;
       public bool _importXML;
-    } ;
+    };
 
     #endregion
 
@@ -924,7 +925,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
     public Type GetServiceInterfaceForContractType
     {
-      get { return typeof(IXMLTVImportService); }
+      get { return typeof (IXMLTVImportService); }
     }
 
     #endregion

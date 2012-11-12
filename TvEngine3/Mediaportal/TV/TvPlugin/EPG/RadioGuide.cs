@@ -33,13 +33,13 @@ namespace Mediaportal.TV.TvPlugin.EPG
   {
     public RadioGuide()
     {
-      GetID = (int)Window.WINDOW_RADIO_GUIDE;
+      GetID = (int) Window.WINDOW_RADIO_GUIDE;
     }
 
     public override bool Init()
     {
-      bool result = Load(GUIGraphicsContext.Skin + @"\myradioguide.xml");      
-      GetID = (int)Window.WINDOW_RADIO_GUIDE;
+      bool result = Load(GUIGraphicsContext.Skin + @"\myradioguide.xml");
+      GetID = (int) Window.WINDOW_RADIO_GUIDE;
       return result;
     }
   }

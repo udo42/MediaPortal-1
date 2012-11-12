@@ -54,11 +54,11 @@ namespace WebEPG.Parser
 
       for (int i = 0; i < _templateData.Count && i < sourceData.Count; i++)
       {
-        var template = (string)_templateData[i];
+        var template = (string) _templateData[i];
 
         if (template.IndexOf("#") != -1)
         {
-          var rowSource = (string)sourceData[i];
+          var rowSource = (string) sourceData[i];
           data.SetElement(template, rowSource);
         }
       }

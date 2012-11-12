@@ -49,13 +49,15 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
           // special workaround for AstonCrypt2 cam type (according to database CamType)
           // avoid unwanted CI menu callbacks if user has not opened CI menu interactively
 
-          if (ActiveCiMenuCard != -1 && ServiceManager.Instance.InternalControllerService.CardCollection[ActiveCiMenuCard].DataBaseCard.CamType == 1 && !IsCiMenuInteractive)
+          if (ActiveCiMenuCard != -1 &&
+              ServiceManager.Instance.InternalControllerService.CardCollection[ActiveCiMenuCard].DataBaseCard.CamType ==
+              1 && !IsCiMenuInteractive)
           {
             this.LogDebug("AstonCrypt2: unrequested CI menu received, no action done. Menu Title: {0}", _curMenu.Title);
             return;
           }
 
-          IDictionary<string, DateTime> usersCopy = GetUsersCopy();                    
+          IDictionary<string, DateTime> usersCopy = GetUsersCopy();
           if (usersCopy.Count > 0)
           {
             foreach (string user in usersCopy.Keys)
@@ -64,7 +66,7 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
             }
             return;
           }
-          
+
           this.LogDebug("CI menu received but no listeners available");
         }
       }
@@ -82,7 +84,7 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
     /// <returns></returns>
     public int OnCiMenu(string lpszTitle, string lpszSubTitle, string lpszBottom, int nNumChoices)
     {
-      var curMenu = new CiMenu(lpszTitle, lpszSubTitle, lpszBottom, CiMenuState.Opened) { NumChoices = nNumChoices };
+      var curMenu = new CiMenu(lpszTitle, lpszSubTitle, lpszBottom, CiMenuState.Opened) {NumChoices = nNumChoices};
       if (nNumChoices == 0)
       {
         curMenu.State = CiMenuState.NoChoices;
@@ -145,7 +147,7 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
         _curMenu = new CiMenu(String.Empty, String.Empty, String.Empty, CiMenuState.Request);
       }
       _curMenu.State = CiMenuState.Request;
-      _curMenu.Request(lpszText, (int)nAnswerLength, bBlind);
+      _curMenu.Request(lpszText, (int) nAnswerLength, bBlind);
       CheckForCallback();
       return 0;
     }

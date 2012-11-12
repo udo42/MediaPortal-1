@@ -45,14 +45,16 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Integration
         container = new WindsorContainer(new XmlInterpreter());
         GlobalServiceProvider.Instance.Add(container);
       }
-            
+
       var assemblyFilter = new AssemblyFilter(searchPath, "*.Integration.*.dll");
 
       container.Register(Component.For<IPathManager>().ImplementedBy<PathManager>());
       container.Register(Component.For<ILogger>().ImplementedBy<Logger>());
 
-      container.Register(AllTypes.FromAssemblyInDirectory(assemblyFilter).BasedOn<IIntegrationProvider>().WithServiceBase().LifestyleSingleton());
-      GlobalServiceProvider.Add(container.Resolve<IIntegrationProvider>());      
+      container.Register(
+        AllTypes.FromAssemblyInDirectory(assemblyFilter).BasedOn<IIntegrationProvider>().WithServiceBase().
+          LifestyleSingleton());
+      GlobalServiceProvider.Add(container.Resolve<IIntegrationProvider>());
     }
   }
 }

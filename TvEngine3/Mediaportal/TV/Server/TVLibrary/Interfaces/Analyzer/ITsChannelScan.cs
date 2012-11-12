@@ -27,8 +27,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer
   /// TsWriter channel scanner callback interface.
   ///</summary>
   [ComVisible(true), ComImport,
-    Guid("ce141670-1840-4188-8a40-618ba3a5a1c3"),
-    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+   Guid("ce141670-1840-4188-8a40-618ba3a5a1c3"),
+   InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface IChannelScanCallBack
   {
     /// <summary>
@@ -49,14 +49,17 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer
     /// DVB - EN 300 468.
     /// </summary>
     Dvb = 0,
+
     /// <summary>
     /// ATSC - A/53 part 3, A/65.
     /// </summary>
     Atsc = 1,
+
     /// <summary>
     /// North American cable - SCTE 54, treated the same as ATSC.
     /// </summary>
     Scte = 2,
+
     /// <summary>
     /// ISDB - treated the same as DVB.
     /// </summary>
@@ -67,8 +70,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer
   /// TsWriter channel scanner interface.
   /// </summary>
   [ComVisible(true), ComImport,
-    Guid("1663dc42-d169-41da-bce2-eeec482cb9fb"),
-    InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+   Guid("1663dc42-d169-41da-bce2-eeec482cb9fb"),
+   InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
   public interface ITsChannelScan
   {
     /// <summary>
@@ -153,38 +156,38 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer
     /// <returns>an HRESULT indicating whether the service details were successfully retrieved</returns>
     [PreserveSig]
     int GetServiceDetail(int index,
-                          out int originalNetworkId,
-                          out int transportStreamId,
-                          out int serviceId,
-                          out IntPtr serviceName,
-                          out IntPtr providerName,
-                          out IntPtr logicalChannelNumber,
-                          out int serviceType,
-                          out int videoStreamCount,
-                          out int audioStreamCount,
-                          [MarshalAs(UnmanagedType.I1)] out bool isHighDefinition,
-                          [MarshalAs(UnmanagedType.I1)] out bool isEncrypted,
-                          [MarshalAs(UnmanagedType.I1)] out bool isRunning,
-                          out int pmtPid,
-                          out int previousOriginalNetworkId,
-                          out int previousTransportStreamId,
-                          out int previousServiceId,
-                          out int networkIdCount,
-                          out IntPtr networkIds,
-                          out int bouquetIdCount,
-                          out IntPtr bouquetIds,
-                          out int languageCount,
-                          out IntPtr languages,
-                          out int availableInCellCount,
-                          out IntPtr availableInCells,
-                          out int unavailableInCellCount,
-                          out IntPtr unavailableInCells,
-                          out int targetRegionCount,
-                          out IntPtr targetRegions,
-                          out int availableInCountryCount,
-                          out IntPtr availableInCountries,
-                          out int unavailableInCountryCount,
-                          out IntPtr unavailableInCountries);
+                         out int originalNetworkId,
+                         out int transportStreamId,
+                         out int serviceId,
+                         out IntPtr serviceName,
+                         out IntPtr providerName,
+                         out IntPtr logicalChannelNumber,
+                         out int serviceType,
+                         out int videoStreamCount,
+                         out int audioStreamCount,
+                         [MarshalAs(UnmanagedType.I1)] out bool isHighDefinition,
+                         [MarshalAs(UnmanagedType.I1)] out bool isEncrypted,
+                         [MarshalAs(UnmanagedType.I1)] out bool isRunning,
+                         out int pmtPid,
+                         out int previousOriginalNetworkId,
+                         out int previousTransportStreamId,
+                         out int previousServiceId,
+                         out int networkIdCount,
+                         out IntPtr networkIds,
+                         out int bouquetIdCount,
+                         out IntPtr bouquetIds,
+                         out int languageCount,
+                         out IntPtr languages,
+                         out int availableInCellCount,
+                         out IntPtr availableInCells,
+                         out int unavailableInCellCount,
+                         out IntPtr unavailableInCells,
+                         out int targetRegionCount,
+                         out IntPtr targetRegions,
+                         out int availableInCountryCount,
+                         out IntPtr availableInCountries,
+                         out int unavailableInCountryCount,
+                         out IntPtr unavailableInCountries);
 
     /// <summary>
     /// Start scanning for network information in the stream that is currently being received.
@@ -238,20 +241,20 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer
     /// <returns>an HRESULT indicating whether the multiplex details were successfully retrieved</returns>
     [PreserveSig]
     int GetMultiplexDetail(int index,
-                            out int originalNetworkId,
-                            out int transportStreamId,
-                            out int type,
-                            out int frequency,
-                            out int polarisation,
-                            out int modulation,
-                            out int symbolRate,
-                            out int bandwidth,
-                            out int innerFecRate,
-                            out int rollOff,
-                            out int longitude,
-                            out int cellId,
-                            out int cellIdExtension,
-                            out int plpId);
+                           out int originalNetworkId,
+                           out int transportStreamId,
+                           out int type,
+                           out int frequency,
+                           out int polarisation,
+                           out int modulation,
+                           out int symbolRate,
+                           out int bandwidth,
+                           out int innerFecRate,
+                           out int rollOff,
+                           out int longitude,
+                           out int cellId,
+                           out int cellIdExtension,
+                           out int plpId);
 
     /// <summary>
     /// Retrieve the name of a specific target region.

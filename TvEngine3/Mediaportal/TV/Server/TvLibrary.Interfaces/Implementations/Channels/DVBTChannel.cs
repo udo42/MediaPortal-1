@@ -89,7 +89,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       return String.Format("freq:{0}/{2} bandwidth:{1}", Frequency, Bandwidth, Offset);
     }
   }
-  
+
   /// <summary>
   /// class holding all tuning details for DVBT
   /// </summary>  
@@ -98,11 +98,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
   {
     #region variables
 
-    [DataMember]
-    private int _bandWidth;
+    [DataMember] private int _bandWidth;
 
-    [DataMember]
-    private int _offset;
+    [DataMember] private int _offset;
 
     #endregion
 
@@ -128,7 +126,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     /// </summary>
     public DVBTTuning TuningInfo
     {
-      get { return new DVBTTuning((int)Frequency, Bandwidth, Offset, 0, 0, false); }
+      get { return new DVBTTuning((int) Frequency, Bandwidth, Offset, 0, 0, false); }
       set
       {
         Frequency = value.Frequency;

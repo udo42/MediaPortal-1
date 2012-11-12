@@ -160,7 +160,9 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     /// <summary>
     /// Standard constructor.
     /// </summary>
-    public MWCancelEventArgs() {}
+    public MWCancelEventArgs()
+    {
+    }
 
     /// <summary>
     /// Standard Constructor taking the current value of the property and the proposed value of the property as arguments.

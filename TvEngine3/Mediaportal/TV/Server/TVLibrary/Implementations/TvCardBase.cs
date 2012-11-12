@@ -54,10 +54,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// <value>the delegate</value>
     public OnNewSubChannelDelegate OnNewSubChannelEvent
     {
-      set
-      {
-        NewSubChannelEvent += value;
-      }
+      set { NewSubChannelEvent += value; }
     }
 
     /// <summary>
@@ -335,7 +332,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       _mapSubChannels = new Dictionary<int, ITvSubChannel>();
       _lastSignalUpdate = DateTime.MinValue;
       _parameters = new ScanParameters();
-      _epgGrabbing = false;   // EPG grabbing not supported by default.
+      _epgGrabbing = false; // EPG grabbing not supported by default.
       _customDeviceInterfaces = new List<ICustomDevice>();
 
       _device = device;
@@ -352,17 +349,18 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
         if (c != null)
         {
           _cardId = c.IdCard;
-          _name = c.Name;   // We prefer to use the name that can be set in TV Server configuration for more readable logs...
+          _name = c.Name;
+            // We prefer to use the name that can be set in TV Server configuration for more readable logs...
           _preloadCard = c.PreloadCard;
-          _idleMode = (DeviceIdleMode)c.IdleMode;
-          _pidFilterMode = (PidFilterMode)c.PidFilterMode;
+          _idleMode = (DeviceIdleMode) c.IdleMode;
+          _pidFilterMode = (PidFilterMode) c.PidFilterMode;
           _useCustomTuning = c.UseCustomTuning;
 
           // Conditional access...
           _useConditionalAccessInterace = c.UseConditionalAccess;
-          _camType = (CamType)c.CamType;
+          _camType = (CamType) c.CamType;
           _decryptLimit = c.DecryptLimit;
-          _multiChannelDecryptMode = (MultiChannelDecryptMode)c.MultiChannelDecryptMode;
+          _multiChannelDecryptMode = (MultiChannelDecryptMode) c.MultiChannelDecryptMode;
         }
       }
     }
@@ -459,10 +457,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// DiSEqC commands</value>
     public virtual IDiseqcController DiseqcController
     {
-      get
-      {
-        return null;
-      }
+      get { return null; }
     }
 
     /// <summary>
@@ -556,10 +551,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     public bool IsScanning
     {
       get { return _isScanning; }
-      set
-      {
-        _isScanning = value;
-      }
+      set { _isScanning = value; }
     }
 
     /// <summary>
@@ -585,10 +577,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// </value>
     public int MinChannel
     {
-      get
-      {
-        return -1;
-      }
+      get { return -1; }
     }
 
     /// <summary>
@@ -601,10 +590,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// </value>
     public int MaxChannel
     {
-      get
-      {
-        return -1;
-      }
+      get { return -1; }
     }
 
     #endregion
@@ -618,10 +604,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// </summary>
     public int DecryptLimit
     {
-      get
-      {
-        return _decryptLimit;
-      }
+      get { return _decryptLimit; }
     }
 
     /// <summary>
@@ -630,14 +613,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// <value>The type of the cam.</value>
     public CamType CamType
     {
-      get
-      {
-        return _camType;
-      }
-      set
-      {
-        _camType = value;
-      }
+      get { return _camType; }
+      set { _camType = value; }
     }
 
     /// <summary>
@@ -729,7 +706,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
             }
             else
             {
-              throw new TvException("TvCardBase: service type not recognised, unable to count number of services being decrypted\r\n" + service);
+              throw new TvException(
+                "TvCardBase: service type not recognised, unable to count number of services being decrypted\r\n" +
+                service);
             }
           }
         }
@@ -753,7 +732,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       if (_graphBuilder != null)
       {
         FilterState state;
-        ((IMediaControl)_graphBuilder).GetState(10, out state);
+        ((IMediaControl) _graphBuilder).GetState(10, out state);
         graphRunning = (state == FilterState.Running);
       }
       return graphRunning;
@@ -802,7 +781,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
             {
               if (CompatibilityManager.IsPluginCompatible(type))
               {
-                var plugin = (ICustomDevice)Activator.CreateInstance(type);
+                var plugin = (ICustomDevice) Activator.CreateInstance(type);
                 plugins.Add(plugin);
               }
               else
@@ -817,25 +796,25 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       // There is a well defined loading/checking order for plugins: add-ons, priority, name.
       plugins.Sort(
         delegate(ICustomDevice cd1, ICustomDevice cd2)
-        {
-          bool cd1IsAddOn = cd1 is IAddOnDevice;
-          bool cd2IsAddOn = cd2 is IAddOnDevice;
-          if (cd1IsAddOn && !cd2IsAddOn)
           {
-            return -1;
+            bool cd1IsAddOn = cd1 is IAddOnDevice;
+            bool cd2IsAddOn = cd2 is IAddOnDevice;
+            if (cd1IsAddOn && !cd2IsAddOn)
+            {
+              return -1;
+            }
+            if (cd2IsAddOn && !cd1IsAddOn)
+            {
+              return 1;
+            }
+            int priorityCompare = cd2.Priority.CompareTo(cd1.Priority);
+            if (priorityCompare != 0)
+            {
+              return priorityCompare;
+            }
+            return cd1.Name.CompareTo(cd2.Name);
           }
-          if (cd2IsAddOn && !cd1IsAddOn)
-          {
-            return 1;
-          }
-          int priorityCompare = cd2.Priority.CompareTo(cd1.Priority);
-          if (priorityCompare != 0)
-          {
-            return priorityCompare;
-          }
-          return cd1.Name.CompareTo(cd2.Name);
-        }
-      );
+        );
 
       // Log the name, priority and capabilities for each plugin, in priority order.
       foreach (ICustomDevice d in plugins)
@@ -1024,7 +1003,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     ///   subchannel has changed, or <c>last</c> if the subchannel is being disposed.</param>
     protected void UpdateDecryptList(int subChannelId, CaPmtListManagementAction updateAction)
     {
-      this.LogDebug("TvCardBase: subchannel {0} update decrypt list, mode = {1}, update action = {2}", subChannelId, _multiChannelDecryptMode, updateAction);
+      this.LogDebug("TvCardBase: subchannel {0} update decrypt list, mode = {1}, update action = {2}", subChannelId,
+                    _multiChannelDecryptMode, updateAction);
 
       if (_mapSubChannels == null || _mapSubChannels.Count == 0 || !_mapSubChannels.ContainsKey(subChannelId))
       {
@@ -1075,7 +1055,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
           else if (updatedAnalogService != null)
           {
             var analogService = service as AnalogChannel;
-            if (analogService != null && analogService.Frequency == updatedAnalogService.Frequency && analogService.ChannelNumber == updatedAnalogService.ChannelNumber)
+            if (analogService != null && analogService.Frequency == updatedAnalogService.Frequency &&
+                analogService.ChannelNumber == updatedAnalogService.ChannelNumber)
             {
               this.LogDebug("TvCardBase: the service for this subchannel is a duplicate, no action required");
               return;
@@ -1083,7 +1064,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
           }
           else
           {
-            throw new TvException("TvCardBase: service type not recognised, unable to assemble decrypt service list\r\n" + service);
+            throw new TvException(
+              "TvCardBase: service type not recognised, unable to assemble decrypt service list\r\n" + service);
           }
         }
 
@@ -1097,7 +1079,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
             var digitalService = service as DVBBaseChannel;
             if (digitalService != null)
             {
-              if (digitalService.ServiceId == ((DVBBaseChannel)serviceToDecrypt.CurrentChannel).ServiceId)
+              if (digitalService.ServiceId == ((DVBBaseChannel) serviceToDecrypt.CurrentChannel).ServiceId)
               {
                 exists = true;
                 break;
@@ -1108,8 +1090,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
               var analogService = service as AnalogChannel;
               if (analogService != null)
               {
-                if (analogService.Frequency == ((AnalogChannel)serviceToDecrypt.CurrentChannel).Frequency &&
-                  analogService.ChannelNumber == ((AnalogChannel)serviceToDecrypt.CurrentChannel).ChannelNumber)
+                if (analogService.Frequency == ((AnalogChannel) serviceToDecrypt.CurrentChannel).Frequency &&
+                    analogService.ChannelNumber == ((AnalogChannel) serviceToDecrypt.CurrentChannel).ChannelNumber)
                 {
                   exists = true;
                   break;
@@ -1117,7 +1099,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
               }
               else
               {
-                throw new TvException("TvCardBase: service type not recognised, unable to assemble decrypt service list\r\n" + service);
+                throw new TvException(
+                  "TvCardBase: service type not recognised, unable to assemble decrypt service list\r\n" + service);
               }
             }
           }
@@ -1212,7 +1195,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
                   {
                     action = CaPmtListManagementAction.Only;
                   }
-                  // Add or update a service...
+                    // Add or update a service...
                   else
                   {
                     action = updateAction;
@@ -1237,7 +1220,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
               action = CaPmtListManagementAction.More;
             }
 
-            this.LogDebug("  command = {0}, action = {1}, service = {2}", command, action, distinctServices[i].CurrentChannel.Name);
+            this.LogDebug("  command = {0}, action = {1}, service = {2}", command, action,
+                          distinctServices[i].CurrentChannel.Name);
             var digitalService = distinctServices[i] as TvDvbChannel;
             if (digitalService == null)
             {
@@ -1245,7 +1229,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
             }
             else
             {
-              success = caProvider.SendCommand(distinctServices[i].CurrentChannel, action, command, digitalService.Pmt, digitalService.Cat);
+              success = caProvider.SendCommand(distinctServices[i].CurrentChannel, action, command, digitalService.Pmt,
+                                               digitalService.Cat);
             }
             // Are we done?
             if (success)
@@ -1333,10 +1318,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// </summary>
     public virtual ITVScanning ScanningInterface
     {
-      get
-      {
-        return null;
-      }
+      get { return null; }
     }
 
     /// <summary>
@@ -1347,7 +1329,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       this.LogDebug("TvCardBase: stop, idle mode = {0}", _idleMode);
       try
       {
-        UpdateEpgGrabber(false);  // Stop grabbing EPG.
+        UpdateEpgGrabber(false); // Stop grabbing EPG.
         _isScanning = false;
         FreeAllSubChannels();
 
@@ -1372,12 +1354,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
           deviceInterface.OnStop(this, ref pluginAction);
           if (pluginAction > action)
           {
-            this.LogDebug("TvCardBase: plugin \"{0}\" overrides action {1} with {2}", deviceInterface.Name, action, pluginAction);
+            this.LogDebug("TvCardBase: plugin \"{0}\" overrides action {1} with {2}", deviceInterface.Name, action,
+                          pluginAction);
             action = pluginAction;
           }
           else if (action != pluginAction)
           {
-            this.LogDebug("TvCardBase: plugin \"{0}\" wants to perform action {1}, overriden", deviceInterface.Name, pluginAction);
+            this.LogDebug("TvCardBase: plugin \"{0}\" wants to perform action {1}, overriden", deviceInterface.Name,
+                          pluginAction);
           }
         }
 
@@ -1405,7 +1389,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// <summary>
     /// Builds the graph.
     /// </summary>
-    public virtual void BuildGraph() { }
+    public virtual void BuildGraph()
+    {
+    }
 
     /// <summary>
     /// Wait for the tuner to acquire signal lock.
@@ -1520,7 +1506,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
 
       // Get current state.
       FilterState currentState;
-      ((IMediaControl)_graphBuilder).GetState(10, out currentState);
+      ((IMediaControl) _graphBuilder).GetState(10, out currentState);
       this.LogDebug("  current state = {0}", currentState);
       if (state == currentState)
       {
@@ -1530,15 +1516,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       int hr = 0;
       if (state == FilterState.Stopped)
       {
-        hr = ((IMediaControl)_graphBuilder).Stop();
+        hr = ((IMediaControl) _graphBuilder).Stop();
       }
       else if (state == FilterState.Paused)
       {
-        hr = ((IMediaControl)_graphBuilder).Pause();
+        hr = ((IMediaControl) _graphBuilder).Pause();
       }
       else
       {
-        hr = ((IMediaControl)_graphBuilder).Run();
+        hr = ((IMediaControl) _graphBuilder).Run();
       }
       if (hr < 0 || hr > 1)
       {
@@ -1632,12 +1618,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
               // Valid action requested...
               if (pluginAction > action)
               {
-                this.LogDebug("TvCardBase: plugin \"{0}\" overrides action {1} with {2}", deviceInterface.Name, action, pluginAction);
+                this.LogDebug("TvCardBase: plugin \"{0}\" overrides action {1} with {2}", deviceInterface.Name, action,
+                              pluginAction);
                 action = pluginAction;
               }
               else if (pluginAction != action)
               {
-                this.LogDebug("TvCardBase: plugin \"{0}\" wants to perform action {1}, overriden", deviceInterface.Name, pluginAction);
+                this.LogDebug("TvCardBase: plugin \"{0}\" wants to perform action {1}, overriden", deviceInterface.Name,
+                              pluginAction);
               }
             }
 
@@ -1770,10 +1758,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// <value></value>
     public virtual bool SupportsQualityControl
     {
-      get
-      {
-        return false;
-      }
+      get { return false; }
     }
 
     /// <summary>
@@ -1781,10 +1766,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// </summary>
     public virtual IQuality Quality
     {
-      get
-      {
-        return null;
-      }
+      get { return null; }
     }
 
     #endregion
@@ -1796,10 +1778,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// </summary>
     public virtual ITVEPG EpgInterface
     {
-      get
-      {
-        return null;
-      }
+      get { return null; }
     }
 
     /// <summary>
@@ -1815,10 +1794,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// <value>EPG data if the device supports EPG grabbing and grabbing is complete, otherwise <c>null</c></value>
     public virtual List<EpgChannel> Epg
     {
-      get
-      {
-        return null;
-      }
+      get { return null; }
     }
 
     /// <summary>
@@ -1868,10 +1844,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// </summary>
     public virtual List<PortalChannel> ChannelLinkages
     {
-      get
-      {
-        return null;
-      }
+      get { return null; }
     }
 
     #endregion

@@ -60,7 +60,7 @@ namespace Mediaportal.TV.TvPlugin
     public override bool Init()
     {
       bool bResult = Load(GUIGraphicsContext.Skin + @"\TVCropSettings.xml");
-      GetID = (int)Window.WINDOW_TV_CROP_SETTINGS;
+      GetID = (int) Window.WINDOW_TV_CROP_SETTINGS;
       GUILayerManager.RegisterLayer(this, GUILayerManager.LayerType.Dialog);
       return bResult;
     }
@@ -96,65 +96,65 @@ namespace Mediaportal.TV.TvPlugin
           {
             // fetch settings for the current capture card
             _cropSettings = TvCropManager.CropSettings;
-            var cardLabel = GetControl((int)Controls.CONTROL_CARD_LABEL) as GUILabelControl;
+            var cardLabel = GetControl((int) Controls.CONTROL_CARD_LABEL) as GUILabelControl;
             cardLabel.Visible = false;
 
             foreach (int iCtl in Enum.GetValues(typeof (Controls)))
             {
               if (GetControl(iCtl) is GUISpinControl)
               {
-                var cntl = (GUISpinControl)GetControl(iCtl);
+                var cntl = (GUISpinControl) GetControl(iCtl);
                 cntl.ShowRange = false;
               }
             }
-            GUIControl.ClearControl(GetID, (int)Controls.CONTROL_CROP_TOP);
+            GUIControl.ClearControl(GetID, (int) Controls.CONTROL_CROP_TOP);
             for (int i = 0; i <= 200; ++i)
             {
-              GUIControl.AddItemLabelControl(GetID, (int)Controls.CONTROL_CROP_TOP, i.ToString());
+              GUIControl.AddItemLabelControl(GetID, (int) Controls.CONTROL_CROP_TOP, i.ToString());
             }
-            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_CROP_TOP, _cropSettings.Top);
-            GUIControl.ClearControl(GetID, (int)Controls.CONTROL_CROP_BOTTOM);
+            GUIControl.SelectItemControl(GetID, (int) Controls.CONTROL_CROP_TOP, _cropSettings.Top);
+            GUIControl.ClearControl(GetID, (int) Controls.CONTROL_CROP_BOTTOM);
             for (int i = 0; i <= 200; ++i)
             {
-              GUIControl.AddItemLabelControl(GetID, (int)Controls.CONTROL_CROP_BOTTOM, i.ToString());
+              GUIControl.AddItemLabelControl(GetID, (int) Controls.CONTROL_CROP_BOTTOM, i.ToString());
             }
-            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_CROP_BOTTOM, _cropSettings.Bottom);
-            GUIControl.ClearControl(GetID, (int)Controls.CONTROL_CROP_LEFT);
+            GUIControl.SelectItemControl(GetID, (int) Controls.CONTROL_CROP_BOTTOM, _cropSettings.Bottom);
+            GUIControl.ClearControl(GetID, (int) Controls.CONTROL_CROP_LEFT);
             for (int i = 0; i <= 200; ++i)
             {
-              GUIControl.AddItemLabelControl(GetID, (int)Controls.CONTROL_CROP_LEFT, i.ToString());
+              GUIControl.AddItemLabelControl(GetID, (int) Controls.CONTROL_CROP_LEFT, i.ToString());
             }
-            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_CROP_LEFT, _cropSettings.Left);
-            GUIControl.ClearControl(GetID, (int)Controls.CONTROL_CROP_RIGHT);
+            GUIControl.SelectItemControl(GetID, (int) Controls.CONTROL_CROP_LEFT, _cropSettings.Left);
+            GUIControl.ClearControl(GetID, (int) Controls.CONTROL_CROP_RIGHT);
             for (int i = 0; i <= 200; ++i)
             {
-              GUIControl.AddItemLabelControl(GetID, (int)Controls.CONTROL_CROP_RIGHT, i.ToString());
+              GUIControl.AddItemLabelControl(GetID, (int) Controls.CONTROL_CROP_RIGHT, i.ToString());
             }
-            GUIControl.SelectItemControl(GetID, (int)Controls.CONTROL_CROP_RIGHT, _cropSettings.Right);
+            GUIControl.SelectItemControl(GetID, (int) Controls.CONTROL_CROP_RIGHT, _cropSettings.Right);
 
             break;
           }
         case GUIMessage.MessageType.GUI_MSG_CLICKED:
           {
             int iControl = message.SenderControlId;
-            if (iControl == (int)Controls.CONTROL_EXIT)
+            if (iControl == (int) Controls.CONTROL_EXIT)
             {
               Close();
             }
-            else if (iControl == (int)Controls.CONTROL_CROP_TOP)
+            else if (iControl == (int) Controls.CONTROL_CROP_TOP)
             {
               // do not use message.Label, because it's empty for "page up/down", causing exceptions
               _cropSettings.Top = (GetControl(iControl) as GUISpinControl).Value;
             }
-            else if (iControl == (int)Controls.CONTROL_CROP_BOTTOM)
+            else if (iControl == (int) Controls.CONTROL_CROP_BOTTOM)
             {
               _cropSettings.Bottom = (GetControl(iControl) as GUISpinControl).Value;
             }
-            else if (iControl == (int)Controls.CONTROL_CROP_LEFT)
+            else if (iControl == (int) Controls.CONTROL_CROP_LEFT)
             {
               _cropSettings.Left = (GetControl(iControl) as GUISpinControl).Value;
             }
-            else if (iControl == (int)Controls.CONTROL_CROP_RIGHT)
+            else if (iControl == (int) Controls.CONTROL_CROP_RIGHT)
             {
               _cropSettings.Right = (GetControl(iControl) as GUISpinControl).Value;
             }
@@ -283,7 +283,7 @@ namespace Mediaportal.TV.TvPlugin
     /// </summary>
     public TvCropSettings()
     {
-      GetID = (int)Window.WINDOW_TV_CROP_SETTINGS;
+      GetID = (int) Window.WINDOW_TV_CROP_SETTINGS;
     }
 
     #endregion

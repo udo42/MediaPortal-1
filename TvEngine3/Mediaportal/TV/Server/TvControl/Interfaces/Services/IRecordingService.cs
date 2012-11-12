@@ -29,6 +29,7 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
 
     [OperationContract]
     IList<Recording> ListAllActiveRecordingsByMediaType(MediaTypeEnum mediaType);
+
     [OperationContract]
     void DeleteRecording(int idRecording);
   }

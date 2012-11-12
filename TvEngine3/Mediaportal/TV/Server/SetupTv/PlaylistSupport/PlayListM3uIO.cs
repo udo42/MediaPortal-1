@@ -115,7 +115,9 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
           }
         }
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
     }
 
     #endregion

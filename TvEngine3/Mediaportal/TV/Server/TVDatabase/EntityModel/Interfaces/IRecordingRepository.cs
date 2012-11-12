@@ -9,6 +9,5 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Interfaces
     Recording GetRecording(int idRecording);
     IQueryable<Recording> ListAllRecordingsByMediaType(MediaTypeEnum mediaType);
     IQueryable<Recording> IncludeAllRelations(IQueryable<Recording> query);
-
   }
 }

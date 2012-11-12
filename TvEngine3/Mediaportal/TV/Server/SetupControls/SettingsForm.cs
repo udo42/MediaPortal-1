@@ -73,7 +73,7 @@ namespace Mediaportal.TV.Server.SetupControls
         //
         // Add to the parent node
         //
-        var parentTreeNode = (SectionTreeNode)settingSections[parentSection.Text];
+        var parentTreeNode = (SectionTreeNode) settingSections[parentSection.Text];
         parentTreeNode.Nodes.Add(treeNode);
       }
 
@@ -111,37 +111,60 @@ namespace Mediaportal.TV.Server.SetupControls
     }
 
 
-    public virtual void SettingsForm_Closed(object sender, EventArgs e) {}
+    public virtual void SettingsForm_Closed(object sender, EventArgs e)
+    {
+    }
 
-    public virtual void SettingsForm_Load(object sender, EventArgs e) {}
+    public virtual void SettingsForm_Load(object sender, EventArgs e)
+    {
+    }
 
-    public virtual void LoadSectionSettings(TreeNode currentNode) {}
+    public virtual void LoadSectionSettings(TreeNode currentNode)
+    {
+    }
 
-    public virtual void SaveSectionSettings(TreeNode currentNode) {}
+    public virtual void SaveSectionSettings(TreeNode currentNode)
+    {
+    }
 
-    public virtual void SaveAllSettings() {}
+    public virtual void SaveAllSettings()
+    {
+    }
 
 
-    public virtual void cancelButton_Click(object sender, EventArgs e) {}
+    public virtual void cancelButton_Click(object sender, EventArgs e)
+    {
+    }
 
-    public virtual void okButton_Click(object sender, EventArgs e) {}
+    public virtual void okButton_Click(object sender, EventArgs e)
+    {
+    }
 
-    public virtual void applyButton_Click(object sender, EventArgs e) {}
+    public virtual void applyButton_Click(object sender, EventArgs e)
+    {
+    }
 
-    private void holderPanel_Paint(object sender, PaintEventArgs e) {}
+    private void holderPanel_Paint(object sender, PaintEventArgs e)
+    {
+    }
 
     private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
     {
-      Process.Start((string)e.Link.LinkData);
+      Process.Start((string) e.Link.LinkData);
     }
 
-    public virtual void helpToolStripSplitButton_ButtonClick(object sender, EventArgs e) {}
+    public virtual void helpToolStripSplitButton_ButtonClick(object sender, EventArgs e)
+    {
+    }
 
-    public virtual void configToolStripSplitButton_ButtonClick(object sender, EventArgs e) {}
-   
+    public virtual void configToolStripSplitButton_ButtonClick(object sender, EventArgs e)
+    {
+    }
+
     private void btnRestrictedMode_Click(object sender, EventArgs e)
     {
-      MessageBox.Show("In order for SetupTV to interact with the TV Service when running SetupTV in a multiseat environment a few things are required...\n\n" +
+      MessageBox.Show(
+        "In order for SetupTV to interact with the TV Service when running SetupTV in a multiseat environment a few things are required...\n\n" +
         "Interacting with a remote windows service in a workgroup environment (not joined in a domain)\n" +
         "requires that the user is logged on the machine hosting the TV service using an administrative user account that has a password.\n" +
         "Create an administrator user account on the TV Service host and make sure you match both the username and password.\n\n" +

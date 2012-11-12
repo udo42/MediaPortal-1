@@ -72,16 +72,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
   /// <summary>
   /// class holding all tuning details for DVBC
   /// </summary>
-  [DataContract]  
+  [DataContract]
   public class DVBCChannel : DVBBaseChannel
   {
     #region variables
 
-    [DataMember]
-    private ModulationType _modulation;
+    [DataMember] private ModulationType _modulation;
 
-    [DataMember]
-    private int _symbolRate;
+    [DataMember] private int _symbolRate;
 
     /// <summary>
     /// returns basic tuning info for current channel

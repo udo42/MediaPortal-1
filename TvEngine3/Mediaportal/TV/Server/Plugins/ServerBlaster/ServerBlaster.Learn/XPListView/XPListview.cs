@@ -161,7 +161,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     public void ShowTiles(int[] columns)
     {
-      IntPtr lpcol = Marshal.AllocHGlobal(columns.Length * 4);
+      IntPtr lpcol = Marshal.AllocHGlobal(columns.Length*4);
       Marshal.Copy(columns, 0, lpcol, columns.Length);
 
       int param = 0;
@@ -182,7 +182,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
         apiTile.cbSize = Marshal.SizeOf(typeof (ListViewAPI.LVTILEINFO));
         apiTile.iItem = itm.Index;
         apiTile.cColumns = columns.Length;
-        apiTile.puColumns = (int)lpcol;
+        apiTile.puColumns = (int) lpcol;
 
         _apiRetVal = ListViewAPI.SendMessage(Handle, ListViewAPI.LVM_SETTILEINFO, 0, ref apiTile);
       }
@@ -199,7 +199,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       int param = 0;
       _apiRetVal = ListViewAPI.SendMessage(Handle, ListViewAPI.LVM_GETVIEW, ListViewAPI.LV_VIEW_TILE,
                                            ref param);
-      if ((int)_apiRetVal != ListViewAPI.LV_VIEW_TILE)
+      if ((int) _apiRetVal != ListViewAPI.LV_VIEW_TILE)
       {
         return;
       }
@@ -226,7 +226,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
       int param = 0;
       _apiRetVal = ListViewAPI.SendMessage(Handle, ListViewAPI.LVM_GETVIEW, ListViewAPI.LV_VIEW_TILE, ref param);
-      if ((int)_apiRetVal != ListViewAPI.LV_VIEW_TILE)
+      if ((int) _apiRetVal != ListViewAPI.LV_VIEW_TILE)
       {
         return;
       }
@@ -249,7 +249,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
       int param = 0;
       _apiRetVal = ListViewAPI.SendMessage(Handle, ListViewAPI.LVM_GETVIEW, ListViewAPI.LV_VIEW_TILE, ref param);
-      if ((int)_apiRetVal != ListViewAPI.LV_VIEW_TILE)
+      if ((int) _apiRetVal != ListViewAPI.LV_VIEW_TILE)
       {
         return;
       }
@@ -476,7 +476,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       switch (m.Msg)
       {
         case ListViewAPI.OCM_NOTIFY:
-          var lmsg = (ListViewAPI.NMHDR)m.GetLParam(typeof (ListViewAPI.NMHDR));
+          var lmsg = (ListViewAPI.NMHDR) m.GetLParam(typeof (ListViewAPI.NMHDR));
 
           switch (lmsg.code)
           {
@@ -499,8 +499,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     private bool NotifyListCustomDraw(ref Message m)
     {
-      m.Result = (IntPtr)ListViewAPI.CDRF_DODEFAULT;
-      var nmcd = (ListViewAPI.NMCUSTOMDRAW)m.GetLParam(typeof (ListViewAPI.NMCUSTOMDRAW));
+      m.Result = (IntPtr) ListViewAPI.CDRF_DODEFAULT;
+      var nmcd = (ListViewAPI.NMCUSTOMDRAW) m.GetLParam(typeof (ListViewAPI.NMCUSTOMDRAW));
       IntPtr thisHandle = Handle;
 
       if (nmcd.hdr.hwndFrom != Handle)
@@ -511,10 +511,10 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       switch (nmcd.dwDrawStage)
       {
         case ListViewAPI.CDDS_PREPAINT:
-          m.Result = (IntPtr)ListViewAPI.CDRF_NOTIFYITEMDRAW;
+          m.Result = (IntPtr) ListViewAPI.CDRF_NOTIFYITEMDRAW;
           break;
         case ListViewAPI.CDDS_ITEMPREPAINT:
-          m.Result = (IntPtr)ListViewAPI.CDRF_NOTIFYSUBITEMDRAW;
+          m.Result = (IntPtr) ListViewAPI.CDRF_NOTIFYSUBITEMDRAW;
           break;
         case (ListViewAPI.CDDS_ITEMPREPAINT | ListViewAPI.CDDS_SUBITEM):
           break;
@@ -547,7 +547,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     public int Compare(object x, object y)
     {
-      return String.Compare(((ListViewItem)x).SubItems[col].Text, ((ListViewItem)y).SubItems[col].Text);
+      return String.Compare(((ListViewItem) x).SubItems[col].Text, ((ListViewItem) y).SubItems[col].Text);
     }
 
     #endregion

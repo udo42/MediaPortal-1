@@ -29,8 +29,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
   /// </summary>
   public class DevicesInUse
   {
-
-
     private static DevicesInUse _instance;
     private readonly List<DsDevice> _devicesInUse;
 

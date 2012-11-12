@@ -189,7 +189,9 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
           _wakeupTimer.Close();
         }
       }
-      catch (ObjectDisposedException) {}
+      catch (ObjectDisposedException)
+      {
+      }
       catch (AppDomainUnloadedException appex)
       {
         this.LogError(appex, "PowerScheduler: Error on dispose");
@@ -327,10 +329,10 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
       switch (_settings.ShutdownMode)
       {
         case ShutdownMode.Suspend:
-          SuspendSystemWithOptions(source, (int)RestartOptions.Suspend, force);
+          SuspendSystemWithOptions(source, (int) RestartOptions.Suspend, force);
           break;
         case ShutdownMode.Hibernate:
-          SuspendSystemWithOptions(source, (int)RestartOptions.Hibernate, force);
+          SuspendSystemWithOptions(source, (int) RestartOptions.Hibernate, force);
           break;
         case ShutdownMode.StayOn:
           this.LogDebug("PowerScheduler: Standby requested but system is configured to stay on");
@@ -355,7 +357,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
         // block concurrent request?
         if (_ignoreSuspendUntil > now)
         {
-          this.LogInfo("PowerScheduler: Concurrent shutdown was ignored: {0} ; force: {1}", (RestartOptions)how, force);
+          this.LogInfo("PowerScheduler: Concurrent shutdown was ignored: {0} ; force: {1}", (RestartOptions) how, force);
           return;
         }
 
@@ -363,11 +365,12 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
         _ignoreSuspendUntil = DateTime.MaxValue;
       }
 
-      this.LogInfo("PowerScheduler: Entering shutdown {0} ; forced: {1} -- kick off shutdown thread", (RestartOptions)how,
+      this.LogInfo("PowerScheduler: Entering shutdown {0} ; forced: {1} -- kick off shutdown thread",
+                   (RestartOptions) how,
                    force);
       var data = new SuspendSystemThreadEnv();
       data.that = this;
-      data.how = (RestartOptions)how;
+      data.how = (RestartOptions) how;
       data.force = force;
       data.source = source;
 
@@ -501,7 +504,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
 
     protected static void SuspendSystemThread(object _data)
     {
-      var data = (SuspendSystemThreadEnv)_data;
+      var data = (SuspendSystemThreadEnv) _data;
       data.that.SuspendSystemThread(data.source, data.how, data.force);
     }
 
@@ -688,7 +691,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
         RemoteStandbyHandler hdl;
         if (newTag <= _remoteTags)
         {
-          hdl = (RemoteStandbyHandler)_remoteStandbyHandlers[oldStandbyTag];
+          hdl = (RemoteStandbyHandler) _remoteStandbyHandlers[oldStandbyTag];
           _remoteStandbyHandlers.Remove(oldStandbyTag);
         }
         else
@@ -705,7 +708,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
         RemoteWakeupHandler hdl;
         if (newTag <= _remoteTags)
         {
-          hdl = (RemoteWakeupHandler)_remoteWakeupHandlers[oldWakeupTag];
+          hdl = (RemoteWakeupHandler) _remoteWakeupHandlers[oldWakeupTag];
           _remoteWakeupHandlers.Remove(oldWakeupTag);
         }
         else
@@ -735,7 +738,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
     public void UnregisterRemote(int tag)
     {
       {
-        var hdl = (RemoteStandbyHandler)_remoteStandbyHandlers[tag];
+        var hdl = (RemoteStandbyHandler) _remoteStandbyHandlers[tag];
         if (hdl != null)
         {
           _remoteStandbyHandlers.Remove(tag);
@@ -746,7 +749,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
         }
       }
       {
-        var hdl = (RemoteWakeupHandler)_remoteWakeupHandlers[tag];
+        var hdl = (RemoteWakeupHandler) _remoteWakeupHandlers[tag];
         if (hdl != null)
         {
           _remoteWakeupHandlers.Remove(tag);
@@ -828,7 +831,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
             if (reload++ == _reloadInterval)
             {
               reload = 0;
-              CheckForStandby(true);              
+              CheckForStandby(true);
               GC.Collect();
               LoadSettings();
               SendPowerSchedulerEvent(PowerSchedulerEventType.Elapsed);
@@ -859,7 +862,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
       if (_settings == null)
         _settings = new PowerSettings();
 
-      
 
       // Check if PowerScheduler should log verbose debug messages
       if (_settings.ExtensiveLogging != SettingsManagement.GetValue("PowerSchedulerExtensiveLogging", false))
@@ -943,9 +945,9 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
       }
       // Check configured shutdown mode
       setting = SettingsManagement.GetValue("PowerSchedulerShutdownMode", 2);
-      if ((int)_settings.ShutdownMode != setting)
+      if ((int) _settings.ShutdownMode != setting)
       {
-        _settings.ShutdownMode = (ShutdownMode)setting;
+        _settings.ShutdownMode = (ShutdownMode) setting;
         LogVerbose("PowerScheduler: Shutdown mode set to {0}", _settings.ShutdownMode);
         changed = true;
       }
@@ -1002,7 +1004,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
       long systemUptime = Environment.TickCount;
 
       var lastInputInfo = new LASTINPUTINFO();
-      lastInputInfo.cbSize = (uint)Marshal.SizeOf(lastInputInfo);
+      lastInputInfo.cbSize = (uint) Marshal.SizeOf(lastInputInfo);
       lastInputInfo.dwTime = 0;
 
       if (!GetLastInputInfo(ref lastInputInfo))
@@ -1091,7 +1093,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
           {
             this.LogDebug("PowerScheduler: Suspend queried, starting suspend sequence");
             // Always try to Hibernate (S4). If system is set to S3, then Hibernate will fail and result will be S3
-            SuspendSystemWithOptions("System", (int)RestartOptions.Hibernate, false);
+            SuspendSystemWithOptions("System", (int) RestartOptions.Hibernate, false);
             return false;
           }
           return true;
@@ -1203,7 +1205,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler
             delta = 60;
           }
           _wakeupTimer.SecondsToWait = delta;
-          this.LogDebug("PowerScheduler: Set wakeup timer to wakeup system in {0} minutes", delta / 60);
+          this.LogDebug("PowerScheduler: Set wakeup timer to wakeup system in {0} minutes", delta/60);
         }
         else
         {

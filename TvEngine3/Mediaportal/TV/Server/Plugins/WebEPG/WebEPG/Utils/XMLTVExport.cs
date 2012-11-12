@@ -94,7 +94,9 @@ namespace WebEPG.Utils
       return true;
     }
 
-    void IEpgDataSink.SetTimeWindow(TimeRange window) {}
+    void IEpgDataSink.SetTimeWindow(TimeRange window)
+    {
+    }
 
     void IEpgDataSink.WriteProgram(ProgramData programData, bool merged)
     {
@@ -185,7 +187,9 @@ namespace WebEPG.Utils
       }
     }
 
-    void IEpgDataSink.EndChannelPrograms(string id, string name) {}
+    void IEpgDataSink.EndChannelPrograms(string id, string name)
+    {
+    }
 
     #endregion
   }

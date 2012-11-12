@@ -84,14 +84,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       }
 
       Program program = ProgramManagement.GetProgramAt(startTime, schedule.Channel.IdChannel);
-      
+
       //no program? then treat this as a manual recording
       if (program == null)
       {
         program = ProgramFactory.CreateProgram(0, DateTime.Now, endTime, "manual", "", null,
                                                ProgramState.None,
                                                SqlDateTime.MinValue.Value, string.Empty, string.Empty,
-                                               string.Empty, string.Empty, -1, string.Empty, 0);        
+                                               string.Empty, string.Empty, -1, string.Empty, 0);
       }
       _program = new ProgramBLL(program);
     }
@@ -204,7 +204,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     /// <param name="recordingPath"></param>
     public void MakeFileName(string recordingPath)
     {
-
       string setting;
       if (!IsSerie)
       {
@@ -252,9 +251,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
       string programCategory = "";
       if (Program.Entity.ProgramCategory != null)
       {
-        programCategory = Program.Entity.ProgramCategory.Category.Trim();  
+        programCategory = Program.Entity.ProgramCategory.Category.Trim();
       }
-      
+
       string[] TagValues = {
                              _schedule.Entity.Channel.DisplayName.Trim(),
                              Program.Entity.Title.Trim(),

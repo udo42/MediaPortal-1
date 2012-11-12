@@ -57,16 +57,13 @@ namespace Mediaportal.TV.TvPlugin
 
     public TvZapOsd()
     {
-      GetID = (int)Window.WINDOW_TVZAPOSD;
+      GetID = (int) Window.WINDOW_TVZAPOSD;
     }
 
     public TVHome.ChannelErrorInfo LastError
     {
       get { return m_lastError; }
-      set
-      {
-        m_lastError = value;
-      }
+      set { m_lastError = value; }
     }
 
     public override bool IsTv
@@ -83,7 +80,7 @@ namespace Mediaportal.TV.TvPlugin
     public override bool Init()
     {
       bool bResult = Load(GUIGraphicsContext.Skin + @"\tvZAPOSD.xml");
-      GetID = (int)Window.WINDOW_TVZAPOSD;
+      GetID = (int) Window.WINDOW_TVZAPOSD;
       return bResult;
     }
 
@@ -119,7 +116,7 @@ namespace Mediaportal.TV.TvPlugin
           {
             if (action.wID == Action.ActionType.ACTION_CONTEXT_MENU)
             {
-              var tvWindow = (TvFullScreen)GUIWindowManager.GetWindow((int)Window.WINDOW_TVFULLSCREEN);
+              var tvWindow = (TvFullScreen) GUIWindowManager.GetWindow((int) Window.WINDOW_TVFULLSCREEN);
               tvWindow.OnAction(new Action(Action.ActionType.ACTION_SHOW_OSD, 0, 0));
               tvWindow.OnAction(action);
             }
@@ -294,8 +291,8 @@ namespace Mediaportal.TV.TvPlugin
       {
         strLogo = TVUtil.GetChannelLogo(TVHome.Navigator.ZapChannel);
       }
-            
-      if (string.IsNullOrEmpty(strLogo))                         
+
+      if (string.IsNullOrEmpty(strLogo))
       {
         if (imgTvChannelLogo != null)
         {
@@ -310,7 +307,7 @@ namespace Mediaportal.TV.TvPlugin
           //img.SetPosition(GUIGraphicsContext.OverScanLeft, GUIGraphicsContext.OverScanTop);
           m_bNeedRefresh = true;
           imgTvChannelLogo.IsVisible = true;
-        }        
+        }
       }
       ShowPrograms();
     }
@@ -326,8 +323,8 @@ namespace Mediaportal.TV.TvPlugin
 
     private string GetChannelNumber()
     {
-      int zapChannelNr = TVHome.Navigator.ZapChannelNr;  
-      if (zapChannelNr<0)
+      int zapChannelNr = TVHome.Navigator.ZapChannelNr;
+      if (zapChannelNr < 0)
       {
         return "";
       }
@@ -360,17 +357,17 @@ namespace Mediaportal.TV.TvPlugin
       if (imgRecIcon != null)
       {
         IVirtualCard card;
-        
+
         imgRecIcon.IsVisible = ServiceAgents.Instance.ControllerServiceAgent.IsRecording(idChannel, out card);
       }
-      
+
       if (lblZapToCannelNo != null)
       {
         lblZapToCannelNo.Label = channelNr;
         lblZapToCannelNo.Visible = !string.IsNullOrEmpty(channelNr);
       }
       if (LastError != null)
-      {        
+      {
         lblStartTime.Label = "";
         lblEndTime.Label = "";
         if (LastError.FailingChannel != null)
@@ -395,7 +392,7 @@ namespace Mediaportal.TV.TvPlugin
           lblCurrentChannel.Label = channelName;
         }
 
-        Program prog = ServiceAgents.Instance.ProgramServiceAgent.GetProgramAt(m_dateTime, idChannel);        
+        Program prog = ServiceAgents.Instance.ProgramServiceAgent.GetProgramAt(m_dateTime, idChannel);
         if (prog != null)
         {
           string strTime = String.Format("{0}-{1}",
@@ -423,7 +420,7 @@ namespace Mediaportal.TV.TvPlugin
           }
 
           // next program
-          prog = ServiceAgents.Instance.ProgramServiceAgent.GetProgramAt(prog.EndTime.AddMinutes(1), idChannel);            
+          prog = ServiceAgents.Instance.ProgramServiceAgent.GetProgramAt(prog.EndTime.AddMinutes(1), idChannel);
           if (prog != null)
           {
             if (lblOnTvNext != null)
@@ -468,7 +465,7 @@ namespace Mediaportal.TV.TvPlugin
       double iTotalSecs = ts.TotalSeconds;
       ts = DateTime.Now - prog.StartTime;
       double iCurSecs = ts.TotalSeconds;
-      double fPercent = (iCurSecs) / (iTotalSecs);
+      double fPercent = (iCurSecs)/(iTotalSecs);
       fPercent *= 100.0d;
       GUIPropertyManager.SetProperty("#TV.View.Percentage", fPercent.ToString());
     }

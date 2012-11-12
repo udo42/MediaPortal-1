@@ -29,7 +29,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
     {
       canRead = false;
       canWrite = false;
-            
+
       using (var fs = new FileStream(fileName, FileMode.Open, FileAccess.Read))
       {
         canRead = fs.CanRead;
@@ -37,8 +37,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
 
       using (var fs = new FileStream(fileName, FileMode.Open, FileAccess.Write))
       {
-        canWrite = fs.CanWrite; 
-      }      
+        canWrite = fs.CanWrite;
+      }
     }
 
     /// <summary>
@@ -53,7 +53,9 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport.util
       Encoding fileEncoding = Encoding.Default;
       using (FileStream fileStream = File.Open(fileName, fm, fa, fs))
       {
-        using (var streamReader = new StreamReader(fileStream, fileEncoding, true)) { }
+        using (var streamReader = new StreamReader(fileStream, fileEncoding, true))
+        {
+        }
       }
     }
   }

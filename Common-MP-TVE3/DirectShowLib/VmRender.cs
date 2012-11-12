@@ -416,7 +416,9 @@ namespace DirectShowLib
     int IsSurfaceLocked();
 
     [PreserveSig]
-    int LockSurface([Out] out IntPtr lpSurface); // BYTE**
+    int LockSurface([Out] out IntPtr lpSurface);
+
+    // BYTE**
 
     [PreserveSig]
     int UnlockSurface();
@@ -525,7 +527,9 @@ namespace DirectShowLib
     int SetAspectRatioMode([In] VMRAspectRatioMode AspectRatioMode);
 
     [PreserveSig]
-    int SetVideoClippingWindow([In] IntPtr hwnd); // HWND
+    int SetVideoClippingWindow([In] IntPtr hwnd);
+
+    // HWND
 
     [PreserveSig]
     int RepaintVideo(
@@ -540,7 +544,9 @@ namespace DirectShowLib
     /// the caller is responsible for free the returned memory by calling CoTaskMemFree.
     /// </summary>
     [PreserveSig]
-    int GetCurrentImage([Out] out IntPtr lpDib); // BYTE**
+    int GetCurrentImage([Out] out IntPtr lpDib);
+
+    // BYTE**
 
     [PreserveSig]
     int SetBorderColor([In] int Clr);

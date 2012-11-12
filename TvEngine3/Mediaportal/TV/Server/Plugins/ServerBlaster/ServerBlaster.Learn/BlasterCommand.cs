@@ -67,8 +67,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn
       _commandName = info.GetString("Name");
       _commandDesc = info.GetString("Description");
       _commandData = info.GetValue("Data", typeof (byte[])) as byte[];
-      _commandPort = (Port)info.GetValue("Port", typeof (Port));
-      _commandSpeed = (Speed)info.GetValue("Speed", typeof (Speed));
+      _commandPort = (Port) info.GetValue("Port", typeof (Port));
+      _commandSpeed = (Speed) info.GetValue("Speed", typeof (Speed));
     }
 
     #endregion Construction

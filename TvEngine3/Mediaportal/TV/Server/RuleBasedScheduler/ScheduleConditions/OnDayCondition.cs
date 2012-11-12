@@ -9,6 +9,7 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
   public class OnDayCondition : IScheduleCondition
   {
     private IList<DayOfWeek> _ondays;
+
     public OnDayCondition(IList<DayOfWeek> ondays)
     {
       _ondays = ondays;

@@ -125,7 +125,7 @@ namespace Mediaportal.TV.Server.TvLibrary.Utils.Web.Parser
       }
 
       // create a new IParserData object from the type and arguments given to the constructor
-      var sectionData = (IParserData)Activator.CreateInstance(_dataType, _dataArgs);
+      var sectionData = (IParserData) Activator.CreateInstance(_dataType, _dataArgs);
       if (_sectionParser.ParseSection(sectionSource, ref sectionData))
       {
         return sectionData;

@@ -53,11 +53,13 @@ namespace Mediaportal.TV.Server.TVService
           {
             // enable "Interact with desktop support
             if (tveKey.GetValue("Type") != null)
-              tveKey.SetValue("Type", ((int)tveKey.GetValue("Type") | 256));
+              tveKey.SetValue("Type", ((int) tveKey.GetValue("Type") | 256));
           }
         }
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
     }
   }
 }

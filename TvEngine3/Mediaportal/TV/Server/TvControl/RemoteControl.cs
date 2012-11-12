@@ -41,7 +41,7 @@ namespace Mediaportal.TV.Server.TVControl
 
     #region private members
 
-    private static bool _isRemotingConnected;    
+    private static bool _isRemotingConnected;
     private static string _hostName = Dns.GetHostName();
     private static bool _useIncreasedTimeoutForInitialConnection = true;
 
@@ -57,7 +57,6 @@ namespace Mediaportal.TV.Server.TVControl
     #endregion
 
     #region public static methods
-
 
     #endregion
 
@@ -89,17 +88,16 @@ namespace Mediaportal.TV.Server.TVControl
       set
       {
         if (_hostName != value)
-        {          
+        {
           _hostName = value;
         }
       }
     }
 
-    
 
     private static void ConnectCallback(IAsyncResult ar)
     {
-      var tcpClient = (TcpClient)ar.AsyncState;
+      var tcpClient = (TcpClient) ar.AsyncState;
       try
       {
         tcpClient.EndConnect(ar);
@@ -141,8 +139,6 @@ namespace Mediaportal.TV.Server.TVControl
         Log.Debug("TCP connect took : {0}", benchClock.ElapsedMilliseconds);
       }
     }
-
-   
 
     #endregion
   }

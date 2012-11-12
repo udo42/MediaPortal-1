@@ -352,7 +352,7 @@ namespace TvEngine.PowerScheduler.Interfaces
       Type type = typeof (T);
       if (_type == type)
       {
-        return (T)_object;
+        return (T) _object;
       }
       return default(T);
     }

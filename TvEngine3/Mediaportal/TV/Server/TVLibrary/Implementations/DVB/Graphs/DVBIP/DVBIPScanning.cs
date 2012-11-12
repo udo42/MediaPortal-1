@@ -32,7 +32,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBIP
     /// Initialise a new instance of the <see cref="DVBIPScanning"/> class.
     /// </summary>
     /// <param name="tuner">The tuner associated with this scanner.</param>
-    public DVBIPScanning(TvCardDVBIP tuner) : base(tuner) {}
+    public DVBIPScanning(TvCardDVBIP tuner) : base(tuner)
+    {
+    }
 
     /// <summary>
     /// Set the name for services which do not supply a name.

@@ -36,32 +36,23 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
   {
     #region variables
 
-    [DataMember]
-    private DiseqcPort _diseqc = DiseqcPort.None;
+    [DataMember] private DiseqcPort _diseqc = DiseqcPort.None;
 
-    [DataMember]
-    private BinaryConvolutionCodeRate _innerFecRate = BinaryConvolutionCodeRate.RateNotSet;
+    [DataMember] private BinaryConvolutionCodeRate _innerFecRate = BinaryConvolutionCodeRate.RateNotSet;
 
-    [DataMember]
-    private LnbType _lnbType;
+    [DataMember] private LnbType _lnbType;
 
-    [DataMember]
-    private ModulationType _modulation = ModulationType.ModQpsk;
+    [DataMember] private ModulationType _modulation = ModulationType.ModQpsk;
 
-    [DataMember]
-    private Pilot _pilot = Pilot.NotSet;
+    [DataMember] private Pilot _pilot = Pilot.NotSet;
 
-    [DataMember]
-    private Polarisation _polarisation = Polarisation.NotSet;
+    [DataMember] private Polarisation _polarisation = Polarisation.NotSet;
 
-    [DataMember]
-    private RollOff _rollOff = RollOff.NotSet;
+    [DataMember] private RollOff _rollOff = RollOff.NotSet;
 
-    [DataMember]
-    private int _satelliteIndex = -1;
+    [DataMember] private int _satelliteIndex = -1;
 
-    [DataMember]
-    private int _symbolRate = -1;
+    [DataMember] private int _symbolRate = -1;
 
     #endregion
 
@@ -286,7 +277,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     /// <returns>a shallow clone of the channel instance</returns>
     public override object Clone()
     {
-      var ch = (DVBSChannel)MemberwiseClone();
+      var ch = (DVBSChannel) MemberwiseClone();
       if (LnbType != null)
       {
         ch.LnbType = LnbType.Clone();
@@ -326,7 +317,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
     /// <returns>a channel instance with parameters adjusted as necessary</returns>
     public override IChannel GetTuningChannel()
     {
-      var clone = (IChannel)Clone();
+      var clone = (IChannel) Clone();
       var dvbsChannel = clone as DVBSChannel;
       if (dvbsChannel == null)
       {
@@ -334,9 +325,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       }
 
       // 1: Log the default frequency settings for the LNB.
-      this.LogDebug("DvbsChannel: LNB settings, low = {0} kHz, high = {1} kHz, switch = {2} kHz, bandstacked = {3}, toroidal = {4}, polarisation = {5}",
-          dvbsChannel.LnbType.LowBandFrequency, dvbsChannel.LnbType.HighBandFrequency, dvbsChannel.LnbType.SwitchFrequency,
-          dvbsChannel.LnbType.IsBandStacked, dvbsChannel.LnbType.IsToroidal, dvbsChannel.Polarisation);
+      this.LogDebug(
+        "DvbsChannel: LNB settings, low = {0} kHz, high = {1} kHz, switch = {2} kHz, bandstacked = {3}, toroidal = {4}, polarisation = {5}",
+        dvbsChannel.LnbType.LowBandFrequency, dvbsChannel.LnbType.HighBandFrequency, dvbsChannel.LnbType.SwitchFrequency,
+        dvbsChannel.LnbType.IsBandStacked, dvbsChannel.LnbType.IsToroidal, dvbsChannel.Polarisation);
 
       // 2: Toroidal LNB handling.
       // LNBs mounted on a toroidal dish require circular polarities to be inverted. Note that it is important to do
@@ -389,9 +381,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels
       // This value is *not* arbitrary. Some drivers (for example Genpix SkyWalker) will treat 20 GHz as a signal to
       // always use high voltage (useful for bandstacked LNBs).
 
-      this.LogDebug("DvbsChannel: translated LNB settings, low = {0} kHz, high = {1} kHz, switch = {2} kHz, polarisation = {3}",
-          dvbsChannel.LnbType.LowBandFrequency, dvbsChannel.LnbType.HighBandFrequency, dvbsChannel.LnbType.SwitchFrequency,
-          dvbsChannel.Polarisation);
+      this.LogDebug(
+        "DvbsChannel: translated LNB settings, low = {0} kHz, high = {1} kHz, switch = {2} kHz, polarisation = {3}",
+        dvbsChannel.LnbType.LowBandFrequency, dvbsChannel.LnbType.HighBandFrequency, dvbsChannel.LnbType.SwitchFrequency,
+        dvbsChannel.Polarisation);
       return dvbsChannel;
     }
   }

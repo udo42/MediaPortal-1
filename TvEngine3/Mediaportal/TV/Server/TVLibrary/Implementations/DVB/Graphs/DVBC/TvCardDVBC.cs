@@ -80,7 +80,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBC
         return;
       }
 
-      var tuner = (ITuner)_filterNetworkProvider;
+      var tuner = (ITuner) _filterNetworkProvider;
       ITuneRequest request;
 
       IEnumTuningSpaces enumTuning;
@@ -101,10 +101,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBC
           if (name.Equals("MediaPortal DVBC TuningSpace"))
           {
             this.LogDebug("TvCardDvbC: found correct tuningspace");
-            _tuningSpace = (IDVBTuningSpace)spaces[0];
+            _tuningSpace = (IDVBTuningSpace) spaces[0];
             tuner.put_TuningSpace(_tuningSpace);
             _tuningSpace.CreateTuneRequest(out request);
-            _tuneRequest = (IDVBTuneRequest)request;
+            _tuneRequest = (IDVBTuneRequest) request;
             Release.ComObject("TuningSpaceContainer", container);
             return;
           }
@@ -118,13 +118,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBC
 
       // We didn't find our tuning space registered in the system, so create a new one.
       this.LogDebug("TvCardDvbC: create new tuningspace");
-      _tuningSpace = (IDVBTuningSpace)new DVBTuningSpace();
+      _tuningSpace = (IDVBTuningSpace) new DVBTuningSpace();
       _tuningSpace.put_UniqueName("MediaPortal DVBC TuningSpace");
       _tuningSpace.put_FriendlyName("MediaPortal DVBC TuningSpace");
-      _tuningSpace.put__NetworkType(typeof(DVBCNetworkProvider).GUID);
+      _tuningSpace.put__NetworkType(typeof (DVBCNetworkProvider).GUID);
       _tuningSpace.put_SystemType(DVBSystemType.Cable);
 
-      var locator = (IDVBCLocator)new DVBCLocator();
+      var locator = (IDVBCLocator) new DVBCLocator();
       locator.put_CarrierFrequency(-1);
       locator.put_SymbolRate(-1);
       locator.put_Modulation(ModulationType.ModNotSet);
@@ -141,7 +141,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBC
 
       tuner.put_TuningSpace(_tuningSpace);
       _tuningSpace.CreateTuneRequest(out request);
-      _tuneRequest = (IDVBTuneRequest)request;
+      _tuneRequest = (IDVBTuneRequest) request;
     }
 
     protected override DVBBaseChannel CreateChannel()
@@ -169,8 +169,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.DVBC
 
       ILocator locator;
       _tuningSpace.get_DefaultLocator(out locator);
-      var dvbcLocator = (IDVBCLocator)locator;
-      dvbcLocator.put_CarrierFrequency((int)dvbcChannel.Frequency);
+      var dvbcLocator = (IDVBCLocator) locator;
+      dvbcLocator.put_CarrierFrequency((int) dvbcChannel.Frequency);
       dvbcLocator.put_SymbolRate(dvbcChannel.SymbolRate);
       dvbcLocator.put_Modulation(dvbcChannel.ModulationType);
 

@@ -46,11 +46,11 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     public int Compare(object x, object y)
     {
       int sortCol = col;
-      if (sortCol >= ((ListViewItem)x).SubItems.Count)
+      if (sortCol >= ((ListViewItem) x).SubItems.Count)
         sortCol = 0;
-      if (sortCol >= ((ListViewItem)y).SubItems.Count)
+      if (sortCol >= ((ListViewItem) y).SubItems.Count)
         sortCol = 0;
-      return String.Compare(((ListViewItem)x).SubItems[sortCol].Text, ((ListViewItem)y).SubItems[sortCol].Text);
+      return String.Compare(((ListViewItem) x).SubItems[sortCol].Text, ((ListViewItem) y).SubItems[sortCol].Text);
     }
 
     #endregion
@@ -75,13 +75,13 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
     public int Compare(object x, object y)
     {
       int sortCol = col;
-      if (sortCol >= ((ListViewItem)x).SubItems.Count)
+      if (sortCol >= ((ListViewItem) x).SubItems.Count)
         sortCol = 0;
-      if (sortCol >= ((ListViewItem)y).SubItems.Count)
+      if (sortCol >= ((ListViewItem) y).SubItems.Count)
         sortCol = 0;
 
-      int item1 = Int32.Parse(((ListViewItem)x).SubItems[sortCol].Text);
-      int item2 = Int32.Parse(((ListViewItem)y).SubItems[sortCol].Text);
+      int item1 = Int32.Parse(((ListViewItem) x).SubItems[sortCol].Text);
+      int item2 = Int32.Parse(((ListViewItem) y).SubItems[sortCol].Text);
       if (item1 < item2)
         return -1;
       if (item1 > item2)

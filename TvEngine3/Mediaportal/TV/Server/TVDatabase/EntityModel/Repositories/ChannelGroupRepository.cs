@@ -8,13 +8,13 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 {
   public class ChannelGroupRepository : GenericRepository<Model>, IChannelGroupRepository
   {
-    public ChannelGroupRepository()    
+    public ChannelGroupRepository()
     {
     }
 
     public ChannelGroupRepository(bool trackingEnabled)
       : base(trackingEnabled)
-    {      
+    {
     }
 
     public ChannelGroupRepository(Model context)
@@ -30,11 +30,12 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
         Include(r => r.GroupMaps.Select(c => c.Channel.TuningDetails)).
         Include(r => r.GroupMaps).
         Include(r => r.KeywordMap).
-        Include(r => r.GroupMaps.Select(c => c.Channel));        
+        Include(r => r.GroupMaps.Select(c => c.Channel));
       return includeRelations;
     }
 
-    public IQueryable<ChannelGroup> IncludeAllRelations(IQueryable<ChannelGroup> query, ChannelGroupIncludeRelationEnum includeRelations)
+    public IQueryable<ChannelGroup> IncludeAllRelations(IQueryable<ChannelGroup> query,
+                                                        ChannelGroupIncludeRelationEnum includeRelations)
     {
       bool groupMaps = includeRelations.HasFlag(ChannelGroupIncludeRelationEnum.GroupMaps);
       bool groupMapsChannel = includeRelations.HasFlag(ChannelGroupIncludeRelationEnum.GroupMapsChannel);

@@ -47,10 +47,14 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
     private PlayListItemType _itemType = PlayListItemType.Unknown;
     protected object _musicTag;
 
-    public PlayListItem() {}
+    public PlayListItem()
+    {
+    }
 
     public PlayListItem(string description, string fileName)
-      : this(description, fileName, 0) {}
+      : this(description, fileName, 0)
+    {
+    }
 
     public PlayListItem(string description, string fileName, int duration)
     {
@@ -108,5 +112,5 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
       get { return _musicTag; }
       set { _musicTag = value; }
     }
-  } ;
+  };
 }

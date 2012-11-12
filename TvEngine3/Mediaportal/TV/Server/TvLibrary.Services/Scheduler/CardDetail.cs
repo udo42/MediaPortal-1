@@ -52,6 +52,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
 
     #endregion
   }
+
   /// <summary>
   /// Class which can be used to sort Cards bases on priority
   /// </summary>
@@ -73,7 +74,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Scheduler
     /// <param name="numberOfOtherUsers"></param>
     /// <param name="isChannelTimeshiftingOnOtherMux"> </param>
     /// <param name="isParked"> </param>
-    public CardDetail(int id, Card card, IChannel detail, bool sameTransponder, int numberOfOtherUsers, long? channelTimeshiftingOnOtherMux)
+    public CardDetail(int id, Card card, IChannel detail, bool sameTransponder, int numberOfOtherUsers,
+                      long? channelTimeshiftingOnOtherMux)
     {
       SameTransponder = sameTransponder;
       _cardId = id;

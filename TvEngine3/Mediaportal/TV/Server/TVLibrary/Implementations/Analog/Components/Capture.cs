@@ -35,8 +35,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
   /// </summary>
   internal class Capture : IDisposable
   {
-
-
     #region struct
 
 #pragma warning disable 649,169,0649 // All fields are used by the Marshal.PtrToStructure function
@@ -236,7 +234,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
           DevicesInUse.Instance.Remove(_audioCaptureDevice);
           _audioCaptureDevice.Dispose();
         }
-        _audioCaptureDevice = null; 
+        _audioCaptureDevice = null;
         if (_videoCaptureDevice != null)
         {
           DevicesInUse.Instance.Remove(_videoCaptureDevice);
@@ -254,7 +252,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       }
       if (_filterAudioCapture != null && _filterVideoCapture != _filterAudioCapture)
       {
-        Release.ComObject("audio capture filter", _filterAudioCapture);        
+        Release.ComObject("audio capture filter", _filterAudioCapture);
       }
       if (_filterVideoCapture != null)
       {
@@ -649,11 +647,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       }
       catch (COMException ex)
       {
-        if (ex.ErrorCode.Equals(unchecked((Int32)0x80070490)))
+        if (ex.ErrorCode.Equals(unchecked((Int32) 0x80070490)))
         {
           // pin on a NVTV capture filter is named VBI..
           this.LogDebug("analog: getCategory not supported by collection ? ERROR:0x{0:x} :" + ex.Message,
-                            ex.ErrorCode);
+                        ex.ErrorCode);
 
           if (_filterVideoCapture == null)
             return;
@@ -883,7 +881,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     {
       if (_streamConfig != null)
       {
-        if (SetFrameRate((long)(10000000d / frameRate)))
+        if (SetFrameRate((long) (10000000d/frameRate)))
         {
           this.LogInfo("Set Framerate to {0} succeeded", frameRate);
           _frameRate = frameRate;

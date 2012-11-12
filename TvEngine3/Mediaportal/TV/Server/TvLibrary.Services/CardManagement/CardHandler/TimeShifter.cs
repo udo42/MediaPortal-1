@@ -34,8 +34,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 {
   public class TimeShifter : TimeShifterBase, ITimeShifter
   {
- 
-
     private readonly ChannelLinkageGrabber _linkageGrabber;
     private readonly bool _linkageScannerEnabled;
     private DateTime _timeAudioEvent;
@@ -94,7 +92,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         {
           return "";
         }
-                
+
         ITvSubChannel subchannel = GetSubChannel(_cardHandler.UserManagement.GetTimeshiftingSubChannel(user.Name));
         if (subchannel == null)
           return null;
@@ -121,7 +119,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         {
           return false;
         }
-                
+
         ITvSubChannel subchannel = GetSubChannel(_cardHandler.UserManagement.GetTimeshiftingSubChannel(userName));
         if (subchannel == null)
           return false;
@@ -143,10 +141,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     /// </value>
     public bool IsAnySubChannelTimeshifting
     {
-      get
-      {
-        return _cardHandler.UserManagement.IsAnyUserTimeShifting();        
-      }
+      get { return _cardHandler.UserManagement.IsAnyUserTimeShifting(); }
     }
 
     /// <summary>
@@ -166,10 +161,10 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
             isTimeShifting = subchannel.IsTimeShifting;
             if (isTimeShifting)
             {
-              break; 
-            }            
-          } 
-        }        
+              break;
+            }
+          }
+        }
       }
       catch (Exception ex)
       {
@@ -237,8 +232,8 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           }
           else
           {
-            this.LogDebug("card: StartTimeShifting {0} {1} ", _cardHandler.DataBaseCard.IdCard, fileName);            
-            
+            this.LogDebug("card: StartTimeShifting {0} {1} ", _cardHandler.DataBaseCard.IdCard, fileName);
+
             _cardHandler.UserManagement.RefreshUser(ref user);
             ITvSubChannel subchannel = GetSubChannel(subChannelId);
 
@@ -305,13 +300,15 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       {
         if (_cardHandler.DataBaseCard.Enabled)
         {
-          ITvSubChannel subchannel = GetSubChannel(_cardHandler.UserManagement.GetSubChannelIdByChannelId(user.Name, idChannel));
+          ITvSubChannel subchannel =
+            GetSubChannel(_cardHandler.UserManagement.GetSubChannelIdByChannelId(user.Name, idChannel));
           DetachAudioVideoEventHandler(subchannel);
-          this.LogDebug("card {2}: StopTimeShifting user:{0} sub:{1}", user.Name, _cardHandler.UserManagement.GetSubChannelIdByChannelId(user.Name, idChannel),
-                    _cardHandler.Card.Name);          
-          ResetLinkageScanner();          
+          this.LogDebug("card {2}: StopTimeShifting user:{0} sub:{1}", user.Name,
+                        _cardHandler.UserManagement.GetSubChannelIdByChannelId(user.Name, idChannel),
+                        _cardHandler.Card.Name);
+          ResetLinkageScanner();
           _cardHandler.UserManagement.RemoveUser(user, idChannel);
-          stop = true;          
+          stop = true;
         }
       }
       catch (Exception ex)
@@ -443,7 +440,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 
 
       Int32 maximumFileSize = SettingsManagement.GetValue("timeshiftMaxFileSize", 256);
-        // in MB
+      // in MB
       ulong diskSpaceNeeded = Convert.ToUInt64(maximumFileSize);
       diskSpaceNeeded *= 1000000*2; // Convert to bytes; 2 times of timeshiftMaxFileSize
       bool hasFreeDiskSpace = freeDiskSpace > diskSpaceNeeded;

@@ -42,15 +42,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       for (byte data = 0; data < 128; data++)
       {
         // Calculate odd parity
-        var b0 = (byte)(data & 1);
-        var b1 = (byte)((data >> 1) & 1);
-        var b2 = (byte)((data >> 2) & 1);
-        var b3 = (byte)((data >> 3) & 1);
-        var b4 = (byte)((data >> 4) & 1);
-        var b5 = (byte)((data >> 5) & 1);
-        var b6 = (byte)((data >> 6) & 1);
-        var p = (byte)(1 ^ b0 ^ b1 ^ b2 ^ b3 ^ b4 ^ b5 ^ b6);
-        var dataP = (byte)(data | (p << 7));
+        var b0 = (byte) (data & 1);
+        var b1 = (byte) ((data >> 1) & 1);
+        var b2 = (byte) ((data >> 2) & 1);
+        var b3 = (byte) ((data >> 3) & 1);
+        var b4 = (byte) ((data >> 4) & 1);
+        var b5 = (byte) ((data >> 5) & 1);
+        var b6 = (byte) ((data >> 6) & 1);
+        var p = (byte) (1 ^ b0 ^ b1 ^ b2 ^ b3 ^ b4 ^ b5 ^ b6);
+        var dataP = (byte) (data | (p << 7));
         m_encode[data] = dataP;
         m_decode[dataP] = data;
       }

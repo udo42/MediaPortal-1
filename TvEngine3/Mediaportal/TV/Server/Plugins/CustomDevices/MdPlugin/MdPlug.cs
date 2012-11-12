@@ -53,7 +53,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       /// Instruct the softCAM plugin filter to decode a different service using specific parameters.
       /// </summary>
       [PreserveSig]
-      int ChangeChannel(int frequency, int bandwidth, int polarity, int videoPid, int audioPid, int ecmPid, int caId, int providerId);
+      int ChangeChannel(int frequency, int bandwidth, int polarity, int videoPid, int audioPid, int ecmPid, int caId,
+                        int providerId);
 
       /// <summary>
       /// Instruct the softCAM plugin filter to decode a different service using a Program82 structure.
@@ -103,7 +104,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
     #region Nested type: MDAPIFilter
 
     [ComImport, Guid("72e6dB8f-9f33-4d1c-a37c-de8148c0be74")]
-    private class MDAPIFilter { };
+    private class MDAPIFilter
+    {
+    };
 
     #endregion
 
@@ -140,8 +143,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct PidFilter
     {
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 5)]
-      public readonly String Name;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 5)] public readonly String Name;
       public readonly byte Id;
       public readonly UInt16 Pid;
     }
@@ -153,10 +155,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
     #region Nested type: PidsToDecode
 
     [StructLayout(LayoutKind.Sequential)]
-    private struct PidsToDecode  // TPids2Dec
+    private struct PidsToDecode // TPids2Dec
     {
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPidCount)]
-      public UInt16[] Pids;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxPidCount)] public UInt16[] Pids;
       public UInt16 PidCount;
     }
 
@@ -167,21 +168,18 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     private struct Program82
     {
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 30)]
-      public String Name;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 30)]
-      public String Provider;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 30)]
-      public readonly String Country;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 30)] public String Name;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 30)] public String Provider;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 30)] public readonly String Country;
       private readonly UInt16 Padding1;
 
-      public readonly UInt32 Frequency;  // unit = kHz
+      public readonly UInt32 Frequency; // unit = kHz
       public readonly byte PType;
-      public readonly byte Voltage;      // polarisation ???
+      public readonly byte Voltage; // polarisation ???
       public readonly byte Afc;
       public readonly byte Diseqc;
       public readonly UInt16 SymbolRate; // unit = ks/s
-      public readonly UInt16 Qam;        // modulation ???
+      public readonly UInt16 Qam; // modulation ???
       public readonly UInt16 FecRate;
       public readonly byte Norm;
       private readonly byte Padding2;
@@ -205,14 +203,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       public readonly UInt16 TempAudioPid;
 
       public readonly UInt16 FilterCount;
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)]
-      public readonly PidFilter[] Filters;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = 32)] public readonly PidFilter[] Filters;
 
       public UInt16 CaSystemCount;
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxCaSystemCount)]
-      public CaSystem82[] CaSystems;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 5)]
-      public readonly String CaCountry;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxCaSystemCount)] public CaSystem82[] CaSystems;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 5)] public readonly String CaCountry;
 
       public readonly byte Marker;
 
@@ -221,8 +216,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
 
       public readonly byte Dynamic;
 
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)]
-      public readonly byte[] ExternBuffer;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = 16)] public readonly byte[] ExternBuffer;
       private readonly byte Padding4;
     }
 
@@ -434,7 +428,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       }
 
       // Merge the dictionaries and assemble the details to pass to the MD plugin.
-      UInt16 count = 0;   // This variable will be used to count the number of distinct CA system-ECM-EMM combinations.
+      UInt16 count = 0; // This variable will be used to count the number of distinct CA system-ECM-EMM combinations.
       programToDecode.CaSystems = new CaSystem82[MaxCaSystemCount];
       IEnumerator<UInt32> en;
       this.LogDebug("MD Plugin: registering PIDs...");
@@ -467,7 +461,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
               // - the EMM PID provider ID is not known
               // In the first case, we choose one of the common provider IDs. In the last two cases we pick one
               // of the known provider IDs and assume it applies to both ECMs and EMMs.
-              if (seenEcmPids[caSystemId][ecmPid].Count > 0 || seenEcmPids[caSystemId][ecmPid].Count == 0 || seenEmmPids[caSystemId][emm].Count == 0)
+              if (seenEcmPids[caSystemId][ecmPid].Count > 0 || seenEcmPids[caSystemId][ecmPid].Count == 0 ||
+                  seenEmmPids[caSystemId][emm].Count == 0)
               {
                 // We have a match! Pick the first common provider ID.
                 if (seenEcmPids[caSystemId][ecmPid].Count == 0)
@@ -626,9 +621,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
                     programToDecode.EcmPid = programToDecode.CaSystems[i].EcmPid;
                     configFound = true;
 
-                    if (((XmlElement)channelNode).HasAttribute("emm_pid"))
+                    if (((XmlElement) channelNode).HasAttribute("emm_pid"))
                     {
-                      programToDecode.CaSystems[i].EmmPid = UInt16.Parse(((XmlElement)channelNode).GetAttribute("emm_pid"));
+                      programToDecode.CaSystems[i].EmmPid =
+                        UInt16.Parse(((XmlElement) channelNode).GetAttribute("emm_pid"));
                     }
 
                     break;
@@ -652,7 +648,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
               {
                 for (byte i = 0; i < programToDecode.CaSystemCount; i++)
                 {
-                  if (providerNode.Attributes["ID"].Value.Equals(String.Format("{0:D}", programToDecode.CaSystems[i].ProviderId)))
+                  if (
+                    providerNode.Attributes["ID"].Value.Equals(String.Format("{0:D}",
+                                                                             programToDecode.CaSystems[i].ProviderId)))
                   {
                     this.LogDebug("MD Plugin: found provider configuration");
                     programToDecode.CaId = i;
@@ -679,7 +677,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
               {
                 for (byte i = 0; i < programToDecode.CaSystemCount; i++)
                 {
-                  if (caTypeNode.Attributes["ID"].Value.Equals(String.Format("{0:D}", programToDecode.CaSystems[i].CaType)))
+                  if (
+                    caTypeNode.Attributes["ID"].Value.Equals(String.Format("{0:D}", programToDecode.CaSystems[i].CaType)))
                   {
                     this.LogDebug("MD Plugin: found CA type configuration");
                     programToDecode.CaId = i;
@@ -702,7 +701,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
           this.LogDebug("MD Plugin: no configuration found");
 
           // Now the question: do we add configuration?
-          var mainNode = (XmlElement)doc.SelectSingleNode("/mdapi");
+          var mainNode = (XmlElement) doc.SelectSingleNode("/mdapi");
           bool fillOutConfig = false;
           if (mainNode == null || !mainNode.HasAttribute("fillout"))
           {
@@ -847,10 +846,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
     /// </summary>
     public override String Name
     {
-      get
-      {
-        return "MD Plugin";
-      }
+      get { return "MD Plugin"; }
     }
 
     /// <summary>
@@ -898,14 +894,15 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       }
       if (hr != 0 || tunerFilterInfo.achName == null)
       {
-        this.LogDebug("MD Plugin: failed to get the tuner filter name, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("MD Plugin: failed to get the tuner filter name, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
       }
       _configurationFolderPrefix = tunerFilterInfo.achName;
 
       try
       {
         // Look for a configuration file.
-        String configFile= PathManager.BuildAssemblyRelativePath("MDPLUGINS\\MDAPICards.xml");
+        String configFile = PathManager.BuildAssemblyRelativePath("MDPLUGINS\\MDAPICards.xml");
         int slotCount = 1;
         String providerList = "all";
         var doc = new XmlDocument();
@@ -999,7 +996,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
             XmlAttribute providerListNode = tunerNode.Attributes["Provider"];
             if (providerListNode == null)
             {
-              providerListNode = doc.CreateAttribute("Provider"); 
+              providerListNode = doc.CreateAttribute("Provider");
               tunerNode.Attributes.Append(providerListNode);
             }
             providerListNode.InnerText = "all";
@@ -1081,11 +1078,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
 
       // Add an infinite tee after the tuner/capture filter.
       this.LogDebug("MD Plugin: adding infinite tee");
-      _infTee = (IBaseFilter)new InfTee();
+      _infTee = (IBaseFilter) new InfTee();
       hr = _graph.AddFilter(_infTee, "MD Plugin Infinite Tee");
       if (hr != 0)
       {
-        this.LogDebug("MD Plugin: failed to add the inf tee to the graph, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("MD Plugin: failed to add the inf tee to the graph, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         return false;
       }
       IPin outputPin = DsFindPin.ByDirection(lastFilter, PinDirection.Output, 0);
@@ -1097,7 +1095,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       inputPin = null;
       if (hr != 0)
       {
-        this.LogDebug("MD Plugin: failed to connect the inf tee into the graph, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("MD Plugin: failed to connect the inf tee into the graph, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         return false;
       }
       lastFilter = _infTee;
@@ -1107,14 +1106,15 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       for (int i = 0; i < _slots.Capacity; i++)
       {
         var slot = new DecodeSlot();
-        slot.Filter = (IBaseFilter)new MDAPIFilter();
+        slot.Filter = (IBaseFilter) new MDAPIFilter();
         slot.CurrentChannel = null;
 
         // Add the filter to the graph.
         hr = _graph.AddFilter(slot.Filter, "MDAPI Filter " + i);
         if (hr != 0)
         {
-          this.LogDebug("MD Plugin: failed to add MD plugin filter {0} to the graph, hr = 0x{1:x} ({2})", i + 1, hr, HResult.GetDXErrorString(hr));
+          this.LogDebug("MD Plugin: failed to add MD plugin filter {0} to the graph, hr = 0x{1:x} ({2})", i + 1, hr,
+                        HResult.GetDXErrorString(hr));
           return false;
         }
 
@@ -1128,7 +1128,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
         inputPin = null;
         if (hr != 0)
         {
-          this.LogDebug("MD Plugin: failed to connect MD plugin filter {0} into the graph, hr = 0x{1:x} ({2})", i + 1, hr, HResult.GetDXErrorString(hr));
+          this.LogDebug("MD Plugin: failed to connect MD plugin filter {0} into the graph, hr = 0x{1:x} ({2})", i + 1,
+                        hr, HResult.GetDXErrorString(hr));
           return false;
         }
         lastFilter = slot.Filter;
@@ -1279,14 +1280,15 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
     /// <param name="pmt">The programme map table for the service.</param>
     /// <param name="cat">The conditional access table for the service.</param>
     /// <returns><c>true</c> if the command is successfully sent, otherwise <c>false</c></returns>
-    public bool SendCommand(IChannel channel, CaPmtListManagementAction listAction, CaPmtCommand command, Pmt pmt, Cat cat)
+    public bool SendCommand(IChannel channel, CaPmtListManagementAction listAction, CaPmtCommand command, Pmt pmt,
+                            Cat cat)
     {
       this.LogDebug("MD Plugin: send conditional access command, list action = {0}, command = {1}", listAction, command);
 
       if (!_isMdPlugin || _slots == null)
       {
         this.LogDebug("MD Plugin: device not initialised or interface not supported");
-        return true;  // Don't retry...
+        return true; // Don't retry...
       }
       if (command == CaPmtCommand.OkMmi || command == CaPmtCommand.Query)
       {
@@ -1319,7 +1321,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       // can reset our slots. This could be optimised to cache the new list until "last"/"only" action and
       // reuse slots where possible.
       DecodeSlot freeSlot = null;
-      if (command == CaPmtCommand.OkDescrambling && (listAction == CaPmtListManagementAction.First || listAction == CaPmtListManagementAction.Only))
+      if (command == CaPmtCommand.OkDescrambling &&
+          (listAction == CaPmtListManagementAction.First || listAction == CaPmtListManagementAction.Only))
       {
         this.LogDebug("MD Plugin: freeing all slots");
         foreach (DecodeSlot slot in _slots)
@@ -1356,7 +1359,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
               // the service that is fine - this is an update.
             else if (command == CaPmtCommand.OkDescrambling)
             {
-              this.LogDebug("MD Plugin: found existing slot decrypting channel \"{0}\", sending update", currentService.Name);
+              this.LogDebug("MD Plugin: found existing slot decrypting channel \"{0}\", sending update",
+                            currentService.Name);
               freeSlot = slot;
               // No need to continue looping - this is the optimal situation where we reuse the existing slot.
               break;
@@ -1407,19 +1411,21 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
       {
         programToDecode.Provider = dvbChannel.Provider;
       }
-      programToDecode.TransportStreamId = (UInt16)dvbChannel.TransportId;
-      programToDecode.PmtPid = (UInt16)dvbChannel.PmtPid;
+      programToDecode.TransportStreamId = (UInt16) dvbChannel.TransportId;
+      programToDecode.PmtPid = (UInt16) dvbChannel.PmtPid;
 
       // We don't know what the actual service type is in this
       // context, but we can at least indicate whether this is
       // a TV or radio service.
       //programToDecode.ServiceType = (byte)(dvbChannel.IsTv ? DvbServiceType.DigitalTelevision : DvbServiceType.DigitalRadio); //TODO look if needed
-      programToDecode.ServiceType = (byte)DvbServiceType.DigitalTelevision;
+      programToDecode.ServiceType = (byte) DvbServiceType.DigitalTelevision;
 
-      this.LogDebug("MD Plugin: TSID = {0} (0x{0:x}), SID = {1} (0x{1:x}), PMT PID = {2} (0x{2:x}), PCR PID = {3} (0x{3:x}), service type = {4}, " +
-                    "video PID = {5} (0x{5:x}), audio PID = {6} (0x{6:x}), AC3 PID = {7} (0x{7:x}), teletext PID = {8} (0x{8:x})",
-                    programToDecode.TransportStreamId, programToDecode.ServiceId, programToDecode.PmtPid, programToDecode.PcrPid,
-                    programToDecode.ServiceType, programToDecode.VideoPid, programToDecode.AudioPid, programToDecode.Ac3AudioPid, programToDecode.TeletextPid
+      this.LogDebug(
+        "MD Plugin: TSID = {0} (0x{0:x}), SID = {1} (0x{1:x}), PMT PID = {2} (0x{2:x}), PCR PID = {3} (0x{3:x}), service type = {4}, " +
+        "video PID = {5} (0x{5:x}), audio PID = {6} (0x{6:x}), AC3 PID = {7} (0x{7:x}), teletext PID = {8} (0x{8:x})",
+        programToDecode.TransportStreamId, programToDecode.ServiceId, programToDecode.PmtPid, programToDecode.PcrPid,
+        programToDecode.ServiceType, programToDecode.VideoPid, programToDecode.AudioPid, programToDecode.Ac3AudioPid,
+        programToDecode.TeletextPid
         );
 
       programToDecode.CaSystemCount = RegisterEcmAndEmmPids(pmt, cat, ref programToDecode);
@@ -1430,8 +1436,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.MdPlugin
         );
       for (byte i = 0; i < programToDecode.CaSystemCount; i++)
       {
-        this.LogDebug("MD Plugin: #{0} CA type = {1} (0x{1:x}), ECM PID = {2} (0x{2:x}), EMM PID = {3} (0x{3:x}), provider = {4} (0x{4:x})",
-                      i + 1, programToDecode.CaSystems[i].CaType, programToDecode.CaSystems[i].EcmPid, programToDecode.CaSystems[i].EmmPid, programToDecode.CaSystems[i].ProviderId
+        this.LogDebug(
+          "MD Plugin: #{0} CA type = {1} (0x{1:x}), ECM PID = {2} (0x{2:x}), EMM PID = {3} (0x{3:x}), provider = {4} (0x{4:x})",
+          i + 1, programToDecode.CaSystems[i].CaType, programToDecode.CaSystems[i].EcmPid,
+          programToDecode.CaSystems[i].EmmPid, programToDecode.CaSystems[i].ProviderId
           );
       }
 

@@ -275,7 +275,6 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     {
       try
       {
-        
         if (SettingsManagement.GetSetting("TvMovieEnabled", "false").Value != "true")
         {
           return;

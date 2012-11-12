@@ -57,8 +57,6 @@ namespace Mediaportal.TV.TvPlugin
 
     public class RecordingThumbCacher
     {
-  
-
       private readonly Work work;
 
       public RecordingThumbCacher()
@@ -78,7 +76,8 @@ namespace Mediaportal.TV.TvPlugin
         {
           _thumbCreationActive = true;
 
-          IList<Recording> recordings = ServiceAgents.Instance.RecordingServiceAgent.ListAllRecordingsByMediaType(MediaTypeEnum.TV).ToList();
+          IList<Recording> recordings =
+            ServiceAgents.Instance.RecordingServiceAgent.ListAllRecordingsByMediaType(MediaTypeEnum.TV).ToList();
           for (int i = recordings.Count - 1; i >= 0; i--)
           {
             string recFileName = TVUtil.GetFileNameForRecording(recordings[i]);
@@ -87,10 +86,10 @@ namespace Mediaportal.TV.TvPlugin
                                              Utils.GetThumbExtension());
 
             if ((!TVHome.UseRTSP()) && !Utils.FileExistsInCache(thumbNail))
-            {              
+            {
               try
               {
-                Thread.Sleep(250);             
+                Thread.Sleep(250);
                 if (VideoThumbCreator.CreateVideoThumb(recFileName, thumbNail, true, true))
                 {
                   this.LogInfo("RecordedTV: Thumbnail successfully created for - {0}", Utils.SplitFilename(recFileName));
@@ -133,10 +132,8 @@ namespace Mediaportal.TV.TvPlugin
     private DateTime _resetSMSsearchDelay;
     private int _rootItem;
 
-    [SkinControl(6)]
-    protected GUIButtonControl btnCleanup;
-    [SkinControl(7)]
-    protected GUIButtonControl btnCompress;
+    [SkinControl(6)] protected GUIButtonControl btnCleanup;
+    [SkinControl(7)] protected GUIButtonControl btnCompress;
 
     private RecordingThumbCacher thumbworker;
 
@@ -148,7 +145,7 @@ namespace Mediaportal.TV.TvPlugin
       LABEL_PROGRAMTIME = 14,
       LABEL_PROGRAMDESCRIPTION = 15,
       LABEL_PROGRAMGENRE = 17,
-    } ;
+    };
 
     #endregion
 
@@ -184,7 +181,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public TvRecorded()
     {
-      GetID = (int)Window.WINDOW_RECORDEDTV;
+      GetID = (int) Window.WINDOW_RECORDEDTV;
     }
 
     #endregion
@@ -196,9 +193,10 @@ namespace Mediaportal.TV.TvPlugin
       base.LoadSettings();
       using (Settings xmlreader = new MPSettings())
       {
-        currentLayout = (GUIFacadeControl.Layout)xmlreader.GetValueAsInt(SerializeName, "layout", (int)GUIFacadeControl.Layout.List);
+        currentLayout =
+          (GUIFacadeControl.Layout) xmlreader.GetValueAsInt(SerializeName, "layout", (int) GUIFacadeControl.Layout.List);
         m_bSortAscending = xmlreader.GetValueAsBool(SerializeName, "sortasc", true);
-        
+
         string strTmp = xmlreader.GetValueAsString("tvrecorded", "sort", "channel");
 
         if (strTmp == "channel")
@@ -238,9 +236,9 @@ namespace Mediaportal.TV.TvPlugin
       base.SaveSettings();
       using (Settings xmlwriter = new MPSettings())
       {
-        xmlwriter.SetValue(SerializeName, "layout", (int)currentLayout);
+        xmlwriter.SetValue(SerializeName, "layout", (int) currentLayout);
         xmlwriter.SetValueAsBool(SerializeName, "sortasc", m_bSortAscending);
-        
+
         switch (_currentSortMethod)
         {
           case SortMethod.Channel:
@@ -271,10 +269,7 @@ namespace Mediaportal.TV.TvPlugin
 
     protected override string SerializeName
     {
-      get
-      {
-        return "tvrecorded";
-      }
+      get { return "tvrecorded"; }
     }
 
     public override bool Init()
@@ -286,7 +281,7 @@ namespace Mediaportal.TV.TvPlugin
 
       bool bResult = Load(GUIGraphicsContext.Skin + @"\mytvrecordedtv.xml");
       //LoadSettings();
-      GUIWindowManager.Replace((int)Window.WINDOW_RECORDEDTV, this);
+      GUIWindowManager.Replace((int) Window.WINDOW_RECORDEDTV, this);
       Restore();
       PreInit();
       ResetAllControls();
@@ -424,7 +419,7 @@ namespace Mediaportal.TV.TvPlugin
 
     protected override void OnShowSort()
     {
-      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_MENU);
       if (dlg == null)
       {
         return;
@@ -437,10 +432,10 @@ namespace Mediaportal.TV.TvPlugin
       dlg.AddLocalizedString(669); // genre
       dlg.AddLocalizedString(671); // watched
       dlg.AddLocalizedString(1017); // duration
-      
+
 
       // set the focus to currently used sort method
-      dlg.SelectedLabel = (int)_currentSortMethod;
+      dlg.SelectedLabel = (int) _currentSortMethod;
 
       // show dialog and wait for result
       dlg.DoModal(GetID);
@@ -449,7 +444,7 @@ namespace Mediaportal.TV.TvPlugin
         return;
       }
 
-      _currentSortMethod = (SortMethod)dlg.SelectedLabel;
+      _currentSortMethod = (SortMethod) dlg.SelectedLabel;
 
       OnSort();
     }
@@ -464,7 +459,7 @@ namespace Mediaportal.TV.TvPlugin
       }
       return base.OnMessage(message);
     }
-    
+
     protected override void OnShowContextMenu()
     {
       int iItem = GetSelectedItemNo();
@@ -477,9 +472,9 @@ namespace Mediaportal.TV.TvPlugin
       {
         return;
       }
-      var rec = (Recording)pItem.TVTag;
+      var rec = (Recording) pItem.TVTag;
 
-      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_MENU);
       if (dlg == null)
       {
         return;
@@ -520,7 +515,7 @@ namespace Mediaportal.TV.TvPlugin
 
         case 1048: // Settings
           TvRecordedInfo.CurrentProgram = rec;
-          GUIWindowManager.ActivateWindow((int)Window.WINDOW_TV_RECORDED_INFO);
+          GUIWindowManager.ActivateWindow((int) Window.WINDOW_TV_RECORDED_INFO);
           break;
 
         case 200072:
@@ -630,10 +625,10 @@ namespace Mediaportal.TV.TvPlugin
         if (null != facadeLayout)
           facadeLayout.EnableScrollLabel = _currentSortMethod == SortMethod.Name;
 
-        GUIControl.ShowControl(GetID, (int)Controls.LABEL_PROGRAMTITLE);
-        GUIControl.ShowControl(GetID, (int)Controls.LABEL_PROGRAMDESCRIPTION);
-        GUIControl.ShowControl(GetID, (int)Controls.LABEL_PROGRAMGENRE);
-        GUIControl.ShowControl(GetID, (int)Controls.LABEL_PROGRAMTIME);
+        GUIControl.ShowControl(GetID, (int) Controls.LABEL_PROGRAMTITLE);
+        GUIControl.ShowControl(GetID, (int) Controls.LABEL_PROGRAMDESCRIPTION);
+        GUIControl.ShowControl(GetID, (int) Controls.LABEL_PROGRAMGENRE);
+        GUIControl.ShowControl(GetID, (int) Controls.LABEL_PROGRAMTIME);
       }
       catch (Exception ex)
       {
@@ -679,12 +674,12 @@ namespace Mediaportal.TV.TvPlugin
       if (g_Player.IsTVRecording)
       {
         // watching TV
-        if (GUIWindowManager.ActiveWindow == (int)Window.WINDOW_TVFULLSCREEN)
+        if (GUIWindowManager.ActiveWindow == (int) Window.WINDOW_TVFULLSCREEN)
         {
           return true;
         }
         Log.Info("TVRecorded: ShowFullScreenWindow switching to fullscreen video");
-        GUIWindowManager.ActivateWindow((int)Window.WINDOW_TVFULLSCREEN);
+        GUIWindowManager.ActivateWindow((int) Window.WINDOW_TVFULLSCREEN);
         GUIGraphicsContext.IsFullScreenVideo = true;
         return true;
       }
@@ -695,11 +690,13 @@ namespace Mediaportal.TV.TvPlugin
     {
       try
       {
-        Program paramProg = ProgramFactory.CreateProgram(rec.IdChannel.GetValueOrDefault(), rec.StartTime, rec.EndTime, rec.Title, rec.Description, rec.ProgramCategory,
-                                                         ProgramState.None, DateTime.MinValue, String.Empty, String.Empty,
+        Program paramProg = ProgramFactory.CreateProgram(rec.IdChannel.GetValueOrDefault(), rec.StartTime, rec.EndTime,
+                                                         rec.Title, rec.Description, rec.ProgramCategory,
+                                                         ProgramState.None, DateTime.MinValue, String.Empty,
+                                                         String.Empty,
                                                          String.Empty, String.Empty, 0, String.Empty, 0);
         TVProgramInfo.CurrentProgram = paramProg;
-        GUIWindowManager.ActivateWindow((int)Window.WINDOW_TV_PROGRAM_INFO);
+        GUIWindowManager.ActivateWindow((int) Window.WINDOW_TV_PROGRAM_INFO);
       }
       catch (Exception ex)
       {
@@ -744,7 +741,7 @@ namespace Mediaportal.TV.TvPlugin
       else if (DateTime.Now.Year.Equals(compareDate.AddYears(1).Year))
         return GUILocalizeStrings.Get(6080); // "Last year";
       else return GUILocalizeStrings.Get(6090); // "Older";
-    }        
+    }
 
     private void LoadDirectory()
     {
@@ -752,10 +749,11 @@ namespace Mediaportal.TV.TvPlugin
       try
       {
         GUIControl.ClearControl(GetID, facadeLayout.GetID);
-        IEnumerable<Recording> recordings = ServiceAgents.Instance.RecordingServiceAgent.ListAllRecordingsByMediaType(MediaTypeEnum.TV);
+        IEnumerable<Recording> recordings =
+          ServiceAgents.Instance.RecordingServiceAgent.ListAllRecordingsByMediaType(MediaTypeEnum.TV);
 
         if (_currentLabel == string.Empty)
-        {          
+        {
           Func<Recording, string> keySelector = (rec => rec.Title);
           switch (_currentDbView)
           {
@@ -773,7 +771,7 @@ namespace Mediaportal.TV.TvPlugin
               break;
           }
 
-          ILookup<string, Recording> recItems = recordings.ToLookup(keySelector);            
+          ILookup<string, Recording> recItems = recordings.ToLookup(keySelector);
 
           itemlist = recItems.Select(recs =>
                                        {
@@ -781,9 +779,11 @@ namespace Mediaportal.TV.TvPlugin
                                            BuildItemFromRecording(
                                              recs.Aggregate(
                                                (ra, r) =>
-                                               ra == null ? r :
-                                                                IsRecordingActual(r) ? r :
-                                                                                           r.StartTime > ra.StartTime ? r : ra));
+                                               ra == null
+                                                 ? r
+                                                 : IsRecordingActual(r)
+                                                     ? r
+                                                     : r.StartTime > ra.StartTime ? r : ra));
                                          if (recs.Count() > 1)
                                          {
                                            item.IsFolder = true;
@@ -792,7 +792,7 @@ namespace Mediaportal.TV.TvPlugin
                                          }
                                          return item;
                                        }).ToList();
-        }        
+        }
         else
         {
           // Showing a merged folders content
@@ -820,7 +820,8 @@ namespace Mediaportal.TV.TvPlugin
                                                                 StringComparison.InvariantCultureIgnoreCase);
                 break;
               case DBView.Genre:
-                addToList = TVUtil.GetCategory(rec.ProgramCategory).Equals(_currentLabel, StringComparison.InvariantCultureIgnoreCase);
+                addToList = TVUtil.GetCategory(rec.ProgramCategory).Equals(_currentLabel,
+                                                                           StringComparison.InvariantCultureIgnoreCase);
                 break;
             }
 
@@ -867,7 +868,9 @@ namespace Mediaportal.TV.TvPlugin
       }
 
       //set object count label
-      GUIPropertyManager.SetProperty("#itemcount", Utils.GetObjectCountLabel(itemlist.Count - (itemlist.Count > 0 && itemlist[0].Label == ".." ? 1 : 0)));
+      GUIPropertyManager.SetProperty("#itemcount",
+                                     Utils.GetObjectCountLabel(itemlist.Count -
+                                                               (itemlist.Count > 0 && itemlist[0].Label == ".." ? 1 : 0)));
 
       SwitchLayout();
       OnSort();
@@ -893,7 +896,7 @@ namespace Mediaportal.TV.TvPlugin
 
     private static bool IsRecordingActual(Recording aRecording)
     {
-      return aRecording.IsRecording;      
+      return aRecording.IsRecording;
     }
 
     private GUIListItem BuildItemFromRecording(Recording aRecording)
@@ -911,11 +914,13 @@ namespace Mediaportal.TV.TvPlugin
           // Re-imported channels might still be valid but their channel does not need to be present anymore...
           refCh = aRecording.Channel;
         }
-        catch (Exception) { }
+        catch (Exception)
+        {
+        }
         if (refCh != null)
         {
           strChannelName = refCh.DisplayName;
-        }        
+        }
 
         // this.LogDebug("TVRecorded: BuildItemFromRecording [{0}]: {1} ({2}) on channel {3}", _currentDbView.ToString(), aRecording.title, aRecording.ProgramCategory.category, strChannelName);
         item = new GUIListItem();
@@ -954,7 +959,7 @@ namespace Mediaportal.TV.TvPlugin
         if (Utils.FileExistsInCache(previewThumb))
         {
           // Search a larger one
-          string PreviewThumbLarge = Utils.ConvertToLargeCoverArt(previewThumb);          
+          string PreviewThumbLarge = Utils.ConvertToLargeCoverArt(previewThumb);
           if (Utils.FileExistsInCache(PreviewThumbLarge))
           {
             previewThumb = PreviewThumbLarge;
@@ -998,12 +1003,12 @@ namespace Mediaportal.TV.TvPlugin
           {
             continue;
           }
-          var rec = (Recording)item1.TVTag;
+          var rec = (Recording) item1.TVTag;
           TimeSpan ts = rec.EndTime - rec.StartTime;
 
           string strTime = String.Format("{0} ({1})",
                                          Utils.GetNamedDate(rec.StartTime),
-                                         Utils.SecondsToHMString((int)ts.TotalSeconds));
+                                         Utils.SecondsToHMString((int) ts.TotalSeconds));
 
           // Do not display a duration in top level of History view
           if (_currentDbView != DBView.History || _currentLabel != String.Empty)
@@ -1030,7 +1035,9 @@ namespace Mediaportal.TV.TvPlugin
                 item1.Label2 = Channel;
               }
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+            }
           }
 
           if (rec.TimesWatched > 0)
@@ -1076,11 +1083,12 @@ namespace Mediaportal.TV.TvPlugin
         return false;
       }
 
-      var rec = (Recording)pItem.TVTag;
-      IEnumerable<Recording> itemlist = ServiceAgents.Instance.RecordingServiceAgent.ListAllRecordingsByMediaType(MediaTypeEnum.TV);
+      var rec = (Recording) pItem.TVTag;
+      IEnumerable<Recording> itemlist =
+        ServiceAgents.Instance.RecordingServiceAgent.ListAllRecordingsByMediaType(MediaTypeEnum.TV);
 
       _activeRecording = rec;
-      _bIsLiveRecording = false;      
+      _bIsLiveRecording = false;
       foreach (Recording recItem in itemlist)
       {
         if (rec.IdRecording == recItem.IdRecording && IsRecordingActual(recItem))
@@ -1134,9 +1142,9 @@ namespace Mediaportal.TV.TvPlugin
       {
         return;
       }
-      var rec = (Recording)pItem.TVTag;
+      var rec = (Recording) pItem.TVTag;
 
-      var dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_YES_NO);
+      var dlgYesNo = (GUIDialogYesNo) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_YES_NO);
       if (null == dlgYesNo)
       {
         return;
@@ -1178,7 +1186,6 @@ namespace Mediaportal.TV.TvPlugin
           return;
         }
         remove = true;
-
       }
 
       if (remove)
@@ -1196,9 +1203,9 @@ namespace Mediaportal.TV.TvPlugin
     {
       _oldStateSMSsearch = facadeLayout.EnableSMSsearch;
       facadeLayout.EnableSMSsearch = false;
-      
+
       TryDeleteRecordingAndNotifyUser(rec);
-      
+
 
       LoadDirectory();
       while (_iSelectedItem >= GetItemCount() && _iSelectedItem > 0)
@@ -1214,7 +1221,6 @@ namespace Mediaportal.TV.TvPlugin
 
     private void TryDeleteRecordingAndNotifyUser(Recording rec)
     {
-      
       int timeout = 0;
       bool deleteRecording = false;
 
@@ -1230,7 +1236,7 @@ namespace Mediaportal.TV.TvPlugin
 
       if (!deleteRecording)
       {
-        var dlgOk = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
+        var dlgOk = (GUIDialogOK) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_OK);
 
         if (dlgOk != null)
         {
@@ -1245,7 +1251,7 @@ namespace Mediaportal.TV.TvPlugin
     private void OnCleanup()
     {
       _iSelectedItem = GetSelectedItemNo();
-      var dlgYesNo = (GUIDialogYesNo)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_YES_NO);
+      var dlgYesNo = (GUIDialogYesNo) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_YES_NO);
       if (null == dlgYesNo)
       {
         return;
@@ -1260,7 +1266,7 @@ namespace Mediaportal.TV.TvPlugin
         return;
       }
 
-      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_MENU);
       dlg.Reset();
       dlg.SetHeading(GUILocalizeStrings.Get(200043)); //Cleanup recordings?
 
@@ -1378,7 +1384,7 @@ namespace Mediaportal.TV.TvPlugin
         }
         else
         {
-          GUIPropertyManager.SetProperty("#TV.RecordedTV.thumb", "defaultVideoBig.png");          
+          GUIPropertyManager.SetProperty("#TV.RecordedTV.thumb", "defaultVideoBig.png");
         }
       }
       catch (Exception ex)
@@ -1460,8 +1466,8 @@ namespace Mediaportal.TV.TvPlugin
         }
 
         int iComp = 0;
-        var rec1 = (Recording)item1.TVTag;
-        var rec2 = (Recording)item2.TVTag;
+        var rec1 = (Recording) item1.TVTag;
+        var rec2 = (Recording) item2.TVTag;
 
         string rec1DisplayName = "";
         string rec2DisplayName = "";
@@ -1469,7 +1475,7 @@ namespace Mediaportal.TV.TvPlugin
         if (rec1.Channel != null)
         {
           rec1DisplayName = rec1.Channel.DisplayName;
-        }        
+        }
         if (rec2.Channel != null)
         {
           rec2DisplayName = rec2.Channel.DisplayName;
@@ -1601,7 +1607,7 @@ namespace Mediaportal.TV.TvPlugin
           case SortMethod.Genre:
             string categoryRec1 = TVUtil.GetCategory(rec1.ProgramCategory);
             string categoryRec2 = TVUtil.GetCategory(rec2.ProgramCategory);
-            item1.Label2 = categoryRec1;            
+            item1.Label2 = categoryRec1;
             item2.Label2 = categoryRec2;
             if (categoryRec1 != categoryRec2)
             {
@@ -1692,23 +1698,23 @@ namespace Mediaportal.TV.TvPlugin
       {
         return;
       }
-      
+
       Recording rec = ServiceAgents.Instance.RecordingServiceAgent.GetRecordingByFileName(filename);
       if (rec != null)
       {
         if (stoptime >= g_Player.Duration)
         {
           stoptime = 0;
-        }        
+        }
         ; //temporary workaround before end of stream get's properly implemented        
         rec = ServiceAgents.Instance.RecordingServiceAgent.GetRecording(rec.IdRecording);
-        rec.StopTime = stoptime;        
+        rec.StopTime = stoptime;
         ServiceAgents.Instance.RecordingServiceAgent.SaveRecording(rec);
       }
       else
       {
         this.LogInfo("TvRecorded:{0} no recording found with filename {1}", caller, filename);
-      }     
+      }
     }
 
     private void OnPlayRecordingBackChanged(g_Player.MediaType type, int stoptime, string filename)
@@ -1729,18 +1735,17 @@ namespace Mediaportal.TV.TvPlugin
       }
 
       g_Player.Stop();
-      
+
       Recording rec = ServiceAgents.Instance.RecordingServiceAgent.GetRecordingByFileName(filename);
       if (rec != null)
       {
-        if (_deleteWatchedShows || rec.KeepUntil == (int)KeepMethodType.UntilWatched)
+        if (_deleteWatchedShows || rec.KeepUntil == (int) KeepMethodType.UntilWatched)
         {
-          
           ServiceAgents.Instance.ControllerServiceAgent.DeleteRecording(rec.IdRecording);
         }
         else
-        {          
-          rec.StopTime = 0;          
+        {
+          rec.StopTime = 0;
           ServiceAgents.Instance.RecordingServiceAgent.SaveRecording(rec);
         }
       }
@@ -1780,7 +1785,7 @@ namespace Mediaportal.TV.TvPlugin
     private void ResetWatchedStatus(Recording aRecording)
     {
       aRecording.TimesWatched = 0;
-      aRecording.StopTime = 0;      
+      aRecording.StopTime = 0;
       ServiceAgents.Instance.RecordingServiceAgent.SaveRecording(aRecording);
     }
 

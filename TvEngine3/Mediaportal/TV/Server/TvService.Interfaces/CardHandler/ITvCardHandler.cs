@@ -32,7 +32,7 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.CardHandler
     ITeletextManagement Teletext { get; }
     IChannelScanning Scanner { get; }
     IEpgGrabbing Epg { get; }
-    
+
     IRecorder Recorder { get; }
     ITimeShifter TimeShifter { get; }
     ICardTuner Tuner { get; }
@@ -40,13 +40,13 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.CardHandler
     bool IsConditionalAccessSupported { get; }
     bool CiMenuSupported { get; }
 
-    ITVCard Card { get; set; }    
+    ITVCard Card { get; set; }
     bool IsIdle { get; }
     Card DataBaseCard { get; set; }
     CardType Type { get; }
     string CardName { get; }
     int NumberOfChannelsDecrypting { get; }
-    
+
 
     bool SupportsSubChannels { get; }
 
@@ -60,11 +60,11 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.CardHandler
 
     IChannel CurrentChannel(string userName, int idChannel);
     int CurrentDbChannel(string userName);
-    string CurrentChannelName(string userName, int idChannel);    
+    string CurrentChannelName(string userName, int idChannel);
     bool IsScrambled(string userName);
     bool IsScrambled(int subchannel);
 
-    void StopCard();        
+    void StopCard();
     void Dispose();
     long CurrentMux();
   }

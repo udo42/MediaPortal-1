@@ -29,7 +29,9 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
     #region constructors
 
     public CMSetup()
-      : this("Conflicts Manager Setup") {}
+      : this("Conflicts Manager Setup")
+    {
+    }
 
     public CMSetup(string name)
       : base(name)
@@ -41,13 +43,12 @@ namespace Mediaportal.TV.Server.Plugins.ConflictsManager
 
     public override void OnSectionActivated()
     {
-      
       analyzeMode.SelectedIndex = ServiceAgents.Instance.SettingServiceAgent.GetValue("CMAnalyzeMode", 0);
       debug.Checked = ServiceAgents.Instance.SettingServiceAgent.GetValue("CMDebugMode", false);
     }
 
     public override void OnSectionDeActivated()
-    {            
+    {
       ServiceAgents.Instance.SettingServiceAgent.SaveValue("CMDebugMode", debug.Checked);
       base.OnSectionDeActivated();
     }

@@ -59,7 +59,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     }
 
     public override void OnSectionActivated()
-    {                 
+    {
       mpComboBoxCard.Items.Clear();
       IList<Card> cards = ServiceAgents.Instance.CardServiceAgent.ListAllCards(CardIncludeRelationEnum.None);
       foreach (Card card in cards)
@@ -77,20 +77,20 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private void mpButtonMap_Click(object sender, EventArgs e)
     {
       var dlg = new NotifyForm("Mapping selected channels to TV-Card...",
-                                      "This can take some time\n\nPlease be patient...");
+                               "This can take some time\n\nPlease be patient...");
       dlg.Show(this);
       dlg.WaitForDisplay();
-      Card card = ((CardInfo)mpComboBoxCard.SelectedItem).Card;
+      Card card = ((CardInfo) mpComboBoxCard.SelectedItem).Card;
       mpListViewChannels.BeginUpdate();
       mpListViewMapped.BeginUpdate();
       try
       {
         ListView.SelectedListViewItemCollection selectedItems = mpListViewChannels.SelectedItems;
-        
+
         foreach (ListViewItem item in selectedItems)
         {
-          var channel = (Channel)item.Tag;
-          ChannelMap map = MappingHelper.AddChannelToCard(channel, card, mpCheckBoxMapForEpgOnly.Checked);          
+          var channel = (Channel) item.Tag;
+          ChannelMap map = MappingHelper.AddChannelToCard(channel, card, mpCheckBoxMapForEpgOnly.Checked);
           mpListViewChannels.Items.Remove(item);
           string displayName = channel.DisplayName;
           if (mpCheckBoxMapForEpgOnly.Checked)
@@ -112,7 +112,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private void mpButtonUnmap_Click(object sender, EventArgs e)
     {
       var dlg = new NotifyForm("Unmapping selected channels from TV-Card...",
-                                      "This can take some time\n\nPlease be patient...");
+                               "This can take some time\n\nPlease be patient...");
       dlg.Show(this);
       dlg.WaitForDisplay();
       mpListViewChannels.BeginUpdate();
@@ -124,13 +124,13 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
         foreach (ListViewItem item in selectedItems)
         {
-          var map = (ChannelMap)item.Tag;
+          var map = (ChannelMap) item.Tag;
           mpListViewMapped.Items.Remove(item);
           Channel referencedChannel = map.Channel;
           ListViewItem newItem = mpListViewChannels.Items.Add(referencedChannel.DisplayName, item.ImageIndex);
           newItem.Tag = referencedChannel;
 
-          ServiceAgents.Instance.ChannelServiceAgent.DeleteChannelMap(map.IdChannelMap);          
+          ServiceAgents.Instance.ChannelServiceAgent.DeleteChannelMap(map.IdChannelMap);
         }
         mpListViewChannels.Sort();
         mpListViewMapped.Sort();
@@ -155,16 +155,20 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         mpListViewMapped.Items.Clear();
         mpListViewChannels.Items.Clear();
 
-        List<Channel> channels = ServiceAgents.Instance.ChannelServiceAgent.ListAllChannelsByMediaType(_mediaTypeEnum, ChannelIncludeRelationEnum.TuningDetails).ToList();
+        List<Channel> channels =
+          ServiceAgents.Instance.ChannelServiceAgent.ListAllChannelsByMediaType(_mediaTypeEnum,
+                                                                                ChannelIncludeRelationEnum.TuningDetails)
+            .ToList();
 
-        Card card = ServiceAgents.Instance.CardServiceAgent.GetCard(((CardInfo)mpComboBoxCard.SelectedItem).Card.IdCard);        
+        Card card = ServiceAgents.Instance.CardServiceAgent.GetCard(((CardInfo) mpComboBoxCard.SelectedItem).Card.IdCard);
         IList<ChannelMap> maps = card.ChannelMaps;
 
         // get cardtype, dvb, analogue etc.		
         CardType cardType = ServiceAgents.Instance.ControllerServiceAgent.Type(card.IdCard);
         //Card card = ServiceAgents.Instance.CardServiceAgent.GetCard(card.idCard);
-        
-        bool enableDVBS2 = ServiceAgents.Instance.SettingServiceAgent.GetValue("dvbs" + card.IdCard + "enabledvbs2", false);
+
+        bool enableDVBS2 = ServiceAgents.Instance.SettingServiceAgent.GetValue("dvbs" + card.IdCard + "enabledvbs2",
+                                                                               false);
 
 
         var items = new List<ListViewItem>();
@@ -175,10 +179,12 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           {
             channel = map.Channel;
           }
-          catch (Exception) {}
+          catch (Exception)
+          {
+          }
           if (channel == null)
             continue;
-          if (channel.MediaType != (decimal)_mediaTypeEnum)
+          if (channel.MediaType != (decimal) _mediaTypeEnum)
             continue;
 
 
@@ -206,14 +212,14 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           }
           else
           {
-            ServiceAgents.Instance.ChannelServiceAgent.DeleteChannelMap(map.IdChannelMap);            
+            ServiceAgents.Instance.ChannelServiceAgent.DeleteChannelMap(map.IdChannelMap);
           }
         }
         mpListViewMapped.Items.AddRange(items.ToArray());
         items = new List<ListViewItem>();
         foreach (Channel channel in channels)
         {
-          if (channel.MediaType != (decimal)_mediaTypeEnum)
+          if (channel.MediaType != (decimal) _mediaTypeEnum)
             continue;
           List<TuningDetail> tuningDetails = GetTuningDetailsByCardType(channel, cardType, enableDVBS2);
           // only add channel that is tuneable on the device selected.
@@ -281,7 +287,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       if (mpListViewMapped.SelectedItems.Count == 0)
         return;
       ListViewItem item = mpListViewMapped.SelectedItems[0];
-      var map = (ChannelMap)item.Tag;
+      var map = (ChannelMap) item.Tag;
       Channel channel = map.Channel;
       if (map.EpgOnly)
       {

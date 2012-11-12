@@ -37,16 +37,16 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
   /// to remote-control the TVService
   /// </summary>
   [ServiceContract(Namespace = "http://www.team-mediaportal.com")]
-  [ServiceKnownType(typeof(User))]
-  [ServiceKnownType(typeof(SubChannel))]
-  [ServiceKnownType(typeof(VirtualCard))]
-  [ServiceKnownType(typeof(TvResult))]
-  [ServiceKnownType(typeof(DVBTChannel))]
-  [ServiceKnownType(typeof(DVBCChannel))]
-  [ServiceKnownType(typeof(DVBSChannel))]
-  [ServiceKnownType(typeof(ATSCChannel))]
-  [ServiceKnownType(typeof(DVBIPChannel))]
-  [ServiceKnownType(typeof(AnalogChannel))]
+  [ServiceKnownType(typeof (User))]
+  [ServiceKnownType(typeof (SubChannel))]
+  [ServiceKnownType(typeof (VirtualCard))]
+  [ServiceKnownType(typeof (TvResult))]
+  [ServiceKnownType(typeof (DVBTChannel))]
+  [ServiceKnownType(typeof (DVBCChannel))]
+  [ServiceKnownType(typeof (DVBSChannel))]
+  [ServiceKnownType(typeof (ATSCChannel))]
+  [ServiceKnownType(typeof (DVBIPChannel))]
+  [ServiceKnownType(typeof (AnalogChannel))]
   public interface IControllerService
   {
     #region internal interface
@@ -55,24 +55,29 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     /// Gets the assembly of tvservice.exe
     /// </summary>
     /// <value>Returns the AssemblyVersion of tvservice.exe</value>    
-    string GetAssemblyVersion { [OperationContract] get; }
+    string GetAssemblyVersion { [OperationContract]
+    get; }
 
     ///<summary>
     ///Gets the total number of tv-cards installed.
     ///</summary>
     ///<value>Number which indicates the cards installed</value>
-    int Cards { [OperationContract] get; }
+    int Cards { [OperationContract]
+    get; }
 
     /// <summary>
     /// Enable or disable the epg-grabber
     /// </summary>
-    bool EpgGrabberEnabled { [OperationContract] get; [OperationContract] set; }
+    bool EpgGrabberEnabled { [OperationContract]
+    get; [OperationContract]
+    set; }
 
     /// <summary>
     /// Returns a list of all ip adresses on the server.
     /// </summary>
     /// <value>The server ip adresses.</value>
-    IEnumerable<string> ServerIpAdresses { [OperationContract] get; }
+    IEnumerable<string> ServerIpAdresses { [OperationContract]
+    get; }
 
     /// <summary>
     /// Initialized Conditional Access handler
@@ -81,7 +86,6 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     /// <returns>true if successful</returns>
     [OperationContract]
     bool InitConditionalAccess(int cardId);
-
 
 
     /// <summary>
@@ -220,7 +224,6 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     int GetRecordingSchedule(int cardId, string userName);
 
 
-
     /// <summary>
     /// Returns the URL for the RTSP stream on which the client can find the
     /// stream for recording 
@@ -285,7 +288,7 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     /// <param name="idChannel"></param>
     /// <param name="idCard"></param>
     /// <returns></returns>
-    [OperationContract(Name = "IsRecordingCard")]        
+    [OperationContract(Name = "IsRecordingCard")]
     bool IsRecording(int idChannel, int idCard);
 
     /// <summary>
@@ -368,13 +371,15 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     /// If streaming is not initialized, returns 0.
     /// </summary>
     /// <value>The streaming port</value>
-    int StreamingPort { [OperationContract] get; }
+    int StreamingPort { [OperationContract]
+    get; }
 
     /// <summary>
     /// Gets a list of all streaming clients.
     /// </summary>
     /// <value>The streaming clients.</value>
-    List<RtspClient> StreamingClients { [OperationContract] get; }
+    List<RtspClient> StreamingClients { [OperationContract]
+    get; }
 
     #endregion
 
@@ -655,8 +660,6 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
                            string recordingFile);
 
 
-
-
     /// <summary>
     /// Stops the card.
     /// </summary>
@@ -711,8 +714,9 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     /// <returns>
     /// TvResult indicating whether method succeeded
     /// </returns>    
-    [OperationContract(Name = "StartTimeShiftingForceCardId")]    
-    TvResult StartTimeShifting(string userName, int idChannel, int? kickCardId, out IVirtualCard card, out Dictionary<int, List<IUser>> kickableCards, bool forceCardId, out IUser user);
+    [OperationContract(Name = "StartTimeShiftingForceCardId")]
+    TvResult StartTimeShifting(string userName, int idChannel, int? kickCardId, out IVirtualCard card,
+                               out Dictionary<int, List<IUser>> kickableCards, bool forceCardId, out IUser user);
 
     /// <summary>
     /// Start timeshifting on a specific channel
@@ -729,7 +733,9 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     /// TvResult indicating whether method succeeded
     /// </returns>
     [OperationContract(Name = "StartTimeShiftingGetCardChanged")]
-    TvResult StartTimeShifting(string userName, int idChannel, int? kickCardId, out IVirtualCard card, out Dictionary<int, List<IUser>> kickableCards, out bool cardChanged, out double? parkedDuration, out IUser user);
+    TvResult StartTimeShifting(string userName, int idChannel, int? kickCardId, out IVirtualCard card,
+                               out Dictionary<int, List<IUser>> kickableCards, out bool cardChanged,
+                               out double? parkedDuration, out IUser user);
 
     /// <summary>
     /// Start timeshifting on a specific channel
@@ -833,9 +839,6 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     /// </returns>
     [OperationContract]
     bool IsOwner(int cardId, string userName);
-
-
-
 
     #endregion
 
@@ -968,8 +971,6 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     [OperationContract]
     bool SetCiMenuHandler(int cardId, ICiMenuCallbacks callbackHandler);
 
-    
-
     #endregion
 
     #region stream quality / statistics
@@ -987,7 +988,7 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     #endregion
 
     [OperationContract]
-    void RegisterUserForHeartbeatMonitoring (string username);
+    void RegisterUserForHeartbeatMonitoring(string username);
 
     [OperationContract]
     void RegisterUserForCiMenu(string username);
@@ -1004,7 +1005,7 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     [OperationContract]
     void UnRegisterUserForTvServerEvents(string username);
 
-    [OperationContract]    
+    [OperationContract]
     IDictionary<string, byte[]> GetPluginBinaries();
 
     [OperationContract]
@@ -1013,7 +1014,7 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     [OperationContract]
     IDictionary<string, byte[]> GetPluginBinariesResources();
 
-    [OperationContract]    
+    [OperationContract]
     IList<StreamPresentation> ListAllStreamingChannels();
 
     [OperationContract]

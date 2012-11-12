@@ -32,12 +32,8 @@ using Mediaportal.TV.Server.TVLibrary.Interfaces.Logging;
 
 namespace Mediaportal.TV.Server.TVService
 {
-
-
   public partial class Service1 : ServiceBase
   {
-    
-
     //private Thread _tvServiceThread = null;
     private static Thread _unhandledExceptionInThread;
     private TvServiceThread _tvServiceThread;
@@ -81,7 +77,7 @@ namespace Mediaportal.TV.Server.TVService
       finally
       {
         Environment.Exit(-1);
-      }            
+      }
     }
 
 
@@ -103,7 +99,7 @@ namespace Mediaportal.TV.Server.TVService
         ti.Installers.Add(mi);
         String path = String.Format("/assemblypath={0}",
                                     Assembly.GetExecutingAssembly().Location);
-        String[] cmdline = { path };
+        String[] cmdline = {path};
         var ctx = new InstallContext("", cmdline);
         ti.Context = ctx;
         ti.Install(new Hashtable());
@@ -117,7 +113,7 @@ namespace Mediaportal.TV.Server.TVService
           ti.Installers.Add(mi);
           String path = String.Format("/assemblypath={0}",
                                       Assembly.GetExecutingAssembly().Location);
-          String[] cmdline = { path };
+          String[] cmdline = {path};
           var ctx = new InstallContext("", cmdline);
           ti.Context = ctx;
           ti.Uninstall(null);
@@ -129,7 +125,7 @@ namespace Mediaportal.TV.Server.TVService
       if (opt != null && opt.ToUpperInvariant() == "/DEBUG")
       {
         var s = new Service1();
-        s.DoStart(new[] { "/DEBUG" });
+        s.DoStart(new[] {"/DEBUG"});
         do
         {
           Thread.Sleep(100);
@@ -142,7 +138,7 @@ namespace Mediaportal.TV.Server.TVService
       //
       //   ServicesToRun = new ServiceBase[] {new Service1(), new MySecondUserService()};
       //
-      var ServicesToRun = new ServiceBase[] { new Service1() };
+      var ServicesToRun = new ServiceBase[] {new Service1()};
       Run(ServicesToRun);
     }
 
@@ -168,19 +164,19 @@ namespace Mediaportal.TV.Server.TVService
 #if DEBUG
         if (File.Exists(@"c:\debug_tvservice.txt"))
         {
-          Debugger.Launch();        
+          Debugger.Launch();
         }
 #endif
-        
+
         if (!(args != null && args.Length > 0 && args[0] == "/DEBUG"))
         {
           RequestAdditionalTime(60000); // starting database can be slow so increase default timeout        
         }
 
         _tvServiceThread = new TvServiceThread(Application.ExecutablePath);
-        _tvServiceThread.Start();        
-      }      
-    }    
+        _tvServiceThread.Start();
+      }
+    }
 
     private void debug()
     {
@@ -286,21 +282,21 @@ namespace Mediaportal.TV.Server.TVService
       man.InsertPrograms(importParams);*/
     }
 
-    
 
     /// <summary>
     /// When implemented in a derived class, executes when a Stop command is sent to the service by the Service Control Manager (SCM). Specifies actions to take when a service stops running.
     /// </summary>
     protected override void OnStop()
-    { 
-      RequestAdditionalTime(300000); // we want to make sure all services etc. are closed before tearing down the process.
+    {
+      RequestAdditionalTime(300000);
+        // we want to make sure all services etc. are closed before tearing down the process.
       this.LogDebug("service.OnStop");
       if (_tvServiceThread != null)
       {
-        _tvServiceThread.Stop(60000);        
+        _tvServiceThread.Stop(60000);
       }
       base.OnStop();
       ExitCode = 0;
-    } 
+    }
   }
 }

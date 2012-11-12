@@ -56,24 +56,24 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Ticket
     #endregion
 
     public CardTuneReservationTicket(
-      IUser user, 
-      IChannel tuningDetail, 
-      bool isSameTransponder, 
-      int numberOfOtherUsersOnSameChannel, 
-      bool isAnySubChannelTimeshifting, 
-      List<IUser> inactiveUsers, 
-      List<IUser> activeUsers, 
-      List<KeyValuePair<string, IUser>> users, 
-      ISubChannel ownerSubchannel, 
-      bool isOwner, 
-      int idCard, 
-      int numberOfChannelsDecrypting, 
-      bool isFreeToAir, 
-      int numberOfOtherUsersOnCurrentCard, 
-      List<IUser> recUsers, 
-      List<IUser> tsUsers, 
-      bool conflictingSubchannelFound, 
-      int numberOfUsersOnSameCurrentChannel, 
+      IUser user,
+      IChannel tuningDetail,
+      bool isSameTransponder,
+      int numberOfOtherUsersOnSameChannel,
+      bool isAnySubChannelTimeshifting,
+      List<IUser> inactiveUsers,
+      List<IUser> activeUsers,
+      List<KeyValuePair<string, IUser>> users,
+      ISubChannel ownerSubchannel,
+      bool isOwner,
+      int idCard,
+      int numberOfChannelsDecrypting,
+      bool isFreeToAir,
+      int numberOfOtherUsersOnCurrentCard,
+      List<IUser> recUsers,
+      List<IUser> tsUsers,
+      bool conflictingSubchannelFound,
+      int numberOfUsersOnSameCurrentChannel,
       bool isCamAlreadyDecodingChannel,
       bool hasHighestPriority,
       bool hasEqualOrHigherPriority,
@@ -83,7 +83,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Ticket
       _user = user;
       _isCamAlreadyDecodingChannel = isCamAlreadyDecodingChannel;
       _numberOfUsersOnSameCurrentChannel = numberOfUsersOnSameCurrentChannel;
-      _conflictingSubchannelFound = conflictingSubchannelFound;      
+      _conflictingSubchannelFound = conflictingSubchannelFound;
       _recordingUsers = recUsers;
       _timeshiftingUsers = tsUsers;
       _numberOfOtherUsersOnCurrentCard = numberOfOtherUsersOnCurrentCard;
@@ -147,19 +147,13 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Ticket
     }
 
     public bool HasHighestPriority
-    {     
-      get
-      {
-        return _hasHighestPriority;        
-      }
+    {
+      get { return _hasHighestPriority; }
     }
 
     public bool HasEqualOrHigherPriority
-    {      
-      get
-      {
-        return _hasEqualOrHigherPriority;        
-      }
+    {
+      get { return _hasEqualOrHigherPriority; }
     }
 
     public long? ChannelTimeshiftingOnOtherMux
@@ -170,7 +164,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Ticket
     public bool IsOwner
     {
       get { return _isOwner; }
-    }    
+    }
 
     public int CardId
     {
@@ -212,7 +206,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardReservation.Ticket
     public IList<IUser> TimeshiftingUsers
     {
       get { return _timeshiftingUsers; }
-    }   
+    }
 
     public bool ConflictingSubchannelFound
     {

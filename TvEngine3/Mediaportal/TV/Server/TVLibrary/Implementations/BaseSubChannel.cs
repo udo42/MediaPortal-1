@@ -40,7 +40,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
     /// Delegate for the audio/video oberserver events.
     /// </summary>
     /// <param name="pidType">Type of the pid</param>
-    public delegate void AudioVideoObserverEvent(PidType pidType);    
+    public delegate void AudioVideoObserverEvent(PidType pidType);
 
     #endregion
 
@@ -396,7 +396,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations
       {
         for (int i = 0; i < packetCount; ++i)
         {
-          var packetPtr = new IntPtr(data.ToInt64() + i * 188);
+          var packetPtr = new IntPtr(data.ToInt64() + i*188);
           ProcessPacket(packetPtr);
         }
       }

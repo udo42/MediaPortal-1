@@ -365,7 +365,9 @@ namespace DirectShowLib
     int IsSurfaceLocked();
 
     [PreserveSig]
-    int LockSurface([Out] out IntPtr lpSurface); // BYTE**
+    int LockSurface([Out] out IntPtr lpSurface);
+
+    // BYTE**
 
     [PreserveSig]
     int UnlockSurface();

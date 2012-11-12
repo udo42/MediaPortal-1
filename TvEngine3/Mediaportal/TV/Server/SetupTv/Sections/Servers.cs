@@ -31,7 +31,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
   public partial class Servers : SectionSettings
   {
     public Servers()
-      : this("TV Servers") {}
+      : this("TV Servers")
+    {
+    }
 
     public Servers(string name)
       : base(name)
@@ -46,16 +48,17 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       mpListView1.Items.Clear();
       var server = new Server {Hostname = hostname, RtspPort = Convert.ToInt32(rtspPort)};
 
-      ListViewItem item = mpListView1.Items.Add(hostname, 0);      
+      ListViewItem item = mpListView1.Items.Add(hostname, 0);
       item.SubItems.Add(rtspPort);
-      
+
       item.Tag = server;
 
       mpListView1.AutoResizeColumns(ColumnHeaderAutoResizeStyle.HeaderSize);
     }
 
-    private void Servers_Load(object sender, EventArgs e) {}
-
+    private void Servers_Load(object sender, EventArgs e)
+    {
+    }
 
 
     private void buttonChooseIp_Click(object sender, EventArgs e)
@@ -64,7 +67,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         return;
       int index = mpListView1.SelectedIndices[0];
       ListViewItem item = mpListView1.Items[index];
-      var server = (Server)item.Tag;
+      var server = (Server) item.Tag;
 
       var dlg = new FormEditIpAdress {HostName = server.Hostname, PortNo = server.RtspPort};
       if (dlg.ShowDialog(this) == DialogResult.OK)
@@ -74,7 +77,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           item.Text = dlg.HostName;
           item.SubItems[2].Text = dlg.PortNo.ToString();
           ServiceAgents.Instance.SettingServiceAgent.SaveValue("hostname", dlg.HostName);
-          ServiceAgents.Instance.SettingServiceAgent.SaveValue("rtspport", dlg.PortNo);                    
+          ServiceAgents.Instance.SettingServiceAgent.SaveValue("rtspport", dlg.PortNo);
           ServiceNeedsToRestart();
         }
       }

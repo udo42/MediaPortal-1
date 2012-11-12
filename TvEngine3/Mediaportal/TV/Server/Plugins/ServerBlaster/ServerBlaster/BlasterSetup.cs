@@ -30,7 +30,6 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
 {
   public partial class BlasterSetup : SectionSettings
   {
-
     public BlasterSetup()
     {
       InitializeComponent();
@@ -43,14 +42,13 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
       ServiceAgents.Instance.SettingServiceAgent.SaveValue("SrvBlaster1Card", comboBoxBlaster1.SelectedIndex);
       ServiceAgents.Instance.SettingServiceAgent.SaveValue("SrvBlaster2Card", comboBoxBlaster2.SelectedIndex);
       ServiceAgents.Instance.SettingServiceAgent.SaveValue("SrvBlasterLog", checkBoxExtLog.Checked);
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("SrvBlasterSendSelect", checkSendSelect.Checked);            
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("SrvBlasterSendSelect", checkSendSelect.Checked);
 
       base.OnSectionDeActivated();
     }
 
     public override void OnSectionActivated()
     {
-      
       comboBoxType.SelectedIndex = ServiceAgents.Instance.SettingServiceAgent.GetValue("SrvBlasterType", 0);
       comboBoxSpeed.SelectedIndex = ServiceAgents.Instance.SettingServiceAgent.GetValue("SrvBlasterSpeed", 0);
       comboBoxBlaster1.Items.Clear();
@@ -66,7 +64,8 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster
         comboBoxBlaster2.Items.Add(card.Name);
       }
       this.LogDebug("CB1Size {0}, CB2Size {1}, BT1 {2}, BT2 {3}", comboBoxBlaster1.Items.Count,
-                    comboBoxBlaster1.Items.Count, ServiceAgents.Instance.SettingServiceAgent.GetValue("SrvBlaster1Card", 0),
+                    comboBoxBlaster1.Items.Count,
+                    ServiceAgents.Instance.SettingServiceAgent.GetValue("SrvBlaster1Card", 0),
                     ServiceAgents.Instance.SettingServiceAgent.GetValue("SrvBlaster2Card", 0));
       comboBoxBlaster1.SelectedIndex = ServiceAgents.Instance.SettingServiceAgent.GetValue("SrvBlaster1Card", 0);
       comboBoxBlaster2.SelectedIndex = ServiceAgents.Instance.SettingServiceAgent.GetValue("SrvBlaster2Card", 0);

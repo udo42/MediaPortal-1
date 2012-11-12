@@ -93,7 +93,7 @@ namespace WebEPG
         get { return _endTime; }
         set { _endTime = value; }
       }
-    } ;
+    };
 
     #endregion
 
@@ -116,7 +116,7 @@ namespace WebEPG
     public WebEPG(string configFile, IEpgDataSink epgDataSink, string baseDirectory)
     {
       this.LogInfo("Assembly versions:");
-      this.LogInfo(GetType().Assembly.GetName().Name + " " + GetType().Assembly.GetName().Version);      
+      this.LogInfo(GetType().Assembly.GetName().Name + " " + GetType().Assembly.GetName().Version);
       // set config directories and files.
       _configFile = configFile;
       //_xmltvDirectory = xmltvDirectory;
@@ -382,9 +382,9 @@ namespace WebEPG
       try
       {
         var s = new XmlSerializer(typeof (WebepgConfigFile));
-        using (var r = new StreamReader(_configFile)) 
+        using (var r = new StreamReader(_configFile))
         {
-          _config = (WebepgConfigFile)s.Deserialize(r);
+          _config = (WebepgConfigFile) s.Deserialize(r);
         }
       }
       catch (InvalidOperationException ex)

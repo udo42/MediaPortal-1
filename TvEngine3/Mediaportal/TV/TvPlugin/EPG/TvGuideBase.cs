@@ -112,8 +112,8 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
     protected override void WindowInit(GUIMessage message)
     {
-      bool isPreviousWindowTvGuideRelated = (message.Param1 == (int)Window.WINDOW_TV_PROGRAM_INFO ||
-                                             message.Param1 == (int)Window.WINDOW_VIDEO_INFO);
+      bool isPreviousWindowTvGuideRelated = (message.Param1 == (int) Window.WINDOW_TV_PROGRAM_INFO ||
+                                             message.Param1 == (int) Window.WINDOW_VIDEO_INFO);
 
       if (!isPreviousWindowTvGuideRelated)
       {
@@ -158,7 +158,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
         _cursorX += ChannelOffset - (_channelList.Count - _channelCount);
         ChannelOffset = _channelList.Count - _channelCount;
       }
-      var cntlDay = GetControl((int)Controls.SPINCONTROL_DAY) as GUISpinControl;
+      var cntlDay = GetControl((int) Controls.SPINCONTROL_DAY) as GUISpinControl;
       if (cntlDay != null)
       {
         DateTime dtNow = DateTime.Now;
@@ -201,7 +201,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
         this.LogDebug("TvGuideBase: SpinControl cntlDay is null!");
       }
 
-      var cntlTimeInterval = GetControl((int)Controls.SPINCONTROL_TIME_INTERVAL) as GUISpinControl;
+      var cntlTimeInterval = GetControl((int) Controls.SPINCONTROL_TIME_INTERVAL) as GUISpinControl;
       if (cntlTimeInterval != null)
       {
         cntlTimeInterval.Reset();
@@ -209,7 +209,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
         {
           cntlTimeInterval.AddLabel(String.Empty, i);
         }
-        cntlTimeInterval.Value = (_timePerBlock / 15) - 1;
+        cntlTimeInterval.Value = (_timePerBlock/15) - 1;
       }
       else
       {
@@ -248,7 +248,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
         if (prevGroup != TVHome.Navigator.CurrentGroup.IdGroup)
         {
-          GUIWaitCursor.Show();          
+          GUIWaitCursor.Show();
           _cursorY = 1; // cursor should be on the program guide item
           ChannelOffset = 0;
           // reset to top; otherwise focus could be out of screen if new group has less then old position
@@ -277,7 +277,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
         SetFocus();
       }
 
-      var vertLine = GetControl((int)Controls.VERTICAL_LINE) as GUIImage;
+      var vertLine = GetControl((int) Controls.VERTICAL_LINE) as GUIImage;
       if (vertLine != null)
       {
         if (_singleChannelView)
@@ -298,34 +298,34 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
           if (_viewingTime.Date.Equals(DateTime.Now.Date) && _viewingTime < DateTime.Now)
           {
-            int iStartX = GetControl((int)Controls.LABEL_TIME1).XPosition;
-            int iWidth = GetControl((int)Controls.LABEL_TIME1 + 1).XPosition - iStartX;
+            int iStartX = GetControl((int) Controls.LABEL_TIME1).XPosition;
+            int iWidth = GetControl((int) Controls.LABEL_TIME1 + 1).XPosition - iStartX;
             iWidth *= 4;
 
             int iMin = _viewingTime.Minute;
-            int iStartTime = _viewingTime.Hour * 60 + iMin;
-            int iCurTime = DateTime.Now.Hour * 60 + DateTime.Now.Minute;
+            int iStartTime = _viewingTime.Hour*60 + iMin;
+            int iCurTime = DateTime.Now.Hour*60 + DateTime.Now.Minute;
             if (iCurTime >= iStartTime)
             {
               iCurTime -= iStartTime;
             }
             else
             {
-              iCurTime = 24 * 60 + iCurTime - iStartTime;
+              iCurTime = 24*60 + iCurTime - iStartTime;
             }
 
-            int iTimeWidth = (_numberOfBlocks * _timePerBlock);
-            float fpos = (iCurTime) / ((float)(iTimeWidth));
+            int iTimeWidth = (_numberOfBlocks*_timePerBlock);
+            float fpos = (iCurTime)/((float) (iTimeWidth));
             fpos *= iWidth;
             fpos += iStartX;
-            int width = vertLine.Width / 2;
+            int width = vertLine.Width/2;
             vertLine.IsVisible = true;
-            vertLine.SetPosition((int)fpos - width, vertLine.YPosition);
+            vertLine.SetPosition((int) fpos - width, vertLine.YPosition);
             vertLine.Select(0);
             ts = DateTime.Now - _updateTimer;
             if (ts.TotalMinutes >= 1)
             {
-              if ((DateTime.Now - _viewingTime).TotalMinutes >= iTimeWidth / 2)
+              if ((DateTime.Now - _viewingTime).TotalMinutes >= iTimeWidth/2)
               {
                 _cursorY = 0;
                 _viewingTime = DateTime.Now;
@@ -364,7 +364,9 @@ namespace Mediaportal.TV.TvPlugin.EPG
             Recording rec = null;
             if (isRec)
             {
-              rec = ServiceAgents.Instance.RecordingServiceAgent.GetActiveRecordingByTitleAndChannel(_currentProgram.Entity.Title, _currentProgram.Entity.IdChannel);
+              rec =
+                ServiceAgents.Instance.RecordingServiceAgent.GetActiveRecordingByTitleAndChannel(
+                  _currentProgram.Entity.Title, _currentProgram.Entity.IdChannel);
             }
 
             if (rec != null)
@@ -375,7 +377,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
             if (!string.IsNullOrEmpty(fileName)) //are we really recording ?
             {
               this.LogInfo("TVGuide: clicked on a currently running recording");
-              var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+              var dlg = (GUIDialogMenu) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_MENU);
               if (dlg == null)
               {
                 return;
@@ -435,11 +437,12 @@ namespace Mediaportal.TV.TvPlugin.EPG
             else //not recording
             {
               // clicked the show we're currently watching
-              if (TVHome.Navigator.Channel != null && TVHome.Navigator.Channel.Entity.IdChannel == _currentChannel.IdChannel &&
+              if (TVHome.Navigator.Channel != null &&
+                  TVHome.Navigator.Channel.Entity.IdChannel == _currentChannel.IdChannel &&
                   g_Player.Playing && g_Player.IsTV)
               {
                 this.LogDebug("TVGuide: clicked on a currently running show");
-                var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+                var dlg = (GUIDialogMenu) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_MENU);
                 if (dlg == null)
                 {
                   return;
@@ -524,7 +527,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
            (_currentProgram.Entity.EndTime <= DateTime.Now)))
       {
         //record current programme
-        GUIWindow tvHome = GUIWindowManager.GetWindow((int)Window.WINDOW_TV);
+        GUIWindow tvHome = GUIWindowManager.GetWindow((int) Window.WINDOW_TV);
         if ((tvHome != null) && (tvHome.GetID != GUIWindowManager.ActiveWindow))
         {
           bool didRecStart = TVHome.ManualRecord(new ChannelBLL(_currentProgram.Entity.Channel), GetID);
@@ -558,13 +561,14 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
     protected override bool IsChannelTypeCorrect(Channel channel)
     {
-      return (channel.MediaType == (int)MediaTypeEnum.TV);
+      return (channel.MediaType == (int) MediaTypeEnum.TV);
     }
 
     protected override IList<Channel> GetGuideChannelsForGroup()
     {
       return
-        ServiceAgents.Instance.ChannelServiceAgent.GetAllChannelsByGroupIdAndMediaType(TVHome.Navigator.CurrentGroup.IdGroup, MediaTypeEnum.TV).ToList();      
+        ServiceAgents.Instance.ChannelServiceAgent.GetAllChannelsByGroupIdAndMediaType(
+          TVHome.Navigator.CurrentGroup.IdGroup, MediaTypeEnum.TV).ToList();
     }
 
     protected override bool HasSelectedGroup()
@@ -574,7 +578,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
     protected override void ShowContextMenu()
     {
-      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_MENU);
       if (dlg != null)
       {
         dlg.Reset();
@@ -661,7 +665,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
           case 938: // view channel
 
             this.LogDebug("viewch channel:{0}", _currentChannel);
-            if (_currentProgram != null) 
+            if (_currentProgram != null)
             {
               TVHome.ViewChannelAndCheck(_currentProgram.Entity.Channel, 0);
               if (TVHome.Card.IsTimeShifting && TVHome.Card.IdChannel == _currentProgram.Entity.IdChannel)
@@ -678,7 +682,8 @@ namespace Mediaportal.TV.TvPlugin.EPG
           case 629: //stop recording
             if (_currentProgram != null)
             {
-              Schedule schedule = ServiceAgents.Instance.ScheduleServiceAgent.GetScheduleWithNoEPG(_currentProgram.Entity.IdChannel);              
+              Schedule schedule =
+                ServiceAgents.Instance.ScheduleServiceAgent.GetScheduleWithNoEPG(_currentProgram.Entity.IdChannel);
               TVUtil.DeleteRecAndEntireSchedWithPrompt(schedule);
             }
             Update(true); //remove RED marker
@@ -745,26 +750,28 @@ namespace Mediaportal.TV.TvPlugin.EPG
       var movieDetails = new IMDBMovie {SearchString = _currentProgram.Entity.Title};
       if (IMDBFetcher.GetInfoFromIMDB(this, ref movieDetails, true, false))
       {
-        IList<Program> progs = ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByChannelAndStartEndTimes(_currentProgram.Entity.IdChannel,
-                                                                                                               _currentProgram.Entity.StartTime, _currentProgram.Entity.EndTime).ToList();
+        IList<Program> progs =
+          ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByChannelAndStartEndTimes(
+            _currentProgram.Entity.IdChannel,
+            _currentProgram.Entity.StartTime, _currentProgram.Entity.EndTime).ToList();
 
         if (progs != null && progs.Count > 0)
         {
           Program prog = progs[0];
           prog.Description = movieDetails.Plot;
-          
+
           //todo gibman: handle new genre here.. simply add it.
           prog.ProgramCategory.Category = movieDetails.Genre;
 
 
-          prog.StarRating = (int)movieDetails.Rating;          
+          prog.StarRating = (int) movieDetails.Rating;
           ServiceAgents.Instance.ProgramServiceAgent.SaveProgram(prog);
         }
-        var videoInfo = (GUIVideoInfo)GUIWindowManager.GetWindow((int)Window.WINDOW_VIDEO_INFO);
+        var videoInfo = (GUIVideoInfo) GUIWindowManager.GetWindow((int) Window.WINDOW_VIDEO_INFO);
         videoInfo.Movie = movieDetails;
-        var btnPlay = (GUIButtonControl)videoInfo.GetControl(2);
+        var btnPlay = (GUIButtonControl) videoInfo.GetControl(2);
         btnPlay.Visible = false;
-        GUIWindowManager.ActivateWindow((int)Window.WINDOW_VIDEO_INFO);
+        GUIWindowManager.ActivateWindow((int) Window.WINDOW_VIDEO_INFO);
       }
       else
       {
@@ -818,7 +825,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
     public bool OnDisableCancel(IMDBFetcher fetcher)
     {
       var pDlgProgress =
-        (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
+        (GUIDialogProgress) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_PROGRESS);
       if (pDlgProgress.IsInstance(fetcher))
       {
         pDlgProgress.DisableCancel(true);
@@ -833,7 +840,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
         return;
       }
       var pDlgProgress =
-        (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
+        (GUIDialogProgress) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_PROGRESS);
       pDlgProgress.ShowProgressBar(true);
       pDlgProgress.SetLine(1, line1);
       pDlgProgress.SetLine(2, line2);
@@ -847,7 +854,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
     public bool OnSearchStarting(IMDBFetcher fetcher)
     {
       var pDlgProgress =
-        (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
+        (GUIDialogProgress) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_PROGRESS);
       // show dialog that we're busy querying www.imdb.com
       pDlgProgress.Reset();
       pDlgProgress.SetHeading(GUILocalizeStrings.Get(197));
@@ -861,7 +868,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
     public bool OnSearchStarted(IMDBFetcher fetcher)
     {
       var pDlgProgress =
-        (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
+        (GUIDialogProgress) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_PROGRESS);
       pDlgProgress.SetObject(fetcher);
       pDlgProgress.DoModal(GUIWindowManager.ActiveWindow);
       if (pDlgProgress.IsCanceled)
@@ -874,7 +881,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
     public bool OnSearchEnd(IMDBFetcher fetcher)
     {
       var pDlgProgress =
-        (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
+        (GUIDialogProgress) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_PROGRESS);
       if ((pDlgProgress != null) && (pDlgProgress.IsInstance(fetcher)))
       {
         pDlgProgress.Close();
@@ -886,7 +893,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
     {
       this.LogInfo("IMDB Fetcher: OnMovieNotFound");
       // show dialog...
-      var dlgOK = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
+      var dlgOK = (GUIDialogOK) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_OK);
       dlgOK.SetHeading(195);
       dlgOK.SetLine(1, fetcher.MovieName);
       dlgOK.SetLine(2, string.Empty);
@@ -897,7 +904,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
     public bool OnDetailsStarting(IMDBFetcher fetcher)
     {
       var pDlgProgress =
-        (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
+        (GUIDialogProgress) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_PROGRESS);
       // show dialog that we're downloading the movie info
       pDlgProgress.Reset();
       pDlgProgress.SetHeading(GUILocalizeStrings.Get(198));
@@ -911,7 +918,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
     public bool OnDetailsStarted(IMDBFetcher fetcher)
     {
       var pDlgProgress =
-        (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
+        (GUIDialogProgress) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_PROGRESS);
       pDlgProgress.SetObject(fetcher);
       pDlgProgress.DoModal(GUIWindowManager.ActiveWindow);
       if (pDlgProgress.IsCanceled)
@@ -924,7 +931,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
     public bool OnDetailsEnd(IMDBFetcher fetcher)
     {
       var pDlgProgress =
-        (GUIDialogProgress)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_PROGRESS);
+        (GUIDialogProgress) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_PROGRESS);
       if ((pDlgProgress != null) && (pDlgProgress.IsInstance(fetcher)))
       {
         pDlgProgress.Close();
@@ -967,7 +974,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
     {
       this.LogInfo("IMDB Fetcher: OnDetailsNotFound");
       // show dialog...
-      var dlgOk = (GUIDialogOK)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_OK);
+      var dlgOk = (GUIDialogOK) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_OK);
       // show dialog...
       dlgOk.SetHeading(195);
       dlgOk.SetLine(1, fetcher.MovieName);

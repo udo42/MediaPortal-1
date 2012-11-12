@@ -240,17 +240,19 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
         // get rid of managed resources
         DevicesInUse.Instance.Remove(_tunerDevice);
         _tunerDevice.Dispose();
-      }      
+      }
       _tuner = null;
       if (_audioPin != null)
       {
-        Release.ComObject("_audioPin", _audioPin);        
+        Release.ComObject("_audioPin", _audioPin);
       }
       if (_filterTvTuner != null)
       {
-        while (Release.ComObject(_filterTvTuner) > 0) { }
-        _filterTvTuner = null;        
-      }     
+        while (Release.ComObject(_filterTvTuner) > 0)
+        {
+        }
+        _filterTvTuner = null;
+      }
     }
 
     ~Tuner()
@@ -322,14 +324,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     {
       int countryCode = channel.Country.Id;
       var registryLocations = new[]
-                                     {
-                                       String.Format(@"Software\Microsoft\TV System Services\TVAutoTune\TS{0}-1",
-                                                     countryCode),
-                                       String.Format(@"Software\Microsoft\TV System Services\TVAutoTune\TS{0}-0",
-                                                     countryCode),
-                                       String.Format(@"Software\Microsoft\TV System Services\TVAutoTune\TS0-1"),
-                                       String.Format(@"Software\Microsoft\TV System Services\TVAutoTune\TS0-0")
-                                     };
+                                {
+                                  String.Format(@"Software\Microsoft\TV System Services\TVAutoTune\TS{0}-1",
+                                                countryCode),
+                                  String.Format(@"Software\Microsoft\TV System Services\TVAutoTune\TS{0}-0",
+                                                countryCode),
+                                  String.Format(@"Software\Microsoft\TV System Services\TVAutoTune\TS0-1"),
+                                  String.Format(@"Software\Microsoft\TV System Services\TVAutoTune\TS0-0")
+                                };
       if (channel.Frequency == 0)
       {
         //remove the frequency override in 
@@ -354,12 +356,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
         using (RegistryKey registryKey = Registry.LocalMachine.CreateSubKey(registryLocations[index]))
         {
           if (registryKey != null)
-            registryKey.SetValue(channel.ChannelNumber.ToString(), (int)channel.Frequency);
+            registryKey.SetValue(channel.ChannelNumber.ToString(), (int) channel.Frequency);
         }
         using (RegistryKey registryKey = Registry.CurrentUser.CreateSubKey(registryLocations[index]))
         {
           if (registryKey != null)
-            registryKey.SetValue(channel.ChannelNumber.ToString(), (int)channel.Frequency);
+            registryKey.SetValue(channel.ChannelNumber.ToString(), (int) channel.Frequency);
         }
       }
     }
@@ -514,7 +516,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
         {
           if (analogChannel.Frequency != _currentChannel.Frequency)
           {
-            _tuner.put_Channel((int)analogChannel.Frequency, AMTunerSubChannel.Default, AMTunerSubChannel.Default);
+            _tuner.put_Channel((int) analogChannel.Frequency, AMTunerSubChannel.Default, AMTunerSubChannel.Default);
           }
         }
         else
@@ -542,7 +544,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
         _tuner.put_InputType(0, analogChannel.TunerSource);
         if (analogChannel.MediaType == MediaTypeEnum.Radio)
         {
-          _tuner.put_Channel((int)analogChannel.Frequency, AMTunerSubChannel.Default, AMTunerSubChannel.Default);
+          _tuner.put_Channel((int) analogChannel.Frequency, AMTunerSubChannel.Default, AMTunerSubChannel.Default);
         }
         else
         {

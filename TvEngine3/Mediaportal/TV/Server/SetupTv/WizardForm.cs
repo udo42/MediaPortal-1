@@ -195,7 +195,7 @@ namespace Mediaportal.TV.Server.SetupTV
         // Create the instance of the section settings class, pass the section name as argument
         // to the constructor. We do this to be able to use the same name on <name> as in the <dependency> tag.
         //
-        var section = (SectionSettings)Activator.CreateInstance(sectionType, new object[] {sectionName});
+        var section = (SectionSettings) Activator.CreateInstance(sectionType, new object[] {sectionName});
         return section;
       }
 
@@ -305,7 +305,7 @@ namespace Mediaportal.TV.Server.SetupTV
             //
             // Return property
             //
-            return (bool)holder.Section.GetSetting(property);
+            return (bool) holder.Section.GetSetting(property);
           }
         }
 

@@ -128,7 +128,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       TuningDetail.PmtPid = Convert.ToInt32(textBoxDVBCPmt.Text);
       TuningDetail.Provider = textBoxDVBCProvider.Text;
       TuningDetail.FreeToAir = checkBoxDVBCfta.Checked;
-      TuningDetail.Modulation = (int)(ModulationType)(comboBoxDvbCModulation.SelectedIndex - 1);
+      TuningDetail.Modulation = (int) (ModulationType) (comboBoxDvbCModulation.SelectedIndex - 1);
       TuningDetail.ChannelType = 2;
     }
 

@@ -46,68 +46,47 @@ namespace Mediaportal.TV.Server.TVControl
   {
     #region variables
 
-    [DataMember]
-    private const int CommandTimeOut = 3000;
+    [DataMember] private const int CommandTimeOut = 3000;
 
-    [DataMember]
-    private CardType _cardType = CardType.Analog;
+    [DataMember] private CardType _cardType = CardType.Analog;
 
-    [DataMember]
-    private string _channelName;
+    [DataMember] private string _channelName;
 
-    [DataMember]
-    private bool _hasTeletext;
+    [DataMember] private bool _hasTeletext;
 
-    [DataMember]
-    private int _idChannel = -1;
+    [DataMember] private int _idChannel = -1;
 
-    [DataMember]
-    private bool _isGrabbingEpg;
+    [DataMember] private bool _isGrabbingEpg;
 
-    [DataMember]
-    private bool _isRecording;
+    [DataMember] private bool _isRecording;
 
-    [DataMember]
-    private bool _isScanning;
+    [DataMember] private bool _isScanning;
 
-    [DataMember]
-    private bool _isScrambled;
+    [DataMember] private bool _isScrambled;
 
-    [DataMember]
-    private bool _isTimeshifting;
+    [DataMember] private bool _isTimeshifting;
 
-    [DataMember]
-    private MediaTypeEnum? _mediaType;
+    [DataMember] private MediaTypeEnum? _mediaType;
 
-    [DataMember]
-    private string _name;
+    [DataMember] private string _name;
 
-    [DataMember]
-    private int _nrOfOtherUsersTimeshiftingOnCard;
+    [DataMember] private int _nrOfOtherUsersTimeshiftingOnCard;
 
-    [DataMember]
-    private string _recordingFileName;
+    [DataMember] private string _recordingFileName;
 
-    [DataMember]
-    private string _recordingFolder;
+    [DataMember] private string _recordingFolder;
 
-    [DataMember]
-    private int _recordingFormat;
+    [DataMember] private int _recordingFormat;
 
-    [DataMember]
-    private string _rtspUrl;
+    [DataMember] private string _rtspUrl;
 
-    [DataMember]
-    private string _server;
+    [DataMember] private string _server;
 
-    [DataMember]
-    private string _timeShiftFileName;
+    [DataMember] private string _timeShiftFileName;
 
-    [DataMember]
-    private string _timeShiftFolder;
+    [DataMember] private string _timeShiftFolder;
 
-    [DataMember]
-    private IUser _user;
+    [DataMember] private IUser _user;
 
     #endregion
 
@@ -120,7 +99,7 @@ namespace Mediaportal.TV.Server.TVControl
     /// <param name="server">The server.</param>
     /// <param name="recordingFormat">The recording format.</param>
     public VirtualCard(User user, string server, int recordingFormat)
-    {      
+    {
       _user = user;
       _server = server;
 
@@ -129,7 +108,6 @@ namespace Mediaportal.TV.Server.TVControl
       _recordingFolder = String.Format(@"{0}\Team MediaPortal\MediaPortal TV Server\recordings",
                                        Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData));
       _recordingFormat = recordingFormat;
-
     }
 
     /// <summary>
@@ -193,7 +171,7 @@ namespace Mediaportal.TV.Server.TVControl
       }
 
       if (cardId > 0)
-      {               
+      {
         if (_idChannel > 0)
         {
           _isRecording = controllerService.IsRecording(_idChannel, cardId);
@@ -202,8 +180,8 @@ namespace Mediaportal.TV.Server.TVControl
         _isScanning = controllerService.IsScanning(cardId);
         _isGrabbingEpg = controllerService.IsGrabbingEpg(cardId);
         _name = controllerService.CardName(cardId);
-        _cardType = controllerService.Type(cardId);        
-      }                        
+        _cardType = controllerService.Type(cardId);
+      }
     }
 
     #endregion
@@ -274,10 +252,7 @@ namespace Mediaportal.TV.Server.TVControl
     /// </summary>    
     public string TimeshiftFolder
     {
-      get
-      {
-        return _timeShiftFolder;
-      }
+      get { return _timeShiftFolder; }
       set
       {
         _timeShiftFolder = value;
@@ -375,7 +350,6 @@ namespace Mediaportal.TV.Server.TVControl
     /// stream 
     /// </summary>
     /// <returns>URL containing the RTSP adress on which the card transmits its stream</returns>
-
     public string RTSPUrl
     {
       get
@@ -535,7 +509,6 @@ namespace Mediaportal.TV.Server.TVControl
     }
 
 
-
     /// <summary>
     /// Returns if card is currently timeshifting or not
     /// </summary>
@@ -602,8 +575,6 @@ namespace Mediaportal.TV.Server.TVControl
     #endregion
 
     #region dynamic properties
-
-   
 
     /// <summary>
     /// returns which schedule is currently being recorded
@@ -696,7 +667,8 @@ namespace Mediaportal.TV.Server.TVControl
         if (User.CardId > 0)
         {
           RemoteControl.HostName = _server;
-          GlobalServiceProvider.Get<IControllerService>().GetStreamQualityCounters(User.Name, out totalTSpackets, out discontinuityCounter);
+          GlobalServiceProvider.Get<IControllerService>().GetStreamQualityCounters(User.Name, out totalTSpackets,
+                                                                                   out discontinuityCounter);
         }
       }
       catch (Exception)
@@ -759,7 +731,6 @@ namespace Mediaportal.TV.Server.TVControl
     }
 
 
-
     /// <summary>
     /// Gets the name of the tv/radio channel to which we are tuned
     /// </summary>
@@ -787,8 +758,6 @@ namespace Mediaportal.TV.Server.TVControl
       }
     }
 
-
-   
 
     /// <summary>
     /// returns the database channel
@@ -833,7 +802,7 @@ namespace Mediaportal.TV.Server.TVControl
       {
         if (User.CardId < 0)
         {
-          return new byte[] { 1 };
+          return new byte[] {1};
         }
         RemoteControl.HostName = _server;
         return GlobalServiceProvider.Get<IControllerService>().GetTeletextPage(User.Name, pageNumber, subPageNumber);
@@ -842,7 +811,7 @@ namespace Mediaportal.TV.Server.TVControl
       {
         //HandleFailure();
       }
-      return new byte[] { 1 };
+      return new byte[] {1};
     }
 
     /// <summary>
@@ -868,7 +837,6 @@ namespace Mediaportal.TV.Server.TVControl
         //HandleFailure();
       }
     }*/
-
     /// <summary>
     /// Stops the time shifting.
     /// </summary>
@@ -891,7 +859,7 @@ namespace Mediaportal.TV.Server.TVControl
 
         if (userResult != null)
         {
-          _user = userResult;          
+          _user = userResult;
         }
         _isTimeshifting = false;
         _timeShiftFileName = null;
@@ -948,7 +916,10 @@ namespace Mediaportal.TV.Server.TVControl
         }
         RemoteControl.HostName = _server;
         IUser userResult;
-        TvResult startRecording = GlobalServiceProvider.Get<IControllerService>().StartRecording(_user.Name, _user.CardId, out userResult, ref fileName);
+        TvResult startRecording = GlobalServiceProvider.Get<IControllerService>().StartRecording(_user.Name,
+                                                                                                 _user.CardId,
+                                                                                                 out userResult,
+                                                                                                 ref fileName);
 
         if (userResult != null)
         {
@@ -1097,8 +1068,6 @@ namespace Mediaportal.TV.Server.TVControl
       }
       return new TimeSpan(0, 0, 0, 15);
     }
-
-
 
     #endregion
 

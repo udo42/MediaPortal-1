@@ -31,7 +31,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
   /// </summary>
   public class DvbTextConverter
   {
-
     /// <summary>
     /// Convert DVB string to Unicode according to provided language
     /// </summary>
@@ -170,7 +169,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
       }
       catch (Exception ex)
       {
-        Log.Error(ex, "Error while converting dvb text");        
+        Log.Error(ex, "Error while converting dvb text");
       }
       var text = new byte[len - pos];
       for (int i = 0; i < len - pos; i++)

@@ -55,17 +55,17 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
 
     private enum BdaExtensionProperty
     {
-      DiseqcMessage = 0,    // For DiSEqC messaging.
-      DiseqcInit,           // For intialising DiSEqC.
-      ScanFrequency,        // (Not supported...)
-      ChannelChange,        // For changing channel.
-      DemodInfo,            // For returning demodulator firmware state and version.
-      EffectiveFrequency,   // (Not supported...)
-      SignalStatus,         // For retrieving signal quality, strength, BER and other attributes.
-      LockStatus,           // For retrieving demodulator lock indicators.
-      ErrorControl,         // For controlling error correction and BER window.
-      ChannelInfo,          // For retrieving the locked values of frequency, symbol rate etc. after corrections and adjustments.
-      NbcParams             // For setting DVB-S2 parameters that could not initially be set through BDA interfaces.
+      DiseqcMessage = 0, // For DiSEqC messaging.
+      DiseqcInit, // For intialising DiSEqC.
+      ScanFrequency, // (Not supported...)
+      ChannelChange, // For changing channel.
+      DemodInfo, // For returning demodulator firmware state and version.
+      EffectiveFrequency, // (Not supported...)
+      SignalStatus, // For retrieving signal quality, strength, BER and other attributes.
+      LockStatus, // For retrieving demodulator lock indicators.
+      ErrorControl, // For controlling error correction and BER window.
+      ChannelInfo, // For retrieving the locked values of frequency, symbol rate etc. after corrections and adjustments.
+      NbcParams // For setting DVB-S2 parameters that could not initially be set through BDA interfaces.
     }
 
     #endregion
@@ -81,6 +81,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       /// Oscillator off.
       /// </summary>
       Off = 0,
+
       /// <summary>
       /// Oscillator on.
       /// </summary>
@@ -93,9 +94,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
 
     private enum ProfDiseqcReceiveMode : uint
     {
-      Interrogation = 0,    // Expecting multiple devices attached.
-      QuickReply,           // Expecting one response (receiving is suspended after first response).
-      NoReply,              // Expecting no response(s).
+      Interrogation = 0, // Expecting multiple devices attached.
+      QuickReply, // Expecting one response (receiving is suspended after first response).
+      NoReply, // Expecting no response(s).
     }
 
     #endregion
@@ -137,7 +138,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
     {
       Off = 0,
       On,
-      Unknown               // (Not used...)
+      Unknown // (Not used...)
     }
 
     #endregion
@@ -147,9 +148,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
     private enum ProfRollOff : uint
     {
       Undefined = 0xff,
-      Twenty = 0,           // 0.2
-      TwentyFive,           // 0.25
-      ThirtyFive            // 0.35
+      Twenty = 0, // 0.2
+      TwentyFive, // 0.25
+      ThirtyFive // 0.35
     }
 
     #endregion
@@ -165,10 +166,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       /// Tone burst (simple A).
       /// </summary>
       ToneBurst = 0,
+
       /// <summary>
       /// Data burst (simple B).
       /// </summary>
       DataBurst,
+
       /// <summary>
       /// Off (no message).
       /// </summary>
@@ -181,7 +184,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
 
     private enum ProfToneModulation : uint
     {
-      Undefined = 0,        // (Results in an error - *do not use*!)
+      Undefined = 0, // (Results in an error - *do not use*!)
       Modulated,
       Unmodulated
     }
@@ -197,12 +200,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct BdaExtensionParams
     {
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcTxMessageLength)]
-      public byte[] DiseqcTransmitMessage;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcTxMessageLength)] public byte[] DiseqcTransmitMessage;
       public byte DiseqcTransmitMessageLength;
 
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcRxMessageLength)]
-      public readonly byte[] DiseqcReceiveMessage;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcRxMessageLength)] public readonly byte[]
+        DiseqcReceiveMessage;
+
       public readonly byte DiseqcReceiveMessageLength;
       private readonly UInt16 Padding;
 
@@ -212,11 +215,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       public BdaExtensionCommand Command;
       public Prof22k Tone22k;
       public ProfToneBurst ToneBurst;
-      public readonly byte MicroControllerParityErrors;        // Parity errors: 0 indicates no errors, binary 1 indicates an error.
-      public readonly byte MicroControllerReplyErrors;         // 1 in bit i indicates error in byte i.
 
-      [MarshalAs(UnmanagedType.Bool)]
-      public bool IsLastMessage;
+      public readonly byte MicroControllerParityErrors;
+                           // Parity errors: 0 indicates no errors, binary 1 indicates an error.
+
+      public readonly byte MicroControllerReplyErrors; // 1 in bit i indicates error in byte i.
+
+      [MarshalAs(UnmanagedType.Bool)] public bool IsLastMessage;
       public ProfLnbPower LnbPower;
     }
 
@@ -242,9 +247,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
 
     private const int BdaExtensionParamsSize = 188;
     private const int NbcTuningParamsSize = 20;
-    private const byte MaxDiseqcTxMessageLength = 151;  // 3 bytes per message * 50 messages
-    private const byte MaxDiseqcRxMessageLength = 9;    // reply fifo size, do not increase (hardware limitation)
-    private static readonly Guid BdaExtensionPropertySet = new Guid(0xfaa8f3e5, 0x31d4, 0x4e41, 0x88, 0xef, 0xd9, 0xeb, 0x71, 0x6f, 0x6e, 0xc9);
+    private const byte MaxDiseqcTxMessageLength = 151; // 3 bytes per message * 50 messages
+    private const byte MaxDiseqcRxMessageLength = 9; // reply fifo size, do not increase (hardware limitation)
+
+    private static readonly Guid BdaExtensionPropertySet = new Guid(0xfaa8f3e5, 0x31d4, 0x4e41, 0x88, 0xef, 0xd9, 0xeb,
+                                                                    0x71, 0x6f, 0x6e, 0xc9);
 
     #endregion
 
@@ -310,11 +317,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       }
 
       KSPropertySupport support;
-      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.DiseqcMessage, out support);
+      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int) BdaExtensionProperty.DiseqcMessage,
+                                           out support);
       // The original Conexant interface uses the set method; this interface uses the get method.
       if (hr != 0 || (support & KSPropertySupport.Get) == 0)
       {
-        this.LogDebug("Prof: device does not support the Prof property set, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Prof: device does not support the Prof property set, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         return false;
       }
 
@@ -336,7 +345,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
     /// <param name="currentChannel">The channel that the tuner is currently tuned to..</param>
     /// <param name="channel">The channel that the tuner will been tuned to.</param>
     /// <param name="action">The action to take, if any.</param>
-    public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel, out DeviceAction action)
+    public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel,
+                                      out DeviceAction action)
     {
       this.LogDebug("Prof: on before tune callback");
       action = DeviceAction.Default;
@@ -408,17 +418,18 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       this.LogDebug("  roll-off       = {0}", command.RollOff);
 
       KSPropertySupport support;
-      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.NbcParams, out support);
+      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int) BdaExtensionProperty.NbcParams, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
-        this.LogDebug("Prof: NBC tuning parameter property not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Prof: NBC tuning parameter property not supported, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         return;
       }
 
       Marshal.StructureToPtr(command, _generalBuffer, true);
       //DVB_MMI.DumpBinary(_generalBuffer, 0, NbcTuningParamsSize);
 
-      hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.NbcParams,
+      hr = _propertySet.Set(BdaExtensionPropertySet, (int) BdaExtensionProperty.NbcParams,
                             _generalBuffer, NbcTuningParamsSize,
                             _generalBuffer, NbcTuningParamsSize
         );
@@ -465,7 +476,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       //DVB_MMI.DumpBinary(_generalBuffer, 0, BdaExtensionParamsSize);
 
       int returnedByteCount = 0;
-      int hr = _propertySet.Get(BdaExtensionPropertySet, (int)BdaExtensionProperty.DiseqcMessage,
+      int hr = _propertySet.Get(BdaExtensionPropertySet, (int) BdaExtensionProperty.DiseqcMessage,
                                 _generalBuffer, BdaExtensionParamsSize,
                                 _generalBuffer, BdaExtensionParamsSize,
                                 out returnedByteCount
@@ -503,7 +514,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       var command = new BdaExtensionParams();
       command.Command = BdaExtensionCommand.Tone;
       command.ToneBurst = ProfToneBurst.Off;
-      command.ToneModulation = ProfToneModulation.Unmodulated;   // Can't use undefined, so use simple A instead.
+      command.ToneModulation = ProfToneModulation.Unmodulated; // Can't use undefined, so use simple A instead.
       if (toneBurstState == ToneBurst.ToneBurst)
       {
         command.ToneBurst = ProfToneBurst.ToneBurst;
@@ -524,7 +535,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       //DVB_MMI.DumpBinary(_generalBuffer, 0, BdaExtensionParamsSize);
 
       int returnedByteCount = 0;
-      int hr = _propertySet.Get(BdaExtensionPropertySet, (int)BdaExtensionProperty.DiseqcMessage,
+      int hr = _propertySet.Get(BdaExtensionPropertySet, (int) BdaExtensionProperty.DiseqcMessage,
                                 _generalBuffer, BdaExtensionParamsSize,
                                 _generalBuffer, BdaExtensionParamsSize,
                                 out returnedByteCount
@@ -567,7 +578,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       var propertyParams = new BdaExtensionParams();
       propertyParams.DiseqcTransmitMessage = new byte[MaxDiseqcTxMessageLength];
       Buffer.BlockCopy(command, 0, propertyParams.DiseqcTransmitMessage, 0, command.Length);
-      propertyParams.DiseqcTransmitMessageLength = (byte)command.Length;
+      propertyParams.DiseqcTransmitMessageLength = (byte) command.Length;
       propertyParams.ReceiveMode = ProfDiseqcReceiveMode.NoReply;
       propertyParams.Command = BdaExtensionCommand.Diseqc;
       propertyParams.IsLastMessage = true;
@@ -577,7 +588,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Prof
       //DVB_MMI.DumpBinary(_generalBuffer, 0, BdaExtensionParamsSize);
 
       int returnedByteCount = 0;
-      int hr = _propertySet.Get(BdaExtensionPropertySet, (int)BdaExtensionProperty.DiseqcMessage,
+      int hr = _propertySet.Get(BdaExtensionPropertySet, (int) BdaExtensionProperty.DiseqcMessage,
                                 _generalBuffer, BdaExtensionParamsSize,
                                 _generalBuffer, BdaExtensionParamsSize,
                                 out returnedByteCount

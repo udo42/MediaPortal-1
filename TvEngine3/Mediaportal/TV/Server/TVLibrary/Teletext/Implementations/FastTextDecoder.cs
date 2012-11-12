@@ -49,19 +49,19 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
       _bluePage = -1;
       _whitePage = -1;
 
-      int maxRows = pageData.Length / 42;
+      int maxRows = pageData.Length/42;
       if (maxRows < 1)
         return;
 
       int pageNumber = 0;
       for (int rowNr = 0; rowNr < maxRows; rowNr++)
       {
-        int packetNumber = Hamming.GetPacketNumber(rowNr * 42, ref pageData);
+        int packetNumber = Hamming.GetPacketNumber(rowNr*42, ref pageData);
         if (packetNumber == 0)
-          pageNumber = Hamming.GetPageNumber(rowNr * 42, ref pageData);
+          pageNumber = Hamming.GetPageNumber(rowNr*42, ref pageData);
         if (packetNumber == 27)
         {
-          DecodePacket27(pageNumber, rowNr * 42, pageData);
+          DecodePacket27(pageNumber, rowNr*42, pageData);
           return;
         }
       }
@@ -89,24 +89,24 @@ namespace Mediaportal.TV.Server.TVLibrary.Teletext.Implementations
         byte pageUnits = linkData[0];
         byte pageTens = linkData[1];
 
-        var m1 = (byte)(linkData[3] >> 3);
-        var m2 = (byte)((linkData[5] & 0x4) >> 2);
-        var m3 = (byte)(linkData[5] >> 3);
-        var m = (byte)((m3 << 2) + (m2 << 1) + m1);
+        var m1 = (byte) (linkData[3] >> 3);
+        var m2 = (byte) ((linkData[5] & 0x4) >> 2);
+        var m3 = (byte) (linkData[5] >> 3);
+        var m = (byte) ((m3 << 2) + (m2 << 1) + m1);
 
         // Magazine is complemented
-        int Magazine = pageNumber / 0x100;
+        int Magazine = pageNumber/0x100;
         if (Magazine == 8)
           Magazine = 0;
 
-        var linkMagazine = (byte)(m ^ (Magazine % 8));
+        var linkMagazine = (byte) (m ^ (Magazine%8));
 
         // Magazine encoded as 0 is magazine 8
         if (linkMagazine == 0)
         {
           linkMagazine = 8;
         }
-        int pageNr = linkMagazine * 0x100 + pageTens * 0x10 + pageUnits;
+        int pageNr = linkMagazine*0x100 + pageTens*0x10 + pageUnits;
         if (!IsDecimalPage(pageNr))
         {
           pageNr = -1;

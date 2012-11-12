@@ -31,10 +31,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer
     /// Video pid
     /// </summary>
     Video = 0,
+
     /// <summary>
     /// Audio pid
     /// </summary>
     Audio,
+
     /// <summary>
     /// Other pid
     /// </summary>

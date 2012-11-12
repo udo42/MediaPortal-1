@@ -125,8 +125,7 @@ namespace DirectShowLib.BDA
   public class UDCR_TAG
   {
     public byte bVersion;
-    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 25)]
-    public byte KID;
+    [MarshalAs(UnmanagedType.ByValArray, SizeConst = 25)] public byte KID;
     public long ullBaseCounter;
     public long ullBaseCounterRange;
     public bool fScrambled;

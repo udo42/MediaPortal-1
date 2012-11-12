@@ -161,7 +161,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
       GetChannels(true);
       LoadSchedules(true);
       _currentProgram = null;
-      if (message.Param1 != (int)Window.WINDOW_TV_PROGRAM_INFO)
+      if (message.Param1 != (int) Window.WINDOW_TV_PROGRAM_INFO)
       {
         _viewingTime = DateTime.Now;
         _cursorY = 0;
@@ -195,7 +195,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
         _cursorX += ChannelOffset - (_channelList.Count - _channelCount);
         ChannelOffset = _channelList.Count - _channelCount;
       }
-      var cntlDay = GetControl((int)Controls.SPINCONTROL_DAY) as GUISpinControl;
+      var cntlDay = GetControl((int) Controls.SPINCONTROL_DAY) as GUISpinControl;
       if (cntlDay != null)
       {
         DateTime dtNow = DateTime.Now;
@@ -238,7 +238,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
         this.LogDebug("RadioGuideBase: SpinControl cntlDay is null!");
       }
 
-      var cntlTimeInterval = GetControl((int)Controls.SPINCONTROL_TIME_INTERVAL) as GUISpinControl;
+      var cntlTimeInterval = GetControl((int) Controls.SPINCONTROL_TIME_INTERVAL) as GUISpinControl;
       if (cntlTimeInterval != null)
       {
         cntlTimeInterval.Reset();
@@ -246,14 +246,14 @@ namespace Mediaportal.TV.TvPlugin.EPG
         {
           cntlTimeInterval.AddLabel(String.Empty, i);
         }
-        cntlTimeInterval.Value = (_timePerBlock / 15) - 1;
+        cntlTimeInterval.Value = (_timePerBlock/15) - 1;
       }
       else
       {
         this.LogDebug("RadioGuideBase: SpinControl cntlTimeInterval is null!");
       }
 
-      if (message.Param1 != (int)Window.WINDOW_TV_PROGRAM_INFO)
+      if (message.Param1 != (int) Window.WINDOW_TV_PROGRAM_INFO)
       {
         Update(true);
       }
@@ -281,7 +281,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
       {
         int prevGroup = Radio.Radio.SelectedGroup.IdGroup;
 
-        var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+        var dlg = (GUIDialogMenu) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_MENU);
         if (dlg == null)
         {
           return;
@@ -356,7 +356,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
         SetFocus();
       }
 
-      var vertLine = GetControl((int)Controls.VERTICAL_LINE) as GUIImage;
+      var vertLine = GetControl((int) Controls.VERTICAL_LINE) as GUIImage;
       if (vertLine != null)
       {
         if (_singleChannelView)
@@ -377,8 +377,8 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
           if (_viewingTime.Date.Equals(DateTime.Now.Date) && _viewingTime < DateTime.Now)
           {
-            int iStartX = GetControl((int)Controls.LABEL_TIME1).XPosition;
-            GUIControl guiControl = GetControl((int)Controls.LABEL_TIME1 + 1);
+            int iStartX = GetControl((int) Controls.LABEL_TIME1).XPosition;
+            GUIControl guiControl = GetControl((int) Controls.LABEL_TIME1 + 1);
             int iWidth = 1;
             if (guiControl != null)
             {
@@ -388,29 +388,29 @@ namespace Mediaportal.TV.TvPlugin.EPG
             iWidth *= 4;
 
             int iMin = _viewingTime.Minute;
-            int iStartTime = _viewingTime.Hour * 60 + iMin;
-            int iCurTime = DateTime.Now.Hour * 60 + DateTime.Now.Minute;
+            int iStartTime = _viewingTime.Hour*60 + iMin;
+            int iCurTime = DateTime.Now.Hour*60 + DateTime.Now.Minute;
             if (iCurTime >= iStartTime)
             {
               iCurTime -= iStartTime;
             }
             else
             {
-              iCurTime = 24 * 60 + iCurTime - iStartTime;
+              iCurTime = 24*60 + iCurTime - iStartTime;
             }
 
-            int iTimeWidth = (_numberOfBlocks * _timePerBlock);
-            float fpos = (iCurTime) / ((float)(iTimeWidth));
+            int iTimeWidth = (_numberOfBlocks*_timePerBlock);
+            float fpos = (iCurTime)/((float) (iTimeWidth));
             fpos *= iWidth;
             fpos += iStartX;
-            int width = vertLine.Width / 2;
+            int width = vertLine.Width/2;
             vertLine.IsVisible = true;
-            vertLine.SetPosition((int)fpos - width, vertLine.YPosition);
+            vertLine.SetPosition((int) fpos - width, vertLine.YPosition);
             vertLine.Select(0);
             ts = DateTime.Now - _updateTimer;
             if (ts.TotalMinutes >= 1)
             {
-              if ((DateTime.Now - _viewingTime).TotalMinutes >= iTimeWidth / 2)
+              if ((DateTime.Now - _viewingTime).TotalMinutes >= iTimeWidth/2)
               {
                 _cursorY = 0;
                 _viewingTime = DateTime.Now;
@@ -428,7 +428,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
     protected override void ShowContextMenu()
     {
-      var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+      var dlg = (GUIDialogMenu) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_MENU);
       if (dlg != null)
       {
         dlg.Reset();
@@ -511,7 +511,8 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
             this.LogDebug("viewch channel:{0}", _currentChannel);
             Radio.Radio.Play();
-            if (_currentProgram != null && (TVHome.Card.IsTimeShifting && TVHome.Card.IdChannel == _currentProgram.Entity.IdChannel))
+            if (_currentProgram != null &&
+                (TVHome.Card.IsTimeShifting && TVHome.Card.IdChannel == _currentProgram.Entity.IdChannel))
             {
               g_Player.ShowFullScreenWindow();
             }
@@ -524,7 +525,8 @@ namespace Mediaportal.TV.TvPlugin.EPG
           case 629: //stop recording
             if (_currentProgram != null)
             {
-              Schedule schedule = ServiceAgents.Instance.ScheduleServiceAgent.GetScheduleWithNoEPG(_currentProgram.Entity.IdChannel);              
+              Schedule schedule =
+                ServiceAgents.Instance.ScheduleServiceAgent.GetScheduleWithNoEPG(_currentProgram.Entity.IdChannel);
               TVUtil.DeleteRecAndEntireSchedWithPrompt(schedule);
             }
             Update(true); //remove RED marker
@@ -571,7 +573,9 @@ namespace Mediaportal.TV.TvPlugin.EPG
             Recording rec = null;
             if (isRec)
             {
-              rec = ServiceAgents.Instance.RecordingServiceAgent.GetActiveRecordingByTitleAndChannel(_currentProgram.Entity.Title, _currentProgram.Entity.IdChannel);
+              rec =
+                ServiceAgents.Instance.RecordingServiceAgent.GetActiveRecordingByTitleAndChannel(
+                  _currentProgram.Entity.Title, _currentProgram.Entity.IdChannel);
             }
 
 
@@ -583,7 +587,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
             if (!string.IsNullOrEmpty(fileName)) //are we really recording ?
             {
               this.LogInfo("RadioGuide: clicked on a currently running recording");
-              var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+              var dlg = (GUIDialogMenu) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_MENU);
               if (dlg == null)
               {
                 return;
@@ -605,7 +609,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
                 switch (dlg.SelectedId)
                 {
                   case 979: // Play recording from beginning
-                    {                      
+                    {
                       Recording recDB = ServiceAgents.Instance.RecordingServiceAgent.GetRecordingByFileName(fileName);
                       if (recDB != null)
                       {
@@ -655,11 +659,12 @@ namespace Mediaportal.TV.TvPlugin.EPG
             else //not recording
             {
               // clicked the show we're currently watching
-              if (Radio.Radio.CurrentChannel != null && Radio.Radio.CurrentChannel.IdChannel == _currentChannel.IdChannel &&
+              if (Radio.Radio.CurrentChannel != null &&
+                  Radio.Radio.CurrentChannel.IdChannel == _currentChannel.IdChannel &&
                   g_Player.Playing)
               {
                 this.LogDebug("RadioGuide: clicked on a currently running show");
-                var dlg = (GUIDialogMenu)GUIWindowManager.GetWindow((int)Window.WINDOW_DIALOG_MENU);
+                var dlg = (GUIDialogMenu) GUIWindowManager.GetWindow((int) Window.WINDOW_DIALOG_MENU);
                 if (dlg == null)
                 {
                   return;
@@ -744,7 +749,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
            (_currentProgram.Entity.EndTime <= DateTime.Now)))
       {
         //record current programme
-        GUIWindow tvHome = GUIWindowManager.GetWindow((int)Window.WINDOW_TV);
+        GUIWindow tvHome = GUIWindowManager.GetWindow((int) Window.WINDOW_TV);
         if ((tvHome != null) && (tvHome.GetID != GUIWindowManager.ActiveWindow))
         {
           bool didRecStart = TVHome.ManualRecord(new ChannelBLL(_currentProgram.Entity.Channel), GetID);
@@ -762,8 +767,10 @@ namespace Mediaportal.TV.TvPlugin.EPG
     }
 
     protected override IList<Channel> GetGuideChannelsForGroup()
-    {      
-      return ServiceAgents.Instance.ChannelServiceAgent.GetAllChannelsByGroupIdAndMediaType(Radio.Radio.SelectedGroup.IdGroup, MediaTypeEnum.Radio).ToList();      
+    {
+      return
+        ServiceAgents.Instance.ChannelServiceAgent.GetAllChannelsByGroupIdAndMediaType(
+          Radio.Radio.SelectedGroup.IdGroup, MediaTypeEnum.Radio).ToList();
     }
 
     protected override bool HasSelectedGroup()
@@ -773,7 +780,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
     protected override bool IsChannelTypeCorrect(Channel channel)
     {
-      return (channel.MediaType == (int)MediaTypeEnum.Radio);
+      return (channel.MediaType == (int) MediaTypeEnum.Radio);
     }
 
     #endregion

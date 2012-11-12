@@ -27,16 +27,22 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
   {
     /// menu is closed
     Closed = 0,
+
     /// opened
     Opened = 1,
+
     /// ready
     Ready = 2,
+
     /// request
     Request = 3,
+
     /// no choices
     NoChoices = 4,
+
     /// error
     Error = 5,
+
     /// open menu is to be closed
     Close = 6
   }
@@ -89,5 +95,5 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces
       bool bBlind,
       uint nAnswerLength,
       string lpszText);
-  } ;
+  };
 }

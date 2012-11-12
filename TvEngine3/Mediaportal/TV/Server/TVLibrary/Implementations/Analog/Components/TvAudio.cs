@@ -106,8 +106,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       {
         if (_filterTvAudioTuner != null)
         {
-          while (Release.ComObject(_filterTvAudioTuner) > 0) { }
-          _filterTvAudioTuner = null;          
+          while (Release.ComObject(_filterTvAudioTuner) > 0)
+          {
+          }
+          _filterTvAudioTuner = null;
         }
       }
     }

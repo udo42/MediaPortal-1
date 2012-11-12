@@ -41,8 +41,6 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 {
   public partial class XmlTvSetup : SectionSettings
   {
-
-
     private const string _shortTimePattern24Hrs = "HH:mm";
     private const string _shortTimePattern12Hrs = "hh:mm";
 
@@ -78,7 +76,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       DateTime xmlTvRemoteScheduleTime = dateTimePickerScheduler.Value;
       _settingServiceAgent.SaveValue("xmlTvRemoteScheduleTime", xmlTvRemoteScheduleTime);
       _settingServiceAgent.SaveValue("xmlTvRemoteSchedulerEnabled", chkScheduler.Checked);
-      _settingServiceAgent.SaveValue("xmlTvRemoteSchedulerDownloadOnWakeUpEnabled", radioDownloadOnWakeUp.Checked);            
+      _settingServiceAgent.SaveValue("xmlTvRemoteSchedulerDownloadOnWakeUpEnabled", radioDownloadOnWakeUp.Checked);
 
       base.OnSectionDeActivated();
     }
@@ -99,7 +97,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       labelStatus.Text = _settingServiceAgent.GetValue("xmlTvResultStatus", "");
 
       chkScheduler.Checked = (_settingServiceAgent.GetValue("xmlTvRemoteSchedulerEnabled", false));
-      radioDownloadOnWakeUp.Checked = (_settingServiceAgent.GetValue("xmlTvRemoteSchedulerDownloadOnWakeUpEnabled", false));
+      radioDownloadOnWakeUp.Checked =
+        (_settingServiceAgent.GetValue("xmlTvRemoteSchedulerDownloadOnWakeUpEnabled", false));
       radioDownloadOnSchedule.Checked = !radioDownloadOnWakeUp.Checked;
 
       txtRemoteURL.Text = _settingServiceAgent.GetValue("xmlTvRemoteURL", "http://www.mysite.com/TVguide.xml");
@@ -150,7 +149,9 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       }
     }
 
-    private void XmlSetup_Load(object sender, EventArgs e) {}
+    private void XmlSetup_Load(object sender, EventArgs e)
+    {
+    }
 
     private void buttonBrowse_Click(object sender, EventArgs e)
     {
@@ -205,19 +206,20 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
         this.LogDebug("Loading all channels from the database");
 
-        var chGroup = (CBChannelGroup)comboBoxGroup.SelectedItem;
+        var chGroup = (CBChannelGroup) comboBoxGroup.SelectedItem;
 
         IList<Channel> channels;
 
-        bool loadRadio = checkBoxLoadRadio.Checked;               
+        bool loadRadio = checkBoxLoadRadio.Checked;
         if (loadRadio)
         {
           channels = _channelServiceAgent.GetAllChannelsByGroupId(chGroup.idGroup).ToList();
         }
         else
         {
-          channels = _channelServiceAgent.GetAllChannelsByGroupIdAndMediaType(chGroup.idGroup, MediaTypeEnum.TV).ToList();          
-        }        
+          channels =
+            _channelServiceAgent.GetAllChannelsByGroupIdAndMediaType(chGroup.idGroup, MediaTypeEnum.TV).ToList();
+        }
 
         progressBar1.Minimum = 0;
         progressBar1.Maximum = channels.Count;
@@ -246,16 +248,16 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
           Boolean alreadyMapped = false;
           DataGridViewRow gridRow = rows[row++];
 
-          var idCell = (DataGridViewTextBoxCell)gridRow.Cells["Id"];
-          var channelCell = (DataGridViewTextBoxCell)gridRow.Cells["tuningChannel"];
-          var providerCell = (DataGridViewTextBoxCell)gridRow.Cells["tuningChannel"];
-          var showInGuideCell = (DataGridViewCheckBoxCell)gridRow.Cells["ShowInGuide"];
+          var idCell = (DataGridViewTextBoxCell) gridRow.Cells["Id"];
+          var channelCell = (DataGridViewTextBoxCell) gridRow.Cells["tuningChannel"];
+          var providerCell = (DataGridViewTextBoxCell) gridRow.Cells["tuningChannel"];
+          var showInGuideCell = (DataGridViewCheckBoxCell) gridRow.Cells["ShowInGuide"];
 
           channelCell.Value = ch.DisplayName;
           idCell.Value = ch.IdChannel;
           showInGuideCell.Value = ch.VisibleInGuide;
 
-          var guideChannelComboBox = (DataGridViewComboBoxCell)gridRow.Cells["guideChannel"];
+          var guideChannelComboBox = (DataGridViewComboBoxCell) gridRow.Cells["guideChannel"];
 
           // always add a empty item as the first option
           // these channels will not be updated when saving
@@ -274,7 +276,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
           {
             string tName = ch.DisplayName.Replace(" ", "").ToLowerInvariant();
             if (guideChannels.ContainsKey(tName))
-              matchingGuideChannel = (Channel)guideChannels[tName];
+              matchingGuideChannel = (Channel) guideChannels[tName];
           }
 
           Boolean exactMatch = false;
@@ -317,7 +319,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
                   {
                     IEnumerator pmE = partialMatches.GetEnumerator();
                     pmE.MoveNext();
-                    matchingGuideChannel = (Channel)guideChannels[(string)pmE.Current];
+                    matchingGuideChannel = (Channel) guideChannels[(string) pmE.Current];
                     partialMatch = true;
                   }
                 }
@@ -342,7 +344,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
           foreach (DictionaryEntry de in guideChannels)
           {
-            var guideChannel = (Channel)de.Value;
+            var guideChannel = (Channel) de.Value;
 
             String itemText = guideChannel.DisplayName + " (" + guideChannel.ExternalId + ")";
 
@@ -392,7 +394,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       }
       catch (Exception ex)
       {
-        this.LogError(ex, "Failed loading channels/mappings : channel {0}", name);        
+        this.LogError(ex, "Failed loading channels/mappings : channel {0}", name);
         textBoxAction.Text = "Error";
       }
     }
@@ -533,7 +535,9 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
               if (streamIn != null)
                 streamIn.Close();
             }
-            catch (Exception) {}
+            catch (Exception)
+            {
+            }
           }
         }
       }
@@ -611,7 +615,9 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
           }
         }
       }
-      catch {}
+      catch
+      {
+      }
       finally
       {
         if (xmlReader != null)
@@ -640,8 +646,8 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
         foreach (DataGridViewRow row in dataGridChannelMappings.Rows)
         {
-          var id = (int)row.Cells["Id"].Value;
-          var guideChannelAndexternalId = (string)row.Cells["guideChannel"].Value;
+          var id = (int) row.Cells["Id"].Value;
+          var guideChannelAndexternalId = (string) row.Cells["guideChannel"].Value;
 
           string externalId = null;
 
@@ -664,7 +670,7 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
       catch (Exception ex)
       {
         textBoxAction.Text = "Save failed";
-        this.LogError(ex, "Error while saving channelmappings");        
+        this.LogError(ex, "Error while saving channelmappings");
       }
     }
 
@@ -676,14 +682,16 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
       var pluginServiceAgent = ServiceAgents.Instance.PluginService<IXMLTVImportService>();
       pluginServiceAgent.ImportNow();
-      
+
       labelLastImport.Text = _settingServiceAgent.GetValue("xmlTvResultLastImport", "");
       labelChannels.Text = _settingServiceAgent.GetValue("xmlTvResultChannels", "");
       labelPrograms.Text = _settingServiceAgent.GetValue("xmlTvResultPrograms", "");
       labelStatus.Text = _settingServiceAgent.GetValue("xmlTvResultStatus", "");
     }
 
-    private void panel1_Paint(object sender, PaintEventArgs e) {}
+    private void panel1_Paint(object sender, PaintEventArgs e)
+    {
+    }
 
     private void buttonExport_Click(object sender, EventArgs e)
     {
@@ -715,13 +723,14 @@ namespace Mediaportal.TV.Server.Plugins.XmlTvImport
 
         foreach (DataGridViewRow row in dataGridChannelMappings.Rows)
         {
-          var guideChannelAndexternalId = (string)row.Cells["guideChannel"].Value;
+          var guideChannelAndexternalId = (string) row.Cells["guideChannel"].Value;
 
           if (guideChannelAndexternalId != null)
           {
             int startIdx = guideChannelAndexternalId.LastIndexOf("(") + 1;
             // the length is the same as the length - startingidex -1 (-1 -> remove trailing )) 
-            string externalId = guideChannelAndexternalId.Substring(startIdx, guideChannelAndexternalId.Length - startIdx - 1);
+            string externalId = guideChannelAndexternalId.Substring(startIdx,
+                                                                    guideChannelAndexternalId.Length - startIdx - 1);
             fileOut.WriteLine("channel=" + externalId);
           }
         }

@@ -27,7 +27,9 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
   {
     private string _text;
 
-    public XPListViewGroup() {}
+    public XPListViewGroup()
+    {
+    }
 
     public XPListViewGroup(string text, int index)
     {

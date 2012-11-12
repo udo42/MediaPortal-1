@@ -39,7 +39,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Analyzer
     /// <returns></returns>
     [PreserveSig]
     int OnTeletextReceived(IntPtr data, short packetCount);
-  } ;
+  };
 
   /// <summary>
   /// Interface to the Teletext grabber com object

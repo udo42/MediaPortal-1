@@ -93,8 +93,8 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
       Region reg = string.Empty != str ? GetGraphicalStringRegion(g, str, fnt) : new Region(new Rectangle(0, 0, 0, 0));
 
       RectangleF rectF = reg.GetBounds(g);
-      var rect = new Rectangle((int)Math.Floor(rectF.Left), (int)Math.Floor(rectF.Top),
-                                     (int)Math.Ceiling(rectF.Width), (int)Math.Ceiling(rectF.Height));
+      var rect = new Rectangle((int) Math.Floor(rectF.Left), (int) Math.Floor(rectF.Top),
+                               (int) Math.Ceiling(rectF.Width), (int) Math.Ceiling(rectF.Height));
 
       return rect;
     }
@@ -199,8 +199,8 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
                      : new Region(new Rectangle(0, 0, 0, 0));
 
       RectangleF rctF = reg.GetBounds(g);
-      var rctRet = new Rectangle((int)Math.Floor(rctF.Left), (int)Math.Floor(rctF.Top),
-                                       (int)Math.Ceiling(rctF.Width), (int)Math.Ceiling(rctF.Height));
+      var rctRet = new Rectangle((int) Math.Floor(rctF.Left), (int) Math.Floor(rctF.Top),
+                                 (int) Math.Ceiling(rctF.Width), (int) Math.Ceiling(rctF.Height));
 
       return rctRet;
     }

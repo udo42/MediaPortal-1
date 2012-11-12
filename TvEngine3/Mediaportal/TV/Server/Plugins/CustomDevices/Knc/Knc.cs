@@ -42,16 +42,16 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
 
     private enum KncCiState
     {
-      Initialising = 0,       // Indicates that a CAM has been inserted.
+      Initialising = 0, // Indicates that a CAM has been inserted.
 
       Transport = 1,
       Resource = 2,
       Application = 3,
       ConditionalAccess = 4,
 
-      Ready = 5,              // Indicates that the CAM is ready for interaction.
+      Ready = 5, // Indicates that the CAM is ready for interaction.
       OpenService = 6,
-      Releasing = 7,          // Indicates that the CAM has been removed.
+      Releasing = 7, // Indicates that the CAM has been removed.
 
       CloseMmi = 8,
       Request = 9,
@@ -78,7 +78,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
     /// <returns><c>true</c> if the interface is successfully enabled, otherwise <c>false</c></returns>
     [DllImport("Resources\\KNCBDACTRL.dll", CallingConvention = CallingConvention.Cdecl)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool KNCBDA_CI_Enable(Int32 deviceIndex, IGraphBuilder graphBuilder, IBaseFilter filter, IntPtr callbacks);
+    private static extern bool KNCBDA_CI_Enable(Int32 deviceIndex, IGraphBuilder graphBuilder, IBaseFilter filter,
+                                                IntPtr callbacks);
 
     /// <summary>
     /// Disable the conditional access interface.
@@ -182,7 +183,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
     /// <returns>???</returns>
     [DllImport("Resources\\KNCBDACTRL.dll", CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Ansi)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool KNCBDA_CI_SendMenuAnswer(Int32 deviceIndex, byte slotIndex, [MarshalAs(UnmanagedType.Bool)] bool cancel,
+    private static extern bool KNCBDA_CI_SendMenuAnswer(Int32 deviceIndex, byte slotIndex,
+                                                        [MarshalAs(UnmanagedType.Bool)] bool cancel,
                                                         [In, MarshalAs(UnmanagedType.LPStr)] String menuAnswer);
 
     /// <summary>
@@ -205,7 +207,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
     /// <returns><c>true</c> if the tuner successfully sent the command, otherwise <c>false</c></returns>
     [DllImport("Resources\\KNCBDACTRL.dll", CallingConvention = CallingConvention.Cdecl)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool KNCBDA_HW_DiSEqCWrite(Int32 deviceIndex, IntPtr command, UInt32 commandLength, UInt32 repeatCount);
+    private static extern bool KNCBDA_HW_DiSEqCWrite(Int32 deviceIndex, IntPtr command, UInt32 commandLength,
+                                                     UInt32 repeatCount);
 
     /// <summary>
     /// PCI-e products (Philips/NXP/Trident SAA7160 based) have a main device filter - one
@@ -264,7 +267,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
     /// <returns><c>true</c> if the value of the property is retrieved successfully, otherwise <c>false</c></returns>
     [DllImport("Resources\\KNCBDACTRL.dll", CallingConvention = CallingConvention.Cdecl)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool PCIE_GetProperty(Guid propertySet, UInt32 propertyIndex, IntPtr data, out UInt32 dataLength);
+    private static extern bool PCIE_GetProperty(Guid propertySet, UInt32 propertyIndex, IntPtr data,
+                                                out UInt32 dataLength);
 
     /// <summary>
     /// Swap the CI slot/CAM associated with the tuners on a card. Tuners can only access a single
@@ -288,28 +292,22 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
       public IntPtr Context;
 
       /// Delegate for CI state changes.
-      [MarshalAs(UnmanagedType.FunctionPtr)]
-      public OnKncCiState OnCiState;
+      [MarshalAs(UnmanagedType.FunctionPtr)] public OnKncCiState OnCiState;
 
       /// Delegate for entering the CAM menu.
-      [MarshalAs(UnmanagedType.FunctionPtr)]
-      public OnKncCiOpenDisplay OnOpenDisplay;
+      [MarshalAs(UnmanagedType.FunctionPtr)] public OnKncCiOpenDisplay OnOpenDisplay;
 
       /// Delegate for CAM menu meta-data (header, footer etc.).
-      [MarshalAs(UnmanagedType.FunctionPtr)]
-      public OnKncCiMenu OnCiMenu;
+      [MarshalAs(UnmanagedType.FunctionPtr)] public OnKncCiMenu OnCiMenu;
 
       /// Delegate for CAM menu entries.
-      [MarshalAs(UnmanagedType.FunctionPtr)]
-      public OnKncCiMenuEntry OnCiMenuEntry;
+      [MarshalAs(UnmanagedType.FunctionPtr)] public OnKncCiMenuEntry OnCiMenuEntry;
 
       /// Delegate for CAM requests.
-      [MarshalAs(UnmanagedType.FunctionPtr)]
-      public OnKncCiRequest OnRequest;
+      [MarshalAs(UnmanagedType.FunctionPtr)] public OnKncCiRequest OnRequest;
 
       /// Delegate for closing the CAM menu.
-      [MarshalAs(UnmanagedType.FunctionPtr)]
-      public OnKncCiCloseDisplay OnCloseDisplay;
+      [MarshalAs(UnmanagedType.FunctionPtr)] public OnKncCiCloseDisplay OnCloseDisplay;
     }
 
     #endregion
@@ -420,7 +418,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
                                                             "KNC BDA DVB-S2",
                                                             "KNC BDA DVB-C",
                                                             "KNC BDA DVB-T",
-                                                            "7160 KNC BDA DVBS2 Tuner",   // PCI-e: DVB-S2 Twin
+                                                            "7160 KNC BDA DVBS2 Tuner", // PCI-e: DVB-S2 Twin
 
                                                             "Mystique SaTiX DVB-S",
                                                             "Mystique SaTiX DVB-S2",
@@ -430,7 +428,6 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
                                                             "Mystique SaTiX-S2",
                                                             "Mystique CaBiX-C2",
                                                             "Mystique TeRiX-T2",
-
                                                             "Satelco EasyWatch PCI (DVB-S)",
                                                             "Satelco EasyWatch PCI (DVB-S2)",
                                                             "Satelco EasyWatch PCI (DVB-C)",
@@ -440,64 +437,67 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
     private static readonly string[] ValidDevicePaths = new[]
                                                           {
                                                             // DVB-S - Old
-                                                            "ven_1131&dev_7146&subsys_4f561131",  // KNC
+                                                            "ven_1131&dev_7146&subsys_4f561131", // KNC
 
                                                             // DVB-S - SH2
-                                                            "ven_1131&dev_7146&subsys_00101894",  // KNC
-                                                            "ven_1131&dev_7146&subsys_00111894",  // Mystique
-                                                            "ven_1131&dev_7146&subsys_001a1894",  // Satelco
+                                                            "ven_1131&dev_7146&subsys_00101894", // KNC
+                                                            "ven_1131&dev_7146&subsys_00111894", // Mystique
+                                                            "ven_1131&dev_7146&subsys_001a1894", // Satelco
 
                                                             // DVB-S - X4
-                                                            "ven_1131&dev_7146&subsys_00161894",  // KNC
-                                                            "ven_1131&dev_7146&subsys_00151894",  // Mystique
-                                                            "ven_1131&dev_7146&subsys_001b1894",  // Satelco
+                                                            "ven_1131&dev_7146&subsys_00161894", // KNC
+                                                            "ven_1131&dev_7146&subsys_00151894", // Mystique
+                                                            "ven_1131&dev_7146&subsys_001b1894", // Satelco
 
                                                             // DVB-S - X4 (no CI)
-                                                            "ven_1131&dev_7146&subsys_00141894",  // KNC
-                                                            "ven_1131&dev_7146&subsys_001e1894",  // Satelco
+                                                            "ven_1131&dev_7146&subsys_00141894", // KNC
+                                                            "ven_1131&dev_7146&subsys_001e1894", // Satelco
 
                                                             // DVB-S - X6
-                                                            "ven_1131&dev_7146&subsys_00191894",  // KNC
-                                                            "ven_1131&dev_7146&subsys_00181894",  // Mystique
-                                                            "ven_1131&dev_7146&subsys_001d1894",  // Satelco
-                                                            "ven_1131&dev_7146&subsys_001f1894",  // Satelco
+                                                            "ven_1131&dev_7146&subsys_00191894", // KNC
+                                                            "ven_1131&dev_7146&subsys_00181894", // Mystique
+                                                            "ven_1131&dev_7146&subsys_001d1894", // Satelco
+                                                            "ven_1131&dev_7146&subsys_001f1894", // Satelco
 
                                                             // DVB-S2 - Sharp
-                                                            "ven_1131&dev_7146&subsys_00501894",  // KNC
-                                                            "ven_1131&dev_7146&subsys_00511894",  // Mystique
-                                                            "ven_1131&dev_7146&subsys_00521894",  // Satelco
+                                                            "ven_1131&dev_7146&subsys_00501894", // KNC
+                                                            "ven_1131&dev_7146&subsys_00511894", // Mystique
+                                                            "ven_1131&dev_7146&subsys_00521894", // Satelco
 
                                                             // DVB-S - X8
-                                                            "ven_1131&dev_7146&subsys_00561894",  // KNC
-                                                            "ven_1131&dev_7146&subsys_00551894",  // Mystique
-                                                            "ven_1131&dev_7146&subsys_005b1894",  // Satelco
+                                                            "ven_1131&dev_7146&subsys_00561894", // KNC
+                                                            "ven_1131&dev_7146&subsys_00551894", // Mystique
+                                                            "ven_1131&dev_7146&subsys_005b1894", // Satelco
 
                                                             // DVB-S - X8 (no CI)
-                                                            "ven_1131&dev_7146&subsys_00541894",  // KNC
-                                                            "ven_1131&dev_7146&subsys_005e1894",  // Satelco
+                                                            "ven_1131&dev_7146&subsys_00541894", // KNC
+                                                            "ven_1131&dev_7146&subsys_005e1894", // Satelco
 
                                                             // DVB-C - MK2
-                                                            "ven_1131&dev_7146&subsys_00201894",  // KNC
-                                                            "ven_1131&dev_7146&subsys_00211894",  // Mystique
-                                                            "ven_1131&dev_7146&subsys_002a1894",  // Satelco
+                                                            "ven_1131&dev_7146&subsys_00201894", // KNC
+                                                            "ven_1131&dev_7146&subsys_00211894", // Mystique
+                                                            "ven_1131&dev_7146&subsys_002a1894", // Satelco
 
                                                             // DVB-C - MK3
-                                                            "ven_1131&dev_7146&subsys_00221894",  // KNC
-                                                            "ven_1131&dev_7146&subsys_00231894",  // Mystique
-                                                            "ven_1131&dev_7146&subsys_002c1894",  // Satelco
+                                                            "ven_1131&dev_7146&subsys_00221894", // KNC
+                                                            "ven_1131&dev_7146&subsys_00231894", // Mystique
+                                                            "ven_1131&dev_7146&subsys_002c1894", // Satelco
 
                                                             // DVB-C - MK32
-                                                            "ven_1131&dev_7146&subsys_00281894",  // KNC
+                                                            "ven_1131&dev_7146&subsys_00281894", // KNC
 
                                                             // DVB-T
-                                                            "ven_1131&dev_7146&subsys_00301894",  // KNC
-                                                            "ven_1131&dev_7146&subsys_00311894",  // Mystique
-                                                            "ven_1131&dev_7146&subsys_003a1894",  // Satelco
+                                                            "ven_1131&dev_7146&subsys_00301894", // KNC
+                                                            "ven_1131&dev_7146&subsys_00311894", // Mystique
+                                                            "ven_1131&dev_7146&subsys_003a1894", // Satelco
 
                                                             // New KNC PCI-e tuners
-                                                            "ven_1131&dev_7160&subsys_01101894",  // DVB-S/DVB-S2 (not yet released)
-                                                            "ven_1131&dev_7160&subsys_02101894",  // DVB-S2/DVB-S2 (DVB-S2 Twin)
-                                                            "ven_1131&dev_7160&subsys_03101894",  // DVB-T/DVB-C (not yet released)
+                                                            "ven_1131&dev_7160&subsys_01101894",
+                                                            // DVB-S/DVB-S2 (not yet released)
+                                                            "ven_1131&dev_7160&subsys_02101894",
+                                                            // DVB-S2/DVB-S2 (DVB-S2 Twin)
+                                                            "ven_1131&dev_7160&subsys_03101894",
+                                                            // DVB-T/DVB-C (not yet released)
                                                           };
 
     #endregion
@@ -681,7 +681,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
     /// <param name="footer">The menu footer.</param>
     /// <param name="numEntries">The number of entries in the menu.</param>
     /// <param name="context">The optional context passed to the interface when the interface was opened.</param>
-    private void OnCiMenu(byte slotIndex, String title, String subTitle, String footer, UInt32 numEntries, IntPtr context)
+    private void OnCiMenu(byte slotIndex, String title, String subTitle, String footer, UInt32 numEntries,
+                          IntPtr context)
     {
       this.LogDebug("KNC: device {0} menu callback, slot = {1}", _deviceIndex, slotIndex);
       this.LogDebug("  title     = {0}", title);
@@ -692,7 +693,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
       {
         try
         {
-          _ciMenuCallbacks.OnCiMenu(title, subTitle, footer, (int)numEntries);
+          _ciMenuCallbacks.OnCiMenu(title, subTitle, footer, (int) numEntries);
         }
         catch (Exception ex)
         {
@@ -720,7 +721,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
       {
         try
         {
-          _ciMenuCallbacks.OnCiMenuChoice((int)entryIndex, text);
+          _ciMenuCallbacks.OnCiMenuChoice((int) entryIndex, text);
         }
         catch (Exception ex)
         {
@@ -777,7 +778,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
       {
         try
         {
-          _ciMenuCallbacks.OnCiCloseDisplay((int)delay);
+          _ciMenuCallbacks.OnCiCloseDisplay((int) delay);
         }
         catch (Exception ex)
         {
@@ -815,10 +816,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
     /// </summary>
     public override String Name
     {
-      get
-      {
-        return _name;
-      }
+      get { return _name; }
     }
 
     /// <summary>
@@ -897,7 +895,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
           tunerOutputPin = null;
           if (hr != 0 || captureInputPin == null)
           {
-            this.LogDebug("KNC: failed to get the capture filter input pin, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+            this.LogDebug("KNC: failed to get the capture filter input pin, hr = 0x{0:x} ({1})", hr,
+                          HResult.GetDXErrorString(hr));
             break;
           }
 
@@ -932,7 +931,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
       this.LogDebug("KNC: supported device detected");
       _diseqcBuffer = Marshal.AllocCoTaskMem(MaxDiseqcCommandLength);
       _tunerFilter = tunerFilter;
-      _graphBuilder = (IFilterGraph2)tunerInfo.pGraph;
+      _graphBuilder = (IFilterGraph2) tunerInfo.pGraph;
 
       // Prepare the hardware interface for use. This seems to always succeed...
       if (!KNCBDA_HW_Enable(_deviceIndex, _isPcie ? _captureFilter : _tunerFilter))
@@ -951,7 +950,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
     /// <param name="currentChannel">The channel that the tuner is currently tuned to..</param>
     /// <param name="channel">The channel that the tuner will been tuned to.</param>
     /// <param name="action">The action to take, if any.</param>
-    public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel, out DeviceAction action)
+    public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel,
+                                      out DeviceAction action)
     {
       this.LogDebug("KNC: on before tune callback");
       action = DeviceAction.Default;
@@ -1077,7 +1077,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
         if (_isCamReady)
         {
           var nameBuffer = new StringBuilder(100);
-          if (KNCBDA_CI_GetName(_deviceIndex, nameBuffer, (uint)nameBuffer.MaxCapacity))
+          if (KNCBDA_CI_GetName(_deviceIndex, nameBuffer, (uint) nameBuffer.MaxCapacity))
           {
             this.LogDebug("KNC: CAM name/type is {0}", nameBuffer);
           }
@@ -1168,7 +1168,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
     /// <param name="pmt">The programme map table for the service.</param>
     /// <param name="cat">The conditional access table for the service.</param>
     /// <returns><c>true</c> if the command is successfully sent, otherwise <c>false</c></returns>
-    public bool SendCommand(IChannel channel, CaPmtListManagementAction listAction, CaPmtCommand command, Pmt pmt, Cat cat)
+    public bool SendCommand(IChannel channel, CaPmtListManagementAction listAction, CaPmtCommand command, Pmt pmt,
+                            Cat cat)
     {
       this.LogDebug("KNC: send conditional access command, list action = {0}, command = {1}", listAction, command);
 
@@ -1192,7 +1193,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
       {
         Marshal.Copy(caPmt, 0, pmtBuffer, caPmt.Length);
         //DVB_MMI.DumpBinary(pmtBuffer, 0, caPmtLength);
-        bool result = KNCBDA_CI_SendPMTCommand(_deviceIndex, pmtBuffer, (UInt32)caPmt.Length);
+        bool result = KNCBDA_CI_SendPMTCommand(_deviceIndex, pmtBuffer, (UInt32) caPmt.Length);
         this.LogDebug("KNC: result = {0}", result);
         return result;
       }
@@ -1295,7 +1296,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
       {
         answer = String.Empty;
       }
-      this.LogDebug("KNC: device {0} slot {1} send menu answer, answer = {2}, cancel = {3}", _deviceIndex, _slotIndex, answer, cancel);
+      this.LogDebug("KNC: device {0} slot {1} send menu answer, answer = {2}, cancel = {3}", _deviceIndex, _slotIndex,
+                    answer, cancel);
       if (!_isKnc)
       {
         this.LogDebug("KNC: device not initialised or interface not supported");
@@ -1360,7 +1362,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Knc
       Marshal.Copy(command, 0, _diseqcBuffer, length);
       //DVB_MMI.DumpBinary(_diseqcBuffer, 0, length);
 
-      bool success = KNCBDA_HW_DiSEqCWrite(_deviceIndex, _diseqcBuffer, (uint)length, 0);
+      bool success = KNCBDA_HW_DiSEqCWrite(_deviceIndex, _diseqcBuffer, (uint) length, 0);
       this.LogDebug("KNC: result = {0}", success);
       return success;
     }

@@ -9,7 +9,6 @@ using Mediaportal.TV.Server.TVService.Interfaces.Services;
 
 namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
 {
-
   public delegate void TvServerEventHandler(object sender, EventArgs eventArgs);
 
   public interface IInternalControllerService : IControllerService, IEpgEvents
@@ -122,7 +121,8 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
     /// </summary>
     /// <param name="sender">The sender.</param>
     /// <param name="args">The <see cref="System.EventArgs"/> instance containing the event data.</param>
-    void Fire(object sender, EventArgs args);    
+    void Fire(object sender, EventArgs args);
+
     bool StopTimeShifting(ref IUser user, TvStoppedReason reason, int channelId);
     bool StopTimeShifting(ref IUser user, int channelId);
     bool IsScrambled(int cardId, int subChannel);

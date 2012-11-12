@@ -20,13 +20,12 @@
 
 namespace Mediaportal.TV.Server.TVControl.Constants
 {
-	/// <summary>
-	/// Grouping of app constants
-	/// </summary>
-	public class TCPconsts
-	{				
-		// TCP server port
-		public const int ServerPort = 50001;		
-
-	}
+  /// <summary>
+  /// Grouping of app constants
+  /// </summary>
+  public class TCPconsts
+  {
+    // TCP server port
+    public const int ServerPort = 50001;
+  }
 }

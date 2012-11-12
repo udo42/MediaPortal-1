@@ -51,7 +51,7 @@ namespace Mediaportal.TV.Server.TestApp
       get { return _channel; }
       set
       {
-        _channel = (AnalogChannel)value;
+        _channel = (AnalogChannel) value;
         comboBoxInput.SelectedIndex = 0;
         if (_channel.TunerSource == TunerInputType.Cable)
           comboBoxInput.SelectedIndex = 1;

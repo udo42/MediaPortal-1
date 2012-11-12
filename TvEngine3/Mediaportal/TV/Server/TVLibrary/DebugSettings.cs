@@ -32,10 +32,9 @@ namespace Mediaportal.TV.Server.TVLibrary
   /// </summary>
   public class DebugSettings
   {
-
-
-    private static readonly string SettingsPath = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +
-                                         @"\Team MediaPortal\MediaPortal TV Server\debug\";
+    private static readonly string SettingsPath =
+      Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) +
+      @"\Team MediaPortal\MediaPortal TV Server\debug\";
 
     /// <summary>
     /// When true, the graph should be reset after it is stopped

@@ -49,7 +49,9 @@ namespace Mediaportal.TV.Server.SetupTV
     #endregion
 
     // singleton. Dont allow any instance of this class
-    private Utils() {}
+    private Utils()
+    {
+    }
 
     [DllImport("kernel32.dll")]
     private static extern bool GetDiskFreeSpaceEx(string lpDirectoryName, out UInt64 lpFreeBytesAvailable,
@@ -180,19 +182,19 @@ namespace Mediaportal.TV.Server.SetupTV
       if (dwFileSize < 1024)
       {
         //  substract the integer part of the float value
-        float fRemainder = (dwFileSize / 1024.0f) - (dwFileSize / 1024.0f);
+        float fRemainder = (dwFileSize/1024.0f) - (dwFileSize/1024.0f);
         float fToAdd = 0.0f;
         if (fRemainder < 0.01f)
           fToAdd = 0.1f;
-        szTemp = String.Format("{0:f} KB", (dwFileSize / 1024.0f) + fToAdd);
+        szTemp = String.Format("{0:f} KB", (dwFileSize/1024.0f) + fToAdd);
         return szTemp;
       }
-      const long iOneMeg = 1024 * 1024;
+      const long iOneMeg = 1024*1024;
 
       // file < 1 megabyte?
       if (dwFileSize < iOneMeg)
       {
-        szTemp = String.Format("{0:f} KB", dwFileSize / 1024.0f);
+        szTemp = String.Format("{0:f} KB", dwFileSize/1024.0f);
         return szTemp;
       }
 
@@ -201,7 +203,7 @@ namespace Mediaportal.TV.Server.SetupTV
       iOneGigabyte *= 1000;
       if (dwFileSize < iOneGigabyte)
       {
-        szTemp = String.Format("{0:f} MB", dwFileSize / ((float)iOneMeg));
+        szTemp = String.Format("{0:f} MB", dwFileSize/((float) iOneMeg));
         return szTemp;
       }
       //file > 1 GByte
@@ -211,7 +213,7 @@ namespace Mediaportal.TV.Server.SetupTV
         dwFileSize -= iOneGigabyte;
         iGigs++;
       }
-      float fMegs = dwFileSize / ((float)iOneMeg);
+      float fMegs = dwFileSize/((float) iOneMeg);
       fMegs /= 1000.0f;
       fMegs += iGigs;
       szTemp = String.Format("{0:f} GB", fMegs);
@@ -370,7 +372,9 @@ namespace Mediaportal.TV.Server.SetupTV
           }
         }
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
 
       // No matches were found, so no stacking
       return false;
@@ -451,7 +455,9 @@ namespace Mediaportal.TV.Server.SetupTV
           CloseHandle(fHandle);
         }
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
 
       return result;
     }
@@ -468,19 +474,21 @@ namespace Mediaportal.TV.Server.SetupTV
         if (ldate < 0)
           return DateTime.MinValue;
         ldate /= 100L;
-        var minute = (int)(ldate % 100L);
+        var minute = (int) (ldate%100L);
         ldate /= 100L;
-        var hour = (int)(ldate % 100L);
+        var hour = (int) (ldate%100L);
         ldate /= 100L;
-        var day = (int)(ldate % 100L);
+        var day = (int) (ldate%100L);
         ldate /= 100L;
-        var month = (int)(ldate % 100L);
+        var month = (int) (ldate%100L);
         ldate /= 100L;
-        var year = (int)ldate;
+        var year = (int) ldate;
         var dt = new DateTime(year, month, day, hour, minute, 0, 0);
         return dt;
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       return DateTime.Now;
     }
 
@@ -496,14 +504,16 @@ namespace Mediaportal.TV.Server.SetupTV
         long iYear = dt.Year;
 
         long lRet = (iYear);
-        lRet = lRet * 100L + iMonth;
-        lRet = lRet * 100L + iDay;
-        lRet = lRet * 100L + iHour;
-        lRet = lRet * 100L + iMin;
-        lRet = lRet * 100L + iSec;
+        lRet = lRet*100L + iMonth;
+        lRet = lRet*100L + iDay;
+        lRet = lRet*100L + iHour;
+        lRet = lRet*100L + iMin;
+        lRet = lRet*100L + iSec;
         return lRet;
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       return 0;
     }
 
@@ -555,7 +565,9 @@ namespace Mediaportal.TV.Server.SetupTV
         File.Delete(strFile);
         return true;
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       return false;
     }
 
@@ -570,7 +582,9 @@ namespace Mediaportal.TV.Server.SetupTV
         Directory.Delete(strDir);
         return true;
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       return false;
     }
 
@@ -595,9 +609,9 @@ namespace Mediaportal.TV.Server.SetupTV
 
     public static void RGB2YUV(int R, int G, int B, out int Y, out int U, out int V)
     {
-      Y = (int)(R * 0.257f + G * 0.504f + B * 0.098f + 16.0f);
-      U = (int)(R * -0.148f + G * -0.291f + B * 0.439f + 128.0f);
-      V = (int)(R * 0.439f + G * -0.368f + B * -0.071f + 128.0f);
+      Y = (int) (R*0.257f + G*0.504f + B*0.098f + 16.0f);
+      U = (int) (R*-0.148f + G*-0.291f + B*0.439f + 128.0f);
+      V = (int) (R*0.439f + G*-0.368f + B*-0.071f + 128.0f);
       Y = Y & 0xff;
       U = U & 0xff;
       V = V & 0xff;
@@ -686,10 +700,14 @@ namespace Mediaportal.TV.Server.SetupTV
           {
             File.Delete(strFile);
           }
-          catch (Exception) {}
+          catch (Exception)
+          {
+          }
         }
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
     }
 
     public static DateTime ParseDateTimeString(string dateTime)
@@ -714,7 +732,9 @@ namespace Mediaportal.TV.Server.SetupTV
         int sec = Int32.Parse(parts[5]);
         return new DateTime(year, month, day, hour, min, sec, 0);
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       return DateTime.Now;
     }
 
@@ -800,7 +820,7 @@ namespace Mediaportal.TV.Server.SetupTV
           if (CheckFileVersion(dllPath, "6.5.2710.2732", out aParamVersion))
             validDllFound = true;
           Log.Info("Util: Version of installed Psisdecd.dll: {0} Path: {1}", aParamVersion.ToString(),
-                                 dllPath);
+                   dllPath);
           if (aParamVersion > mostRecentVer)
             mostRecentVer = aParamVersion;
         }
@@ -831,7 +851,9 @@ namespace Mediaportal.TV.Server.SetupTV
                             MessageBoxIcon.Exclamation) == DialogResult.OK)
             Process.Start(@"http://wiki.team-mediaportal.com/GeneralRequirements");
         }
-        catch (Exception) {}
+        catch (Exception)
+        {
+        }
       }
     }
 
@@ -889,7 +911,7 @@ namespace Mediaportal.TV.Server.SetupTV
                     {
                       if (defaultkey != null)
                       {
-                        var friendlyName = (string)defaultkey.GetValue(null);
+                        var friendlyName = (string) defaultkey.GetValue(null);
                         // Gets the (Default) value from this key            
                         if (!String.IsNullOrEmpty(friendlyName) &&
                             friendlyName.ToLowerInvariant().IndexOf(aFilename.ToLowerInvariant()) >= 0)
@@ -902,7 +924,9 @@ namespace Mediaportal.TV.Server.SetupTV
                   }
                 }
               }
-              catch (Exception) {}
+              catch (Exception)
+              {
+              }
             }
           }
         }
@@ -936,7 +960,7 @@ namespace Mediaportal.TV.Server.SetupTV
               RegistryKey key = componentsKey.OpenSubKey(instComp);
               if (key != null)
               {
-                string friendlyName = (string)key.GetValue(null);
+                string friendlyName = (string) key.GetValue(null);
                 if (friendlyName != null && friendlyName.IndexOf(aSoftwareName) >= 0)
                 {
                   AppFound = true;
@@ -952,7 +976,7 @@ namespace Mediaportal.TV.Server.SetupTV
         MessageBox.Show(String.Format("Error checking registry for installed components: {0}", ex.Message));
       }
       return AppFound;
-    }    
+    }
 
     public static void UpdateCardStatus(MPListView mpListView1)
     {
@@ -960,7 +984,7 @@ namespace Mediaportal.TV.Server.SetupTV
       {
         return;
       }
-      
+
       try
       {
         IList<CardPresentation> cards = ServiceAgents.Instance.ControllerServiceAgent.ListAllCards();
@@ -980,17 +1004,17 @@ namespace Mediaportal.TV.Server.SetupTV
           if (mpListView1.Items.Count < cards.Count)
           {
             item = mpListView1.Items.Add(""); // 0 card id
-            item.SubItems.Add("");//1 card type
-            item.SubItems.Add("");//2 state
-            item.SubItems.Add("");//3 channelname
-            item.SubItems.Add("");//4 scrambled
-            item.SubItems.Add("");//5 user
-            item.SubItems.Add("");//6 cardname
-            item.SubItems.Add("");//7 subchannels 
-            item.SubItems.Add("");//7 owner
+            item.SubItems.Add(""); //1 card type
+            item.SubItems.Add(""); //2 state
+            item.SubItems.Add(""); //3 channelname
+            item.SubItems.Add(""); //4 scrambled
+            item.SubItems.Add(""); //5 user
+            item.SubItems.Add(""); //6 cardname
+            item.SubItems.Add(""); //7 subchannels 
+            item.SubItems.Add(""); //7 owner
           }
           else
-          {            
+          {
             item = mpListView1.Items[i];
           }
 
@@ -1025,11 +1049,11 @@ namespace Mediaportal.TV.Server.SetupTV
               nrOfusers = 1;
               cardIds.Add(card.CardId.GetValueOrDefault(), nrOfusers);
             }            
-          } */         
+          } */
 
           if (card.SubChannelsCountOk)
           {
-            ColorLine(Color.White, item);               
+            ColorLine(Color.White, item);
           }
           else
           {

@@ -37,7 +37,7 @@ namespace TvEngine.PowerScheduler.Interfaces
     /// <summary>
     /// IPowerController singleton
     /// </summary>
-    private static IPowerController _powerController;    
+    private static IPowerController _powerController;
 
     #endregion
 
@@ -52,7 +52,6 @@ namespace TvEngine.PowerScheduler.Interfaces
       {
         try
         {
-          
           if (_powerController != null)
           {
             return _powerController;

@@ -34,11 +34,11 @@ namespace MediaPortal.Common.Utils
     public static readonly Version SkinVersion = new Version(1, 3, 0, 0);
     private const string MinRequiredVersionDefault = "1.1.8.0"; // 1.2.0 RC1
 
-    static readonly Dictionary<Version, string> MpReleaseApi = new Dictionary<Version, string>
-                                                                 {
-                                                                   { new Version("1.1.6.27644"), "1.2.0 Beta" },
-                                                                   { new Version("1.2.100.0"), "1.3.0 Alpha" }
-                                                                 };
+    private static readonly Dictionary<Version, string> MpReleaseApi = new Dictionary<Version, string>
+                                                                         {
+                                                                           {new Version("1.1.6.27644"), "1.2.0 Beta"},
+                                                                           {new Version("1.2.100.0"), "1.3.0 Alpha"}
+                                                                         };
 
     static CompatibilityManager()
     {
@@ -93,19 +93,20 @@ namespace MediaPortal.Common.Utils
     private static void ScanAssembly(Assembly asm)
     {
       IEnumerable<SubsystemVersionAttribute> mpAttributes =
-        asm.GetCustomAttributes(typeof(SubsystemVersionAttribute), false).Cast<SubsystemVersionAttribute>();
+        asm.GetCustomAttributes(typeof (SubsystemVersionAttribute), false).Cast<SubsystemVersionAttribute>();
 
       foreach (SubsystemVersionAttribute attr in mpAttributes)
       {
         string subSystem = attr.Subsystem;
-        while(!string.IsNullOrEmpty(subSystem))
+        while (!string.IsNullOrEmpty(subSystem))
         {
-          if (!subSystem.EndsWith(".")) // ignore subsystems ending in dot, next iteration will pick up subsystem without the dot
+          if (!subSystem.EndsWith("."))
+            // ignore subsystems ending in dot, next iteration will pick up subsystem without the dot
           {
             SetSubSystemVersion(subSystem, attr.Version);
           }
           int pos = subSystem.LastIndexOf('.');
-          if (pos<0)
+          if (pos < 0)
           {
             pos = 0;
           }
@@ -174,10 +175,11 @@ namespace MediaPortal.Common.Utils
     public static bool IsPluginCompatible(Type plugin)
     {
       var mpVersions =
-        (CompatibleVersionAttribute[])plugin.GetCustomAttributes(typeof(CompatibleVersionAttribute), true);
+        (CompatibleVersionAttribute[]) plugin.GetCustomAttributes(typeof (CompatibleVersionAttribute), true);
       if (mpVersions.Length == 0)
       {
-        mpVersions = (CompatibleVersionAttribute[])plugin.Assembly.GetCustomAttributes(typeof(CompatibleVersionAttribute), true);
+        mpVersions =
+          (CompatibleVersionAttribute[]) plugin.Assembly.GetCustomAttributes(typeof (CompatibleVersionAttribute), true);
       }
       var minRequiredVersion = new Version(MinRequiredVersionDefault);
       var designedForVersion = new Version(1, 0, 0, 0);
@@ -199,20 +201,26 @@ namespace MediaPortal.Common.Utils
       CheckLoadedAssemblies();
       Version lastFullyBreakingVersion;
 
-      if (CompareVersions(AppVersion, minRequiredVersion) < 0 ||                 // MP version is too old
-          (SubSystemVersions.TryGetValue("*", out lastFullyBreakingVersion) &&   
-            CompareVersions(lastFullyBreakingVersion, designedForVersion) > 0))  // MP breaking version after plugin released
+      if (CompareVersions(AppVersion, minRequiredVersion) < 0 || // MP version is too old
+          (SubSystemVersions.TryGetValue("*", out lastFullyBreakingVersion) &&
+           CompareVersions(lastFullyBreakingVersion, designedForVersion) > 0))
+        // MP breaking version after plugin released
       {
         return false;
       }
 
-      IEnumerable<UsesSubsystemAttribute> subsystemsUsed = (UsesSubsystemAttribute[])plugin.GetCustomAttributes(typeof(UsesSubsystemAttribute), true);
-      subsystemsUsed = subsystemsUsed.Union((UsesSubsystemAttribute[])plugin.Assembly.GetCustomAttributes(typeof(UsesSubsystemAttribute), true),
-                                            new UsesSubsystemAttributeComparer()).Where(attr => attr.Used);
+      IEnumerable<UsesSubsystemAttribute> subsystemsUsed =
+        (UsesSubsystemAttribute[]) plugin.GetCustomAttributes(typeof (UsesSubsystemAttribute), true);
+      subsystemsUsed = subsystemsUsed.Union(
+        (UsesSubsystemAttribute[]) plugin.Assembly.GetCustomAttributes(typeof (UsesSubsystemAttribute), true),
+        new UsesSubsystemAttributeComparer()).Where(attr => attr.Used);
 
       Version ver;
       // Have all used subsystem known versions and prior to the one the plugin was designed for?
-      return subsystemsUsed.All(attr => SubSystemVersions.TryGetValue(attr.Subsystem, out ver) && CompareVersions(ver, designedForVersion) <= 0);
+      return
+        subsystemsUsed.All(
+          attr =>
+          SubSystemVersions.TryGetValue(attr.Subsystem, out ver) && CompareVersions(ver, designedForVersion) <= 0);
     }
 
     /// <summary>
@@ -235,7 +243,7 @@ namespace MediaPortal.Common.Utils
     public static bool IsPluginCompatible(Assembly plugin)
     {
       var mpVersions =
-        (CompatibleVersionAttribute[])plugin.GetCustomAttributes(typeof(CompatibleVersionAttribute), true);
+        (CompatibleVersionAttribute[]) plugin.GetCustomAttributes(typeof (CompatibleVersionAttribute), true);
 
       var minRequiredVersion = new Version(MinRequiredVersionDefault);
       var designedForVersion = new Version(1, 0, 0, 0);
@@ -257,19 +265,25 @@ namespace MediaPortal.Common.Utils
       CheckLoadedAssemblies();
       Version lastFullyBreakingVersion;
 
-      if (CompareVersions(AppVersion, minRequiredVersion) < 0 ||                 // MP version is too old
+      if (CompareVersions(AppVersion, minRequiredVersion) < 0 || // MP version is too old
           (SubSystemVersions.TryGetValue("*", out lastFullyBreakingVersion) &&
-            CompareVersions(lastFullyBreakingVersion, designedForVersion) > 0))  // MP breaking version after plugin released
+           CompareVersions(lastFullyBreakingVersion, designedForVersion) > 0))
+        // MP breaking version after plugin released
       {
         return false;
       }
 
-      IEnumerable<UsesSubsystemAttribute> subsystemsUsed = ((UsesSubsystemAttribute[])plugin.GetCustomAttributes(typeof(UsesSubsystemAttribute), true))
-                                                           .Where(attr => attr.Used);
+      IEnumerable<UsesSubsystemAttribute> subsystemsUsed = ((UsesSubsystemAttribute[])
+                                                            plugin.GetCustomAttributes(typeof (UsesSubsystemAttribute),
+                                                                                       true))
+        .Where(attr => attr.Used);
 
       Version ver;
       // Have all used subsystem known versions and prior to the one the plugin was designed for?
-      return subsystemsUsed.All(attr => SubSystemVersions.TryGetValue(attr.Subsystem, out ver) && CompareVersions(ver, designedForVersion) <= 0);
+      return
+        subsystemsUsed.All(
+          attr =>
+          SubSystemVersions.TryGetValue(attr.Subsystem, out ver) && CompareVersions(ver, designedForVersion) <= 0);
     }
 
     public static Version GetCurrentVersion()
@@ -298,18 +312,20 @@ namespace MediaPortal.Common.Utils
 
     public static IEnumerable<UsesSubsystemAttribute> GetSubSystemsUsed(Assembly asm)
     {
-      return ((UsesSubsystemAttribute[])asm.GetCustomAttributes(typeof(UsesSubsystemAttribute), true)).Where(attr => attr.Used);
+      return
+        ((UsesSubsystemAttribute[]) asm.GetCustomAttributes(typeof (UsesSubsystemAttribute), true)).Where(
+          attr => attr.Used);
     }
 
     public static IEnumerable<CompatibleVersionAttribute> GetRequestedVersions(Assembly asm)
     {
-      return (CompatibleVersionAttribute[])asm.GetCustomAttributes(typeof(CompatibleVersionAttribute), true);
+      return (CompatibleVersionAttribute[]) asm.GetCustomAttributes(typeof (CompatibleVersionAttribute), true);
     }
 
     public static bool IsPluginCompatible(XmlElement rootNode)
     {
       XmlNode versionNode = rootNode.SelectSingleNode("CompatibleVersion/Items");
-      if(versionNode == null)
+      if (versionNode == null)
       {
         return false;
       }
@@ -335,9 +351,10 @@ namespace MediaPortal.Common.Utils
       CheckLoadedAssemblies();
       Version lastFullyBreakingVersion;
 
-      if (CompareVersions(AppVersion, minRequiredVersion) < 0 ||                 // MP version is too old
+      if (CompareVersions(AppVersion, minRequiredVersion) < 0 || // MP version is too old
           (SubSystemVersions.TryGetValue("*", out lastFullyBreakingVersion) &&
-            CompareVersions(lastFullyBreakingVersion, designedForVersion) > 0))  // MP breaking version after plugin released
+           CompareVersions(lastFullyBreakingVersion, designedForVersion) > 0))
+        // MP breaking version after plugin released
       {
         return false;
       }
@@ -351,7 +368,7 @@ namespace MediaPortal.Common.Utils
       foreach (XmlNode node in subsystemNode.ChildNodes)
       {
         XmlAttribute nameAttrib = node.Attributes["Name"];
-        if(nameAttrib == null || string.IsNullOrEmpty(nameAttrib.InnerText))
+        if (nameAttrib == null || string.IsNullOrEmpty(nameAttrib.InnerText))
         {
           continue;
         }
@@ -365,7 +382,9 @@ namespace MediaPortal.Common.Utils
 
       Version ver;
       // Have all used subsystem known versions and prior to the one the plugin was designed for?
-      return subsystemsUsed.All(attr => SubSystemVersions.TryGetValue(attr, out ver) && CompareVersions(ver, designedForVersion) <= 0);
+      return
+        subsystemsUsed.All(
+          attr => SubSystemVersions.TryGetValue(attr, out ver) && CompareVersions(ver, designedForVersion) <= 0);
     }
 
     public static string MediaPortalReleaseForApiVersion(Version apiVersion)

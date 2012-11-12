@@ -69,7 +69,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
 
     public DateTime GetNextWakeupTime(DateTime earliestWakeupTime)
     {
-      
       Schedule recSchedule = null;
       DateTime scheduleWakeupTime = DateTime.MaxValue;
       DateTime nextWakeuptime = DateTime.MaxValue;
@@ -145,12 +144,12 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     /// <returns>DateTime indicating the wakeup time for this Schedule</returns>
     private static DateTime GetWakeupTime(Schedule schedule)
     {
-      var type = (ScheduleRecordingType)schedule.ScheduleType;
+      var type = (ScheduleRecordingType) schedule.ScheduleType;
       DateTime now = DateTime.Now;
       var start = new DateTime(now.Year, now.Month, now.Day, schedule.StartTime.Hour, schedule.StartTime.Minute,
-                                    schedule.StartTime.Second);
+                               schedule.StartTime.Second);
       var stop = new DateTime(now.Year, now.Month, now.Day, schedule.EndTime.Hour, schedule.EndTime.Minute,
-                                   schedule.EndTime.Second);
+                              schedule.EndTime.Second);
       switch (type)
       {
         case ScheduleRecordingType.Once:
@@ -174,7 +173,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
           else
           {
             // it's not a weekend so calculate number of days to add to current time
-            int days = (int)WeekEndTool.FirstWeekendDay - (int)now.DayOfWeek;
+            int days = (int) WeekEndTool.FirstWeekendDay - (int) now.DayOfWeek;
             start = start.AddDays(days);
           }
           return start.AddMinutes(-schedule.PreRecordInterval);

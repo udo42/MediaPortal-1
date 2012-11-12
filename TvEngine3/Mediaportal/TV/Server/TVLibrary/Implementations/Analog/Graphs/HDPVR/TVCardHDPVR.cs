@@ -52,7 +52,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
     #region imports
 
     [ComImport, Guid("fc50bed6-fe38-42d3-b831-771690091a6e")]
-    private class MpTsAnalyzer { }
+    private class MpTsAnalyzer
+    {
+    }
 
     #endregion
 
@@ -254,22 +256,30 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
       this.LogDebug("HDPVR:  All filters removed");
       if (_filterCrossBar != null)
       {
-        while (Release.ComObject(_filterCrossBar) > 0) { }
+        while (Release.ComObject(_filterCrossBar) > 0)
+        {
+        }
         _filterCrossBar = null;
       }
       if (_filterCapture != null)
       {
-        while (Release.ComObject(_filterCapture) > 0) { }
+        while (Release.ComObject(_filterCapture) > 0)
+        {
+        }
         _filterCapture = null;
       }
       if (_filterEncoder != null)
       {
-        while (Release.ComObject(_filterEncoder) > 0) { }
+        while (Release.ComObject(_filterEncoder) > 0)
+        {
+        }
         _filterEncoder = null;
       }
       if (_filterTsWriter != null)
       {
-        while (Release.ComObject(_filterTsWriter) > 0) { }
+        while (Release.ComObject(_filterTsWriter) > 0)
+        {
+        }
         _filterTsWriter = null;
       }
       _rotEntry.Dispose();
@@ -320,9 +330,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
           this.LogDebug("HDPVR: graph already built!");
           throw new TvException("Graph already built");
         }
-        _graphBuilder = (IFilterGraph2)new FilterGraph();
+        _graphBuilder = (IFilterGraph2) new FilterGraph();
         _rotEntry = new DsROTEntry(_graphBuilder);
-        _capBuilder = (ICaptureGraphBuilder2)new CaptureGraphBuilder2();
+        _capBuilder = (ICaptureGraphBuilder2) new CaptureGraphBuilder2();
         _capBuilder.SetFiltergraph(_graphBuilder);
         AddCrossBarFilter();
         AddCaptureFilter();
@@ -563,7 +573,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Graphs.HDPVR
       if (_filterTsWriter == null)
       {
         this.LogDebug("HDPVR: Add Mediaportal TsWriter filter");
-        _filterTsWriter = (IBaseFilter)new MpTsAnalyzer();
+        _filterTsWriter = (IBaseFilter) new MpTsAnalyzer();
         int hr = _graphBuilder.AddFilter(_filterTsWriter, "MediaPortal Ts Analyzer");
         if (hr != 0)
         {

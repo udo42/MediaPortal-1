@@ -131,9 +131,8 @@ namespace DirectShowLib
   [StructLayout(LayoutKind.Sequential, Pack = 1)]
   public class DVB_EIT_FILTER_OPTIONS
   {
-    [MarshalAs(UnmanagedType.Bool)]
-    bool fSpecifySegment;
-    byte bSegment;
+    [MarshalAs(UnmanagedType.Bool)] private bool fSpecifySegment;
+    private byte bSegment;
   }
 
   /// <summary>
@@ -142,9 +141,8 @@ namespace DirectShowLib
   [StructLayout(LayoutKind.Sequential, Pack = 1)]
   public class MPEG2Filter2 : MPEG2Filter
   {
-    [MarshalAs(UnmanagedType.Bool)]
-    bool fSpecifyDvbEitOptions;
-    DVB_EIT_FILTER_OPTIONS DvbEit;
+    [MarshalAs(UnmanagedType.Bool)] private bool fSpecifyDvbEitOptions;
+    private DVB_EIT_FILTER_OPTIONS DvbEit;
   }
 
   /// <summary>

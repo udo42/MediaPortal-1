@@ -182,12 +182,16 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     {
       if (_filterVideoEncoder != null)
       {
-        while (Release.ComObject(_filterVideoEncoder) > 0) {}
+        while (Release.ComObject(_filterVideoEncoder) > 0)
+        {
+        }
         _filterVideoEncoder = null;
       }
       if (_filterAudioEncoder != null)
       {
-        while (Release.ComObject(_filterAudioEncoder) > 0) {}
+        while (Release.ComObject(_filterAudioEncoder) > 0)
+        {
+        }
         _filterAudioEncoder = null;
       }
       if (_filterMpeg2Demux != null)
@@ -293,7 +297,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     public bool CreateFilterInstance(IFilterGraph2 _graphBuilder, Tuner _tuner, TvAudio _tvAudio, Crossbar _crossbar,
                                      Capture _capture)
     {
-      
       // now things get difficult.
       // Here we can have the following situations:
       // 1. we're done, the video capture filter has a mpeg-2 audio output pin
@@ -502,7 +505,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
         return;
       if (_pinCapture == null)
         return;
-      _filterMpeg2Demux = (IBaseFilter)new MPEG2Demultiplexer();
+      _filterMpeg2Demux = (IBaseFilter) new MPEG2Demultiplexer();
       int hr = _graphBuilder.AddFilter(_filterMpeg2Demux, "MPEG2 Demultiplexer");
       if (hr != 0)
       {
@@ -517,15 +520,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
         this.LogDebug("analog: ConnectFilters returns:0x{0:X}", hr);
         throw new TvException("Unable to connect capture-> MPEG2 demultiplexer");
       }
-      var demuxer = (IMpeg2Demultiplexer)_filterMpeg2Demux;
+      var demuxer = (IMpeg2Demultiplexer) _filterMpeg2Demux;
       demuxer.CreateOutputPin(FilterGraphTools.GetVideoMpg2Media(), "Video", out _pinVideo);
       demuxer.CreateOutputPin(FilterGraphTools.GetAudioMpg2Media(), "Audio", out _pinAudio);
       demuxer.CreateOutputPin(FilterGraphTools.GetAudioLPCMMedia(), "LPCM", out _pinLPCM);
-      var map = (IMPEG2StreamIdMap)_pinVideo;
+      var map = (IMPEG2StreamIdMap) _pinVideo;
       map.MapStreamId(224, MPEG2Program.ElementaryStream, 0, 0);
-      map = (IMPEG2StreamIdMap)_pinAudio;
+      map = (IMPEG2StreamIdMap) _pinAudio;
       map.MapStreamId(0xC0, MPEG2Program.ElementaryStream, 0, 0);
-      map = (IMPEG2StreamIdMap)_pinLPCM;
+      map = (IMPEG2StreamIdMap) _pinLPCM;
       map.MapStreamId(0xBD, MPEG2Program.ElementaryStream, 0xA0, 7);
     }
 
@@ -574,8 +577,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
         // Some Adaptec devices use the LPCM pin for audio so we check this can connect if applicable.
         // Note that this does *not* apply to the Adaptec AVC-3610.
         bool isAdaptec = false;
-        if (!_capture.VideoCaptureDevicePath.ToLower().StartsWith(@"@device:pnp:\\?\usb#vid_03f3&pid_0091#") && // Adaptec AVC-3610 tuner 1
-            !_capture.VideoCaptureDevicePath.ToLower().StartsWith(@"@device:pnp:\\?\usb#vid_03f3&pid_0093#") && // Adaptec AVC-3610 tuner 2
+        if (!_capture.VideoCaptureDevicePath.ToLower().StartsWith(@"@device:pnp:\\?\usb#vid_03f3&pid_0091#") &&
+            // Adaptec AVC-3610 tuner 1
+            !_capture.VideoCaptureDevicePath.ToLower().StartsWith(@"@device:pnp:\\?\usb#vid_03f3&pid_0093#") &&
+            // Adaptec AVC-3610 tuner 2
             (
               _capture.VideoCaptureName.Contains("Adaptec USB Capture Device") ||
               _capture.VideoCaptureName.Contains("Adaptec PCI Capture Device") ||

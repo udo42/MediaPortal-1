@@ -8,14 +8,15 @@ using Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Channels;
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
 
 namespace Mediaportal.TV.Server.TVLibrary.Services
-{ 
+{
   public class ChannelService : IChannelService
   {
     #region IChannelService Members
 
     public IList<Channel> GetAllChannelsByGroupIdAndMediaType(int groupId, MediaTypeEnum mediatype)
     {
-      IList<Channel> allChannelsByGroupIdAndMediaType = ChannelManagement.GetAllChannelsByGroupIdAndMediaType(groupId, mediatype);
+      IList<Channel> allChannelsByGroupIdAndMediaType = ChannelManagement.GetAllChannelsByGroupIdAndMediaType(groupId,
+                                                                                                              mediatype);
       return allChannelsByGroupIdAndMediaType;
     }
 
@@ -41,7 +42,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     {
       IList<Channel> listAllVisisbleChannelsByMediaType = ChannelManagement.ListAllVisibleChannelsByMediaType(mediaType);
       return listAllVisisbleChannelsByMediaType;
-    }    
+    }
 
     public IList<Channel> SaveChannels(IEnumerable<Channel> channels)
     {
@@ -57,19 +58,24 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     {
       IList<Channel> listAllChannelsByMediaType = ChannelManagement.ListAllChannelsByMediaType(mediaType);
       return listAllChannelsByMediaType;
-    }    
+    }
 
-    public IList<Channel> ListAllChannelsByMediaType(MediaTypeEnum mediaType, ChannelIncludeRelationEnum includeRelations)
+    public IList<Channel> ListAllChannelsByMediaType(MediaTypeEnum mediaType,
+                                                     ChannelIncludeRelationEnum includeRelations)
     {
-      IList<Channel> listAllChannelsByMediaType = ChannelManagement.ListAllChannelsByMediaType(mediaType, includeRelations);
+      IList<Channel> listAllChannelsByMediaType = ChannelManagement.ListAllChannelsByMediaType(mediaType,
+                                                                                               includeRelations);
       return listAllChannelsByMediaType;
     }
 
-    public IList<Channel> GetAllChannelsByGroupIdAndMediaType(int idGroup, MediaTypeEnum mediaType, ChannelIncludeRelationEnum include)
+    public IList<Channel> GetAllChannelsByGroupIdAndMediaType(int idGroup, MediaTypeEnum mediaType,
+                                                              ChannelIncludeRelationEnum include)
     {
-      IList<Channel> allChannelsByGroupIdAndMediaType = ChannelManagement.GetAllChannelsByGroupIdAndMediaType(idGroup, mediaType, include);
+      IList<Channel> allChannelsByGroupIdAndMediaType = ChannelManagement.GetAllChannelsByGroupIdAndMediaType(idGroup,
+                                                                                                              mediaType,
+                                                                                                              include);
       return allChannelsByGroupIdAndMediaType;
-    }    
+    }
 
     public IList<Channel> GetChannelsByName(string channelName)
     {
@@ -95,7 +101,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public TuningDetail SaveTuningDetail(TuningDetail tuningDetail)
     {
-      return ChannelManagement.SaveTuningDetail(tuningDetail);      
+      return ChannelManagement.SaveTuningDetail(tuningDetail);
     }
 
     public TuningDetail GetTuningDetail(DVBBaseChannel dvbChannel)

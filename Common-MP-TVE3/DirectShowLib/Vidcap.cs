@@ -711,7 +711,9 @@ namespace DirectShowLib
     int put_NodeId([In] int dwNodeId);
 
     [PreserveSig]
-    int put_KsControl([In] IntPtr pKsControl); // PVOID
+    int put_KsControl([In] IntPtr pKsControl);
+
+    // PVOID
   }
 
 

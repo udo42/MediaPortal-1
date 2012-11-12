@@ -69,7 +69,7 @@ namespace WebEPG.config
 
       for (int i = 0; i < configList.Count; i++)
       {
-        var channel = (EPGConfigData)configList[i];
+        var channel = (EPGConfigData) configList[i];
         if (channel.ChannelID != null && channel.DisplayName != null && channel.PrimaryGrabberID != null)
         {
           _ConfigList.Add(channel);
@@ -81,7 +81,7 @@ namespace WebEPG.config
     {
       if (index < _ConfigList.Count)
       {
-        return (EPGConfigData)_ConfigList[index];
+        return (EPGConfigData) _ConfigList[index];
       }
       return null;
     }
@@ -122,7 +122,7 @@ namespace WebEPG.config
     {
       for (int i = 0; i < _ConfigList.Count; i++)
       {
-        var channel = (EPGConfigData)_ConfigList[i];
+        var channel = (EPGConfigData) _ConfigList[i];
         if (channel.DisplayName == name)
         {
           return i;
@@ -142,7 +142,7 @@ namespace WebEPG.config
       }
 
       this.LogInfo("WebEPG Config: Loading Existing WebEPG.xml");
-      using (var xmlreader = new Xml(configFile)) 
+      using (var xmlreader = new Xml(configFile))
       {
         _MaxGrab = xmlreader.GetValueAsInt("General", "MaxDays", 1);
         int channelCount = xmlreader.GetValueAsInt("ChannelMap", "Count", 0);
@@ -182,14 +182,14 @@ namespace WebEPG.config
           File.Delete(confFile.Replace(".xml", ".bak"));
           File.Move(confFile, confFile.Replace(".xml", ".bak"));
         }
-        using (var xmlwriter = new Xml(confFile)) 
+        using (var xmlwriter = new Xml(confFile))
         {
           xmlwriter.SetValue("General", "MaxDays", _MaxGrab.ToString());
           xmlwriter.SetValue("ChannelMap", "Count", _ConfigList.Count.ToString());
 
           for (int i = 0; i < _ConfigList.Count; i++)
           {
-            var channel = (EPGConfigData)_ConfigList[i];
+            var channel = (EPGConfigData) _ConfigList[i];
             xmlwriter.SetValue((i + 1).ToString(), "ChannelID", channel.ChannelID);
             xmlwriter.SetValue((i + 1).ToString(), "DisplayName", channel.DisplayName);
             xmlwriter.SetValue((i + 1).ToString(), "Grabber1", channel.PrimaryGrabberID);

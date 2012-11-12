@@ -180,7 +180,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
       }
       if (_filterCrossBar != null)
       {
-        Release.ComObject("crossbar filter", _filterCrossBar);        
+        Release.ComObject("crossbar filter", _filterCrossBar);
         _filterCrossBar = null;
       }
     }
@@ -281,7 +281,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
           }
           continue;
         }
-        _crossBarFilter = (IAMCrossbar)tmp;
+        _crossBarFilter = (IAMCrossbar) tmp;
         _videoPinMap = graph.Crossbar.VideoPinMap;
         _audioPinMap = graph.Crossbar.AudioPinMap;
         _videoPinRelatedAudioMap = graph.Crossbar.VideoPinRelatedAudioMap;
@@ -389,7 +389,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
           }
           continue;
         }
-        _crossBarFilter = (IAMCrossbar)tmp;
+        _crossBarFilter = (IAMCrossbar) tmp;
         CheckCapabilities();
         if (_videoOutPinIndex == -1)
         {
@@ -655,7 +655,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Analog.Components
     {
       if (_currentChannel != null)
       {
-        bool updateRequired = _currentChannel.MediaType == channel.MediaType;        
+        bool updateRequired = _currentChannel.MediaType == channel.MediaType;
         if (updateRequired ||
             (_currentChannel.VideoSource != channel.VideoSource && _videoPinMap.ContainsKey(channel.VideoSource)))
         {

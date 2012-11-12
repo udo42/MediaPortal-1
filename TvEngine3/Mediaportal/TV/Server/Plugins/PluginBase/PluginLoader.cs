@@ -57,33 +57,34 @@ namespace Mediaportal.TV.Server.Plugins.Base
     /// </summary>
     public virtual void Load()
     {
-       /*   
+      /*   
        var container = new WindsorContainer();
        container.Register(Component.For<IService>().ImplementedBy<Service>()
        */
-                 
+
       _plugins.Clear();
       _incompatiblePlugins.Clear();
 
       try
       {
-        
         var assemblyFilter = new AssemblyFilter("plugins");
         GlobalServiceProvider.Instance.Get<IWindsorContainer>().Register(
-        AllTypes.FromAssemblyInDirectory(assemblyFilter).                        
+          AllTypes.FromAssemblyInDirectory(assemblyFilter).
             BasedOn<ITvServerPlugin>().
-            If(t => IsPluginCompatible(t)).            
-            WithServiceBase().            
+            If(t => IsPluginCompatible(t)).
+            WithServiceBase().
             LifestyleSingleton()
-            );
+          );
 
-        _plugins = new List<ITvServerPlugin>(GlobalServiceProvider.Instance.Get<IWindsorContainer>().ResolveAll<ITvServerPlugin>());
+        _plugins =
+          new List<ITvServerPlugin>(
+            GlobalServiceProvider.Instance.Get<IWindsorContainer>().ResolveAll<ITvServerPlugin>());
 
         foreach (ITvServerPlugin plugin in _plugins)
         {
           this.LogDebug("PluginManager: Loaded {0} version:{1} author:{2}", plugin.Name, plugin.Version,
                         plugin.Author);
-        }      
+        }
       }
       catch (Exception ex)
       {
@@ -97,9 +98,10 @@ namespace Mediaportal.TV.Server.Plugins.Base
       if (!isPluginCompatible)
       {
         _incompatiblePlugins.Add(type);
-        this.LogDebug("PluginManager: {0} is incompatible with the current tvserver version and won't be loaded!", type.FullName);
+        this.LogDebug("PluginManager: {0} is incompatible with the current tvserver version and won't be loaded!",
+                      type.FullName);
       }
       return isPluginCompatible;
-    }    
+    }
   }
 }

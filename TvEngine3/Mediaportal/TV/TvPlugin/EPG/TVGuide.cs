@@ -35,7 +35,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
     public TVGuide()
     {
-      GetID = (int)Window.WINDOW_TVGUIDE;
+      GetID = (int) Window.WINDOW_TVGUIDE;
     }
 
     #endregion
@@ -55,7 +55,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
     public override bool Init()
     {
       bool result = Load(GUIGraphicsContext.Skin + @"\mytvguide.xml");
-      GetID = (int)Window.WINDOW_TVGUIDE;
+      GetID = (int) Window.WINDOW_TVGUIDE;
       return result;
     }
 

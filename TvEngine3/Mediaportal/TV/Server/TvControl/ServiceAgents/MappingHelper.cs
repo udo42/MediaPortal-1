@@ -26,7 +26,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
                          //Channel = channel, // causes : AcceptChanges cannot continue because the object's key values conflict with another object in the ObjectStateManager. Make sure that the key values are unique before calling AcceptChanges.
                          //ChannelGroup = group,
                          IdChannel = channel.IdChannel,
-                         IdGroup = @group.IdGroup,                         
+                         IdGroup = @group.IdGroup,
                          SortOrder = channel.SortOrder
                        };
       channel.GroupMaps.Add(groupMap);
@@ -34,7 +34,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
 
     public static GroupMap AddChannelToGroup(ref Channel channel, string groupName, MediaTypeEnum mediaType)
     {
-      ChannelGroup channelGroup = ServiceAgents.Instance.ChannelGroupServiceAgent.GetChannelGroupByNameAndMediaType(groupName, mediaType);
+      ChannelGroup channelGroup =
+        ServiceAgents.Instance.ChannelGroupServiceAgent.GetChannelGroupByNameAndMediaType(groupName, mediaType);
       if (channelGroup != null)
       {
         return AddChannelToGroup(ref channel, channelGroup);
@@ -52,7 +53,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     }
 
     public static ChannelMap AddChannelToCard(Channel channel, Card card, bool epg)
-    {      
+    {
       foreach (ChannelMap channelMap in channel.ChannelMaps.Where(chMap => chMap.IdCard == card.IdCard))
       {
         //already associated ?
@@ -61,16 +62,15 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
 
       var map = new ChannelMap
                   {
-        IdChannel = channel.IdChannel,
-        IdCard =  card.IdCard,
-        EpgOnly = epg
-      };
-      
+                    IdChannel = channel.IdChannel,
+                    IdCard = card.IdCard,
+                    EpgOnly = epg
+                  };
+
       channel.ChannelMaps.Add(map);
       channel = ServiceAgents.Instance.ChannelServiceAgent.SaveChannel(channel);
       channel.AcceptChanges();
       return channel.ChannelMaps.FirstOrDefault(chMap => chMap.IdCard == card.IdCard);
     }
-  
   }
 }

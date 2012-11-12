@@ -194,7 +194,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
         // If a matching user is connected to any share from the define host, then prevent standby.
         UserFromHostUsingShare, // All three fields must match to prevent standby.
         Undefined, // Invalid share configuration. Do not prevent standby.
-      } ;
+      };
 
       #endregion
     }
@@ -248,7 +248,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       {
         _sharesToMonitor.Clear();
 
-        
 
         // Load share monitoring configuration for standby prevention 
         if (SettingsManagement.GetValue("PreventStandybyWhenSharesInUse", false))
@@ -328,7 +327,9 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
       }
     }
 
-    public void UserShutdownNow() {}
+    public void UserShutdownNow()
+    {
+    }
 
     public string HandlerName
     {

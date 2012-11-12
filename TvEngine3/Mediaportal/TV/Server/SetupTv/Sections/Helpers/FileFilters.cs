@@ -112,7 +112,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
   /// </summary>
   internal class FileFilters
   {
- 
     private readonly String[] files;
     private readonly MPComboBox m_cbxCountries;
     private readonly MPComboBox m_cbxRegions;
@@ -129,7 +128,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
       m_cbxRegions = cbxRegions;
 
       files = Directory.GetFiles(String.Format(@"{0}\TuningParameters\{1}", PathManager.GetDataPath, TuningType),
-                                           "*.xml");
+                                 "*.xml");
       List<String> countries = CountryList(files);
       for (int i = 0; i < countries.Count; ++i)
       {
@@ -147,7 +146,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
     public FileFilters(String TuningType)
     {
       files = Directory.GetFiles(String.Format(@"{0}\TuningParameters\{1}", PathManager.GetDataPath, TuningType),
-                                           "*.xml");
+                                 "*.xml");
     }
 
     public List<SimpleFileName> AllFiles

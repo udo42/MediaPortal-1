@@ -286,8 +286,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
             capture.ImageWidth = Int32.Parse(imageResolutions[0]);
             capture.ImageHeight = Int32.Parse(imageResolutions[1]);
           }
-          capture.CurrentVideoStandard = (AnalogVideoStandard)Int32.Parse(currentVideoStandardNode.InnerText);
-          capture.AvailableVideoStandard = (AnalogVideoStandard)Int32.Parse(availableVideoStandardNode.InnerText);
+          capture.CurrentVideoStandard = (AnalogVideoStandard) Int32.Parse(currentVideoStandardNode.InnerText);
+          capture.AvailableVideoStandard = (AnalogVideoStandard) Int32.Parse(availableVideoStandardNode.InnerText);
           XmlNodeList videoQualityList = viceoCaptureNode.SelectSingleNode("videoProcAmp").SelectNodes("videoQuality");
           if (videoQualityList != null)
           {
@@ -297,11 +297,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
               int maxValue = Int32.Parse(pin.Attributes["maxValue"].Value);
               int defaultValue = Int32.Parse(pin.Attributes["defaultValue"].Value);
               int delta = Int32.Parse(pin.Attributes["delta"].Value);
-              var flags = (VideoProcAmpFlags)Int32.Parse(pin.Attributes["flags"].Value);
+              var flags = (VideoProcAmpFlags) Int32.Parse(pin.Attributes["flags"].Value);
               int value = Int32.Parse(pin.Attributes["value"].Value);
-              var property = (VideoProcAmpProperty)Int32.Parse(pin.InnerText);
+              var property = (VideoProcAmpProperty) Int32.Parse(pin.InnerText);
               var quality = new VideoQuality(minValue, maxValue, delta, defaultValue,
-                                                      flags == VideoProcAmpFlags.Manual, value);
+                                             flags == VideoProcAmpFlags.Manual, value);
               videoProcAmpValues.Add(property, quality);
             }
           }
@@ -334,8 +334,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
         writer.WriteElementString("audioIn", _audioIn.ToString());
       }
       writer.WriteStartElement("videoStandard"); //<videoStandard>
-      writer.WriteElementString("available", ((Int32)_availableVideoStandard).ToString());
-      writer.WriteElementString("selected", ((Int32)_currentVideoStandard).ToString());
+      writer.WriteElementString("available", ((Int32) _availableVideoStandard).ToString());
+      writer.WriteElementString("selected", ((Int32) _currentVideoStandard).ToString());
       writer.WriteEndElement(); //</videoStandard>
       writer.WriteStartElement("videoProcAmp"); //<videoProcAmp>
       foreach (VideoProcAmpProperty property in _videoProcAmpValues.Keys)
@@ -348,9 +348,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
         VideoProcAmpFlags prop = _videoProcAmpValues[property].IsManual
                                    ? VideoProcAmpFlags.Manual
                                    : VideoProcAmpFlags.Auto;
-        writer.WriteAttributeString("flags", ((Int32)prop).ToString());
+        writer.WriteAttributeString("flags", ((Int32) prop).ToString());
         writer.WriteAttributeString("value", _videoProcAmpValues[property].Value.ToString());
-        writer.WriteValue((Int32)property);
+        writer.WriteValue((Int32) property);
         writer.WriteEndElement(); //<</videoQuality>
       }
       writer.WriteEndElement(); //</videoProcAmp>

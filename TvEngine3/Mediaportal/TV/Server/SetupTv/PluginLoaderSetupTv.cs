@@ -30,7 +30,6 @@ namespace Mediaportal.TV.Server.SetupTV
 {
   public class PluginLoaderSetupTv : PluginLoader
   {
-
     /// <summary>
     /// Loads all plugins.
     /// </summary>
@@ -68,7 +67,8 @@ namespace Mediaportal.TV.Server.SetupTV
             fileStream.Write(stream.Value, 0, stream.Value.Length);
           }
         }
-        IDictionary<string, byte[]> streamListCustomDevices = ServiceAgents.Instance.ControllerServiceAgent.GetPluginBinariesCustomDevices();
+        IDictionary<string, byte[]> streamListCustomDevices =
+          ServiceAgents.Instance.ControllerServiceAgent.GetPluginBinariesCustomDevices();
         string customDevicesFolder = Path.Combine(pluginsFolder, "CustomDevices");
         if (!Directory.Exists(customDevicesFolder))
         {
@@ -82,7 +82,8 @@ namespace Mediaportal.TV.Server.SetupTV
             fileStream.Write(stream.Value, 0, stream.Value.Length);
           }
         }
-        IDictionary<string, byte[]> streamListResources = ServiceAgents.Instance.ControllerServiceAgent.GetPluginBinariesResources();
+        IDictionary<string, byte[]> streamListResources =
+          ServiceAgents.Instance.ControllerServiceAgent.GetPluginBinariesResources();
         string resourceFolder = Path.Combine(customDevicesFolder, "Resources");
         if (!Directory.Exists(resourceFolder))
         {

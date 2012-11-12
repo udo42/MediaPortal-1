@@ -11,12 +11,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 {
   public class ServiceManager : Singleton<ServiceManager>, IDisposable
   {
-
-
-    private readonly object _lock = new object();    
+    private readonly object _lock = new object();
     private readonly IDictionary<Type, ServiceHost> _serviceHosts = new Dictionary<Type, ServiceHost>();
 
-    private ServiceManager ()
+    private ServiceManager()
     {
       Init();
     }
@@ -74,7 +72,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
     public IProgramCategoryService ProgramCategoryService
     {
       get { return GlobalServiceProvider.Get<IProgramCategoryService>(); }
-    }    
+    }
 
     public IInternalControllerService InternalControllerService
     {
@@ -88,7 +86,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     ~ServiceManager()
     {
-      Dispose();      
+      Dispose();
     }
 
     private void Init()
@@ -115,13 +113,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       catch (Exception ex)
       {
         this.LogError("ServiceManager: exception - {0}", ex);
-      }      
-    }  
+      }
+    }
 
     private void AddEventService<I, T>() where T : class, I, new()
     {
-      Type implType = typeof(T);
-      Type interfaceType = typeof(I);
+      Type implType = typeof (T);
+      Type interfaceType = typeof (I);
       ThrowExceptionIfServiceAlreadyAdded(implType);
       ServiceHost serviceHost = GetEventServiceHost(interfaceType, implType);
       lock (_lock)
@@ -176,7 +174,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       var httpUri = new Uri(endpointHTTPUrl);
       serviceMetaDataBehaviour.HttpGetUrl = httpUri;
 
-      var throttle = new ServiceThrottlingBehavior { MaxConcurrentCalls = 3, MaxConcurrentInstances = 20 };
+      var throttle = new ServiceThrottlingBehavior {MaxConcurrentCalls = 3, MaxConcurrentInstances = 20};
       throttle.MaxConcurrentInstances = 20;
       serviceHost.Description.Behaviors.Add(throttle);
 
@@ -201,7 +199,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       return serviceMetaDataBehaviour;
     }
 
-  
 
     private static void SetMaxItemsInObjectGraph(ServiceHost serviceHost)
     {
@@ -217,11 +214,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public void AddService(Type interfaceType, object instance)
     {
-      Type implType = instance.GetType();      
+      Type implType = instance.GetType();
       ThrowExceptionIfServiceAlreadyAdded(implType);
       ServiceHost serviceHost = GetServiceHost(interfaceType, implType);
       lock (_lock)
-      {        
+      {
         GlobalServiceProvider.Add(interfaceType, instance);
         _serviceHosts.Add(implType, serviceHost);
       }
@@ -241,7 +238,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       }
     }
 
-    
 
     private void ThrowExceptionIfServiceAlreadyAdded(Type contractType)
     {
@@ -267,10 +263,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       {
         Services.EventService.CleanUp();
         foreach (ServiceHost host in _serviceHosts.Values)
-        {          
+        {
           if (host != null)
           {
-            host.Close();            
+            host.Close();
           }
         }
         _serviceHosts.Clear();
@@ -280,7 +276,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
       {
         this.LogError("error closing WCF service", ex);
         throw;
-      }      
+      }
     }
 
     #endregion

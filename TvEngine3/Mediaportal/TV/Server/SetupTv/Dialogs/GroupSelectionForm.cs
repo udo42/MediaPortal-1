@@ -107,7 +107,8 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
     {
       if (groupType == typeof (ChannelGroup))
       {
-        IList<ChannelGroup> tmp = ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllChannelGroupsByMediaType(MediaTypeEnum.TV);
+        IList<ChannelGroup> tmp =
+          ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllChannelGroupsByMediaType(MediaTypeEnum.TV);
         foreach (ChannelGroup group in tmp)
         {
           bool isFixedGroupName = (
@@ -130,7 +131,8 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
       }
       else if (groupType == typeof (ChannelGroup))
       {
-        IList<ChannelGroup> tmp = ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllChannelGroupsByMediaType(MediaTypeEnum.Radio);
+        IList<ChannelGroup> tmp =
+          ServiceAgents.Instance.ChannelGroupServiceAgent.ListAllChannelGroupsByMediaType(MediaTypeEnum.Radio);
         foreach (ChannelGroup group in tmp)
         {
           bool isFixedGroupName = (

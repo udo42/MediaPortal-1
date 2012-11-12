@@ -41,7 +41,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     private static WmpServiceStatus _wmpServices;
 
     public ThirdPartyChecks()
-      : this("Additional 3rd party checks") {}
+      : this("Additional 3rd party checks")
+    {
+    }
 
     public ThirdPartyChecks(string name)
       : base(name)
@@ -266,7 +268,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
       int RtspPort = ServiceAgents.Instance.ControllerServiceAgent.StreamingPort;
       STREAMING_PORT = RtspPort;
       if (STREAMING_PORT == 0)
-      {        
+      {
         STREAMING_PORT = Convert.ToInt32(ServiceAgents.Instance.SettingServiceAgent.GetSetting("rtspport").Value);
         return false;
       }

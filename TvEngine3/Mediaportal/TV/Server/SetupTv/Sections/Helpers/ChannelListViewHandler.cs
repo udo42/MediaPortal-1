@@ -36,8 +36,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
   /// </summary>
   internal class ChannelListViewHandler
   {
-
-
     private const int MS_SLEEP_BEFORE_FILTERING = 150;
 
     internal Dictionary<int, CardType> _allCards; //all available cards
@@ -89,7 +87,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
     {
       if (filterObject == null) return;
 
-      String filterText = ((String)filterObject).ToLower();
+      String filterText = ((String) filterObject).ToLower();
 
       //Sleep for MS_SLEEP_BEFORE_FILTERING ms before starting filtering (to prevent searches while
       //user is still typing)
@@ -260,7 +258,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections.Helpers
         groups.Add((gm.ChannelGroup.GroupName));
       }
 
-      
+
       var groupNames = new List<string>();
       foreach (string groupName in groups)
       {

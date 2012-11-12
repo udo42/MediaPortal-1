@@ -6,7 +6,7 @@ using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 using Mediaportal.TV.Server.TVDatabase.TVBusinessLayer;
 
 namespace Mediaportal.TV.Server.TVLibrary.Services
-{ 
+{
   public class RecordingService : IRecordingService
   {
     #region IRecordingService Members
@@ -42,13 +42,15 @@ namespace Mediaportal.TV.Server.TVLibrary.Services
 
     public Recording GetActiveRecordingByTitleAndChannel(string title, int idChannel)
     {
-      Recording activeRecordingByTitleAndChannel = RecordingManagement.GetActiveRecordingByTitleAndChannel(title, idChannel);
+      Recording activeRecordingByTitleAndChannel = RecordingManagement.GetActiveRecordingByTitleAndChannel(title,
+                                                                                                           idChannel);
       return activeRecordingByTitleAndChannel;
     }
 
     public IList<Recording> ListAllActiveRecordingsByMediaType(MediaTypeEnum mediaType)
     {
-      IList<Recording> listAllActiveRecordingsByMediaType = RecordingManagement.ListAllActiveRecordingsByMediaType(mediaType);
+      IList<Recording> listAllActiveRecordingsByMediaType =
+        RecordingManagement.ListAllActiveRecordingsByMediaType(mediaType);
       return listAllActiveRecordingsByMediaType;
     }
 

@@ -13,22 +13,32 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.LinqKit
     /// <summary>
     /// Creates a predicate that evaluates to true.
     /// </summary>
-    public static Expression<Func<T, bool>> True<T>() { return param => true; }
+    public static Expression<Func<T, bool>> True<T>()
+    {
+      return param => true;
+    }
 
     /// <summary>
     /// Creates a predicate that evaluates to false.
     /// </summary>
-    public static Expression<Func<T, bool>> False<T>() { return param => false; }
+    public static Expression<Func<T, bool>> False<T>()
+    {
+      return param => false;
+    }
 
     /// <summary>
     /// Creates a predicate expression from the specified lambda expression.
     /// </summary>
-    public static Expression<Func<T, bool>> Create<T>(Expression<Func<T, bool>> predicate) { return predicate; }
+    public static Expression<Func<T, bool>> Create<T>(Expression<Func<T, bool>> predicate)
+    {
+      return predicate;
+    }
 
     /// <summary>
     /// Combines the first predicate with the second using the logical "and".
     /// </summary>
-    public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> first, Expression<Func<T, bool>> second)
+    public static Expression<Func<T, bool>> And<T>(this Expression<Func<T, bool>> first,
+                                                   Expression<Func<T, bool>> second)
     {
       return first.Compose(second, Expression.AndAlso);
     }
@@ -53,12 +63,13 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.LinqKit
     /// <summary>
     /// Combines the first expression with the second using the specified merge function.
     /// </summary>
-    static Expression<T> Compose<T>(this Expression<T> first, Expression<T> second, Func<Expression, Expression, Expression> merge)
+    private static Expression<T> Compose<T>(this Expression<T> first, Expression<T> second,
+                                            Func<Expression, Expression, Expression> merge)
     {
       // zip parameters (map from parameters of second to parameters of first)
       Dictionary<ParameterExpression, ParameterExpression> map = first.Parameters
-          .Select((f, i) => new { f, s = second.Parameters[i] })
-          .ToDictionary(p => p.s, p => p.f);
+        .Select((f, i) => new {f, s = second.Parameters[i]})
+        .ToDictionary(p => p.s, p => p.f);
 
       // replace parameters in the second lambda expression with the parameters in the first
       Expression secondBody = ParameterRebinder.ReplaceParameters(map, second.Body);
@@ -69,16 +80,17 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.LinqKit
 
     #region Nested type: ParameterRebinder
 
-    class ParameterRebinder : ExpressionVisitor
+    private class ParameterRebinder : ExpressionVisitor
     {
-      readonly Dictionary<ParameterExpression, ParameterExpression> map;
+      private readonly Dictionary<ParameterExpression, ParameterExpression> map;
 
-      ParameterRebinder(Dictionary<ParameterExpression, ParameterExpression> map)
+      private ParameterRebinder(Dictionary<ParameterExpression, ParameterExpression> map)
       {
         this.map = map ?? new Dictionary<ParameterExpression, ParameterExpression>();
       }
 
-      public static Expression ReplaceParameters(Dictionary<ParameterExpression, ParameterExpression> map, Expression exp)
+      public static Expression ReplaceParameters(Dictionary<ParameterExpression, ParameterExpression> map,
+                                                 Expression exp)
       {
         return new ParameterRebinder(map).Visit(exp);
       }
@@ -98,7 +110,4 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer.LinqKit
 
     #endregion
   }
-
-
-
 }

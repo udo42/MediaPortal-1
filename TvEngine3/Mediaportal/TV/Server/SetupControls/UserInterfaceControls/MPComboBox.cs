@@ -25,5 +25,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   /// <summary>
   /// Summary description for MPComboBox.
   /// </summary>
-  public class MPComboBox : ComboBox {}
+  public class MPComboBox : ComboBox
+  {
+  }
 }

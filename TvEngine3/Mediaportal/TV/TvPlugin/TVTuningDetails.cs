@@ -32,11 +32,9 @@ namespace Mediaportal.TV.TvPlugin
 {
   public class TVTuningDetails : GUIInternalWindow
   {
-
-
     public TVTuningDetails()
     {
-      GetID = (int)Window.WINDOW_TV_TUNING_DETAILS;
+      GetID = (int) Window.WINDOW_TV_TUNING_DETAILS;
     }
 
     #region Overrides
@@ -59,7 +57,8 @@ namespace Mediaportal.TV.TvPlugin
       {
         try
         {
-          GUIPropertyManager.SetProperty("#TV.TuningDetails.HasCiMenuSupport", TVHome.Card.CiMenuSupported().ToString(CultureInfo.InvariantCulture));
+          GUIPropertyManager.SetProperty("#TV.TuningDetails.HasCiMenuSupport",
+                                         TVHome.Card.CiMenuSupported().ToString(CultureInfo.InvariantCulture));
         }
         catch (Exception ex)
         {
@@ -171,7 +170,6 @@ namespace Mediaportal.TV.TvPlugin
 
     public override void Process()
     {
-
       TimeSpan ts = DateTime.Now - _updateTimer;
       if (ts.TotalMilliseconds < 500)
       {

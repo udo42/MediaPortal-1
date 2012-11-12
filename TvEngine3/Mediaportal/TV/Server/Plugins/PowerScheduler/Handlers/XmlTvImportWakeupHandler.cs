@@ -63,7 +63,6 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Handlers
     [MethodImpl(MethodImplOptions.Synchronized)]
     public DateTime GetNextWakeupTime(DateTime earliestWakeupTime)
     {
-      
       bool remoteSchedulerEnabled = SettingsManagement.GetValue("xmlTvRemoteSchedulerEnabled", false);
       if (!remoteSchedulerEnabled)
       {

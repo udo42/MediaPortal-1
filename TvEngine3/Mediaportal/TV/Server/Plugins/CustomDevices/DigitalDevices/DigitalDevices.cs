@@ -38,7 +38,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
   /// <summary>
   /// A class for handling conditional access and DiSEqC for Digital Devices devices (and clones from Mystique).
   /// </summary>
-  public class DigitalDevices : BaseCustomDevice, IAddOnDevice, IConditionalAccessProvider, ICiMenuActions, IDiseqcDevice, ITvServerPlugin
+  public class DigitalDevices : BaseCustomDevice, IAddOnDevice, IConditionalAccessProvider, ICiMenuActions,
+                                IDiseqcDevice, ITvServerPlugin
   {
     #region enums
 
@@ -50,8 +51,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       EnterMenu,
       CloseMenu,
       GetMenu,
-      MenuReply,    // Select a menu entry.
-      CamAnswer,    // Send an answer to a CAM enquiry.
+      MenuReply, // Select a menu entry.
+      CamAnswer, // Send an answer to a CAM enquiry.
     }
 
     #endregion
@@ -112,7 +113,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     #region Nested type: MenuAnswer
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    private struct MenuAnswer   // DD_CAM_TEXT_DATA
+    private struct MenuAnswer // DD_CAM_TEXT_DATA
     {
 #pragma warning disable 0649
       public readonly Int32 Id;
@@ -129,7 +130,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     #region Nested type: MenuChoice
 
     [StructLayout(LayoutKind.Sequential)]
-    private struct MenuChoice   // DD_CAM_MENU_REPLY
+    private struct MenuChoice // DD_CAM_MENU_REPLY
     {
       public Int32 Id;
       public Int32 Choice;
@@ -140,7 +141,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     #region Nested type: MenuData
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    private struct MenuData   // DD_CAM_MENU_DATA
+    private struct MenuData // DD_CAM_MENU_DATA
     {
       public Int32 Id;
       public Int32 Type;
@@ -160,7 +161,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     #region Nested type: MenuTitle
 
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-    private struct MenuTitle    // DD_CAM_MENU_TITLE
+    private struct MenuTitle // DD_CAM_MENU_TITLE
     {
       // The following string is passed back as an inline variable
       // length NULL terminated string. This makes it impossible to
@@ -176,11 +177,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
 
     #region constants
 
-    private const int MenuDataSize = 2048;  // This is arbitrary - an estimate of the buffer size needed to hold the largest menu.
+    private const int MenuDataSize = 2048;
+                      // This is arbitrary - an estimate of the buffer size needed to hold the largest menu.
+
     private const int MenuChoiceSize = 8;
-    private const int MmiHandlerThreadSleepTime = 500;   // unit = ms
+    private const int MmiHandlerThreadSleepTime = 500; // unit = ms
     private const int KsMethodSize = 24;
-    private const int InstanceSize = 32;    // The size of a property instance (KSP_NODE) parameter.
+    private const int InstanceSize = 32; // The size of a property instance (KSP_NODE) parameter.
     private const int BdaDiseqcMessageSize = 16;
     private const int MaxDiseqcMessageLength = 8;
 
@@ -190,7 +193,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
                                                                    "Mystique SaTiX-S2 Dual"
                                                                  };
 
-    private static readonly Guid CamControlMethodSet = new Guid(0x0aa8a511, 0xa240, 0x11de, 0xb1, 0x30, 0x00, 0x00, 0x00, 0x00, 0x4d, 0x56);
+    private static readonly Guid CamControlMethodSet = new Guid(0x0aa8a511, 0xa240, 0x11de, 0xb1, 0x30, 0x00, 0x00, 0x00,
+                                                                0x00, 0x4d, 0x56);
 
     #endregion
 
@@ -257,10 +261,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       }
 
       KSPropertySupport support;
-      int hr = ps.QuerySupported(typeof(IBDA_DiseqCommand).GUID, (int)BdaDiseqcProperty.Send, out support);
+      int hr = ps.QuerySupported(typeof (IBDA_DiseqCommand).GUID, (int) BdaDiseqcProperty.Send, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
-        this.LogDebug("Digital Devices: property set not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Digital Devices: property set not supported, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         DsUtils.ReleaseComObject(pin);
         pin = null;
         return null;
@@ -368,7 +373,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
                   this.LogDebug("  length    = {0}", menu.EntryCount);
                   if (_ciMenuCallbacks != null && !_camMessagesDisabled)
                   {
-                    _ciMenuCallbacks.OnCiRequest(false, (uint)menu.EntryCount, menu.Title);
+                    _ciMenuCallbacks.OnCiRequest(false, (uint) menu.EntryCount, menu.Title);
                   }
                 }
               }
@@ -405,9 +410,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         Marshal.WriteByte(_mmiBuffer, i, 0);
       }
 
-      var method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.GetMenu, (int)KsMethodFlag.Send);
+      var method = new KsMethod(CamControlMethodSet, (int) CamControlMethod.GetMenu, (int) KsMethodFlag.Send);
       int returnedByteCount = 0;
-      int hr = ((IKsControl)_ciContexts[slot].Filter).KsMethod(ref method, KsMethodSize, _mmiBuffer, MenuDataSize, ref returnedByteCount);
+      int hr = ((IKsControl) _ciContexts[slot].Filter).KsMethod(ref method, KsMethodSize, _mmiBuffer, MenuDataSize,
+                                                                ref returnedByteCount);
       if (hr != 0)
       {
         // Attempting to check for an MMI message when the menu has not previously been
@@ -525,7 +531,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       }
       if (hr != 0 || String.IsNullOrEmpty(tunerFilterInfo.achName))
       {
-        this.LogDebug("Digital Devices: failed to get the tuner filter name, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Digital Devices: failed to get the tuner filter name, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
       }
       else
       {
@@ -621,13 +628,14 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       // We need a demux filter to test whether we can add any further CI filters
       // to the graph.
       IPin demuxInputPin = null;
-      var tmpDemux = (IBaseFilter)new MPEG2Demultiplexer();
+      var tmpDemux = (IBaseFilter) new MPEG2Demultiplexer();
       try
       {
         hr = _graph.AddFilter(tmpDemux, "Temp MPEG2 Demultiplexer");
         if (hr != 0)
         {
-          this.LogDebug("Digital Devices: failed to add test demux to graph, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+          this.LogDebug("Digital Devices: failed to add test demux to graph, hr = 0x{0:x} ({1})", hr,
+                        HResult.GetDXErrorString(hr));
           return false;
         }
         demuxInputPin = DsFindPin.ByDirection(tmpDemux, PinDirection.Input, 0);
@@ -682,7 +690,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
             hr = _graph.AddSourceFilterForMoniker(captureDevice.Mon, null, captureDevice.Name, out tmpCiFilter);
             if (hr != 0 || tmpCiFilter == null)
             {
-              this.LogDebug("Digital Devices: failed to add the filter to the graph, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+              this.LogDebug("Digital Devices: failed to add the filter to the graph, hr = 0x{0:x} ({1})", hr,
+                            HResult.GetDXErrorString(hr));
               continue;
             }
 
@@ -701,7 +710,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
               hr = _graph.Connect(lastFilterOutputPin, tmpFilterInputPin);
               if (hr != 0)
               {
-                this.LogDebug("Digital Devices: failed to connect the filter into the graph, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+                this.LogDebug("Digital Devices: failed to connect the filter into the graph, hr = 0x{0:x} ({1})", hr,
+                              HResult.GetDXErrorString(hr));
                 continue;
               }
             }
@@ -776,10 +786,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// </remarks>
     public bool MasterOnly
     {
-      get
-      {
-        return true;
-      }
+      get { return true; }
     }
 
     /// <summary>
@@ -787,10 +794,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// </summary>
     public string Version
     {
-      get
-      {
-        return "1.0.0.0";
-      }
+      get { return "1.0.0.0"; }
     }
 
     /// <summary>
@@ -798,10 +802,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// </summary>
     public string Author
     {
-      get
-      {
-        return "mm1352000";
-      }
+      get { return "mm1352000"; }
     }
 
     /// <summary>
@@ -923,7 +924,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         _stopMmiHandlerThread = true;
         // In the worst case scenario it should take approximately
         // twice the thread sleep time to cleanly stop the thread.
-        Thread.Sleep(MmiHandlerThreadSleepTime * 2);
+        Thread.Sleep(MmiHandlerThreadSleepTime*2);
         _mmiHandlerThread = null;
       }
 
@@ -972,8 +973,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       for (int i = 0; i < _ciContexts.Count; i++)
       {
         this.LogDebug("Digital Devices: reset slot {0} \"{1}\"", i + 1, _ciContexts[i].FilterName);
-        var method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.Reset, (int)KsMethodFlag.Send);
-        int hr = ((IKsControl)_ciContexts[i].Filter).KsMethod(ref method, KsMethodSize, IntPtr.Zero, 0, ref returnedByteCount);
+        var method = new KsMethod(CamControlMethodSet, (int) CamControlMethod.Reset, (int) KsMethodFlag.Send);
+        int hr = ((IKsControl) _ciContexts[i].Filter).KsMethod(ref method, KsMethodSize, IntPtr.Zero, 0,
+                                                               ref returnedByteCount);
         if (hr == 0)
         {
           this.LogDebug("Digital Devices: result = success");
@@ -1018,9 +1020,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     /// <param name="pmt">The programme map table for the service.</param>
     /// <param name="cat">The conditional access table for the service.</param>
     /// <returns><c>true</c> if the command is successfully sent, otherwise <c>false</c></returns>
-    public bool SendCommand(IChannel channel, CaPmtListManagementAction listAction, CaPmtCommand command, Pmt pmt, Cat cat)
+    public bool SendCommand(IChannel channel, CaPmtListManagementAction listAction, CaPmtCommand command, Pmt pmt,
+                            Cat cat)
     {
-      this.LogDebug("Digital Devices: send conditional access command, list action = {0}, command = {1}", listAction, command);
+      this.LogDebug("Digital Devices: send conditional access command, list action = {0}, command = {1}", listAction,
+                    command);
 
       if (!_isDigitalDevices)
       {
@@ -1074,7 +1078,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       {
         this.LogDebug("Digital Devices: chaining restrictions not applied");
         context = 0;
-        serviceId |= (uint)DecryptChainingRestriction.None;
+        serviceId |= (uint) DecryptChainingRestriction.None;
 
         // Disable messages from the CAM for the next 10 seconds. We do this to
         // avoid showing MMI messages from CAMs which can't decrypt the channel.
@@ -1092,7 +1096,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         // look for a slot that has the provider not set. Otherwise look for a slot that can decrypt
         // services for the provider. The slot must also have decrypt limit "headroom".
         this.LogDebug("Digital Devices: chaining restrictions applied");
-        serviceId |= (uint)DecryptChainingRestriction.NoBackwardChaining | (uint)DecryptChainingRestriction.NoForwardChaining;
+        serviceId |= (uint) DecryptChainingRestriction.NoBackwardChaining |
+                     (uint) DecryptChainingRestriction.NoForwardChaining;
         // For each slot available to this tuner...
         for (int i = 0; i < _ciContexts.Count; i++)
         {
@@ -1102,9 +1107,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
             lock (_ciSlotSettings)
             {
               DigitalDevicesCiSlot globalSlot = _ciSlotSettings[_ciContexts[i].Device.DevicePath];
-              if ((provider.Equals(String.Empty) && globalSlot.Providers.Count == 0) || globalSlot.Providers.Contains(provider))
+              if ((provider.Equals(String.Empty) && globalSlot.Providers.Count == 0) ||
+                  globalSlot.Providers.Contains(provider))
               {
-                this.LogDebug("    provider supported, decrypt limit status = {0}/{1}", globalSlot.CurrentTunerSet.Count, globalSlot.DecryptLimit);
+                this.LogDebug("    provider supported, decrypt limit status = {0}/{1}", globalSlot.CurrentTunerSet.Count,
+                              globalSlot.DecryptLimit);
                 if (globalSlot.DecryptLimit == 0 || globalSlot.CurrentTunerSet.Count < globalSlot.DecryptLimit)
                 {
                   context = i;
@@ -1126,16 +1133,17 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       if (context == -1)
       {
         this.LogDebug("Digital Devices: no slots available");
-        return true;   // Don't bother retrying.
+        return true; // Don't bother retrying.
       }
 
-      const int paramSize = sizeof(Int32);
+      const int paramSize = sizeof (Int32);
       IntPtr buffer = Marshal.AllocCoTaskMem(paramSize);
-      Marshal.WriteInt32(buffer, (int)serviceId);
+      Marshal.WriteInt32(buffer, (int) serviceId);
       DVB_MMI.DumpBinary(buffer, 0, paramSize);
-      int hr = ((IKsPropertySet)_ciContexts[context].Filter).Set(DigitalDevicesCiSlots.CommonInterfacePropertySet, (int)CommonInterfaceProperty.DecryptProgram,
-                                                                 buffer, paramSize,
-                                                                 buffer, paramSize
+      int hr = ((IKsPropertySet) _ciContexts[context].Filter).Set(DigitalDevicesCiSlots.CommonInterfacePropertySet,
+                                                                  (int) CommonInterfaceProperty.DecryptProgram,
+                                                                  buffer, paramSize,
+                                                                  buffer, paramSize
         );
       Marshal.FreeCoTaskMem(buffer);
       if (hr == 0)
@@ -1214,7 +1222,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
           _ciMenuCallbacks.OnCiMenuChoice(i, _ciContexts[i].CamMenuTitle);
           this.LogDebug("  {0} = {1}", i + 1, _ciContexts[i].CamMenuTitle);
         }
-        _menuContext = -1;  // Reset the CAM context - the user will choose which CAM to use.
+        _menuContext = -1; // Reset the CAM context - the user will choose which CAM to use.
         this.LogDebug("Digital Devices: result = success");
         return true;
       }
@@ -1245,9 +1253,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         return true;
       }
 
-      var method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.CloseMenu, (int)KsMethodFlag.Send);
+      var method = new KsMethod(CamControlMethodSet, (int) CamControlMethod.CloseMenu, (int) KsMethodFlag.Send);
       int returnedByteCount = 0;
-      int hr = ((IKsControl)_ciContexts[_menuContext].Filter).KsMethod(ref method, KsMethodSize, IntPtr.Zero, 0, ref returnedByteCount);
+      int hr = ((IKsControl) _ciContexts[_menuContext].Filter).KsMethod(ref method, KsMethodSize, IntPtr.Zero, 0,
+                                                                        ref returnedByteCount);
       if (hr == 0)
       {
         this.LogDebug("Digital Devices: result = success");
@@ -1314,9 +1323,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       reply.Choice = choice;
       Marshal.StructureToPtr(reply, _mmiBuffer, true);
 
-      var method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.MenuReply, (int)KsMethodFlag.Send);
+      var method = new KsMethod(CamControlMethodSet, (int) CamControlMethod.MenuReply, (int) KsMethodFlag.Send);
       int returnedByteCount = 0;
-      int hr = ((IKsControl)_ciContexts[_menuContext].Filter).KsMethod(ref method, KsMethodSize, _mmiBuffer, MenuChoiceSize, ref returnedByteCount);
+      int hr = ((IKsControl) _ciContexts[_menuContext].Filter).KsMethod(ref method, KsMethodSize, _mmiBuffer,
+                                                                        MenuChoiceSize, ref returnedByteCount);
       if (hr == 0)
       {
         this.LogDebug("Digital Devices: result = success");
@@ -1339,7 +1349,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       {
         answer = String.Empty;
       }
-      this.LogDebug("Digital Devices: slot {0} send menu answer, answer = {1}, cancel = {2}", _menuContext + 1, answer, cancel);
+      this.LogDebug("Digital Devices: slot {0} send menu answer, answer = {1}, cancel = {2}", _menuContext + 1, answer,
+                    cancel);
 
       if (!_isDigitalDevices)
       {
@@ -1358,7 +1369,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       Marshal.WriteInt32(_mmiBuffer, 8, 0);
       for (int i = 0; i < answer.Length; i++)
       {
-        Marshal.WriteByte(_mmiBuffer, 8 + i, (byte)answer[i]);
+        Marshal.WriteByte(_mmiBuffer, 8 + i, (byte) answer[i]);
       }
       // NULL terminate the string.
       Marshal.WriteByte(_mmiBuffer, 8 + answer.Length, 0);
@@ -1366,9 +1377,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       int bufferSize = 8 + Math.Max(4, answer.Length + 1);
       DVB_MMI.DumpBinary(_mmiBuffer, 0, bufferSize);
 
-      var method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.CamAnswer, (int)KsMethodFlag.Send);
+      var method = new KsMethod(CamControlMethodSet, (int) CamControlMethod.CamAnswer, (int) KsMethodFlag.Send);
       int returnedByteCount = 0;
-      int hr = ((IKsControl)_ciContexts[_menuContext].Filter).KsMethod(ref method, KsMethodSize, _mmiBuffer, bufferSize, ref returnedByteCount);
+      int hr = ((IKsControl) _ciContexts[_menuContext].Filter).KsMethod(ref method, KsMethodSize, _mmiBuffer, bufferSize,
+                                                                        ref returnedByteCount);
       if (hr == 0)
       {
         this.LogDebug("Digital Devices: result = success");
@@ -1400,9 +1412,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         return true;
       }
 
-      var method = new KsMethod(CamControlMethodSet, (int)CamControlMethod.EnterMenu, (int)KsMethodFlag.Send);
+      var method = new KsMethod(CamControlMethodSet, (int) CamControlMethod.EnterMenu, (int) KsMethodFlag.Send);
       int returnedByteCount = 0;
-      int hr = ((IKsControl)_ciContexts[slot].Filter).KsMethod(ref method, KsMethodSize, IntPtr.Zero, 0, ref returnedByteCount);
+      int hr = ((IKsControl) _ciContexts[slot].Filter).KsMethod(ref method, KsMethodSize, IntPtr.Zero, 0,
+                                                                ref returnedByteCount);
       if (hr == 0)
       {
         this.LogDebug("Digital Devices: result = success");
@@ -1475,27 +1488,31 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       int hr = _deviceControl.StartChanges();
       if (hr != 0)
       {
-        this.LogDebug("Digital Devices: failed to start device control changes, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Digital Devices: failed to start device control changes, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         success = false;
       }
 
       // I'm not certain whether this property has to be set for each command sent, but we do it for safety.
       Marshal.WriteInt32(_paramBuffer, 0, 0);
-      hr = _propertySet.Set(typeof(IBDA_DiseqCommand).GUID, (int)BdaDiseqcProperty.Enable, _instanceBuffer, InstanceSize, _paramBuffer, 4);
+      hr = _propertySet.Set(typeof (IBDA_DiseqCommand).GUID, (int) BdaDiseqcProperty.Enable, _instanceBuffer,
+                            InstanceSize, _paramBuffer, 4);
       if (hr != 0)
       {
-        this.LogDebug("Digital Devices: failed to enable DiSEqC commands, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Digital Devices: failed to enable DiSEqC commands, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         success = false;
       }
 
       var message = new BdaDiseqcMessage();
       message.RequestId = _requestId++;
-      message.PacketLength = (uint)command.Length;
+      message.PacketLength = (uint) command.Length;
       message.PacketData = new byte[MaxDiseqcMessageLength];
       Buffer.BlockCopy(command, 0, message.PacketData, 0, command.Length);
       Marshal.StructureToPtr(message, _paramBuffer, true);
       //DVB_MMI.DumpBinary(_paramBuffer, 0, BdaDiseqcMessageSize);
-      hr = _propertySet.Set(typeof(IBDA_DiseqCommand).GUID, (int)BdaDiseqcProperty.Send, _instanceBuffer, InstanceSize, _paramBuffer, BdaDiseqcMessageSize);
+      hr = _propertySet.Set(typeof (IBDA_DiseqCommand).GUID, (int) BdaDiseqcProperty.Send, _instanceBuffer, InstanceSize,
+                            _paramBuffer, BdaDiseqcMessageSize);
       if (hr != 0)
       {
         this.LogDebug("Digital Devices: failed to send command, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -1506,13 +1523,15 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       hr = _deviceControl.CheckChanges();
       if (hr != 0)
       {
-        this.LogDebug("Digital Devices: failed to check device control changes, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Digital Devices: failed to check device control changes, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         success = false;
       }
       hr = _deviceControl.CommitChanges();
       if (hr != 0)
       {
-        this.LogDebug("Digital Devices: failed to commit device control changes, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Digital Devices: failed to commit device control changes, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         success = false;
       }
 
@@ -1542,11 +1561,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         Marshal.WriteInt32(_paramBuffer, 0, 0);
       }
       int returnedByteCount;
-      int hr = _propertySet.Get(typeof(IBDA_DiseqCommand).GUID, (int)BdaDiseqcProperty.Response, _paramBuffer, InstanceSize, _paramBuffer, BdaDiseqcMessageSize, out returnedByteCount);
+      int hr = _propertySet.Get(typeof (IBDA_DiseqCommand).GUID, (int) BdaDiseqcProperty.Response, _paramBuffer,
+                                InstanceSize, _paramBuffer, BdaDiseqcMessageSize, out returnedByteCount);
       if (hr == 0 && returnedByteCount == BdaDiseqcMessageSize)
       {
         // Copy the response into the return array.
-        var message = (BdaDiseqcMessage)Marshal.PtrToStructure(_paramBuffer, typeof(BdaDiseqcMessage));
+        var message = (BdaDiseqcMessage) Marshal.PtrToStructure(_paramBuffer, typeof (BdaDiseqcMessage));
         if (message.PacketLength > MaxDiseqcMessageLength)
         {
           this.LogDebug("Digital Devices: response length is out of bounds, response length = {0}", message.PacketLength);
@@ -1554,11 +1574,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         }
         this.LogDebug("Digital Devices: result = success");
         response = new byte[message.PacketLength];
-        Buffer.BlockCopy(message.PacketData, 0, response, 0, (int)message.PacketLength);
+        Buffer.BlockCopy(message.PacketData, 0, response, 0, (int) message.PacketLength);
         return true;
       }
 
-      this.LogDebug("Digital Devices: result = failure, response length = {0}, hr = 0x{1:x} ({2})", returnedByteCount, hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("Digital Devices: result = failure, response length = {0}, hr = 0x{1:x} ({2})", returnedByteCount,
+                    hr, HResult.GetDXErrorString(hr));
       return false;
     }
 

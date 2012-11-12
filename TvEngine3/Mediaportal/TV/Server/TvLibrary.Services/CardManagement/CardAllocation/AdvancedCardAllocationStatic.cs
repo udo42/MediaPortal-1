@@ -15,6 +15,7 @@
 // 
 // You should have received a copy of the GNU General Public License
 // along with MediaPortal. If not, see <http://www.gnu.org/licenses/>.
+
 #endregion
 
 using Mediaportal.TV.Server.TVLibrary.Interfaces.Interfaces;
@@ -40,7 +41,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
     protected override int NumberOfOtherUsersOnCurrentCard(ITvCardHandler card, IUser user)
     {
       return 0;
-    }   
+    }
 
     #endregion
   }

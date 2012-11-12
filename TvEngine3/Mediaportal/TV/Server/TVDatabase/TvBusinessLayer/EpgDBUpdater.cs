@@ -102,8 +102,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     #region Public members
 
     public void ReloadConfig()
-    {      
-      
+    {
       _titleTemplate = SettingsManagement.GetValue("epgTitleTemplate", "%TITLE%");
       _descriptionTemplate = SettingsManagement.GetValue("epgDescriptionTemplate", "%DESCRIPTION%");
       _epgLanguages = SettingsManagement.GetValue("epgLanguages", string.Empty);
@@ -194,20 +193,22 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         {
           try
           {
-            IList<Program> epgs = ProgramManagement.GetProgramExists(dbChannel.IdChannel, epgProgram.StartTime, epgProgram.EndTime);
+            IList<Program> epgs = ProgramManagement.GetProgramExists(dbChannel.IdChannel, epgProgram.StartTime,
+                                                                     epgProgram.EndTime);
 
             if (epgs.Count > 0)
             {
               prog = epgs[0];
               if (epgs.Count > 1)
               {
-                this.LogDebug("- {0} entries are obsolete for {1} from {2} to {3}", epgs.Count - 1, dbChannel.DisplayName,
+                this.LogDebug("- {0} entries are obsolete for {1} from {2} to {3}", epgs.Count - 1,
+                              dbChannel.DisplayName,
                               epgProgram.StartTime, epgProgram.EndTime);
               }
               for (int idx = 1; idx < epgs.Count; idx++)
               {
                 try
-                {                  
+                {
                   ProgramManagement.DeleteProgram(epgs[idx].IdProgram);
                   this.LogDebug("- Deleted the epg entry {0} ({1} - {2})", epgs[idx].Title, epgs[idx].StartTime,
                                 epgs[idx].EndTime);
@@ -230,7 +231,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       }
       dbChannel.LastGrabTime = DateTime.Now;
       dbChannel.EpgHasGaps = hasGaps;
-      ChannelManagement.SaveChannel(dbChannel);      
+      ChannelManagement.SaveChannel(dbChannel);
 
       //_layer.StartResetProgramStatesThread(System.Threading.ThreadPriority.Lowest);
 
@@ -244,7 +245,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
     private Channel IsInsertAllowed(EpgChannel epgChannel)
     {
-      var dvbChannel = (DVBBaseChannel)epgChannel.Channel;
+      var dvbChannel = (DVBBaseChannel) epgChannel.Channel;
       //are there any epg infos for this channel?
       if (epgChannel.Programs.Count == 0)
       {
@@ -254,7 +255,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       }
       //do we know a channel with these tuning details?
       Channel dbChannel = null;
-      TuningDetail tuningDetail = ChannelManagement.GetTuningDetail(dvbChannel);      
+      TuningDetail tuningDetail = ChannelManagement.GetTuningDetail(dvbChannel);
       if (tuningDetail != null)
       {
         dbChannel = tuningDetail.Channel;
@@ -432,9 +433,11 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       description = EvalTemplate(_descriptionTemplate, values);
       if (dbProg == null)
       {
-        dbProg = ProgramFactory.CreateProgram(dbChannel.IdChannel, ep.StartTime, ep.EndTime, title, description, ProgramManagement.GetProgramCategoryByName(genre),
+        dbProg = ProgramFactory.CreateProgram(dbChannel.IdChannel, ep.StartTime, ep.EndTime, title, description,
+                                              ProgramManagement.GetProgramCategoryByName(genre),
                                               ProgramState.None,
-                                              SqlDateTime.MinValue.Value, string.Empty, string.Empty, string.Empty, string.Empty,
+                                              SqlDateTime.MinValue.Value, string.Empty, string.Empty, string.Empty,
+                                              string.Empty,
                                               starRating, classification,
                                               parentRating);
         ProgramManagement.SaveProgram(dbProg);
@@ -464,7 +467,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         prgBLL.Entity.OriginalAirDate = SqlDateTime.MinValue.Value; // TODO: /!\ add implementation
         prgBLL.ClearRecordPendingState();
         ProgramManagement.SaveProgram(prgBLL.Entity);
-      }      
+      }
     }
 
     #endregion

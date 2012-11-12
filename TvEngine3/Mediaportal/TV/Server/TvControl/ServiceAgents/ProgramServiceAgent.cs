@@ -20,7 +20,7 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     }
 
     public IDictionary<int, NowAndNext> GetNowAndNextForChannelGroup(int idGroup)
-    {      
+    {
       return _channel.GetNowAndNextForChannelGroup(idGroup);
     }
 
@@ -55,7 +55,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       return _channel.GetProgramsByTitleAndTimesInterval(title, startTime, endTime);
     }
 
-    public Program GetProgramsByTitleTimesAndChannel(string programName, DateTime startTime, DateTime endTime, int idChannel)
+    public Program GetProgramsByTitleTimesAndChannel(string programName, DateTime startTime, DateTime endTime,
+                                                     int idChannel)
     {
       return _channel.GetProgramsByTitleTimesAndChannel(programName, startTime, endTime, idChannel);
     }
@@ -90,7 +91,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       return _channel.GetProgramByTitleAndTimes(programName, startTime, endTime);
     }
 
-    public IList<Program> GetProgramsByDescriptionAndMediaType(string descriptionCriteria, MediaTypeEnum mediaType, StringComparisonEnum stringComparison)
+    public IList<Program> GetProgramsByDescriptionAndMediaType(string descriptionCriteria, MediaTypeEnum mediaType,
+                                                               StringComparisonEnum stringComparison)
     {
       return _channel.GetProgramsByDescriptionAndMediaType(descriptionCriteria, mediaType, stringComparison);
     }
@@ -105,7 +107,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       return _channel.GetProgramsByTitle(titleCriteria, stringComparison);
     }
 
-    public IList<Program> GetProgramsByTitleAndMediaType(string titleCriteria, MediaTypeEnum mediaType, StringComparisonEnum stringComparison)
+    public IList<Program> GetProgramsByTitleAndMediaType(string titleCriteria, MediaTypeEnum mediaType,
+                                                         StringComparisonEnum stringComparison)
     {
       return _channel.GetProgramsByTitleAndMediaType(titleCriteria, mediaType, stringComparison);
     }
@@ -115,14 +118,19 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       return _channel.GetProgram(idProgram);
     }
 
-    public IDictionary<int, IList<Program>> GetProgramsForAllChannels(DateTime startTime, DateTime endTime, IEnumerable<Channel> channels)
+    public IDictionary<int, IList<Program>> GetProgramsForAllChannels(DateTime startTime, DateTime endTime,
+                                                                      IEnumerable<Channel> channels)
     {
       return _channel.GetProgramsForAllChannels(startTime, endTime, channels);
     }
 
-    public IList<Program> GetProgramsByTitleAndCategoryAndMediaType(string categoryCriteriea, string titleCriteria, MediaTypeEnum mediaType, StringComparisonEnum stringComparisonCategory, StringComparisonEnum stringComparisonTitle)
+    public IList<Program> GetProgramsByTitleAndCategoryAndMediaType(string categoryCriteriea, string titleCriteria,
+                                                                    MediaTypeEnum mediaType,
+                                                                    StringComparisonEnum stringComparisonCategory,
+                                                                    StringComparisonEnum stringComparisonTitle)
     {
-      return _channel.GetProgramsByTitleAndCategoryAndMediaType(categoryCriteriea, titleCriteria, mediaType, stringComparisonCategory, stringComparisonTitle);
+      return _channel.GetProgramsByTitleAndCategoryAndMediaType(categoryCriteriea, titleCriteria, mediaType,
+                                                                stringComparisonCategory, stringComparisonTitle);
     }
 
     public IList<Program> GetProgramsByTimesInterval(DateTime startTime, DateTime endTime)
@@ -130,7 +138,8 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
       return _channel.GetProgramsByTimesInterval(startTime, endTime);
     }
 
-    public IList<Program> GetProgramsByChannelAndTitleAndStartEndTimes(int idChannel, string title, DateTime startTime, DateTime endTime)
+    public IList<Program> GetProgramsByChannelAndTitleAndStartEndTimes(int idChannel, string title, DateTime startTime,
+                                                                       DateTime endTime)
     {
       return _channel.GetProgramsByChannelAndTitleAndStartEndTimes(idChannel, title, startTime, endTime);
     }

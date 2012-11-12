@@ -43,6 +43,5 @@ namespace MediaPortal.Common.Utils
     {
       get { return _version; }
     }
-
   }
 }

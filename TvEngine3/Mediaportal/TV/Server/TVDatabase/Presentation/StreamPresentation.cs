@@ -4,35 +4,29 @@ using Mediaportal.TV.Server.TVDatabase.Entities;
 using Mediaportal.TV.Server.TVService.Interfaces.Services;
 
 namespace Mediaportal.TV.Server.TVDatabase.Presentation
-{  
+{
   [DataContract]
   public class StreamPresentation
   {
-    [DataMember]
-    private readonly Channel _channel;
+    [DataMember] private readonly Channel _channel;
 
-    [DataMember]
-    private readonly bool _isParked;
+    [DataMember] private readonly bool _isParked;
 
-    [DataMember]
-    private readonly bool _isRecording;
+    [DataMember] private readonly bool _isRecording;
 
     private readonly bool _isScrambled;
 
-    [DataMember]
-    private readonly bool _isTimeshifting;
+    [DataMember] private readonly bool _isTimeshifting;
 
-    [DataMember]
-    private readonly DateTime _parkedAt;
+    [DataMember] private readonly DateTime _parkedAt;
 
-    [DataMember]
-    private readonly double _parkedDuration;
+    [DataMember] private readonly double _parkedDuration;
 
-    [DataMember]
-    private readonly IUser _user;
+    [DataMember] private readonly IUser _user;
 
 
-    public StreamPresentation(Channel channel, IUser user, bool isParked, bool isRecording, bool isTimeshifting, double parkedDuration, DateTime parkedAt, bool isScrambled)
+    public StreamPresentation(Channel channel, IUser user, bool isParked, bool isRecording, bool isTimeshifting,
+                              double parkedDuration, DateTime parkedAt, bool isScrambled)
     {
       _channel = channel;
       _user = user;

@@ -24,7 +24,7 @@ using MediaPortal.Util;
 
 namespace Mediaportal.TV.TvPlugin
 {
-  public class TVConflictDialog: GUIDialogWindow
+  public class TVConflictDialog : GUIDialogWindow
   {
     #region Enums
 
@@ -36,7 +36,7 @@ namespace Mediaportal.TV.TvPlugin
       BUTTON_CONFLICT_REC = 12,
       BUTTON_KEEP_CONFLICT = 13,
       BUTTON_CONFLICT_EPISODE = 14
-    } ;
+    };
 
     #endregion
 
@@ -53,7 +53,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public TVConflictDialog()
     {
-      GetID = (int)Window.WINDOW_DIALOG_TVCONFLICT;
+      GetID = (int) Window.WINDOW_DIALOG_TVCONFLICT;
     }
 
     #endregion
@@ -72,13 +72,13 @@ namespace Mediaportal.TV.TvPlugin
 
     public void SetHeading(string HeadingText)
     {
-      SetControlLabel(GetID, (int)Controls.HEADING, HeadingText);
+      SetControlLabel(GetID, (int) Controls.HEADING, HeadingText);
     }
 
     public void AddConflictRecording(GUIListItem item)
     {
       string logo = Utils.GetCoverArt(Thumbs.TVChannel, item.Label3);
-      if (!Utils.FileExistsInCache(logo))      
+      if (!Utils.FileExistsInCache(logo))
       {
         logo = "defaultVideoBig.png";
       }
@@ -87,7 +87,7 @@ namespace Mediaportal.TV.TvPlugin
       item.IconImage = logo;
       item.OnItemSelected += OnListItemSelected;
 
-      var list = (GUIListControl)GetControl((int)Controls.LIST);
+      var list = (GUIListControl) GetControl((int) Controls.LIST);
       if (list != null)
       {
         list.Add(item);
@@ -120,7 +120,7 @@ namespace Mediaportal.TV.TvPlugin
     {
       base.Reset();
       ConflictingEpisodes = false;
-      var list = (GUIListControl)GetControl((int)Controls.LIST);
+      var list = (GUIListControl) GetControl((int) Controls.LIST);
       if (list != null)
       {
         list.Clear();
@@ -133,22 +133,22 @@ namespace Mediaportal.TV.TvPlugin
       {
         case GUIMessage.MessageType.GUI_MSG_CLICKED:
           int iControl = message.SenderControlId;
-          if ((int)Controls.BUTTON_NEW_REC == iControl)
+          if ((int) Controls.BUTTON_NEW_REC == iControl)
           {
             SelectedLabel = 0;
             PageDestroy();
           }
-          else if ((int)Controls.BUTTON_CONFLICT_REC == iControl)
+          else if ((int) Controls.BUTTON_CONFLICT_REC == iControl)
           {
             SelectedLabel = 1;
             PageDestroy();
           }
-          else if ((int)Controls.BUTTON_KEEP_CONFLICT == iControl)
+          else if ((int) Controls.BUTTON_KEEP_CONFLICT == iControl)
           {
             SelectedLabel = 2;
             PageDestroy();
           }
-          else if ((int)Controls.BUTTON_CONFLICT_EPISODE == iControl)
+          else if ((int) Controls.BUTTON_CONFLICT_EPISODE == iControl)
           {
             SelectedLabel = 3;
             PageDestroy();
@@ -162,11 +162,11 @@ namespace Mediaportal.TV.TvPlugin
     {
       if (_conflictingEpisodes)
       {
-        ShowControl(GetID, (int)Controls.BUTTON_CONFLICT_EPISODE);
+        ShowControl(GetID, (int) Controls.BUTTON_CONFLICT_EPISODE);
       }
       else
       {
-        HideControl(GetID, (int)Controls.BUTTON_CONFLICT_EPISODE);
+        HideControl(GetID, (int) Controls.BUTTON_CONFLICT_EPISODE);
       }
 
       base.DoModal(ParentID);

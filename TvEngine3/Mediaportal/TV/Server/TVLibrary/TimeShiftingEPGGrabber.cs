@@ -53,9 +53,8 @@ namespace Mediaportal.TV.Server.TVLibrary
 
     private void LoadSettings()
     {
-
       double timeout = SettingsManagement.GetValue("timeshiftingEpgGrabberTimeout", 2.0);
-      _epgTimer.Interval = timeout * 60000;
+      _epgTimer.Interval = timeout*60000;
     }
 
     public bool StartGrab()
@@ -157,8 +156,8 @@ namespace Mediaportal.TV.Server.TVLibrary
       finally
       {
         _card.IsEpgGrabbing = false;
-        _updateThreadRunning = false;         
-      }            
+        _updateThreadRunning = false;
+      }
     }
 
     #endregion

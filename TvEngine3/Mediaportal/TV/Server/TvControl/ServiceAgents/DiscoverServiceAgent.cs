@@ -21,12 +21,12 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
     public DiscoverServiceAgent(string hostname)
     {
       BasicHttpBinding binding = ServiceHelper.GetHttpBinding();
-      var timeout = new TimeSpan(0,0,0,2);
+      var timeout = new TimeSpan(0, 0, 0, 2);
       binding.SendTimeout = timeout;
       binding.OpenTimeout = timeout;
       if (!String.IsNullOrEmpty(hostname))
       {
-        var endpoint = new EndpointAddress(ServiceHelper.GetEndpointURL(typeof(IDiscoverService), hostname));
+        var endpoint = new EndpointAddress(ServiceHelper.GetEndpointURL(typeof (IDiscoverService), hostname));
         var channelFactory = new ChannelFactory<IDiscoverService>(binding, endpoint);
         _channel = channelFactory.CreateChannel();
       }
@@ -50,6 +50,4 @@ namespace Mediaportal.TV.Server.TVControl.ServiceAgents
 
     #endregion
   }
-
-  
 }

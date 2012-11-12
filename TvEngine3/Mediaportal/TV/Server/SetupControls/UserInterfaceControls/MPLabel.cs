@@ -25,5 +25,7 @@ namespace Mediaportal.TV.Server.SetupControls.UserInterfaceControls
   /// <summary>
   /// Summary description for MPLabel.
   /// </summary>
-  public class MPLabel : Label {}
+  public class MPLabel : Label
+  {
+  }
 }

@@ -1312,22 +1312,22 @@ namespace DirectShowLib.BDA
     [PreserveSig]
     int put_SignalTimeouts(
       [In] BDA_SIGNAL_TIMEOUTS pSignalTimeouts
-    );
+      );
 
     [PreserveSig]
     int get_SignalTimeouts(
       [In, Out] BDA_SIGNAL_TIMEOUTS pSignalTimeouts
-    );
+      );
 
     [PreserveSig]
     int put_PLPNumber(
       [In] ref int pPLPNumber
-    );
+      );
 
     [PreserveSig]
     int get_PLPNumber(
       [In, Out] ref int pPLPNumber
-    );
+      );
   }
 
   [ComImport, SuppressUnmanagedCodeSecurity,
@@ -1639,12 +1639,16 @@ namespace DirectShowLib.BDA
     [PreserveSig]
     int GetMulticastList(
       out int pulcbSize,
-      out IntPtr pbBuffer); // BYTE **
+      out IntPtr pbBuffer);
+
+    // BYTE **
 
     [PreserveSig]
     int GetAdapterIPAddress(
       out int pulcbSize,
-      out IntPtr pbBuffer); // BYTE **
+      out IntPtr pbBuffer);
+
+    // BYTE **
   }
 
   [ComImport, SuppressUnmanagedCodeSecurity,
@@ -1655,7 +1659,9 @@ namespace DirectShowLib.BDA
     [PreserveSig]
     int get_MulticastList(
       out int pulcbAddresses,
-      out IntPtr ppbAddressList); // BYTE **
+      out IntPtr ppbAddressList);
+
+    // BYTE **
 
     [PreserveSig]
     int get_AdapterIPAddress(
@@ -1706,12 +1712,16 @@ namespace DirectShowLib.BDA
     [PreserveSig]
     int PutMulticastList(
       int ulcbAddresses,
-      IntPtr pAddressList); // BYTE []
+      IntPtr pAddressList);
+
+    // BYTE []
 
     [PreserveSig]
     int GetMulticastList(
       ref int pulcbAddresses,
-      IntPtr pAddressList); // BYTE []
+      IntPtr pAddressList);
+
+    // BYTE []
 
     [PreserveSig]
     int PutMulticastMode(

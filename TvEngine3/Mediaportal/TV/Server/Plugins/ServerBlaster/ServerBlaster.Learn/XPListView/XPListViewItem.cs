@@ -32,20 +32,33 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
     private int _groupIndex;
 
     public XPListViewItem()
-    {}
+    {
+    }
 
-    public XPListViewItem(string text) : base(text) {}
+    public XPListViewItem(string text) : base(text)
+    {
+    }
 
-    public XPListViewItem(string text, int imageIndex) : base(text, imageIndex) {}
+    public XPListViewItem(string text, int imageIndex) : base(text, imageIndex)
+    {
+    }
 
-    public XPListViewItem(string[] items) : base(items) {}
+    public XPListViewItem(string[] items) : base(items)
+    {
+    }
 
-    public XPListViewItem(string[] items, int imageIndex) : base(items, imageIndex) {}
+    public XPListViewItem(string[] items, int imageIndex) : base(items, imageIndex)
+    {
+    }
 
-    public XPListViewItem(ListViewSubItem[] subItems, int imageIndex) : base(subItems, imageIndex) {}
+    public XPListViewItem(ListViewSubItem[] subItems, int imageIndex) : base(subItems, imageIndex)
+    {
+    }
 
     public XPListViewItem(string[] items, int imageIndex, Color foreColor, Color backColor, Font font)
-      : base(items, imageIndex, foreColor, backColor, font) {}
+      : base(items, imageIndex, foreColor, backColor, font)
+    {
+    }
 
     public XPListViewItem(string text, int imageIndex, int groupIndex) : base(text, imageIndex)
     {
@@ -76,7 +89,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
       set
       {
         _groupIndex = value;
-        ListViewAPI.AddItemToGroup(((XPListView)base.ListView), base.Index, _groupIndex);
+        ListViewAPI.AddItemToGroup(((XPListView) base.ListView), base.Index, _groupIndex);
       }
     }
 

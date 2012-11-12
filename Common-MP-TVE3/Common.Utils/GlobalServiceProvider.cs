@@ -90,6 +90,7 @@ namespace MediaPortal.Common.Utils
       return pool;
     }
     */
+
     #endregion
 
     public static void Remove(Type serviceInterface)

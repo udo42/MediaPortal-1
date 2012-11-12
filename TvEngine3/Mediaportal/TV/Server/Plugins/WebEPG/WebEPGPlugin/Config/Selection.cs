@@ -93,7 +93,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
       tGrabbers = grabbers;
 
       treeView1.Nodes.Clear();
-      treeView1.Nodes.Add((TreeNode)tGrabbers.Clone());
+      treeView1.Nodes.Add((TreeNode) tGrabbers.Clone());
 
       treeView1.TreeViewNodeSorter = new NodeSorter();
 
@@ -105,7 +105,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
 
     public GrabberSelectionInfo Selected
     {
-      get { return (GrabberSelectionInfo)treeView1.SelectedNode.Tag; }
+      get { return (GrabberSelectionInfo) treeView1.SelectedNode.Tag; }
     }
 
     public event GrabberSelectedEventHandler GrabberSelected;
@@ -150,7 +150,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
     {
       //			TreeNode sNode = treeView1.SelectedNode;
       treeView1.Nodes.Clear();
-      treeView1.Nodes.Add((TreeNode)tGrabbers.Clone());
+      treeView1.Nodes.Add((TreeNode) tGrabbers.Clone());
     }
 
     private TreeNode FindNode(TreeNode tNode, GrabberSelectionInfo tag)
@@ -165,7 +165,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
         }
       }
 
-      var ntag = (GrabberSelectionInfo)tNode.Tag;
+      var ntag = (GrabberSelectionInfo) tNode.Tag;
       if (ntag != null && ntag.ChannelId == tag.ChannelId && ntag.GrabberId == tag.GrabberId)
       {
         return tNode;

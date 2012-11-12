@@ -7,7 +7,6 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 {
   public static class ConflictManagement
   {
-
     public static IList<Conflict> ListAllConflicts()
     {
       using (var conflictRepository = new GenericRepository<Model>())
@@ -26,7 +25,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         conflictRepository.UnitOfWork.SaveChanges();
         conflict.AcceptChanges();
         return conflict;
-      }            
+      }
     }
 
     public static Conflict GetConflict(int idConflict)

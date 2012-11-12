@@ -67,7 +67,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
 
     private bool _disposed;
     private List<EpgCard> _epgCards;
-    private int _epgReGrabAfter = 4 * 60; //hours
+    private int _epgReGrabAfter = 4*60; //hours
     private bool _isRunning;
     private bool _reEntrant;
 
@@ -79,7 +79,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
     /// Constructor
     /// </summary>
     public EpgGrabber()
-    {      
+    {
       _epgTimer.Interval = 30000;
       _epgTimer.Elapsed += _epgTimer_Elapsed;
     }
@@ -116,7 +116,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
         return;
       }
 
-      _epgReGrabAfter = SettingsManagement.GetValue("timeoutEPGRefresh", 240);      
+      _epgReGrabAfter = SettingsManagement.GetValue("timeoutEPGRefresh", 240);
 
       TransponderList.Instance.RefreshTransponders();
       if (TransponderList.Instance.Count == 0)
@@ -187,13 +187,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
     #region IDisposable Members
 
     /// <summary>
-		/// Disposes the EPG card grabber
-		/// </summary>    
-		public void Dispose()
-		{
-		  Dispose(true);
-		  GC.SuppressFinalize(this);
-		}
+    /// Disposes the EPG card grabber
+    /// </summary>    
+    public void Dispose()
+    {
+      Dispose(true);
+      GC.SuppressFinalize(this);
+    }
 
     #endregion
 
@@ -213,9 +213,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
     }
 
     ~EpgGrabber()
-		{
-		  Dispose(false);
-		}
+    {
+      Dispose(false);
+    }
 
     #region private members
 
@@ -244,7 +244,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
           if (string.IsNullOrEmpty(threadname))
             Thread.CurrentThread.Name = "DVB EPG timer";
         }
-        catch (InvalidOperationException) {}
+        catch (InvalidOperationException)
+        {
+        }
 
         if (ServiceManager.Instance.InternalControllerService.AllCardsIdle == false)
           return;
@@ -306,7 +308,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Epg
           Channel ch = TransponderList.Instance.CurrentTransponder.CurrentChannel;
 
           //check if its time to grab the epg for this channel
-          TimeSpan ts = DateTime.Now - TransponderList.Instance.CurrentTransponder.CurrentChannel.LastGrabTime.GetValueOrDefault(DateTime.MinValue);
+          TimeSpan ts = DateTime.Now -
+                        TransponderList.Instance.CurrentTransponder.CurrentChannel.LastGrabTime.GetValueOrDefault(
+                          DateTime.MinValue);
           if (ts.TotalMinutes < _epgReGrabAfter)
           {
             //this.LogInfo("Skip card:#{0} transponder #{1}/{2} channel: {3} - Less than regrab time",

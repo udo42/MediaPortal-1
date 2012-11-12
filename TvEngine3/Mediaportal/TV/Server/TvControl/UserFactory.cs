@@ -31,9 +31,7 @@ namespace Mediaportal.TV.Server.TVControl
 {
   public static class UserFactory
   {
-
-
-    public const int EPG_PRIORITY = 1;    
+    public const int EPG_PRIORITY = 1;
     public const int USER_PRIORITY = 2;
     public const int SCHEDULER_PRIORITY = 101;
     public const string EPG_TAGNAME = "PriorityEPG";
@@ -45,7 +43,7 @@ namespace Mediaportal.TV.Server.TVControl
     //private const bool IS_ADMIN_EPG = false;
 
     public const string NAME_SCHEDULER = "scheduler";
-    
+
     private const int PRIORITY_MAX_VALUE = 100;
     private const int PRIORITY_MIN_VALUE = 1;
 
@@ -59,19 +57,24 @@ namespace Mediaportal.TV.Server.TVControl
 
     static UserFactory()
     {
-        
-      
       try
       {
         var settingService = GlobalServiceProvider.Get<ISettingService>();
-        _priorityEpg = (int)ValueSanityCheck(settingService.GetValue(EPG_TAGNAME, EPG_PRIORITY), PRIORITY_MIN_VALUE, PRIORITY_MAX_VALUE);
+        _priorityEpg =
+          (int)
+          ValueSanityCheck(settingService.GetValue(EPG_TAGNAME, EPG_PRIORITY), PRIORITY_MIN_VALUE, PRIORITY_MAX_VALUE);
 
         Log.Debug("UserFactory setting PriorityEPG : {0}", _priorityEpg);
 
-        _priorityUser = (int)ValueSanityCheck(settingService.GetValue(USER_TAGNAME, USER_PRIORITY), PRIORITY_MIN_VALUE, PRIORITY_MAX_VALUE);
+        _priorityUser =
+          (int)
+          ValueSanityCheck(settingService.GetValue(USER_TAGNAME, USER_PRIORITY), PRIORITY_MIN_VALUE, PRIORITY_MAX_VALUE);
         Log.Debug("UserFactory setting PriorityUser : {0}", _priorityUser);
 
-        _priorityScheduler = (int)ValueSanityCheck(settingService.GetValue(SCHEDULER_TAGNAME, SCHEDULER_PRIORITY), PRIORITY_MIN_VALUE, PRIORITY_MAX_VALUE);
+        _priorityScheduler =
+          (int)
+          ValueSanityCheck(settingService.GetValue(SCHEDULER_TAGNAME, SCHEDULER_PRIORITY), PRIORITY_MIN_VALUE,
+                           PRIORITY_MAX_VALUE);
         Log.Debug("UserFactory setting PriorityScheduler : {0}", _priorityScheduler);
 
         string setting = settingService.GetValue(CUSTOM_TAGNAME, "");
@@ -94,9 +97,8 @@ namespace Mediaportal.TV.Server.TVControl
       }
       catch (Exception ex)
       {
-        Log.Error("UserFactory - error reading priority settings from database", ex);        
+        Log.Error("UserFactory - error reading priority settings from database", ex);
       }
-      
     }
 
     private static decimal ValueSanityCheck(decimal value, int min, int max)
@@ -118,7 +120,7 @@ namespace Mediaportal.TV.Server.TVControl
     {
       string name = NAME_SCHEDULER + scheduleId;
       IUser schedulerUser = new User(name, UserType.Scheduler, cardId, _priorityScheduler);
-      return schedulerUser;  
+      return schedulerUser;
     }
 
     public static IUser CreateSchedulerUser()
@@ -142,7 +144,7 @@ namespace Mediaportal.TV.Server.TVControl
     {
       int priorityCustomUser = GetDefaultPriority(name, defaultPriority);
       IUser basicUser = new User(name, userType, cardId, priorityCustomUser);
-      return basicUser;  
+      return basicUser;
     }
 
     public static IUser CreateBasicUser(string name)
@@ -176,7 +178,5 @@ namespace Mediaportal.TV.Server.TVControl
       }
       return priorityCustomUser;
     }
-
-    
   }
 }

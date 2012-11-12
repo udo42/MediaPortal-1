@@ -39,8 +39,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
   {
     #region constants
 
-    private const int InstanceSize = 32;    // The size of a property instance (KSP_NODE) parameter.
-    private const int ParamSize = 4;        // The size of a demodulator property value, usually ULONG.
+    private const int InstanceSize = 32; // The size of a property instance (KSP_NODE) parameter.
+    private const int ParamSize = 4; // The size of a demodulator property value, usually ULONG.
     private const int BdaDiseqcMessageSize = 16;
     private const int MaxDiseqcMessageLength = 8;
 
@@ -48,18 +48,18 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
 
     #region variables
 
-    private List<byte[]> _commands = new List<byte[]>();        // A cache of commands.
+    private List<byte[]> _commands = new List<byte[]>(); // A cache of commands.
     private readonly HashSet<UInt16> _currentPids = new HashSet<UInt16>();
     private IBDA_DeviceControl _deviceControl;
-    private IKsPropertySet _diseqcPropertySet;           // IBDA_DiseqCommand
+    private IKsPropertySet _diseqcPropertySet; // IBDA_DiseqCommand
 
     private IntPtr _instanceBuffer = IntPtr.Zero;
     private bool _isMicrosoft;
-    private IBDA_FrequencyFilter _oldDiseqcInterface;    // IBDA_FrequencyFilter
+    private IBDA_FrequencyFilter _oldDiseqcInterface; // IBDA_FrequencyFilter
     private IntPtr _paramBuffer = IntPtr.Zero;
     private IMPEG2PIDMap _pidFilterInterface;
     private IKsPropertySet _qamPropertySet;
-    private uint _requestId = 1;                                // Unique request ID for raw DiSEqC commands.
+    private uint _requestId = 1; // Unique request ID for raw DiSEqC commands.
     private bool _useToneBurst;
 
     #endregion
@@ -69,10 +69,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
     /// </summary>
     protected virtual Guid ModulationPropertyClass
     {
-      get
-      {
-        return typeof(IBDA_DigitalDemodulator).GUID;
-      }
+      get { return typeof (IBDA_DigitalDemodulator).GUID; }
     }
 
     /// <summary>
@@ -106,7 +103,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
       }
 
       KSPropertySupport support;
-      int hr = ps.QuerySupported(typeof(IBDA_DiseqCommand).GUID, (int)BdaDiseqcProperty.LnbSource, out support);
+      int hr = ps.QuerySupported(typeof (IBDA_DiseqCommand).GUID, (int) BdaDiseqcProperty.LnbSource, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
         this.LogDebug("Microsoft: property set not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -146,7 +143,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
         return frequencyFilterInterface;
       }
 
-      this.LogDebug("Microsoft: failed to get the control interface, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("Microsoft: failed to get the control interface, hr = 0x{0:x} ({1})", hr,
+                    HResult.GetDXErrorString(hr));
       if (controlNode != null)
       {
         DsUtils.ReleaseComObject(controlNode);
@@ -188,7 +186,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
       // checking a tuner filter which has a capture filter connected, but if the tuner filter is also the capture
       // filter then the output pin(s) won't be connected yet.
       KSPropertySupport support;
-      int hr = ps.QuerySupported(ModulationPropertyClass, (int)BdaDemodulatorProperty.ModulationType, out support);
+      int hr = ps.QuerySupported(ModulationPropertyClass, (int) BdaDemodulatorProperty.ModulationType, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
         this.LogDebug("Microsoft: property set not supported, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -341,7 +339,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
     /// <param name="currentChannel">The channel that the tuner is currently tuned to..</param>
     /// <param name="channel">The channel that the tuner will been tuned to.</param>
     /// <param name="action">The action to take, if any.</param>
-    public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel, out DeviceAction action)
+    public override void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel,
+                                      out DeviceAction action)
     {
       this.LogDebug("Microsoft: on before tune callback");
       action = DeviceAction.Default;
@@ -375,13 +374,16 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
       var atscChannel = channel as ATSCChannel;
       if (atscChannel != null && _qamPropertySet != null)
       {
-        if (atscChannel.ModulationType == ModulationType.Mod64Qam || atscChannel.ModulationType == ModulationType.Mod256Qam)
+        if (atscChannel.ModulationType == ModulationType.Mod64Qam ||
+            atscChannel.ModulationType == ModulationType.Mod256Qam)
         {
-          Marshal.WriteInt32(_paramBuffer, (Int32)atscChannel.ModulationType);
-          int hr = _qamPropertySet.Set(ModulationPropertyClass, (int)BdaDemodulatorProperty.ModulationType, _instanceBuffer, InstanceSize, _paramBuffer, ParamSize);
+          Marshal.WriteInt32(_paramBuffer, (Int32) atscChannel.ModulationType);
+          int hr = _qamPropertySet.Set(ModulationPropertyClass, (int) BdaDemodulatorProperty.ModulationType,
+                                       _instanceBuffer, InstanceSize, _paramBuffer, ParamSize);
           if (hr != 0)
           {
-            this.LogDebug("Microsoft: failed to set QAM modulation, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+            this.LogDebug("Microsoft: failed to set QAM modulation, hr = 0x{0:x} ({1})", hr,
+                          HResult.GetDXErrorString(hr));
           }
           else
           {
@@ -453,10 +455,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
         i = 1;
         while (en.MoveNext())
         {
-          hr = _pidFilterInterface.UnmapPID(1, new int[1] { en.Current });
+          hr = _pidFilterInterface.UnmapPID(1, new int[1] {en.Current});
           if (hr != 0)
           {
-            this.LogDebug("Microsoft: failed to remove PID {0} (0x{0:x}), hr = 0x{1:x} ({2})", en.Current, hr, HResult.GetDXErrorString(hr));
+            this.LogDebug("Microsoft: failed to remove PID {0} (0x{0:x}), hr = 0x{1:x} ({2})", en.Current, hr,
+                          HResult.GetDXErrorString(hr));
             success = false;
           }
           else
@@ -478,10 +481,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
         {
           continue;
         }
-        hr = _pidFilterInterface.MapPID(1, new int[1] { en.Current }, MediaSampleContent.ElementaryStream);
+        hr = _pidFilterInterface.MapPID(1, new int[1] {en.Current}, MediaSampleContent.ElementaryStream);
         if (hr != 0)
         {
-          this.LogDebug("Microsoft: failed to add PID {0} (0x{0:x}), hr = 0x{1:x} ({2})", en.Current, hr, HResult.GetDXErrorString(hr));
+          this.LogDebug("Microsoft: failed to add PID {0} (0x{0:x}), hr = 0x{1:x} ({2})", en.Current, hr,
+                        HResult.GetDXErrorString(hr));
           success = false;
         }
         else
@@ -590,10 +594,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
       // IBDA_DiseqCommand interface (so we want to use the simpler LNB source property if possible).
       int portNumber = -1;
       if (command.Length == 4 &&
-          (command[0] == (byte)DiseqcFrame.CommandFirstTransmissionNoReply ||
-           command[0] == (byte)DiseqcFrame.CommandRepeatTransmissionNoReply) &&
-          command[1] == (byte)DiseqcAddress.AnySwitch &&
-          command[2] == (byte)DiseqcCommand.WriteN0)
+          (command[0] == (byte) DiseqcFrame.CommandFirstTransmissionNoReply ||
+           command[0] == (byte) DiseqcFrame.CommandRepeatTransmissionNoReply) &&
+          command[1] == (byte) DiseqcAddress.AnySwitch &&
+          command[2] == (byte) DiseqcCommand.WriteN0)
       {
         portNumber = (command[3] & 0xc) >> 2;
         this.LogDebug("Microsoft: DiSEqC 1.0 command recognised for port {0}", portNumber);
@@ -609,7 +613,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
       int hr = _deviceControl.StartChanges();
       if (hr != 0)
       {
-        this.LogDebug("Microsoft: failed to start device control changes, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Microsoft: failed to start device control changes, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         success = false;
       }
 
@@ -618,38 +623,45 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
       {
         // This property has to be set for each command sent for some tuners (eg. TBS).
         Marshal.WriteInt32(_paramBuffer, 0, 1);
-        hr = _diseqcPropertySet.Set(typeof(IBDA_DiseqCommand).GUID, (int)BdaDiseqcProperty.Enable, _instanceBuffer, InstanceSize, _paramBuffer, 4);
+        hr = _diseqcPropertySet.Set(typeof (IBDA_DiseqCommand).GUID, (int) BdaDiseqcProperty.Enable, _instanceBuffer,
+                                    InstanceSize, _paramBuffer, 4);
         if (hr != 0)
         {
-          this.LogDebug("Microsoft: failed to enable DiSEqC commands, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+          this.LogDebug("Microsoft: failed to enable DiSEqC commands, hr = 0x{0:x} ({1})", hr,
+                        HResult.GetDXErrorString(hr));
           success = false;
         }
 
         // Disable command repeats for optimal performance. We set this for each command for "safety",
         // assuming that if DiSEqC must be enabled for each command then the same may apply to repeats.
         Marshal.WriteInt32(_paramBuffer, 0, 0);
-        hr = _diseqcPropertySet.Set(typeof(IBDA_DiseqCommand).GUID, (int)BdaDiseqcProperty.Repeats, _instanceBuffer, InstanceSize, _paramBuffer, 4);
+        hr = _diseqcPropertySet.Set(typeof (IBDA_DiseqCommand).GUID, (int) BdaDiseqcProperty.Repeats, _instanceBuffer,
+                                    InstanceSize, _paramBuffer, 4);
         if (hr != 0)
         {
-          this.LogDebug("Microsoft: failed to disable DiSEqC command repeats, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+          this.LogDebug("Microsoft: failed to disable DiSEqC command repeats, hr = 0x{0:x} ({1})", hr,
+                        HResult.GetDXErrorString(hr));
           success = false;
         }
 
         // Disable tone burst messages - it seems that many drivers don't support them, and setting the correct
         // tone state is inconvenient with the IBDA_DiseqCommand implementation.
         Marshal.WriteInt32(_paramBuffer, 0, 0);
-        hr = _diseqcPropertySet.Set(typeof(IBDA_DiseqCommand).GUID, (int)BdaDiseqcProperty.UseToneBurst, _instanceBuffer, InstanceSize, _paramBuffer, 4);
+        hr = _diseqcPropertySet.Set(typeof (IBDA_DiseqCommand).GUID, (int) BdaDiseqcProperty.UseToneBurst,
+                                    _instanceBuffer, InstanceSize, _paramBuffer, 4);
         if (hr != 0)
         {
-          this.LogDebug("Microsoft: failed to disable tone burst commands, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+          this.LogDebug("Microsoft: failed to disable tone burst commands, hr = 0x{0:x} ({1})", hr,
+                        HResult.GetDXErrorString(hr));
           success = false;
         }
 
-        portNumber++;   // Range needs to be 1..4, not 0..3 - Microsoft documentation has been ignored... again!
+        portNumber++; // Range needs to be 1..4, not 0..3 - Microsoft documentation has been ignored... again!
         if (portNumber > 0)
         {
           Marshal.WriteInt32(_paramBuffer, 0, portNumber);
-          hr = _diseqcPropertySet.Set(typeof(IBDA_DiseqCommand).GUID, (int)BdaDiseqcProperty.LnbSource, _instanceBuffer, InstanceSize, _paramBuffer, 4);
+          hr = _diseqcPropertySet.Set(typeof (IBDA_DiseqCommand).GUID, (int) BdaDiseqcProperty.LnbSource,
+                                      _instanceBuffer, InstanceSize, _paramBuffer, 4);
           if (hr != 0)
           {
             this.LogDebug("Microsoft: failed to set LNB source, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -660,12 +672,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
         {
           var message = new BdaDiseqcMessage();
           message.RequestId = _requestId++;
-          message.PacketLength = (uint)command.Length;
+          message.PacketLength = (uint) command.Length;
           message.PacketData = new byte[MaxDiseqcMessageLength];
           Buffer.BlockCopy(command, 0, message.PacketData, 0, command.Length);
           Marshal.StructureToPtr(message, _paramBuffer, true);
           //DVB_MMI.DumpBinary(_paramBuffer, 0, BdaDiseqcMessageSize);
-          hr = _diseqcPropertySet.Set(typeof(IBDA_DiseqCommand).GUID, (int)BdaDiseqcProperty.Send, _instanceBuffer, InstanceSize, _paramBuffer, BdaDiseqcMessageSize);
+          hr = _diseqcPropertySet.Set(typeof (IBDA_DiseqCommand).GUID, (int) BdaDiseqcProperty.Send, _instanceBuffer,
+                                      InstanceSize, _paramBuffer, BdaDiseqcMessageSize);
           if (hr != 0)
           {
             this.LogDebug("Microsoft: failed to send command, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -683,7 +696,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
           portNumber |= 0x100;
         }
         this.LogDebug("Microsoft: range = 0x{0:x4}", portNumber);
-        hr = _oldDiseqcInterface.put_Range((ulong)portNumber);
+        hr = _oldDiseqcInterface.put_Range((ulong) portNumber);
         if (hr != 0)
         {
           this.LogDebug("Microsoft: failed to put range, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -695,13 +708,15 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
       hr = _deviceControl.CheckChanges();
       if (hr != 0)
       {
-        this.LogDebug("Microsoft: failed to check device control changes, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Microsoft: failed to check device control changes, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         success = false;
       }
       hr = _deviceControl.CommitChanges();
       if (hr != 0)
       {
-        this.LogDebug("Microsoft: failed to commit device control changes, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Microsoft: failed to commit device control changes, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         success = false;
       }
 
@@ -736,11 +751,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
         Marshal.WriteInt32(_paramBuffer, 0, 0);
       }
       int returnedByteCount;
-      int hr = _diseqcPropertySet.Get(typeof(IBDA_DiseqCommand).GUID, (int)BdaDiseqcProperty.Response, _paramBuffer, InstanceSize, _paramBuffer, BdaDiseqcMessageSize, out returnedByteCount);
+      int hr = _diseqcPropertySet.Get(typeof (IBDA_DiseqCommand).GUID, (int) BdaDiseqcProperty.Response, _paramBuffer,
+                                      InstanceSize, _paramBuffer, BdaDiseqcMessageSize, out returnedByteCount);
       if (hr == 0 && returnedByteCount == BdaDiseqcMessageSize)
       {
         // Copy the response into the return array.
-        var message = (BdaDiseqcMessage)Marshal.PtrToStructure(_paramBuffer, typeof(BdaDiseqcMessage));
+        var message = (BdaDiseqcMessage) Marshal.PtrToStructure(_paramBuffer, typeof (BdaDiseqcMessage));
         if (message.PacketLength > MaxDiseqcMessageLength)
         {
           this.LogDebug("Microsoft: response length is out of bounds, response length = {0}", message.PacketLength);
@@ -748,11 +764,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.Microsoft
         }
         this.LogDebug("Microsoft: result = success");
         response = new byte[message.PacketLength];
-        Buffer.BlockCopy(message.PacketData, 0, response, 0, (int)message.PacketLength);
+        Buffer.BlockCopy(message.PacketData, 0, response, 0, (int) message.PacketLength);
         return true;
       }
 
-      this.LogDebug("Microsoft: result = failure, response length = {0}, hr = 0x{1:x} ({2})", returnedByteCount, hr, HResult.GetDXErrorString(hr));
+      this.LogDebug("Microsoft: result = failure, response length = {0}, hr = 0x{1:x} ({2})", returnedByteCount, hr,
+                    HResult.GetDXErrorString(hr));
       return false;
     }
 

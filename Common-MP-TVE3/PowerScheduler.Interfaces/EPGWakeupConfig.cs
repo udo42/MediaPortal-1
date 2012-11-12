@@ -53,7 +53,9 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
     public DateTime LastRun = DateTime.MinValue;
     public int Minutes;
 
-    public EPGWakeupConfig() {}
+    public EPGWakeupConfig()
+    {
+    }
 
     public EPGWakeupConfig(string serializedConfig)
     {
@@ -64,10 +66,12 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
         byte[] buffer = Convert.FromBase64String(serializedConfig);
         using (var stream = new MemoryStream(buffer, 0, buffer.Length))
         {
-          cfg = (EPGWakeupConfig)formatter.Deserialize(stream);
+          cfg = (EPGWakeupConfig) formatter.Deserialize(stream);
         }
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       Hour = cfg.Hour;
       Minutes = cfg.Minutes;
       Days = cfg.Days;
@@ -94,7 +98,7 @@ namespace Mediaportal.TV.Server.Plugins.PowerScheduler.Interfaces
     {
       if (obj is EPGWakeupConfig)
       {
-        var cfg = (EPGWakeupConfig)obj;
+        var cfg = (EPGWakeupConfig) obj;
         if (cfg.Hour == Hour && cfg.Minutes == Minutes)
         {
           foreach (EPGGrabDays day in cfg.Days)

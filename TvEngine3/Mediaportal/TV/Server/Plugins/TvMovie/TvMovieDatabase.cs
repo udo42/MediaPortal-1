@@ -95,7 +95,6 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
 
   internal class TvMovieDatabase
   {
-
     public TvMovieDatabase()
     {
       IEnumerable<ProgramCategory> categories = ProgramCategoryManagement.ListAllProgramCategories();
@@ -108,7 +107,10 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
     #region Members
 
     private static string _xmlFile;
-    private readonly IDictionary<string, ProgramCategory> _categories = new ConcurrentDictionary<string, ProgramCategory>();
+
+    private readonly IDictionary<string, ProgramCategory> _categories =
+      new ConcurrentDictionary<string, ProgramCategory>();
+
     private int _actorCount = 5;
     private bool _canceled;
     private List<Channel> _channelList;
@@ -230,8 +232,6 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       get { return _programsCounter; }
     }
 
-   
-
     #endregion
 
     #region Public functions
@@ -242,8 +242,9 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       {
         try
         {
-          var restTime = new TimeSpan(Convert.ToInt32(SettingsManagement.GetSetting("TvMovieRestPeriod", "24").Value), 0, 0);
-          DateTime lastUpdated = Convert.ToDateTime(SettingsManagement.GetSetting("TvMovieLastUpdate", "0").Value);          
+          var restTime = new TimeSpan(Convert.ToInt32(SettingsManagement.GetSetting("TvMovieRestPeriod", "24").Value), 0,
+                                      0);
+          DateTime lastUpdated = Convert.ToDateTime(SettingsManagement.GetSetting("TvMovieLastUpdate", "0").Value);
           if (lastUpdated >= (DateTime.Now - restTime))
           {
             return false;
@@ -256,7 +257,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
         }
         catch (Exception ex)
         {
-          this.LogError(ex, "TVMovie: An error occured checking the last import time");          
+          this.LogError(ex, "TVMovie: An error occured checking the last import time");
           return true;
         }
       }
@@ -307,7 +308,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       string sqlSelect =
         "SELECT * FROM Sender WHERE (Favorit = true) AND (GueltigBis >=Now()) ORDER BY Bezeichnung ASC;";
 
-      using (var tvMovieTable = new DataSet("Sender")) 
+      using (var tvMovieTable = new DataSet("Sender"))
       {
         try
         {
@@ -331,7 +332,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
         }
         catch (OleDbException ex)
         {
-          this.LogError(ex, "TVMovie: Error accessing TV Movie Clickfinder database while reading stations");          
+          this.LogError(ex, "TVMovie: Error accessing TV Movie Clickfinder database while reading stations");
           _canceled = true;
           return false;
         }
@@ -363,24 +364,30 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
             {
               senderUrl = sender["Webseite"].ToString();
             }
-            catch (Exception) {}
+            catch (Exception)
+            {
+            }
             try
             {
               senderSort = sender["SortNrTVMovie"].ToString();
             }
-            catch (Exception) {}
+            catch (Exception)
+            {
+            }
             try
             {
               senderZeichen = sender["Zeichen"].ToString();
             }
-            catch (Exception) {}
+            catch (Exception)
+            {
+            }
 
             var current = new TVMChannel(senderId,
-                                                senderKennung,
-                                                senderBez,
-                                                senderUrl,
-                                                senderSort,
-                                                senderZeichen
+                                         senderKennung,
+                                         senderBez,
+                                         senderUrl,
+                                         senderSort,
+                                         senderZeichen
               );
             _tvmEpgChannels.Add(current);
           }
@@ -462,7 +469,8 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
               OnStationsChanged(counter, maximum, display);
             counter++;
 
-            this.LogInfo("TVMovie: Importing {3} time frame(s) for MP channel [{0}/{1}] - {2}", Convert.ToString(counter),
+            this.LogInfo("TVMovie: Importing {3} time frame(s) for MP channel [{0}/{1}] - {2}",
+                         Convert.ToString(counter),
                          Convert.ToString(maximum), display, Convert.ToString(channelNames.Count));
 
             _tvmEpgProgs.Clear();
@@ -474,7 +482,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
               Thread.Sleep(32);
 
             // make a copy of this list because Insert it done in syncronized threads - therefore the object reference would cause multiple/missing entries
-            var InsertCopy = new List<Program>(_tvmEpgProgs);            
+            var InsertCopy = new List<Program>(_tvmEpgProgs);
             int debugCount = TvBLayer.InsertPrograms(InsertCopy, DeleteBeforeImportOption.OverlappingPrograms,
                                                      importPrio);
             this.LogInfo("TVMovie: Inserted {0} programs", debugCount);
@@ -499,10 +507,11 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
       {
         try
         {
-          SettingsManagement.SaveSetting("TvMovieLastUpdate", DateTime.Now.ToString());                    
+          SettingsManagement.SaveSetting("TvMovieLastUpdate", DateTime.Now.ToString());
 
           TimeSpan ImportDuration = (DateTime.Now - ImportStartTime);
-          this.LogDebug("TVMovie: Imported {0} database entries for {1} stations in {2} seconds", _programsCounter, counter,
+          this.LogDebug("TVMovie: Imported {0} database entries for {1} stations in {2} seconds", _programsCounter,
+                        counter,
                         Convert.ToString(ImportDuration.TotalSeconds));
         }
         catch (Exception)
@@ -594,7 +603,9 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
           {
             databaseTransaction.Rollback();
           }
-          catch (Exception) {}
+          catch (Exception)
+          {
+          }
           this.LogInfo("TVMovie: Exception: {0}", ex1);
           return 0;
         }
@@ -827,18 +838,19 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
           bool hasCategory = _categories.TryGetValue(genre, out programCategory);
           if (!hasCategory)
           {
-            programCategory = new ProgramCategory { Category = genre };
+            programCategory = new ProgramCategory {Category = genre};
             ProgramCategoryManagement.AddCategory(programCategory);
             _categories[genre] = programCategory;
           }
 
-          Program prog = ProgramFactory.CreateProgram(progChannel.IdChannel, newStartDate, newEndDate, title, description, programCategory,
+          Program prog = ProgramFactory.CreateProgram(progChannel.IdChannel, newStartDate, newEndDate, title,
+                                                      description, programCategory,
                                                       ProgramState.None, OnAirDate, String.Empty, String.Empty, episode,
                                                       String.Empty, EPGStarRating, classification, parentalRating);
 
           _tvmEpgProgs.Add(prog);
 
-          if (_slowImport && aCounter % 2 == 0)
+          if (_slowImport && aCounter%2 == 0)
             Thread.Sleep(20);
         }
       }
@@ -862,7 +874,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
             string newEnd = mapping.TimeSharingEnd;
             string newStation = mapping.StationName;
             string newChannel = mapping.Channel.DisplayName;
-            int newIdChannel = mapping.IdChannel;            
+            int newIdChannel = mapping.IdChannel;
 
             mappingList.Add(new Mapping(newChannel, newIdChannel, newStation, newStart, newEnd));
           }
@@ -1102,14 +1114,16 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
         long iYear = dt.Year;
 
         long lRet = (iYear);
-        lRet = lRet * 100L + iMonth;
-        lRet = lRet * 100L + iDay;
-        lRet = lRet * 100L + iHour;
-        lRet = lRet * 100L + iMin;
-        lRet = lRet * 100L + iSec;
+        lRet = lRet*100L + iMonth;
+        lRet = lRet*100L + iDay;
+        lRet = lRet*100L + iHour;
+        lRet = lRet*100L + iMin;
+        lRet = lRet*100L + iSec;
         return lRet;
       }
-      catch (Exception) {}
+      catch (Exception)
+      {
+      }
       return 0;
     }
 
@@ -1135,7 +1149,7 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
           {
             processes[0].WaitForExit(1200000);
             BenchClock.Stop();
-            UpdateDuration = (BenchClock.ElapsedMilliseconds / 1000);
+            UpdateDuration = (BenchClock.ElapsedMilliseconds/1000);
             this.LogInfo("TVMovie: tvuptodate was already running - waited {0} seconds for internet update to finish",
                          Convert.ToString(UpdateDuration));
             return UpdateDuration;
@@ -1154,13 +1168,13 @@ namespace Mediaportal.TV.Server.Plugins.TvMovie
           UpdateProcess.WaitForExit(1200000); // do not wait longer than 20 minutes for the internet update
 
           BenchClock.Stop();
-          UpdateDuration = (BenchClock.ElapsedMilliseconds / 1000);
+          UpdateDuration = (BenchClock.ElapsedMilliseconds/1000);
           this.LogInfo("TVMovie: tvuptodate finished internet update in {0} seconds", Convert.ToString(UpdateDuration));
         }
         catch (Exception ex)
         {
           BenchClock.Stop();
-          UpdateDuration = (BenchClock.ElapsedMilliseconds / 1000);
+          UpdateDuration = (BenchClock.ElapsedMilliseconds/1000);
           this.LogError(ex, "TVMovie: LaunchTVMUpdater failed");
         }
       }

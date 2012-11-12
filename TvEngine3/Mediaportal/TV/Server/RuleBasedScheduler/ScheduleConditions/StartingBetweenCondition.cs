@@ -26,7 +26,11 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
     {
       if (_startTimeInterval.HasValue && _endTimeInterval.HasValue)
       {
-        return baseQuery.Where(program => program.StartTime >= _startTimeInterval.GetValueOrDefault() && program.StartTime <= _endTimeInterval.GetValueOrDefault()); 
+        return
+          baseQuery.Where(
+            program =>
+            program.StartTime >= _startTimeInterval.GetValueOrDefault() &&
+            program.StartTime <= _endTimeInterval.GetValueOrDefault());
       }
       return baseQuery;
     }

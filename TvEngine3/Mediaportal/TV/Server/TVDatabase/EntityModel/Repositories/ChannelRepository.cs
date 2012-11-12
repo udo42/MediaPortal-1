@@ -6,16 +6,15 @@ using Mediaportal.TV.Server.TVDatabase.EntityModel.Interfaces;
 
 namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
 {
-
   public class ChannelRepository : GenericRepository<Model>, IChannelRepository
-  {    
-    public ChannelRepository()    
+  {
+    public ChannelRepository()
     {
     }
 
     public ChannelRepository(bool trackingEnabled)
       : base(trackingEnabled)
-    {      
+    {
     }
 
     public ChannelRepository(Model context)
@@ -26,30 +25,37 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
     #region IChannelRepository Members
 
     public IQueryable<Channel> GetAllChannelsByGroupIdAndMediaType(int groupId, MediaTypeEnum mediaType)
-    {     
-      IQueryable<Channel> channels = GetQuery<GroupMap>().Where(gm => gm.IdGroup == groupId && gm.Channel.VisibleInGuide && gm.Channel.MediaType == (int)mediaType).OrderBy(gm => gm.SortOrder).Select(gm => gm.Channel);
-      return channels;  
+    {
+      IQueryable<Channel> channels =
+        GetQuery<GroupMap>().Where(
+          gm => gm.IdGroup == groupId && gm.Channel.VisibleInGuide && gm.Channel.MediaType == (int) mediaType).OrderBy(
+            gm => gm.SortOrder).Select(gm => gm.Channel);
+      return channels;
     }
 
     public IQueryable<Channel> GetAllChannelsByGroupId(int groupId)
     {
-      IOrderedQueryable<Channel> channels = GetQuery<Channel>().Where(c => c.VisibleInGuide && c.GroupMaps.Count > 0 && c.GroupMaps.Any(gm => gm.ChannelGroup.IdGroup == groupId)).OrderBy(c => c.SortOrder);
-      return channels;     
+      IOrderedQueryable<Channel> channels =
+        GetQuery<Channel>().Where(
+          c => c.VisibleInGuide && c.GroupMaps.Count > 0 && c.GroupMaps.Any(gm => gm.ChannelGroup.IdGroup == groupId)).
+          OrderBy(c => c.SortOrder);
+      return channels;
     }
 
-   
 
     public IQueryable<TuningDetail> IncludeAllRelations(IQueryable<TuningDetail> query)
     {
       IQueryable<TuningDetail> includeRelations = query.Include(c => c.Channel).
         Include(c => c.Channel.GroupMaps);
       return includeRelations;
-    }    
+    }
 
-    public IQueryable<Channel> IncludeAllRelations(IQueryable<Channel> query, ChannelIncludeRelationEnum includeRelations)
-    {      
+    public IQueryable<Channel> IncludeAllRelations(IQueryable<Channel> query,
+                                                   ChannelIncludeRelationEnum includeRelations)
+    {
       bool channelLinkMapsChannelLink = includeRelations.HasFlag(ChannelIncludeRelationEnum.ChannelLinkMapsChannelLink);
-      bool channelLinkMapsChannelPortal = includeRelations.HasFlag(ChannelIncludeRelationEnum.ChannelLinkMapsChannelPortal);
+      bool channelLinkMapsChannelPortal =
+        includeRelations.HasFlag(ChannelIncludeRelationEnum.ChannelLinkMapsChannelPortal);
       bool channelMaps = includeRelations.HasFlag(ChannelIncludeRelationEnum.ChannelMaps);
       bool channelMapsCard = includeRelations.HasFlag(ChannelIncludeRelationEnum.ChannelMapsCard);
       bool groupMaps = includeRelations.HasFlag(ChannelIncludeRelationEnum.GroupMaps);
@@ -86,7 +92,7 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
       if (groupMapsChannelGroup)
       {
         query = query.Include(c => c.GroupMaps.Select(g => g.ChannelGroup));
-      }      
+      }
 
       return query;
     }
@@ -95,17 +101,17 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
     public IQueryable<Channel> IncludeAllRelations(IQueryable<Channel> query)
     {
       IQueryable<Channel> includeRelations =
-        query.          
+        query.
           Include(c => c.TuningDetails).
           Include(c => c.TuningDetails.Select(l => l.LnbType)).
-          Include(c => c.TuningDetails.Select(l=>l.LnbType)).
+          Include(c => c.TuningDetails.Select(l => l.LnbType)).
           Include(c => c.ChannelMaps).
           Include(c => c.ChannelMaps.Select(card => card.Card)).
           Include(c => c.GroupMaps).
           Include(c => c.GroupMaps.Select(g => g.ChannelGroup)).
           Include(c => c.ChannelLinkMaps.Select(l => l.ChannelLink)).
-          Include(c => c.ChannelLinkMaps.Select(l => l.ChannelPortal))          
-        ;   
+          Include(c => c.ChannelLinkMaps.Select(l => l.ChannelPortal))
+        ;
 
       return includeRelations;
     }
@@ -122,5 +128,5 @@ namespace Mediaportal.TV.Server.TVDatabase.EntityModel.Repositories
     }
 
     #endregion
-  }  
+  }
 }

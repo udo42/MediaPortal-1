@@ -13,8 +13,6 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 {
   public static class ScheduleManagement
   {
-
-
     public static IList<Schedule> ListAllSchedules()
     {
       using (IScheduleRepository scheduleRepository = new ScheduleRepository())
@@ -31,7 +29,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       {
         scheduleRepository.AttachEntityIfChangeTrackingDisabled(scheduleRepository.ObjectContext.Schedules, schedule);
         scheduleRepository.ApplyChanges(scheduleRepository.ObjectContext.Schedules, schedule);
-        scheduleRepository.UnitOfWork.SaveChanges();        
+        scheduleRepository.UnitOfWork.SaveChanges();
         schedule.AcceptChanges();
       }
       ProgramManagement.SynchProgramStates(new ScheduleBLL(schedule));
@@ -137,7 +135,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       Schedule scheduleToDelete;
       using (IScheduleRepository scheduleRepository = new ScheduleRepository(true))
-      {        
+      {
         SetRelatedRecordingsToNull(idSchedule, scheduleRepository);
         scheduleToDelete = scheduleRepository.First<Schedule>(schedule => schedule.IdSchedule == idSchedule);
         if (scheduleToDelete == null)
@@ -172,7 +170,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       bool isScheduleRecording = false;
       Program prg = ProgramManagement.GetProgram(idProgram);
-      
+
       if (prg != null)
       {
         var programBll = new ProgramBLL(prg);
@@ -196,7 +194,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
           }
         }
       }
-      
+
       return isScheduleRecording;
     }
 
@@ -220,8 +218,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
           {
             scheduleRepository.Delete(canceledSchedule);
             ProgramManagement.SetSingleStateSeriesPending(canceledSchedule.CancelDateTime,
-                                                           canceledSchedule.IdChannel,
-                                                           canceledSchedule.Schedule.ProgramName);
+                                                          canceledSchedule.IdChannel,
+                                                          canceledSchedule.Schedule.ProgramName);
           }
         }
         scheduleRepository.UnitOfWork.SaveChanges();
@@ -230,7 +228,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
 
     public static IList<Schedule> GetConflictingSchedules(Schedule sched)
-    {      
+    {
       sched.Channel = ChannelManagement.GetChannel(sched.IdChannel);
       Log.Info("GetConflictingSchedules: Schedule = " + sched);
       var conflicts = new List<Schedule>();
@@ -293,7 +291,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     }
 
     private static bool AssignSchedulesToCard(Schedule schedule, List<Schedule>[] cardSchedules,
-                                             out List<Schedule> overlappingSchedules)
+                                              out List<Schedule> overlappingSchedules)
     {
       overlappingSchedules = new List<Schedule>();
       Log.Info("AssignSchedulesToCard: schedule = " + schedule);
@@ -301,7 +299,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       bool assigned = false;
       int count = 0;
       foreach (Card card in cards)
-      {        
+      {
         var scheduleBll = new ScheduleBLL(schedule);
         if (card.Enabled && CardManagement.CanViewTvChannel(card, schedule.IdChannel))
         {
@@ -348,30 +346,32 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     }
 
     public static List<Schedule> GetRecordingTimes(Schedule rec, int days)
-    {      
+    {
       var recordings = new List<Schedule>();
       var recBLL = new ScheduleBLL(rec);
 
       DateTime dtDay = DateTime.Now;
-      if (recBLL.Entity.ScheduleType == (int)ScheduleRecordingType.Once)
+      if (recBLL.Entity.ScheduleType == (int) ScheduleRecordingType.Once)
       {
         recordings.Add(recBLL.Entity);
         return recordings;
       }
 
-      if (recBLL.Entity.ScheduleType == (int)ScheduleRecordingType.Daily)
+      if (recBLL.Entity.ScheduleType == (int) ScheduleRecordingType.Daily)
       {
         for (int i = 0; i < days; ++i)
         {
           Schedule recNew = ScheduleFactory.Clone(recBLL.Entity);
-          recNew.ScheduleType = (int)ScheduleRecordingType.Once;
-          recNew.StartTime = new DateTime(dtDay.Year, dtDay.Month, dtDay.Day, recBLL.Entity.StartTime.Hour, recBLL.Entity.StartTime.Minute,
+          recNew.ScheduleType = (int) ScheduleRecordingType.Once;
+          recNew.StartTime = new DateTime(dtDay.Year, dtDay.Month, dtDay.Day, recBLL.Entity.StartTime.Hour,
+                                          recBLL.Entity.StartTime.Minute,
                                           0);
           if (recBLL.Entity.EndTime.Day > recBLL.Entity.StartTime.Day)
           {
             dtDay = dtDay.AddDays(1);
           }
-          recNew.EndTime = new DateTime(dtDay.Year, dtDay.Month, dtDay.Day, recBLL.Entity.EndTime.Hour, recBLL.Entity.EndTime.Minute, 0);
+          recNew.EndTime = new DateTime(dtDay.Year, dtDay.Month, dtDay.Day, recBLL.Entity.EndTime.Hour,
+                                        recBLL.Entity.EndTime.Minute, 0);
           if (recBLL.Entity.EndTime.Day > recBLL.Entity.StartTime.Day)
           {
             dtDay = dtDay.AddDays(-1);
@@ -390,21 +390,23 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         return recordings;
       }
 
-      if (recBLL.Entity.ScheduleType == (int)ScheduleRecordingType.WorkingDays)
+      if (recBLL.Entity.ScheduleType == (int) ScheduleRecordingType.WorkingDays)
       {
         for (int i = 0; i < days; ++i)
         {
           if (WeekEndTool.IsWorkingDay(dtDay.DayOfWeek))
           {
             Schedule recNew = ScheduleFactory.Clone(recBLL.Entity);
-            recNew.ScheduleType = (int)ScheduleRecordingType.Once;
-            recNew.StartTime = new DateTime(dtDay.Year, dtDay.Month, dtDay.Day, recBLL.Entity.StartTime.Hour, recBLL.Entity.StartTime.Minute,
+            recNew.ScheduleType = (int) ScheduleRecordingType.Once;
+            recNew.StartTime = new DateTime(dtDay.Year, dtDay.Month, dtDay.Day, recBLL.Entity.StartTime.Hour,
+                                            recBLL.Entity.StartTime.Minute,
                                             0);
             if (recBLL.Entity.EndTime.Day > recBLL.Entity.StartTime.Day)
             {
               dtDay = dtDay.AddDays(1);
             }
-            recNew.EndTime = new DateTime(dtDay.Year, dtDay.Month, dtDay.Day, recBLL.Entity.EndTime.Hour, recBLL.Entity.EndTime.Minute, 0);
+            recNew.EndTime = new DateTime(dtDay.Year, dtDay.Month, dtDay.Day, recBLL.Entity.EndTime.Hour,
+                                          recBLL.Entity.EndTime.Minute, 0);
             if (recBLL.Entity.EndTime.Day > recBLL.Entity.StartTime.Day)
             {
               dtDay = dtDay.AddDays(-1);
@@ -424,18 +426,19 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         return recordings;
       }
 
-      if (recBLL.Entity.ScheduleType == (int)ScheduleRecordingType.Weekends)
+      if (recBLL.Entity.ScheduleType == (int) ScheduleRecordingType.Weekends)
       {
-        IEnumerable<Program> progList = ProgramManagement.GetProgramsByChannelAndTitleAndStartEndTimes(recBLL.Entity.IdChannel,
-                                                                        recBLL.Entity.ProgramName, dtDay,
-                                                                        dtDay.AddDays(days));        
+        IEnumerable<Program> progList =
+          ProgramManagement.GetProgramsByChannelAndTitleAndStartEndTimes(recBLL.Entity.IdChannel,
+                                                                         recBLL.Entity.ProgramName, dtDay,
+                                                                         dtDay.AddDays(days));
         foreach (Program prog in progList)
         {
           if ((recBLL.IsRecordingProgram(prog, false)) &&
               (WeekEndTool.IsWeekend(prog.StartTime.DayOfWeek)))
           {
             Schedule recNew = ScheduleFactory.Clone(recBLL.Entity);
-            recNew.ScheduleType = (int)ScheduleRecordingType.Once;
+            recNew.ScheduleType = (int) ScheduleRecordingType.Once;
             recNew.StartTime = prog.StartTime;
             recNew.EndTime = prog.EndTime;
             recNew.Series = true;
@@ -449,21 +452,23 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         }
         return recordings;
       }
-      if (recBLL.Entity.ScheduleType == (int)ScheduleRecordingType.Weekly)
+      if (recBLL.Entity.ScheduleType == (int) ScheduleRecordingType.Weekly)
       {
         for (int i = 0; i < days; ++i)
         {
           if ((dtDay.DayOfWeek == recBLL.Entity.StartTime.DayOfWeek) && (dtDay.Date >= recBLL.Entity.StartTime.Date))
           {
             Schedule recNew = ScheduleFactory.Clone(recBLL.Entity);
-            recNew.ScheduleType = (int)ScheduleRecordingType.Once;
-            recNew.StartTime = new DateTime(dtDay.Year, dtDay.Month, dtDay.Day, recBLL.Entity.StartTime.Hour, recBLL.Entity.StartTime.Minute,
+            recNew.ScheduleType = (int) ScheduleRecordingType.Once;
+            recNew.StartTime = new DateTime(dtDay.Year, dtDay.Month, dtDay.Day, recBLL.Entity.StartTime.Hour,
+                                            recBLL.Entity.StartTime.Minute,
                                             0);
             if (recBLL.Entity.EndTime.Day > recBLL.Entity.StartTime.Day)
             {
               dtDay = dtDay.AddDays(1);
             }
-            recNew.EndTime = new DateTime(dtDay.Year, dtDay.Month, dtDay.Day, recBLL.Entity.EndTime.Hour, recBLL.Entity.EndTime.Minute, 0);
+            recNew.EndTime = new DateTime(dtDay.Year, dtDay.Month, dtDay.Day, recBLL.Entity.EndTime.Hour,
+                                          recBLL.Entity.EndTime.Minute, 0);
             if (recBLL.Entity.EndTime.Day > recBLL.Entity.StartTime.Day)
             {
               dtDay = dtDay.AddDays(-1);
@@ -484,12 +489,12 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       }
 
       IEnumerable<Program> programs;
-      if (recBLL.Entity.ScheduleType == (int)ScheduleRecordingType.WeeklyEveryTimeOnThisChannel)
+      if (recBLL.Entity.ScheduleType == (int) ScheduleRecordingType.WeeklyEveryTimeOnThisChannel)
       {
         //this.LogDebug("get {0} {1} EveryTimeOnThisChannel", rec.ProgramName, rec.ReferencedChannel().Name);
         programs = ProgramManagement.GetProgramsByChannelAndTitleAndStartEndTimes(recBLL.Entity.IdChannel,
-                                                                        recBLL.Entity.ProgramName, dtDay,
-                                                                        dtDay.AddDays(days));        
+                                                                                  recBLL.Entity.ProgramName, dtDay,
+                                                                                  dtDay.AddDays(days));
         foreach (Program prog in programs)
         {
           // dtDay.DayOfWeek == rec.startTime.DayOfWeek
@@ -497,7 +502,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
           if (prog.StartTime.DayOfWeek == recBLL.Entity.StartTime.DayOfWeek && recBLL.IsRecordingProgram(prog, false))
           {
             Schedule recNew = ScheduleFactory.Clone(recBLL.Entity);
-            recNew.ScheduleType = (int)ScheduleRecordingType.Once;
+            recNew.ScheduleType = (int) ScheduleRecordingType.Once;
             recNew.IdChannel = prog.IdChannel;
             recNew.StartTime = prog.StartTime;
             recNew.EndTime = prog.EndTime;
@@ -513,18 +518,19 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
         return recordings;
       }
 
-      programs = recBLL.Entity.ScheduleType == (int)ScheduleRecordingType.EveryTimeOnThisChannel
+      programs = recBLL.Entity.ScheduleType == (int) ScheduleRecordingType.EveryTimeOnThisChannel
                    ? ProgramManagement.GetProgramsByChannelAndTitleAndStartEndTimes(recBLL.Entity.IdChannel,
-                                          recBLL.Entity.ProgramName, dtDay,
-                                          dtDay.AddDays(days))
-                   : ProgramManagement.GetProgramsByTitleAndStartEndTimes(recBLL.Entity.ProgramName, dtDay, dtDay.AddDays(days));
+                                                                                    recBLL.Entity.ProgramName, dtDay,
+                                                                                    dtDay.AddDays(days))
+                   : ProgramManagement.GetProgramsByTitleAndStartEndTimes(recBLL.Entity.ProgramName, dtDay,
+                                                                          dtDay.AddDays(days));
 
       foreach (Program prog in programs)
       {
         if (recBLL.IsRecordingProgram(prog, false))
         {
           Schedule recNew = ScheduleFactory.Clone(recBLL.Entity);
-          recNew.ScheduleType = (int)ScheduleRecordingType.Once;
+          recNew.ScheduleType = (int) ScheduleRecordingType.Once;
           recNew.IdChannel = prog.IdChannel;
           recNew.StartTime = prog.StartTime;
           recNew.EndTime = prog.EndTime;
@@ -559,7 +565,7 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       {
         IList<Schedule> schedules =
           scheduleRepository.GetQuery<Schedule>(
-            s => s.ScheduleType == (int) ScheduleRecordingType.Once && s.EndTime < DateTime.Now).ToList();        
+            s => s.ScheduleType == (int) ScheduleRecordingType.Once && s.EndTime < DateTime.Now).ToList();
 
         if (schedules.Count > 0)
         {
@@ -567,12 +573,12 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
 
           foreach (Schedule schedule in schedules)
           {
-            SetRelatedRecordingsToNull(schedule.IdSchedule, scheduleRepository); 
-          }          
+            SetRelatedRecordingsToNull(schedule.IdSchedule, scheduleRepository);
+          }
 
           scheduleRepository.DeleteList(schedules);
           scheduleRepository.UnitOfWork.SaveChanges();
-        }        
+        }
       }
     }
 
@@ -581,8 +587,9 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
       using (IScheduleRepository scheduleRepository = new ScheduleRepository())
       {
         var onceSchedule =
-          scheduleRepository.FindOne<Schedule>(s=>s.ScheduleType == (int)ScheduleRecordingType.Once 
-            && s.IdChannel == idChannel && s.ProgramName == title && s.EndTime == endTime);
+          scheduleRepository.FindOne<Schedule>(s => s.ScheduleType == (int) ScheduleRecordingType.Once
+                                                    && s.IdChannel == idChannel && s.ProgramName == title &&
+                                                    s.EndTime == endTime);
         return onceSchedule;
       }
     }
@@ -601,7 +608,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (IScheduleRepository scheduleRepository = new ScheduleRepository())
       {
-        IQueryable<ScheduleRulesTemplate> listAllScheduleRulesTemplates = scheduleRepository.GetAll<ScheduleRulesTemplate>();
+        IQueryable<ScheduleRulesTemplate> listAllScheduleRulesTemplates =
+          scheduleRepository.GetAll<ScheduleRulesTemplate>();
         //listAllScheduleRules = scheduleRepository.IncludeAllRelations(listAllScheduleRules);
         return listAllScheduleRulesTemplates.ToList();
       }
@@ -611,7 +619,8 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     {
       using (IScheduleRepository scheduleRepository = new ScheduleRepository())
       {
-        scheduleRepository.AttachEntityIfChangeTrackingDisabled(scheduleRepository.ObjectContext.RuleBasedSchedules, schedule);
+        scheduleRepository.AttachEntityIfChangeTrackingDisabled(scheduleRepository.ObjectContext.RuleBasedSchedules,
+                                                                schedule);
         scheduleRepository.ApplyChanges(scheduleRepository.ObjectContext.RuleBasedSchedules, schedule);
         scheduleRepository.UnitOfWork.SaveChanges();
         schedule.AcceptChanges();

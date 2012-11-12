@@ -69,7 +69,6 @@ namespace Mediaportal.TV.Server.TVService.Interfaces
     [DataMember]
     string RecordingFileName { get; }
 
-    
 
     /// <summary>
     /// returns which schedule is currently being recorded

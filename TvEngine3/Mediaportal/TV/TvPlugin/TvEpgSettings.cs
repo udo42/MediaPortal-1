@@ -37,7 +37,7 @@ namespace Mediaportal.TV.TvPlugin
 
     public TvEpgSettings()
     {
-      GetID = (int)Window.WINDOW_SETTINGS_TV_EPG;
+      GetID = (int) Window.WINDOW_SETTINGS_TV_EPG;
     }
 
     public override bool Init()
@@ -49,15 +49,15 @@ namespace Mediaportal.TV.TvPlugin
     {
       base.OnPageLoad();
       Update();
-    }    
+    }
 
     private void Update()
     {
-      listChannels.Clear();      
+      listChannels.Clear();
       IEnumerable<Channel> channels = ServiceAgents.Instance.ChannelServiceAgent.ListAllChannels();
       foreach (Channel chan in channels)
       {
-        if (chan.MediaType == (int)MediaTypeEnum.TV)
+        if (chan.MediaType == (int) MediaTypeEnum.TV)
         {
           continue;
         }
@@ -99,14 +99,14 @@ namespace Mediaportal.TV.TvPlugin
         IEnumerable<Channel> channels = ServiceAgents.Instance.ChannelServiceAgent.ListAllChannels();
         foreach (Channel chan in channels)
         {
-          if (chan.MediaType == (int)MediaTypeEnum.TV)
+          if (chan.MediaType == (int) MediaTypeEnum.TV)
           {
             continue;
           }
           if (!chan.GrabEpg)
           {
             chan.GrabEpg = true;
-            ServiceAgents.Instance.ChannelServiceAgent.SaveChannel(chan);            
+            ServiceAgents.Instance.ChannelServiceAgent.SaveChannel(chan);
           }
         }
         Update();
@@ -116,7 +116,7 @@ namespace Mediaportal.TV.TvPlugin
         IEnumerable<Channel> channels = ServiceAgents.Instance.ChannelServiceAgent.ListAllChannels();
         foreach (Channel chan in channels)
         {
-          if (chan.MediaType == (int)MediaTypeEnum.TV)
+          if (chan.MediaType == (int) MediaTypeEnum.TV)
           {
             continue;
           }

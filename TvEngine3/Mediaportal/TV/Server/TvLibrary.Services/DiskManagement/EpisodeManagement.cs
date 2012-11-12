@@ -29,8 +29,6 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
 {
   public class EpisodeManagement
   {
-
-
     public List<Recording> GetEpisodes(string title, IList<Recording> recordings)
     {
       var episodes = new List<Recording>();
@@ -64,14 +62,13 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
     public void OnScheduleEnded(string recordingFilename, Schedule recording, Program program)
     {
       this.LogDebug("diskmanagement: recording {0} ended. type:{1} max episodes:{2}",
-                    program.Title, (ScheduleRecordingType)recording.ScheduleType, recording.MaxAirings);
+                    program.Title, (ScheduleRecordingType) recording.ScheduleType, recording.MaxAirings);
 
       CheckEpsiodesForRecording(recording, program);
     }
 
     private void CheckEpsiodesForRecording(Schedule schedule, Program program)
     {
-
       if (!ScheduleManagement.DoesScheduleUseEpisodeManagement(schedule))
       {
         return;
@@ -80,7 +77,8 @@ namespace Mediaportal.TV.Server.TVLibrary.DiskManagement
       //check how many episodes we got
       while (true)
       {
-        IList<Recording> recordings = TVDatabase.TVBusinessLayer.RecordingManagement.ListAllRecordingsByMediaType(MediaTypeEnum.TV);
+        IList<Recording> recordings =
+          TVDatabase.TVBusinessLayer.RecordingManagement.ListAllRecordingsByMediaType(MediaTypeEnum.TV);
 
         List<Recording> episodes = GetEpisodes(program.Title, recordings);
         if (episodes.Count <= schedule.MaxAirings)

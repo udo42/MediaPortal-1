@@ -44,7 +44,7 @@ namespace Mediaportal.TV.Server.Plugins.ServerBlaster.Learn.XPListView
 
     public XPListViewGroup this[int index]
     {
-      get { return ((XPListViewGroup)List[index]); }
+      get { return ((XPListViewGroup) List[index]); }
       set { List[index] = value; }
     }
 

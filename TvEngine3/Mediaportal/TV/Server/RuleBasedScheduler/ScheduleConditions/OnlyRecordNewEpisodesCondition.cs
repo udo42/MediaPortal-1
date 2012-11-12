@@ -22,9 +22,8 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
     #region IScheduleCondition Members
 
     public IQueryable<Program> ApplyCondition(IQueryable<Program> baseQuery)
-    {      
-      
-      return baseQuery.Where(program => !(_skipEpisodes.Any(e => e.Equals(program.EpisodeNum))));      
+    {
+      return baseQuery.Where(program => !(_skipEpisodes.Any(e => e.Equals(program.EpisodeNum))));
       //return baseQuery.Where(program => !DB.Recordings.Any(r => r.Title == program.Title && t.SeriesNum == program.SeriesNum && t.EpisodeNum == program.EpisodeNum));
     }
 

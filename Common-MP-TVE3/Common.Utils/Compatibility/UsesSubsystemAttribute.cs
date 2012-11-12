@@ -33,7 +33,7 @@ namespace MediaPortal.Common.Utils
       _subsystem = subsystem;
       _used = used;
     }
-    
+
     public UsesSubsystemAttribute(string subsystem)
       : this(subsystem, true)
     {
@@ -48,6 +48,5 @@ namespace MediaPortal.Common.Utils
     {
       get { return _used; }
     }
-
   }
 }

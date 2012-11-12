@@ -59,7 +59,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     /// Initializes a new instance of the <see cref="ITVCard"/> class.
     /// </summary>
     public TvCardHandler(Card dbsCard, ITVCard card)
-    {      
+    {
       _dbsCard = dbsCard;
       Card = card;
       _userManagement = new UserManagement(this);
@@ -71,7 +71,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       _epgGrabbing = new EpgGrabbing(this);
       _tuner = new CardTuner(this);
       _recorder = new Recorder(this);
-      _timerShifter = new TimeShifter(this);      
+      _timerShifter = new TimeShifter(this);
     }
 
     #endregion
@@ -124,7 +124,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     public IParkedUserManagement ParkedUserManagement
     {
       get { return _parkedUserManagement; }
-    }    
+    }
 
     /// <summary>
     /// Gets the diseqc handler.
@@ -189,10 +189,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     /// <value><c>true</c> if card supports sub channels; otherwise, <c>false</c>.</value>
     public bool SupportsSubChannels
     {
-      get
-      {       
-        return _card.SupportsSubChannels;
-      }
+      get { return _card.SupportsSubChannels; }
     }
 
     /// <summary>
@@ -204,7 +201,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       get { return _dbsCard; }
       set { _dbsCard = value; }
     }
-
 
 
     /// <summary>
@@ -229,10 +225,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     /// <value><c>true</c> if the device supports conditional access, otherwise <c>false</c></value>
     public bool IsConditionalAccessSupported
     {
-      get
-      {       
-        return _card.IsConditionalAccessSupported;
-      }
+      get { return _card.IsConditionalAccessSupported; }
     }
 
     /// <summary>
@@ -241,10 +234,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     /// <value>The number of channels decrypting.</value>
     public int NumberOfChannelsDecrypting
     {
-      get
-      {       
-        return _card.NumberOfChannelsDecrypting;
-      }
+      get { return _card.NumberOfChannelsDecrypting; }
     }
 
 
@@ -257,7 +247,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       get
       {
         try
-        {         
+        {
           return _card.CardType;
         }
         catch (ThreadAbortException)
@@ -281,7 +271,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       get
       {
         try
-        {          
+        {
           return _card.Name;
         }
         catch (ThreadAbortException)
@@ -303,7 +293,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     public string CardDevice()
     {
       try
-      {      
+      {
         return _dbsCard.DevicePath;
       }
       catch (ThreadAbortException)
@@ -387,7 +377,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           if (_dbsCard.Enabled == false)
           {
             return 0;
-          }         
+          }
           return _card.SignalLevel;
         }
         catch (ThreadAbortException)
@@ -412,11 +402,11 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         if (_dbsCard.Enabled == false)
         {
           return;
-        }       
+        }
         _card.ResetSignalUpdate();
       }
       catch (ThreadAbortException)
-      {       
+      {
       }
       catch (Exception ex)
       {
@@ -438,7 +428,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           {
             return 0;
           }
-          
+
           return _card.MinChannel;
         }
         catch (ThreadAbortException)
@@ -490,25 +480,25 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           if (_settings == null)
           {
             _settings = new ScanParameters
-            {
-              TimeOutTune = SettingsManagement.GetValue("timeoutTune", 2),
-              TimeOutPAT = SettingsManagement.GetValue("timeoutPAT", 5),
-              TimeOutCAT = SettingsManagement.GetValue("timeoutCAT", 5),
-              TimeOutPMT = SettingsManagement.GetValue("timeoutPMT", 10),
-              TimeOutSDT = SettingsManagement.GetValue("timeoutSDT", 20),
-              TimeOutAnalog = SettingsManagement.GetValue("timeoutAnalog", 20),
-              UseDefaultLnbFrequencies = SettingsManagement.GetValue("lnbDefault", true),
-              LnbLowFrequency = SettingsManagement.GetValue("LnbLowFrequency", 0),
-              LnbHighFrequency = SettingsManagement.GetValue("LnbHighFrequency", 0),
-              LnbSwitchFrequency = SettingsManagement.GetValue("LnbSwitchFrequency", 0),
-              MinimumFiles = SettingsManagement.GetValue("timeshiftMinFiles", 6),
-              MaximumFiles = SettingsManagement.GetValue("timeshiftMaxFiles", 20),
-              MaximumFileSize = (uint) SettingsManagement.GetValue("timeshiftMaxFileSize", 256)
-            };
+                          {
+                            TimeOutTune = SettingsManagement.GetValue("timeoutTune", 2),
+                            TimeOutPAT = SettingsManagement.GetValue("timeoutPAT", 5),
+                            TimeOutCAT = SettingsManagement.GetValue("timeoutCAT", 5),
+                            TimeOutPMT = SettingsManagement.GetValue("timeoutPMT", 10),
+                            TimeOutSDT = SettingsManagement.GetValue("timeoutSDT", 20),
+                            TimeOutAnalog = SettingsManagement.GetValue("timeoutAnalog", 20),
+                            UseDefaultLnbFrequencies = SettingsManagement.GetValue("lnbDefault", true),
+                            LnbLowFrequency = SettingsManagement.GetValue("LnbLowFrequency", 0),
+                            LnbHighFrequency = SettingsManagement.GetValue("LnbHighFrequency", 0),
+                            LnbSwitchFrequency = SettingsManagement.GetValue("LnbSwitchFrequency", 0),
+                            MinimumFiles = SettingsManagement.GetValue("timeshiftMinFiles", 6),
+                            MaximumFiles = SettingsManagement.GetValue("timeshiftMaxFiles", 20),
+                            MaximumFileSize = (uint) SettingsManagement.GetValue("timeshiftMaxFileSize", 256)
+                          };
             _settings.MaximumFileSize *= 1000;
             _settings.MaximumFileSize *= 1000;
-          } 
-        }        
+          }
+        }
         return _settings;
       }
     }
@@ -521,16 +511,15 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     {
       _card.Dispose();
     }
-    
+
     private void SetParameters()
     {
       if (_card == null)
       {
         return;
-      }      
+      }
       _card.Parameters = Settings;
     }
-
 
 
     public long CurrentMux()
@@ -550,11 +539,11 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         var analogTuningDetail = tuningDetail as AnalogChannel;
         if (analogTuningDetail != null)
         {
-          frequency = analogTuningDetail.Frequency; 
-        }        
+          frequency = analogTuningDetail.Frequency;
+        }
       }
 
-      return frequency;      
+      return frequency;
     }
 
 
@@ -572,12 +561,12 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         {
           return null;
         }
-               
+
         if (Context == null)
         {
           return null;
         }
-        
+
         ITvSubChannel subchannel = _card.GetSubChannel(_userManagement.GetSubChannelIdByChannelId(userName, idChannel));
         if (subchannel == null)
         {
@@ -585,7 +574,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         }
         return subchannel.CurrentChannel;
       }
-      catch(ThreadAbortException)
+      catch (ThreadAbortException)
       {
         return null;
       }
@@ -609,7 +598,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         {
           return -1;
         }
-        
+
         return _userManagement.GetTimeshiftingChannelId(userName);
       }
       catch (ThreadAbortException)
@@ -637,12 +626,12 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         {
           return "";
         }
-        
+
         if (Context == null)
         {
           return "";
         }
-        
+
         ITvSubChannel subchannel = _card.GetSubChannel(_userManagement.GetSubChannelIdByChannelId(userName, idChannel));
         if (subchannel == null)
         {
@@ -677,11 +666,11 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         if (_dbsCard.Enabled == false)
         {
           return true;
-        }               
+        }
         if (Context == null)
         {
           return false;
-        }        
+        }
         ITvSubChannel subchannel = _card.GetSubChannel(_userManagement.GetTimeshiftingSubChannel(userName));
         if (subchannel == null)
         {
@@ -708,7 +697,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
         {
           return true;
         }
-        
+
         if (Context == null)
           return false;
 
@@ -729,10 +718,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     }
 
 
-    
-
-   
-
     /// <summary>
     /// Stops the card.
     /// </summary>
@@ -750,20 +735,19 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
           this.LogInfo("unable to Stopcard since there are parked channels");
           return;
         }
-      
+
         this.LogInfo("Stopcard");
 
         //remove all subchannels, except for this user...
-        FreeAllSubChannels();        
+        FreeAllSubChannels();
 
-        
-        
+
         _userManagement.Clear();
-        
+
         _card.Stop();
       }
       catch (ThreadAbortException)
-      {       
+      {
       }
       catch (Exception ex)
       {
@@ -780,8 +764,6 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
       {
         _card.FreeSubChannel(tvSubChannel.SubChannelId);
       }
-
     }
-  
   }
 }

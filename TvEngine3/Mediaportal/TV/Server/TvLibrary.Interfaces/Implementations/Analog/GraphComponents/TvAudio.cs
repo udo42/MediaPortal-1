@@ -36,14 +36,17 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     /// Standard TvAudio device
     /// </summary>
     Normal,
+
     /// <summary>
     /// The tuner device is only connected to the Crossbar
     /// </summary>
     TvTunerConnection,
+
     /// <summary>
     /// The tuner device is also the TvAudio device
     /// </summary>
     TvTuner,
+
     /// <summary>
     /// No TvAudio device is available
     /// </summary>
@@ -81,7 +84,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     /// <summary>
     /// Private constructor
     /// </summary>
-    private TvAudio() {}
+    private TvAudio()
+    {
+    }
 
     #endregion
 
@@ -101,7 +106,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
         TvAudioVariant mode;
         try
         {
-          mode = (TvAudioVariant)Int32.Parse(modeNode.InnerText);
+          mode = (TvAudioVariant) Int32.Parse(modeNode.InnerText);
         }
         catch
         {
@@ -115,7 +120,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
           tvAudio.Name = nameNode.InnerText;
           try
           {
-            tvAudio.AudioModes = (TVAudioMode)Int32.Parse(audioModeNode.InnerText);
+            tvAudio.AudioModes = (TVAudioMode) Int32.Parse(audioModeNode.InnerText);
           }
           catch
           {
@@ -137,11 +142,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Implementations.Analog.Grap
     public void WriteGraph(XmlWriter writer)
     {
       writer.WriteStartElement("tvAudio"); //<tvAudio>
-      writer.WriteElementString("mode", ((Int32)_mode).ToString());
+      writer.WriteElementString("mode", ((Int32) _mode).ToString());
       if (_mode == TvAudioVariant.Normal)
       {
         writer.WriteElementString("name", _name ?? "");
-        writer.WriteElementString("audioModes", ((Int32)_audioModes).ToString());
+        writer.WriteElementString("audioModes", ((Int32) _audioModes).ToString());
       }
       writer.WriteEndElement(); //</tvAudio>
     }

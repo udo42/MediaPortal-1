@@ -89,8 +89,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
     private enum TeViiPolarisation
     {
       None = 0,
-      Vertical,     // also use for circular right
-      Horizontal    // also use for circular left
+      Vertical, // also use for circular right
+      Horizontal // also use for circular left
     }
 
     #endregion
@@ -100,6 +100,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
     #region DLL imports
 
     #region information functions
+
     // These functions don't require an open device.
 
     /// <summary>
@@ -147,6 +148,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
     #endregion
 
     #region device functions
+
     // The following functions work only after calling OpenDevice().
 
     /// <summary>
@@ -186,8 +188,10 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
     /// <returns><c>true</c> if the tuner successfully locks on the transponder, otherwise <c>false</c></returns>
     [DllImport("Resources\\TeVii.dll", CallingConvention = CallingConvention.Cdecl)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool TuneTransponder(Int32 idx, Int32 frequency, Int32 symbolRate, Int32 lnbLof, TeViiPolarisation polarisation,
-                                               [MarshalAs(UnmanagedType.Bool)] bool toneOn, TeViiModulation modulation, TeViiFecRate fecRate);
+    private static extern bool TuneTransponder(Int32 idx, Int32 frequency, Int32 symbolRate, Int32 lnbLof,
+                                               TeViiPolarisation polarisation,
+                                               [MarshalAs(UnmanagedType.Bool)] bool toneOn, TeViiModulation modulation,
+                                               TeViiFecRate fecRate);
 
     /// <summary>
     /// Get the current signal status for a specific TeVii tuner device.
@@ -198,7 +202,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
     /// <param name="quality">A signal quality rating ranging between 0 (low quality) and 100 (high quality).</param>
     /// <returns><c>true</c> if the signal status is successfully retrieved, otherwise <c>false</c></returns>
     [DllImport("Resources\\TeVii.dll", CallingConvention = CallingConvention.Cdecl)]
-    private static extern bool GetSignalStatus(Int32 idx, [Out, MarshalAs(UnmanagedType.Bool)] out bool isLocked, out Int32 strength, out Int32 quality);
+    private static extern bool GetSignalStatus(Int32 idx, [Out, MarshalAs(UnmanagedType.Bool)] out bool isLocked,
+                                               out Int32 strength, out Int32 quality);
 
     /// <summary>
     /// Send an arbitrary DiSEqC message.
@@ -211,7 +216,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
     /// <returns><c>true</c> if the message is successfully sent, otherwise <c>false</c></returns>
     [DllImport("Resources\\TeVii.dll", CallingConvention = CallingConvention.Cdecl)]
     [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool SendDiSEqC(Int32 idx, byte[] message, Int32 length, Int32 repeatCount, [MarshalAs(UnmanagedType.Bool)] bool repeatFlag);
+    private static extern bool SendDiSEqC(Int32 idx, byte[] message, Int32 length, Int32 repeatCount,
+                                          [MarshalAs(UnmanagedType.Bool)] bool repeatFlag);
 
     /// <summary>
     /// Set the remote control receiver callback function.
@@ -416,7 +422,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
         //this.LogDebug("TeVii: compare to {0} {1}", deviceName, devicePath);
         if (devicePath.Equals(tunerDevicePath))
         {
-          this.LogDebug("TeVii: device recognised, index = {0}, name = {1}, API version = {2}", deviceIdx, deviceName, GetAPIVersion());
+          this.LogDebug("TeVii: device recognised, index = {0}, name = {1}, API version = {2}", deviceIdx, deviceName,
+                        GetAPIVersion());
           _deviceIndex = deviceIdx;
           break;
         }
@@ -497,8 +504,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.TeVii
         toneOn = true;
       }
 
-      bool result = TuneTransponder(_deviceIndex, (int)ch.Frequency, ch.SymbolRate * 1000, lnbLof,
-                                    Translate(ch.Polarisation), toneOn, Translate(true, ch.ModulationType), Translate(ch.InnerFecRate));
+      bool result = TuneTransponder(_deviceIndex, (int) ch.Frequency, ch.SymbolRate*1000, lnbLof,
+                                    Translate(ch.Polarisation), toneOn, Translate(true, ch.ModulationType),
+                                    Translate(ch.InnerFecRate));
       if (result)
       {
         this.LogDebug("TeVii: result = success");

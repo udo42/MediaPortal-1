@@ -34,21 +34,24 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardAllocation
     /// List is sorted by "same transponder" and priority
     /// </summary>
     /// <returns>list containg all free cards which can receive the channel</returns>
-    List<CardDetail> GetFreeCardsForChannel(IDictionary<int, ITvCardHandler> cards, Channel dbChannel, IUser user, out TvResult result);
+    List<CardDetail> GetFreeCardsForChannel(IDictionary<int, ITvCardHandler> cards, Channel dbChannel, IUser user,
+                                            out TvResult result);
 
     /// <summary>
     /// Gets a list of all available cards which can receive the channel specified
     /// List is sorted by "same transponder" and priority
     /// </summary>
     /// <returns>list containg all free cards which can receive the channel</returns>
-    List<CardDetail> GetAvailableCardsForChannel(IDictionary<int, ITvCardHandler> cards, Channel dbChannel, IUser user, out IDictionary<int, TvResult> cardsUnAvailable);
+    List<CardDetail> GetAvailableCardsForChannel(IDictionary<int, ITvCardHandler> cards, Channel dbChannel, IUser user,
+                                                 out IDictionary<int, TvResult> cardsUnAvailable);
 
     /// <summary>
     /// Gets a list of all available cards which can receive the channel specified
     /// List is sorted by "same transponder" and priority
     /// </summary>
     /// <returns>list containg all free cards which can receive the channel</returns>
-    List<CardDetail> GetAvailableCardsForChannel(IDictionary<int, ITvCardHandler> cards, Channel dbChannel, ref IUser user);
+    List<CardDetail> GetAvailableCardsForChannel(IDictionary<int, ITvCardHandler> cards, Channel dbChannel,
+                                                 ref IUser user);
 
     /// <summary>
     /// Gets a list of all free cards which can receive the channel specified

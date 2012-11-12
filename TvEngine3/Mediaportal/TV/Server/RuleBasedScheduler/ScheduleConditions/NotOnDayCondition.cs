@@ -9,10 +9,12 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
   public class NotOnDayCondition : IScheduleCondition
   {
     private IList<DayOfWeek> _notOndays;
+
     public NotOnDayCondition(IList<DayOfWeek> notOndays)
     {
       _notOndays = notOndays;
     }
+
     public NotOnDayCondition()
     {
     }

@@ -9,11 +9,11 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
   public class ProgramCondition<T> : IScheduleCondition
   {
     private readonly ConditionOperator _operator; //contains the operator. eg equals.
-    private readonly string _programFieldName;        // contains the fieldname
-    private readonly T _programFieldValue;             // the value to match. eg "gump"
+    private readonly string _programFieldName; // contains the fieldname
+    private readonly T _programFieldValue; // the value to match. eg "gump"
 
     public ProgramCondition(string programFieldName, T programFieldValue, ConditionOperator op)
-    {      
+    {
       _programFieldName = programFieldName;
       _programFieldValue = programFieldValue;
       _operator = op;
@@ -21,14 +21,13 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
 
     public ProgramCondition()
     {
-      
     }
 
     #region IScheduleCondition Members
 
     public IQueryable<Program> ApplyCondition(IQueryable<Program> baseQuery)
     {
-      return DynamicLinqBuilder.ApplyFilter(baseQuery, _programFieldName, _programFieldValue, _operator);        
+      return DynamicLinqBuilder.ApplyFilter(baseQuery, _programFieldName, _programFieldValue, _operator);
     }
 
     #endregion
@@ -37,8 +36,5 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.ScheduleConditions
     {
       return ("[" + _programFieldName + "] " + _operator + " [" + _programFieldValue + "]");
     }
-
   }
-
-
 }

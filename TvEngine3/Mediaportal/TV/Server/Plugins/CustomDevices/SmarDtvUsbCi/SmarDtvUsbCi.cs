@@ -39,10 +39,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
   /// A class for handling conditional access with the Hauppauge WinTV-CI and TerraTec USB CI. Both devices are
   /// based on an OEM design by SmarDTV.
   /// </summary>
-  public class SmarDtvUsbCi : BaseCustomDevice, IAddOnDevice, IConditionalAccessProvider, ICiMenuActions, ITvServerPlugin
+  public class SmarDtvUsbCi : BaseCustomDevice, IAddOnDevice, IConditionalAccessProvider, ICiMenuActions,
+                              ITvServerPlugin
   {
-
-
     #region enums
 
     private enum SmarDtvCiState
@@ -99,30 +98,27 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     private struct SmarDtvUsbCiCallbacks
     {
-      public readonly IntPtr Context;  // Optional context that the interface will pass back as a parameter when the delegates are executed.
+      public readonly IntPtr Context;
+                             // Optional context that the interface will pass back as a parameter when the delegates are executed.
+
       public OnSmarDtvUsbCiState OnCiState;
       public OnSmarDtvUsbCiApplicationInfo OnApplicationInfo;
       public OnSmarDtvUsbCiCloseMmi OnCloseMmi;
       public OnSmarDtvUsbCiApdu OnApdu;
     }
 
-    #pragma warning disable 0649, 0169
+#pragma warning disable 0649, 0169
     // These structs are used - they are marshaled from the COM interface.
     private struct VersionInfo
     {
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)]
-      public String BdaVersion;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)] public String BdaVersion;
 
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)]
-      public String FirmwareVersion;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)]
-      public String FpgaVersion;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)] public String FirmwareVersion;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 8)] public String FpgaVersion;
 
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)]
-      public String PluginVersion;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)] public String PluginVersion;
 
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)]
-      public String UsbVersion;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 12)] public String UsbVersion;
     }
 
     private struct ApplicationInfo
@@ -131,12 +127,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
       public UInt16 Code;
       public UInt16 Manufacturer;
 
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 352)]
-      public String MenuTitle;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 352)] public String MenuTitle;
 
       private byte Padding;
     }
-    #pragma warning restore 0649, 0169
+#pragma warning restore 0649, 0169
 
     #endregion
 
@@ -154,9 +149,9 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     private static readonly HashSet<String> _devicesInUse = new HashSet<string>();
 
     private bool _isSmarDtvUsbCi;
-    #pragma warning disable 0414
+#pragma warning disable 0414
     private bool _isCamPresent;
-    #pragma warning restore 0414
+#pragma warning restore 0414
     private bool _isCamReady;
     private SmarDtvCiState _ciState = SmarDtvCiState.Empty;
 
@@ -209,7 +204,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     {
       this.LogInfo("SmarDTV USB CI: application information callback");
       //DVB_MMI.DumpBinary(info, 0, ApplicationInfoSize);
-      var appInfo = (ApplicationInfo)Marshal.PtrToStructure(info, typeof(ApplicationInfo));
+      var appInfo = (ApplicationInfo) Marshal.PtrToStructure(info, typeof (ApplicationInfo));
       this.LogDebug("  type         = {0}", appInfo.ApplicationType);
       // Note: current drivers seem to have a bug that causes only the first byte in the manufacturer and code
       // fields to be available.
@@ -386,7 +381,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
         int hr = lastFilter.QueryFilterInfo(out filterInfo);
         if (hr != 0)
         {
-          this.LogDebug("SmarDTV USB CI: failed to get filter info, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+          this.LogDebug("SmarDTV USB CI: failed to get filter info, hr = 0x{0:x} ({1})", hr,
+                        HResult.GetDXErrorString(hr));
           return false;
         }
         _graph = filterInfo.pGraph as IFilterGraph2;
@@ -400,7 +396,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
         hr = _graph.AddSourceFilterForMoniker(_ciDevice.Mon, null, _ciDevice.Name, out _ciFilter);
         if (hr != 0)
         {
-          this.LogDebug("SmarDTV USB CI: failed to add the filter to the graph, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+          this.LogDebug("SmarDTV USB CI: failed to add the filter to the graph, hr = 0x{0:x} ({1})", hr,
+                        HResult.GetDXErrorString(hr));
           return false;
         }
 
@@ -419,7 +416,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
         tmpInputPin = null;
         if (hr != 0)
         {
-          this.LogDebug("SmarDTV USB CI: failed to connect the CI filter into the graph, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+          this.LogDebug("SmarDTV USB CI: failed to connect the CI filter into the graph, hr = 0x{0:x} ({1})", hr,
+                        HResult.GetDXErrorString(hr));
           return false;
         }
 
@@ -456,10 +454,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     /// </summary>
     public override string Name
     {
-      get
-      {
-        return "SmarDTV USB CI";
-      }
+      get { return "SmarDTV USB CI"; }
     }
 
     /// <summary>
@@ -467,10 +462,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     /// </summary>
     public string Version
     {
-      get
-      {
-        return "1.0.0.0";
-      }
+      get { return "1.0.0.0"; }
     }
 
     /// <summary>
@@ -478,10 +470,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     /// </summary>
     public string Author
     {
-      get
-      {
-        return "mm1352000";
-      }
+      get { return "mm1352000"; }
     }
 
     /// <summary>
@@ -493,10 +482,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     /// </remarks>
     public bool MasterOnly
     {
-      get
-      {
-        return true;
-      }
+      get { return true; }
     }
 
     /// <summary>
@@ -558,7 +544,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
       _ciCallbacks.OnCloseMmi = OnCloseMmi;
       _ciCallbackBuffer = Marshal.AllocCoTaskMem(20);
       Marshal.StructureToPtr(_ciCallbacks, _ciCallbackBuffer, true);
-      var hr = (int)_ciType.GetMethod("USB2CI_Init").Invoke(_ciFilter, new object[] { _ciCallbackBuffer });
+      var hr = (int) _ciType.GetMethod("USB2CI_Init").Invoke(_ciFilter, new object[] {_ciCallbackBuffer});
       if (hr == 0)
       {
         IntPtr versionInfoBuffer = Marshal.AllocCoTaskMem(VersionInfoSize);
@@ -566,11 +552,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
         {
           Marshal.WriteByte(versionInfoBuffer, i, 0);
         }
-        hr = (int)_ciType.GetMethod("USB2CI_GetVersion").Invoke(_ciFilter, new object [] { versionInfoBuffer });
+        hr = (int) _ciType.GetMethod("USB2CI_GetVersion").Invoke(_ciFilter, new object[] {versionInfoBuffer});
         if (hr == 0)
         {
           //DVB_MMI.DumpBinary(versionBuffer, 0, VersionInfoSize);
-          var versionInfo = (VersionInfo)Marshal.PtrToStructure(versionInfoBuffer, typeof(VersionInfo));
+          var versionInfo = (VersionInfo) Marshal.PtrToStructure(versionInfoBuffer, typeof (VersionInfo));
           this.LogDebug("  plugin version     = {0}", versionInfo.PluginVersion);
           this.LogDebug("  BDA driver version = {0}", versionInfo.BdaVersion);
           this.LogDebug("  USB driver version = {0}", versionInfo.UsbVersion);
@@ -579,7 +565,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
         }
         else
         {
-          this.LogDebug("SmarDTV USB CI: failed to retrieve version information, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+          this.LogDebug("SmarDTV USB CI: failed to retrieve version information, hr = 0x{0:x} ({1})", hr,
+                        HResult.GetDXErrorString(hr));
         }
         Marshal.FreeCoTaskMem(versionInfoBuffer);
 
@@ -647,9 +634,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
     /// <param name="pmt">The programme map table for the service.</param>
     /// <param name="cat">The conditional access table for the service.</param>
     /// <returns><c>true</c> if the command is successfully sent, otherwise <c>false</c></returns>
-    public bool SendCommand(IChannel channel, CaPmtListManagementAction listAction, CaPmtCommand command, Pmt pmt, Cat cat)
+    public bool SendCommand(IChannel channel, CaPmtListManagementAction listAction, CaPmtCommand command, Pmt pmt,
+                            Cat cat)
     {
-      this.LogDebug("SmarDTV USB CI: send conditional access command, list action = {0}, command = {1}", listAction, command);
+      this.LogDebug("SmarDTV USB CI: send conditional access command, list action = {0}, command = {1}", listAction,
+                    command);
 
       if (!_isSmarDtvUsbCi)
       {
@@ -692,7 +681,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
       ReadOnlyCollection<byte> rawPmt = pmt.GetRawPmt();
       var rawPmtCopy = new byte[rawPmt.Count];
       rawPmt.CopyTo(rawPmtCopy, 0);
-      var hr = (int)_ciType.GetMethod("USB2CI_GuiSendPMT").Invoke(_ciFilter, new object[] { rawPmtCopy, (Int16)rawPmt.Count });
+      var hr =
+        (int) _ciType.GetMethod("USB2CI_GuiSendPMT").Invoke(_ciFilter, new object[] {rawPmtCopy, (Int16) rawPmt.Count});
       if (hr == 0)
       {
         this.LogDebug("SmarDTV USB CI: result = success");
@@ -746,7 +736,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
         return false;
       }
 
-      var hr = (int)_ciType.GetMethod("USB2CI_OpenMMI").Invoke(_ciFilter, null);
+      var hr = (int) _ciType.GetMethod("USB2CI_OpenMMI").Invoke(_ciFilter, null);
       if (hr == 0)
       {
         this.LogDebug("SmarDTV USB CI: result = success");
@@ -782,7 +772,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
       }
 
       byte[] apdu = DvbMmiHandler.CreateMmiClose(0);
-      var hr = (int)_ciType.GetMethod("USB2CI_APDUToCAM").Invoke(_ciFilter, new object[] { apdu.Length, apdu });
+      var hr = (int) _ciType.GetMethod("USB2CI_APDUToCAM").Invoke(_ciFilter, new object[] {apdu.Length, apdu});
       if (hr == 0)
       {
         this.LogDebug("SmarDTV USB CI: result = success");
@@ -819,7 +809,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
       }
 
       byte[] apdu = DvbMmiHandler.CreateMmiMenuAnswer(choice);
-      var hr = (int)_ciType.GetMethod("USB2CI_APDUToCAM").Invoke(_ciFilter, new object[] { apdu.Length, apdu });
+      var hr = (int) _ciType.GetMethod("USB2CI_APDUToCAM").Invoke(_ciFilter, new object[] {apdu.Length, apdu});
       if (hr == 0)
       {
         this.LogDebug("SmarDTV USB CI: result = success");
@@ -866,7 +856,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.SmarDtvUsbCi
         responseType = MmiResponseType.Cancel;
       }
       byte[] apdu = DvbMmiHandler.CreateMmiEnquiryAnswer(responseType, answer);
-      var hr = (int)_ciType.GetMethod("USB2CI_APDUToCAM").Invoke(_ciFilter, new object[] { apdu.Length, apdu });
+      var hr = (int) _ciType.GetMethod("USB2CI_APDUToCAM").Invoke(_ciFilter, new object[] {apdu.Length, apdu});
       if (hr == 0)
       {
         this.LogDebug("SmarDTV USB CI: result = success");

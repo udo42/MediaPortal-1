@@ -43,8 +43,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
   /// </summary>
   public static class FilterGraphTools
   {
-
-
     #region structs
 
     private static readonly byte[] Mpeg2ProgramVideo =
@@ -272,7 +270,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
       try
       {
         Type type = Type.GetTypeFromCLSID(clsid);
-        filter = (IBaseFilter)Activator.CreateInstance(type);
+        filter = (IBaseFilter) Activator.CreateInstance(type);
 
         int hr = graphBuilder.AddFilter(filter, name);
         DsError.ThrowExceptionForHR(hr);
@@ -317,7 +315,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         if (!devices[i].Name.Equals(friendlyName))
           continue;
 
-        int hr = ((IFilterGraph2)graphBuilder).AddSourceFilterForMoniker(devices[i].Mon, null, friendlyName, out filter);
+        int hr = ((IFilterGraph2) graphBuilder).AddSourceFilterForMoniker(devices[i].Mon, null, friendlyName, out filter);
         DsError.ThrowExceptionForHR(hr);
 
         break;
@@ -365,7 +363,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         hr = NativeMethods.MkParseDisplayName(bindCtx, devicePath, out eaten, out moniker);
         Marshal.ThrowExceptionForHR(hr);
 
-        hr = ((IFilterGraph2)graphBuilder).AddSourceFilterForMoniker(moniker, bindCtx, name, out filter);
+        hr = ((IFilterGraph2) graphBuilder).AddSourceFilterForMoniker(moniker, bindCtx, name, out filter);
         DsError.ThrowExceptionForHR(hr);
       }
       catch (Exception ex)
@@ -927,7 +925,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 
         Marshal.ThrowExceptionForHR(hr);
 
-        hr = ((IPersistStream)graphBuilder).Save(stream, true);
+        hr = ((IPersistStream) graphBuilder).Save(stream, true);
         Marshal.ThrowExceptionForHR(hr);
 
         hr = storage.Commit(STGC.Default);
@@ -990,7 +988,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 
         Marshal.ThrowExceptionForHR(hr);
 
-        hr = ((IPersistStream)graphBuilder).Load(stream);
+        hr = ((IPersistStream) graphBuilder).Load(stream);
         Marshal.ThrowExceptionForHR(hr);
       }
       finally
@@ -1055,7 +1053,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
           Release.ComObject(filterInfo.pGraph);
 
         DsCAUUID caGuid;
-        hr = ((ISpecifyPropertyPages)filter).GetPages(out caGuid);
+        hr = ((ISpecifyPropertyPages) filter).GetPages(out caGuid);
         DsError.ThrowExceptionForHR(hr);
 
         try
@@ -1104,7 +1102,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
         retval = true;
         Release.ComObject(o);
       }
-      catch { }
+      catch
+      {
+      }
       return retval;
     }
 
@@ -1119,7 +1119,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     [SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
     public static bool IsVMR9Present()
     {
-      return IsThisComObjectInstalled(typeof(VideoMixingRenderer9).GUID);
+      return IsThisComObjectInstalled(typeof (VideoMixingRenderer9).GUID);
     }
 
     /// <summary>
@@ -1133,7 +1133,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     [SecurityPermission(SecurityAction.LinkDemand, UnmanagedCode = true)]
     public static bool IsVMR7Present()
     {
-      return IsThisComObjectInstalled(typeof(VideoMixingRenderer).GUID);
+      return IsThisComObjectInstalled(typeof (VideoMixingRenderer).GUID);
     }
 
     /// <summary>
@@ -1816,9 +1816,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 #if USING_NET11
 			[Out] out UCOMIStream ppstm
 #else
- [Out] out IStream ppstm
+      [Out] out IStream ppstm
 #endif
-);
+      );
 
     [PreserveSig]
     int OpenStream(
@@ -1829,9 +1829,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 #if USING_NET11
 			[Out] out UCOMIStream ppstm
 #else
- [Out] out IStream ppstm
+      [Out] out IStream ppstm
 #endif
-);
+      );
 
     [PreserveSig]
     int CreateStorage(
@@ -1899,11 +1899,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 			[In] FILETIME patime,
 			[In] FILETIME pmtime
 #else
- [In] FILETIME pctime,
- [In] FILETIME patime,
- [In] FILETIME pmtime
+      [In] FILETIME pctime,
+      [In] FILETIME patime,
+      [In] FILETIME pmtime
 #endif
-);
+      );
 
     [PreserveSig]
     int SetClass([In, MarshalAs(UnmanagedType.LPStruct)] Guid clsid);
@@ -1919,10 +1919,10 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
 #if USING_NET11
 			[Out] out STATSTG pStatStg,
 #else
-[Out] out STATSTG pStatStg,
+      [Out] out STATSTG pStatStg,
 #endif
- [In] int grfStatFlag
- );
+      [In] int grfStatFlag
+      );
   }
 
   internal static class NativeMethods

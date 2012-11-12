@@ -34,8 +34,6 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
   /// </summary>
   public class EncodersInUse
   {
- 
-
     private static EncodersInUse _instance;
     private readonly Dictionary<DsDevice, int> _encodersInUse;
 
@@ -44,7 +42,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
     /// </summary>
     private EncodersInUse()
     {
-      _encodersInUse = new Dictionary<DsDevice, int>();      
+      _encodersInUse = new Dictionary<DsDevice, int>();
     }
 
     /// <summary>
@@ -113,14 +111,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.Helper
           if (reuseLimit <= 0 || _encodersInUse[key] < reuseLimit)
           {
             this.LogDebug("analog:  reusable compressor, usage under limit (usage: {0}, limit: {1})",
-                              _encodersInUse[key], reuseLimit == 0 ? "[unlimited]" : reuseLimit.ToString());
+                          _encodersInUse[key], reuseLimit == 0 ? "[unlimited]" : reuseLimit.ToString());
             _encodersInUse[key]++;
             return true;
           }
           else
           {
             this.LogDebug("analog:  reusable compressor, usage already at limit (usage: {0}, limit: {1})",
-                              _encodersInUse[key], reuseLimit);
+                          _encodersInUse[key], reuseLimit);
             return false;
           }
         }

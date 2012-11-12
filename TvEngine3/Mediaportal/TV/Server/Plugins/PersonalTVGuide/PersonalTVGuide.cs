@@ -56,7 +56,7 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
     /// <param name="eventArgs">The <see cref="System.EventArgs"/> the event data.</param>
     private void events_OnTvServerEvent(object sender, EventArgs eventArgs)
     {
-      var tvEvent = (TvServerEventArgs)eventArgs;
+      var tvEvent = (TvServerEventArgs) eventArgs;
       if (tvEvent.EventType == TvServerEventType.ProgramUpdated)
       {
         UpdatePersonalTVGuide();
@@ -114,10 +114,10 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
           this.LogInfo("PersonalTVGuide: Stop Update loop");
           break;
         }
-        UpdateKeyword(key);      
+        UpdateKeyword(key);
       }
 
-      SettingsManagement.SaveSetting("PTVGLastUpdateTime", DateTime.Now.ToString());      
+      SettingsManagement.SaveSetting("PTVGLastUpdateTime", DateTime.Now.ToString());
       if (_debugMode) this.LogInfo("PersonalTVGuide: UpdateThread - Stop : " + DateTime.Now.ToLongTimeString());
       _isUpdating = false;
     }
@@ -133,14 +133,14 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
     }
 
     private void UpdateKeyword(Keyword key)
-    {      
+    {
       if (_debugMode) this.LogDebug("PersonalTVGuide: Updating Keyword: " + key.KeywordName);
       if (key.SearchInTitle)
       {
         SaveList(key.IdKeyword, ContainsInTitle(key.KeywordName));
         Thread.Sleep(100);
       }
-      
+
       if (key.SearchInDescription)
       {
         SaveList(key.IdKeyword, ContainsInDescription(key.KeywordName));
@@ -181,9 +181,9 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
     {
       StringComparisonEnum stringComparisonEnum = StringComparisonEnum.StartsWith;
       stringComparisonEnum |= StringComparisonEnum.EndsWith;
-      return ProgramManagement.GetProgramsByDescription(token, MediaTypeEnum.TV, stringComparisonEnum);      
+      return ProgramManagement.GetProgramsByDescription(token, MediaTypeEnum.TV, stringComparisonEnum);
     }
-    
+
 
     private void LoadSettings()
     {
@@ -267,7 +267,9 @@ namespace Mediaportal.TV.Server.Plugins.PersonalTVGuide
 
     #region IStandbyHandler
 
-    public void UserShutdownNow() {}
+    public void UserShutdownNow()
+    {
+    }
 
     public bool DisAllowShutdown
     {

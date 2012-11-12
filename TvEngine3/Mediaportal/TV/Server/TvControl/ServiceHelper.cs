@@ -37,18 +37,18 @@ namespace Mediaportal.TV.Server.TVControl
     /// </summary>
     /// <returns></returns>
     public static NetTcpBinding GetTcpBinding()
-    {      
+    {
       var netTcpBinding = new NetTcpBinding
-      {
-        Name = NetTcpBindingName,
-        MaxBufferSize = MaxBufferSize,
-        MaxReceivedMessageSize = MaxReceivedMessageSize,
-        ReceiveTimeout = TcpReceiveTimeout,
-        SendTimeout = TcpSendTimeout,   
-        //TransactionFlow = false,
-        CloseTimeout = TcpCloseTimeout,
-        OpenTimeout = TcpOpenTimeout
-      };
+                            {
+                              Name = NetTcpBindingName,
+                              MaxBufferSize = MaxBufferSize,
+                              MaxReceivedMessageSize = MaxReceivedMessageSize,
+                              ReceiveTimeout = TcpReceiveTimeout,
+                              SendTimeout = TcpSendTimeout,
+                              //TransactionFlow = false,
+                              CloseTimeout = TcpCloseTimeout,
+                              OpenTimeout = TcpOpenTimeout
+                            };
 
       /*netTcpBinding.ReliableSession.Enabled = true;
       netTcpBinding.ReliableSession.Ordered = true;
@@ -61,24 +61,24 @@ namespace Mediaportal.TV.Server.TVControl
     public static BasicHttpBinding GetHttpBinding()
     {
       var basicHttpBinding = new BasicHttpBinding
-      {
-        Name = DefaultBasicHttpBindingName,
-        MaxBufferSize = MaxBufferSize,
-        MaxReceivedMessageSize = MaxReceivedMessageSize,
-        ReceiveTimeout = HttpReceiveTimeout,
-        SendTimeout = HttpSendTimeout,   
-        Security =
-          {
-            Mode = HttpSecurityMode,
-            Transport = { ClientCredentialType = HttpClientCredentialType.None }
-          }
-      };
+                               {
+                                 Name = DefaultBasicHttpBindingName,
+                                 MaxBufferSize = MaxBufferSize,
+                                 MaxReceivedMessageSize = MaxReceivedMessageSize,
+                                 ReceiveTimeout = HttpReceiveTimeout,
+                                 SendTimeout = HttpSendTimeout,
+                                 Security =
+                                   {
+                                     Mode = HttpSecurityMode,
+                                     Transport = {ClientCredentialType = HttpClientCredentialType.None}
+                                   }
+                               };
       SetReaderQuotas(basicHttpBinding.ReaderQuotas);
       return basicHttpBinding;
     }
 
-    private static void SetReaderQuotas (XmlDictionaryReaderQuotas readerQuotas)
-    {      
+    private static void SetReaderQuotas(XmlDictionaryReaderQuotas readerQuotas)
+    {
       readerQuotas.MaxDepth = ReaderQuotasMaxDepth;
       readerQuotas.MaxStringContentLength = ReaderQuotasMaxStringContentLength;
       readerQuotas.MaxArrayLength = ReaderQuotasMaxArrayLength;

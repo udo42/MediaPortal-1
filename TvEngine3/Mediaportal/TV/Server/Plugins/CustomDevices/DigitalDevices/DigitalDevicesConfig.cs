@@ -56,7 +56,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
       // to fill the _ciSlots list.
       _ciSlots = new List<DigitalDevicesCiSlot>();
       DsDevice[] captureDevices = DsDevice.GetDevicesOfCat(FilterCategory.BDAReceiverComponentsCategory);
-      Guid baseFilterGuid = typeof(IBaseFilter).GUID;
+      Guid baseFilterGuid = typeof (IBaseFilter).GUID;
       foreach (DsDevice device in captureDevices)
       {
         if (!DigitalDevicesCiSlots.IsDigitalDevicesCiDevice(device))
@@ -107,11 +107,8 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
         _ciSlots.Add(slot);
       }
       _ciSlots.Sort(
-        delegate(DigitalDevicesCiSlot slot1, DigitalDevicesCiSlot slot2)
-        {
-          return slot1.DeviceName.CompareTo(slot2.DeviceName);
-        }
-      );
+        delegate(DigitalDevicesCiSlot slot1, DigitalDevicesCiSlot slot2) { return slot1.DeviceName.CompareTo(slot2.DeviceName); }
+        );
 
       _decryptLimits = new NumericUpDown[_ciSlots.Count];
       _providerLists = new MPTextBox[_ciSlots.Count];
@@ -134,7 +131,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.DigitalDevices
     public override void SaveSettings()
     {
       this.LogDebug("Digital Devices config: saving settings, slot count = {0}", _ciSlots.Count);
-      
+
       byte i = 0;
       foreach (DigitalDevicesCiSlot slot in _ciSlots)
       {

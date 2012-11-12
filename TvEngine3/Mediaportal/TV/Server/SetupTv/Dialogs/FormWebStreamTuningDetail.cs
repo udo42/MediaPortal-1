@@ -72,7 +72,7 @@ namespace Mediaportal.TV.Server.SetupTV.Dialogs
     {
       TuningDetail.ChannelType = 5;
       TuningDetail.Url = edStreamURL.Text;
-      TuningDetail.Bitrate = (int)nudStreamBitrate.Value;
+      TuningDetail.Bitrate = (int) nudStreamBitrate.Value;
     }
 
     private bool ValidateInput()

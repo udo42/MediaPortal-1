@@ -40,7 +40,7 @@ namespace Mediaportal.TV.Server.TestApp
       get { return _channel; }
       set
       {
-        _channel = (ATSCChannel)value;
+        _channel = (ATSCChannel) value;
         textboxFreq.Text = _channel.PhysicalChannel.ToString();
         textBoxONID.Text = _channel.MajorChannel.ToString();
         textBoxTSID.Text = _channel.MinorChannel.ToString();

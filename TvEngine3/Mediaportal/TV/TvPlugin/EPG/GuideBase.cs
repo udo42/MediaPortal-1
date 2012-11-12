@@ -57,7 +57,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
     #region private
 
-    private int _backupChannelOffset;    
+    private int _backupChannelOffset;
     private int _backupCursorY;
     private bool _byIndex;
     private int _channelNumberMaxLength = 3;
@@ -145,7 +145,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
         UpdateGroupButton();
 
         _updateTimer = DateTime.Now;
-        var cntlDay = GetControl((int)Controls.SPINCONTROL_DAY) as GUISpinControl;
+        var cntlDay = GetControl((int) Controls.SPINCONTROL_DAY) as GUISpinControl;
 
         // Find first day in TVGuide and set spincontrol position
         int iDay = CalcDays();
@@ -163,24 +163,25 @@ namespace Mediaportal.TV.TvPlugin.EPG
         }
 
         int xpos, ypos;
-        GUIControl cntlPanel = GetControl((int)Controls.PANEL_BACKGROUND);
-        var cntlChannelImg = (GUIImage)GetControl((int)Controls.CHANNEL_IMAGE_TEMPLATE);
-        var cntlChannelLabel = (GUILabelControl)GetControl((int)Controls.CHANNEL_LABEL_TEMPLATE);
-        var labelTime = (GUILabelControl)GetControl((int)Controls.LABEL_TIME1);
-        var cntlHeaderBkgImg = (GUIImage)GetControl((int)Controls.IMG_TIME1);
-        var cntlChannelTemplate = (GUIImage)GetControl((int)Controls.CHANNEL_TEMPLATE);
+        GUIControl cntlPanel = GetControl((int) Controls.PANEL_BACKGROUND);
+        var cntlChannelImg = (GUIImage) GetControl((int) Controls.CHANNEL_IMAGE_TEMPLATE);
+        var cntlChannelLabel = (GUILabelControl) GetControl((int) Controls.CHANNEL_LABEL_TEMPLATE);
+        var labelTime = (GUILabelControl) GetControl((int) Controls.LABEL_TIME1);
+        var cntlHeaderBkgImg = (GUIImage) GetControl((int) Controls.IMG_TIME1);
+        var cntlChannelTemplate = (GUIImage) GetControl((int) Controls.CHANNEL_TEMPLATE);
 
 
-        _titleDarkTemplate = GetControl((int)Controls.LABEL_TITLE_DARK_TEMPLATE) as GUILabelControl;
-        _titleTemplate = GetControl((int)Controls.LABEL_TITLE_TEMPLATE) as GUILabelControl;
-        _genreDarkTemplate = GetControl((int)Controls.LABEL_GENRE_DARK_TEMPLATE) as GUILabelControl;
-        _genreTemplate = GetControl((int)Controls.LABEL_GENRE_TEMPLATE) as GUILabelControl;
+        _titleDarkTemplate = GetControl((int) Controls.LABEL_TITLE_DARK_TEMPLATE) as GUILabelControl;
+        _titleTemplate = GetControl((int) Controls.LABEL_TITLE_TEMPLATE) as GUILabelControl;
+        _genreDarkTemplate = GetControl((int) Controls.LABEL_GENRE_DARK_TEMPLATE) as GUILabelControl;
+        _genreTemplate = GetControl((int) Controls.LABEL_GENRE_TEMPLATE) as GUILabelControl;
 
-        _programPartialRecordTemplate = GetControl((int)Controls.BUTTON_PROGRAM_PARTIAL_RECORD) as GUIButton3PartControl;
-        _programRecordTemplate = GetControl((int)Controls.BUTTON_PROGRAM_RECORD) as GUIButton3PartControl;
-        _programNotifyTemplate = GetControl((int)Controls.BUTTON_PROGRAM_NOTIFY) as GUIButton3PartControl;
-        _programNotRunningTemplate = GetControl((int)Controls.BUTTON_PROGRAM_NOT_RUNNING) as GUIButton3PartControl;
-        _programRunningTemplate = GetControl((int)Controls.BUTTON_PROGRAM_RUNNING) as GUIButton3PartControl;
+        _programPartialRecordTemplate =
+          GetControl((int) Controls.BUTTON_PROGRAM_PARTIAL_RECORD) as GUIButton3PartControl;
+        _programRecordTemplate = GetControl((int) Controls.BUTTON_PROGRAM_RECORD) as GUIButton3PartControl;
+        _programNotifyTemplate = GetControl((int) Controls.BUTTON_PROGRAM_NOTIFY) as GUIButton3PartControl;
+        _programNotRunningTemplate = GetControl((int) Controls.BUTTON_PROGRAM_NOT_RUNNING) as GUIButton3PartControl;
+        _programRunningTemplate = GetControl((int) Controls.BUTTON_PROGRAM_RUNNING) as GUIButton3PartControl;
 
         _showChannelLogos = cntlChannelImg != null;
         if (_showChannelLogos)
@@ -194,12 +195,12 @@ namespace Mediaportal.TV.TvPlugin.EPG
         cntlHeaderBkgImg.IsVisible = false;
         labelTime.IsVisible = false;
         cntlChannelTemplate.IsVisible = false;
-        int iLabelWidth = (cntlPanel.XPosition + cntlPanel.Width - labelTime.XPosition) / 4;
+        int iLabelWidth = (cntlPanel.XPosition + cntlPanel.Width - labelTime.XPosition)/4;
 
         // add labels for time blocks 1-4
         int iMin = _viewingTime.Minute;
         _viewingTime = _viewingTime.AddMinutes(-iMin);
-        iMin = (iMin / _timePerBlock) * _timePerBlock;
+        iMin = (iMin/_timePerBlock)*_timePerBlock;
         _viewingTime = _viewingTime.AddMinutes(iMin);
 
         var dt = new DateTime();
@@ -207,13 +208,13 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
         for (int iLabel = 0; iLabel < 4; iLabel++)
         {
-          xpos = iLabel * iLabelWidth + labelTime.XPosition;
+          xpos = iLabel*iLabelWidth + labelTime.XPosition;
           ypos = labelTime.YPosition;
 
-          var img = GetControl((int)Controls.IMG_TIME1 + iLabel) as GUIImage;
+          var img = GetControl((int) Controls.IMG_TIME1 + iLabel) as GUIImage;
           if (img == null)
           {
-            img = new GUIImage(GetID, (int)Controls.IMG_TIME1 + iLabel, xpos, ypos, iLabelWidth - 4,
+            img = new GUIImage(GetID, (int) Controls.IMG_TIME1 + iLabel, xpos, ypos, iLabelWidth - 4,
                                cntlHeaderBkgImg.RenderHeight, cntlHeaderBkgImg.FileName, 0x0);
             img.AllocResources();
             GUIControl cntl2 = img;
@@ -227,10 +228,10 @@ namespace Mediaportal.TV.TvPlugin.EPG
           img.SetPosition(xpos, ypos);
           img.DoUpdate();
 
-          var label = GetControl((int)Controls.LABEL_TIME1 + iLabel) as GUILabelControl;
+          var label = GetControl((int) Controls.LABEL_TIME1 + iLabel) as GUILabelControl;
           if (label == null)
           {
-            label = new GUILabelControl(GetID, (int)Controls.LABEL_TIME1 + iLabel, xpos, ypos, iLabelWidth,
+            label = new GUILabelControl(GetID, (int) Controls.LABEL_TIME1 + iLabel, xpos, ypos, iLabelWidth,
                                         cntlHeaderBkgImg.RenderHeight, labelTime.FontName, String.Empty,
                                         labelTime.TextColor, labelTime.TextAlignment, labelTime.TextVAlignment, false,
                                         labelTime.ShadowAngle, labelTime.ShadowDistance, labelTime.ShadowColor);
@@ -259,9 +260,9 @@ namespace Mediaportal.TV.TvPlugin.EPG
         for (int iChan = 0; iChan < _channelCount; ++iChan)
         {
           xpos = cntlChannelTemplate.XPosition;
-          ypos = cntlChannelTemplate.YPosition + iChan * iItemHeight;
+          ypos = cntlChannelTemplate.YPosition + iChan*iItemHeight;
 
-          var imgBut = GetControl((int)Controls.IMG_CHAN1 + iChan) as GUIButton3PartControl;
+          var imgBut = GetControl((int) Controls.IMG_CHAN1 + iChan) as GUIButton3PartControl;
           if (imgBut == null)
           {
             string strChannelImageFileName = String.Empty;
@@ -274,11 +275,11 @@ namespace Mediaportal.TV.TvPlugin.EPG
             }
 
             // Use a template control if it exists, otherwise use default values.
-            var buttonTemplate = GetControl((int)Controls.BUTTON_PROGRAM_NOT_RUNNING) as GUIButton3PartControl;
+            var buttonTemplate = GetControl((int) Controls.BUTTON_PROGRAM_NOT_RUNNING) as GUIButton3PartControl;
             if (buttonTemplate != null)
             {
               buttonTemplate.IsVisible = false;
-              imgBut = new GUIButton3PartControl(GetID, (int)Controls.IMG_CHAN1 + iChan, xpos, ypos,
+              imgBut = new GUIButton3PartControl(GetID, (int) Controls.IMG_CHAN1 + iChan, xpos, ypos,
                                                  cntlChannelTemplate.Width - 2, cntlChannelTemplate.Height - 2,
                                                  buttonTemplate.TexutureFocusLeftName,
                                                  buttonTemplate.TexutureFocusMidName,
@@ -295,11 +296,10 @@ namespace Mediaportal.TV.TvPlugin.EPG
                            TileFillTFR = buttonTemplate.TileFillTFR,
                            TileFillTNFR = buttonTemplate.TileFillTNFR
                          };
-
             }
             else
             {
-              imgBut = new GUIButton3PartControl(GetID, (int)Controls.IMG_CHAN1 + iChan, xpos, ypos,
+              imgBut = new GUIButton3PartControl(GetID, (int) Controls.IMG_CHAN1 + iChan, xpos, ypos,
                                                  cntlChannelTemplate.Width - 2, cntlChannelTemplate.Height - 2,
                                                  "tvguide_button_selected_left.png",
                                                  "tvguide_button_selected_middle.png",
@@ -315,7 +315,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
           }
 
           imgBut.Width = cntlChannelTemplate.Width - 2;
-          imgBut.Height = cntlChannelTemplate.Height - 2; 
+          imgBut.Height = cntlChannelTemplate.Height - 2;
           imgBut.SetPosition(xpos, ypos);
           imgBut.FontName1 = cntlChannelLabel.FontName;
           imgBut.TextColor1 = cntlChannelLabel.TextColor;
@@ -326,7 +326,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
           if (_showChannelLogos)
           {
-            if (cntlChannelImg != null) 
+            if (cntlChannelImg != null)
             {
               imgBut.TexutureIcon = cntlChannelImg.FileName;
               imgBut.IconOffsetX = cntlChannelImg.XPosition;
@@ -388,7 +388,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
                                         _viewingTime.Hour, _viewingTime.Minute, 0);
         var dtStop = new DateTime();
         dtStop = _viewingTime;
-        dtStop = dtStop.AddMinutes(_numberOfBlocks * _timePerBlock - 1);
+        dtStop = dtStop.AddMinutes(_numberOfBlocks*_timePerBlock - 1);
         iMin = dtStop.Minute;
         string strEnd = String.Format("{0}{1:00}{2:00}{3:00}{4:00}{5:00}",
                                       dtStop.Year, dtStop.Month, dtStop.Day,
@@ -406,7 +406,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
           _cursorX = 0;
         }
 
-        foreach (GUIControl cntl in controlList.Where(cntl => cntl.GetID >= GUIDE_COMPONENTID_START)) 
+        foreach (GUIControl cntl in controlList.Where(cntl => cntl.GetID >= GUIDE_COMPONENTID_START))
         {
           cntl.IsVisible = false;
         }
@@ -416,7 +416,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
           // show all buttons (could be less visible if channels < rows)
           for (int iChannel = 0; iChannel < _channelCount; iChannel++)
           {
-            var imgBut = GetControl((int)Controls.IMG_CHAN1 + iChannel) as GUIButton3PartControl;
+            var imgBut = GetControl((int) Controls.IMG_CHAN1 + iChannel) as GUIButton3PartControl;
             if (imgBut != null)
               imgBut.IsVisible = true;
           }
@@ -443,9 +443,10 @@ namespace Mediaportal.TV.TvPlugin.EPG
             }
           }
 
-          IDictionary<int, IList<Program>> programEntities = ServiceAgents.Instance.ProgramServiceAgent.GetProgramsForAllChannels(Utils.longtodate(iStart),
-                                                                                                                                  Utils.longtodate(iEnd),
-                                                                                                                                  visibleChannels);
+          IDictionary<int, IList<Program>> programEntities =
+            ServiceAgents.Instance.ProgramServiceAgent.GetProgramsForAllChannels(Utils.longtodate(iStart),
+                                                                                 Utils.longtodate(iEnd),
+                                                                                 visibleChannels);
           // todo tedious code.. Id like to rethink this
           // as we need to convert the IDictionary<int, IList<Program>> to IDictionary<int, IList<ProgramBLL>>
           IDictionary<int, IList<ProgramBLL>> programs = new Dictionary<int, IList<ProgramBLL>>();
@@ -457,12 +458,12 @@ namespace Mediaportal.TV.TvPlugin.EPG
             {
               idchannel = p.IdChannel;
               var programBll = new ProgramBLL(p);
-              programBlls.Add(programBll);              
+              programBlls.Add(programBll);
             }
             programs[idchannel] = programBlls;
           }
 
-         
+
           // make sure the TV Guide heading is visiable and the single channel labels are not.
           SetGuideHeadingVisibility(true);
           SetSingleChannelLabelVisibility(false);
@@ -484,7 +485,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
               GuideChannel tvGuideChannel = _channelList[chan];
               RenderChannel(ref programs, iChannel, tvGuideChannel, iStart, iEnd, selectCurrentShow);
               // remember bottom y position from last visible button
-              var imgBut = GetControl((int)Controls.IMG_CHAN1 + iChannel) as GUIButton3PartControl;
+              var imgBut = GetControl((int) Controls.IMG_CHAN1 + iChannel) as GUIButton3PartControl;
               if (imgBut != null)
               {
                 if (iChannel == 0)
@@ -500,7 +501,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
             }
             if (chan > _channelList.Count)
             {
-              var imgBut = GetControl((int)Controls.IMG_CHAN1 + iChannel) as GUIButton3PartControl;
+              var imgBut = GetControl((int) Controls.IMG_CHAN1 + iChannel) as GUIButton3PartControl;
               if (imgBut != null)
               {
                 imgBut.IsVisible = false;
@@ -508,7 +509,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
             }
           }
 
-          var vertLine = GetControl((int)Controls.VERTICAL_LINE) as GUIImage;
+          var vertLine = GetControl((int) Controls.VERTICAL_LINE) as GUIImage;
           if (vertLine != null)
           {
             // height taken from last button (bottom) minus the yposition of slider plus the offset of slider in relation to first button
@@ -522,15 +523,15 @@ namespace Mediaportal.TV.TvPlugin.EPG
           }
 
           // instead of direct casting us "as"; else it fails for other controls!
-          var img = GetControl(_cursorX + (int)Controls.IMG_CHAN1) as GUIButton3PartControl;
+          var img = GetControl(_cursorX + (int) Controls.IMG_CHAN1) as GUIButton3PartControl;
           if (null != img)
           {
-            _currentChannel = (Channel)img.Data;
+            _currentChannel = (Channel) img.Data;
           }
         }
         UpdateVerticalScrollbar();
       }
-    }    
+    }
 
     protected void LoadSchedules(bool refresh)
     {
@@ -582,14 +583,18 @@ namespace Mediaportal.TV.TvPlugin.EPG
             }
           }
         }
-        catch {/*ignore*/}
+        catch
+        {
+/*ignore*/
+        }
 
         if (_channelList.Count == 0)
         {
           var tvGuidChannel = new GuideChannel
                                 {
                                   Channel = ChannelFactory.CreateChannel(MediaTypeEnum.TV, 0, DateTime.MinValue, false,
-                                                                         DateTime.MinValue, 0, true, "", GUILocalizeStrings.Get(911))
+                                                                         DateTime.MinValue, 0, true, "",
+                                                                         GUILocalizeStrings.Get(911))
                                 };
           for (int i = 0; i < 10; ++i)
           {
@@ -611,17 +616,18 @@ namespace Mediaportal.TV.TvPlugin.EPG
       // get the right db instance of current prog before we store it
       // currentProgram is not a ref to the real entity    
       var modifiedProg =
-        new ProgramBLL (ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByTitleTimesAndChannel(_currentProgram.Entity.Title,
-                                                                                                     _currentProgram.Entity.StartTime,
-                                                                                                     _currentProgram.Entity.EndTime,
-                                                                                                     _currentProgram.Entity.IdChannel))
+        new ProgramBLL(
+          ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByTitleTimesAndChannel(_currentProgram.Entity.Title,
+                                                                                       _currentProgram.Entity.StartTime,
+                                                                                       _currentProgram.Entity.EndTime,
+                                                                                       _currentProgram.Entity.IdChannel))
           {Notify = _currentProgram.Notify};
 
       ServiceAgents.Instance.ProgramServiceAgent.SaveProgram(modifiedProg.Entity);
       TvNotifyManager.OnNotifiesChanged();
       Update(false);
       SetFocus();
-    }  
+    }
 
     protected bool IsRecordingNoEPG(Channel channel)
     {
@@ -633,9 +639,8 @@ namespace Mediaportal.TV.TvPlugin.EPG
         return vc.IsRecording;
       }
       return false;
-    }    
+    }
 
-   
 
     protected void UpdateCurrentProgram()
     {
@@ -653,12 +658,12 @@ namespace Mediaportal.TV.TvPlugin.EPG
         SetFocus();
         return;
       }
-      int iControlId = GUIDE_COMPONENTID_START + _cursorX * ROW_ID + (_cursorY - 1) * COL_ID;
+      int iControlId = GUIDE_COMPONENTID_START + _cursorX*ROW_ID + (_cursorY - 1)*COL_ID;
       var img = GetControl(iControlId) as GUIButton3PartControl;
       if (null != img)
       {
         SetFocus();
-        _currentProgram = new ProgramBLL((Program)img.Data);
+        _currentProgram = new ProgramBLL((Program) img.Data);
         SetProperties();
       }
     }
@@ -668,7 +673,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
       UnFocus();
       _singleChannelView = !_singleChannelView;
       if (_singleChannelView)
-      {        
+      {
         _backupCursorY = _cursorX;
         _backupChannelOffset = ChannelOffset;
 
@@ -694,13 +699,13 @@ namespace Mediaportal.TV.TvPlugin.EPG
       }
       if (_cursorY == 0 || _cursorY == _minYIndex) // either channel or group button
       {
-        int controlid = (int)Controls.IMG_CHAN1 + _cursorX;
+        int controlid = (int) Controls.IMG_CHAN1 + _cursorX;
         GUIControl.UnfocusControl(GetID, controlid);
       }
       else
       {
         Correct();
-        int iControlId = GUIDE_COMPONENTID_START + _cursorX * ROW_ID + (_cursorY - 1) * COL_ID;
+        int iControlId = GUIDE_COMPONENTID_START + _cursorX*ROW_ID + (_cursorY - 1)*COL_ID;
         var img = GetControl(iControlId) as GUIButton3PartControl;
         if (null != img && img.IsVisible)
         {
@@ -722,20 +727,20 @@ namespace Mediaportal.TV.TvPlugin.EPG
       if (_cursorY == 0 || _cursorY == _minYIndex) // either channel or group button
       {
         int controlid;
-        GUIControl.UnfocusControl(GetID, (int)Controls.SPINCONTROL_DAY);
-        GUIControl.UnfocusControl(GetID, (int)Controls.SPINCONTROL_TIME_INTERVAL);
+        GUIControl.UnfocusControl(GetID, (int) Controls.SPINCONTROL_DAY);
+        GUIControl.UnfocusControl(GetID, (int) Controls.SPINCONTROL_TIME_INTERVAL);
 
         if (_cursorY == -1)
-          controlid = (int)Controls.CHANNEL_GROUP_BUTTON;
+          controlid = (int) Controls.CHANNEL_GROUP_BUTTON;
         else
-          controlid = (int)Controls.IMG_CHAN1 + _cursorX;
+          controlid = (int) Controls.IMG_CHAN1 + _cursorX;
 
         GUIControl.FocusControl(GetID, controlid);
       }
       else
       {
         Correct();
-        int iControlId = GUIDE_COMPONENTID_START + _cursorX * ROW_ID + (_cursorY - 1) * COL_ID;
+        int iControlId = GUIDE_COMPONENTID_START + _cursorX*ROW_ID + (_cursorY - 1)*COL_ID;
         var img = GetControl(iControlId) as GUIButton3PartControl;
         if (null != img && img.IsVisible)
         {
@@ -767,7 +772,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
       }
 
       TVProgramInfo.CurrentProgram = _currentProgram.Entity;
-      GUIWindowManager.ActivateWindow((int)Window.WINDOW_TV_PROGRAM_INFO);
+      GUIWindowManager.ActivateWindow((int) Window.WINDOW_TV_PROGRAM_INFO);
     }
 
     protected void OnKeyTimeout()
@@ -775,7 +780,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
       if (_lineInput.Length == 0)
       {
         // Hide label if no keyed channel number to display.
-        var label = GetControl((int)Controls.LABEL_KEYED_CHANNEL) as GUILabelControl;
+        var label = GetControl((int) Controls.LABEL_KEYED_CHANNEL) as GUILabelControl;
         if (label != null)
         {
           label.IsVisible = false;
@@ -804,7 +809,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
       get
       {
         // show/hide channel group button
-        var btnChannelGroup = GetControl((int)Controls.CHANNEL_GROUP_BUTTON) as GUIButtonControl;
+        var btnChannelGroup = GetControl((int) Controls.CHANNEL_GROUP_BUTTON) as GUIButtonControl;
 
         // visible only if more than one group? and not in single channel, and button exists in skin!
         return (ChannelGroupCount > 1 && !_singleChannelView && btnChannelGroup != null);
@@ -875,23 +880,29 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
         _currentTitle = String.Empty;
         _currentChannel = chan;
-        GUIControl.HideControl(GetID, (int)Controls.IMG_REC_PIN);
+        GUIControl.HideControl(GetID, (int) Controls.IMG_REC_PIN);
       }
       else if (_currentProgram != null)
       {
         string strTime = String.Format("{0}-{1}",
-                                       _currentProgram.Entity.StartTime.ToString("t", CultureInfo.CurrentCulture.DateTimeFormat),
-                                       _currentProgram.Entity.EndTime.ToString("t", CultureInfo.CurrentCulture.DateTimeFormat));
+                                       _currentProgram.Entity.StartTime.ToString("t",
+                                                                                 CultureInfo.CurrentCulture.
+                                                                                   DateTimeFormat),
+                                       _currentProgram.Entity.EndTime.ToString("t",
+                                                                               CultureInfo.CurrentCulture.DateTimeFormat));
 
         GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Title", _currentProgram.Entity.Title);
         GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.CompositeTitle",
                                        TVUtil.GetDisplayTitle(_currentProgram.Entity));
         GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Time", strTime);
         GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Description", _currentProgram.Entity.Description);
-        GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Genre", TVUtil.GetCategory(_currentProgram.Entity.ProgramCategory));
+        GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Genre",
+                                       TVUtil.GetCategory(_currentProgram.Entity.ProgramCategory));
         GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Duration", GetDuration(_currentProgram.Entity));
-        GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.DurationMins", GetDurationAsMinutes(_currentProgram.Entity));
-        GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.TimeFromNow", GetStartTimeFromNow(_currentProgram.Entity));
+        GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.DurationMins",
+                                       GetDurationAsMinutes(_currentProgram.Entity));
+        GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.TimeFromNow",
+                                       GetStartTimeFromNow(_currentProgram.Entity));
         GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Episode", _currentProgram.Entity.EpisodeNum);
         GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.SubTitle", _currentProgram.Entity.EpisodeName);
 
@@ -901,7 +912,8 @@ namespace Mediaportal.TV.TvPlugin.EPG
         }
         else
         {
-          GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Classification", _currentProgram.Entity.Classification);
+          GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Classification",
+                                         _currentProgram.Entity.Classification);
         }
 
         _currentTitle = _currentProgram.Entity.Title;
@@ -914,7 +926,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
         if (bRecording)
         {
-          var img = (GUIImage)GetControl((int)Controls.IMG_REC_PIN);
+          var img = (GUIImage) GetControl((int) Controls.IMG_REC_PIN);
 
           bool bPartialRecording = _currentProgram.IsPartialRecordingSeriesPending;
 
@@ -955,11 +967,11 @@ namespace Mediaportal.TV.TvPlugin.EPG
               img.SetFileName(Thumbs.TvRecordingIcon);
             }
           }
-          GUIControl.ShowControl(GetID, (int)Controls.IMG_REC_PIN);
+          GUIControl.ShowControl(GetID, (int) Controls.IMG_REC_PIN);
         }
         else
         {
-          GUIControl.HideControl(GetID, (int)Controls.IMG_REC_PIN);
+          GUIControl.HideControl(GetID, (int) Controls.IMG_REC_PIN);
         }
       }
 
@@ -985,7 +997,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
           Channel tvChan = _channelList[chan].Channel;
 
           strLogo = GetChannelLogo(tvChan.DisplayName);
-          var img = GetControl(iChannel + (int)Controls.IMG_CHAN1) as GUIButton3PartControl;
+          var img = GetControl(iChannel + (int) Controls.IMG_CHAN1) as GUIButton3PartControl;
           if (img != null)
           {
             if (_showChannelLogos)
@@ -1000,17 +1012,17 @@ namespace Mediaportal.TV.TvPlugin.EPG
         chan++;
       }
 
-      var channelLabel = GetControl((int)Controls.SINGLE_CHANNEL_LABEL) as GUILabelControl;
-      var channelImage = GetControl((int)Controls.SINGLE_CHANNEL_IMAGE) as GUIImage;
+      var channelLabel = GetControl((int) Controls.SINGLE_CHANNEL_LABEL) as GUILabelControl;
+      var channelImage = GetControl((int) Controls.SINGLE_CHANNEL_IMAGE) as GUIImage;
 
       strLogo = GetChannelLogo(channel.DisplayName);
       if (channelImage == null)
       {
         if (strLogo.Length > 0)
         {
-          channelImage = new GUIImage(GetID, (int)Controls.SINGLE_CHANNEL_IMAGE,
-                                      GetControl((int)Controls.LABEL_TIME1).XPosition,
-                                      GetControl((int)Controls.LABEL_TIME1).YPosition - 15,
+          channelImage = new GUIImage(GetID, (int) Controls.SINGLE_CHANNEL_IMAGE,
+                                      GetControl((int) Controls.LABEL_TIME1).XPosition,
+                                      GetControl((int) Controls.LABEL_TIME1).YPosition - 15,
                                       40, 40, strLogo, Color.White);
           channelImage.AllocResources();
           GUIControl temp = channelImage;
@@ -1026,10 +1038,11 @@ namespace Mediaportal.TV.TvPlugin.EPG
       {
         if (channelImage != null)
         {
-          channelLabel = new GUILabelControl(GetID, (int)Controls.SINGLE_CHANNEL_LABEL,
+          channelLabel = new GUILabelControl(GetID, (int) Controls.SINGLE_CHANNEL_LABEL,
                                              channelImage.XPosition + 44,
                                              channelImage.YPosition + 10,
-                                             300, 40, "font16", channel.DisplayName, 4294967295, GUIControl.Alignment.Left,
+                                             300, 40, "font16", channel.DisplayName, 4294967295,
+                                             GUIControl.Alignment.Left,
                                              GUIControl.VAlignment.Top,
                                              true, 0, 0, 0xFF000000);
         }
@@ -1060,11 +1073,13 @@ namespace Mediaportal.TV.TvPlugin.EPG
         channelLabel.Label = channel.DisplayName;
       }
       if (_recalculateProgramOffset)
-      {        
+      {
         DateTime dtStart = DateTime.Now;
         dtStart = dtStart.AddDays(-1);
         DateTime dtEnd = dtStart.AddDays(30);
-        _programs = ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByChannelAndStartEndTimes(channel.IdChannel, dtStart, dtEnd).ToList();
+        _programs =
+          ServiceAgents.Instance.ProgramServiceAgent.GetProgramsByChannelAndStartEndTimes(channel.IdChannel, dtStart,
+                                                                                          dtEnd).ToList();
 
         _totalProgramCount = _programs.Count;
         if (_totalProgramCount == 0)
@@ -1105,7 +1120,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
         }
         if (changed)
         {
-          var cntlDay = GetControl((int)Controls.SPINCONTROL_DAY) as GUISpinControl;
+          var cntlDay = GetControl((int) Controls.SPINCONTROL_DAY) as GUISpinControl;
 
           // Find first day in TVGuide and set spincontrol position
           int iDay = CalcDays();
@@ -1126,19 +1141,19 @@ namespace Mediaportal.TV.TvPlugin.EPG
       // ichan = number of rows
       for (int ichan = 0; ichan < _channelCount; ++ichan)
       {
-        var imgCh = GetControl(ichan + (int)Controls.IMG_CHAN1) as GUIButton3PartControl;
+        var imgCh = GetControl(ichan + (int) Controls.IMG_CHAN1) as GUIButton3PartControl;
         if (imgCh != null)
         {
           imgCh.TexutureIcon = "";
         }
 
-        int iStartXPos = GetControl(0 + (int)Controls.LABEL_TIME1).XPosition;
-        int height = GetControl((int)Controls.IMG_CHAN1 + 1).YPosition;
-        height -= GetControl((int)Controls.IMG_CHAN1).YPosition;
-        int width = GetControl((int)Controls.LABEL_TIME1 + 1).XPosition;
-        width -= GetControl((int)Controls.LABEL_TIME1).XPosition;
+        int iStartXPos = GetControl(0 + (int) Controls.LABEL_TIME1).XPosition;
+        int height = GetControl((int) Controls.IMG_CHAN1 + 1).YPosition;
+        height -= GetControl((int) Controls.IMG_CHAN1).YPosition;
+        int width = GetControl((int) Controls.LABEL_TIME1 + 1).XPosition;
+        width -= GetControl((int) Controls.LABEL_TIME1).XPosition;
 
-        int iTotalWidth = width * _numberOfBlocks;
+        int iTotalWidth = width*_numberOfBlocks;
 
         ProgramBLL program;
         int offset = _programOffset;
@@ -1157,32 +1172,38 @@ namespace Mediaportal.TV.TvPlugin.EPG
                                            ProgramState.None,
                                            DateTime.MinValue, string.Empty, string.Empty, string.Empty,
                                            string.Empty, -1,
-                                           string.Empty, -1));                       
+                                           string.Empty, -1));
           }
           else
           {
             program = new ProgramBLL(_programs[_programs.Count - 1]);
             if (program.Entity.EndTime.DayOfYear == _viewingTime.DayOfYear)
             {
-              program = new ProgramBLL(ProgramFactory.CreateProgram(channel.IdChannel, program.Entity.EndTime, program.Entity.EndTime, "-", "-", null,
-                                                                    ProgramState.None,
-                                                                    DateTime.MinValue, string.Empty, string.Empty, string.Empty, string.Empty, -1,
-                                                                    string.Empty, -1));
+              program =
+                new ProgramBLL(ProgramFactory.CreateProgram(channel.IdChannel, program.Entity.EndTime,
+                                                            program.Entity.EndTime, "-", "-", null,
+                                                            ProgramState.None,
+                                                            DateTime.MinValue, string.Empty, string.Empty, string.Empty,
+                                                            string.Empty, -1,
+                                                            string.Empty, -1));
             }
             else
             {
-              program = new ProgramBLL(ProgramFactory.CreateProgram(channel.IdChannel, _viewingTime, _viewingTime, "-", "-", null,
-                                                                    ProgramState.None,
-                                                                    DateTime.MinValue, string.Empty, string.Empty, string.Empty, string.Empty, -1,
-                                                                    string.Empty, -1));
+              program =
+                new ProgramBLL(ProgramFactory.CreateProgram(channel.IdChannel, _viewingTime, _viewingTime, "-", "-",
+                                                            null,
+                                                            ProgramState.None,
+                                                            DateTime.MinValue, string.Empty, string.Empty, string.Empty,
+                                                            string.Empty, -1,
+                                                            string.Empty, -1));
             }
           }
         }
 
-        int ypos = GetControl(ichan + (int)Controls.IMG_CHAN1).YPosition;
-        int iControlId = GUIDE_COMPONENTID_START + ichan * ROW_ID + 0 * COL_ID;
+        int ypos = GetControl(ichan + (int) Controls.IMG_CHAN1).YPosition;
+        int iControlId = GUIDE_COMPONENTID_START + ichan*ROW_ID + 0*COL_ID;
         var img = GetControl(iControlId) as GUIButton3PartControl;
-        var buttonTemplate = GetControl((int)Controls.BUTTON_PROGRAM_NOT_RUNNING) as GUIButton3PartControl;
+        var buttonTemplate = GetControl((int) Controls.BUTTON_PROGRAM_NOT_RUNNING) as GUIButton3PartControl;
 
         if (img == null)
         {
@@ -1205,7 +1226,6 @@ namespace Mediaportal.TV.TvPlugin.EPG
                       TileFillTFR = buttonTemplate.TileFillTFR,
                       TileFillTNFR = buttonTemplate.TileFillTNFR
                     };
-
           }
           else
           {
@@ -1289,7 +1309,8 @@ namespace Mediaportal.TV.TvPlugin.EPG
         img.Label1 = TVUtil.GetDisplayTitle(program.Entity);
 
         string strTimeSingle = String.Format("{0}",
-                                             program.Entity.StartTime.ToString("t", CultureInfo.CurrentCulture.DateTimeFormat));
+                                             program.Entity.StartTime.ToString("t",
+                                                                               CultureInfo.CurrentCulture.DateTimeFormat));
 
         if (program.Entity.StartTime.DayOfYear != _viewingTime.DayOfYear)
         {
@@ -1316,7 +1337,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
           img.SetShadow1(labelTemplate.ShadowAngle, labelTemplate.ShadowDistance, labelTemplate.ShadowColor);
         }
         img.TextOffsetX2 = 5;
-        img.TextOffsetY2 = img.Height / 2;
+        img.TextOffsetY2 = img.Height/2;
         img.FontName2 = "font13";
         img.TextColor2 = 0xffffffff;
         img.Label2 = "";
@@ -1380,7 +1401,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
         img.TexutureIcon = String.Empty;
         if (program.Notify)
         {
-          var buttonNotifyTemplate = GetControl((int)Controls.BUTTON_PROGRAM_NOTIFY) as GUIButton3PartControl;
+          var buttonNotifyTemplate = GetControl((int) Controls.BUTTON_PROGRAM_NOTIFY) as GUIButton3PartControl;
           if (buttonNotifyTemplate != null)
           {
             buttonNotifyTemplate.IsVisible = false;
@@ -1425,12 +1446,12 @@ namespace Mediaportal.TV.TvPlugin.EPG
         if (bRecording)
         {
           bool bPartialRecording = program.IsPartialRecordingSeriesPending;
-          var buttonRecordTemplate = GetControl((int)Controls.BUTTON_PROGRAM_RECORD) as GUIButton3PartControl;
+          var buttonRecordTemplate = GetControl((int) Controls.BUTTON_PROGRAM_RECORD) as GUIButton3PartControl;
 
           // Select the partial recording template if needed.
           if (bPartialRecording)
           {
-            buttonRecordTemplate = GetControl((int)Controls.BUTTON_PROGRAM_PARTIAL_RECORD) as GUIButton3PartControl;
+            buttonRecordTemplate = GetControl((int) Controls.BUTTON_PROGRAM_PARTIAL_RECORD) as GUIButton3PartControl;
           }
 
           if (buttonRecordTemplate != null)
@@ -1538,7 +1559,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
         channelNum = _channelList.IndexOf(tvGuideChannel) + 1;
       }
 
-      var img = GetControl(iChannel + (int)Controls.IMG_CHAN1) as GUIButton3PartControl;
+      var img = GetControl(iChannel + (int) Controls.IMG_CHAN1) as GUIButton3PartControl;
       if (img != null)
       {
         if (_showChannelLogos)
@@ -1569,10 +1590,12 @@ namespace Mediaportal.TV.TvPlugin.EPG
       {
         DateTime dt = Utils.longtodate(iEnd);
         long iProgEnd = Utils.datetolong(dt);
-        Program prog = ProgramFactory.CreateProgram(channel.IdChannel, Utils.longtodate(iStart), Utils.longtodate(iProgEnd),
-                                                GUILocalizeStrings.Get(736), "", null, ProgramState.None, DateTime.MinValue,
-                                                string.Empty,
-                                                string.Empty, string.Empty, string.Empty, -1, string.Empty, -1);
+        Program prog = ProgramFactory.CreateProgram(channel.IdChannel, Utils.longtodate(iStart),
+                                                    Utils.longtodate(iProgEnd),
+                                                    GUILocalizeStrings.Get(736), "", null, ProgramState.None,
+                                                    DateTime.MinValue,
+                                                    string.Empty,
+                                                    string.Empty, string.Empty, string.Empty, -1, string.Empty, -1);
         prog.Channel = channel;
         if (programs == null)
         {
@@ -1584,11 +1607,11 @@ namespace Mediaportal.TV.TvPlugin.EPG
       int iProgram = 0;
       int iPreviousEndXPos = 0;
 
-      int width = GetControl((int)Controls.LABEL_TIME1 + 1).XPosition;
-      width -= GetControl((int)Controls.LABEL_TIME1).XPosition;
+      int width = GetControl((int) Controls.LABEL_TIME1 + 1).XPosition;
+      width -= GetControl((int) Controls.LABEL_TIME1).XPosition;
 
-      int height = GetControl((int)Controls.IMG_CHAN1 + 1).YPosition;
-      height -= GetControl((int)Controls.IMG_CHAN1).YPosition;
+      int height = GetControl((int) Controls.IMG_CHAN1 + 1).YPosition;
+      height -= GetControl((int) Controls.IMG_CHAN1).YPosition;
 
       foreach (ProgramBLL program in programs)
       {
@@ -1612,7 +1635,8 @@ namespace Mediaportal.TV.TvPlugin.EPG
         bool bConflict = program.HasConflict;
         bool bSeries = (program.IsRecordingSeries || program.IsRecordingSeriesPending);
         bool bRecording = bSeries ||
-                          (program.IsRecording || program.IsRecordingOncePending || program.IsPartialRecordingSeriesPending);
+                          (program.IsRecording || program.IsRecordingOncePending ||
+                           program.IsPartialRecordingSeriesPending);
         bool bPartialRecording = program.IsPartialRecordingSeriesPending;
         if (noEPG && !bRecording)
         {
@@ -1634,7 +1658,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
               TimeSpan dtSpan = dtBlokEnd - program.Entity.EndTime;
               int iEndMin = _timePerBlock - (dtSpan.Minutes);
 
-              fWidthEnd = ((iEndMin) / ((float)_timePerBlock)) * ((width));
+              fWidthEnd = ((iEndMin)/((float) _timePerBlock))*((width));
               if (bEndsAfter)
               {
                 fWidthEnd = width;
@@ -1644,26 +1668,26 @@ namespace Mediaportal.TV.TvPlugin.EPG
             if (iStartXPos == 0)
             {
               TimeSpan ts = program.Entity.StartTime - dtBlokStart;
-              int iStartMin = ts.Hours * 60;
+              int iStartMin = ts.Hours*60;
               iStartMin += ts.Minutes;
               if (ts.Seconds == 59)
               {
                 iStartMin += 1;
               }
-              float fWidth = ((iStartMin) / ((float)_timePerBlock)) * ((width));
+              float fWidth = ((iStartMin)/((float) _timePerBlock))*((width));
 
               if (bStartsBefore)
               {
                 fWidth = 0;
               }
 
-              iStartXPos = GetControl(iBlok + (int)Controls.LABEL_TIME1).XPosition;
-              iStartXPos += (int)fWidth;
-              iEndXPos = GetControl(iBlok + (int)Controls.LABEL_TIME1).XPosition + (int)fWidthEnd;
+              iStartXPos = GetControl(iBlok + (int) Controls.LABEL_TIME1).XPosition;
+              iStartXPos += (int) fWidth;
+              iEndXPos = GetControl(iBlok + (int) Controls.LABEL_TIME1).XPosition + (int) fWidthEnd;
             }
             else
             {
-              iEndXPos = GetControl(iBlok + (int)Controls.LABEL_TIME1).XPosition + (int)fWidthEnd;
+              iEndXPos = GetControl(iBlok + (int) Controls.LABEL_TIME1).XPosition + (int) fWidthEnd;
             }
           }
           dtBlokStart = dtBlokStart.AddMinutes(_timePerBlock);
@@ -1680,8 +1704,8 @@ namespace Mediaportal.TV.TvPlugin.EPG
             iEndXPos = iStartXPos + 6; // at least 1 pixel width
           }
 
-          int ypos = GetControl(iChannel + (int)Controls.IMG_CHAN1).YPosition;
-          int iControlId = GUIDE_COMPONENTID_START + iChannel * ROW_ID + iProgram * COL_ID;
+          int ypos = GetControl(iChannel + (int) Controls.IMG_CHAN1).YPosition;
+          int iControlId = GUIDE_COMPONENTID_START + iChannel*ROW_ID + iProgram*COL_ID;
 
 
           string texutureFocusLeftName = "tvguide_button_selected_left.png";
@@ -1962,7 +1986,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
             }
           }
           img.TextOffsetX2 = 5;
-          img.TextOffsetY2 = img.Height / 2;
+          img.TextOffsetY2 = img.Height/2;
           img.FontName2 = "font13";
           img.TextColor2 = 0xffffffff;
 
@@ -2096,12 +2120,12 @@ namespace Mediaportal.TV.TvPlugin.EPG
     private void UpdateChannelCount()
     {
       GetChannels(false);
-      GUIControl cntlPanel = GetControl((int)Controls.PANEL_BACKGROUND);
-      var cntlChannelTemplate = (GUIImage)GetControl((int)Controls.CHANNEL_TEMPLATE);
+      GUIControl cntlPanel = GetControl((int) Controls.PANEL_BACKGROUND);
+      var cntlChannelTemplate = (GUIImage) GetControl((int) Controls.CHANNEL_TEMPLATE);
 
       int iHeight = cntlPanel.Height + cntlPanel.YPosition - cntlChannelTemplate.YPosition;
       int iItemHeight = cntlChannelTemplate.Height;
-      _channelCount = (int)(((float)iHeight) / iItemHeight);
+      _channelCount = (int) (((float) iHeight)/iItemHeight);
 
       if (_channelCount > _channelList.Count)
       {
@@ -2130,12 +2154,12 @@ namespace Mediaportal.TV.TvPlugin.EPG
       {
         return;
       }
-      var scrollbar = GetControl((int)Controls.HORZ_SCROLLBAR) as GUIHorizontalScrollbar;
+      var scrollbar = GetControl((int) Controls.HORZ_SCROLLBAR) as GUIHorizontalScrollbar;
       if (scrollbar != null)
       {
-        float percentage = (float)_viewingTime.Hour * 60 + _viewingTime.Minute +
-                           _timePerBlock * (_viewingTime.Hour / 24.0f);
-        percentage /= (24.0f * 60.0f);
+        float percentage = (float) _viewingTime.Hour*60 + _viewingTime.Minute +
+                           _timePerBlock*(_viewingTime.Hour/24.0f);
+        percentage /= (24.0f*60.0f);
         percentage *= 100.0f;
         if (percentage < 0)
         {
@@ -2150,7 +2174,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
           percentage = 0;
         }
 
-        if ((int)percentage != (int)scrollbar.Percentage)
+        if ((int) percentage != (int) scrollbar.Percentage)
         {
           scrollbar.Percentage = percentage;
         }
@@ -2180,7 +2204,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
       String groupButtonText = " ";
 
       // show/hide tvgroup button
-      var btnTvGroup = GetControl((int)Controls.CHANNEL_GROUP_BUTTON) as GUIButtonControl;
+      var btnTvGroup = GetControl((int) Controls.CHANNEL_GROUP_BUTTON) as GUIButtonControl;
 
       if (btnTvGroup != null)
         btnTvGroup.Visible = GroupButtonAvail;
@@ -2226,19 +2250,19 @@ namespace Mediaportal.TV.TvPlugin.EPG
         channel -= _channelList.Count;
       }
       float current = (_cursorX + ChannelOffset);
-      float total = (float)_channelList.Count - 1;
+      float total = (float) _channelList.Count - 1;
 
       if (_singleChannelView)
       {
         current = (_cursorX + _programOffset);
-        total = (float)_totalProgramCount - 1;
+        total = (float) _totalProgramCount - 1;
       }
       if (total == 0)
       {
         total = _channelCount;
       }
 
-      float percentage = (current / total) * 100.0f;
+      float percentage = (current/total)*100.0f;
       if (percentage < 0)
       {
         percentage = 0;
@@ -2247,7 +2271,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
       {
         percentage = 100;
       }
-      var scrollbar = GetControl((int)Controls.VERT_SCROLLBAR) as GUIVerticalScrollbar;
+      var scrollbar = GetControl((int) Controls.VERT_SCROLLBAR) as GUIVerticalScrollbar;
       if (scrollbar != null)
       {
         scrollbar.Percentage = percentage;
@@ -2258,7 +2282,9 @@ namespace Mediaportal.TV.TvPlugin.EPG
     {
       // can't rely on the heading text control having a unique id, so locate it using the localised heading string.
       // todo: update all skins to have a unique id for this control...?
-      foreach (GUILabelControl control in controlList.OfType<GUILabelControl>().Where(control => (control).Label == GUILocalizeStrings.Get(4)))
+      foreach (
+        GUILabelControl control in
+          controlList.OfType<GUILabelControl>().Where(control => (control).Label == GUILocalizeStrings.Get(4)))
       {
         control.Visible = visible;
       }
@@ -2266,9 +2292,9 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
     private void SetSingleChannelLabelVisibility(bool visible)
     {
-      var channelLabel = GetControl((int)Controls.SINGLE_CHANNEL_LABEL) as GUILabelControl;
-      var channelImage = GetControl((int)Controls.SINGLE_CHANNEL_IMAGE) as GUIImage;
-      var timeInterval = GetControl((int)Controls.SPINCONTROL_TIME_INTERVAL) as GUISpinControl;
+      var channelLabel = GetControl((int) Controls.SINGLE_CHANNEL_LABEL) as GUILabelControl;
+      var channelImage = GetControl((int) Controls.SINGLE_CHANNEL_IMAGE) as GUIImage;
+      var timeInterval = GetControl((int) Controls.SPINCONTROL_TIME_INTERVAL) as GUISpinControl;
 
       if (channelLabel != null)
       {
@@ -2633,7 +2659,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
       {
         while (_cursorY > 0)
         {
-          iControlId = GUIDE_COMPONENTID_START + _cursorX * ROW_ID + (_cursorY - 1) * COL_ID;
+          iControlId = GUIDE_COMPONENTID_START + _cursorX*ROW_ID + (_cursorY - 1)*COL_ID;
           GUIControl cntl = GetControl(iControlId);
           if (cntl == null)
           {
@@ -2657,7 +2683,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
       {
         while (_cursorX > 0)
         {
-          iControlId = GUIDE_COMPONENTID_START + _cursorX * ROW_ID + (0) * COL_ID;
+          iControlId = GUIDE_COMPONENTID_START + _cursorX*ROW_ID + (0)*COL_ID;
           GUIControl cntl = GetControl(iControlId);
           if (cntl == null)
           {
@@ -2695,7 +2721,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
         // give feedback to user that numbers are being entered
         // Check for new standalone label control for keyed in channel numbers.
-        var label = GetControl((int)Controls.LABEL_KEYED_CHANNEL) as GUILabelControl;
+        var label = GetControl((int) Controls.LABEL_KEYED_CHANNEL) as GUILabelControl;
         if (label != null)
         {
           // Show the keyed channel number.
@@ -2703,9 +2729,9 @@ namespace Mediaportal.TV.TvPlugin.EPG
         }
         else
         {
-          label = GetControl((int)Controls.LABEL_TIME1) as GUILabelControl;
+          label = GetControl((int) Controls.LABEL_TIME1) as GUILabelControl;
         }
-        if (label != null) 
+        if (label != null)
         {
           label.Label = _lineInput;
 
@@ -2723,7 +2749,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
           ChangeChannelNr(iChannel);
 
           // Hide the keyed channel number label.
-          var labelKeyed = GetControl((int)Controls.LABEL_KEYED_CHANNEL) as GUILabelControl;
+          var labelKeyed = GetControl((int) Controls.LABEL_KEYED_CHANNEL) as GUILabelControl;
           if (labelKeyed != null)
           {
             labelKeyed.IsVisible = false;
@@ -2889,7 +2915,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
       // if cursor is on a program in guide, try to find the "best time matching" program in new channel
       int iCurY = _cursorX;
       int iCurOff = ChannelOffset;
-      int iControlId = GUIDE_COMPONENTID_START + _cursorX * ROW_ID + (_cursorY - 1) * COL_ID;
+      int iControlId = GUIDE_COMPONENTID_START + _cursorX*ROW_ID + (_cursorY - 1)*COL_ID;
       GUIControl control = GetControl(iControlId);
       if (control == null)
       {
@@ -2918,11 +2944,11 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
         for (int x = 1; x < COL_ID; x++)
         {
-          iControlId = GUIDE_COMPONENTID_START + _cursorX * ROW_ID + (x - 1) * COL_ID;
+          iControlId = GUIDE_COMPONENTID_START + _cursorX*ROW_ID + (x - 1)*COL_ID;
           control = GetControl(iControlId);
           if (control != null)
           {
-            var prog = (Program)control.Data;
+            var prog = (Program) control.Data;
 
             if (_singleChannelView)
             {
@@ -3041,10 +3067,10 @@ namespace Mediaportal.TV.TvPlugin.EPG
         if (_cursorX == 0 && _cursorY == 0 && !isPaging)
         {
           // Don't focus the control when it is not visible.
-          if (GetControl((int)Controls.SPINCONTROL_DAY).IsVisible)
+          if (GetControl((int) Controls.SPINCONTROL_DAY).IsVisible)
           {
             _cursorX = -1;
-            GetControl((int)Controls.SPINCONTROL_DAY).Focus = true;
+            GetControl((int) Controls.SPINCONTROL_DAY).Focus = true;
           }
           return;
         }
@@ -3071,18 +3097,18 @@ namespace Mediaportal.TV.TvPlugin.EPG
       {
         _cursorX = -1;
         _cursorY = 0;
-        GetControl((int)Controls.CHANNEL_GROUP_BUTTON).Focus = false;
-        GetControl((int)Controls.SPINCONTROL_DAY).Focus = true;
+        GetControl((int) Controls.CHANNEL_GROUP_BUTTON).Focus = false;
+        GetControl((int) Controls.SPINCONTROL_DAY).Focus = true;
         return;
       }
 
       if (_cursorY == 0 && _cursorX == 0 && !isPaging)
       {
         // Only focus the control if it is visible.
-        if (GetControl((int)Controls.SPINCONTROL_TIME_INTERVAL).Visible)
+        if (GetControl((int) Controls.SPINCONTROL_TIME_INTERVAL).Visible)
         {
           _cursorX = -1;
-          GetControl((int)Controls.SPINCONTROL_TIME_INTERVAL).Focus = true;
+          GetControl((int) Controls.SPINCONTROL_TIME_INTERVAL).Focus = true;
           return;
         }
       }
@@ -3141,7 +3167,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
         if (updateScreen)
         {
           SetFocus();
-          GetControl((int)Controls.SPINCONTROL_TIME_INTERVAL).Focus = false;
+          GetControl((int) Controls.SPINCONTROL_TIME_INTERVAL).Focus = false;
         }
         return;
       }
@@ -3257,9 +3283,9 @@ namespace Mediaportal.TV.TvPlugin.EPG
     private int ProgramCount(int iChannel)
     {
       int iProgramCount = 0;
-      for (int iProgram = 0; iProgram < _numberOfBlocks * 5; ++iProgram)
+      for (int iProgram = 0; iProgram < _numberOfBlocks*5; ++iProgram)
       {
-        int iControlId = GUIDE_COMPONENTID_START + iChannel * ROW_ID + iProgram * COL_ID;
+        int iControlId = GUIDE_COMPONENTID_START + iChannel*ROW_ID + iProgram*COL_ID;
         GUIControl cntl = GetControl(iControlId);
         if (cntl != null && cntl.IsVisible)
         {
@@ -3377,10 +3403,10 @@ namespace Mediaportal.TV.TvPlugin.EPG
           _singleChannelNumber -= _channelList.Count;
         }
         // instead of direct casting us "as"; else it fails for other controls!
-        var img = GetControl(_cursorX + (int)Controls.IMG_CHAN1) as GUIButton3PartControl;
+        var img = GetControl(_cursorX + (int) Controls.IMG_CHAN1) as GUIButton3PartControl;
         if (null != img)
         {
-          _currentChannel = (Channel)img.Data;
+          _currentChannel = (Channel) img.Data;
         }
       }
     }
@@ -3396,7 +3422,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
         switch (message.Message)
         {
           case GUIMessage.MessageType.GUI_MSG_PERCENTAGE_CHANGED:
-            if (message.SenderControlId == (int)Controls.HORZ_SCROLLBAR)
+            if (message.SenderControlId == (int) Controls.HORZ_SCROLLBAR)
             {
               _needUpdate = true;
               float fPercentage = message.Param1;
@@ -3404,10 +3430,10 @@ namespace Mediaportal.TV.TvPlugin.EPG
               fPercentage *= 24.0f;
               fPercentage *= 60.0f;
               _viewingTime = new DateTime(_viewingTime.Year, _viewingTime.Month, _viewingTime.Day, 0, 0, 0, 0);
-              _viewingTime = _viewingTime.AddMinutes((int)fPercentage);
+              _viewingTime = _viewingTime.AddMinutes((int) fPercentage);
             }
 
-            if (message.SenderControlId == (int)Controls.VERT_SCROLLBAR)
+            if (message.SenderControlId == (int) Controls.VERT_SCROLLBAR)
             {
               _needUpdate = true;
               float fPercentage = message.Param1;
@@ -3415,7 +3441,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
               if (_singleChannelView)
               {
                 fPercentage *= _totalProgramCount;
-                var iChan = (int)fPercentage;
+                var iChan = (int) fPercentage;
                 ChannelOffset = 0;
                 _cursorX = 0;
                 while (iChan >= _channelCount)
@@ -3428,7 +3454,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
               else
               {
                 fPercentage *= _channelList.Count;
-                var iChan = (int)fPercentage;
+                var iChan = (int) fPercentage;
                 ChannelOffset = 0;
                 _cursorX = 0;
                 while (iChan >= _channelCount)
@@ -3444,7 +3470,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
           case GUIMessage.MessageType.GUI_MSG_WINDOW_DEINIT:
             {
               base.OnMessage(message);
-              SaveSettings();              
+              SaveSettings();
               _controls = new Dictionary<int, GUIButton3PartControl>();
               _channelList = null;
               _recordingList = null;
@@ -3502,10 +3528,10 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
           case GUIMessage.MessageType.GUI_MSG_CLICKED:
             int iControl = message.SenderControlId;
-            if (iControl == (int)Controls.SPINCONTROL_DAY)
+            if (iControl == (int) Controls.SPINCONTROL_DAY)
             {
-              var cntlDay = GetControl((int)Controls.SPINCONTROL_DAY) as GUISpinControl;
-              if (cntlDay != null) 
+              var cntlDay = GetControl((int) Controls.SPINCONTROL_DAY) as GUISpinControl;
+              if (cntlDay != null)
               {
                 int iDay = cntlDay.Value;
 
@@ -3519,23 +3545,23 @@ namespace Mediaportal.TV.TvPlugin.EPG
               SetFocus();
               return true;
             }
-            if (iControl == (int)Controls.SPINCONTROL_TIME_INTERVAL)
+            if (iControl == (int) Controls.SPINCONTROL_TIME_INTERVAL)
             {
-              var cntlTimeInt = GetControl((int)Controls.SPINCONTROL_TIME_INTERVAL) as GUISpinControl;
-              if (cntlTimeInt != null) 
+              var cntlTimeInt = GetControl((int) Controls.SPINCONTROL_TIME_INTERVAL) as GUISpinControl;
+              if (cntlTimeInt != null)
               {
                 int iInterval = (cntlTimeInt.Value) + 1;
                 if (iInterval > 4)
                 {
                   iInterval = 4;
                 }
-                _timePerBlock = iInterval * 15;
+                _timePerBlock = iInterval*15;
               }
               Update(false);
               SetFocus();
               return true;
             }
-            if (iControl == (int)Controls.CHANNEL_GROUP_BUTTON)
+            if (iControl == (int) Controls.CHANNEL_GROUP_BUTTON)
             {
               OnSelectChannelGroup();
               return true;
@@ -3576,7 +3602,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
         case Action.ActionType.ACTION_KEY_PRESSED:
           if (action.m_key != null)
           {
-            OnKeyCode((char)action.m_key.KeyChar);
+            OnKeyCode((char) action.m_key.KeyChar);
           }
           break;
 
@@ -3589,19 +3615,19 @@ namespace Mediaportal.TV.TvPlugin.EPG
 
         case Action.ActionType.ACTION_MOUSE_MOVE:
           {
-            var x = (int)action.fAmount1;
-            var y = (int)action.fAmount2;
+            var x = (int) action.fAmount1;
+            var y = (int) action.fAmount2;
             foreach (GUIControl control in controlList)
             {
-              if (control.GetID >= (int)Controls.IMG_CHAN1 + 0 &&
-                  control.GetID <= (int)Controls.IMG_CHAN1 + _channelCount)
+              if (control.GetID >= (int) Controls.IMG_CHAN1 + 0 &&
+                  control.GetID <= (int) Controls.IMG_CHAN1 + _channelCount)
               {
                 if (x >= control.XPosition && x < control.XPosition + control.Width)
                 {
                   if (y >= control.YPosition && y < control.YPosition + control.Height)
                   {
                     UnFocus();
-                    _cursorX = control.GetID - (int)Controls.IMG_CHAN1;
+                    _cursorX = control.GetID - (int) Controls.IMG_CHAN1;
                     _cursorY = 0;
 
                     if (_singleChannelNumber != _cursorX + ChannelOffset)
@@ -3626,11 +3652,11 @@ namespace Mediaportal.TV.TvPlugin.EPG
                     if (iControlId >= GUIDE_COMPONENTID_START)
                     {
                       iControlId -= GUIDE_COMPONENTID_START;
-                      int iCursorY = (iControlId / ROW_ID);
-                      iControlId -= iCursorY * ROW_ID;
-                      if (iControlId % COL_ID == 0)
+                      int iCursorY = (iControlId/ROW_ID);
+                      iControlId -= iCursorY*ROW_ID;
+                      if (iControlId%COL_ID == 0)
                       {
-                        int iCursorX = (iControlId / COL_ID) + 1;
+                        int iCursorX = (iControlId/COL_ID) + 1;
                         if (iCursorY != _cursorX || iCursorX != _cursorY)
                         {
                           UnFocus();
@@ -3755,10 +3781,10 @@ namespace Mediaportal.TV.TvPlugin.EPG
             {
               _timePerBlock = 60;
             }
-            var cntlTimeInterval = GetControl((int)Controls.SPINCONTROL_TIME_INTERVAL) as GUISpinControl;
+            var cntlTimeInterval = GetControl((int) Controls.SPINCONTROL_TIME_INTERVAL) as GUISpinControl;
             if (cntlTimeInterval != null)
             {
-              cntlTimeInterval.Value = (_timePerBlock / 15) - 1;
+              cntlTimeInterval.Value = (_timePerBlock/15) - 1;
             }
             Update(false);
             SetFocus();
@@ -3785,10 +3811,10 @@ namespace Mediaportal.TV.TvPlugin.EPG
             {
               _timePerBlock -= 15;
             }
-            var cntlTimeInterval = GetControl((int)Controls.SPINCONTROL_TIME_INTERVAL) as GUISpinControl;
+            var cntlTimeInterval = GetControl((int) Controls.SPINCONTROL_TIME_INTERVAL) as GUISpinControl;
             if (cntlTimeInterval != null)
             {
-              cntlTimeInterval.Value = (_timePerBlock / 15) - 1;
+              cntlTimeInterval.Value = (_timePerBlock/15) - 1;
             }
             Update(false);
             SetFocus();
@@ -3797,10 +3823,10 @@ namespace Mediaportal.TV.TvPlugin.EPG
         case Action.ActionType.ACTION_DEFAULT_TIMEBLOCK:
           {
             _timePerBlock = 30;
-            var cntlTimeInterval = GetControl((int)Controls.SPINCONTROL_TIME_INTERVAL) as GUISpinControl;
+            var cntlTimeInterval = GetControl((int) Controls.SPINCONTROL_TIME_INTERVAL) as GUISpinControl;
             if (cntlTimeInterval != null)
             {
-              cntlTimeInterval.Value = (_timePerBlock / 15) - 1;
+              cntlTimeInterval.Value = (_timePerBlock/15) - 1;
             }
             Update(false);
             SetFocus();
@@ -3829,7 +3855,7 @@ namespace Mediaportal.TV.TvPlugin.EPG
     {
       lock (this)
       {
-        var vertLine = GetControl((int)Controls.VERTICAL_LINE) as GUIImage;
+        var vertLine = GetControl((int) Controls.VERTICAL_LINE) as GUIImage;
         base.Render(timePassed);
         if (vertLine != null)
         {
@@ -3842,9 +3868,9 @@ namespace Mediaportal.TV.TvPlugin.EPG
     {
       int focusedId = base.GetFocusControlId();
       if (_cursorX >= 0 ||
-          focusedId == (int)Controls.SPINCONTROL_DAY ||
-          focusedId == (int)Controls.SPINCONTROL_TIME_INTERVAL ||
-          focusedId == (int)Controls.CHANNEL_GROUP_BUTTON
+          focusedId == (int) Controls.SPINCONTROL_DAY ||
+          focusedId == (int) Controls.SPINCONTROL_TIME_INTERVAL ||
+          focusedId == (int) Controls.CHANNEL_GROUP_BUTTON
         )
       {
         return focusedId;

@@ -14,35 +14,39 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.Helpers
     public static IQueryable ApplyContainsFilter(IQueryable source, string propertyName, object propertyValue) { }
     public static IQueryable ApplyStartsWithFilter(IQueryable source, string propertyName, object propertyValue) { }   
     */
-     
-    public static IQueryable<Program> ApplyFilter<T>(IQueryable source, string propertyName, T propertyValue, ConditionOperator conditionOperator)
-    {     
+
+    public static IQueryable<Program> ApplyFilter<T>(IQueryable source, string propertyName, T propertyValue,
+                                                     ConditionOperator conditionOperator)
+    {
       LambdaExpression lambdaExpression = null;
       var propertyValueString = propertyValue as string;
       switch (conditionOperator)
       {
-        case ConditionOperator.Equals:                   
+        case ConditionOperator.Equals:
           Expression expression;
-          ParameterExpression parameterExpression = GetParameterExpression(source, propertyName, propertyValue, out expression);
-     
-          var parameterExp = new ParameterExpression[1] 
-                                        {
-                                          parameterExpression
-                                        };
+          ParameterExpression parameterExpression = GetParameterExpression(source, propertyName, propertyValue,
+                                                                           out expression);
+
+          var parameterExp = new ParameterExpression[1]
+                               {
+                                 parameterExpression
+                               };
           if (propertyValueString != null)
           {
             propertyValueString = propertyValueString.ToUpperInvariant();
-     
-            MethodInfo methodToUpperInvariant = typeof(string).GetMethod("ToUpperInvariant");
+
+            MethodInfo methodToUpperInvariant = typeof (string).GetMethod("ToUpperInvariant");
             expression = Expression.Call(expression, methodToUpperInvariant);
-            lambdaExpression = Expression.Lambda(Expression.Equal(expression, Expression.Constant(propertyValueString)), parameterExp);
+            lambdaExpression = Expression.Lambda(
+              Expression.Equal(expression, Expression.Constant(propertyValueString)), parameterExp);
           }
           else
           {
-            lambdaExpression = Expression.Lambda(Expression.Equal(expression, Expression.Constant(propertyValue)), parameterExp);
+            lambdaExpression = Expression.Lambda(Expression.Equal(expression, Expression.Constant(propertyValue)),
+                                                 parameterExp);
           }
           break;
-     
+
         case ConditionOperator.Contains:
           if (propertyValueString != null)
           {
@@ -52,7 +56,7 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.Helpers
           {
             throw new InvalidOperationException("ConditionOperator.Contains only supports strings");
           }
-          break;       
+          break;
         case ConditionOperator.NotContains:
           if (propertyValueString != null)
           {
@@ -74,43 +78,49 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.Helpers
           }
           break;
       }
-         
+
       MethodCallExpression methodCallExpression = Expression.Call(typeof (Queryable), "Where", new Type[1]
-      {
-        source.ElementType
-      }, new Expression[2]
-      {
-        source.Expression,
-        Expression.Quote(lambdaExpression)
-      });
+                                                                                                 {
+                                                                                                   source.ElementType
+                                                                                                 }, new Expression[2]
+                                                                                                      {
+                                                                                                        source.
+                                                                                                          Expression,
+                                                                                                        Expression.Quote
+                                                                                                          (lambdaExpression)
+                                                                                                      });
       return source.Provider.CreateQuery<Program>(methodCallExpression);
     }
 
     private static Expression<Func<T, bool>> GetContainsExpression<T>(string propertyName, string propertyValue)
     {
       propertyValue = propertyValue.ToUpperInvariant();
-      ParameterExpression parameterExp = Expression.Parameter(typeof(T), "type");
+      ParameterExpression parameterExp = Expression.Parameter(typeof (T), "type");
       MemberExpression propertyExp = Expression.Property(parameterExp, propertyName);
-      MethodInfo methodToUpperInvariant = typeof(string).GetMethod("ToUpperInvariant");
+      MethodInfo methodToUpperInvariant = typeof (string).GetMethod("ToUpperInvariant");
       MethodCallExpression toUpperInvariantMethodExp = Expression.Call(propertyExp, methodToUpperInvariant);
-      MethodInfo methodContains = typeof(string).GetMethod("Contains", new[] { typeof(string) });
-      ConstantExpression propertyValueExp = Expression.Constant(propertyValue, typeof(string));
-      MethodCallExpression containsMethodExp = Expression.Call(toUpperInvariantMethodExp, methodContains, propertyValueExp);
+      MethodInfo methodContains = typeof (string).GetMethod("Contains", new[] {typeof (string)});
+      ConstantExpression propertyValueExp = Expression.Constant(propertyValue, typeof (string));
+      MethodCallExpression containsMethodExp = Expression.Call(toUpperInvariantMethodExp, methodContains,
+                                                               propertyValueExp);
 
       Expression<Func<T, bool>> containsExpression = Expression.Lambda<Func<T, bool>>(containsMethodExp, parameterExp);
       return containsExpression;
     }
 
     private static LambdaExpression GetStartsWithExpression<T>(string propertyName, string propertyValue)
-    {            
-      ParameterExpression parameterExp = Expression.Parameter(typeof(T), "type");
+    {
+      ParameterExpression parameterExp = Expression.Parameter(typeof (T), "type");
       MemberExpression propertyExp = Expression.Property(parameterExp, propertyName);
 
-      MethodInfo methodStartsWith = typeof(string).GetMethod("StartsWith", new[] { typeof(string), typeof(bool), typeof(CultureInfo) });
+      MethodInfo methodStartsWith = typeof (string).GetMethod("StartsWith",
+                                                              new[]
+                                                                {typeof (string), typeof (bool), typeof (CultureInfo)});
       ConstantExpression propertyValueExp = Expression.Constant(propertyValue);
       ConstantExpression ignoreCaseExp = Expression.Constant(true);
       ConstantExpression cultureInfoExp = Expression.Constant(CultureInfo.InvariantCulture);
-      MethodCallExpression startsWithMethodExp = Expression.Call(propertyExp, methodStartsWith, new[] { propertyValueExp, ignoreCaseExp, cultureInfoExp });
+      MethodCallExpression startsWithMethodExp = Expression.Call(propertyExp, methodStartsWith,
+                                                                 new[] {propertyValueExp, ignoreCaseExp, cultureInfoExp});
 
       /*Expression toUpperInvariantMethodExp = Expression.Call(
         propertyExp,
@@ -120,20 +130,21 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.Helpers
         cultureInfoExp
         );
       */
-      Expression<Func<T, bool>> containsExpression = Expression.Lambda<Func<T,  bool>>(startsWithMethodExp, parameterExp);
+      Expression<Func<T, bool>> containsExpression = Expression.Lambda<Func<T, bool>>(startsWithMethodExp, parameterExp);
       return containsExpression;
     }
 
     private static LambdaExpression GetNotContainsExpression<T>(string propertyName, string propertyValue)
     {
       propertyValue = propertyValue.ToUpperInvariant();
-      ParameterExpression parameterExp = Expression.Parameter(typeof(T), "type");
+      ParameterExpression parameterExp = Expression.Parameter(typeof (T), "type");
       MemberExpression propertyExp = Expression.Property(parameterExp, propertyName);
-      MethodInfo methodToUpperInvariant = typeof(string).GetMethod("ToUpperInvariant");
+      MethodInfo methodToUpperInvariant = typeof (string).GetMethod("ToUpperInvariant");
       MethodCallExpression toUpperInvariantMethodExp = Expression.Call(propertyExp, methodToUpperInvariant);
-      MethodInfo methodContains = typeof(string).GetMethod("Contains", new[] { typeof(string) });
-      ConstantExpression propertyValueExp = Expression.Constant(propertyValue, typeof(string));
-      UnaryExpression containsMethodExp = Expression.Not(Expression.Call(toUpperInvariantMethodExp, methodContains, propertyValueExp));
+      MethodInfo methodContains = typeof (string).GetMethod("Contains", new[] {typeof (string)});
+      ConstantExpression propertyValueExp = Expression.Constant(propertyValue, typeof (string));
+      UnaryExpression containsMethodExp =
+        Expression.Not(Expression.Call(toUpperInvariantMethodExp, methodContains, propertyValueExp));
 
 
       Expression<Func<T, bool>> containsExpression = Expression.Lambda<Func<T, bool>>(containsMethodExp, parameterExp);
@@ -141,7 +152,7 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.Helpers
     }
 
     private static ParameterExpression GetParameterExpression<T>(IQueryable source, string propertyName, T value,
-                                                                  out Expression expression)
+                                                                 out Expression expression)
     {
       ParameterExpression parameterExpression = Expression.Parameter(source.ElementType, string.Empty);
       expression = CreatePropertyExpression(parameterExpression, propertyName);
@@ -151,17 +162,23 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.Helpers
       }
       return parameterExpression;
     }
-     
+
     private static Expression CreatePropertyExpression(Expression parameterExpression, string propertyName)
     {
       string str = propertyName;
       var chArray = new char[1]
-      {
-        '.'
-      };
-      return str.Split(chArray).Aggregate<string, Expression>(null, (current, propertyOrFieldName) => current != null ? Expression.PropertyOrField(current, propertyOrFieldName) : Expression.PropertyOrField(parameterExpression, propertyOrFieldName));
+                      {
+                        '.'
+                      };
+      return str.Split(chArray).Aggregate<string, Expression>(null,
+                                                              (current, propertyOrFieldName) =>
+                                                              current != null
+                                                                ? Expression.PropertyOrField(current,
+                                                                                             propertyOrFieldName)
+                                                                : Expression.PropertyOrField(parameterExpression,
+                                                                                             propertyOrFieldName));
     }
-     
+
     /*public static T ChangeType<T>(object propertyValue)
     {
       return (T) ChangeType(propertyValue, typeof (T));
@@ -203,11 +220,10 @@ namespace Mediaportal.TV.Server.RuleBasedScheduler.Helpers
       return true;
     }
 */
+
     public static Type RemoveNullableFromType(Type type)
     {
       return Nullable.GetUnderlyingType(type) ?? type;
     }
   }
-} 
-
-
+}

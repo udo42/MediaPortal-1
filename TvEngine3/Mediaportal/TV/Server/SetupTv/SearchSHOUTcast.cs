@@ -244,11 +244,11 @@ namespace Mediaportal.TV.Server.SetupTV
         radiostation.url = station.url;
         radiostation.bitrate = station.bitrate;
         var listItem = new ListViewItem(new[]
-                                                   {
-                                                     radiostation.bitrate.ToString(),
-                                                     radiostation.name,
-                                                     radiostation.url
-                                                   });
+                                          {
+                                            radiostation.bitrate.ToString(),
+                                            radiostation.name,
+                                            radiostation.url
+                                          });
         listItem.Tag = radiostation;
         if (ResultsBox.Items != null) ResultsBox.Items.Add(listItem);
       }
@@ -438,7 +438,7 @@ namespace Mediaportal.TV.Server.SetupTV
       this.WaitLabel.Enabled = false;
       this.WaitLabel.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
       this.WaitLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Bold,
-                                                    System.Drawing.GraphicsUnit.Point, ((System.Byte)(0)));
+                                                    System.Drawing.GraphicsUnit.Point, ((System.Byte) (0)));
       this.WaitLabel.ForeColor = System.Drawing.Color.Black;
       this.WaitLabel.Location = new System.Drawing.Point(160, 104);
       this.WaitLabel.Name = "WaitLabel";

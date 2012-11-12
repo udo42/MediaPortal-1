@@ -61,8 +61,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.GenpixOpenSource
     [StructLayout(LayoutKind.Sequential)]
     private struct DiseqcMessage
     {
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcMessageLength)]
-      public byte[] Message;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxDiseqcMessageLength)] public byte[] Message;
       public byte MessageLength;
     }
 
@@ -70,11 +69,13 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.GenpixOpenSource
 
     #region constants
 
-    private const int InstanceSize = 32;    // The size of a property instance (KSP_NODE) parameter.
+    private const int InstanceSize = 32; // The size of a property instance (KSP_NODE) parameter.
 
     private const int DiseqcMessageSize = 7;
     private const int MaxDiseqcMessageLength = 6;
-    private static readonly Guid BdaExtensionPropertySet = new Guid(0x0b5221eb, 0xf4c4, 0x4976, 0xb9, 0x59, 0xef, 0x74, 0x42, 0x74, 0x64, 0xd9);
+
+    private static readonly Guid BdaExtensionPropertySet = new Guid(0x0b5221eb, 0xf4c4, 0x4976, 0xb9, 0x59, 0xef, 0x74,
+                                                                    0x42, 0x74, 0x64, 0xd9);
 
     #endregion
 
@@ -95,10 +96,7 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.GenpixOpenSource
     /// </summary>
     public override String Name
     {
-      get
-      {
-        return "Genpix (Open Source)";
-      }
+      get { return "Genpix (Open Source)"; }
     }
 
     /// <summary>
@@ -133,10 +131,11 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.GenpixOpenSource
       }
 
       KSPropertySupport support;
-      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int)BdaExtensionProperty.Diseqc, out support);
+      int hr = _propertySet.QuerySupported(BdaExtensionPropertySet, (int) BdaExtensionProperty.Diseqc, out support);
       if (hr != 0 || (support & KSPropertySupport.Set) == 0)
       {
-        this.LogDebug("Genpix (Open Source): device does not support the Genpix property set, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("Genpix (Open Source): device does not support the Genpix property set, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         return false;
       }
 
@@ -184,15 +183,15 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.GenpixOpenSource
       message.Message = new byte[MaxDiseqcMessageLength];
       if (toneBurstState == ToneBurst.ToneBurst)
       {
-        message.Message[0] = (byte)GenpixToneBurst.ToneBurst;
+        message.Message[0] = (byte) GenpixToneBurst.ToneBurst;
       }
       else if (toneBurstState == ToneBurst.DataBurst)
       {
-        message.Message[0] = (byte)GenpixToneBurst.DataBurst;
+        message.Message[0] = (byte) GenpixToneBurst.DataBurst;
       }
 
       Marshal.StructureToPtr(message, _diseqcBuffer, true);
-      int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.Diseqc,
+      int hr = _propertySet.Set(BdaExtensionPropertySet, (int) BdaExtensionProperty.Diseqc,
                                 _instanceBuffer, InstanceSize,
                                 _diseqcBuffer, DiseqcMessageSize
         );
@@ -232,12 +231,12 @@ namespace Mediaportal.TV.Server.Plugins.CustomDevices.GenpixOpenSource
       }
 
       var message = new DiseqcMessage();
-      message.MessageLength = (byte)command.Length;
+      message.MessageLength = (byte) command.Length;
       message.Message = new byte[MaxDiseqcMessageLength];
       Buffer.BlockCopy(command, 0, message.Message, 0, command.Length);
 
       Marshal.StructureToPtr(message, _diseqcBuffer, true);
-      int hr = _propertySet.Set(BdaExtensionPropertySet, (int)BdaExtensionProperty.Diseqc,
+      int hr = _propertySet.Set(BdaExtensionPropertySet, (int) BdaExtensionProperty.Diseqc,
                                 _instanceBuffer, InstanceSize,
                                 _diseqcBuffer, DiseqcMessageSize
         );

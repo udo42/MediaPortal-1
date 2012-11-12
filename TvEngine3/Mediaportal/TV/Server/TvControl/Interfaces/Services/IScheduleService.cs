@@ -7,13 +7,16 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
 {
   [ServiceContract(Namespace = "http://www.team-mediaportal.com")]
   public interface IScheduleService
-  {    
+  {
     [OperationContract]
     IList<Schedule> ListAllSchedules();
+
     [OperationContract]
     Schedule SaveSchedule(Schedule schedule);
+
     [OperationContract]
     Schedule GetSchedule(int idSchedule);
+
     [OperationContract]
     bool IsScheduleRecording(int idSchedule);
 
@@ -55,6 +58,7 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
 
     [OperationContract]
     bool IsScheduleRecordingProgram(int idSchedule, int idProgram);
+
     [OperationContract]
     Schedule GetScheduleWithNoEPG(int idChannel);
 
@@ -66,10 +70,13 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Services
 
     [OperationContract]
     IList<Schedule> GetRecordingTimes(Schedule schedule, int days);
+
     [OperationContract]
     IList<ScheduleRulesTemplate> ListAllScheduleRules();
+
     [OperationContract]
     IList<ScheduleRulesTemplate> ListAllScheduleRulesTemplates();
+
     [OperationContract]
     RuleBasedSchedule SaveRuleBasedSchedule(RuleBasedSchedule schedule);
   }

@@ -8,19 +8,17 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
 {
   public class TvServerEventDispatcher : EventDispatcher
   {
-
-
     private void OnTvServerEvent(object sender, EventArgs eventArgs)
     {
       var tvEvent = eventArgs as TvServerEventArgs;
       if (tvEvent != null)
-      {              
+      {
         try
         {
           IDictionary<string, DateTime> usersCopy = GetUsersCopy();
 
           if (usersCopy.Count > 0)
-          {            
+          {
             if (tvEvent.EventType == TvServerEventType.ChannelStatesChanged)
             {
               foreach (string username in usersCopy.Keys)
@@ -51,13 +49,14 @@ namespace Mediaportal.TV.Server.TVLibrary.EventDispatchers
           }
           else
           {
-            this.LogDebug("TvServerEventDispatcher.DoOnTvServerEventAsynch : tvserver event received but no users found...");
+            this.LogDebug(
+              "TvServerEventDispatcher.DoOnTvServerEventAsynch : tvserver event received but no users found...");
           }
         }
         catch (Exception ex)
         {
-          this.LogDebug("DoOnTvServerEventAsynch failed : {0}", ex);        
-        }            
+          this.LogDebug("DoOnTvServerEventAsynch failed : {0}", ex);
+        }
       }
     }
 

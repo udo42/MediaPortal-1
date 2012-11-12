@@ -38,9 +38,10 @@ namespace Mediaportal.TV.Server.TVLibrary
   public class TvCardContext : ITvCardContext
   {
     #region variables
+
     //private readonly Timer _timer = new Timer();
     private readonly IDictionary<string, ParkedUser> _parkedUsers = new Dictionary<string, ParkedUser>();
-    private readonly IDictionary<string,IUser> _users;
+    private readonly IDictionary<string, IUser> _users;
     private readonly IDictionary<string, IUser> _usersHistory;
     //holding a list of all the timeshifting users that have been stopped - mkaing it possible for the client to query the possible stop reason.
 
@@ -52,7 +53,7 @@ namespace Mediaportal.TV.Server.TVLibrary
     ///   Initializes a new instance of the <see cref = "TvCardContext" /> class.
     /// </summary>
     public TvCardContext()
-    {      
+    {
       _users = new Dictionary<string, IUser>();
       _usersHistory = new Dictionary<string, IUser>();
       OwnerSubChannel = null;
@@ -132,9 +133,5 @@ namespace Mediaportal.TV.Server.TVLibrary
         this.LogError(ex);
       }
     }*/
-
-    
   }
-
-  
 }

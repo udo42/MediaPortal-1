@@ -8,7 +8,7 @@ using Mediaportal.TV.Server.TVService.Interfaces.Services;
 namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 {
   public class ParkedUser : User, IDisposable
-  {        
+  {
     private readonly IDictionary<int, ManualResetEvent> _events; //key is subchannelid
     private readonly IDictionary<int, DateTime> _parkedAtList; //key is subchannelid
     private readonly IDictionary<int, double> _parkedDurations; //key is subchannelid
@@ -19,7 +19,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
     {
       //_parkedSubChannel = user.GetSubChannelIdByChannelId(channelId);            
       SubChannels = new SortedDictionary<int, ISubChannel>(user.SubChannels);
-      TvStoppedReason = user.TvStoppedReason;      
+      TvStoppedReason = user.TvStoppedReason;
       _parkedAtList = new Dictionary<int, DateTime>();
       _parkedDurations = new Dictionary<int, double>();
       _events = new Dictionary<int, ManualResetEvent>();
@@ -58,7 +58,7 @@ namespace Mediaportal.TV.Server.TVLibrary.CardManagement.CardHandler
 
     public void Dispose()
     {
-      foreach(ManualResetEvent evt in _events.Values)
+      foreach (ManualResetEvent evt in _events.Values)
       {
         evt.Set();
         evt.Dispose();

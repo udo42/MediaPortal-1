@@ -30,7 +30,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces
     private int _lnbHighFrequency = -1;
     private int _lnbLowFrequency = -1;
     private int _lnbSwitchFrequency = -1;
-    private UInt32 _maxFileSize = (256 * 1000 * 1000);
+    private UInt32 _maxFileSize = (256*1000*1000);
     private int _maxFiles = 20;
     private int _minFiles = 6;
     private int _timeoutAnalog = 20;

@@ -29,5 +29,5 @@ namespace Mediaportal.TV.Server.SetupTV.PlaylistSupport
     PLAYLIST_VIDEO_TEMP,
     PLAYLIST_MUSIC_VIDEO,
     PLAYLIST_RADIO_STREAMS,
-  } ;
+  };
 }

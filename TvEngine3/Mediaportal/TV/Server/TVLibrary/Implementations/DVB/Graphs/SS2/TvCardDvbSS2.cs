@@ -41,23 +41,21 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
   /// </summary>
   public class TvCardDvbSS2 : TvCardDvbBase, ICustomDevice, IPidFilterController, IDiseqcDevice
   {
-
-
     #region enums
 
     private enum B2c2Error
     {
-      NotLockedOnSignal = -1878982377,    // [0x90010115]
+      NotLockedOnSignal = -1878982377, // [0x90010115]
 
       // For AddPIDsToPin() or AddPIDs()...
-      AlreadyExists = 0x10011000,         // PID already registered.
-      PidError = -1878978558,             // [0x90011001]
-      AlreadyFull = -1878978557,          // Max PID count exceeded. [0x90011002]
+      AlreadyExists = 0x10011000, // PID already registered.
+      PidError = -1878978558, // [0x90011001]
+      AlreadyFull = -1878978557, // Max PID count exceeded. [0x90011002]
 
       // General...
-      CreateInterface = -1878917118,      // Not all interfaces could be created correctly. [0x90020001]
-      UnsupportedDevice = -1878917117,    // The given device is not B2C2-compatible (Linux). [0x90020002]
-      NotInitialised,                     // Initialize() needs to be called.
+      CreateInterface = -1878917118, // Not all interfaces could be created correctly. [0x90020001]
+      UnsupportedDevice = -1878917117, // The given device is not B2C2-compatible (Linux). [0x90020002]
+      NotInitialised, // Initialize() needs to be called.
 
       // (B2C2MPEG2AdapterWin.cpp code...)
       InvalidPin,
@@ -65,7 +63,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       PinAlreadyConnected,
       NoInputPin,
 
-      InvalidTid,                         // Invalid table ID passed to SetTableId().
+      InvalidTid, // Invalid table ID passed to SetTableId().
 
       // Decrypt keys...
       SetGlobalFixedKey,
@@ -74,7 +72,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       DeletePidFixedKey,
       PurgeFixedKey,
 
-      DiseqcInProgress = 1878917105,      // [0x9002000f]
+      DiseqcInProgress = 1878917105, // [0x9002000f]
       Diseqc12NotSupported,
       NoDeviceAvailable
     }
@@ -91,35 +89,35 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     private enum B2c2BusType
     {
       Pci = 0,
-      Usb1 = 1    // USB 1.1
+      Usb1 = 1 // USB 1.1
     }
 
     [Flags]
     private enum B2c2PerformanceMonitoringCapability
     {
       None = 0,
-      BitErrorRate = 1,           // BER reporting via GetPreErrorCorrectionBER().
-      BlockCount = 2,             // Block count reporting via GetTotalBlocks().
-      CorrectedBlockCount = 4,    // Corrected block count reporting via GetCorrectedBlocks().
-      UncorrectedBlockCount = 8,  // Uncorrected block count reporting via GetUncorrectedBlocks().
-      SignalToNoiseRatio = 16,    // SNR reporting via GetSNR().
-      SignalStrength = 32,        // Signal strength percentage reporting via GetSignalStrength().
-      SignalQuality = 64          // Signal quality percentage reporting via GetSignalQuality().
+      BitErrorRate = 1, // BER reporting via GetPreErrorCorrectionBER().
+      BlockCount = 2, // Block count reporting via GetTotalBlocks().
+      CorrectedBlockCount = 4, // Corrected block count reporting via GetCorrectedBlocks().
+      UncorrectedBlockCount = 8, // Uncorrected block count reporting via GetUncorrectedBlocks().
+      SignalToNoiseRatio = 16, // SNR reporting via GetSNR().
+      SignalStrength = 32, // Signal strength percentage reporting via GetSignalStrength().
+      SignalQuality = 64 // Signal quality percentage reporting via GetSignalQuality().
     }
 
     [Flags]
     private enum B2c2AcquisionCapability
     {
       None = 0,
-      AutoSymbolRate = 1,       // DVB-S automatic symbol rate detection support.
-      AutoGuardInterval = 2,    // DVB-T automatic guard interval detection support.
-      AutoFrequencyOffset = 4,  // DVB-T automatic frequency offset handling support.
-      VhfSupport = 8,           // DVB-T VHF (30 - 300 MHz) support.
-      Bandwidth6 = 16,          // DVB-T 6 MHz transponder support.
-      Bandwidth7 = 32,          // DVB-T 7 MHz transponder support.
-      Bandwidth8 = 64,          // DVB-T 8 MHz transponder support.
-      RawDiseqc = 128,          // DVB-S DiSEqC 1.2 16 port switch and motor control support.
-      IrInput = 256             // IR remote input support.
+      AutoSymbolRate = 1, // DVB-S automatic symbol rate detection support.
+      AutoGuardInterval = 2, // DVB-T automatic guard interval detection support.
+      AutoFrequencyOffset = 4, // DVB-T automatic frequency offset handling support.
+      VhfSupport = 8, // DVB-T VHF (30 - 300 MHz) support.
+      Bandwidth6 = 16, // DVB-T 6 MHz transponder support.
+      Bandwidth7 = 32, // DVB-T 7 MHz transponder support.
+      Bandwidth8 = 64, // DVB-T 8 MHz transponder support.
+      RawDiseqc = 128, // DVB-S DiSEqC 1.2 16 port switch and motor control support.
+      IrInput = 256 // IR remote input support.
     }
 
     private enum B2c2Modulation
@@ -139,9 +137,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
 
     private enum B2c2Polarisation
     {
-      Horizontal = 0,   // 18 V - also use for circular left.
-      Vertical,         // 13 V - also use for circular right.
-      PowerOff = 10     // Turn the power supply to the LNB completely off.
+      Horizontal = 0, // 18 V - also use for circular left.
+      Vertical, // 13 V - also use for circular right.
+      PowerOff = 10 // Turn the power supply to the LNB completely off.
     }
 
     private enum B2c2FecRate
@@ -200,13 +198,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     private enum B2c2KeyType
     {
       // PID TSC Keys. Up to 7 Keys possible; highest priority used.
-      PidTscReserved = 1,   // Key is used if the PID matches and the scrambling control bits are '01' (reserved).
-      PidTscEven = 2,       // Key is used if the PID matches and the scrambling control bits are '10' (even).
-      PidTscOdd = 3,        // Key is used if the PID matches and the scrambling control bits are '11' (odd).
+      PidTscReserved = 1, // Key is used if the PID matches and the scrambling control bits are '01' (reserved).
+      PidTscEven = 2, // Key is used if the PID matches and the scrambling control bits are '10' (even).
+      PidTscOdd = 3, // Key is used if the PID matches and the scrambling control bits are '11' (odd).
       // PID-only Key. 1 key only; used if no global key is set.
-      PidTscAny,            // Key is used if none of the scrambling patterns matches and the PID value matches.
+      PidTscAny, // Key is used if none of the scrambling patterns matches and the PID value matches.
       // Global Key. 1 key only; used if no PID-only key is set.
-      Global,               // Key is used if no other key matches.
+      Global, // Key is used if no other key matches.
     }
 
     private enum B2c2PvrOption
@@ -218,7 +216,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     private enum B2c2PvrCallbackState
     {
       EndOfFile = 0,
-      FileError       // Indicates file access or disk space issues.
+      FileError // Indicates file access or disk space issues.
     }
 
     private enum B2c2VideoAspectRatio : byte
@@ -250,8 +248,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     #region tuner control
 
     [ComVisible(true), ComImport,
-      Guid("61a9051f-04c4-435e-8742-9edd2c543ce9"),
-      InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+     Guid("61a9051f-04c4-435e-8742-9edd2c543ce9"),
+     InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     private interface IB2C2MPEG2TunerCtrl4
     {
       #region IB2C2MPEG2TunerCtrl
@@ -588,8 +586,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     #region data control
 
     [ComVisible(true), ComImport,
-      Guid("a12a4531-72d2-40fc-b17d-8f9b0004444f"),
-      InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+     Guid("a12a4531-72d2-40fc-b17d-8f9b0004444f"),
+     InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     private interface IB2C2MPEG2DataCtrl6
     {
       #region IB2C2MPEG2DataCtrl
@@ -662,8 +660,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       /// <returns>an HRESULT indicating whether the PIDs were successfully retrieved</returns>
       [PreserveSig]
       Int32 GetIpPIDs([Out] out Int32 pidCount,
-                [Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] out Int32[] pids
-      );
+                      [Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] out Int32[] pids
+        );
 
       #endregion
 
@@ -692,8 +690,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       /// <returns>an HRESULT indicating whether the PIDs were successfully retrieved</returns>
       [PreserveSig]
       Int32 GetGlobalPIDs([Out] out Int32 pidCount,
-                [Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] out Int32[] pids
-      );
+                          [Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] out Int32[] pids
+        );
 
       #endregion
 
@@ -729,7 +727,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       /// <returns>an HRESULT indicating whether the PIDs were successfully registered</returns>
       [PreserveSig]
       Int32 AddPIDsToPin([In, Out] ref Int32 pidCount,
-                [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] Int32[] pids, Int32 pidIndex);
+                         [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] Int32[] pids, Int32 pidIndex);
 
       /// <summary>
       /// Deregister transport stream class PID(s) that are no longer of interest to the application.
@@ -742,7 +740,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       /// <returns>an HRESULT indicating whether the PIDs were successfully deregistered</returns>
       [PreserveSig]
       Int32 DeletePIDsFromPin(Int32 pidCount,
-                [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] Int32[] pids, Int32 pidIndex);
+                              [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 0)] Int32[] pids, Int32 pidIndex);
 
       #endregion
 
@@ -782,8 +780,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       /// <returns>an HRESULT indicating whether the state information was successfully retrieved</returns>
       [PreserveSig]
       Int32 GetTsState([Out] out Int32 openPidCount, [Out] out Int32 runningPidCount,
-              [In, Out] ref Int32 pidCount, [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)] Int32[] pidList
-      );
+                       [In, Out] ref Int32 pidCount,
+                       [MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 3)] Int32[] pidList
+        );
 
       #endregion
 
@@ -800,9 +799,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       /// <returns>an HRESULT indicating whether the state information was successfully retrieved</returns>
       [PreserveSig]
       Int32 GetIpState([Out] out Int32 openPidCount, [Out] out Int32 runningPidCount,
-              [In, Out] ref Int32 pidCount,
-              [Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] out Int32[] pidList
-      );
+                       [In, Out] ref Int32 pidCount,
+                       [Out, MarshalAs(UnmanagedType.LPArray, SizeParamIndex = 2)] out Int32[] pidList
+        );
 
       /// <summary>
       /// Get the number of IP class PID bytes and packets that have been received.
@@ -905,7 +904,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       /// <param name="globalKeyCount">The number of global keys registered.</param>
       /// <returns>an HRESULT indicating whether the key counts were successfully retrieved</returns>
       [PreserveSig]
-      Int32 GetKeyCount([Out] out Int32 totalKeyCount, [Out] out Int32 pidTscKeyCount, [Out] out Int32 pidKeyCount, [Out] out Int32 globalKeyCount);
+      Int32 GetKeyCount([Out] out Int32 totalKeyCount, [Out] out Int32 pidTscKeyCount, [Out] out Int32 pidKeyCount,
+                        [Out] out Int32 globalKeyCount);
 
       /// <summary>
       /// Get the details for the keys that are registered with and being used by the interface.
@@ -991,8 +991,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     #region AV control
 
     [ComVisible(true), ComImport,
-      Guid("3ca933bb-4378-4e03-8abd-02450169aa5e"),
-      InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+     Guid("3ca933bb-4378-4e03-8abd-02450169aa5e"),
+     InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     private interface IB2C2MPEG2AVCtrl3
     {
       #region IB2C2MPEG2AVCtrl
@@ -1043,9 +1043,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       /// <returns>an HRESULT indicating whether the settings were successfully retrieved</returns>
       [PreserveSig]
       Int32 GetAudioVideoState([Out] out Int32 openAudioStreamCount, [Out] out Int32 openVideoStreamCount,
-            [Out] out Int32 totalAudioStreamCount, [Out] out Int32 totalVideoStreamCount,
-            [Out] out Int32 audioPid, [Out] out Int32 videoPid
-      );
+                               [Out] out Int32 totalAudioStreamCount, [Out] out Int32 totalVideoStreamCount,
+                               [Out] out Int32 audioPid, [Out] out Int32 videoPid
+        );
 
       #endregion
 
@@ -1070,8 +1070,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     #region timeshifting
 
     [ComVisible(true), ComImport,
-      Guid("a306af1c-51d9-496d-9e7a-1cfe28f51fda"),
-      InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+     Guid("a306af1c-51d9-496d-9e7a-1cfe28f51fda"),
+     InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     private interface IB2C2MPEG2TimeshiftCtrl
     {
       /// <summary>
@@ -1177,8 +1177,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     #region multicast
 
     [ComVisible(true), ComImport,
-      Guid("0b5a8a87-7133-4a37-846e-77f568a52155"),
-      InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
+     Guid("0b5a8a87-7133-4a37-846e-77f568a52155"),
+     InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
     private interface IB2C2MPEG2MulticastCtrl
     {
       /// <summary>
@@ -1244,36 +1244,32 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     private struct TunerCapabilities
     {
       public B2c2AcquisionCapability AcquisitionCapabilities;
-      private UInt32 AutoSymbolRate;              // Obsolete		
+      private UInt32 AutoSymbolRate; // Obsolete		
 
-      [MarshalAs(UnmanagedType.Bool)]
-      public bool ConstellationSupported;         // Is SetModulation() supported?
-      [MarshalAs(UnmanagedType.Bool)]
-      public bool FecSupported;                   // Is SetFec() suppoted?
+      [MarshalAs(UnmanagedType.Bool)] public bool ConstellationSupported; // Is SetModulation() supported?
+      [MarshalAs(UnmanagedType.Bool)] public bool FecSupported; // Is SetFec() suppoted?
 
-      public UInt32 KernelLockTime;               // unit = ms
-      public UInt32 LockTime;                     // unit = ms
-      public UInt32 MaxSymbolRate;                // unit = Baud
+      public UInt32 KernelLockTime; // unit = ms
+      public UInt32 LockTime; // unit = ms
+      public UInt32 MaxSymbolRate; // unit = Baud
 
-      public UInt32 MaxTransponderFrequency;      // unit = kHz
-      public UInt32 MaxTunerFrequency;            // unit = kHz
-      public UInt32 MinSymbolRate;                // unit = Baud
-      public UInt32 MinTransponderFrequency;      // unit = kHz
-      public UInt32 MinTunerFrequency;            // unit = kHz
+      public UInt32 MaxTransponderFrequency; // unit = kHz
+      public UInt32 MaxTunerFrequency; // unit = kHz
+      public UInt32 MinSymbolRate; // unit = Baud
+      public UInt32 MinTransponderFrequency; // unit = kHz
+      public UInt32 MinTunerFrequency; // unit = kHz
       public B2c2PerformanceMonitoringCapability PerformanceMonitoringCapabilities;
       public B2c2TunerType TunerType;
     }
 
     private struct MacAddress
     {
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MacAddressLength)]
-      public byte[] Address;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MacAddressLength)] public byte[] Address;
     }
 
     private struct MacAddressList
     {
-      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxMacAddressCount)]
-      public MacAddress[] Address;
+      [MarshalAs(UnmanagedType.ByValArray, SizeConst = MaxMacAddressCount)] public MacAddress[] Address;
 
       public Int32 AddressCount;
     }
@@ -1295,18 +1291,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       private readonly UInt16 Padding1;
       public readonly B2c2TunerType TunerType;
       public readonly B2c2BusType BusInterface;
-      [MarshalAs(UnmanagedType.I1)]
-      public readonly bool IsInUse;
+      [MarshalAs(UnmanagedType.I1)] public readonly bool IsInUse;
       private readonly byte Padding2;
       public readonly UInt32 ProductId;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 31)]
-      public readonly String ProductName;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 81)]
-      public readonly String ProductDescription;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 21)]
-      public readonly String ProductRevision;
-      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 61)]
-      public readonly String ProductFrontEnd;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 31)] public readonly String ProductName;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 81)] public readonly String ProductDescription;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 21)] public readonly String ProductRevision;
+      [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 61)] public readonly String ProductFrontEnd;
     }
 
     #endregion
@@ -1347,7 +1338,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
 
     #region constants
 
-    private static readonly Guid B2c2AdapterClass = new Guid(0xe82536a0, 0x94da, 0x11d2, 0xa4, 0x63, 0x00, 0xa0, 0xc9, 0x5d, 0x30, 0x8d);
+    private static readonly Guid B2c2AdapterClass = new Guid(0xe82536a0, 0x94da, 0x11d2, 0xa4, 0x63, 0x00, 0xa0, 0xc9,
+                                                             0x5d, 0x30, 0x8d);
 
     private const int MaxDeviceCount = 16;
     private const int MacAddressLength = 6;
@@ -1413,7 +1405,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     public TvCardDvbSS2(IEpgEvents epgEvents, DsDevice device, object context)
       : base(epgEvents, device)
     {
-      _deviceContext = (DeviceInfo)context;
+      _deviceContext = (DeviceInfo) context;
       switch (_deviceContext.TunerType)
       {
         case B2c2TunerType.Satellite:
@@ -1424,7 +1416,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
             if (c != null)
             {
               _alwaysSendDiseqcCommands = c.AlwaysSendDiseqcCommands;
-              _diseqcCommandRepeatCount = (ushort)c.DiseqcCommandRepeatCount;
+              _diseqcCommandRepeatCount = (ushort) c.DiseqcCommandRepeatCount;
               if (_diseqcCommandRepeatCount > 5)
               {
                 // It would be rare that commands would need to be repeated more than twice. Five times
@@ -1469,8 +1461,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
         }
       }
       if (!GraphRunning() ||
-        CurrentChannel == null ||
-        _tunerInterface == null)
+          CurrentChannel == null ||
+          _tunerInterface == null)
       {
         _tunerLocked = false;
         _signalPresent = false;
@@ -1598,7 +1590,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
         return false;
       }
 
-      int hr = _tunerInterface.SetFrequency((Int32)dvbsChannel.Frequency / 1000);
+      int hr = _tunerInterface.SetFrequency((Int32) dvbsChannel.Frequency/1000);
       if (hr != 0)
       {
         this.LogError("TvCardDvbSs2: failed to set frequency, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -1654,15 +1646,16 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
 
       if (dvbsChannel.Frequency > dvbsChannel.LnbType.SwitchFrequency)
       {
-        hr = _tunerInterface.SetLnbFrequency(dvbsChannel.LnbType.HighBandFrequency / 1000);
+        hr = _tunerInterface.SetLnbFrequency(dvbsChannel.LnbType.HighBandFrequency/1000);
       }
       else
       {
-        hr = _tunerInterface.SetLnbFrequency(dvbsChannel.LnbType.LowBandFrequency / 1000);
+        hr = _tunerInterface.SetLnbFrequency(dvbsChannel.LnbType.LowBandFrequency/1000);
       }
       if (hr != 0)
       {
-        this.LogDebug("TvCardDvbSs2: failed to set LNB LOF frequency, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("TvCardDvbSs2: failed to set LNB LOF frequency, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         return false;
       }
 
@@ -1678,14 +1671,14 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
         return false;
       }
 
-      int hr = _tunerInterface.SetFrequency((Int32)dvbtChannel.Frequency / 1000);
+      int hr = _tunerInterface.SetFrequency((Int32) dvbtChannel.Frequency/1000);
       if (hr != 0)
       {
         this.LogError("TvCardDvbSs2: failed to set frequency, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
         return false;
       }
 
-      hr = _tunerInterface.SetBandwidth(dvbtChannel.Bandwidth / 1000);
+      hr = _tunerInterface.SetBandwidth(dvbtChannel.Bandwidth/1000);
       if (hr != 0)
       {
         this.LogDebug("TvCardDvbSs2: failed to set bandwidth, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -1697,7 +1690,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       hr = _tunerInterface.SetGuardInterval(B2c2GuardInterval.Auto);
       if (hr != 0)
       {
-        this.LogDebug("TvCardDvbSs2: failed to use automatic guard interval detection, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("TvCardDvbSs2: failed to use automatic guard interval detection, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         return false;
       }
 
@@ -1713,7 +1707,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
         return false;
       }
 
-      int hr = _tunerInterface.SetFrequency((Int32)dvbcChannel.Frequency / 1000);
+      int hr = _tunerInterface.SetFrequency((Int32) dvbcChannel.Frequency/1000);
       if (hr != 0)
       {
         this.LogError("TvCardDvbSs2: failed to set frequency, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -1773,21 +1767,22 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
         // frequency (in MHz), probably for the US only.
         if (atscChannel.PhysicalChannel <= 6)
         {
-          frequency = 45 + (atscChannel.PhysicalChannel * 6);
+          frequency = 45 + (atscChannel.PhysicalChannel*6);
         }
         else if (atscChannel.PhysicalChannel >= 7 && atscChannel.PhysicalChannel <= 13)
         {
-          frequency = 177 + ((atscChannel.PhysicalChannel - 7) * 6);
+          frequency = 177 + ((atscChannel.PhysicalChannel - 7)*6);
         }
         else
         {
-          frequency = 473 + ((atscChannel.PhysicalChannel - 14) * 6);
+          frequency = 473 + ((atscChannel.PhysicalChannel - 14)*6);
         }
-        this.LogDebug("TvCardDvbSs2: translated ATSC physical channel number {0} to {1} MHz", atscChannel.PhysicalChannel, frequency);
+        this.LogDebug("TvCardDvbSs2: translated ATSC physical channel number {0} to {1} MHz",
+                      atscChannel.PhysicalChannel, frequency);
       }
       else
       {
-        frequency = (Int32)atscChannel.Frequency / 1000;
+        frequency = (Int32) atscChannel.Frequency/1000;
         modulation = B2c2Modulation.Qam256AnnexB;
         if (atscChannel.ModulationType == ModulationType.Mod64Qam)
         {
@@ -1850,9 +1845,9 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
           throw new TvExceptionGraphBuildingFailed("TvCardDvbSs2: device is not present, driver restart required");
         }
 
-        _graphBuilder = (IFilterGraph2)new FilterGraph();
+        _graphBuilder = (IFilterGraph2) new FilterGraph();
         _rotEntry = new DsROTEntry(_graphBuilder);
-        _capBuilder = (ICaptureGraphBuilder2)new CaptureGraphBuilder2();
+        _capBuilder = (ICaptureGraphBuilder2) new CaptureGraphBuilder2();
         _capBuilder.SetFiltergraph(_graphBuilder);
 
         DevicesInUse.Instance.Add(_tunerDevice);
@@ -1860,7 +1855,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
         {
           // Create, add and initialise the B2C2 source filter.
           this.LogDebug("TvCardDvbSs2: create B2C2 source filter");
-          _filterB2c2Adapter = (IBaseFilter)Activator.CreateInstance(Type.GetTypeFromCLSID(B2c2AdapterClass, false));
+          _filterB2c2Adapter = (IBaseFilter) Activator.CreateInstance(Type.GetTypeFromCLSID(B2c2AdapterClass, false));
           if (_filterB2c2Adapter == null)
           {
             this.LogError("TvCardDvbSs2: failed to create B2C2 source filter");
@@ -1870,7 +1865,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
           int hr = _graphBuilder.AddFilter(_filterB2c2Adapter, "B2C2-Source");
           if (hr != 0)
           {
-            this.LogError("TvCardDvbSs2: failed to add source filter to graph, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+            this.LogError("TvCardDvbSs2: failed to add source filter to graph, hr = 0x{0:x} ({1})", hr,
+                          HResult.GetDXErrorString(hr));
             return;
           }
           this.LogDebug("TvCardDvbSs2: get device interface handles");
@@ -1885,7 +1881,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
           hr = _tunerInterface.Initialize();
           if (hr != 0)
           {
-            this.LogError("TvCardDvbSs2: failed to initialise tuner interface, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+            this.LogError("TvCardDvbSs2: failed to initialise tuner interface, hr = 0x{0:x} ({1})", hr,
+                          HResult.GetDXErrorString(hr));
             return;
           }
           // This line is a remnant from old code. I don't know if/why it is necessary, but no harm
@@ -1977,7 +1974,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     protected override void AddInfiniteTeeToGraph(ref IBaseFilter lastFilter)
     {
       this.LogDebug("TvCardDvbSs2: add infinite tee filter");
-      _infTee = (IBaseFilter)new InfTee();
+      _infTee = (IBaseFilter) new InfTee();
       int hr = _graphBuilder.AddFilter(_infTee, "Infinite Tee");
       if (hr != 0)
       {
@@ -1993,7 +1990,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       Release.ComObject("MPEG 2 demux input pin", sourceOut);
       if (hr != 0)
       {
-        this.LogError("TvCardDvbSs2: failed to connect infinite tee, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogError("TvCardDvbSs2: failed to connect infinite tee, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         throw new TvExceptionGraphBuildingFailed("TvCardDvbSs2: failed to connect infinite tee");
       }
       lastFilter = _infTee;
@@ -2070,7 +2068,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       IBaseFilter b2c2Source = null;
       try
       {
-        b2c2Source = (IBaseFilter)Activator.CreateInstance(Type.GetTypeFromCLSID(B2c2AdapterClass, false));
+        b2c2Source = (IBaseFilter) Activator.CreateInstance(Type.GetTypeFromCLSID(B2c2AdapterClass, false));
       }
       catch (Exception ex)
       {
@@ -2085,7 +2083,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       }
 
       // Get device details...
-      int size = DeviceInfoSize * MaxDeviceCount;
+      int size = DeviceInfoSize*MaxDeviceCount;
       int deviceCount = MaxDeviceCount;
       IntPtr tempBuffer = Marshal.AllocCoTaskMem(size);
       for (int i = 0; i < size; i++)
@@ -2106,7 +2104,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
         for (int i = 0; i < deviceCount; i++)
         {
           Log.Debug("TvCardDvbSs2: device {0}", i + 1);
-          var d = (DeviceInfo)Marshal.PtrToStructure(new IntPtr(structurePtr), typeof(DeviceInfo));
+          var d = (DeviceInfo) Marshal.PtrToStructure(new IntPtr(structurePtr), typeof (DeviceInfo));
           Log.Debug("  device ID           = {0}", d.DeviceId);
           Log.Debug("  MAC address         = {0}", BitConverter.ToString(d.MacAddress.Address).ToLowerInvariant());
           Log.Debug("  tuner type          = {0}", d.TunerType);
@@ -2158,7 +2156,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       else
       {
         //DVB_MMI.DumpBinary(_generalBuffer, 0, returnedByteCount);
-        var capabilities = (TunerCapabilities)Marshal.PtrToStructure(_generalBuffer, typeof(TunerCapabilities));
+        var capabilities = (TunerCapabilities) Marshal.PtrToStructure(_generalBuffer, typeof (TunerCapabilities));
         this.LogDebug("  tuner type                = {0}", capabilities.TunerType);
         this.LogDebug("  set constellation?        = {0}", capabilities.ConstellationSupported);
         this.LogDebug("  set FEC rate?             = {0}", capabilities.FecSupported);
@@ -2214,10 +2212,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     /// </summary>
     public byte Priority
     {
-      get
-      {
-        return 50;
-      }
+      get { return 50; }
     }
 
     /// <summary>
@@ -2253,7 +2248,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
     /// <param name="currentChannel">The channel that the tuner is currently tuned to..</param>
     /// <param name="channel">The channel that the tuner will been tuned to.</param>
     /// <param name="action">The action to take, if any.</param>
-    public virtual void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel, out DeviceAction action)
+    public virtual void OnBeforeTune(ITVCard tuner, IChannel currentChannel, ref IChannel channel,
+                                     out DeviceAction action)
     {
       action = DeviceAction.Default;
     }
@@ -2312,7 +2308,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
         return false;
       }
 
-      if (pids == null || pids.Count == 0 || (modulation != ModulationType.ModQpsk && modulation != ModulationType.Mod8Psk && !forceEnable))
+      if (pids == null || pids.Count == 0 ||
+          (modulation != ModulationType.ModQpsk && modulation != ModulationType.Mod8Psk && !forceEnable))
       {
         this.LogDebug("TvCardDvbSs2: disabling PID filter");
       }
@@ -2323,7 +2320,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
         fullTransponder = false;
         if (pids.Count > _maxPidCount)
         {
-          this.LogDebug("TvCardDvbSs2: too many PIDs, hardware limit = {0}, actual count = {1}", _maxPidCount, pids.Count);
+          this.LogDebug("TvCardDvbSs2: too many PIDs, hardware limit = {0}, actual count = {1}", _maxPidCount,
+                        pids.Count);
           // When the forceEnable flag is set, we just set as many PIDs as possible.
           if (!forceEnable)
           {
@@ -2348,7 +2346,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       hr = _dataInterface.GetTsState(out openPidCount, out runningPidCount, ref totalPidCount, currentPids);
       if (hr != 0)
       {
-        this.LogDebug("TvCardDvbSs2: failed to retrieve current PIDs, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
+        this.LogDebug("TvCardDvbSs2: failed to retrieve current PIDs, hr = 0x{0:x} ({1})", hr,
+                      HResult.GetDXErrorString(hr));
         fullTransponder = true;
         success = false;
       }
@@ -2373,12 +2372,13 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
         // Remove the PIDs that are no longer needed.
         for (byte i = 0; i < totalPidCount; i++)
         {
-          if (currentPids != null && !pids.Contains((UInt16)currentPids[i]))
+          if (currentPids != null && !pids.Contains((UInt16) currentPids[i]))
           {
-            hr = _dataInterface.DeletePIDsFromPin(1, new int[1] { currentPids[i] }, 0);
+            hr = _dataInterface.DeletePIDsFromPin(1, new int[1] {currentPids[i]}, 0);
             if (hr != 0)
             {
-              this.LogDebug("TvCardDvbSs2: failed to remove PID {0} (0x{0:x}), hr = 0x{1:x} ({2})", currentPids[i], hr, HResult.GetDXErrorString(hr));
+              this.LogDebug("TvCardDvbSs2: failed to remove PID {0} (0x{0:x}), hr = 0x{1:x} ({2})", currentPids[i], hr,
+                            HResult.GetDXErrorString(hr));
               success = false;
             }
             else
@@ -2397,10 +2397,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
           {
             if (currentPidsAsHash != null && !currentPidsAsHash.Contains(en.Current))
             {
-              hr = _dataInterface.AddPIDsToPin(ref changingPidCount, new int[1] { en.Current }, 0);
+              hr = _dataInterface.AddPIDsToPin(ref changingPidCount, new int[1] {en.Current}, 0);
               if (hr != 0)
               {
-                this.LogDebug("TvCardDvbSs2: failed to add PID {0} (0x{0:x}), hr = 0x{1:x} ({2})", en.Current, hr, HResult.GetDXErrorString(hr));
+                this.LogDebug("TvCardDvbSs2: failed to add PID {0} (0x{0:x}), hr = 0x{1:x} ({2})", en.Current, hr,
+                              HResult.GetDXErrorString(hr));
                 success = false;
               }
               else
@@ -2419,10 +2420,11 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
         {
           for (byte i = 0; i < totalPidCount; i++)
           {
-            hr = _dataInterface.DeletePIDsFromPin(1, new int[1] { currentPids[i] }, 0);
+            hr = _dataInterface.DeletePIDsFromPin(1, new int[1] {currentPids[i]}, 0);
             if (hr != 0)
             {
-              this.LogDebug("TvCardDvbSs2: failed to remove PID {0} (0x{0:x}), hr = 0x{1:x} ({2})", currentPids[i], hr, HResult.GetDXErrorString(hr));
+              this.LogDebug("TvCardDvbSs2: failed to remove PID {0} (0x{0:x}), hr = 0x{1:x} ({2})", currentPids[i], hr,
+                            HResult.GetDXErrorString(hr));
               success = false;
             }
             else
@@ -2432,7 +2434,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
           }
         }
         // Allow all PIDs.
-        hr = _dataInterface.AddPIDsToPin(ref changingPidCount, new int[1] { (int)B2c2PidFilterMode.AllExcludingNull }, 0);
+        hr = _dataInterface.AddPIDsToPin(ref changingPidCount, new int[1] {(int) B2c2PidFilterMode.AllExcludingNull}, 0);
         if (hr != 0)
         {
           this.LogDebug("TvCardDvbSs2: failed to enable all PIDs, hr = 0x{0:x} ({1})", hr, HResult.GetDXErrorString(hr));
@@ -2549,7 +2551,7 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
         }
         catch (COMException ex)
         {
-          if ((B2c2Error)ex.ErrorCode == B2c2Error.Diseqc12NotSupported)
+          if ((B2c2Error) ex.ErrorCode == B2c2Error.Diseqc12NotSupported)
           {
             // DiSEqC 1.2 commands not supported. This is a little unexpected given that the
             // driver previously reported that it supports them.
@@ -2557,7 +2559,8 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
           }
           else
           {
-            this.LogDebug("TvCardDvbSs2: failed to send raw DiSEqC command, hr = 0x{0:x}\r\n{1}", ex.ErrorCode, ex.StackTrace);
+            this.LogDebug("TvCardDvbSs2: failed to send raw DiSEqC command, hr = 0x{0:x}\r\n{1}", ex.ErrorCode,
+                          ex.StackTrace);
           }
         }
       }
@@ -2565,17 +2568,17 @@ namespace Mediaportal.TV.Server.TVLibrary.Implementations.DVB.Graphs.SS2
       // If we get to here then the driver/hardware doesn't support raw commands. We'll attempt to send
       // non-raw commands if the command is a DiSEqC 1.0 switch command.
       if (command.Length != 4 ||
-        (command[0] != (byte)DiseqcFrame.CommandFirstTransmissionNoReply &&
-        command[0] != (byte)DiseqcFrame.CommandRepeatTransmissionNoReply) ||
-        command[1] != (byte)DiseqcAddress.AnySwitch ||
-        command[2] != (byte)DiseqcCommand.WriteN0)
+          (command[0] != (byte) DiseqcFrame.CommandFirstTransmissionNoReply &&
+           command[0] != (byte) DiseqcFrame.CommandRepeatTransmissionNoReply) ||
+          command[1] != (byte) DiseqcAddress.AnySwitch ||
+          command[2] != (byte) DiseqcCommand.WriteN0)
       {
         this.LogDebug("TvCardDvbSs2: command not supported");
         return false;
       }
 
       // Port A = 3, Port B = 4 etc.
-      B2c2DiseqcPort port = (B2c2DiseqcPort)((command[3] & 0xc) >> 2) + 3;
+      B2c2DiseqcPort port = (B2c2DiseqcPort) ((command[3] & 0xc) >> 2) + 3;
       hr = _tunerInterface.SetDiseqc(port);
       if (hr == 0)
       {

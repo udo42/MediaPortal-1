@@ -39,7 +39,9 @@ namespace WebEPG.config.Grabber
 
     #region Constructors/Destructors
 
-    public DataPreference() {}
+    public DataPreference()
+    {
+    }
 
     public DataPreference(DataPreference preference)
     {

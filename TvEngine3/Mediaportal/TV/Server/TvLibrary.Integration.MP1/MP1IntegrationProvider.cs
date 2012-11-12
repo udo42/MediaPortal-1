@@ -22,9 +22,9 @@ using Mediaportal.TV.Server.TVLibrary.IntegrationProvider.Interfaces;
 
 namespace Mediaportal.TV.Server.TVLibrary.Integration.MP1
 {
-  public class MP1IntegrationProvider: IIntegrationProvider
+  public class MP1IntegrationProvider : IIntegrationProvider
   {
-    protected readonly IPathManager _pathManager;// = new PathManager();
+    protected readonly IPathManager _pathManager; // = new PathManager();
     protected ILogger _logger;
 
     public MP1IntegrationProvider(ILogger logger, IPathManager pathManager)

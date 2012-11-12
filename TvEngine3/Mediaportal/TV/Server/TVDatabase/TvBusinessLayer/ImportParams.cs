@@ -10,5 +10,5 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     public DeleteBeforeImportOption ProgamsToDelete;
     public ProgramList ProgramList;
     public int SleepTime;
-  } ;
+  };
 }

@@ -54,7 +54,9 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
     private TreeNode tGrabbers;
 
     public WebEPGSetup()
-      : this("WebEPG") {}
+      : this("WebEPG")
+    {
+    }
 
     public WebEPGSetup(string name)
       : base(name)
@@ -122,14 +124,16 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
       }
 
       textBoxFolder.Text = ServiceAgents.Instance.SettingServiceAgent.GetValue("webepgDestinationFolder", "");
-      checkBoxDeleteBeforeImport.Checked = ServiceAgents.Instance.SettingServiceAgent.GetValue("webepgDeleteBeforeImport", true);
+      checkBoxDeleteBeforeImport.Checked =
+        ServiceAgents.Instance.SettingServiceAgent.GetValue("webepgDeleteBeforeImport", true);
 
       LoadWebepgConfigFile();
       //RedrawList(null);
 
       // Schedule
       ScheduleGrabCheckBox.Checked = ServiceAgents.Instance.SettingServiceAgent.GetValue("webepgScheduleEnabled", true);
-      var config = new EPGWakeupConfig(ServiceAgents.Instance.SettingServiceAgent.GetValue("webepgSchedule", String.Empty));
+      var config =
+        new EPGWakeupConfig(ServiceAgents.Instance.SettingServiceAgent.GetValue("webepgSchedule", String.Empty));
       foreach (EPGGrabDays day in config.Days)
       {
         switch (day)
@@ -164,7 +168,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
     {
       base.SaveSettings();
 
-      _configFile.Info.GrabDays = (int)nMaxGrab.Value;
+      _configFile.Info.GrabDays = (int) nMaxGrab.Value;
 
       _configFile.Channels = new List<ChannelMap>();
       _configFile.RadioChannels = new List<ChannelMap>();
@@ -193,7 +197,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
       w.Close();
 
 
-      string value = "";      
+      string value = "";
       switch (DestinationComboBox.SelectedIndex)
       {
         case 0:
@@ -209,7 +213,8 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
 
       ServiceAgents.Instance.SettingServiceAgent.SaveValue("webepgDestination", value);
       ServiceAgents.Instance.SettingServiceAgent.SaveValue("webepgDestinationFolder", textBoxFolder.Text);
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("webepgDeleteBeforeImport", checkBoxDeleteBeforeImport.Checked);
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("webepgDeleteBeforeImport",
+                                                           checkBoxDeleteBeforeImport.Checked);
       ServiceAgents.Instance.SettingServiceAgent.SaveValue("webepgScheduleEnabled", ScheduleGrabCheckBox.Checked);
 
 
@@ -233,7 +238,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
 
       if (!cfg.Equals(newcfg))
       {
-        ServiceAgents.Instance.SettingServiceAgent.SaveValue("webepgSchedule", newcfg.SerializeAsString());                
+        ServiceAgents.Instance.SettingServiceAgent.SaveValue("webepgSchedule", newcfg.SerializeAsString());
       }
     }
 
@@ -322,15 +327,13 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
       labelStatus.Text = status.Status;
 
       ServiceAgents.Instance.SettingServiceAgent.SaveValue("webepgResultChannels", status.Channels);
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("webepgResultPrograms", status.Programs);      
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("webepgResultPrograms", status.Programs);
       ServiceAgents.Instance.SettingServiceAgent.SaveValue("webepgResultStatus", status.Status);
-      ServiceAgents.Instance.SettingServiceAgent.SaveValue("webepgResultLastImport", status.StartTime);      
-      
+      ServiceAgents.Instance.SettingServiceAgent.SaveValue("webepgResultLastImport", status.StartTime);
     }
 
     private void ShowStatus()
     {
-
       labelLastImport.Text = ServiceAgents.Instance.SettingServiceAgent.GetValue("webepgResultLastImport", "");
       labelChannels.Text = ServiceAgents.Instance.SettingServiceAgent.GetValue("webepgResultChannels", "");
       labelPrograms.Text = ServiceAgents.Instance.SettingServiceAgent.GetValue("webepgResultPrograms", "");
@@ -354,7 +357,9 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
             cbCountry.Items.Add(region.EnglishName);
             _countryList.Add(region.EnglishName, country);
           }
-          catch (Exception) {}
+          catch (Exception)
+          {
+          }
         }
       }
 
@@ -405,7 +410,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
       IDictionaryEnumerator Enumerator = hChannelConfigInfo.GetEnumerator();
       while (Enumerator.MoveNext())
       {
-        var info = (ChannelConfigInfo)Enumerator.Value;
+        var info = (ChannelConfigInfo) Enumerator.Value;
         if (info.ChannelID != null && info.FullName != null)
         {
           if (info.GrabberList != null)
@@ -413,8 +418,8 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
             IDictionaryEnumerator grabEnum = info.GrabberList.GetEnumerator();
             while (grabEnum.MoveNext())
             {
-              var gInfo = (GrabberConfigInfo)grabEnum.Value;
-              var chList = (SortedList)CountryList[gInfo.Country];
+              var gInfo = (GrabberConfigInfo) grabEnum.Value;
+              var chList = (SortedList) CountryList[gInfo.Country];
               if (chList[info.ChannelID] == null)
               {
                 chList.Add(info.ChannelID, gInfo.GrabberID);
@@ -438,7 +443,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
         try
         {
           r = new StreamReader(_configFileDir + "\\WebEPG.xml");
-          _configFile = (WebepgConfigFile)s.Deserialize(r);
+          _configFile = (WebepgConfigFile) s.Deserialize(r);
           r.Close();
         }
         catch (InvalidOperationException ex)
@@ -584,7 +589,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
 
           var s = new XmlSerializer(typeof (GrabberConfigFile));
           TextReader r = new StreamReader(file.FullName);
-          grabberXml = (GrabberConfigFile)s.Deserialize(r);
+          grabberXml = (GrabberConfigFile) s.Deserialize(r);
         }
         catch (Exception)
         {
@@ -615,7 +620,7 @@ namespace Mediaportal.TV.Server.Plugins.WebEPGImport.Config
         {
           if (channel.id != null)
           {
-            var info = (ChannelConfigInfo)hChannelConfigInfo[channel.id];
+            var info = (ChannelConfigInfo) hChannelConfigInfo[channel.id];
             if (info != null) // && info.GrabberList[gInfo.GrabberID] != null)
             {
               var tNode = new TreeNode(info.FullName);

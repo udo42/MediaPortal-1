@@ -4,6 +4,6 @@ namespace Mediaportal.TV.Server.TVControl.Interfaces.Events
 {
   public interface ITvServerEventCallbackClient
   {
-    void CallbackTvServerEvent(TvServerEventArgs eventArgs);    
+    void CallbackTvServerEvent(TvServerEventArgs eventArgs);
   }
 }

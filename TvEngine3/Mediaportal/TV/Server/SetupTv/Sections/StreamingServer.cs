@@ -41,19 +41,19 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
 
     public StreamingServer()
-      : this("Streaming Server") {}
+      : this("Streaming Server")
+    {
+    }
 
     public StreamingServer(string name)
       : base(name)
     {
       InitializeComponent();
-
-      
     }
 
     public override void OnSectionActivated()
     {
-      timer1.Enabled = true;      
+      timer1.Enabled = true;
 
       try
       {
@@ -78,7 +78,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         counter++;
       }
       IpAddressComboBox.SelectedIndex = selected;
-      
+
       if (_rtspPort >= PortNoNumericUpDown.Minimum && _rtspPort <= PortNoNumericUpDown.Maximum)
       {
         PortNoNumericUpDown.Value = _rtspPort;
@@ -96,8 +96,8 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private void ApplyStreamingSettings()
     {
-      string newHostName = ((IpAddressOption)IpAddressComboBox.SelectedItem).HostName;
-      var newRtspPort = (int)PortNoNumericUpDown.Value;
+      string newHostName = ((IpAddressOption) IpAddressComboBox.SelectedItem).HostName;
+      var newRtspPort = (int) PortNoNumericUpDown.Value;
       bool needRestart = false;
       //int.TryParse(PortNoNumericUpDown.Text, out newRtspPort);
       if (_hostname != newHostName ||
@@ -107,10 +107,9 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
         _rtspPort = newRtspPort;
         needRestart = true;
       }
-     
+
       if (needRestart)
       {
-
         ServiceAgents.Instance.SettingServiceAgent.SaveValue("rtspport", _rtspPort);
         ServiceAgents.Instance.SettingServiceAgent.SaveValue("hostname", _hostname);
 
@@ -175,7 +174,7 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
     {
       foreach (ListViewItem item in listView1.SelectedItems)
       {
-        var client = (RtspClient)item.Tag;
+        var client = (RtspClient) item.Tag;
 
         IUser user = new User();
         user.Name = Dns.GetHostEntry(client.IpAdress).HostName;
@@ -194,22 +193,23 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
           {
             if (u.Value.Name == user.Name || u.Value.Name == "setuptv")
             {
-              foreach(ISubChannel subchannel in u.Value.SubChannels.Values)
+              foreach (ISubChannel subchannel in u.Value.SubChannels.Values)
               {
                 Channel ch = ServiceAgents.Instance.ChannelServiceAgent.GetChannel(subchannel.IdChannel);
                 if (ch.DisplayName == client.Description)
                 {
                   user.CardId = card.IdCard;
                   break;
-                } 
-              }              
+                }
+              }
             }
           }
           if (user.CardId > -1)
             break;
         }
 
-        bool res = ServiceAgents.Instance.ControllerServiceAgent.StopTimeShifting(user.Name, out user, TvStoppedReason.KickedByAdmin);
+        bool res = ServiceAgents.Instance.ControllerServiceAgent.StopTimeShifting(user.Name, out user,
+                                                                                  TvStoppedReason.KickedByAdmin);
 
         if (res)
         {
@@ -233,7 +233,6 @@ namespace Mediaportal.TV.Server.SetupTV.Sections
 
     private class IpAddressOption
     {
-   
       public readonly string DisplayString;
       public readonly string HostName;
 

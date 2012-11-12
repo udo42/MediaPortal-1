@@ -32,18 +32,22 @@ namespace Mediaportal.TV.Server.TVService.Interfaces.Enums
     /// Timeshifting stopped because of an unknown reason.
     /// </summary>
     UnknownReason,
+
     /// <summary>
     /// Timeshifting stopped because a recording started which needed the card.
     /// </summary>
     RecordingStarted,
+
     /// <summary>
     /// Timeshifting stopped because client was kicked by server admin.
     /// </summary>
     KickedByAdmin,
+
     /// <summary>
     /// Timeshifting stopped because client heartbeat timed out.
     /// </summary>
     HeartBeatTimeOut,
+
     /// <summary>
     /// Timeshifting stopped because the owner of the same transponder has decided to change transponder.
     /// </summary>
