@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Threading;
 using Mediaportal.Common.Utils;
 using Mediaportal.TV.Server.TVDatabase.Entities;
+using Mediaportal.TV.Server.TVDatabase.Entities.Cache;
 using Mediaportal.TV.Server.TVDatabase.Entities.Enums;
 using Mediaportal.TV.Server.TVDatabase.EntityModel.Interfaces;
 using Mediaportal.TV.Server.TVDatabase.EntityModel.ObjContext;
@@ -1147,13 +1148,24 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
             p => p.Title == programName && p.StartTime <= now.AddMinutes(preRecordInterval) && p.EndTime > now).ToList();
       }
     }
-
+    
     public static ProgramCategory GetProgramCategoryByName(string category)
     {
-      using (IProgramRepository programRepository = new ProgramRepository())
-      {
-        return programRepository.FindOne<ProgramCategory>(p => p.Category == category);
-      }
+      ProgramCategory programCategory = EntityCacheHelper.Instance.ProgramCategoryCache.GetOrUpdateFromCache(category, delegate
+                                                                                       {
+                                                                                         using (
+                                                                                           IProgramRepository
+                                                                                             programRepository =
+                                                                                               new ProgramRepository())
+                                                                                         {
+                                                                                           return
+                                                                                             programRepository.FindOne
+                                                                                               <ProgramCategory>(
+                                                                                                 p =>
+                                                                                                 p.Category == category);
+                                                                                         }
+                                                                                       });      
+      return programCategory;      
     }
 
     public static IList<string> ListAllDistinctCreditRoles()
@@ -1305,5 +1317,26 @@ namespace Mediaportal.TV.Server.TVDatabase.TVBusinessLayer
     }
 
     #endregion
+
+    public static IList<Program> SavePrograms(IEnumerable<Program> programs)
+    {
+      using (IProgramRepository programRepository = new ProgramRepository())
+      {                
+          SynchronizeDateHelpers(programs);
+          programRepository.AttachEntityIfChangeTrackingDisabled(programRepository.ObjectContext.Programs, programs);
+          programRepository.ApplyChanges(programRepository.ObjectContext.Programs, programs);
+          programRepository.UnitOfWork.SaveChanges();
+          programRepository.ObjectContext.AcceptAllChanges();
+          return programs.ToList(); 
+      }
+    }
+
+    private static void SynchronizeDateHelpers(IEnumerable<Program> programs)
+    {
+      foreach (Program program in programs)
+      {
+        SynchronizeDateHelpers(program);
+      }
+    }
   }
 }
