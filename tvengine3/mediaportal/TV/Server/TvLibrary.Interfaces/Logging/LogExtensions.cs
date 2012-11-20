@@ -71,12 +71,12 @@ namespace Mediaportal.TV.Server.TVLibrary.Interfaces.Logging
 
     public static void LogError(this object caller, Exception exception, string message, params object[] args)
     {
-      Log.Error(caller.GetType(), message, exception, args);
+      Log.Error(caller.GetType(), exception, message, args);
     }
 
     public static void LogError(this object caller, Exception exception)
-    {
-      Log.Error(caller.GetType(), "", exception);
+    {      
+      Log.Error(caller.GetType(), exception, "");
     }
   }
 }
