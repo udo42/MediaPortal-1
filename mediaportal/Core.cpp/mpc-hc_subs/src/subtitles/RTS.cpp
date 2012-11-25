@@ -304,6 +304,7 @@ void CWord::Transform_SSE2(CPoint& org)
         }
 
         // scale and shift
+        __tmpy = __pointx; // save a copy for calculating __pointy later
         if (m_style.fontShiftX != 0) {
             __tmpx = _mm_mul_ps(__xshift, __pointy);
             __pointx = _mm_add_ps(__pointx, __tmpx);
@@ -312,7 +313,7 @@ void CWord::Transform_SSE2(CPoint& org)
         __pointx = _mm_sub_ps(__pointx, __xorg);
 
         if (m_style.fontShiftY != 0) {
-            __tmpy = _mm_mul_ps(__yshift, __pointx);
+            __tmpy = _mm_mul_ps(__yshift, __tmpy); // __tmpy is a copy of __pointx here, because it may otherwise be modified
             __pointy = _mm_add_ps(__pointy, __tmpy);
         }
         __pointy = _mm_mul_ps(__pointy, __yscale);
@@ -2533,19 +2534,18 @@ STDMETHODIMP CRenderedTextSubtitle::Render(SubPicDesc& spd, REFERENCE_TIME rt, d
         return S_FALSE;
     }
 
-    // clear any cached subs not in the range of +/-30secs measured from the segment's bounds
+    // clear any cached subs that is behind current time
     {
         POSITION pos = m_subtitleCache.GetStartPosition();
         while (pos) {
-            int key;
-            CSubtitle* value;
-            m_subtitleCache.GetNextAssoc(pos, key, value);
+            int entry;
+            CSubtitle* pSub;
+            m_subtitleCache.GetNextAssoc(pos, entry, pSub);
 
-            STSEntry& stse = GetAt(key);
-            if (stse.end <= (t - 30000) || stse.start > (t + 30000)) {
-                delete value;
-                m_subtitleCache.RemoveKey(key);
-                pos = m_subtitleCache.GetStartPosition();
+            STSEntry& stse = GetAt(entry);
+            if (stse.end < t) {
+                delete pSub;
+                m_subtitleCache.RemoveKey(entry);
             }
         }
     }
