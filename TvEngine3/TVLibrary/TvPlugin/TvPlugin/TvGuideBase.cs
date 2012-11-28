@@ -1188,6 +1188,7 @@ namespace TvPlugin
 
       if (_cursorY == 0 || _currentProgram == null)
       {
+        GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.idProgram", 0);
         GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Title", String.Empty);
         GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.CompositeTitle", String.Empty);
         GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Time", String.Empty);
@@ -1233,7 +1234,7 @@ namespace TvPlugin
             mpg = mpGenre.Name;
           }
         }
-
+        GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.idProgram", _currentProgram.idProgram);
         GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Title", _currentProgram.Title);
         GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.CompositeTitle", TVUtil.GetDisplayTitle(_currentProgram));
         GUIPropertyManager.SetProperty(SkinPropertyPrefix + ".Guide.Time", strTime);
